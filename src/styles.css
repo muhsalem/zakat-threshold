@@ -173,3 +173,33 @@
   a { color: #111 !important; text-decoration: none !important; }
 }
 
+/* وضع تصدير PDF — يستبدل ألوان oklch بقيم متوافقة مع html2canvas */
+.pdf-export-mode {
+  --background: #f8f6f0;
+  --foreground: #1a2622;
+  --card: #ffffff;
+  --card-foreground: #1a2622;
+  --popover: #ffffff;
+  --popover-foreground: #1a2622;
+  --primary: #2d6a52;
+  --primary-foreground: #f8f6f0;
+  --secondary: #e8efe9;
+  --secondary-foreground: #2d4a3e;
+  --muted: #eef2ee;
+  --muted-foreground: #5a6660;
+  --accent: #dce8df;
+  --accent-foreground: #2d4a3e;
+  --destructive: #c14a3d;
+  --destructive-foreground: #ffffff;
+  --border: #d4dbd6;
+  --input: #dde3df;
+  --ring: #2d6a52;
+  --gold: #d4a13a;
+  --gold-foreground: #3b2d10;
+  background-image: none !important;
+}
+.pdf-export-mode #print-report,
+.pdf-export-mode #print-report * {
+  background-image: none !important;
+}
+
