@@ -5,7 +5,10 @@ import { CompanyTab } from "@/components/zakat/CompanyTab";
 import { NisabHistory } from "@/components/zakat/NisabHistory";
 import { FitrCalculator } from "@/components/zakat/FitrCalculator";
 import { RikazSection } from "@/components/zakat/RikazSection";
-import { Users, Building2, Scroll, Moon, ShieldCheck, FileText, Wheat, Gem, History, LogIn, LogOut } from "lucide-react";
+import { BeginnerWizard } from "@/components/zakat/BeginnerWizard";
+import { MadhabsComparison } from "@/components/zakat/MadhabsComparison";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { Users, Building2, Scroll, Moon, ShieldCheck, FileText, Wheat, Gem, History, LogIn, LogOut, Sparkles, Scale } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -29,8 +32,12 @@ function Index() {
               <p className="text-xs text-muted-foreground">للأفراد والشركات — وفق الضوابط الشرعية</p>
             </div>
           </div>
-          <HeaderAuth />
+          <div className="flex items-center gap-1">
+            <ThemeToggle />
+            <HeaderAuth />
+          </div>
         </div>
+
       </header>
 
       <main className="container mx-auto px-4 py-8">
@@ -46,7 +53,11 @@ function Index() {
         </section>
 
         <Tabs defaultValue="individual" className="space-y-6">
-          <TabsList dir="rtl" className="grid grid-cols-2 md:grid-cols-5 w-full max-w-4xl mx-auto h-auto gap-1">
+          <TabsList dir="rtl" className="grid grid-cols-3 md:grid-cols-7 w-full max-w-5xl mx-auto h-auto gap-1">
+
+            <TabsTrigger value="wizard" className="gap-1.5 text-xs md:text-sm py-2.5">
+              <Sparkles className="h-3.5 w-3.5 md:h-4 md:w-4" /> المبتدئ
+            </TabsTrigger>
             <TabsTrigger value="individual" className="gap-1.5 text-xs md:text-sm py-2.5">
               <Users className="h-3.5 w-3.5 md:h-4 md:w-4" /> الأفراد
             </TabsTrigger>
@@ -59,18 +70,24 @@ function Index() {
             <TabsTrigger value="rikaz" className="gap-1.5 text-xs md:text-sm py-2.5">
               <Gem className="h-3.5 w-3.5 md:h-4 md:w-4" /> الركاز والمعادن
             </TabsTrigger>
+            <TabsTrigger value="madhabs" className="gap-1.5 text-xs md:text-sm py-2.5">
+              <Scale className="h-3.5 w-3.5 md:h-4 md:w-4" /> المذاهب
+            </TabsTrigger>
             <TabsTrigger value="history" className="gap-1.5 text-xs md:text-sm py-2.5">
               <Scroll className="h-3.5 w-3.5 md:h-4 md:w-4" /> الأنصبة
             </TabsTrigger>
           </TabsList>
 
+          <TabsContent value="wizard"><BeginnerWizard /></TabsContent>
           <TabsContent value="individual"><IndividualTab /></TabsContent>
           <TabsContent value="company"><CompanyTab /></TabsContent>
           <TabsContent value="fitr" className="max-w-6xl mx-auto"><FitrCalculator /></TabsContent>
           <TabsContent value="rikaz" className="max-w-6xl mx-auto"><RikazSection /></TabsContent>
+          <TabsContent value="madhabs" className="max-w-5xl mx-auto"><MadhabsComparison /></TabsContent>
           <TabsContent value="history" className="max-w-4xl mx-auto"><NisabHistory /></TabsContent>
         </Tabs>
       </main>
+
 
 
       <footer className="border-t border-border/60 mt-16 bg-card/40">

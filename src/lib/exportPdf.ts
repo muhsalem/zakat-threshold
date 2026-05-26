@@ -13,6 +13,7 @@ export async function downloadReportPdf(filename = "zakat-report.pdf") {
   const prevPosition = el.style.position;
   el.style.display = "block";
   el.style.position = "static";
+  document.documentElement.classList.add("pdf-export-mode");
 
   try {
     const mod = await import("html2pdf.js");
@@ -31,5 +32,6 @@ export async function downloadReportPdf(filename = "zakat-report.pdf") {
   } finally {
     el.style.display = prevDisplay;
     el.style.position = prevPosition;
+    document.documentElement.classList.remove("pdf-export-mode");
   }
 }
