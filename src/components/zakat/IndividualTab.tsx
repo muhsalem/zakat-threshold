@@ -102,14 +102,33 @@ export function IndividualTab() {
   const hawl = useMemo(() => checkHawl(nisabStartDate), [nisabStartDate]);
   const effectiveRate = calendarBasis === "gregorian" ? ZAKAT_RATE_GREGORIAN : ZAKAT_RATE;
 
-  // الذهب: تفصيل المستعمل والمكتنز
-  const [goldUse24, setGoldUse24] = useState(""); // ذهب الحلي للاستعمال
-  const [goldUse21, setGoldUse21] = useState("");
-  const [goldUse18, setGoldUse18] = useState("");
-  const [gold24, setGold24] = useState(""); // ذهب مكتنز / غير مستعمل
-  const [gold21, setGold21] = useState("");
-  const [gold18, setGold18] = useState("");
+  // ========= الذهب: 4 أقسام =========
+  // أ) السبائك والأونصات
+  const [sb9, setSb9] = useState(""); const [sb14, setSb14] = useState("");
+  const [sb18, setSb18] = useState(""); const [sb21, setSb21] = useState("");
+  const [sb22, setSb22] = useState(""); const [sb24, setSb24] = useState("");
+  const [ounces, setOunces] = useState("");
+  // ب) الجنيهات والعملات الذهبية (عيار 21)
+  const [coinQuarter, setCoinQuarter] = useState(""); // 2.125 جم
+  const [coinHalf, setCoinHalf] = useState("");       // 4.25 جم
+  const [coinFull, setCoinFull] = useState("");       // 8.5 جم
+  const [coinCustomKarat, setCoinCustomKarat] = useState("21");
+  const [coinCustomWeight, setCoinCustomWeight] = useState("8.5");
+  const [coinCustomQty, setCoinCustomQty] = useState("");
+  // ج) المجوهرات
+  const [jw9, setJw9] = useState(""); const [jw12, setJw12] = useState("");
+  const [jw14, setJw14] = useState(""); const [jw18, setJw18] = useState("");
+  const [jw21, setJw21] = useState(""); const [jw22, setJw22] = useState("");
+  const [jw24, setJw24] = useState("");
+  const [jewelryPurpose, setJewelryPurpose] = useState<"storage" | "wear">("wear");
   const [jewelryOpinion, setJewelryOpinion] = useState<"majority" | "hanafi">("majority");
+  // د) المشغولات الذهبية الأخرى
+  const [brk18, setBrk18] = useState(""); const [brk21, setBrk21] = useState("");
+  const [brk24, setBrk24] = useState("");
+  const [brkOtherKarat, setBrkOtherKarat] = useState("9");
+  const [brkOtherWeight, setBrkOtherWeight] = useState("");
+  const [storageKarat, setStorageKarat] = useState("21");
+  const [storageWeight, setStorageWeight] = useState("");
   // الفضة
   const [silver, setSilver] = useState("");
 
