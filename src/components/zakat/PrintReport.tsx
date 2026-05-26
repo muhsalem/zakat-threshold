@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import { currency as fmtCurrency, camelZakat, cowZakat, sheepZakat } from "@/lib/zakat";
 
 /**
@@ -63,7 +63,9 @@ function generateReportId(name: string): string {
 
 export function PrintReport({ data }: { data: PrintReportData }) {
   const cur = (n: number) => fmtCurrency(n, data.currencyName);
-  const reportId = useMemo(() => generateReportId(data.name), [data.name]);
+  // توليد على العميل فقط لتفادي عدم تطابق SSR
+  const [reportId, setReportId] = useState<string>("ZK-PENDING");
+  useEffect(() => { setReportId(generateReportId(data.name)); }, [data.name]);
   const issueDate = new Date();
   const issueDateAr = issueDate.toLocaleDateString("ar-EG", {
     weekday: "long", year: "numeric", month: "long", day: "numeric",
