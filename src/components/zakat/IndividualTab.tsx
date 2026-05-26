@@ -1401,6 +1401,21 @@ export function IndividualTab() {
           </CardContent>
         </Card>
 
+        <SaveToHistoryCard
+          payload={{
+            record_type: "individual",
+            hijri_year: hawl ? formatHijri(new Date()) : null,
+            currency: currencyName,
+            total_assets: calc.monetaryGross + calc.totalGoldValue + calc.silverValue + calc.cropsValue,
+            total_liabilities: calc.debts,
+            zakat_base: calc.monetaryBase,
+            zakat_due: calc.total,
+            prepaid_zakat: num(prepaidZakat),
+            net_due: Math.max(0, calc.total - num(prepaidZakat)),
+          }}
+        />
+
+
         <Card className="shadow-soft">
           <CardHeader className="pb-3"><CardTitle className="text-base">تفصيل النتيجة</CardTitle></CardHeader>
           <CardContent className="space-y-2">
