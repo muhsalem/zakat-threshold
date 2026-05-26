@@ -261,8 +261,11 @@ export function IndividualTab() {
       total, hawlBlocks,
     };
   }, [
-    goldPrice, silverPrice, gold24, gold21, gold18, goldUse24, goldUse21, goldUse18,
-    jewelryOpinion, silver, cashHand, cashBank, savings, foreignCurrency,
+    goldPrice, silverPrice,
+    sb9, sb14, sb18, sb21, sb22, sb24, ounces,
+    coinQuarter, coinHalf, coinFull, coinCustomKarat, coinCustomWeight, coinCustomQty,
+    jw9, jw12, jw14, jw18, jw21, jw22, jw24, jewelryPurpose, jewelryOpinion,
+    brk18, brk21, brk24, brkOtherKarat, brkOtherWeight, storageKarat, storageWeight,
     stocksTrade, stocksInvest, mutualFunds, bonds, bills,
     inventory, receivablesGood, realEstateTrade, realEstateRentIncome,
     shortDebts, expenses, cropsKg, cropsValuePerKg, cropsIrrigation,
