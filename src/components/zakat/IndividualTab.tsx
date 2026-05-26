@@ -1055,22 +1055,30 @@ export function IndividualTab() {
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
-              <Alert className="border-primary/20 bg-primary/5">
-                <Info className="h-4 w-4" />
-                <AlertDescription className="text-xs">
-                  الأنعام تُزكَّى عيناً (لا قيمتها)، ويُشترط بلوغ النصاب وحولان الحول وسومُها (رعيها) أكثر السنة.
-                </AlertDescription>
-              </Alert>
-              <div className="grid md:grid-cols-3 gap-4">
-                <NumField label="عدد الإبل" value={camels} onChange={setCamels} hint="النصاب: 5" />
-                <NumField label="عدد البقر" value={cows} onChange={setCows} hint="النصاب: 30" />
-                <NumField label="عدد الغنم" value={sheep} onChange={setSheep} hint="النصاب: 40" />
+              <div className="flex items-center justify-between rounded-lg border bg-muted/30 p-3">
+                <Label className="text-sm font-semibold">هل تملك مواشي / أنعام؟</Label>
+                <Switch checked={ownsLivestock} onCheckedChange={setOwnsLivestock} />
               </div>
-              <div className="space-y-2 text-sm">
-                {calc.camelsN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>الإبل ({calc.camelsN}):</b> {camelZakat(calc.camelsN)}</div>}
-                {calc.cowsN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>البقر ({calc.cowsN}):</b> {cowZakat(calc.cowsN)}</div>}
-                {calc.sheepN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>الغنم ({calc.sheepN}):</b> {sheepZakat(calc.sheepN)}</div>}
-              </div>
+              {ownsLivestock && (
+                <>
+                  <Alert className="border-primary/20 bg-primary/5">
+                    <Info className="h-4 w-4" />
+                    <AlertDescription className="text-xs">
+                      الأنعام تُزكَّى عيناً (لا قيمتها)، ويُشترط بلوغ النصاب وحولان الحول وسومُها (رعيها) أكثر السنة.
+                    </AlertDescription>
+                  </Alert>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <NumField label="عدد الإبل" value={camels} onChange={setCamels} hint="النصاب: 5" />
+                    <NumField label="عدد البقر" value={cows} onChange={setCows} hint="النصاب: 30" />
+                    <NumField label="عدد الغنم" value={sheep} onChange={setSheep} hint="النصاب: 40" />
+                  </div>
+                  <div className="space-y-2 text-sm">
+                    {calc.camelsN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>الإبل ({calc.camelsN}):</b> {camelZakat(calc.camelsN)}</div>}
+                    {calc.cowsN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>البقر ({calc.cowsN}):</b> {cowZakat(calc.cowsN)}</div>}
+                    {calc.sheepN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>الغنم ({calc.sheepN}):</b> {sheepZakat(calc.sheepN)}</div>}
+                  </div>
+                </>
+              )}
             </AccordionContent>
           </AccordionItem>
 
