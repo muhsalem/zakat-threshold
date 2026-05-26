@@ -14,7 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      nisab_prices: {
+        Row: {
+          country_code: string
+          created_at: string
+          currency: string
+          event: string | null
+          gold_price: number
+          hijri_year: number | null
+          id: string
+          month: number | null
+          silver_price: number
+          source: string | null
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          country_code?: string
+          created_at?: string
+          currency?: string
+          event?: string | null
+          gold_price: number
+          hijri_year?: number | null
+          id?: string
+          month?: number | null
+          silver_price: number
+          source?: string | null
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          country_code?: string
+          created_at?: string
+          currency?: string
+          event?: string | null
+          gold_price?: number
+          hijri_year?: number | null
+          id?: string
+          month?: number | null
+          silver_price?: number
+          source?: string | null
+          updated_at?: string
+          year?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
