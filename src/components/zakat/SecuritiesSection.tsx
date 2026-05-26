@@ -19,7 +19,9 @@ type SecurityKind =
   | "bond"            // سندات (ربوية)
   | "mutual_islamic"  // صندوق استثمار إسلامي
   | "mutual_conv"     // صندوق استثمار تقليدي
-  | "etf";            // صندوق متداول ETF
+  | "etf"             // صندوق متداول ETF
+  | "takaful"         // وثيقة تأمين تكافلي (إسلامي)
+  | "insurance_conv"; // وثيقة تأمين تقليدي (تجاري)
 
 const KIND_LABEL: Record<SecurityKind, string> = {
   stock_trade: "سهم — للمتاجرة (نية البيع)",
@@ -29,6 +31,8 @@ const KIND_LABEL: Record<SecurityKind, string> = {
   mutual_islamic: "صندوق استثمار إسلامي",
   mutual_conv: "صندوق استثمار تقليدي",
   etf: "صندوق متداول ETF",
+  takaful: "وثيقة تأمين تكافلي — قيمة استرداد",
+  insurance_conv: "وثيقة تأمين تقليدي — الأصل المُسدَّد",
 };
 
 interface Row {
