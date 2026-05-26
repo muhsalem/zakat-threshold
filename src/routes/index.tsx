@@ -3,7 +3,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { IndividualTab } from "@/components/zakat/IndividualTab";
 import { CompanyTab } from "@/components/zakat/CompanyTab";
 import { NisabHistory } from "@/components/zakat/NisabHistory";
-import { Users, Building2, Scroll, Moon, ShieldCheck, FileText } from "lucide-react";
+import { FitrCalculator } from "@/components/zakat/FitrCalculator";
+import { RikazSection } from "@/components/zakat/RikazSection";
+import { Users, Building2, Scroll, Moon, ShieldCheck, FileText, Wheat, Gem } from "lucide-react";
 
 
 export const Route = createFileRoute("/")({
@@ -38,29 +40,37 @@ function Index() {
           </h2>
           <p className="text-muted-foreground leading-relaxed">
             نموذج شامل لزكاة الذهب والفضة والنقود والأسهم والأوراق التجارية وعروض التجارة والزروع والأنعام،
-            مع نموذج مخصص لزكاة الشركات بطرق المحاسبة المعتمدة، والتدقيق والامتثال والحوكمة الشرعية.
+            مع زكاة الفطر، والركاز والمعادن والثروات المستحدثة، ونموذج مخصص للشركات.
           </p>
         </section>
 
         <Tabs defaultValue="individual" className="space-y-6">
-          <TabsList dir="rtl" className="grid grid-cols-3 w-full max-w-2xl mx-auto h-auto">
-            <TabsTrigger value="individual" className="gap-2 text-sm py-2.5">
-              <Users className="h-4 w-4" /> حساب زكاة الأفراد
+          <TabsList dir="rtl" className="grid grid-cols-2 md:grid-cols-5 w-full max-w-4xl mx-auto h-auto gap-1">
+            <TabsTrigger value="individual" className="gap-1.5 text-xs md:text-sm py-2.5">
+              <Users className="h-3.5 w-3.5 md:h-4 md:w-4" /> الأفراد
             </TabsTrigger>
-            <TabsTrigger value="company" className="gap-2 text-sm py-2.5">
-              <Building2 className="h-4 w-4" /> حساب زكاة الشركات
+            <TabsTrigger value="company" className="gap-1.5 text-xs md:text-sm py-2.5">
+              <Building2 className="h-3.5 w-3.5 md:h-4 md:w-4" /> الشركات
             </TabsTrigger>
-            <TabsTrigger value="history" className="gap-2 text-sm py-2.5">
-              <Scroll className="h-4 w-4" /> قوائم أنصبة الزكاة
+            <TabsTrigger value="fitr" className="gap-1.5 text-xs md:text-sm py-2.5">
+              <Wheat className="h-3.5 w-3.5 md:h-4 md:w-4" /> زكاة الفطر
+            </TabsTrigger>
+            <TabsTrigger value="rikaz" className="gap-1.5 text-xs md:text-sm py-2.5">
+              <Gem className="h-3.5 w-3.5 md:h-4 md:w-4" /> الركاز والمعادن
+            </TabsTrigger>
+            <TabsTrigger value="history" className="gap-1.5 text-xs md:text-sm py-2.5">
+              <Scroll className="h-3.5 w-3.5 md:h-4 md:w-4" /> الأنصبة
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="individual"><IndividualTab /></TabsContent>
           <TabsContent value="company"><CompanyTab /></TabsContent>
-
+          <TabsContent value="fitr" className="max-w-6xl mx-auto"><FitrCalculator /></TabsContent>
+          <TabsContent value="rikaz" className="max-w-6xl mx-auto"><RikazSection /></TabsContent>
           <TabsContent value="history" className="max-w-4xl mx-auto"><NisabHistory /></TabsContent>
         </Tabs>
       </main>
+
 
       <footer className="border-t border-border/60 mt-16 bg-card/40">
         <div className="container mx-auto px-4 py-8 grid md:grid-cols-3 gap-6 text-xs text-muted-foreground">
