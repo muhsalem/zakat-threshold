@@ -28,6 +28,8 @@ import {
 import { SaveToHistoryCard } from "./SaveToHistoryCard";
 import { CashBankSection } from "./CashBankSection";
 import { SecuritiesSection } from "./SecuritiesSection";
+import { LivePricesCard } from "./LivePricesCard";
+import { downloadReportPdf } from "@/lib/exportPdf";
 import { IncomeUsufructSection } from "./IncomeUsufructSection";
 import { PrintReport } from "./PrintReport";
 import { supabase } from "@/integrations/supabase/client";
@@ -1515,14 +1517,24 @@ export function IndividualTab() {
           </CardContent>
         </Card>
 
+        <LivePricesCard
+          currency={currencyName}
+          onApply={(g, s) => { setGoldPrice(g.toFixed(2)); setSilverPrice(s.toFixed(3)); }}
+        />
+
         <Card className="border-primary/20 shadow-soft print:hidden">
-          <CardContent className="pt-6">
-            <Button className="w-full" size="lg" onClick={() => window.print()}>
+          <CardContent className="pt-6 space-y-2">
+            <Button className="w-full" size="lg" onClick={() => downloadReportPdf(`zakat-${name || "report"}-${new Date().toISOString().slice(0,10)}.pdf`)}>
+              <FileText className="h-4 w-4 ml-2" />
+              تحميل الإقرار PDF
+            </Button>
+            <Button variant="outline" className="w-full" onClick={() => window.print()}>
               <CheckCircle2 className="h-4 w-4 ml-2" />
               طباعة الإقرار
             </Button>
           </CardContent>
         </Card>
+
       </div>
     </div>
   );
