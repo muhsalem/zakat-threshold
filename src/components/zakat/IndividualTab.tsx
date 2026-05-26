@@ -1224,6 +1224,11 @@ export function IndividualTab() {
                   </div>
                 </>
               )}
+
+              {/* الركاز والمعادن والعسل والثروة السمكية والدواجن — أسئلة تكميلية ضمن الأنعام */}
+              <div className="pt-2">
+                <RikazSection />
+              </div>
             </AccordionContent>
           </AccordionItem>
 
