@@ -107,3 +107,22 @@ function Index() {
   );
 }
 
+function HeaderAuth() {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  if (user) {
+    return (
+      <div className="flex items-center gap-2">
+        <Link to="/history"><Button variant="outline" size="sm" className="gap-1.5"><History className="h-4 w-4" /> <span className="hidden sm:inline">سجل الزكاة</span></Button></Link>
+        <Button variant="ghost" size="sm" onClick={() => supabase.auth.signOut()} className="gap-1.5">
+          <LogOut className="h-4 w-4" /> <span className="hidden sm:inline">خروج</span>
+        </Button>
+      </div>
+    );
+  }
+  return (
+    <Link to="/auth"><Button variant="outline" size="sm" className="gap-1.5"><LogIn className="h-4 w-4" /> دخول</Button></Link>
+  );
+}
+
+
