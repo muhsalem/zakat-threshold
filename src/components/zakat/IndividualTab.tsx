@@ -27,6 +27,7 @@ import {
 } from "@/lib/zakat";
 import { CashBankSection } from "./CashBankSection";
 import { SecuritiesSection } from "./SecuritiesSection";
+import { IncomeUsufructSection } from "./IncomeUsufructSection";
 
 interface NumFieldProps {
   label: string;
@@ -166,17 +167,27 @@ export function IndividualTab() {
   const [inventory, setInventory] = useState("");
   const [receivablesGood, setReceivablesGood] = useState(""); // ديون مرجوّة
   const [receivablesBad, setReceivablesBad] = useState(""); // ديون متعذّرة (لا تُزكَّى الآن)
+  // هل المزكي مساهم في شركة (داخل قسم عروض التجارة)
+  const [tradeIsShareholder, setTradeIsShareholder] = useState(false);
+  const [tradeShareCompany, setTradeShareCompany] = useState("");
+  const [tradeSharePct, setTradeSharePct] = useState("");
+  const [tradeShareCompanyBase, setTradeShareCompanyBase] = useState("");
 
   // العقار
   const [realEstateTrade, setRealEstateTrade] = useState(""); // عقار للتجارة (بقيمته السوقية)
   const [realEstateRentIncome, setRealEstateRentIncome] = useState(""); // صافي إيراد الإيجار المُدّخر
 
-  // الزروع
+  // المستغلات والدخل (المجموع يُحسب داخل المكوّن)
+  const [incomeUsufructTotal, setIncomeUsufructTotal] = useState(0);
+
+  // الزروع — هل يملك أرضاً زراعية
+  const [ownsFarmland, setOwnsFarmland] = useState(false);
   const [cropsKg, setCropsKg] = useState("");
   const [cropsValuePerKg, setCropsValuePerKg] = useState("");
   const [cropsIrrigation, setCropsIrrigation] = useState<"rain" | "irrigated">("rain");
 
-  // الأنعام
+  // الأنعام — هل يملك مواشي
+  const [ownsLivestock, setOwnsLivestock] = useState(false);
   const [camels, setCamels] = useState("");
   const [cows, setCows] = useState("");
   const [sheep, setSheep] = useState("");
@@ -259,29 +270,32 @@ export function IndividualTab() {
     const cashTotal = cashTotalFromSection;
     const securitiesTotal = securitiesTotalFromSection;
     const billsTotal = num(bills);
-    const tradeTotal = num(inventory) + num(receivablesGood);
+    const tradeShareholderBase = tradeIsShareholder
+      ? num(tradeShareCompanyBase) * (num(tradeSharePct) / 100) : 0;
+    const tradeTotal = num(inventory) + num(receivablesGood) + tradeShareholderBase;
     const realEstateZakatable = num(realEstateTrade) + num(realEstateRentIncome);
+    const incomeUsufruct = incomeUsufructTotal;
 
     const goldNisabValue = GOLD_NISAB_GRAMS * gp;
     const silverNisabValue = SILVER_NISAB_GRAMS * sp;
     const moneyNisab = Math.min(goldNisabValue, silverNisabValue);
 
     const debts = num(shortDebts) + num(expenses);
-    const monetaryGross = cashTotal + securitiesTotal + billsTotal + tradeTotal + realEstateZakatable;
+    const monetaryGross = cashTotal + securitiesTotal + billsTotal + tradeTotal + realEstateZakatable + incomeUsufruct;
     const monetaryBase = monetaryGross - debts;
     const monetaryEligible = monetaryBase >= moneyNisab && monetaryBase > 0;
     const monetaryZakat = monetaryEligible ? monetaryBase * effectiveRate : 0;
 
-    // الزروع (لا يُشترط لها حول)
-    const cropsKgN = num(cropsKg);
+    // الزروع (لا يُشترط لها حول) — تُحسب فقط إذا كان يملك أرضاً زراعية
+    const cropsKgN = ownsFarmland ? num(cropsKg) : 0;
     const cropsValue = cropsKgN * num(cropsValuePerKg);
     const cropsRate = cropsIrrigation === "rain" ? 0.1 : 0.05;
-    const cropsEligible = cropsKgN >= CROPS_NISAB_KG;
+    const cropsEligible = ownsFarmland && cropsKgN >= CROPS_NISAB_KG;
     const cropsZakat = cropsEligible ? cropsValue * cropsRate : 0;
 
-    const camelsN = Math.floor(num(camels));
-    const cowsN = Math.floor(num(cows));
-    const sheepN = Math.floor(num(sheep));
+    const camelsN = ownsLivestock ? Math.floor(num(camels)) : 0;
+    const cowsN = ownsLivestock ? Math.floor(num(cows)) : 0;
+    const sheepN = ownsLivestock ? Math.floor(num(sheep)) : 0;
 
     // الزكاة المالية (تشترط الحول) — لا نحسبها إن لم يكتمل الحول وكان التاريخ مُدخلًا
     const hawlBlocks = hawl !== null && !hawl.hawlComplete;
@@ -309,6 +323,8 @@ export function IndividualTab() {
     brk18, brk21, brk24, brkOtherKarat, brkOtherWeight, storageKarat, storageWeight,
     securitiesTotalFromSection, bills,
     inventory, receivablesGood, realEstateTrade, realEstateRentIncome,
+    tradeIsShareholder, tradeSharePct, tradeShareCompanyBase,
+    incomeUsufructTotal, ownsFarmland, ownsLivestock,
     shortDebts, expenses, cropsKg, cropsValuePerKg, cropsIrrigation,
     camels, cows, sheep, effectiveRate, hawl, cashTotalFromSection,
   ]);
@@ -923,6 +939,50 @@ export function IndividualTab() {
                   hint="لا تُزكَّى حتى تُقبض، ثم زكاة سنة واحدة فقط — لا تُحتسب الآن"
                 />
               </div>
+
+              {/* هل أنت مساهم في شركة */}
+              <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm font-semibold">هل أنت مساهم / شريك في شركة قائمة؟</Label>
+                  <Switch checked={tradeIsShareholder} onCheckedChange={setTradeIsShareholder} />
+                </div>
+                {tradeIsShareholder && (
+                  <>
+                    <Alert className="border-primary/20 bg-primary/5">
+                      <Info className="h-4 w-4" />
+                      <AlertDescription className="text-xs">
+                        إن كانت الشركة تُخرج زكاتها كاملةً عن وعائها فلا تُكرّر الحساب — اتركها صفراً. وإلا أدخل الوعاء الزكوي للشركة (من تبويب «زكاة الشركات») ونسبة حصتك.
+                      </AlertDescription>
+                    </Alert>
+                    <div className="grid md:grid-cols-3 gap-3">
+                      <div>
+                        <Label className="text-xs">اسم الشركة</Label>
+                        <Input value={tradeShareCompany} onChange={(e) => setTradeShareCompany(e.target.value)} placeholder="…" />
+                      </div>
+                      <NumField label="نسبة حصتك %" value={tradeSharePct} onChange={setTradeSharePct} unit="%" />
+                      <NumField label="وعاء الشركة الزكوي" value={tradeShareCompanyBase} onChange={setTradeShareCompanyBase} unit={currencyName} />
+                    </div>
+                    <p className="text-[11px] text-muted-foreground">
+                      نصيبك المُحتسب: <b className="text-primary">{cur(num(tradeShareCompanyBase) * (num(tradeSharePct) / 100))}</b>
+                    </p>
+                  </>
+                )}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          {/* المستغلات وزكاة الدخل */}
+          <AccordionItem value="income-usufruct" className="border rounded-xl shadow-soft bg-card px-4">
+            <AccordionTrigger className="hover:no-underline">
+              <span className="flex items-center gap-2 text-base font-semibold">
+                <HandHeart className="h-5 w-5 text-primary" /> زكاة المستغلات والإيرادات وزكاة الدخل
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="space-y-4 pb-4">
+              <IncomeUsufructSection
+                currencyName={currencyName}
+                onTotalChange={setIncomeUsufructTotal}
+              />
             </AccordionContent>
           </AccordionItem>
 
@@ -959,23 +1019,31 @@ export function IndividualTab() {
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
-              <div className="grid md:grid-cols-2 gap-4">
-                <NumField label="كمية المحصول" value={cropsKg} onChange={setCropsKg} unit="كجم" hint={`النصاب: ${CROPS_NISAB_KG} كجم (5 أوسق)`} />
-                <NumField label="سعر الكيلوجرام" value={cropsValuePerKg} onChange={setCropsValuePerKg} unit={currencyName} />
+              <div className="flex items-center justify-between rounded-lg border bg-muted/30 p-3">
+                <Label className="text-sm font-semibold">هل تملك أرضاً زراعية؟</Label>
+                <Switch checked={ownsFarmland} onCheckedChange={setOwnsFarmland} />
               </div>
-              <div>
-                <Label className="mb-2 block">طريقة الري</Label>
-                <RadioGroup value={cropsIrrigation} onValueChange={(v) => setCropsIrrigation(v as "rain" | "irrigated")} className="flex flex-col md:flex-row gap-4">
-                  <div className="flex items-center gap-2"><RadioGroupItem value="rain" id="rain" /><Label htmlFor="rain">سُقي بلا كلفة (مطر/أنهار) — 10%</Label></div>
-                  <div className="flex items-center gap-2"><RadioGroupItem value="irrigated" id="irr" /><Label htmlFor="irr">سُقي بكلفة (آلات/شراء) — 5%</Label></div>
-                </RadioGroup>
-              </div>
-              {calc.cropsEligible && (
-                <div className="rounded-lg bg-muted/50 p-3 text-xs">
-                  قيمة المحصول: <b>{cur(calc.cropsValue)}</b> — النسبة: <b>{(calc.cropsRate * 100).toFixed(0)}%</b>
-                </div>
+              {ownsFarmland && (
+                <>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <NumField label="كمية المحصول" value={cropsKg} onChange={setCropsKg} unit="كجم" hint={`النصاب: ${CROPS_NISAB_KG} كجم (5 أوسق)`} />
+                    <NumField label="سعر الكيلوجرام" value={cropsValuePerKg} onChange={setCropsValuePerKg} unit={currencyName} />
+                  </div>
+                  <div>
+                    <Label className="mb-2 block">طريقة الري</Label>
+                    <RadioGroup value={cropsIrrigation} onValueChange={(v) => setCropsIrrigation(v as "rain" | "irrigated")} className="flex flex-col md:flex-row gap-4">
+                      <div className="flex items-center gap-2"><RadioGroupItem value="rain" id="rain" /><Label htmlFor="rain">سُقي بلا كلفة (مطر/أنهار) — 10%</Label></div>
+                      <div className="flex items-center gap-2"><RadioGroupItem value="irrigated" id="irr" /><Label htmlFor="irr">سُقي بكلفة (آلات/شراء) — 5%</Label></div>
+                    </RadioGroup>
+                  </div>
+                  {calc.cropsEligible && (
+                    <div className="rounded-lg bg-muted/50 p-3 text-xs">
+                      قيمة المحصول: <b>{cur(calc.cropsValue)}</b> — النسبة: <b>{(calc.cropsRate * 100).toFixed(0)}%</b>
+                    </div>
+                  )}
+                  <p className="text-xs text-muted-foreground">ملاحظة: الزروع لا تشترط حولًا، وإنما تجب يوم الحصاد.</p>
+                </>
               )}
-              <p className="text-xs text-muted-foreground">ملاحظة: الزروع لا تشترط حولًا، وإنما تجب يوم الحصاد.</p>
             </AccordionContent>
           </AccordionItem>
 
@@ -987,22 +1055,30 @@ export function IndividualTab() {
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
-              <Alert className="border-primary/20 bg-primary/5">
-                <Info className="h-4 w-4" />
-                <AlertDescription className="text-xs">
-                  الأنعام تُزكَّى عيناً (لا قيمتها)، ويُشترط بلوغ النصاب وحولان الحول وسومُها (رعيها) أكثر السنة.
-                </AlertDescription>
-              </Alert>
-              <div className="grid md:grid-cols-3 gap-4">
-                <NumField label="عدد الإبل" value={camels} onChange={setCamels} hint="النصاب: 5" />
-                <NumField label="عدد البقر" value={cows} onChange={setCows} hint="النصاب: 30" />
-                <NumField label="عدد الغنم" value={sheep} onChange={setSheep} hint="النصاب: 40" />
+              <div className="flex items-center justify-between rounded-lg border bg-muted/30 p-3">
+                <Label className="text-sm font-semibold">هل تملك مواشي / أنعام؟</Label>
+                <Switch checked={ownsLivestock} onCheckedChange={setOwnsLivestock} />
               </div>
-              <div className="space-y-2 text-sm">
-                {calc.camelsN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>الإبل ({calc.camelsN}):</b> {camelZakat(calc.camelsN)}</div>}
-                {calc.cowsN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>البقر ({calc.cowsN}):</b> {cowZakat(calc.cowsN)}</div>}
-                {calc.sheepN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>الغنم ({calc.sheepN}):</b> {sheepZakat(calc.sheepN)}</div>}
-              </div>
+              {ownsLivestock && (
+                <>
+                  <Alert className="border-primary/20 bg-primary/5">
+                    <Info className="h-4 w-4" />
+                    <AlertDescription className="text-xs">
+                      الأنعام تُزكَّى عيناً (لا قيمتها)، ويُشترط بلوغ النصاب وحولان الحول وسومُها (رعيها) أكثر السنة.
+                    </AlertDescription>
+                  </Alert>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <NumField label="عدد الإبل" value={camels} onChange={setCamels} hint="النصاب: 5" />
+                    <NumField label="عدد البقر" value={cows} onChange={setCows} hint="النصاب: 30" />
+                    <NumField label="عدد الغنم" value={sheep} onChange={setSheep} hint="النصاب: 40" />
+                  </div>
+                  <div className="space-y-2 text-sm">
+                    {calc.camelsN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>الإبل ({calc.camelsN}):</b> {camelZakat(calc.camelsN)}</div>}
+                    {calc.cowsN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>البقر ({calc.cowsN}):</b> {cowZakat(calc.cowsN)}</div>}
+                    {calc.sheepN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>الغنم ({calc.sheepN}):</b> {sheepZakat(calc.sheepN)}</div>}
+                  </div>
+                </>
+              )}
             </AccordionContent>
           </AccordionItem>
 
