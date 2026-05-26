@@ -856,6 +856,17 @@ function BankPicker({
                 ))}
               </SelectContent>
             </Select>
+            <div className="flex items-center gap-2 pt-1">
+              <input
+                type="checkbox"
+                id={`${idPrefix}-isvc`}
+                checked={useWindow}
+                onChange={(e) => setUseWindow(e.target.checked)}
+              />
+              <Label htmlFor={`${idPrefix}-isvc`} className="text-xs cursor-pointer text-muted-foreground">
+                المنتج أو الخدمة إسلامية (متوافقة مع الشريعة)
+              </Label>
+            </div>
           </div>
           {!hideWindow && (
             <div className="space-y-1.5">
