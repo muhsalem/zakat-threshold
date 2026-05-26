@@ -190,104 +190,99 @@ export function PrintReport({ data }: { data: PrintReportData }) {
       {/* صفحة 1 — تقرير حساب زكاة الأفراد */}
       {/* ============================================================ */}
 
-      {/* ====== العنوان الرئيسي ====== */}
+      {/* ====== شريط الهوية العلوي (لاتيني فقط لتفادي كسر اتصال الحروف) ====== */}
       <div className="print-avoid-break" style={{
         textAlign: "center",
-        padding: "6pt 0 8pt",
+        padding: "5pt 0 7pt",
         borderBottom: `2pt double ${C.gold}`,
         marginBottom: "10pt",
+        fontSize: "8.5pt",
+        color: C.goldDark,
+        fontWeight: 700,
+        letterSpacing: "2pt",
       }}>
-        <div style={{ fontSize: "9pt", color: C.goldDark, letterSpacing: "3pt", fontWeight: 700 }}>
-          ◆ {PLATFORM_NAME_AR.toUpperCase()} ◆ {PLATFORM_TAGLINE} ◆
-        </div>
+        ◆ NISAB · CERTIFIED ZAKAT CALCULATOR ◆
       </div>
 
-      {/* ====== الترويسة الفاخرة ====== */}
+      {/* ====== الترويسة الفاخرة (خلفية صلبة بدل التدرج لتفادي مشاكل html2canvas) ====== */}
       <div className="print-avoid-break" style={{
-        background: `linear-gradient(135deg, ${C.primaryDark} 0%, ${C.primary} 50%, ${C.primaryLight} 100%)`,
+        background: C.primary,
         color: "white",
-        padding: "18pt 18pt",
+        padding: "16pt 18pt",
         borderRadius: "8pt",
         marginBottom: "10pt",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
         gap: "14pt",
-        boxShadow: "0 3pt 8pt rgba(0,0,0,0.18)",
-        border: `1pt solid ${C.gold}`,
+        border: `1.5pt solid ${C.gold}`,
       }}>
         {/* لوجو كبير */}
         <div style={{
-          width: "110pt", height: "110pt", flexShrink: 0,
-          background: "radial-gradient(circle, rgba(255,255,255,0.18), transparent 70%)",
+          width: "115pt", height: "115pt", flexShrink: 0,
+          background: "rgba(255,255,255,0.06)",
+          border: `1pt solid ${C.gold}`,
           borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
           padding: "6pt",
         }}>
           <img src={logoUrl} alt={`شعار ${PLATFORM_NAME_AR}`}
-            style={{ width: "100%", height: "100%", objectFit: "contain",
-              filter: "drop-shadow(0 2pt 4pt rgba(0,0,0,0.35))" }} />
+            style={{ width: "100%", height: "100%", objectFit: "contain" }} />
         </div>
 
-        {/* العنوان والبسملة */}
+        {/* العنوان والبسملة (بدون letter-spacing لحماية اتصال الحروف) */}
         <div style={{ flex: 1, textAlign: "center" }}>
-          {/* بسم الله بصيغة فنية جمالية */}
           <div style={{
-            fontFamily: "Amiri, 'Tajawal', serif",
-            fontSize: "20pt",
+            fontFamily: "'Amiri', 'Tajawal', serif",
+            fontSize: "22pt",
             fontWeight: 700,
             color: C.goldLight,
-            letterSpacing: "1.5pt",
-            textShadow: "0 1pt 3pt rgba(0,0,0,0.4)",
-            marginBottom: "4pt",
-            padding: "2pt 0",
+            lineHeight: 1.4,
+            padding: "4pt 14pt",
             borderTop: `0.6pt solid ${C.gold}`,
             borderBottom: `0.6pt solid ${C.gold}`,
             display: "inline-block",
-            paddingLeft: "20pt",
-            paddingRight: "20pt",
           }}>
-            ﷽
-          </div>
-          <div style={{ fontSize: "10pt", color: C.goldLight, fontWeight: 600, opacity: 0.95, marginTop: "2pt", letterSpacing: "2pt" }}>
-            بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+            بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
           </div>
           <div style={{
-            fontSize: "20pt", fontWeight: 900, marginTop: "6pt",
-            fontFamily: "Amiri, Tajawal, serif", letterSpacing: "1pt",
+            fontSize: "22pt", fontWeight: 900, marginTop: "8pt",
+            fontFamily: "'Tajawal', sans-serif",
+            color: "white",
+            lineHeight: 1.2,
           }}>
             تقرير حساب زكاة الأفراد
           </div>
-          <div style={{ fontSize: "9pt", opacity: 0.9, marginTop: "2pt" }}>
+          <div style={{ fontSize: "9pt", opacity: 0.92, marginTop: "3pt", color: C.goldLight }}>
             وفق المعايير الشرعية والمحاسبية الدولية (AAOIFI)
           </div>
         </div>
 
         {/* QR + رابط التحقق */}
         <div style={{ textAlign: "center", flexShrink: 0 }}>
-          <img src={qrSrc} alt="رمز التحقق"
-            style={{ width: "78pt", height: "78pt", background: "white", padding: "3pt", borderRadius: "5pt" }} />
-          <div style={{ fontSize: "7pt", marginTop: "3pt", opacity: 0.85 }}>امسح للتحقق</div>
+          <img src={qrSrc} alt="QR"
+            style={{ width: "82pt", height: "82pt", background: "white", padding: "3pt", borderRadius: "5pt" }} />
+          <div style={{ fontSize: "7pt", marginTop: "3pt", opacity: 0.9 }}>امسح للتحقق</div>
         </div>
       </div>
 
-      {/* ====== شريط معلومات الإصدار (تاريخ هجري وميلادي ووقت) ====== */}
+      {/* ====== شريط معلومات الإصدار ====== */}
       <div className="print-avoid-break" style={{
-        background: `linear-gradient(180deg, ${C.deepCream}, ${C.cream})`,
+        background: C.deepCream,
         border: `0.6pt solid ${C.border}`, borderRadius: "5pt",
-        padding: "7pt 12pt", marginBottom: "10pt", fontSize: "8.5pt",
-        display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4pt 16pt",
+        padding: "8pt 12pt", marginBottom: "10pt", fontSize: "8.5pt",
+        display: "grid", gridTemplateColumns: "1fr 1fr", gap: "5pt 16pt",
       }}>
-        <span><b style={{ color: C.primary }}>📄 رقم التقرير:</b> <span style={{ fontFamily: "monospace", color: C.goldDark, fontWeight: 700 }}>{reportId}</span></span>
-        <span><b style={{ color: C.primary }}>🕌 التقويم المعتمد:</b> {data.calendarBasis === "hijri" ? "هجري (354 يوم)" : "ميلادي (365 يوم)"}</span>
-        <span><b style={{ color: C.primary }}>📅 التاريخ الميلادي:</b> {issueGregorian}</span>
-        <span><b style={{ color: C.primary }}>☪ التاريخ الهجري:</b> {issueHijri}</span>
-        <span><b style={{ color: C.primary }}>⏰ وقت الإصدار:</b> {issueTime}</span>
+        <span><b style={{ color: C.primary }}>رقم التقرير:</b> <span style={{ fontFamily: "monospace", color: C.goldDark, fontWeight: 700 }}>{reportId}</span></span>
+        <span><b style={{ color: C.primary }}>التقويم المعتمد:</b> {data.calendarBasis === "hijri" ? "هجري (354 يوم)" : "ميلادي (365 يوم)"}</span>
+        <span><b style={{ color: C.primary }}>التاريخ الميلادي:</b> {issueGregorian}</span>
+        <span><b style={{ color: C.primary }}>التاريخ الهجري:</b> {issueHijri}</span>
+        <span><b style={{ color: C.primary }}>وقت الإصدار:</b> {issueTime}</span>
         {nextHawl && (
-          <span><b style={{ color: C.primary }}>🔔 حلول الحول القادم:</b> {nextHawlGreg} — {nextHawlHijri}</span>
+          <span><b style={{ color: C.primary }}>حلول الحول القادم:</b> {nextHawlGreg} — {nextHawlHijri}</span>
         )}
-        <span style={{ gridColumn: "1 / -1", borderTop: `0.4pt dashed ${C.border}`, paddingTop: "3pt", marginTop: "1pt" }}>
-          <b style={{ color: C.primary }}>🔗 رابط التحقق / إعادة الطباعة:</b>{" "}
-          <a href={verifyUrl} style={{ color: C.primaryLight, textDecoration: "underline", wordBreak: "break-all" }}>{verifyUrl || "—"}</a>
+        <span style={{ gridColumn: "1 / -1", borderTop: `0.4pt dashed ${C.border}`, paddingTop: "4pt", marginTop: "2pt" }}>
+          <b style={{ color: C.primary }}>رابط التحقق / إعادة الطباعة:</b>{" "}
+          <a href={verifyUrl} style={{ color: C.primaryLight, textDecoration: "underline", wordBreak: "break-all", fontFamily: "monospace", fontSize: "8pt" }}>{verifyUrl || "—"}</a>
         </span>
       </div>
 
@@ -342,7 +337,7 @@ export function PrintReport({ data }: { data: PrintReportData }) {
       </div>
 
       {/* ====== أنصبة الذهب والفضة ====== */}
-      <div className="print-card print-avoid-break" style={{ ...cardStyle(C, C.gold), background: `linear-gradient(180deg, ${C.goldLight} 0%, #fffdf5 100%)` }}>
+      <div className="print-card print-avoid-break" style={{ ...cardStyle(C, C.gold), background: C.goldLight }}>
         <div style={titleStyle(C)}>② الأنصبة الشرعية المرجعية</div>
         <table className="print-table" style={tableStyle}>
           <thead>
@@ -420,7 +415,7 @@ export function PrintReport({ data }: { data: PrintReportData }) {
               </td>
               <td style={{
                 ...tdCell("num"),
-                background: `linear-gradient(135deg, ${C.primary}, ${C.primaryLight})`,
+                background: C.primary,
                 color: "white", fontWeight: 900, fontSize: "11pt",
               }}>
                 {curFull(data.totalZakat)}
@@ -434,8 +429,8 @@ export function PrintReport({ data }: { data: PrintReportData }) {
       <div className="print-card print-avoid-break" style={{
         ...cardStyle(C, C.gold),
         background: reachedGoldNisab
-          ? `linear-gradient(180deg, #eaf5ee, #ffffff)`
-          : `linear-gradient(180deg, #fff8e6, #ffffff)`,
+          ? '#eaf5ee'
+          : '#fff8e6',
       }}>
         <div style={titleStyle(C)}>④ مقارنة الوعاء بالنصاب وخيار المُزكِّي</div>
 
@@ -471,7 +466,7 @@ export function PrintReport({ data }: { data: PrintReportData }) {
         {/* الخيار المقدم للمزكي */}
         <div style={{
           marginTop: "8pt", padding: "8pt 12pt", borderRadius: "5pt",
-          background: reachedGoldNisab ? `linear-gradient(135deg, #1f7a4d, #2d8a5c)` : `linear-gradient(135deg, ${C.goldDark}, ${C.gold})`,
+          background: reachedGoldNisab ? C.success : C.goldDark,
           color: "white", fontSize: "9.5pt", lineHeight: 1.7,
         }}>
           <div style={{ fontWeight: 800, fontSize: "10.5pt", marginBottom: "3pt" }}>
@@ -587,45 +582,45 @@ export function PrintReport({ data }: { data: PrintReportData }) {
       </div>
 
       <div className="print-avoid-break" style={{
-        background: `linear-gradient(135deg, ${C.gold} 0%, #e6c673 50%, ${C.goldDark} 100%)`,
+        background: C.gold,
         color: C.primaryDark, padding: "16pt 18pt", borderRadius: "8pt",
         marginBottom: "12pt", textAlign: "center",
-        border: `1pt solid ${C.primary}`,
-        boxShadow: "0 3pt 6pt rgba(0,0,0,0.12)",
+        border: `1.5pt solid ${C.primary}`,
       }}>
         <div style={{
-          fontFamily: "Amiri, Tajawal, serif", fontSize: "16pt", fontWeight: 700,
-          letterSpacing: "1pt", marginBottom: "4pt",
+          fontFamily: "'Amiri', 'Tajawal', serif", fontSize: "20pt", fontWeight: 700,
+          marginBottom: "6pt", lineHeight: 1.3,
         }}>
-          ﷽
+          بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
         </div>
-        <div style={{ fontSize: "20pt", fontWeight: 900, fontFamily: "Amiri, Tajawal, serif", letterSpacing: "1pt" }}>
+        <div style={{ fontSize: "22pt", fontWeight: 900, fontFamily: "'Tajawal', sans-serif", lineHeight: 1.2 }}>
           مصارف الزكاة الثمانية الشرعية
         </div>
-        <div style={{ fontSize: "9pt", marginTop: "3pt", opacity: 0.85 }}>
+        <div style={{ fontSize: "9.5pt", marginTop: "4pt", opacity: 0.9 }}>
           المُستحقّون شرعاً لأخذ الزكاة وفق نصّ القرآن الكريم
         </div>
       </div>
 
       <div className="print-card" style={{
         ...cardStyle(C, C.gold),
-        background: `linear-gradient(180deg, #fffdf5 0%, ${C.cream} 100%)`,
+        background: C.cream,
       }}>
         <div className="print-avoid-break" style={{
-          background: `linear-gradient(135deg, ${C.primaryDark}, ${C.primary})`,
+          background: C.primary,
           color: "white", padding: "12pt 16pt",
           borderRadius: "6pt", textAlign: "center", fontSize: "11pt", lineHeight: 2,
-          marginBottom: "12pt", fontFamily: "Amiri, Tajawal, serif",
+          marginBottom: "12pt",
           border: `0.6pt solid ${C.gold}`,
         }}>
           <div style={{ fontSize: "9pt", color: C.goldLight, marginBottom: "4pt" }}>قال تعالى:</div>
-          <div style={{ fontSize: "13pt", fontWeight: 700, color: C.goldLight, letterSpacing: "0.5pt" }}>
+          <div style={{ fontSize: "13pt", fontWeight: 700, color: C.goldLight, fontFamily: "'Amiri', 'Tajawal', serif", lineHeight: 1.9 }}>
             ﴿إِنَّمَا الصَّدَقَاتُ لِلْفُقَرَاءِ وَالْمَسَاكِينِ وَالْعَامِلِينَ عَلَيْهَا وَالْمُؤَلَّفَةِ قُلُوبُهُمْ
             وَفِي الرِّقَابِ وَالْغَارِمِينَ وَفِي سَبِيلِ اللَّهِ وَابْنِ السَّبِيلِ ۖ
             فَرِيضَةً مِّنَ اللَّهِ ۗ وَاللَّهُ عَلِيمٌ حَكِيمٌ﴾
           </div>
           <div style={{ fontSize: "8.5pt", marginTop: "4pt", opacity: 0.9 }}>[سورة التوبة: 60]</div>
         </div>
+
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "9pt" }}>
           {ZAKAT_RECIPIENTS.map((r, i) => (
@@ -636,7 +631,7 @@ export function PrintReport({ data }: { data: PrintReportData }) {
               borderRight: `3pt solid ${C.primary}`,
             }}>
               <div style={{
-                background: `linear-gradient(135deg, ${C.gold}, ${C.goldDark})`,
+                background: C.gold,
                 color: "white", fontWeight: 900, width: "24pt", height: "24pt",
                 borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
                 fontSize: "12pt", flexShrink: 0,
@@ -668,7 +663,7 @@ export function PrintReport({ data }: { data: PrintReportData }) {
       {/* ====== التذييل القانوني + ختم الـ branding ====== */}
       <div style={{
         marginTop: "8pt", padding: "10pt 14pt", borderRadius: "6pt",
-        background: `linear-gradient(180deg, ${C.deepCream}, ${C.cream})`,
+        background: C.deepCream,
         border: `0.6pt dashed ${C.border}`,
         fontSize: "8pt", color: C.soft, lineHeight: 1.65, textAlign: "justify",
       }}>
@@ -681,10 +676,10 @@ export function PrintReport({ data }: { data: PrintReportData }) {
           marginTop: "8pt", paddingTop: "6pt", borderTop: `0.6pt solid ${C.gold}`,
           display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10pt", flexWrap: "wrap",
         }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "6pt" }}>
-            <img src={logoUrl} alt="" style={{ width: "26pt", height: "26pt", objectFit: "contain" }} />
+          <div style={{ display: "flex", alignItems: "center", gap: "8pt" }}>
+            <img src={logoUrl} alt="" style={{ width: "30pt", height: "30pt", objectFit: "contain" }} />
             <div>
-              <div style={{ fontWeight: 900, color: C.primary, fontSize: "10pt", letterSpacing: "1pt" }}>{PLATFORM_NAME_AR}</div>
+              <div style={{ fontWeight: 900, color: C.primary, fontSize: "11pt" }}>{PLATFORM_NAME_AR}</div>
               <div style={{ fontSize: "7.5pt", color: C.goldDark }}>{PLATFORM_TAGLINE}</div>
             </div>
           </div>
@@ -724,7 +719,7 @@ function titleStyle(C: any): React.CSSProperties {
 function thStyle(C: any): React.CSSProperties {
   return {
     border: `0.6pt solid ${C.border}`, padding: "5pt 7pt", textAlign: "right",
-    background: `linear-gradient(180deg, ${C.primary}, ${C.primaryLight})`,
+    background: C.primary,
     color: "white", fontWeight: 700, fontSize: "9pt",
   };
 }
