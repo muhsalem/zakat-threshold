@@ -92,6 +92,87 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      zakat_records: {
+        Row: {
+          created_at: string
+          currency: string
+          gregorian_date: string
+          hijri_year: string | null
+          id: string
+          net_due: number
+          notes: string | null
+          prepaid_zakat: number
+          record_type: string
+          snapshot: Json | null
+          total_assets: number
+          total_liabilities: number
+          updated_at: string
+          user_id: string
+          zakat_base: number
+          zakat_due: number
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          gregorian_date?: string
+          hijri_year?: string | null
+          id?: string
+          net_due?: number
+          notes?: string | null
+          prepaid_zakat?: number
+          record_type?: string
+          snapshot?: Json | null
+          total_assets?: number
+          total_liabilities?: number
+          updated_at?: string
+          user_id: string
+          zakat_base?: number
+          zakat_due?: number
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          gregorian_date?: string
+          hijri_year?: string | null
+          id?: string
+          net_due?: number
+          notes?: string | null
+          prepaid_zakat?: number
+          record_type?: string
+          snapshot?: Json | null
+          total_assets?: number
+          total_liabilities?: number
+          updated_at?: string
+          user_id?: string
+          zakat_base?: number
+          zakat_due?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

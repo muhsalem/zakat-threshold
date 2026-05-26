@@ -5,7 +5,10 @@ import { CompanyTab } from "@/components/zakat/CompanyTab";
 import { NisabHistory } from "@/components/zakat/NisabHistory";
 import { FitrCalculator } from "@/components/zakat/FitrCalculator";
 import { RikazSection } from "@/components/zakat/RikazSection";
-import { Users, Building2, Scroll, Moon, ShieldCheck, FileText, Wheat, Gem } from "lucide-react";
+import { Users, Building2, Scroll, Moon, ShieldCheck, FileText, Wheat, Gem, History, LogIn, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 
 export const Route = createFileRoute("/")({
@@ -26,14 +29,12 @@ function Index() {
               <p className="text-xs text-muted-foreground">للأفراد والشركات — وفق الضوابط الشرعية</p>
             </div>
           </div>
-          <div className="hidden sm:flex items-center gap-2 text-xs text-muted-foreground">
-            <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
-            حساب فوري — لا تُحفظ بياناتك
-          </div>
+          <HeaderAuth />
         </div>
       </header>
 
       <main className="container mx-auto px-4 py-8">
+
         <section className="mb-8 text-center max-w-3xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-l from-primary via-primary to-gold bg-clip-text text-transparent">
             احسب زكاتك بدقة وفق المنهج الشرعي
@@ -105,4 +106,23 @@ function Index() {
     </div>
   );
 }
+
+function HeaderAuth() {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  if (user) {
+    return (
+      <div className="flex items-center gap-2">
+        <Link to="/history"><Button variant="outline" size="sm" className="gap-1.5"><History className="h-4 w-4" /> <span className="hidden sm:inline">سجل الزكاة</span></Button></Link>
+        <Button variant="ghost" size="sm" onClick={() => supabase.auth.signOut()} className="gap-1.5">
+          <LogOut className="h-4 w-4" /> <span className="hidden sm:inline">خروج</span>
+        </Button>
+      </div>
+    );
+  }
+  return (
+    <Link to="/auth"><Button variant="outline" size="sm" className="gap-1.5"><LogIn className="h-4 w-4" /> دخول</Button></Link>
+  );
+}
+
 

@@ -23,8 +23,9 @@ import {
   ZAKAT_RATE, ZAKAT_RATE_GREGORIAN, GOLD_NISAB_GRAMS, SILVER_NISAB_GRAMS,
   CROPS_NISAB_KG, HAWL_DAYS_HIJRI,
   num, fmt, currency, camelZakat, cowZakat, sheepZakat,
-  COUNTRY_PRICES, checkHawl, formatHijri, ZAKAT_RECIPIENTS,
+  COUNTRY_PRICES, checkHawl, formatHijri, gregorianToHijri, ZAKAT_RECIPIENTS,
 } from "@/lib/zakat";
+import { SaveToHistoryCard } from "./SaveToHistoryCard";
 import { CashBankSection } from "./CashBankSection";
 import { SecuritiesSection } from "./SecuritiesSection";
 import { IncomeUsufructSection } from "./IncomeUsufructSection";
@@ -1400,6 +1401,21 @@ export function IndividualTab() {
             )}
           </CardContent>
         </Card>
+
+        <SaveToHistoryCard
+          payload={{
+            record_type: "individual",
+            hijri_year: (() => { const d = new Date(); return formatHijri(gregorianToHijri(d.getFullYear(), d.getMonth() + 1, d.getDate())); })(),
+            currency: currencyName,
+            total_assets: calc.monetaryGross + calc.totalGoldValue + calc.silverValue + calc.cropsValue,
+            total_liabilities: calc.debts,
+            zakat_base: calc.monetaryBase,
+            zakat_due: calc.total,
+            prepaid_zakat: num(prepaidZakat),
+            net_due: Math.max(0, calc.total - num(prepaidZakat)),
+          }}
+        />
+
 
         <Card className="shadow-soft">
           <CardHeader className="pb-3"><CardTitle className="text-base">تفصيل النتيجة</CardTitle></CardHeader>
