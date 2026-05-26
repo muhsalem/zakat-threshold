@@ -1538,6 +1538,16 @@ export function IndividualTab() {
         </Card>
 
       </div>
+
+      {/* ====== الركاز والمعادن (مدمج كقسم تكميلي) ====== */}
+      <div className="lg:col-span-3 mt-8">
+        <RikazSection />
+      </div>
+
+      {/* ====== إيضاحات فقهية مكملة — مقارنة المذاهب ====== */}
+      <div className="lg:col-span-3 mt-6">
+        <MadhabsComparison />
+      </div>
     </div>
   );
 }
