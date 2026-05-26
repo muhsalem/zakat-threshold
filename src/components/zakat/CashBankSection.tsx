@@ -9,9 +9,46 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Info, RefreshCw, Wallet, Smartphone, CreditCard, Building2, PiggyBank, Banknote } from "lucide-react";
+import { Info, RefreshCw, Wallet, Smartphone, CreditCard, Building2, PiggyBank, Banknote, Bitcoin, Award } from "lucide-react";
 import { COUNTRY_PRICES, currency as fmtCurrency, num } from "@/lib/zakat";
 import bankCardsImg from "@/assets/bank-cards.png";
+
+// ===== قوائم البنوك =====
+const ISLAMIC_BANKS = [
+  "بنك فيصل الإسلامي المصري",
+  "بنك البركة مصر",
+  "مصرف أبوظبي الإسلامي — ADIB",
+  "البنك الإسلامي الأردني",
+  "بيت التمويل الكويتي — KFH",
+  "مصرف الراجحي",
+  "بنك البلاد",
+  "بنك الجزيرة",
+  "مصرف الإنماء",
+  "مصرف الشارقة الإسلامي",
+  "مصرف الإمارات الإسلامي",
+  "بنك دبي الإسلامي",
+  "مصرف قطر الإسلامي — QIB",
+  "البنك الإسلامي القطري الدولي — QIIB",
+  "البنك الإسلامي الفلسطيني",
+  "بنك صفوة الإسلامي (الأردن)",
+  "أخرى",
+];
+
+const TRADITIONAL_BANKS_WITH_WINDOWS = [
+  { v: "nbe", l: "البنك الأهلي المصري — NBE", window: "نافذة المعاملات الإسلامية" },
+  { v: "misr", l: "بنك مصر", window: "فرع المعاملات الإسلامية" },
+  { v: "cib", l: "البنك التجاري الدولي — CIB", window: "—" },
+  { v: "qnb", l: "بنك QNB الأهلي", window: "—" },
+  { v: "aaib", l: "البنك العربي الأفريقي الدولي", window: "—" },
+  { v: "hsbc", l: "بنك HSBC", window: "Amanah — أمانة" },
+  { v: "adcb", l: "بنك أبوظبي التجاري — ADCB", window: "إسلامي" },
+  { v: "fab", l: "بنك أبوظبي الأول — FAB", window: "إسلامي" },
+  { v: "enbd", l: "بنك الإمارات دبي الوطني", window: "إسلامي" },
+  { v: "mashreq", l: "بنك المشرق", window: "المشرق الإسلامي" },
+  { v: "samba", l: "سامبا — SNB", window: "إسلامي" },
+  { v: "alahli", l: "البنك الأهلي السعودي — SNB", window: "—" },
+  { v: "other", l: "بنك تقليدي آخر", window: "—" },
+];
 
 type BankType = "islamic" | "traditional";
 
@@ -58,6 +95,9 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   const [currBalance, setCurrBalance] = useState("");
   const [currOpenedAt, setCurrOpenedAt] = useState("");
   const [currBranch, setCurrBranch] = useState("");
+  const [currIslamicBank, setCurrIslamicBank] = useState(ISLAMIC_BANKS[0]);
+  const [currTradBank, setCurrTradBank] = useState("nbe");
+  const [currUseWindow, setCurrUseWindow] = useState(false); // نافذة إسلامية داخل بنك تقليدي
 
   // د) التوفير والادخار
   const [savType, setSavType] = useState<BankType>("islamic");
@@ -65,15 +105,29 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   const [savPurifyPct, setSavPurifyPct] = useState(""); // نسبة التطهير للإسلامي (لخفض الوعاء)
   const [savOpenedAt, setSavOpenedAt] = useState("");
   const [savBranch, setSavBranch] = useState("");
+  const [savIslamicBank, setSavIslamicBank] = useState(ISLAMIC_BANKS[0]);
+  const [savTradBank, setSavTradBank] = useState("nbe");
+  const [savUseWindow, setSavUseWindow] = useState(false);
 
-  // ودائع وشهادات وبريد
+  // ودائع (مفصولة عن الشهادات)
   const [depType, setDepType] = useState<BankType>("traditional");
   const [depBranch, setDepBranch] = useState("");
   const [depOpenedAt, setDepOpenedAt] = useState("");
   const [depPrincipal, setDepPrincipal] = useState(""); // أصل الوديعة
+  const [depIslamicBank, setDepIslamicBank] = useState(ISLAMIC_BANKS[0]);
+  const [depTradBank, setDepTradBank] = useState("nbe");
+
+  // شهادات (قسم مستقل)
+  const [certType, setCertType] = useState<BankType>("traditional");
+  const [certBranch, setCertBranch] = useState("");
+  const [certOpenedAt, setCertOpenedAt] = useState("");
   const [certPrincipal, setCertPrincipal] = useState(""); // أصل الشهادات
-  const [postSavings, setPostSavings] = useState(""); // دفتر توفير البريد (الرصيد الحالي)
-  const [postPrincipal, setPostPrincipal] = useState(""); // أصل المبلغ عند الإيداع
+  const [certIslamicBank, setCertIslamicBank] = useState(ISLAMIC_BANKS[0]);
+  const [certTradBank, setCertTradBank] = useState("nbe");
+
+  // دفتر توفير البريد
+  const [postSavings, setPostSavings] = useState("");
+  const [postPrincipal, setPostPrincipal] = useState("");
 
   // هـ) البطاقات البنكية
   const [cardPrepaid, setCardPrepaid] = useState("");
@@ -84,9 +138,13 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   const [telcoWallets, setTelcoWallets] = useState<WalletRow[]>([
     { id: 1, provider: "vodafone", amount: "", linked: "standalone" },
   ]);
-  // ز) المحافظ البنكية (Meeza / Apple Pay / Google Pay / Samsung Pay / محافظ البنوك)
+  // ز) المحافظ البنكية
   const [bankWallets, setBankWallets] = useState<WalletRow[]>([
     { id: 1, provider: "meeza", amount: "", linked: "linked" },
+  ]);
+  // ح) محافظ العملات المشفّرة (Crypto)
+  const [cryptoWallets, setCryptoWallets] = useState<WalletRow[]>([
+    { id: 1, provider: "btc", amount: "", linked: "standalone" },
   ]);
 
   const addFx = () =>
@@ -111,44 +169,36 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   });
   const telcoOps = makeWalletOps(setTelcoWallets, "vodafone");
   const bankOps = makeWalletOps(setBankWallets, "meeza");
+  const cryptoOps = makeWalletOps(setCryptoWallets, "btc");
 
   // ========= الحسابات =========
   const totals = useMemo(() => {
     const tCash = num(cashHome);
     const tFx = fxRows.reduce((s, r) => s + num(r.amount) * num(r.rate), 0);
-
-    // الحساب الجاري: للإسلامي الرصيد كاملاً، للتقليدي الأصل فقط (يُدخل في نفس الحقل)
     const tCurr = num(currBalance);
-
-    // التوفير: للإسلامي = الرصيد − نسبة التطهير، للتقليدي = الأصل فقط
     const savBal = num(savBalance);
     const tSav = savType === "islamic"
       ? Math.max(0, savBal * (1 - num(savPurifyPct) / 100))
       : savBal;
-
-    // الودائع والشهادات: الأصل فقط للتقليدي، للإسلامي الرصيد المُسجَّل
-    const tDep = num(depPrincipal) + num(certPrincipal);
-    // البريد: نزكِّي أصل المبلغ عند الإيداع (دون الفوائد الربوية)
+    const tDep = num(depPrincipal);
+    const tCert = num(certPrincipal);
     const tPost = num(postPrincipal) || num(postSavings);
-
-    // البطاقات: المقدم والمدخر + (نخصم المدفوع المقترح من إجمالي البطاقات الائتمانية كَدَين)
     const tCards = num(cardPrepaid);
-    const tCreditDue = num(creditCardDue); // يُخصم كَدَين
-
-    // المحافظ الرقمية: تُزكَّى كنقد. المحافظ المربوطة ببنك تُستثنى لتفادي التكرار.
+    const tCreditDue = num(creditCardDue);
     const sumWallets = (rows: WalletRow[]) => rows.reduce((s, w) => s + (w.linked === "linked" ? 0 : num(w.amount)), 0);
     const tTelco = sumWallets(telcoWallets);
     const tBankWal = sumWallets(bankWallets);
-    const tWallets = tTelco + tBankWal;
+    const tCrypto = cryptoWallets.reduce((s, w) => s + num(w.amount), 0); // العملات المشفرة تُزكَّى دائماً كنقد
+    const tWallets = tTelco + tBankWal + tCrypto;
 
-    const gross = tCash + tFx + tCurr + tSav + tDep + tPost + tCards + tWallets;
+    const gross = tCash + tFx + tCurr + tSav + tDep + tCert + tPost + tCards + tWallets;
     const debts = tCreditDue;
     const zakatable = Math.max(0, gross - debts);
-    return { tCash, tFx, tCurr, tSav, tDep, tPost, tCards, tCreditDue, tTelco, tBankWal, tWallets, gross, zakatable };
+    return { tCash, tFx, tCurr, tSav, tDep, tCert, tPost, tCards, tCreditDue, tTelco, tBankWal, tCrypto, tWallets, gross, zakatable };
   }, [
     cashHome, fxRows, currBalance, savBalance, savPurifyPct, savType,
     depPrincipal, certPrincipal, postPrincipal, postSavings,
-    cardPrepaid, creditCardDue, telcoWallets, bankWallets,
+    cardPrepaid, creditCardDue, telcoWallets, bankWallets, cryptoWallets,
   ]);
 
   useEffect(() => { onTotalChange(totals.zakatable); }, [totals.zakatable, onTotalChange]);
@@ -245,14 +295,18 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
             <Label className="text-xs">تاريخ فتح الحساب</Label>
             <Input type="date" value={currOpenedAt} onChange={(e) => setCurrOpenedAt(e.target.value)} />
           </div>
-          {currType === "islamic" && (
-            <div className="space-y-1.5">
-              <Label className="text-xs">فرع البنك الإسلامي</Label>
-              <Input value={currBranch} onChange={(e) => setCurrBranch(e.target.value)} placeholder="مثال: فيصل / البركة / ADIB" />
-            </div>
-          )}
+          <div className="space-y-1.5 md:col-span-2">
+            <BankPicker
+              type={currType}
+              islamicBank={currIslamicBank} setIslamicBank={setCurrIslamicBank}
+              tradBank={currTradBank} setTradBank={setCurrTradBank}
+              useWindow={currUseWindow} setUseWindow={setCurrUseWindow}
+              branch={currBranch} setBranch={setCurrBranch}
+              idPrefix="curr"
+            />
+          </div>
         </div>
-        {currType === "traditional" && (
+        {currType === "traditional" && !currUseWindow && (
           <Alert className="border-info/30 bg-info/5">
             <Info className="h-4 w-4" />
             <AlertDescription className="text-xs">
@@ -260,7 +314,16 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
             </AlertDescription>
           </Alert>
         )}
+        {currType === "traditional" && currUseWindow && (
+          <Alert className="border-primary/30 bg-primary/5">
+            <Info className="h-4 w-4" />
+            <AlertDescription className="text-xs">
+              نافذة إسلامية داخل بنك تقليدي — تعامل معاملة البنوك الإسلامية: زكاة الرصيد كاملاً مع خصم نسبة التطهير إن وجدت في التقرير الشرعي.
+            </AlertDescription>
+          </Alert>
+        )}
       </div>
+
 
       {/* د) التوفير والادخار */}
       <div className="rounded-lg border bg-card p-4 space-y-3">
@@ -298,19 +361,24 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
             <Label className="text-xs">تاريخ فتح الحساب</Label>
             <Input type="date" value={savOpenedAt} onChange={(e) => setSavOpenedAt(e.target.value)} />
           </div>
-          {savType === "islamic" && (
-            <div className="space-y-1.5 md:col-span-2">
-              <Label className="text-xs">فرع البنك الإسلامي</Label>
-              <Input value={savBranch} onChange={(e) => setSavBranch(e.target.value)} placeholder="فيصل / البركة / ADIB / KFH ..." />
-            </div>
-          )}
+          <div className="space-y-1.5 md:col-span-2">
+            <BankPicker
+              type={savType}
+              islamicBank={savIslamicBank} setIslamicBank={setSavIslamicBank}
+              tradBank={savTradBank} setTradBank={setSavTradBank}
+              useWindow={savUseWindow} setUseWindow={setSavUseWindow}
+              branch={savBranch} setBranch={setSavBranch}
+              idPrefix="sav"
+            />
+          </div>
         </div>
       </div>
 
-      {/* ودائع وشهادات وبريد */}
+
+      {/* هـ-١) الودائع */}
       <div className="rounded-lg border bg-card p-4 space-y-3">
         <div className="flex items-center gap-2 text-sm font-semibold text-primary">
-          <Banknote className="h-4 w-4" /> ودائع وشهادات وبريد
+          <Banknote className="h-4 w-4" /> هـ-١ · الودائع
           <Badge variant={depType === "islamic" ? "default" : "secondary"} className="text-[10px]">
             {depType === "islamic" ? "إسلامي" : "تقليدي — أصل فقط بدون العائد الربوي"}
           </Badge>
@@ -324,56 +392,95 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
             </RadioGroup>
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs">تاريخ فتح الحساب / الوديعة</Label>
+            <Label className="text-xs">تاريخ فتح الوديعة</Label>
             <Input type="date" value={depOpenedAt} onChange={(e) => setDepOpenedAt(e.target.value)} />
           </div>
-          {depType === "islamic" && (
-            <div className="space-y-1.5 md:col-span-2">
-              <Label className="text-xs">فرع البنك الإسلامي</Label>
-              <Input value={depBranch} onChange={(e) => setDepBranch(e.target.value)} placeholder="فيصل / البركة / ADIB / KFH ..." />
-            </div>
-          )}
-          <div className="space-y-1.5">
+          <div className="md:col-span-2">
+            <BankPicker
+              type={depType}
+              islamicBank={depIslamicBank} setIslamicBank={setDepIslamicBank}
+              tradBank={depTradBank} setTradBank={setDepTradBank}
+              useWindow={false} setUseWindow={() => {}}
+              branch={depBranch} setBranch={setDepBranch}
+              idPrefix="dep" hideWindow
+            />
+          </div>
+          <div className="space-y-1.5 md:col-span-2">
             <Label className="text-xs">أصل الودائع</Label>
             <div className="relative">
               <Input type="number" min="0" step="0.01" value={depPrincipal} onChange={(e) => setDepPrincipal(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* هـ-٢) الشهادات */}
+      <div className="rounded-lg border bg-card p-4 space-y-3">
+        <div className="flex items-center gap-2 text-sm font-semibold text-primary">
+          <Award className="h-4 w-4" /> هـ-٢ · الشهادات الادخارية والاستثمارية
+          <Badge variant={certType === "islamic" ? "default" : "secondary"} className="text-[10px]">
+            {certType === "islamic" ? "صكوك / شهادات إسلامية" : "تقليدية — أصل فقط"}
+          </Badge>
+        </div>
+        <div className="grid md:grid-cols-2 gap-3">
           <div className="space-y-1.5">
-            <Label className="text-xs">أصل الشهادات</Label>
+            <Label className="text-xs">نوع البنك</Label>
+            <RadioGroup value={certType} onValueChange={(v) => setCertType(v as BankType)} className="flex gap-3 pt-2">
+              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer"><RadioGroupItem value="islamic" id="cert-i" /><Label htmlFor="cert-i" className="text-xs cursor-pointer">بنك إسلامي</Label></div>
+              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer"><RadioGroupItem value="traditional" id="cert-t" /><Label htmlFor="cert-t" className="text-xs cursor-pointer">بنك تقليدي</Label></div>
+            </RadioGroup>
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs">تاريخ شراء الشهادة</Label>
+            <Input type="date" value={certOpenedAt} onChange={(e) => setCertOpenedAt(e.target.value)} />
+          </div>
+          <div className="md:col-span-2">
+            <BankPicker
+              type={certType}
+              islamicBank={certIslamicBank} setIslamicBank={setCertIslamicBank}
+              tradBank={certTradBank} setTradBank={setCertTradBank}
+              useWindow={false} setUseWindow={() => {}}
+              branch={certBranch} setBranch={setCertBranch}
+              idPrefix="cert" hideWindow
+            />
+          </div>
+          <div className="space-y-1.5 md:col-span-2">
+            <Label className="text-xs">أصل الشهادات (دون العائد الربوي)</Label>
             <div className="relative">
               <Input type="number" min="0" step="0.01" value={certPrincipal} onChange={(e) => setCertPrincipal(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
             </div>
           </div>
         </div>
+      </div>
 
-        <Separator />
-
-        <div className="rounded-md border border-dashed p-3 space-y-3">
-          <div className="text-xs font-semibold text-muted-foreground">دفتر توفير البريد</div>
-          <div className="grid md:grid-cols-2 gap-3">
-            <div className="space-y-1.5">
-              <Label className="text-xs">رصيد الدفتر الحالي (للعلم)</Label>
-              <div className="relative">
-                <Input type="number" min="0" step="0.01" value={postSavings} onChange={(e) => setPostSavings(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
-              </div>
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs">أصل المبلغ عند الإيداع (يُزكَّى)</Label>
-              <div className="relative">
-                <Input type="number" min="0" step="0.01" value={postPrincipal} onChange={(e) => setPostPrincipal(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
-              </div>
+      {/* هـ-٣) دفتر توفير البريد */}
+      <div className="rounded-lg border bg-card p-4 space-y-3">
+        <div className="flex items-center gap-2 text-sm font-semibold text-primary">
+          <PiggyBank className="h-4 w-4" /> هـ-٣ · دفتر توفير البريد
+        </div>
+        <div className="grid md:grid-cols-2 gap-3">
+          <div className="space-y-1.5">
+            <Label className="text-xs">رصيد الدفتر الحالي (للعلم)</Label>
+            <div className="relative">
+              <Input type="number" min="0" step="0.01" value={postSavings} onChange={(e) => setPostSavings(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
             </div>
           </div>
-          <p className="text-xs text-muted-foreground">
-            دفتر توفير البريد يُعدّ من المعاملات الربوية — تُزكَّى <b>أصل المبالغ المُودَعة فقط</b> دون الفوائد المتراكمة.
-          </p>
+          <div className="space-y-1.5">
+            <Label className="text-xs">أصل المبلغ عند الإيداع (يُزكَّى)</Label>
+            <div className="relative">
+              <Input type="number" min="0" step="0.01" value={postPrincipal} onChange={(e) => setPostPrincipal(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
+            </div>
+          </div>
         </div>
+        <p className="text-xs text-muted-foreground">
+          دفتر توفير البريد يُعدّ من المعاملات الربوية — تُزكَّى <b>أصل المبالغ المُودَعة فقط</b> دون الفوائد المتراكمة.
+        </p>
       </div>
+
 
       {/* هـ) البطاقات البنكية */}
       <div className="rounded-lg border bg-card p-4 space-y-3">
@@ -438,6 +545,27 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
           { v: "other", l: "محفظة بنكية أخرى" },
         ]}
         note="المحافظ البنكية غالبًا ما تكون مربوطة بحساب جاري — حدِّد «مربوطة» لمنع التكرار المحاسبي."
+      />
+
+      {/* ح) محافظ العملات المشفّرة */}
+      <WalletGroup
+        title="ح · محافظ العملات المشفّرة (Crypto)"
+        rows={cryptoWallets}
+        ops={cryptoOps}
+        currencyName={currencyName}
+        providers={[
+          { v: "btc", l: "Bitcoin (BTC)" },
+          { v: "eth", l: "Ethereum (ETH)" },
+          { v: "usdt", l: "Tether (USDT)" },
+          { v: "usdc", l: "USD Coin (USDC)" },
+          { v: "bnb", l: "Binance Coin (BNB)" },
+          { v: "sol", l: "Solana (SOL)" },
+          { v: "xrp", l: "XRP" },
+          { v: "ada", l: "Cardano (ADA)" },
+          { v: "other", l: "عملة مشفّرة أخرى" },
+        ]}
+        note="العملات المشفّرة تُزكَّى بقيمتها السوقية يوم وجوب الزكاة كنقد. أدخل القيمة المُقوَّمة بعملتك المحلية."
+        forceStandalone
       />
 
 
