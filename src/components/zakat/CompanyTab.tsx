@@ -102,22 +102,40 @@ const COUNTRIES: CountryInfo[] = [
 // ============ القطاعات والربط بالنماذج ============
 type Sector = { id: string; label: string; group: "primary" | "industrial" | "commercial" | "services"; model: string };
 const SECTORS: Sector[] = [
-  // أولى
-  { id: "agri",     label: "زراعي (نباتي/حيواني)",         group: "primary",     model: "trade" },
-  { id: "minerals", label: "استخراج معادن",                 group: "primary",     model: "minerals" },
-  { id: "oilgas",   label: "استخراج بترول وغاز",            group: "primary",     model: "minerals" },
-  { id: "fishing",  label: "صيد الأسماك / ثروة بحرية",     group: "primary",     model: "marine" },
-  // صناعي
-  { id: "manuf",    label: "صناعي تحويلي",                  group: "industrial",  model: "industry" },
-  { id: "construct",label: "إنشاءات ومقاولات",              group: "industrial",  model: "industry" },
-  // تجاري
-  { id: "trade_w",  label: "تجارة جملة وتجزئة",             group: "commercial",  model: "trade" },
-  { id: "import",   label: "استيراد وتصدير",                group: "commercial",  model: "trade" },
-  // خدمي
-  { id: "consult",  label: "استشارات وخدمات مهنية",         group: "services",    model: "services" },
-  { id: "transport",label: "نقل ولوجستيات",                  group: "services",    model: "services" },
-  { id: "software", label: "تقنية وبرمجيات",                 group: "services",    model: "services" },
-  { id: "realestate",label:"عقارات ومُستغلات",              group: "services",    model: "mustaghal" },
+  // ===== أولى (استخراجي/زراعي) =====
+  { id: "agri",        label: "زراعي (نباتي)",                      group: "primary",    model: "trade" },
+  { id: "livestock",   label: "ثروة حيوانية ودواجن",                group: "primary",    model: "trade" },
+  { id: "forestry",    label: "حراجة وقطع أخشاب",                   group: "primary",    model: "trade" },
+  { id: "minerals",    label: "استخراج معادن",                       group: "primary",    model: "minerals" },
+  { id: "oilgas",      label: "استخراج بترول وغاز",                  group: "primary",    model: "minerals" },
+  { id: "quarries",    label: "محاجر أحجار ورمال ومواد بناء",       group: "primary",    model: "minerals" },
+  { id: "fishing",     label: "صيد الأسماك والثروة البحرية",         group: "primary",    model: "marine" },
+  // ===== صناعي =====
+  { id: "manuf",       label: "صناعي تحويلي عام",                    group: "industrial", model: "industry" },
+  { id: "food",        label: "صناعات غذائية ومشروبات",              group: "industrial", model: "industry" },
+  { id: "pharma",      label: "صناعات دوائية وكيماوية",              group: "industrial", model: "industry" },
+  { id: "textile",     label: "نسيج وملابس",                          group: "industrial", model: "industry" },
+  { id: "auto",        label: "صناعة السيارات والمعدات الثقيلة",    group: "industrial", model: "industry" },
+  { id: "utilities",   label: "طاقة وكهرباء ومياه (مرافق)",          group: "industrial", model: "services" },
+  { id: "renewable",   label: "طاقة متجددة وإعادة تدوير",            group: "industrial", model: "industry" },
+  { id: "construct",   label: "إنشاءات ومقاولات",                    group: "industrial", model: "industry" },
+  // ===== تجاري =====
+  { id: "trade_w",     label: "تجارة جملة وتجزئة",                   group: "commercial", model: "trade" },
+  { id: "import",      label: "استيراد وتصدير",                       group: "commercial", model: "trade" },
+  { id: "ecommerce",   label: "تجارة إلكترونية (E-commerce)",         group: "commercial", model: "trade" },
+  { id: "gold_trade",  label: "تجارة الذهب والمعادن الثمينة",         group: "commercial", model: "trade" },
+  { id: "used_goods",  label: "تجارة سيارات ومعدات مستعملة",         group: "commercial", model: "trade" },
+  // ===== خدمي =====
+  { id: "islamic_fin", label: "مصارف ومؤسسات مالية إسلامية",         group: "services",   model: "services" },
+  { id: "takaful",     label: "تأمين تكافلي إسلامي",                  group: "services",   model: "services" },
+  { id: "consult",     label: "استشارات وخدمات مهنية",                group: "services",   model: "services" },
+  { id: "health",      label: "رعاية صحية ومستشفيات",                 group: "services",   model: "services" },
+  { id: "education",   label: "تعليم خاص وتدريب",                     group: "services",   model: "services" },
+  { id: "tourism",     label: "سياحة وفنادق ومطاعم (HORECA)",         group: "services",   model: "mustaghal" },
+  { id: "transport",   label: "نقل ولوجستيات وشحن دولي",              group: "services",   model: "services" },
+  { id: "software",    label: "تقنية وبرمجيات و SaaS",                group: "services",   model: "services" },
+  { id: "media",       label: "إعلام ونشر وإنتاج",                    group: "services",   model: "services" },
+  { id: "realestate",  label: "عقارات ومُستغلَّات",                  group: "services",   model: "mustaghal" },
 ];
 
 const GROUP_LABELS: Record<Sector["group"], string> = {
@@ -132,20 +150,37 @@ function getAllowedSectoralTabs(sectorId: string, group: Sector["group"]): strin
   const supporting = ["salary", "tax"]; // الأجور والضريبة مرتبطة دائماً
   let primary: string[] = [];
   switch (sectorId) {
-    case "agri":      primary = ["trade"]; break;
+    case "agri":
+    case "livestock":
+    case "forestry":   primary = ["trade"]; break;
     case "minerals":
-    case "oilgas":    primary = ["minerals"]; break;
-    case "fishing":   primary = ["marine"]; break;
+    case "oilgas":
+    case "quarries":   primary = ["minerals"]; break;
+    case "fishing":    primary = ["marine"]; break;
     case "manuf":
-    case "construct": primary = ["industry", "trade"]; break;
+    case "food":
+    case "pharma":
+    case "textile":
+    case "auto":
+    case "renewable":
+    case "construct":  primary = ["industry", "trade"]; break;
+    case "utilities":  primary = ["services", "industry"]; break;
     case "trade_w":
-    case "import":    primary = ["trade"]; break;
-    case "realestate":primary = ["mustaghal", "services"]; break;
+    case "import":
+    case "ecommerce":
+    case "gold_trade":
+    case "used_goods": primary = ["trade"]; break;
+    case "tourism":
+    case "realestate": primary = ["mustaghal", "services"]; break;
+    case "islamic_fin":
+    case "takaful":    primary = ["services", "trade"]; break;
     case "consult":
+    case "health":
+    case "education":
     case "transport":
-    case "software":  primary = ["services", "free"]; break;
+    case "software":
+    case "media":      primary = ["services", "free"]; break;
     default:
-      // افتراضي حسب المجموعة
       primary = group === "industrial" ? ["industry"]
         : group === "commercial" ? ["trade"]
         : group === "services" ? ["services"]
@@ -332,28 +367,53 @@ export function CompanyTab() {
   const [method, setMethod] = useState<"net_assets" | "working_capital">("net_assets");
   const [cash, setCash] = useState("");
   const [banks, setBanks] = useState("");
-  const [receivablesCo, setReceivablesCo] = useState("");
-  const [doubtfulDebts, setDoubtfulDebts] = useState(""); // ديون مشكوك فيها (تُخصم)
-  const [inventoryCo, setInventoryCo] = useState("");
-  const [investments, setInvestments] = useState("");
-  const [subsidiaryInv, setSubsidiaryInv] = useState(""); // استثمارات في شركات تابعة (تُعامل خاصة)
+
+  // ===== الذمم المدينة — تصنيف رباعي =====
+  const [recGood, setRecGood] = useState("");        // ① جيدة → تُزكى كاملة
+  const [recDoubtful, setRecDoubtful] = useState(""); // ② مشكوك فيها → اختياري
+  const [recInsolvent, setRecInsolvent] = useState(""); // ③ على معسرين/مماطلين → تُزكى عند القبض (لا تُدخل في الوعاء)
+  const [recBad, setRecBad] = useState("");          // ④ معدومة → لا تُزكى
+  const [recPolicy, setRecPolicy] = useState<"strict" | "lenient">("strict"); // strict: استبعاد المشكوك / lenient: تزكية المشكوك أيضاً
+
+  // ===== المخزون — تقييم سوقي =====
+  const [invBook, setInvBook] = useState("");           // قيمة دفترية (محاسبية)
+  const [invMarketDiff, setInvMarketDiff] = useState(""); // فرق التقييم لسعر بيع الجملة (موجب/سالب)
+
+  // ===== الاستثمارات في الأوراق المالية — فصل المتاجرة عن الاستثمار طويل الأجل =====
+  const [stkTrading, setStkTrading] = useState("");        // أسهم بنية المتاجرة → كامل القيمة السوقية
+  const [stkLongTerm, setStkLongTerm] = useState("");      // أسهم استثمارية → نصيب الموجودات الزكوية فقط
+  const [stkLongRatio, setStkLongRatio] = useState("30");  // نسبة الموجودات الزكوية بالقيمة الدفترية للسهم (افتراضي 30%)
+
+  const [subsidiaryInv, setSubsidiaryInv] = useState("");
   const [otherCurrent, setOtherCurrent] = useState("");
   const [stPayables, setStPayables] = useState("");
   const [accruals, setAccruals] = useState("");
   const [taxDue, setTaxDue] = useState("");
-  const [stLoans, setStLoans] = useState("");
+
+  // ===== القروض — فصل الأصل عن الفوائد الربوية =====
+  const [loanPrincipal, setLoanPrincipal] = useState("");  // أصل القرض → يُخصم
+  const [loanInterest, setLoanInterest] = useState("");    // الفوائد الربوية → لا تُخصم شرعاً
+
   const [equity, setEquity] = useState("");
   const [ltLiabilities, setLtLiabilities] = useState("");
   const [fixedAssets, setFixedAssets] = useState("");
   const [intangibles, setIntangibles] = useState("");
   const [losses, setLosses] = useState("");
 
+  // ===== تعجيل الزكاة =====
+  const [accelerateYears, setAccelerateYears] = useState("0"); // 0/1/2
+
+  // ===== محوّل العملات (لتقويم العملات الأجنبية يوم الحول) =====
+  const [fxAmount, setFxAmount] = useState("");
+  const [fxRate, setFxRate] = useState("");
+  const fxConverted = useMemo(() => num(fxAmount) * num(fxRate), [fxAmount, fxRate]);
+
   // الامتثال الشرعي
   const [compliance, setCompliance] = useState<Record<string, boolean>>({});
   const toggleC = (id: string) => setCompliance((p) => ({ ...p, [id]: !p[id] }));
 
   // ===== حفظ واسترجاع محلي =====
-  const STORAGE_KEY = "zakat_company_v1";
+  const STORAGE_KEY = "zakat_company_v2";
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -365,19 +425,26 @@ export function CompanyTab() {
       set(setFiscalEnd, "fiscalEnd"); set(setHawlStart, "hawlStart"); set(setSectorId, "sectorId");
       set(setGoldGramPrice, "goldGramPrice"); set(setShGcc, "shGcc"); set(setShForeign, "shForeign");
       set(setShGovt, "shGovt"); set(setShWaqf, "shWaqf"); set(setShNonMuslim, "shNonMuslim");
-      set(setCash, "cash"); set(setBanks, "banks"); set(setReceivablesCo, "receivablesCo");
-      set(setDoubtfulDebts, "doubtfulDebts"); set(setInventoryCo, "inventoryCo");
-      set(setInvestments, "investments"); set(setSubsidiaryInv, "subsidiaryInv");
+      set(setCash, "cash"); set(setBanks, "banks");
+      set(setRecGood, "recGood"); set(setRecDoubtful, "recDoubtful");
+      set(setRecInsolvent, "recInsolvent"); set(setRecBad, "recBad");
+      set(setInvBook, "invBook"); set(setInvMarketDiff, "invMarketDiff");
+      set(setStkTrading, "stkTrading"); set(setStkLongTerm, "stkLongTerm"); set(setStkLongRatio, "stkLongRatio");
+      set(setSubsidiaryInv, "subsidiaryInv");
       set(setOtherCurrent, "otherCurrent"); set(setStPayables, "stPayables"); set(setAccruals, "accruals");
-      set(setTaxDue, "taxDue"); set(setStLoans, "stLoans"); set(setEquity, "equity");
+      set(setTaxDue, "taxDue");
+      set(setLoanPrincipal, "loanPrincipal"); set(setLoanInterest, "loanInterest");
+      set(setEquity, "equity");
       set(setLtLiabilities, "ltLiabilities"); set(setFixedAssets, "fixedAssets");
       set(setIntangibles, "intangibles"); set(setLosses, "losses");
+      set(setAccelerateYears, "accelerateYears");
       if (d.compliance) setCompliance(d.compliance);
       if (d.accountingStd) setAccountingStd(d.accountingStd);
       if (typeof d.consolidated === "boolean") setConsolidated(d.consolidated);
       if (d.solarYear) setSolarYear(d.solarYear);
       if (d.orgKind) setOrgKind(d.orgKind);
       if (d.method) setMethod(d.method);
+      if (d.recPolicy) setRecPolicy(d.recPolicy);
     } catch { /* ignore */ }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -387,19 +454,33 @@ export function CompanyTab() {
       countryCode, companyName, crNumber, taxId, zakatId, accountingStd, consolidated,
       fiscalStart, fiscalEnd, hawlStart, solarYear, orgKind, sectorId, goldGramPrice,
       shGcc, shForeign, shGovt, shWaqf, shNonMuslim,
-      method, cash, banks, receivablesCo, doubtfulDebts, inventoryCo, investments, subsidiaryInv,
-      otherCurrent, stPayables, accruals, taxDue, stLoans,
+      method, cash, banks,
+      recGood, recDoubtful, recInsolvent, recBad, recPolicy,
+      invBook, invMarketDiff,
+      stkTrading, stkLongTerm, stkLongRatio,
+      subsidiaryInv, otherCurrent, stPayables, accruals, taxDue,
+      loanPrincipal, loanInterest,
       equity, ltLiabilities, fixedAssets, intangibles, losses, compliance,
+      accelerateYears,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
   };
 
   const calc = useMemo(() => {
-    // الموجودات الزكوية مع خصم الديون المشكوك فيها
-    const grossAssets = num(cash) + num(banks) + num(receivablesCo) + num(inventoryCo)
-      + num(investments) + num(subsidiaryInv) + num(otherCurrent);
-    const curAssets = grossAssets - num(doubtfulDebts);
-    const curLiabs = num(stPayables) + num(accruals) + num(taxDue) + num(stLoans);
+    // ① الذمم المدينة — الجيدة دائماً تُزكى. المشكوك حسب السياسة. المعسر/المعدوم لا يدخل
+    const recZakatable = num(recGood) + (recPolicy === "lenient" ? num(recDoubtful) : 0);
+
+    // ② المخزون بالقيمة السوقية = الدفتري + فرق التقييم
+    const inventoryMarket = num(invBook) + num(invMarketDiff);
+
+    // ③ الأوراق المالية: متاجرة كاملة + استثمار طويل × نسبة الموجودات الزكوية فقط
+    const stocksZakatable = num(stkTrading) + num(stkLongTerm) * (num(stkLongRatio) / 100);
+
+    const grossAssets = num(cash) + num(banks) + recZakatable + inventoryMarket
+      + stocksZakatable + num(subsidiaryInv) + num(otherCurrent);
+    const curAssets = grossAssets;
+    // ④ القروض: يُخصم الأصل فقط (الفوائد الربوية لا يُعتد بها شرعاً)
+    const curLiabs = num(stPayables) + num(accruals) + num(taxDue) + num(loanPrincipal);
     const netAssets = curAssets - curLiabs;
     const workingCapital = num(equity) + num(ltLiabilities) - num(fixedAssets) - num(intangibles) - num(losses);
     const baseGross = method === "net_assets" ? netAssets : workingCapital;
@@ -414,7 +495,9 @@ export function CompanyTab() {
     const reachesNisab = base >= nisabValue && nisabValue > 0;
 
     const rate = solarYear === "solar" ? 0.025775 : ZAKAT_RATE;
-    const zakat = (orgKind === "nonprofit" || !reachesNisab) ? 0 : base > 0 ? base * rate : 0;
+    const zakatOneYear = (orgKind === "nonprofit" || !reachesNisab) ? 0 : base > 0 ? base * rate : 0;
+    const years = 1 + Math.min(2, Math.max(0, Math.round(num(accelerateYears))));
+    const zakat = zakatOneYear * years;
 
     const completed = Object.values(compliance).filter(Boolean).length;
     const complianceScore = Math.round((completed / ALL_ITEM_IDS.length) * 100);
@@ -424,16 +507,21 @@ export function CompanyTab() {
 
     return {
       grossAssets, curAssets, curLiabs, netAssets, workingCapital, baseGross, base,
-      rate, zakat, completed, complianceScore,
+      rate, zakatOneYear, zakat, years, completed, complianceScore,
       nisabValue, reachesNisab, exemptPct, zakatableRatio, totalShares, sharesBalanced,
+      recZakatable, inventoryMarket, stocksZakatable,
     };
   }, [
-    cash, banks, receivablesCo, doubtfulDebts, inventoryCo, investments, subsidiaryInv, otherCurrent,
-    stPayables, accruals, taxDue, stLoans,
+    cash, banks, recGood, recDoubtful, recInsolvent, recBad, recPolicy,
+    invBook, invMarketDiff, stkTrading, stkLongTerm, stkLongRatio,
+    subsidiaryInv, otherCurrent,
+    stPayables, accruals, taxDue, loanPrincipal, loanInterest,
     equity, ltLiabilities, fixedAssets, intangibles, losses,
     method, solarYear, compliance, orgKind, goldGramPrice,
-    shGcc, shForeign, shGovt, shWaqf, shNonMuslim,
+    shGcc, shForeign, shGovt, shWaqf, shNonMuslim, accelerateYears,
   ]);
+
+
 
   return (
     <Tabs defaultValue="zakat" className="space-y-6">
@@ -688,6 +776,56 @@ export function CompanyTab() {
             </CardContent>
           </Card>
 
+          {/* محوّل العملات الأجنبية + تعجيل الزكاة */}
+          <div className="grid md:grid-cols-2 gap-4">
+            <Card className="shadow-soft">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <Scale className="h-4 w-4 text-primary" /> محوّل العملات الأجنبية (يوم الحول)
+                </CardTitle>
+                <p className="text-[11px] text-muted-foreground">قوِّم الأرصدة بالعملات الأجنبية بسعر يوم وجوب الزكاة.</p>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <NumField label="المبلغ بالعملة الأجنبية" value={fxAmount} onChange={setFxAmount} unit="FX" />
+                  <NumField label={`سعر الصرف (1 FX = ? ${currencyName})`} value={fxRate} onChange={setFxRate} unit={currencyName} />
+                </div>
+                <div className="rounded-md bg-muted/50 p-2 text-sm flex justify-between">
+                  <span>المبلغ المُقوَّم:</span>
+                  <b className="text-primary">{cFmt(fxConverted, currencyName)}</b>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-soft">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <Calculator className="h-4 w-4 text-primary" /> تعجيل الزكاة (لسنة أو سنتين)
+                </CardTitle>
+                <p className="text-[11px] text-muted-foreground">جائز شرعاً تعجيل زكاة سنة أو سنتين قادمتين عند الحاجة (جمهور الفقهاء).</p>
+              </CardHeader>
+              <CardContent>
+                <RadioGroup value={accelerateYears} onValueChange={setAccelerateYears} className="grid grid-cols-3 gap-2">
+                  <label className={`flex items-center justify-center gap-1.5 rounded-md border-2 px-2 py-2 cursor-pointer text-xs ${accelerateYears === "0" ? "border-primary bg-primary/5" : "border-border"}`}>
+                    <RadioGroupItem value="0" id="ac0" /><Label htmlFor="ac0" className="cursor-pointer">السنة الحالية فقط</Label>
+                  </label>
+                  <label className={`flex items-center justify-center gap-1.5 rounded-md border-2 px-2 py-2 cursor-pointer text-xs ${accelerateYears === "1" ? "border-primary bg-primary/5" : "border-border"}`}>
+                    <RadioGroupItem value="1" id="ac1" /><Label htmlFor="ac1" className="cursor-pointer">+ سنة قادمة</Label>
+                  </label>
+                  <label className={`flex items-center justify-center gap-1.5 rounded-md border-2 px-2 py-2 cursor-pointer text-xs ${accelerateYears === "2" ? "border-primary bg-primary/5" : "border-border"}`}>
+                    <RadioGroupItem value="2" id="ac2" /><Label htmlFor="ac2" className="cursor-pointer">+ سنتان</Label>
+                  </label>
+                </RadioGroup>
+                {calc.years > 1 && (
+                  <p className="text-xs mt-2 text-primary">
+                    سيُحسب الإجمالي = زكاة سنة واحدة × <b>{calc.years}</b>
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+
           {/* طريقة حساب الزكاة */}
           <Card className="shadow-soft">
             <CardHeader>
@@ -710,16 +848,72 @@ export function CompanyTab() {
                       <b>الموجودات المتداولة الزكوية − المطلوبات المتداولة</b> ثم تُضرب الناتج × 2.5%. تستخدمها هيئة المحاسبة والمراجعة للمؤسسات المالية الإسلامية (AAOIFI).
                     </AlertDescription>
                   </Alert>
+                  {/* الذمم المدينة — تصنيف رباعي */}
+                  <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 space-y-2">
+                    <h4 className="font-semibold text-sm text-primary flex items-center gap-2">
+                      <Info className="h-4 w-4" /> الذمم المدينة — تصنيف رباعي شرعي
+                    </h4>
+                    <p className="text-[11px] text-muted-foreground">
+                      ① جيدة → تُزكى كاملة. ② مشكوك فيها → اختياري حسب القول الفقهي. ③ على معسرين/مماطلين → تُزكى عند القبض لسنة واحدة (رأي ابن تيمية) ولا تدخل الوعاء الآن. ④ معدومة → لا تُزكى.
+                    </p>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3">
+                      <NumField label="① جيدة (مرجوّة التحصيل)" value={recGood} onChange={setRecGood} unit={currencyName} hint="تُزكى كاملة" />
+                      <NumField label="② مشكوك فيها" value={recDoubtful} onChange={setRecDoubtful} unit={currencyName} hint={recPolicy === "lenient" ? "ستُزكى" : "لن تُزكى الآن"} />
+                      <NumField label="③ على معسرين/مماطلين" value={recInsolvent} onChange={setRecInsolvent} unit={currencyName} hint="تُزكى عند القبض" />
+                      <NumField label="④ معدومة" value={recBad} onChange={setRecBad} unit={currencyName} hint="لا تُزكى شرعاً" />
+                    </div>
+                    <div className="flex items-center gap-3 text-xs">
+                      <span className="text-muted-foreground">سياسة المشكوك فيها:</span>
+                      <RadioGroup value={recPolicy} onValueChange={(v) => setRecPolicy(v as "strict" | "lenient")} className="flex gap-3">
+                        <div className="flex items-center gap-1.5"><RadioGroupItem value="strict" id="rs" /><Label htmlFor="rs" className="text-xs">احتياط (لا تُزكى)</Label></div>
+                        <div className="flex items-center gap-1.5"><RadioGroupItem value="lenient" id="rl" /><Label htmlFor="rl" className="text-xs">تُزكى مع الجيدة</Label></div>
+                      </RadioGroup>
+                    </div>
+                  </div>
+
+                  {/* المخزون بالقيمة السوقية */}
+                  <div className="rounded-lg border border-gold/30 bg-gold/5 p-3 space-y-2">
+                    <h4 className="font-semibold text-sm text-primary flex items-center gap-2">
+                      <Info className="h-4 w-4" /> المخزون — التقييم بسعر بيع الجملة (شرعاً)
+                    </h4>
+                    <p className="text-[11px] text-muted-foreground">
+                      شرعاً يُقوَّم المخزون بسعر بيع الجملة يوم وجوب الزكاة، لا بسعر التكلفة الدفترية. أدخل القيمة الدفترية ثم فرق التقويم السوقي (موجباً أو سالباً).
+                    </p>
+                    <div className="grid md:grid-cols-3 gap-3">
+                      <NumField label="القيمة الدفترية للمخزون" value={invBook} onChange={setInvBook} unit={currencyName} />
+                      <NumField label="فرق التقييم السوقي (±)" value={invMarketDiff} onChange={setInvMarketDiff} unit={currencyName} hint="موجب إذا السوق أعلى" />
+                      <div className="rounded-md bg-background border p-2 text-xs flex flex-col justify-center">
+                        <span className="text-muted-foreground">القيمة السوقية المعتمدة:</span>
+                        <b className="text-primary text-base">{cFmt(calc.inventoryMarket, currencyName)}</b>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* الأوراق المالية — فصل المتاجرة عن الاستثمار */}
+                  <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 space-y-2">
+                    <h4 className="font-semibold text-sm text-primary flex items-center gap-2">
+                      <Info className="h-4 w-4" /> الأوراق المالية — تمييز فقهي (قرار مجمع الفقه 28)
+                    </h4>
+                    <p className="text-[11px] text-muted-foreground">
+                      أسهم <b>المتاجرة</b> (بنية البيع قريباً): تُزكى بكامل القيمة السوقية كعروض تجارة. أسهم <b>الاستثمار طويل الأجل</b>: يُزكى نصيب الموجودات الزكوية فقط منها (نقدية + ذمم + مخزون ÷ القيمة الدفترية للسهم).
+                    </p>
+                    <div className="grid md:grid-cols-3 gap-3">
+                      <NumField label="أسهم متاجرة (قيمة سوقية)" value={stkTrading} onChange={setStkTrading} unit={currencyName} hint="تُزكى كاملة" />
+                      <NumField label="أسهم استثمار طويل الأجل" value={stkLongTerm} onChange={setStkLongTerm} unit={currencyName} hint="تُزكى جزئياً" />
+                      <NumField label="نسبة الموجودات الزكوية للسهم" value={stkLongRatio} onChange={setStkLongRatio} unit="%" hint="افتراضي 30% — راجع تقرير الشركة" />
+                    </div>
+                    <div className="text-xs flex justify-between bg-background rounded p-2">
+                      <span className="text-muted-foreground">القيمة الزكوية للأوراق المالية:</span>
+                      <b className="text-primary">{cFmt(calc.stocksZakatable, currencyName)}</b>
+                    </div>
+                  </div>
+
                   <div>
-                    <h4 className="font-semibold mb-3 text-primary">الموجودات المتداولة الزكوية</h4>
+                    <h4 className="font-semibold mb-3 text-primary">الموجودات الزكوية الأخرى</h4>
                     <div className="grid md:grid-cols-2 gap-4">
                       <NumField label="النقدية في الصندوق" value={cash} onChange={setCash} unit={currencyName} />
                       <NumField label="أرصدة البنوك" value={banks} onChange={setBanks} unit={currencyName} />
-                      <NumField label="العملاء والمدينون" value={receivablesCo} onChange={setReceivablesCo} unit={currencyName} hint="بعد استبعاد المشكوك" />
-                      <NumField label="المخزون (بسعر السوق)" value={inventoryCo} onChange={setInventoryCo} unit={currencyName} />
-                      <NumField label="استثمارات قصيرة الأجل" value={investments} onChange={setInvestments} unit={currencyName} hint="للمضاربة — تُزكى بالقيمة السوقية" />
-                      <NumField label="استثمارات في شركات تابعة/شقيقة" value={subsidiaryInv} onChange={setSubsidiaryInv} unit={currencyName} hint="نصيب المستثمر من زكاتها يُضاف هنا" />
-                      <NumField label="الديون المشكوك في تحصيلها (تُخصم)" value={doubtfulDebts} onChange={setDoubtfulDebts} unit={currencyName} hint="تُحسم من العملاء" />
+                      <NumField label="استثمارات في شركات تابعة/شقيقة" value={subsidiaryInv} onChange={setSubsidiaryInv} unit={currencyName} hint="نصيب المستثمر من زكاتها" />
                       <NumField label="أصول متداولة أخرى" value={otherCurrent} onChange={setOtherCurrent} unit={currencyName} />
                     </div>
                   </div>
@@ -730,9 +924,19 @@ export function CompanyTab() {
                       <NumField label="موردون ودائنون" value={stPayables} onChange={setStPayables} unit={currencyName} />
                       <NumField label="مصروفات مستحقة" value={accruals} onChange={setAccruals} unit={currencyName} />
                       <NumField label="ضرائب مستحقة" value={taxDue} onChange={setTaxDue} unit={currencyName} />
-                      <NumField label="قروض قصيرة الأجل" value={stLoans} onChange={setStLoans} unit={currencyName} />
+                      <NumField label="أصل القروض قصيرة الأجل (دون الفوائد)" value={loanPrincipal} onChange={setLoanPrincipal} unit={currencyName} hint="يُخصم" />
+                      <NumField label="الفوائد الربوية على القروض" value={loanInterest} onChange={setLoanInterest} unit={currencyName} hint="⚠️ لا تُخصم شرعاً" />
                     </div>
+                    {num(loanInterest) > 0 && (
+                      <Alert className="border-amber-500/30 bg-amber-500/5 mt-2">
+                        <AlertTriangle className="h-4 w-4 text-amber-600" />
+                        <AlertDescription className="text-xs">
+                          الفوائد الربوية ({cFmt(num(loanInterest), currencyName)}) لا يُعتد بها شرعاً ولا تُخصم من الوعاء — الراجح خصم أصل القرض فقط.
+                        </AlertDescription>
+                      </Alert>
+                    )}
                   </div>
+
                   <div className="rounded-lg bg-muted/50 p-4 text-sm space-y-1">
                     <div className="flex justify-between"><span>إجمالي الموجودات الزكوية:</span><b>{cFmt(calc.curAssets, currencyName)}</b></div>
                     <div className="flex justify-between"><span>إجمالي المطلوبات المتداولة:</span><b>{cFmt(calc.curLiabs, currencyName)}</b></div>
