@@ -780,13 +780,7 @@ export function IndividualTab() {
                 </div>
               </div>
 
-              {/* السعر والإجمالي */}
-              <div className="rounded-lg border border-muted-foreground/30 bg-background p-4 space-y-2">
-                <Label className="text-sm">سعر جرام الفضة عيار 999 (الخالصة)</Label>
-                <Input type="number" min="0" value={silverPrice} onChange={(e) => setSilverPrice(e.target.value)} dir="ltr" style={{ textAlign: "right" }} />
-                <p className="text-[11px] text-muted-foreground">{currencyName} / جرام</p>
-              </div>
-
+              {/* الإجمالي الفضي */}
               <div className="rounded-xl border-2 border-primary/40 bg-gradient-to-l from-primary/10 to-muted/20 p-4 space-y-3">
                 <div className="flex items-center justify-between flex-wrap gap-3">
                   <div className="text-sm font-bold text-primary">إجمالي الوعاء الزكوي من الفضة</div>
@@ -823,16 +817,23 @@ export function IndividualTab() {
                     <div className="text-xl font-extrabold text-primary">{cur(calc.silverValue)}</div>
                   </div>
                 </div>
-                <p className="text-[11px] text-muted-foreground leading-relaxed">
-                  تمت معادلة جميع العيارات (750 · 800 · 835 · 900 · 925 · 960) إلى عيار 999 بمعامل (العيار ÷ 1000)، ثم ضُربت في سعر اليوم لجرام عيار 999.
-                </p>
               </div>
 
-              {/* إجمالي وعاء الذهب + الفضة */}
-              <div className="rounded-xl border-2 border-gold/50 bg-gold/10 p-4 space-y-2">
+              {/* إجمالي وعاء الذهب + الفضة + الأسعار المرجعية اليوم */}
+              <div className="rounded-xl border-2 border-gold/50 bg-gold/10 p-4 space-y-3">
                 <div className="text-sm font-bold text-gold flex items-center gap-2">
-                  <Coins className="h-4 w-4" /> إجمالي وعاء زكاة الذهب والفضة
+                  <Coins className="h-4 w-4" /> إجمالي وعاء زكاة الذهب والفضة — الأسعار المرجعية اليوم ({country.name})
                 </div>
+
+                {/* الأسعار المرجعية */}
+                <div className="grid md:grid-cols-2 gap-3 rounded-lg border bg-background/60 p-3">
+                  <NumField label="سعر جرام الذهب عيار 24" value={goldPrice} onChange={setGoldPrice} unit={currencyName} />
+                  <NumField label="سعر جرام الفضة الخالصة (عيار 999)" value={silverPrice} onChange={setSilverPrice} unit={currencyName} />
+                  <div className="md:col-span-2 text-xs text-muted-foreground bg-muted/40 rounded-md px-3 py-2 text-right">
+                    نصاب الذهب: <b>{cur(calc.goldNisabValue)}</b> — نصاب الفضة: <b>{cur(calc.silverNisabValue)}</b> — الأنفع للفقراء: <b>{cur(calc.moneyNisab)}</b>
+                  </div>
+                </div>
+
                 <div className="space-y-1 text-sm">
                   <div className="flex items-center justify-between border-b border-dashed py-1.5">
                     <span>الوعاء من الذهب</span>
