@@ -201,15 +201,39 @@ export function NisabHistory() {
       {/* نصاب اليوم */}
       <Card className="border-gold/30 shadow-soft">
         <CardHeader className="bg-gradient-to-l from-gold/15 to-transparent">
-          <CardTitle className="flex items-center gap-2 text-xl">
-            <Globe2 className="h-5 w-5 text-gold" />
-            نصاب اليوم — حسب الدولة
-          </CardTitle>
-          <p className="text-sm text-muted-foreground">
-            اختر دولتك لعرض السعر التقريبي لجرام الذهب والفضة، ويمكنك تعديل القيم لتطابق
-            السعر الحالي في السوق.
-          </p>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <Globe2 className="h-5 w-5 text-gold" />
+                نصاب اليوم — حسب الدولة (تحديث لحظي)
+              </CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">
+                الأسعار محدّثة لحظيًّا من مصادر السوق العالمية (XAU/XAG + سعر صرف USD)،
+                ويعاد التحديث تلقائيًّا كل 5 دقائق. يمكنك تعديل القيم يدويًّا للسعر المحلي.
+              </p>
+            </div>
+            <div className="flex flex-col items-end gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => refreshLive(countryCode)}
+                disabled={liveLoading}
+              >
+                <RefreshCw className={`h-3.5 w-3.5 ml-1 ${liveLoading ? "animate-spin" : ""}`} />
+                تحديث الأسعار
+              </Button>
+              {livePrices && !liveError && (
+                <Badge variant="secondary" className="text-[10px]">
+                  ● حيّ — {new Date(livePrices.fetchedAt).toLocaleTimeString("ar-EG")}
+                </Badge>
+              )}
+              {liveError && (
+                <Badge variant="destructive" className="text-[10px]">تعذّر التحديث</Badge>
+              )}
+            </div>
+          </div>
         </CardHeader>
+
         <CardContent className="pt-6 space-y-5">
           <div className="grid sm:grid-cols-3 gap-3">
             <div className="space-y-1.5">
