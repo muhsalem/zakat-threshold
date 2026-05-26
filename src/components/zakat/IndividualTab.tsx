@@ -151,11 +151,8 @@ export function IndividualTab() {
   const [silverPurpose, setSilverPurpose] = useState<"storage" | "wear">("wear");
   const [silverOpinion, setSilverOpinion] = useState<"majority" | "hanafi">("majority");
 
-  // النقدية والبنوك
-  const [cashHand, setCashHand] = useState("");
-  const [cashBank, setCashBank] = useState("");
-  const [savings, setSavings] = useState("");
-  const [foreignCurrency, setForeignCurrency] = useState("");
+  // النقدية والبنوك (المجموع يُحسب داخل المكوّن المتخصّص ويُمرَّر هنا)
+  const [cashTotalFromSection, setCashTotalFromSection] = useState(0);
 
   // الأوراق المالية
   const [stocksTrade, setStocksTrade] = useState("");
