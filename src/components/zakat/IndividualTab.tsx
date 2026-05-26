@@ -122,6 +122,9 @@ export function IndividualTab() {
   const [sb18, setSb18] = useState(""); const [sb21, setSb21] = useState("");
   const [sb22, setSb22] = useState(""); const [sb24, setSb24] = useState("");
   const [ounces, setOunces] = useState("");
+  const [sbHalal, setSbHalal] = useState(true);
+  const [sbFullyOwned, setSbFullyOwned] = useState(true);
+  const [sbAcquireDate, setSbAcquireDate] = useState("");
   // ب) الجنيهات والعملات الذهبية (عيار 21)
   const [coinQuarter, setCoinQuarter] = useState(""); // 2.125 جم
   const [coinHalf, setCoinHalf] = useState("");       // 4.25 جم
@@ -129,6 +132,10 @@ export function IndividualTab() {
   const [coinCustomKarat, setCoinCustomKarat] = useState("21");
   const [coinCustomWeight, setCoinCustomWeight] = useState("8.5");
   const [coinCustomQty, setCoinCustomQty] = useState("");
+  const [coinHalal, setCoinHalal] = useState(true);
+  const [coinFullyOwned, setCoinFullyOwned] = useState(true);
+  const [coinAcquireDate, setCoinAcquireDate] = useState("");
+  const [coinPurpose, setCoinPurpose] = useState<"storage" | "wear">("storage");
   // ج) المجوهرات
   const [jw9, setJw9] = useState(""); const [jw12, setJw12] = useState("");
   const [jw14, setJw14] = useState(""); const [jw18, setJw18] = useState("");
