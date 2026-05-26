@@ -323,6 +323,8 @@ export function IndividualTab() {
     brk18, brk21, brk24, brkOtherKarat, brkOtherWeight, storageKarat, storageWeight,
     securitiesTotalFromSection, bills,
     inventory, receivablesGood, realEstateTrade, realEstateRentIncome,
+    tradeIsShareholder, tradeSharePct, tradeShareCompanyBase,
+    incomeUsufructTotal, ownsFarmland, ownsLivestock,
     shortDebts, expenses, cropsKg, cropsValuePerKg, cropsIrrigation,
     camels, cows, sheep, effectiveRate, hawl, cashTotalFromSection,
   ]);
