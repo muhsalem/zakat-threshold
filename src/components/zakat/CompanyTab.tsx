@@ -274,6 +274,58 @@ const COMPLIANCE_SECTIONS: { title: string; items: { id: string; label: string }
 ];
 const ALL_ITEM_IDS = COMPLIANCE_SECTIONS.flatMap((s) => s.items.map((i) => i.id));
 
+// ============ إضافات قائمة التدقيق الشرعي الخاصة بكل قطاع ============
+const SECTOR_COMPLIANCE_EXTRAS: Record<Sector["group"], { title: string; items: { id: string; label: string }[] }[]> = {
+  primary: [
+    { title: "ثامناً — ضوابط النشاط الأولي (زراعي/استخراجي/سمكي)", items: [
+      { id: "pr_irrigation", label: "تمييز الزروع المسقية بكلفة (نصف العشر 5%) عن المسقية بلا كلفة (العشر 10%)" },
+      { id: "pr_nisab_crops", label: "التحقق من بلوغ نصاب الزروع والثمار (5 أوسق ≈ 612 كجم) لكل صنف على حدة" },
+      { id: "pr_livestock_sayma", label: "التمييز بين الأنعام السائمة (تجب الزكاة) والمعلوفة للتجارة (عروض تجارة)" },
+      { id: "pr_rikaz", label: "تطبيق الخُمس (20%) على الركاز المُكتشف وتوثيق مصدره" },
+      { id: "pr_minerals", label: "تطبيق ربع العشر (2.5%) على المعادن المستخرجة بعد التصفية (قول الجمهور)" },
+      { id: "pr_honey", label: "إخراج العُشر (10%) من إنتاج العسل عند بلوغ النصاب (قول الحنابلة)" },
+      { id: "pr_fish_poultry", label: "زكاة الثروة السمكية ومزارع الدواجن كعروض تجارة (2.5% من القيمة السوقية)" },
+      { id: "pr_land_lease", label: "تمييز أرض الزراعة المملوكة عن المستأجرة وأثر ذلك على المُزكِّي" },
+    ]},
+  ],
+  industrial: [
+    { title: "ثامناً — ضوابط النشاط الصناعي والإنتاجي", items: [
+      { id: "in_wip", label: "تقييم الإنتاج تحت التشغيل بالتكلفة الحقيقية لا التقديرية" },
+      { id: "in_raw_materials", label: "إدراج المواد الخام والمواد المساعدة بسعر السوق يوم الحول" },
+      { id: "in_spare", label: "استبعاد قطع الغيار المخصصة لصيانة الآلات (غير معدة للبيع)" },
+      { id: "in_mustaghal_machines", label: "اعتبار الآلات والمعدات من المُستغلات (تُزكى غلتها لا قيمتها)" },
+      { id: "in_byproducts", label: "إدراج المنتجات الثانوية والمخلفات القابلة للبيع ضمن الوعاء" },
+      { id: "in_quality_reserve", label: "حسم مخصص ضمانات الجودة والمرتجعات الفعلية" },
+    ]},
+  ],
+  commercial: [
+    { title: "ثامناً — ضوابط النشاط التجاري وعروض التجارة", items: [
+      { id: "co_inv_market", label: "تقييم البضاعة بسعر البيع بالجملة يوم الحول لا بالتكلفة" },
+      { id: "co_consignment", label: "استبعاد بضاعة الأمانة (الكونسينمنت) المملوكة للغير" },
+      { id: "co_letters_credit", label: "إدراج البضاعة الواردة في الطريق (CIF) متى انتقلت الملكية" },
+      { id: "co_promo_stock", label: "استبعاد العينات المجانية والهدايا الترويجية من الوعاء" },
+      { id: "co_gold_trade", label: "تجار الذهب: تقييم المخزون بسعر يوم الحول مع مراعاة قاعدة المثل بالمثل" },
+      { id: "co_used_goods", label: "تقييم السلع المستعملة بالقيمة العادلة الحقيقية لا الدفترية" },
+    ]},
+  ],
+  services: [
+    { title: "ثامناً — ضوابط النشاط الخدمي والمهن الحرة", items: [
+      { id: "se_wip_services", label: "إدراج الأعمال تحت التنفيذ والإيرادات المستحقة غير المُفوترة" },
+      { id: "se_mustaghal_assets", label: "اعتبار العقارات المؤجرة والمعدات المؤجرة من المُستغلات (تُزكى الغلة)" },
+      { id: "se_intangibles", label: "استبعاد الشهرة والعلامات التجارية المستخدمة في النشاط لا المُعدّة للبيع" },
+      { id: "se_advance_pay", label: "إدراج الدفعات المقدمة من العملاء كالتزام يُحسم من الوعاء" },
+      { id: "se_islamic_fin", label: "للتمويل الإسلامي: مراجعة عقود المرابحة والمشاركة والإجارة للتحقق من المطابقة الشرعية" },
+      { id: "se_takaful", label: "لشركات التكافل: فصل أموال المساهمين عن أموال حملة الوثائق وزكاة كلٍّ على حدة" },
+      { id: "se_realestate", label: "للعقارات: تمييز عقار التجارة (يُزكى بالقيمة) عن عقار الاستغلال (تُزكى الغلة)" },
+      { id: "se_professionals", label: "للمهن الحرة: زكاة كسب العمل عند قبضه إذا بلغ النصاب (مع الديون أو مفرداً)" },
+    ]},
+  ],
+};
+
+function getActiveComplianceSections(group: Sector["group"]) {
+  return [...COMPLIANCE_SECTIONS, ...(SECTOR_COMPLIANCE_EXTRAS[group] || [])];
+}
+
 // ============ قسم رفع القوائم المالية ============
 type StatementKey = "bs" | "is" | "cf" | "eq";
 const STATEMENT_LABELS: Record<StatementKey, { title: string; desc: string }> = {
@@ -545,15 +597,18 @@ export function CompanyTab() {
     const years = 1 + Math.min(2, Math.max(0, Math.round(num(accelerateYears))));
     const zakat = zakatOneYear * years;
 
-    const completed = Object.values(compliance).filter(Boolean).length;
-    const complianceScore = Math.round((completed / ALL_ITEM_IDS.length) * 100);
+    const activeSections = getActiveComplianceSections(sector.group);
+    const activeIds = activeSections.flatMap((s) => s.items.map((i) => i.id));
+    const completed = activeIds.filter((id) => compliance[id]).length;
+    const complianceScore = activeIds.length > 0 ? Math.round((completed / activeIds.length) * 100) : 0;
+    const totalCount = activeIds.length;
 
     const totalShares = num(shGcc) + num(shForeign) + num(shGovt) + num(shWaqf) + num(shNonMuslim);
     const sharesBalanced = Math.abs(totalShares - 100) < 0.01;
 
     return {
       grossAssets, curAssets, curLiabs, netAssets, workingCapital, baseGross, base,
-      rate, zakatOneYear, zakat, years, completed, complianceScore,
+      rate, zakatOneYear, zakat, years, completed, complianceScore, totalCount, activeSections,
       nisabValue, reachesNisab, exemptPct, zakatableRatio, totalShares, sharesBalanced,
       recZakatable, inventoryMarket, stocksZakatable,
     };
@@ -564,7 +619,7 @@ export function CompanyTab() {
     stPayables, accruals, taxDue, loanPrincipal, loanInterest,
     equity, ltLiabilities, fixedAssets, intangibles, losses,
     method, solarYear, compliance, orgKind, goldGramPrice,
-    shGcc, shForeign, shGovt, shWaqf, shNonMuslim, accelerateYears,
+    shGcc, shForeign, shGovt, shWaqf, shNonMuslim, accelerateYears, sector.group,
   ]);
 
 
@@ -1243,11 +1298,11 @@ export function CompanyTab() {
                 قائمة التدقيق والامتثال الشرعي الشاملة
               </CardTitle>
               <p className="text-sm text-muted-foreground">
-                قائمة مهنية مرجعية وفق معايير AAOIFI والمعايير الفقهية للهيئات الشرعية وهيئات الزكاة المعتمدة.
+                قائمة مهنية مرجعية وفق معايير AAOIFI والمعايير الفقهية، مُخصَّصة تلقائياً وفق قطاع <b>{GROUP_LABELS[sector.group]}</b>.
               </p>
             </CardHeader>
             <CardContent className="pt-6 space-y-6">
-              {COMPLIANCE_SECTIONS.map((section) => {
+              {calc.activeSections.map((section) => {
                 const done = section.items.filter((i) => compliance[i.id]).length;
                 return (
                   <div key={section.title} className="space-y-2">
@@ -1287,7 +1342,7 @@ export function CompanyTab() {
               <div className="h-2 rounded-full bg-muted overflow-hidden">
                 <div className="h-full bg-gradient-to-l from-primary to-gold transition-all" style={{ width: `${calc.complianceScore}%` }} />
               </div>
-              <p className="text-xs text-muted-foreground mt-2">{calc.completed} من {ALL_ITEM_IDS.length} بند مُحقَّق</p>
+              <p className="text-xs text-muted-foreground mt-2">{calc.completed} من {calc.totalCount} بند مُحقَّق</p>
               {calc.complianceScore < 80 && (
                 <Alert className="mt-3 border-destructive/30 bg-destructive/5">
                   <AlertTriangle className="h-4 w-4 text-destructive" />

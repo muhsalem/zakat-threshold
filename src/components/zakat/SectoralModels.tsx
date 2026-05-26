@@ -583,6 +583,89 @@ export function SectoralModels({
     ? ALL_TABS.filter((t) => allowedTabs.includes(t.v))
     : ALL_TABS;
 
+  // مقارنة المذاهب الفقهية حسب نوع النشاط
+  const MADHAHIB: Record<string, { issue: string; rows: { madhab: string; view: string }[] }[]> = {
+    trade: [
+      { issue: "تقييم عروض التجارة يوم الحول", rows: [
+        { madhab: "الحنفية", view: "تُقوَّم بسعر السوق يوم الإخراج (الأنفع للفقراء)." },
+        { madhab: "المالكية", view: "إن كان مديراً تُقوَّم سنوياً، وإن كان محتكِراً فعند البيع." },
+        { madhab: "الشافعية", view: "تُقوَّم بسعر السوق يوم تمام الحول بثمن المثل." },
+        { madhab: "الحنابلة", view: "تُقوَّم بالأحظ للفقراء بين سعر الشراء وسعر السوق." },
+      ]},
+      { issue: "ضم الديون التجارية", rows: [
+        { madhab: "الجمهور", view: "تُضم الديون الجيدة المرجوّة إلى الوعاء وتُزكَّى سنوياً." },
+        { madhab: "رأي مرجوح", view: "لا تُزكَّى إلا بعد القبض (للديون المشكوك فيها)." },
+      ]},
+    ],
+    industry: [
+      { issue: "زكاة الآلات والمعدات الصناعية", rows: [
+        { madhab: "الجمهور", view: "لا تُزكَّى أعيانها (مُستغلات) وإنما تُزكَّى غلتها." },
+        { madhab: "مجمع الفقه الإسلامي", view: "تُزكَّى الغلة بنسبة 2.5% بعد خصم النفقات (قياساً على عروض التجارة)." },
+      ]},
+      { issue: "الإنتاج تحت التشغيل والمواد الخام", rows: [
+        { madhab: "AAOIFI 35", view: "تُدرج بالقيمة السوقية يوم الحول ضمن الوعاء." },
+        { madhab: "المعيار المحاسبي", view: "تُقوَّم بالتكلفة أو صافي القيمة البيعية أيهما أقل." },
+      ]},
+    ],
+    services: [
+      { issue: "زكاة كسب المهن الحرة (الأطباء/المهندسين/المحامين)", rows: [
+        { madhab: "الجمهور (قديماً)", view: "لا زكاة إلا بحَوَلان الحول على ما يتبقى منه." },
+        { madhab: "المعاصرون (القرضاوي وغيره)", view: "تُزكَّى عند القبض إن بلغت النصاب — قياساً على المال المستفاد." },
+      ]},
+      { issue: "الأعمال تحت التنفيذ والإيرادات المستحقة", rows: [
+        { madhab: "AAOIFI", view: "تُدرج كحقوق وتُزكَّى ضمن الوعاء." },
+      ]},
+    ],
+    mustaghal: [
+      { issue: "زكاة العقارات والمعدات المؤجَّرة (المستغلات)", rows: [
+        { madhab: "الجمهور", view: "لا تُزكَّى أعيانها — تُزكَّى الغلة (الإيجار) بنسبة 2.5% بعد النفقات." },
+        { madhab: "رأي بعض المعاصرين", view: "تُزكَّى الغلة بنسبة 10% أو 5% قياساً على زكاة الزروع." },
+      ]},
+    ],
+    marine: [
+      { issue: "الثروة السمكية ومزارع الأسماك", rows: [
+        { madhab: "الحنفية", view: "تجب الزكاة في السمك المستخرج للتجارة كعروض تجارة." },
+        { madhab: "الجمهور", view: "لا زكاة في الصيد إلا إذا أُعِدّ للتجارة فيُزكَّى كعرض تجارة (2.5%)." },
+      ]},
+    ],
+    minerals: [
+      { issue: "نسبة زكاة المعادن المستخرجة", rows: [
+        { madhab: "الحنفية", view: "الخُمس (20%) في كل ما يُستخرج من الأرض من المعادن." },
+        { madhab: "الجمهور (المالكية/الشافعية/الحنابلة)", view: "ربع العشر (2.5%) كزكاة المال." },
+      ]},
+      { issue: "الركاز (الكنز المدفون)", rows: [
+        { madhab: "اتفاق الفقهاء", view: "فيه الخُمس (20%) دون اشتراط نصاب أو حول." },
+      ]},
+    ],
+  };
+
+  const MadhabBlock = ({ topic }: { topic: string }) => {
+    const items = MADHAHIB[topic] || [];
+    if (!items.length) return null;
+    return (
+      <details className="group rounded-xl border bg-card overflow-hidden mt-4">
+        <summary className="cursor-pointer px-4 py-3 font-semibold text-sm flex items-center gap-2 bg-gold/10 hover:bg-gold/20">
+          <Info className="h-4 w-4 text-gold" /> الفروق ومقارنة المذاهب الفقهية لهذا النشاط
+        </summary>
+        <div className="p-4 space-y-4">
+          {items.map((blk, i) => (
+            <div key={i} className="space-y-2">
+              <div className="text-sm font-semibold text-primary">▸ {blk.issue}</div>
+              <div className="grid md:grid-cols-2 gap-2">
+                {blk.rows.map((r, j) => (
+                  <div key={j} className="rounded-lg border bg-muted/30 p-3 text-xs">
+                    <div className="font-bold text-primary mb-1">{r.madhab}</div>
+                    <div className="text-muted-foreground leading-relaxed">{r.view}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </details>
+    );
+  };
+
   // قسم تكميلي للأجور والضرائب يُلحَق بكل نموذج (بدل التبويبات المستقلة)
   const Addons = (
     <div className="space-y-4 mt-6 pt-6 border-t-2 border-dashed border-primary/20">
@@ -659,8 +742,8 @@ export function SectoralModels({
               })}
             </TabsList>
 
-            <TabsContent value="trade"><TradeModel currency={currency} nisab={nisab} yearMode={yearMode} />{Addons}</TabsContent>
-            <TabsContent value="industry"><IndustrialModel currency={currency} nisab={nisab} yearMode={yearMode} />{Addons}</TabsContent>
+            <TabsContent value="trade"><TradeModel currency={currency} nisab={nisab} yearMode={yearMode} /><MadhabBlock topic="trade" />{Addons}</TabsContent>
+            <TabsContent value="industry"><IndustrialModel currency={currency} nisab={nisab} yearMode={yearMode} /><MadhabBlock topic="industry" />{Addons}</TabsContent>
             <TabsContent value="services">
               <ServicesModel currency={currency} nisab={nisab} yearMode={yearMode} />
               <div className="mt-6 pt-6 border-t-2 border-dashed border-gold/30">
@@ -669,11 +752,12 @@ export function SectoralModels({
                 </h4>
                 <FreeProfModel currency={currency} nisab={nisab} yearMode={yearMode} />
               </div>
+              <MadhabBlock topic="services" />
               {Addons}
             </TabsContent>
-            <TabsContent value="mustaghal"><MustaghallatModel currency={currency} nisab={nisab} yearMode={yearMode} />{Addons}</TabsContent>
-            <TabsContent value="marine"><MarineModel currency={currency} nisab={nisab} yearMode={yearMode} />{Addons}</TabsContent>
-            <TabsContent value="minerals"><MineralsModel currency={currency} nisab={nisab} yearMode={yearMode} />{Addons}</TabsContent>
+            <TabsContent value="mustaghal"><MustaghallatModel currency={currency} nisab={nisab} yearMode={yearMode} /><MadhabBlock topic="mustaghal" />{Addons}</TabsContent>
+            <TabsContent value="marine"><MarineModel currency={currency} nisab={nisab} yearMode={yearMode} /><MadhabBlock topic="marine" />{Addons}</TabsContent>
+            <TabsContent value="minerals"><MineralsModel currency={currency} nisab={nisab} yearMode={yearMode} /><MadhabBlock topic="minerals" />{Addons}</TabsContent>
           </Tabs>
         </CardContent>
       </Card>
