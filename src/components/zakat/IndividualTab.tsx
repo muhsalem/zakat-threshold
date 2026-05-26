@@ -294,7 +294,18 @@ export function IndividualTab() {
     const silverNisabValue = SILVER_NISAB_GRAMS * sp;
     const moneyNisab = Math.min(goldNisabValue, silverNisabValue);
 
-    const debts = num(shortDebts) + num(expenses);
+    // ① الديون الحالة — تُخصم باتفاق الفقهاء
+    const dueDebts = num(debtPersonalLoan) + num(debtBankLoan) + num(debtConsumerFinance)
+      + num(debtCarInstall) + num(debtTradePayable) + num(debtPurchases);
+    // ② الديون المؤجلة — حسب القول المختار في الفتوى المعاصرة
+    const deferredTotal = num(debtMortgage) + num(debtMahr);
+    const deferredDeduction =
+      debtDeferredPolicy === "yearly" ? num(debtDeferredYearly)
+      : debtDeferredPolicy === "full" ? (deferredTotal || num(debtDeferredYearly))
+      : 0;
+    // ③ النفقة الواجبة إذا صارت ديناً — تُخصم
+    const alimony = num(debtAlimony);
+    const debts = dueDebts + deferredDeduction + alimony + num(expenses);
     const monetaryGross = cashTotal + securitiesTotal + billsTotal + tradeTotal + realEstateZakatable + incomeUsufruct;
     const monetaryBase = monetaryGross - debts;
     const monetaryEligible = monetaryBase >= moneyNisab && monetaryBase > 0;
