@@ -1,6 +1,18 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import {
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -11,14 +23,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
   COUNTRY_PRICES,
   GOLD_NISAB_GRAMS,
   SILVER_NISAB_GRAMS,
@@ -27,8 +31,26 @@ import {
   fmt,
   num,
 } from "@/lib/zakat";
-import { Scroll, Coins, Gem, Globe2, CalendarClock, Database } from "lucide-react";
+import {
+  Scroll,
+  Coins,
+  Gem,
+  Globe2,
+  CalendarClock,
+  Database,
+  RefreshCw,
+  TrendingUp,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { getLivePrices } from "@/lib/prices.functions";
+
+// Map internal country code -> ISO 4217 currency
+const ISO_CURRENCY: Record<string, string> = {
+  EG: "EGP", SA: "SAR", AE: "AED", KW: "KWD", QA: "QAR", BH: "BHD",
+  OM: "OMR", JO: "JOD", MA: "MAD", DZ: "DZD", TN: "TND", IQ: "IQD",
+  SY: "SYP", LB: "LBP", YE: "YER", SD: "SDG", LY: "LYD", PS: "ILS",
+  TR: "TRY", US: "USD", EU: "EUR", GB: "GBP",
+};
 
 const MONTHS_AR = [
   "يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
