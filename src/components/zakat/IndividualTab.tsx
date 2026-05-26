@@ -416,18 +416,49 @@ export function IndividualTab() {
               </RadioGroup>
             </div>
 
-            <div className="space-y-1.5">
-              <Label>تاريخ بلوغ النصاب (ميلادي)</Label>
-              <Input type="date" value={nisabStartDate} onChange={(e) => setNisabStartDate(e.target.value)} />
+            <div className="space-y-1.5 md:col-span-2">
+              <Label className="flex items-center gap-2">
+                <CalendarClock className="h-4 w-4 text-primary" />
+                سجل بلوغ النصاب الموحَّد (يطبَّق على جميع أنواع الأصول)
+              </Label>
+              <div className="grid md:grid-cols-[1fr_auto_auto] gap-2 items-end">
+                <Input type="date" value={nisabStartDate} onChange={(e) => setNisabStartDate(e.target.value)} />
+                <Button type="button" variant="outline" size="sm" disabled={nisabSaving || !nisabStartDate}
+                  onClick={async () => {
+                    setNisabSaving(true);
+                    const hijri_label = hawl ? formatHijri(hawl.hijriStart) : null;
+                    const payload = {
+                      owner_label: name || "بدون اسم",
+                      unified_nisab_date: nisabStartDate,
+                      hijri_label,
+                      calendar_basis: calendarBasis,
+                      notes: notes || null,
+                    };
+                    const { data, error } = nisabRecordId
+                      ? await supabase.from("nisab_records").update(payload).eq("id", nisabRecordId).select().single()
+                      : await supabase.from("nisab_records").insert(payload).select().single();
+                    if (!error && data) { setNisabRecordId(data.id); setNisabSaveMsg("تم الحفظ ✓"); }
+                    else setNisabSaveMsg("تعذّر الحفظ");
+                    setNisabSaving(false);
+                    setTimeout(() => setNisabSaveMsg(""), 2500);
+                  }}>
+                  {nisabSaving ? "..." : nisabRecordId ? "تحديث السجل" : "حفظ السجل"}
+                </Button>
+                {nisabSaveMsg && <span className="text-xs text-primary">{nisabSaveMsg}</span>}
+              </div>
               {hawl && (
                 <p className="text-xs text-muted-foreground">
                   الموافق هجريًا: <b>{formatHijri(hawl.hijriStart)}</b>
                 </p>
               )}
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                <Info className="inline h-3 w-3 ml-1" />
+                وفقاً للجمهور (ضم المستفاد إلى ما عنده من جنسه): تاريخ بلوغ النصاب الأول يصبح <b>المرجع الموحَّد</b> لحَوْل جميع الأصول النقدية (ذهب، فضة، نقد، عروض تجارة، أسهم). الزروع والثمار لا يشترط لها حول.
+              </p>
             </div>
-            <div className="space-y-1.5">
+            <div className="space-y-1.5 md:col-span-2">
               <Label>أساس حساب الحول</Label>
-              <RadioGroup value={calendarBasis} onValueChange={(v) => setCalendarBasis(v as "hijri" | "gregorian")} className="flex flex-col gap-2 pt-1">
+              <RadioGroup value={calendarBasis} onValueChange={(v) => setCalendarBasis(v as "hijri" | "gregorian")} className="flex flex-wrap gap-4 pt-1">
                 <div className="flex items-center gap-2"><RadioGroupItem value="hijri" id="cb-h" /><Label htmlFor="cb-h" className="text-sm">هجري — نسبة 2.5%</Label></div>
                 <div className="flex items-center gap-2"><RadioGroupItem value="gregorian" id="cb-g" /><Label htmlFor="cb-g" className="text-sm">ميلادي — نسبة 2.577% (معدّلة)</Label></div>
               </RadioGroup>
@@ -439,7 +470,7 @@ export function IndividualTab() {
                   <Info className="h-4 w-4" />
                   <AlertDescription className="text-xs">
                     {hawl.hawlComplete ? (
-                      <>اكتمل الحَوْل (مضى <b>{hawl.daysPassed} يومًا</b> ≥ {HAWL_DAYS_HIJRI} يوم هجري). تجب الزكاة على الأموال التي حال عليها الحول.</>
+                      <>اكتمل الحَوْل (مضى <b>{hawl.daysPassed} يومًا</b> ≥ {HAWL_DAYS_HIJRI} يوم هجري). تجب الزكاة على جميع الأصول النقدية تحت هذا السجل الموحَّد.</>
                     ) : (
                       <>لم يكتمل الحول بعد — مضى <b>{hawl.daysPassed} يومًا</b> ويتبقى <b>{hawl.daysRemaining} يومًا</b> لإكمال 354 يومًا هجريًا. لا تجب زكاة النقد والذهب الآن (الزروع والثمار لا تشترط حولًا).</>
                     )}
