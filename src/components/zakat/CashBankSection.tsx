@@ -411,61 +411,42 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
         </p>
       </div>
 
-      {/* و) المحافظ الرقمية */}
-      <div className="rounded-lg border bg-card p-4 space-y-3">
-        <div className="flex items-center gap-2 text-sm font-semibold text-primary">
-          <Smartphone className="h-4 w-4" /> و · المحافظ الرقمية
-        </div>
-        <p className="text-xs text-muted-foreground">
-          إن كانت المحفظة <b>مربوطة بحساب بنكي</b> فالأصل أن تُحتسب ضمن الحساب نفسه لتفادي التكرار.
-        </p>
-        <div className="space-y-2">
-          {walletRows.map((w) => (
-            <div key={w.id} className="grid grid-cols-12 gap-2 items-end">
-              <div className="col-span-4">
-                <Label className="text-xs">نوع المحفظة</Label>
-                <Select value={w.provider} onValueChange={(v) => updateWallet(w.id, { provider: v })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="vodafone">فودافون كاش</SelectItem>
-                    <SelectItem value="orange">أورانج كاش</SelectItem>
-                    <SelectItem value="etisalat">اتصالات كاش</SelectItem>
-                    <SelectItem value="we">e&amp; / WE Pay</SelectItem>
-                    <SelectItem value="instapay">إنستاباي</SelectItem>
-                    <SelectItem value="other">محفظة أخرى</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="col-span-3">
-                <Label className="text-xs">الرصيد</Label>
-                <div className="relative">
-                  <Input type="number" min="0" step="0.01" value={w.amount} onChange={(e) => updateWallet(w.id, { amount: e.target.value })} dir="ltr" style={{ textAlign: "right" }} className="pl-12" placeholder="0" />
-                  <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">{currencyName}</span>
-                </div>
-              </div>
-              <div className="col-span-3">
-                <Label className="text-xs">الربط</Label>
-                <Select value={w.linked} onValueChange={(v) => updateWallet(w.id, { linked: v as "linked" | "standalone" })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="standalone">محفظة مستقلة</SelectItem>
-                    <SelectItem value="linked">مربوطة بحساب بنكي</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="col-span-2 flex gap-1">
-                <Button type="button" size="sm" variant="ghost" onClick={() => removeWallet(w.id)} disabled={walletRows.length <= 1}>حذف</Button>
-              </div>
-              {w.linked === "linked" && (
-                <div className="col-span-12 text-[11px] text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 rounded px-2 py-1">
-                  ⓘ هذه المحفظة مربوطة بحساب بنكي — تأكَّد من عدم احتساب الرصيد مرتين.
-                </div>
-              )}
-            </div>
-          ))}
-          <Button type="button" size="sm" variant="outline" onClick={addWallet}>+ إضافة محفظة</Button>
-        </div>
-      </div>
+      {/* و) محافظ شركات الاتصالات */}
+      <WalletGroup
+        title="و · محافظ شركات الاتصالات"
+        rows={telcoWallets}
+        ops={telcoOps}
+        currencyName={currencyName}
+        providers={[
+          { v: "vodafone", l: "فودافون كاش" },
+          { v: "orange", l: "أورانج كاش" },
+          { v: "etisalat", l: "اتصالات كاش" },
+          { v: "we", l: "e& / WE Pay" },
+          { v: "stc", l: "STC Pay" },
+          { v: "other", l: "محفظة اتصالات أخرى" },
+        ]}
+        note="محافظ شركات الاتصالات تُزكَّى كنقد. إن كانت مربوطة بحساب بنكي فقد احتُسبت ضمنه — اختَر «مربوطة» لاستثنائها."
+      />
+
+      {/* ز) المحافظ البنكية */}
+      <WalletGroup
+        title="ز · المحافظ البنكية والدفع الإلكتروني"
+        rows={bankWallets}
+        ops={bankOps}
+        currencyName={currencyName}
+        providers={[
+          { v: "meeza", l: "بطاقة ميزة الرقمية" },
+          { v: "instapay", l: "إنستاباي (InstaPay)" },
+          { v: "applepay", l: "Apple Pay" },
+          { v: "googlepay", l: "Google Pay" },
+          { v: "samsungpay", l: "Samsung Pay" },
+          { v: "valu", l: "valU / تقسيط رقمي" },
+          { v: "bankapp", l: "محفظة تطبيق البنك" },
+          { v: "other", l: "محفظة بنكية أخرى" },
+        ]}
+        note="المحافظ البنكية غالبًا ما تكون مربوطة بحساب جاري — حدِّد «مربوطة» لمنع التكرار المحاسبي."
+      />
+
 
       {/* الملخّص */}
       <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 space-y-1.5">
