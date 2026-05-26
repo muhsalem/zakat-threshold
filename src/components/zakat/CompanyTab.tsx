@@ -127,6 +127,34 @@ const GROUP_LABELS: Record<Sector["group"], string> = {
   services: "نشاط خدمي",
 };
 
+// التبويبات المسموح بها في النموذج القطاعي حسب القطاع المحدد (مع تبويبات مساندة دائمة)
+function getAllowedSectoralTabs(sectorId: string, group: Sector["group"]): string[] {
+  const supporting = ["salary", "tax"]; // الأجور والضريبة مرتبطة دائماً
+  let primary: string[] = [];
+  switch (sectorId) {
+    case "agri":      primary = ["trade"]; break;
+    case "minerals":
+    case "oilgas":    primary = ["minerals"]; break;
+    case "fishing":   primary = ["marine"]; break;
+    case "manuf":
+    case "construct": primary = ["industry", "trade"]; break;
+    case "trade_w":
+    case "import":    primary = ["trade"]; break;
+    case "realestate":primary = ["mustaghal", "services"]; break;
+    case "consult":
+    case "transport":
+    case "software":  primary = ["services", "free"]; break;
+    default:
+      // افتراضي حسب المجموعة
+      primary = group === "industrial" ? ["industry"]
+        : group === "commercial" ? ["trade"]
+        : group === "services" ? ["services"]
+        : ["trade"];
+  }
+  return [...primary, ...supporting];
+}
+
+
 // تقريب التحويل الميلادي/الهجري
 function gregorianToHijri(gYear: number) {
   return Math.round((gYear - 622) * 33 / 32);
