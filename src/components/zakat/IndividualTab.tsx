@@ -192,8 +192,22 @@ export function IndividualTab() {
   const [cows, setCows] = useState("");
   const [sheep, setSheep] = useState("");
 
-  // الديون
-  const [shortDebts, setShortDebts] = useState("");
+  // الديون والالتزامات — تصنيف شرعي مفصّل
+  // ① الديون الحالة (واجبة السداد الآن)
+  const [debtPersonalLoan, setDebtPersonalLoan] = useState("");    // قروض شخصية
+  const [debtBankLoan, setDebtBankLoan] = useState("");            // ديون مصرفية
+  const [debtConsumerFinance, setDebtConsumerFinance] = useState(""); // تمويل استهلاكي
+  const [debtCarInstall, setDebtCarInstall] = useState("");        // أقساط سيارات/سلع حالَّة
+  const [debtTradePayable, setDebtTradePayable] = useState("");    // ديون تجارية مستحقة
+  const [debtPurchases, setDebtPurchases] = useState("");          // أثمان مشتريات لم تُسدد
+  // ② الديون المؤجلة — رأي العمل المعاصر
+  const [debtDeferredYearly, setDebtDeferredYearly] = useState(""); // قسط السنة فقط من الديون المؤجلة
+  const [debtDeferredPolicy, setDebtDeferredPolicy] = useState<"yearly" | "full" | "none">("yearly");
+  const [debtMortgage, setDebtMortgage] = useState("");            // أقساط تمويل عقاري (إجمالي متبقي)
+  const [debtMahr, setDebtMahr] = useState("");                    // مهر مؤجل
+  // ③ النفقة الواجبة إذا صارت ديناً
+  const [debtAlimony, setDebtAlimony] = useState("");              // نفقة زوجة/أولاد/أقارب بحكم أو اتفاق
+  // نفقات ضرورية مستحقة (فواتير وإيجارات)
   const [expenses, setExpenses] = useState("");
 
   // ========= الحسابات =========
@@ -280,7 +294,18 @@ export function IndividualTab() {
     const silverNisabValue = SILVER_NISAB_GRAMS * sp;
     const moneyNisab = Math.min(goldNisabValue, silverNisabValue);
 
-    const debts = num(shortDebts) + num(expenses);
+    // ① الديون الحالة — تُخصم باتفاق الفقهاء
+    const dueDebts = num(debtPersonalLoan) + num(debtBankLoan) + num(debtConsumerFinance)
+      + num(debtCarInstall) + num(debtTradePayable) + num(debtPurchases);
+    // ② الديون المؤجلة — حسب القول المختار في الفتوى المعاصرة
+    const deferredTotal = num(debtMortgage) + num(debtMahr);
+    const deferredDeduction =
+      debtDeferredPolicy === "yearly" ? num(debtDeferredYearly)
+      : debtDeferredPolicy === "full" ? (deferredTotal || num(debtDeferredYearly))
+      : 0;
+    // ③ النفقة الواجبة إذا صارت ديناً — تُخصم
+    const alimony = num(debtAlimony);
+    const debts = dueDebts + deferredDeduction + alimony + num(expenses);
     const monetaryGross = cashTotal + securitiesTotal + billsTotal + tradeTotal + realEstateZakatable + incomeUsufruct;
     const monetaryBase = monetaryGross - debts;
     const monetaryEligible = monetaryBase >= moneyNisab && monetaryBase > 0;
@@ -325,7 +350,9 @@ export function IndividualTab() {
     inventory, receivablesGood, realEstateTrade, realEstateRentIncome,
     tradeIsShareholder, tradeSharePct, tradeShareCompanyBase,
     incomeUsufructTotal, ownsFarmland, ownsLivestock,
-    shortDebts, expenses, cropsKg, cropsValuePerKg, cropsIrrigation,
+    debtPersonalLoan, debtBankLoan, debtConsumerFinance, debtCarInstall, debtTradePayable, debtPurchases,
+    debtDeferredPolicy, debtDeferredYearly, debtMortgage, debtMahr, debtAlimony,
+    expenses, cropsKg, cropsValuePerKg, cropsIrrigation,
     camels, cows, sheep, effectiveRate, hawl, cashTotalFromSection,
   ]);
 
@@ -819,19 +846,10 @@ export function IndividualTab() {
                 </div>
               </div>
 
-              {/* إجمالي وعاء الذهب + الفضة + الأسعار المرجعية اليوم */}
+              {/* إجمالي وعاء الذهب + الفضة — الزكاة الواجبة ثم الأسعار المرجعية اللحظية */}
               <div className="rounded-xl border-2 border-gold/50 bg-gold/10 p-4 space-y-3">
                 <div className="text-sm font-bold text-gold flex items-center gap-2">
-                  <Coins className="h-4 w-4" /> إجمالي وعاء زكاة الذهب والفضة — الأسعار المرجعية اليوم ({country.name})
-                </div>
-
-                {/* الأسعار المرجعية */}
-                <div className="grid md:grid-cols-2 gap-3 rounded-lg border bg-background/60 p-3">
-                  <NumField label="سعر جرام الذهب عيار 24" value={goldPrice} onChange={setGoldPrice} unit={currencyName} />
-                  <NumField label="سعر جرام الفضة الخالصة (عيار 999)" value={silverPrice} onChange={setSilverPrice} unit={currencyName} />
-                  <div className="md:col-span-2 text-xs text-muted-foreground bg-muted/40 rounded-md px-3 py-2 text-right">
-                    نصاب الذهب: <b>{cur(calc.goldNisabValue)}</b> — نصاب الفضة: <b>{cur(calc.silverNisabValue)}</b> — الأنفع للفقراء: <b>{cur(calc.moneyNisab)}</b>
-                  </div>
+                  <Coins className="h-4 w-4" /> إجمالي وعاء زكاة الذهب والفضة
                 </div>
 
                 <div className="space-y-1 text-sm">
@@ -850,6 +868,20 @@ export function IndividualTab() {
                   <div className="flex items-center justify-between py-1.5">
                     <span>الزكاة الواجبة على الذهب والفضة ({(effectiveRate * 100).toFixed(3)}%)</span>
                     <span className="font-extrabold text-gold text-lg">{cur(calc.goldZakat + calc.silverZakat)}</span>
+                  </div>
+                </div>
+
+                {/* الأسعار المرجعية — تحديث لحظي حسب الدولة المسجلة في بيانات المزكي */}
+                <Separator />
+                <div className="text-xs font-semibold text-primary flex items-center gap-2">
+                  <Info className="h-3.5 w-3.5" />
+                  الأسعار المرجعية اليوم ({country.name}) — تحديث لحظي حسب الدولة المسجلة في بيانات المزكي
+                </div>
+                <div className="grid md:grid-cols-2 gap-3 rounded-lg border bg-background/60 p-3">
+                  <NumField label="سعر جرام الذهب عيار 24" value={goldPrice} onChange={setGoldPrice} unit={currencyName} />
+                  <NumField label="سعر جرام الفضة الخالصة (عيار 999)" value={silverPrice} onChange={setSilverPrice} unit={currencyName} />
+                  <div className="md:col-span-2 text-xs text-muted-foreground bg-muted/40 rounded-md px-3 py-2 text-right">
+                    نصاب الذهب: <b>{cur(calc.goldNisabValue)}</b> — نصاب الفضة: <b>{cur(calc.silverNisabValue)}</b> — الأنفع للفقراء: <b>{cur(calc.moneyNisab)}</b>
                   </div>
                 </div>
               </div>
@@ -876,7 +908,7 @@ export function IndividualTab() {
           <AccordionItem value="securities" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
-                <TrendingUp className="h-5 w-5 text-primary" /> زكاة الأوراق المالية والاستثمارات
+                <TrendingUp className="h-5 w-5 text-primary" /> زكاة الأوراق المالية ووثائق التأمين
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
@@ -1067,10 +1099,63 @@ export function IndividualTab() {
                 <MinusCircle className="h-5 w-5 text-destructive" /> الديون والالتزامات (تُخصم)
               </span>
             </AccordionTrigger>
-            <AccordionContent className="space-y-4 pb-4">
-              <div className="grid md:grid-cols-2 gap-4">
-                <NumField label="ديون مستحقة عليك" value={shortDebts} onChange={setShortDebts} unit={currencyName} hint="القسط المستحق خلال الحول" />
-                <NumField label="نفقات ضرورية مستحقة" value={expenses} onChange={setExpenses} unit={currencyName} hint="فواتير وإيجارات مستحقة" />
+            <AccordionContent className="space-y-5 pb-4">
+              {/* ① الديون الحالة */}
+              <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 space-y-3">
+                <div className="text-sm font-semibold text-destructive flex items-center gap-2">
+                  <Badge className="bg-destructive text-destructive-foreground">①</Badge>
+                  الديون الحالة (واجبة السداد الآن) — تُخصم باتفاق الفقهاء
+                </div>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <NumField label="قروض شخصية" value={debtPersonalLoan} onChange={setDebtPersonalLoan} unit={currencyName} />
+                  <NumField label="ديون مصرفية" value={debtBankLoan} onChange={setDebtBankLoan} unit={currencyName} hint="أصل الدين دون الفوائد الربوية" />
+                  <NumField label="تمويل استهلاكي" value={debtConsumerFinance} onChange={setDebtConsumerFinance} unit={currencyName} hint="مرابحة / تورق / تقسيط حلال — الأصل المستحق" />
+                  <NumField label="أقساط سيارات أو سلع حالَّة" value={debtCarInstall} onChange={setDebtCarInstall} unit={currencyName} />
+                  <NumField label="ديون تجارية مستحقة" value={debtTradePayable} onChange={setDebtTradePayable} unit={currencyName} />
+                  <NumField label="أثمان مشتريات لم تُسدد" value={debtPurchases} onChange={setDebtPurchases} unit={currencyName} />
+                </div>
+              </div>
+
+              {/* ② الديون المؤجلة */}
+              <div className="rounded-lg border border-amber-500/40 bg-amber-50/40 dark:bg-amber-950/20 p-4 space-y-3">
+                <div className="text-sm font-semibold text-amber-700 dark:text-amber-400 flex items-center gap-2">
+                  <Badge className="bg-amber-500 text-white">②</Badge>
+                  الديون المؤجلة (طويلة الأجل) — على خلاف بين العلماء
+                </div>
+                <Alert className="border-amber-500/30 bg-background">
+                  <Info className="h-4 w-4" />
+                  <AlertDescription className="text-xs leading-relaxed">
+                    <b>الجمهور:</b> يُخصم كل الدين حالًّا ومؤجلًا. <b>الأحوط:</b> يُخصم قسط السنة فقط. <b>الشافعية (قول قوي):</b> لا يُخصم الدين المؤجل أصلًا. والعمل المعاصر: إن لم يكن لديك مال زائد عن الحاجة فيجوز الخصم، والأحوط خصم قسط السنة فقط.
+                  </AlertDescription>
+                </Alert>
+                <div>
+                  <Label className="mb-2 block text-xs">السياسة المختارة لخصم المؤجل</Label>
+                  <RadioGroup value={debtDeferredPolicy} onValueChange={(v) => setDebtDeferredPolicy(v as "yearly" | "full" | "none")} className="flex flex-wrap gap-3">
+                    <div className="flex items-center gap-2 border rounded-md px-3 py-1.5"><RadioGroupItem value="yearly" id="dp-y" /><Label htmlFor="dp-y" className="text-xs cursor-pointer">قسط السنة فقط (الأحوط)</Label></div>
+                    <div className="flex items-center gap-2 border rounded-md px-3 py-1.5"><RadioGroupItem value="full" id="dp-f" /><Label htmlFor="dp-f" className="text-xs cursor-pointer">خصم كامل الدين (الجمهور)</Label></div>
+                    <div className="flex items-center gap-2 border rounded-md px-3 py-1.5"><RadioGroupItem value="none" id="dp-n" /><Label htmlFor="dp-n" className="text-xs cursor-pointer">لا يُخصم (الشافعية)</Label></div>
+                  </RadioGroup>
+                </div>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <NumField label="أقساط تمويل عقاري (إجمالي متبقي)" value={debtMortgage} onChange={setDebtMortgage} unit={currencyName} />
+                  <NumField label="مهر الزوجة المؤجل" value={debtMahr} onChange={setDebtMahr} unit={currencyName} />
+                  <NumField label="قسط السنة فقط من الديون المؤجلة" value={debtDeferredYearly} onChange={setDebtDeferredYearly} unit={currencyName} hint="يُستخدم مع سياسة «قسط السنة»" />
+                </div>
+              </div>
+
+              {/* ③ النفقة الواجبة */}
+              <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 space-y-3">
+                <div className="text-sm font-semibold text-primary flex items-center gap-2">
+                  <Badge className="bg-primary">③</Badge>
+                  النفقة الواجبة إذا صارت دينًا — تُخصم
+                </div>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  نفقة الزوجة أو الأولاد بحكم قضاء أو اتفاق، ونفقة الأقارب الواجبة شرعاً متى ثبتت في الذمة كَدَين.
+                </p>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <NumField label="نفقة واجبة مستحقة (زوجة/أولاد/أقارب)" value={debtAlimony} onChange={setDebtAlimony} unit={currencyName} hint="بحكم قضاء أو اتفاق" />
+                  <NumField label="نفقات ضرورية مستحقة" value={expenses} onChange={setExpenses} unit={currencyName} hint="فواتير وإيجارات مستحقة" />
+                </div>
               </div>
             </AccordionContent>
           </AccordionItem>
