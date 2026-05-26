@@ -354,6 +354,15 @@ export function CompanyTab() {
   const [crNumber, setCrNumber] = useState("");
   const [taxId, setTaxId] = useState("");
   const [zakatId, setZakatId] = useState("");
+  // أشخاص الشركة الرئيسيون
+  const [managerName, setManagerName] = useState("");
+  const [ownerName, setOwnerName] = useState("");
+  const [sameOwnerManager, setSameOwnerManager] = useState(false);
+  const [cfoName, setCfoName] = useState("");
+  // إعدادات الحول والاحتساب السابق
+  const [calcPrevYears, setCalcPrevYears] = useState<"yes" | "no">("no");
+  const [prevYearsCount, setPrevYearsCount] = useState("");
+  const [fixHawlYear, setFixHawlYear] = useState<"yes" | "no">("no");
   const [accountingStd, setAccountingStd] = useState<string>("IFRS");
   const [consolidated, setConsolidated] = useState(false);
 
