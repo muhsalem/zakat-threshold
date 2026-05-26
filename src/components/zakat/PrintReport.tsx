@@ -190,104 +190,99 @@ export function PrintReport({ data }: { data: PrintReportData }) {
       {/* صفحة 1 — تقرير حساب زكاة الأفراد */}
       {/* ============================================================ */}
 
-      {/* ====== العنوان الرئيسي ====== */}
+      {/* ====== شريط الهوية العلوي (لاتيني فقط لتفادي كسر اتصال الحروف) ====== */}
       <div className="print-avoid-break" style={{
         textAlign: "center",
-        padding: "6pt 0 8pt",
+        padding: "5pt 0 7pt",
         borderBottom: `2pt double ${C.gold}`,
         marginBottom: "10pt",
+        fontSize: "8.5pt",
+        color: C.goldDark,
+        fontWeight: 700,
+        letterSpacing: "2pt",
       }}>
-        <div style={{ fontSize: "9pt", color: C.goldDark, letterSpacing: "3pt", fontWeight: 700 }}>
-          ◆ {PLATFORM_NAME_AR.toUpperCase()} ◆ {PLATFORM_TAGLINE} ◆
-        </div>
+        ◆ NISAB · CERTIFIED ZAKAT CALCULATOR ◆
       </div>
 
-      {/* ====== الترويسة الفاخرة ====== */}
+      {/* ====== الترويسة الفاخرة (خلفية صلبة بدل التدرج لتفادي مشاكل html2canvas) ====== */}
       <div className="print-avoid-break" style={{
-        background: `linear-gradient(135deg, ${C.primaryDark} 0%, ${C.primary} 50%, ${C.primaryLight} 100%)`,
+        background: C.primary,
         color: "white",
-        padding: "18pt 18pt",
+        padding: "16pt 18pt",
         borderRadius: "8pt",
         marginBottom: "10pt",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
         gap: "14pt",
-        boxShadow: "0 3pt 8pt rgba(0,0,0,0.18)",
-        border: `1pt solid ${C.gold}`,
+        border: `1.5pt solid ${C.gold}`,
       }}>
         {/* لوجو كبير */}
         <div style={{
-          width: "110pt", height: "110pt", flexShrink: 0,
-          background: "radial-gradient(circle, rgba(255,255,255,0.18), transparent 70%)",
+          width: "115pt", height: "115pt", flexShrink: 0,
+          background: "rgba(255,255,255,0.06)",
+          border: `1pt solid ${C.gold}`,
           borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
           padding: "6pt",
         }}>
           <img src={logoUrl} alt={`شعار ${PLATFORM_NAME_AR}`}
-            style={{ width: "100%", height: "100%", objectFit: "contain",
-              filter: "drop-shadow(0 2pt 4pt rgba(0,0,0,0.35))" }} />
+            style={{ width: "100%", height: "100%", objectFit: "contain" }} />
         </div>
 
-        {/* العنوان والبسملة */}
+        {/* العنوان والبسملة (بدون letter-spacing لحماية اتصال الحروف) */}
         <div style={{ flex: 1, textAlign: "center" }}>
-          {/* بسم الله بصيغة فنية جمالية */}
           <div style={{
-            fontFamily: "Amiri, 'Tajawal', serif",
-            fontSize: "20pt",
+            fontFamily: "'Amiri', 'Tajawal', serif",
+            fontSize: "22pt",
             fontWeight: 700,
             color: C.goldLight,
-            letterSpacing: "1.5pt",
-            textShadow: "0 1pt 3pt rgba(0,0,0,0.4)",
-            marginBottom: "4pt",
-            padding: "2pt 0",
+            lineHeight: 1.4,
+            padding: "4pt 14pt",
             borderTop: `0.6pt solid ${C.gold}`,
             borderBottom: `0.6pt solid ${C.gold}`,
             display: "inline-block",
-            paddingLeft: "20pt",
-            paddingRight: "20pt",
           }}>
-            ﷽
-          </div>
-          <div style={{ fontSize: "10pt", color: C.goldLight, fontWeight: 600, opacity: 0.95, marginTop: "2pt", letterSpacing: "2pt" }}>
-            بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+            بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
           </div>
           <div style={{
-            fontSize: "20pt", fontWeight: 900, marginTop: "6pt",
-            fontFamily: "Amiri, Tajawal, serif", letterSpacing: "1pt",
+            fontSize: "22pt", fontWeight: 900, marginTop: "8pt",
+            fontFamily: "'Tajawal', sans-serif",
+            color: "white",
+            lineHeight: 1.2,
           }}>
             تقرير حساب زكاة الأفراد
           </div>
-          <div style={{ fontSize: "9pt", opacity: 0.9, marginTop: "2pt" }}>
+          <div style={{ fontSize: "9pt", opacity: 0.92, marginTop: "3pt", color: C.goldLight }}>
             وفق المعايير الشرعية والمحاسبية الدولية (AAOIFI)
           </div>
         </div>
 
         {/* QR + رابط التحقق */}
         <div style={{ textAlign: "center", flexShrink: 0 }}>
-          <img src={qrSrc} alt="رمز التحقق"
-            style={{ width: "78pt", height: "78pt", background: "white", padding: "3pt", borderRadius: "5pt" }} />
-          <div style={{ fontSize: "7pt", marginTop: "3pt", opacity: 0.85 }}>امسح للتحقق</div>
+          <img src={qrSrc} alt="QR"
+            style={{ width: "82pt", height: "82pt", background: "white", padding: "3pt", borderRadius: "5pt" }} />
+          <div style={{ fontSize: "7pt", marginTop: "3pt", opacity: 0.9 }}>امسح للتحقق</div>
         </div>
       </div>
 
-      {/* ====== شريط معلومات الإصدار (تاريخ هجري وميلادي ووقت) ====== */}
+      {/* ====== شريط معلومات الإصدار ====== */}
       <div className="print-avoid-break" style={{
-        background: `linear-gradient(180deg, ${C.deepCream}, ${C.cream})`,
+        background: C.deepCream,
         border: `0.6pt solid ${C.border}`, borderRadius: "5pt",
-        padding: "7pt 12pt", marginBottom: "10pt", fontSize: "8.5pt",
-        display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4pt 16pt",
+        padding: "8pt 12pt", marginBottom: "10pt", fontSize: "8.5pt",
+        display: "grid", gridTemplateColumns: "1fr 1fr", gap: "5pt 16pt",
       }}>
-        <span><b style={{ color: C.primary }}>📄 رقم التقرير:</b> <span style={{ fontFamily: "monospace", color: C.goldDark, fontWeight: 700 }}>{reportId}</span></span>
-        <span><b style={{ color: C.primary }}>🕌 التقويم المعتمد:</b> {data.calendarBasis === "hijri" ? "هجري (354 يوم)" : "ميلادي (365 يوم)"}</span>
-        <span><b style={{ color: C.primary }}>📅 التاريخ الميلادي:</b> {issueGregorian}</span>
-        <span><b style={{ color: C.primary }}>☪ التاريخ الهجري:</b> {issueHijri}</span>
-        <span><b style={{ color: C.primary }}>⏰ وقت الإصدار:</b> {issueTime}</span>
+        <span><b style={{ color: C.primary }}>رقم التقرير:</b> <span style={{ fontFamily: "monospace", color: C.goldDark, fontWeight: 700 }}>{reportId}</span></span>
+        <span><b style={{ color: C.primary }}>التقويم المعتمد:</b> {data.calendarBasis === "hijri" ? "هجري (354 يوم)" : "ميلادي (365 يوم)"}</span>
+        <span><b style={{ color: C.primary }}>التاريخ الميلادي:</b> {issueGregorian}</span>
+        <span><b style={{ color: C.primary }}>التاريخ الهجري:</b> {issueHijri}</span>
+        <span><b style={{ color: C.primary }}>وقت الإصدار:</b> {issueTime}</span>
         {nextHawl && (
-          <span><b style={{ color: C.primary }}>🔔 حلول الحول القادم:</b> {nextHawlGreg} — {nextHawlHijri}</span>
+          <span><b style={{ color: C.primary }}>حلول الحول القادم:</b> {nextHawlGreg} — {nextHawlHijri}</span>
         )}
-        <span style={{ gridColumn: "1 / -1", borderTop: `0.4pt dashed ${C.border}`, paddingTop: "3pt", marginTop: "1pt" }}>
-          <b style={{ color: C.primary }}>🔗 رابط التحقق / إعادة الطباعة:</b>{" "}
-          <a href={verifyUrl} style={{ color: C.primaryLight, textDecoration: "underline", wordBreak: "break-all" }}>{verifyUrl || "—"}</a>
+        <span style={{ gridColumn: "1 / -1", borderTop: `0.4pt dashed ${C.border}`, paddingTop: "4pt", marginTop: "2pt" }}>
+          <b style={{ color: C.primary }}>رابط التحقق / إعادة الطباعة:</b>{" "}
+          <a href={verifyUrl} style={{ color: C.primaryLight, textDecoration: "underline", wordBreak: "break-all", fontFamily: "monospace", fontSize: "8pt" }}>{verifyUrl || "—"}</a>
         </span>
       </div>
 
