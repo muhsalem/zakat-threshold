@@ -3,8 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { IndividualTab } from "@/components/zakat/IndividualTab";
 import { CompanyTab } from "@/components/zakat/CompanyTab";
 import { NisabHistory } from "@/components/zakat/NisabHistory";
-import { SectoralModels } from "@/components/zakat/SectoralModels";
-import { Users, Building2, Scroll, Moon, FileSpreadsheet } from "lucide-react";
+import { Users, Building2, Scroll, Moon } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: Index,
