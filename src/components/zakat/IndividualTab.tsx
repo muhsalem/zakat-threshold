@@ -350,7 +350,9 @@ export function IndividualTab() {
     inventory, receivablesGood, realEstateTrade, realEstateRentIncome,
     tradeIsShareholder, tradeSharePct, tradeShareCompanyBase,
     incomeUsufructTotal, ownsFarmland, ownsLivestock,
-    shortDebts, expenses, cropsKg, cropsValuePerKg, cropsIrrigation,
+    debtPersonalLoan, debtBankLoan, debtConsumerFinance, debtCarInstall, debtTradePayable, debtPurchases,
+    debtDeferredPolicy, debtDeferredYearly, debtMortgage, debtMahr, debtAlimony,
+    expenses, cropsKg, cropsValuePerKg, cropsIrrigation,
     camels, cows, sheep, effectiveRate, hawl, cashTotalFromSection,
   ]);
 
