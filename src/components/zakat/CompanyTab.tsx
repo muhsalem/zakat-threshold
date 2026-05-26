@@ -597,8 +597,11 @@ export function CompanyTab() {
     const years = 1 + Math.min(2, Math.max(0, Math.round(num(accelerateYears))));
     const zakat = zakatOneYear * years;
 
-    const completed = Object.values(compliance).filter(Boolean).length;
-    const complianceScore = Math.round((completed / ALL_ITEM_IDS.length) * 100);
+    const activeSections = getActiveComplianceSections(sector.group);
+    const activeIds = activeSections.flatMap((s) => s.items.map((i) => i.id));
+    const completed = activeIds.filter((id) => compliance[id]).length;
+    const complianceScore = activeIds.length > 0 ? Math.round((completed / activeIds.length) * 100) : 0;
+    const totalCount = activeIds.length;
 
     const totalShares = num(shGcc) + num(shForeign) + num(shGovt) + num(shWaqf) + num(shNonMuslim);
     const sharesBalanced = Math.abs(totalShares - 100) < 0.01;
