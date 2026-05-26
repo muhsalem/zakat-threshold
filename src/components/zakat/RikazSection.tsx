@@ -158,7 +158,7 @@ export function RikazSection() {
           <AccordionItem value="rikaz" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
-                <Pickaxe className="h-5 w-5 text-gold" /> ① الركاز — الخُمس (20%)
+                <Pickaxe className="h-5 w-5 text-gold" /> ① هل اكتشفت ركازاً (كنزاً مدفوناً)؟ — الخُمس (20%)
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
@@ -188,7 +188,7 @@ export function RikazSection() {
           <AccordionItem value="minerals" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
-                <FlaskConical className="h-5 w-5 text-primary" /> ② المعادن المستخرجة
+                <FlaskConical className="h-5 w-5 text-primary" /> ② هل تستخرج معادن من باطن الأرض؟
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
@@ -237,7 +237,7 @@ export function RikazSection() {
           <AccordionItem value="honey" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
-                <FlaskConical className="h-5 w-5 text-gold" /> ③ العسل — العُشر (10%)
+                <FlaskConical className="h-5 w-5 text-gold" /> ③ هل تملك إنتاج عسل؟ — العُشر (10%)
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
@@ -272,7 +272,7 @@ export function RikazSection() {
           <AccordionItem value="fish" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
-                <Fish className="h-5 w-5 text-primary" /> ④ الثروة السمكية / مزارع الأسماك
+                <Fish className="h-5 w-5 text-primary" /> ④ هل تملك ثروة سمكية أو مزرعة أسماك للتجارة؟
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
@@ -301,7 +301,7 @@ export function RikazSection() {
           <AccordionItem value="poultry" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
-                <Drumstick className="h-5 w-5 text-gold" /> ⑤ مزارع الدواجن
+                <Drumstick className="h-5 w-5 text-gold" /> ⑤ هل تملك مزرعة دواجن للتجارة؟
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">

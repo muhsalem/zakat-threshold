@@ -1224,6 +1224,11 @@ export function IndividualTab() {
                   </div>
                 </>
               )}
+
+              {/* الركاز والمعادن والعسل والثروة السمكية والدواجن — أسئلة تكميلية ضمن الأنعام */}
+              <div className="pt-2">
+                <RikazSection />
+              </div>
             </AccordionContent>
           </AccordionItem>
 
@@ -1537,11 +1542,6 @@ export function IndividualTab() {
           </CardContent>
         </Card>
 
-      </div>
-
-      {/* ====== الركاز والمعادن (مدمج كقسم تكميلي) ====== */}
-      <div className="lg:col-span-3 mt-8">
-        <RikazSection />
       </div>
 
       {/* ====== إيضاحات فقهية مكملة — مقارنة المذاهب ====== */}
