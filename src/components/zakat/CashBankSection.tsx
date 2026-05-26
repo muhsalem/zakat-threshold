@@ -135,17 +135,20 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
     const tCards = num(cardPrepaid);
     const tCreditDue = num(creditCardDue); // يُخصم كَدَين
 
-    // المحافظ الرقمية: تُزكَّى كنقد (الرصيد فيها)
-    const tWallets = walletRows.reduce((s, w) => s + num(w.amount), 0);
+    // المحافظ الرقمية: تُزكَّى كنقد. المحافظ المربوطة ببنك تُستثنى لتفادي التكرار.
+    const sumWallets = (rows: WalletRow[]) => rows.reduce((s, w) => s + (w.linked === "linked" ? 0 : num(w.amount)), 0);
+    const tTelco = sumWallets(telcoWallets);
+    const tBankWal = sumWallets(bankWallets);
+    const tWallets = tTelco + tBankWal;
 
     const gross = tCash + tFx + tCurr + tSav + tDep + tPost + tCards + tWallets;
     const debts = tCreditDue;
     const zakatable = Math.max(0, gross - debts);
-    return { tCash, tFx, tCurr, tSav, tDep, tPost, tCards, tCreditDue, tWallets, gross, zakatable };
+    return { tCash, tFx, tCurr, tSav, tDep, tPost, tCards, tCreditDue, tTelco, tBankWal, tWallets, gross, zakatable };
   }, [
     cashHome, fxRows, currBalance, savBalance, savPurifyPct, savType,
     depPrincipal, certPrincipal, postPrincipal, postSavings,
-    cardPrepaid, creditCardDue, walletRows,
+    cardPrepaid, creditCardDue, telcoWallets, bankWallets,
   ]);
 
   useEffect(() => { onTotalChange(totals.zakatable); }, [totals.zakatable, onTotalChange]);
