@@ -8,6 +8,7 @@ import { Moon, ArrowRight, Trash2, TrendingUp, History, LogOut, Info } from "luc
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { fmt } from "@/lib/zakat";
+import { HawlReminderCard } from "@/components/zakat/HawlReminderCard";
 import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, BarChart, Bar, Legend,
 } from "recharts";
@@ -123,6 +124,10 @@ function HistoryPage() {
             <div className="text-3xl font-black mt-1">{records.length ? fmt(Number(records[records.length - 1].net_due)) : "—"}</div>
           </CardContent></Card>
         </section>
+
+        {records.length > 0 && (
+          <HawlReminderCard lastDate={records[records.length - 1].gregorian_date} />
+        )}
 
         {loading ? (
           <div className="text-center text-muted-foreground py-12">جاري تحميل السجل...</div>
