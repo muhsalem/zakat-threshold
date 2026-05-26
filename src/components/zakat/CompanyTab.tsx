@@ -1373,7 +1373,7 @@ export function CompanyTab() {
       <CardHeader className="bg-gradient-to-l from-primary/10 to-transparent">
         <CardTitle className="flex items-center gap-2">
           <FileText className="h-5 w-5 text-primary" />
-          ديباجة المحاسب القانوني ومصارف الزكاة الثمانية
+          بيانات المحاسب القانوني
         </CardTitle>
         <p className="text-xs text-muted-foreground">تظهر هذه البيانات في التقرير النهائي عند الطباعة.</p>
       </CardHeader>
