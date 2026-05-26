@@ -79,10 +79,14 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   const [cardPrepaid, setCardPrepaid] = useState("");
   const [creditCardDue, setCreditCardDue] = useState("");
 
-  // و) المحافظ الرقمية
-  type WalletRow = { id: number; provider: string; amount: string; linked: "linked" | "standalone" };
-  const [walletRows, setWalletRows] = useState<WalletRow[]>([
+  // و) المحافظ الرقمية — محافظ شركات الاتصالات
+  type WalletRow = { id: number; provider: string; amount: string; linked: "linked" | "standalone"; linkedBank?: string };
+  const [telcoWallets, setTelcoWallets] = useState<WalletRow[]>([
     { id: 1, provider: "vodafone", amount: "", linked: "standalone" },
+  ]);
+  // ز) المحافظ البنكية (Meeza / Apple Pay / Google Pay / Samsung Pay / محافظ البنوك)
+  const [bankWallets, setBankWallets] = useState<WalletRow[]>([
+    { id: 1, provider: "meeza", amount: "", linked: "linked" },
   ]);
 
   const addFx = () =>
