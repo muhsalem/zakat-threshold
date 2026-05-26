@@ -1298,11 +1298,11 @@ export function CompanyTab() {
                 قائمة التدقيق والامتثال الشرعي الشاملة
               </CardTitle>
               <p className="text-sm text-muted-foreground">
-                قائمة مهنية مرجعية وفق معايير AAOIFI والمعايير الفقهية للهيئات الشرعية وهيئات الزكاة المعتمدة.
+                قائمة مهنية مرجعية وفق معايير AAOIFI والمعايير الفقهية، مُخصَّصة تلقائياً وفق قطاع <b>{GROUP_LABELS[sector.group]}</b>.
               </p>
             </CardHeader>
             <CardContent className="pt-6 space-y-6">
-              {COMPLIANCE_SECTIONS.map((section) => {
+              {calc.activeSections.map((section) => {
                 const done = section.items.filter((i) => compliance[i.id]).length;
                 return (
                   <div key={section.title} className="space-y-2">
