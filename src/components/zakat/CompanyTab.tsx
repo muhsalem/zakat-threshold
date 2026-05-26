@@ -713,10 +713,10 @@ export function CompanyTab() {
                 )}
               </div>
 
-              {/* طبيعة المؤسسة + قطاع النشاط */}
+              {/* قطاع المؤسسة + قطاع النشاط */}
               <div className="space-y-3">
                 <div>
-                  <Label className="mb-2 block">طبيعة المؤسسة</Label>
+                  <Label className="mb-2 block">قطاع المؤسسة</Label>
                   <RadioGroup value={orgKind} onValueChange={(v) => setOrgKind(v as "profit" | "nonprofit")} className="flex flex-wrap gap-3">
                     <label className={`flex items-center gap-2 rounded-md border-2 px-4 py-2 cursor-pointer transition ${orgKind === "profit" ? "border-primary bg-primary/5" : "border-border"}`}>
                       <RadioGroupItem value="profit" id="pf" /><span>ربحية</span>
@@ -728,24 +728,66 @@ export function CompanyTab() {
                 </div>
 
                 <div>
-                  <Label className="mb-2 block">قطاع النشاط</Label>
+                  <Label className="mb-2 block">
+                    {orgKind === "nonprofit" ? "نوع النشاط غير الربحي" : "قطاع النشاط"}
+                  </Label>
                   <Select value={sectorId} onValueChange={setSectorId}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      {(["primary","industrial","commercial","services"] as const).map((g) => (
-                        <div key={g}>
-                          <div className="px-2 py-1 text-[11px] font-bold text-primary bg-primary/5">{GROUP_LABELS[g]}</div>
-                          {SECTORS.filter((s) => s.group === g).map((s) => (
+                      {orgKind === "nonprofit" ? (
+                        <div>
+                          <div className="px-2 py-1 text-[11px] font-bold text-primary bg-primary/5">أنشطة غير ربحية</div>
+                          {NONPROFIT_SECTORS.map((s) => (
                             <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>
                           ))}
                         </div>
-                      ))}
+                      ) : (
+                        (["primary","industrial","commercial","services"] as const).map((g) => (
+                          <div key={g}>
+                            <div className="px-2 py-1 text-[11px] font-bold text-primary bg-primary/5">{GROUP_LABELS[g]}</div>
+                            {SECTORS.filter((s) => s.group === g).map((s) => (
+                              <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>
+                            ))}
+                          </div>
+                        ))
+                      )}
                     </SelectContent>
                   </Select>
                   <p className="text-[11px] text-muted-foreground mt-1.5">
-                    <Info className="h-3 w-3 inline mr-1" />
+                    <Info className="h-3 w-3 inline ml-1" />
                     سيتم فتح النموذج القطاعي المناسب تلقائياً أدناه: <b>{sector.label}</b>
                   </p>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* هيكل المساهمين والإعفاءات — مدمج داخل بيانات الشركة */}
+              <div className="space-y-3">
+                <div>
+                  <h4 className="font-semibold flex items-center gap-2 text-sm">
+                    <Users className="h-4 w-4 text-primary" />
+                    هيكل المساهمين والإعفاءات الزكوية
+                  </h4>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    تطبيق نظام {country.flag} {country.name}: حصص المسلمين الخليجيين/المواطنين خاضعة للزكاة،
+                    وحصص الأجانب تخضع لضريبة الدخل، وحصص الجهات الحكومية والوقفية وغير المسلمين معفاة من الزكاة.
+                  </p>
+                </div>
+                <div className="grid md:grid-cols-3 gap-3">
+                  <NumField label="حصة المواطنين/الخليجيين المسلمين" value={shGcc} onChange={setShGcc} unit="%" hint="خاضعة للزكاة" />
+                  <NumField label="حصة الأجانب" value={shForeign} onChange={setShForeign} unit="%" hint="ضريبة دخل بدلاً من الزكاة" />
+                  <NumField label="حصة الجهات الحكومية" value={shGovt} onChange={setShGovt} unit="%" hint="معفاة" />
+                  <NumField label="حصة الجهات الوقفية" value={shWaqf} onChange={setShWaqf} unit="%" hint="معفاة" />
+                  <NumField label="حصة غير المسلمين" value={shNonMuslim} onChange={setShNonMuslim} unit="%" hint="معفاة من الزكاة" />
+                </div>
+                <div className={`rounded-lg p-3 text-sm flex items-center justify-between ${calc.sharesBalanced ? "bg-primary/5 border border-primary/20" : "bg-destructive/5 border border-destructive/30"}`}>
+                  <span>إجمالي الحصص:</span>
+                  <b>{fmt(calc.totalShares)}% {!calc.sharesBalanced && <span className="text-destructive text-xs"> — يجب أن يساوي 100%</span>}</b>
+                </div>
+                <div className="rounded-lg bg-muted/40 p-3 text-xs space-y-1">
+                  <div className="flex justify-between"><span>نسبة الحصص المعفاة:</span><b>{(calc.exemptPct * 100).toFixed(2)}%</b></div>
+                  <div className="flex justify-between text-primary"><span>نسبة الوعاء الخاضع للزكاة:</span><b>{(calc.zakatableRatio * 100).toFixed(2)}%</b></div>
                 </div>
               </div>
             </CardContent>
@@ -755,41 +797,12 @@ export function CompanyTab() {
             <Alert className="border-amber-500/30 bg-amber-500/5">
               <Info className="h-4 w-4 text-amber-600" />
               <AlertDescription className="text-xs">
-                المؤسسات غير الربحية لا تجب عليها الزكاة في الأصل (لانتفاء الملك التام والقصد التجاري). يبقى التدقيق الشرعي لازماً لمواردها ومصارفها.
+                المؤسسات غير الربحية لا تجب عليها الزكاة في الأصل (لانتفاء الملك التام والقصد التجاري). يبقى التدقيق الشرعي لازماً لمواردها ومصارفها،
+                مع وجوب زكاة عروض التجارة في الأنشطة الاستثمارية التابعة (كالوقف الاستثماري وغلة العقارات).
               </AlertDescription>
             </Alert>
           )}
 
-          {/* هيكل المساهمين والإعفاءات */}
-          <Card className="shadow-soft border-primary/20">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="h-5 w-5 text-primary" />
-                هيكل المساهمين والإعفاءات الزكوية
-              </CardTitle>
-              <p className="text-xs text-muted-foreground">
-                تطبيق نظام {country.flag} {country.name}: حصص المسلمين الخليجيين/المواطنين خاضعة للزكاة،
-                وحصص الأجانب تخضع لضريبة الدخل، وحصص الجهات الحكومية والوقفية وغير المسلمين معفاة من الزكاة.
-              </p>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="grid md:grid-cols-3 gap-3">
-                <NumField label="حصة المواطنين/الخليجيين المسلمين" value={shGcc} onChange={setShGcc} unit="%" hint="خاضعة للزكاة" />
-                <NumField label="حصة الأجانب" value={shForeign} onChange={setShForeign} unit="%" hint="ضريبة دخل بدلاً من الزكاة" />
-                <NumField label="حصة الجهات الحكومية" value={shGovt} onChange={setShGovt} unit="%" hint="معفاة" />
-                <NumField label="حصة الجهات الوقفية" value={shWaqf} onChange={setShWaqf} unit="%" hint="معفاة" />
-                <NumField label="حصة غير المسلمين" value={shNonMuslim} onChange={setShNonMuslim} unit="%" hint="معفاة من الزكاة" />
-              </div>
-              <div className={`rounded-lg p-3 text-sm flex items-center justify-between ${calc.sharesBalanced ? "bg-primary/5 border border-primary/20" : "bg-destructive/5 border border-destructive/30"}`}>
-                <span>إجمالي الحصص:</span>
-                <b>{fmt(calc.totalShares)}% {!calc.sharesBalanced && <span className="text-destructive text-xs"> — يجب أن يساوي 100%</span>}</b>
-              </div>
-              <div className="rounded-lg bg-muted/40 p-3 text-xs space-y-1">
-                <div className="flex justify-between"><span>نسبة الحصص المعفاة:</span><b>{(calc.exemptPct * 100).toFixed(2)}%</b></div>
-                <div className="flex justify-between text-primary"><span>نسبة الوعاء الخاضع للزكاة:</span><b>{(calc.zakatableRatio * 100).toFixed(2)}%</b></div>
-              </div>
-            </CardContent>
-          </Card>
 
           {/* النصاب */}
           <Card className="shadow-soft border-gold/30">
