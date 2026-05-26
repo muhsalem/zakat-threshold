@@ -301,7 +301,7 @@ export function RikazSection() {
           <AccordionItem value="poultry" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
-                <Drumstick className="h-5 w-5 text-gold" /> ⑤ مزارع الدواجن
+                <Drumstick className="h-5 w-5 text-gold" /> ⑤ هل تملك مزرعة دواجن للتجارة؟
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
