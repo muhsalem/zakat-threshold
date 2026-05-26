@@ -106,10 +106,9 @@ function rowOrder(label: string) {
 }
 
 export function PrintReport({ data }: { data: PrintReportData }) {
-  const curShort = (n: number) => fmtCurrency(n, data.currencyName);
   const currencyLong = CURRENCY_FULL[data.countryCode] ?? data.currencyName;
   const countryLong = COUNTRY_FULL[data.countryCode] ?? data.countryCode;
-  const curFull = (n: number) => `${fmtCurrency(n, "").replace(data.currencyName, "").trim() || n.toLocaleString("ar-EG", { maximumFractionDigits: 2 })} ${currencyLong}`;
+  const curFull = (n: number) => fmtCurrency(n, currencyLong);
 
   const [reportId, setReportId] = useState<string>("ZK-PENDING");
   useEffect(() => { setReportId(generateReportId(data.name)); }, [data.name]);
