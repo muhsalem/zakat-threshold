@@ -272,7 +272,7 @@ export function RikazSection() {
           <AccordionItem value="fish" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
-                <Fish className="h-5 w-5 text-primary" /> ④ الثروة السمكية / مزارع الأسماك
+                <Fish className="h-5 w-5 text-primary" /> ④ هل تملك ثروة سمكية أو مزرعة أسماك للتجارة؟
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
