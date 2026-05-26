@@ -383,16 +383,9 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
         <div className="grid md:grid-cols-[1fr_auto] gap-4 items-start">
           <div className="grid grid-cols-1 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-xs">بطاقات Debit / Prepaid (الرصيد المتاح)</Label>
+              <Label className="text-xs">بطاقات Prepaid (الرصيد المتاح)</Label>
               <div className="relative">
                 <Input type="number" min="0" step="0.01" value={cardPrepaid} onChange={(e) => setCardPrepaid(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
-              </div>
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs">رصيد بطاقة ائتمان مقترح سداده (يُخصم كَدَين)</Label>
-              <div className="relative">
-                <Input type="number" min="0" step="0.01" value={creditCardDue} onChange={(e) => setCreditCardDue(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
               </div>
             </div>
