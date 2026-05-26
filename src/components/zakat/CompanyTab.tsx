@@ -412,6 +412,14 @@ export function CompanyTab() {
   const [compliance, setCompliance] = useState<Record<string, boolean>>({});
   const toggleC = (id: string) => setCompliance((p) => ({ ...p, [id]: !p[id] }));
 
+  // ديباجة المحاسب (للتقرير المطبوع)
+  const [accName, setAccName] = useState("");
+  const [accLicense, setAccLicense] = useState("");
+  const [accFirm, setAccFirm] = useState("");
+  const [accStatement, setAccStatement] = useState(
+    "أُقرّ بأن البيانات الواردة في هذا التقرير قد تمت مراجعتها وفق المعايير الشرعية والمحاسبية المعتمدة (AAOIFI / IFRS) وأنها تعكس الوعاء الزكوي للشركة في تاريخ وجوب الزكاة."
+  );
+
   // ===== حفظ واسترجاع محلي =====
   const STORAGE_KEY = "zakat_company_v2";
   useEffect(() => {
