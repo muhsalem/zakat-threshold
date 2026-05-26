@@ -192,8 +192,22 @@ export function IndividualTab() {
   const [cows, setCows] = useState("");
   const [sheep, setSheep] = useState("");
 
-  // الديون
-  const [shortDebts, setShortDebts] = useState("");
+  // الديون والالتزامات — تصنيف شرعي مفصّل
+  // ① الديون الحالة (واجبة السداد الآن)
+  const [debtPersonalLoan, setDebtPersonalLoan] = useState("");    // قروض شخصية
+  const [debtBankLoan, setDebtBankLoan] = useState("");            // ديون مصرفية
+  const [debtConsumerFinance, setDebtConsumerFinance] = useState(""); // تمويل استهلاكي
+  const [debtCarInstall, setDebtCarInstall] = useState("");        // أقساط سيارات/سلع حالَّة
+  const [debtTradePayable, setDebtTradePayable] = useState("");    // ديون تجارية مستحقة
+  const [debtPurchases, setDebtPurchases] = useState("");          // أثمان مشتريات لم تُسدد
+  // ② الديون المؤجلة — رأي العمل المعاصر
+  const [debtDeferredYearly, setDebtDeferredYearly] = useState(""); // قسط السنة فقط من الديون المؤجلة
+  const [debtDeferredPolicy, setDebtDeferredPolicy] = useState<"yearly" | "full" | "none">("yearly");
+  const [debtMortgage, setDebtMortgage] = useState("");            // أقساط تمويل عقاري (إجمالي متبقي)
+  const [debtMahr, setDebtMahr] = useState("");                    // مهر مؤجل
+  // ③ النفقة الواجبة إذا صارت ديناً
+  const [debtAlimony, setDebtAlimony] = useState("");              // نفقة زوجة/أولاد/أقارب بحكم أو اتفاق
+  // نفقات ضرورية مستحقة (فواتير وإيجارات)
   const [expenses, setExpenses] = useState("");
 
   // ========= الحسابات =========
