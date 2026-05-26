@@ -776,6 +776,56 @@ export function CompanyTab() {
             </CardContent>
           </Card>
 
+          {/* محوّل العملات الأجنبية + تعجيل الزكاة */}
+          <div className="grid md:grid-cols-2 gap-4">
+            <Card className="shadow-soft">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <Scale className="h-4 w-4 text-primary" /> محوّل العملات الأجنبية (يوم الحول)
+                </CardTitle>
+                <p className="text-[11px] text-muted-foreground">قوِّم الأرصدة بالعملات الأجنبية بسعر يوم وجوب الزكاة.</p>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <NumField label="المبلغ بالعملة الأجنبية" value={fxAmount} onChange={setFxAmount} unit="FX" />
+                  <NumField label={`سعر الصرف (1 FX = ? ${currencyName})`} value={fxRate} onChange={setFxRate} unit={currencyName} />
+                </div>
+                <div className="rounded-md bg-muted/50 p-2 text-sm flex justify-between">
+                  <span>المبلغ المُقوَّم:</span>
+                  <b className="text-primary">{cFmt(fxConverted, currencyName)}</b>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-soft">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <Calculator className="h-4 w-4 text-primary" /> تعجيل الزكاة (لسنة أو سنتين)
+                </CardTitle>
+                <p className="text-[11px] text-muted-foreground">جائز شرعاً تعجيل زكاة سنة أو سنتين قادمتين عند الحاجة (جمهور الفقهاء).</p>
+              </CardHeader>
+              <CardContent>
+                <RadioGroup value={accelerateYears} onValueChange={setAccelerateYears} className="grid grid-cols-3 gap-2">
+                  <label className={`flex items-center justify-center gap-1.5 rounded-md border-2 px-2 py-2 cursor-pointer text-xs ${accelerateYears === "0" ? "border-primary bg-primary/5" : "border-border"}`}>
+                    <RadioGroupItem value="0" id="ac0" /><Label htmlFor="ac0" className="cursor-pointer">السنة الحالية فقط</Label>
+                  </label>
+                  <label className={`flex items-center justify-center gap-1.5 rounded-md border-2 px-2 py-2 cursor-pointer text-xs ${accelerateYears === "1" ? "border-primary bg-primary/5" : "border-border"}`}>
+                    <RadioGroupItem value="1" id="ac1" /><Label htmlFor="ac1" className="cursor-pointer">+ سنة قادمة</Label>
+                  </label>
+                  <label className={`flex items-center justify-center gap-1.5 rounded-md border-2 px-2 py-2 cursor-pointer text-xs ${accelerateYears === "2" ? "border-primary bg-primary/5" : "border-border"}`}>
+                    <RadioGroupItem value="2" id="ac2" /><Label htmlFor="ac2" className="cursor-pointer">+ سنتان</Label>
+                  </label>
+                </RadioGroup>
+                {calc.years > 1 && (
+                  <p className="text-xs mt-2 text-primary">
+                    سيُحسب الإجمالي = زكاة سنة واحدة × <b>{calc.years}</b>
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+
           {/* طريقة حساب الزكاة */}
           <Card className="shadow-soft">
             <CardHeader>
