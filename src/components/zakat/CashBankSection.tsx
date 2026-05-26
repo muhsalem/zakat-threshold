@@ -169,44 +169,36 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   });
   const telcoOps = makeWalletOps(setTelcoWallets, "vodafone");
   const bankOps = makeWalletOps(setBankWallets, "meeza");
+  const cryptoOps = makeWalletOps(setCryptoWallets, "btc");
 
   // ========= الحسابات =========
   const totals = useMemo(() => {
     const tCash = num(cashHome);
     const tFx = fxRows.reduce((s, r) => s + num(r.amount) * num(r.rate), 0);
-
-    // الحساب الجاري: للإسلامي الرصيد كاملاً، للتقليدي الأصل فقط (يُدخل في نفس الحقل)
     const tCurr = num(currBalance);
-
-    // التوفير: للإسلامي = الرصيد − نسبة التطهير، للتقليدي = الأصل فقط
     const savBal = num(savBalance);
     const tSav = savType === "islamic"
       ? Math.max(0, savBal * (1 - num(savPurifyPct) / 100))
       : savBal;
-
-    // الودائع والشهادات: الأصل فقط للتقليدي، للإسلامي الرصيد المُسجَّل
-    const tDep = num(depPrincipal) + num(certPrincipal);
-    // البريد: نزكِّي أصل المبلغ عند الإيداع (دون الفوائد الربوية)
+    const tDep = num(depPrincipal);
+    const tCert = num(certPrincipal);
     const tPost = num(postPrincipal) || num(postSavings);
-
-    // البطاقات: المقدم والمدخر + (نخصم المدفوع المقترح من إجمالي البطاقات الائتمانية كَدَين)
     const tCards = num(cardPrepaid);
-    const tCreditDue = num(creditCardDue); // يُخصم كَدَين
-
-    // المحافظ الرقمية: تُزكَّى كنقد. المحافظ المربوطة ببنك تُستثنى لتفادي التكرار.
+    const tCreditDue = num(creditCardDue);
     const sumWallets = (rows: WalletRow[]) => rows.reduce((s, w) => s + (w.linked === "linked" ? 0 : num(w.amount)), 0);
     const tTelco = sumWallets(telcoWallets);
     const tBankWal = sumWallets(bankWallets);
-    const tWallets = tTelco + tBankWal;
+    const tCrypto = cryptoWallets.reduce((s, w) => s + num(w.amount), 0); // العملات المشفرة تُزكَّى دائماً كنقد
+    const tWallets = tTelco + tBankWal + tCrypto;
 
-    const gross = tCash + tFx + tCurr + tSav + tDep + tPost + tCards + tWallets;
+    const gross = tCash + tFx + tCurr + tSav + tDep + tCert + tPost + tCards + tWallets;
     const debts = tCreditDue;
     const zakatable = Math.max(0, gross - debts);
-    return { tCash, tFx, tCurr, tSav, tDep, tPost, tCards, tCreditDue, tTelco, tBankWal, tWallets, gross, zakatable };
+    return { tCash, tFx, tCurr, tSav, tDep, tCert, tPost, tCards, tCreditDue, tTelco, tBankWal, tCrypto, tWallets, gross, zakatable };
   }, [
     cashHome, fxRows, currBalance, savBalance, savPurifyPct, savType,
     depPrincipal, certPrincipal, postPrincipal, postSavings,
-    cardPrepaid, creditCardDue, telcoWallets, bankWallets,
+    cardPrepaid, creditCardDue, telcoWallets, bankWallets, cryptoWallets,
   ]);
 
   useEffect(() => { onTotalChange(totals.zakatable); }, [totals.zakatable, onTotalChange]);
