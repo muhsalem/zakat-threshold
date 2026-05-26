@@ -798,16 +798,72 @@ export function CompanyTab() {
                       <b>الموجودات المتداولة الزكوية − المطلوبات المتداولة</b> ثم تُضرب الناتج × 2.5%. تستخدمها هيئة المحاسبة والمراجعة للمؤسسات المالية الإسلامية (AAOIFI).
                     </AlertDescription>
                   </Alert>
+                  {/* الذمم المدينة — تصنيف رباعي */}
+                  <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 space-y-2">
+                    <h4 className="font-semibold text-sm text-primary flex items-center gap-2">
+                      <Info className="h-4 w-4" /> الذمم المدينة — تصنيف رباعي شرعي
+                    </h4>
+                    <p className="text-[11px] text-muted-foreground">
+                      ① جيدة → تُزكى كاملة. ② مشكوك فيها → اختياري حسب القول الفقهي. ③ على معسرين/مماطلين → تُزكى عند القبض لسنة واحدة (رأي ابن تيمية) ولا تدخل الوعاء الآن. ④ معدومة → لا تُزكى.
+                    </p>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3">
+                      <NumField label="① جيدة (مرجوّة التحصيل)" value={recGood} onChange={setRecGood} unit={currencyName} hint="تُزكى كاملة" />
+                      <NumField label="② مشكوك فيها" value={recDoubtful} onChange={setRecDoubtful} unit={currencyName} hint={recPolicy === "lenient" ? "ستُزكى" : "لن تُزكى الآن"} />
+                      <NumField label="③ على معسرين/مماطلين" value={recInsolvent} onChange={setRecInsolvent} unit={currencyName} hint="تُزكى عند القبض" />
+                      <NumField label="④ معدومة" value={recBad} onChange={setRecBad} unit={currencyName} hint="لا تُزكى شرعاً" />
+                    </div>
+                    <div className="flex items-center gap-3 text-xs">
+                      <span className="text-muted-foreground">سياسة المشكوك فيها:</span>
+                      <RadioGroup value={recPolicy} onValueChange={(v) => setRecPolicy(v as "strict" | "lenient")} className="flex gap-3">
+                        <div className="flex items-center gap-1.5"><RadioGroupItem value="strict" id="rs" /><Label htmlFor="rs" className="text-xs">احتياط (لا تُزكى)</Label></div>
+                        <div className="flex items-center gap-1.5"><RadioGroupItem value="lenient" id="rl" /><Label htmlFor="rl" className="text-xs">تُزكى مع الجيدة</Label></div>
+                      </RadioGroup>
+                    </div>
+                  </div>
+
+                  {/* المخزون بالقيمة السوقية */}
+                  <div className="rounded-lg border border-gold/30 bg-gold/5 p-3 space-y-2">
+                    <h4 className="font-semibold text-sm text-primary flex items-center gap-2">
+                      <Info className="h-4 w-4" /> المخزون — التقييم بسعر بيع الجملة (شرعاً)
+                    </h4>
+                    <p className="text-[11px] text-muted-foreground">
+                      شرعاً يُقوَّم المخزون بسعر بيع الجملة يوم وجوب الزكاة، لا بسعر التكلفة الدفترية. أدخل القيمة الدفترية ثم فرق التقويم السوقي (موجباً أو سالباً).
+                    </p>
+                    <div className="grid md:grid-cols-3 gap-3">
+                      <NumField label="القيمة الدفترية للمخزون" value={invBook} onChange={setInvBook} unit={currencyName} />
+                      <NumField label="فرق التقييم السوقي (±)" value={invMarketDiff} onChange={setInvMarketDiff} unit={currencyName} hint="موجب إذا السوق أعلى" />
+                      <div className="rounded-md bg-background border p-2 text-xs flex flex-col justify-center">
+                        <span className="text-muted-foreground">القيمة السوقية المعتمدة:</span>
+                        <b className="text-primary text-base">{cFmt(calc.inventoryMarket, currencyName)}</b>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* الأوراق المالية — فصل المتاجرة عن الاستثمار */}
+                  <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 space-y-2">
+                    <h4 className="font-semibold text-sm text-primary flex items-center gap-2">
+                      <Info className="h-4 w-4" /> الأوراق المالية — تمييز فقهي (قرار مجمع الفقه 28)
+                    </h4>
+                    <p className="text-[11px] text-muted-foreground">
+                      أسهم <b>المتاجرة</b> (بنية البيع قريباً): تُزكى بكامل القيمة السوقية كعروض تجارة. أسهم <b>الاستثمار طويل الأجل</b>: يُزكى نصيب الموجودات الزكوية فقط منها (نقدية + ذمم + مخزون ÷ القيمة الدفترية للسهم).
+                    </p>
+                    <div className="grid md:grid-cols-3 gap-3">
+                      <NumField label="أسهم متاجرة (قيمة سوقية)" value={stkTrading} onChange={setStkTrading} unit={currencyName} hint="تُزكى كاملة" />
+                      <NumField label="أسهم استثمار طويل الأجل" value={stkLongTerm} onChange={setStkLongTerm} unit={currencyName} hint="تُزكى جزئياً" />
+                      <NumField label="نسبة الموجودات الزكوية للسهم" value={stkLongRatio} onChange={setStkLongRatio} unit="%" hint="افتراضي 30% — راجع تقرير الشركة" />
+                    </div>
+                    <div className="text-xs flex justify-between bg-background rounded p-2">
+                      <span className="text-muted-foreground">القيمة الزكوية للأوراق المالية:</span>
+                      <b className="text-primary">{cFmt(calc.stocksZakatable, currencyName)}</b>
+                    </div>
+                  </div>
+
                   <div>
-                    <h4 className="font-semibold mb-3 text-primary">الموجودات المتداولة الزكوية</h4>
+                    <h4 className="font-semibold mb-3 text-primary">الموجودات الزكوية الأخرى</h4>
                     <div className="grid md:grid-cols-2 gap-4">
                       <NumField label="النقدية في الصندوق" value={cash} onChange={setCash} unit={currencyName} />
                       <NumField label="أرصدة البنوك" value={banks} onChange={setBanks} unit={currencyName} />
-                      <NumField label="العملاء والمدينون" value={receivablesCo} onChange={setReceivablesCo} unit={currencyName} hint="بعد استبعاد المشكوك" />
-                      <NumField label="المخزون (بسعر السوق)" value={inventoryCo} onChange={setInventoryCo} unit={currencyName} />
-                      <NumField label="استثمارات قصيرة الأجل" value={investments} onChange={setInvestments} unit={currencyName} hint="للمضاربة — تُزكى بالقيمة السوقية" />
-                      <NumField label="استثمارات في شركات تابعة/شقيقة" value={subsidiaryInv} onChange={setSubsidiaryInv} unit={currencyName} hint="نصيب المستثمر من زكاتها يُضاف هنا" />
-                      <NumField label="الديون المشكوك في تحصيلها (تُخصم)" value={doubtfulDebts} onChange={setDoubtfulDebts} unit={currencyName} hint="تُحسم من العملاء" />
+                      <NumField label="استثمارات في شركات تابعة/شقيقة" value={subsidiaryInv} onChange={setSubsidiaryInv} unit={currencyName} hint="نصيب المستثمر من زكاتها" />
                       <NumField label="أصول متداولة أخرى" value={otherCurrent} onChange={setOtherCurrent} unit={currencyName} />
                     </div>
                   </div>
@@ -818,9 +874,19 @@ export function CompanyTab() {
                       <NumField label="موردون ودائنون" value={stPayables} onChange={setStPayables} unit={currencyName} />
                       <NumField label="مصروفات مستحقة" value={accruals} onChange={setAccruals} unit={currencyName} />
                       <NumField label="ضرائب مستحقة" value={taxDue} onChange={setTaxDue} unit={currencyName} />
-                      <NumField label="قروض قصيرة الأجل" value={stLoans} onChange={setStLoans} unit={currencyName} />
+                      <NumField label="أصل القروض قصيرة الأجل (دون الفوائد)" value={loanPrincipal} onChange={setLoanPrincipal} unit={currencyName} hint="يُخصم" />
+                      <NumField label="الفوائد الربوية على القروض" value={loanInterest} onChange={setLoanInterest} unit={currencyName} hint="⚠️ لا تُخصم شرعاً" />
                     </div>
+                    {num(loanInterest) > 0 && (
+                      <Alert className="border-amber-500/30 bg-amber-500/5 mt-2">
+                        <AlertTriangle className="h-4 w-4 text-amber-600" />
+                        <AlertDescription className="text-xs">
+                          الفوائد الربوية ({cFmt(num(loanInterest), currencyName)}) لا يُعتد بها شرعاً ولا تُخصم من الوعاء — الراجح خصم أصل القرض فقط.
+                        </AlertDescription>
+                      </Alert>
+                    )}
                   </div>
+
                   <div className="rounded-lg bg-muted/50 p-4 text-sm space-y-1">
                     <div className="flex justify-between"><span>إجمالي الموجودات الزكوية:</span><b>{cFmt(calc.curAssets, currencyName)}</b></div>
                     <div className="flex justify-between"><span>إجمالي المطلوبات المتداولة:</span><b>{cFmt(calc.curLiabs, currencyName)}</b></div>
