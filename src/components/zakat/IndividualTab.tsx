@@ -102,6 +102,9 @@ export function IndividualTab() {
   // الحول
   const [nisabStartDate, setNisabStartDate] = useState(""); // تاريخ بلوغ النصاب (ميلادي)
   const [calendarBasis, setCalendarBasis] = useState<"hijri" | "gregorian">("hijri");
+  const [nisabRecordId, setNisabRecordId] = useState<string | null>(null);
+  const [nisabSaving, setNisabSaving] = useState(false);
+  const [nisabSaveMsg, setNisabSaveMsg] = useState("");
   const hawl = useMemo(() => checkHawl(nisabStartDate), [nisabStartDate]);
   const effectiveRate = calendarBasis === "gregorian" ? ZAKAT_RATE_GREGORIAN : ZAKAT_RATE;
 
