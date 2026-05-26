@@ -491,3 +491,73 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
     </div>
   );
 }
+
+type WalletRowT = { id: number; provider: string; amount: string; linked: "linked" | "standalone"; linkedBank?: string };
+interface WalletOps {
+  add: () => void;
+  remove: (id: number) => void;
+  update: (id: number, patch: Partial<WalletRowT>) => void;
+}
+function WalletGroup({
+  title, rows, ops, currencyName, providers, note,
+}: {
+  title: string;
+  rows: WalletRowT[];
+  ops: WalletOps;
+  currencyName: string;
+  providers: { v: string; l: string }[];
+  note: string;
+}) {
+  return (
+    <div className="rounded-lg border bg-card p-4 space-y-3">
+      <div className="flex items-center gap-2 text-sm font-semibold text-primary">
+        <Smartphone className="h-4 w-4" /> {title}
+      </div>
+      <p className="text-xs text-muted-foreground">{note}</p>
+      <div className="space-y-2">
+        {rows.map((w) => (
+          <div key={w.id} className="grid grid-cols-12 gap-2 items-end">
+            <div className="col-span-4">
+              <Label className="text-xs">النوع</Label>
+              <Select value={w.provider} onValueChange={(v) => ops.update(w.id, { provider: v })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {providers.map((p) => <SelectItem key={p.v} value={p.v}>{p.l}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="col-span-3">
+              <Label className="text-xs">الرصيد</Label>
+              <div className="relative">
+                <Input type="number" min="0" step="0.01" value={w.amount} onChange={(e) => ops.update(w.id, { amount: e.target.value })} dir="ltr" style={{ textAlign: "right" }} className="pl-12" placeholder="0" />
+                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">{currencyName}</span>
+              </div>
+            </div>
+            <div className="col-span-3">
+              <Label className="text-xs">الربط بحساب بنكي</Label>
+              <Select value={w.linked} onValueChange={(v) => ops.update(w.id, { linked: v as "linked" | "standalone" })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="standalone">مستقلة — تُزكَّى</SelectItem>
+                  <SelectItem value="linked">مربوطة — تُستثنى</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="col-span-2 flex gap-1">
+              <Button type="button" size="sm" variant="ghost" onClick={() => ops.remove(w.id)} disabled={rows.length <= 1}>حذف</Button>
+            </div>
+            {w.linked === "linked" && (
+              <div className="col-span-12">
+                <Input value={w.linkedBank ?? ""} onChange={(e) => ops.update(w.id, { linkedBank: e.target.value })} placeholder="اسم البنك المرتبط (للتوثيق)" className="text-xs" />
+                <div className="text-[11px] text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 rounded px-2 py-1 mt-1">
+                  ⓘ مربوطة بحساب بنكي — لن تُحتسب هنا، تأكَّد من إدراج رصيد البنك في القسم المناسب.
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+        <Button type="button" size="sm" variant="outline" onClick={ops.add}>+ إضافة</Button>
+      </div>
+    </div>
+  );
+
