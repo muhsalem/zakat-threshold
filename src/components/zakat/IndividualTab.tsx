@@ -952,14 +952,35 @@ export function IndividualTab() {
             </AccordionContent>
           </AccordionItem>
 
-          {/* المستغلات وزكاة الدخل */}
+          {/* المستغلات وزكاة الدخل + العقار */}
           <AccordionItem value="income-usufruct" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
-                <HandHeart className="h-5 w-5 text-primary" /> زكاة المستغلات والإيرادات وزكاة الدخل
+                <HandHeart className="h-5 w-5 text-primary" /> زكاة المستغلات والإيرادات والدخل (شاملاً العقار)
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
+              {/* قسم العقار مُدمج هنا */}
+              <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-3">
+                <div className="flex items-center gap-2 text-sm font-semibold text-primary">
+                  <Home className="h-4 w-4" /> زكاة العقار
+                </div>
+                <Alert className="border-primary/20 bg-background">
+                  <Info className="h-4 w-4" />
+                  <AlertDescription className="text-xs leading-relaxed text-right">
+                    <b>عقار السكن الخاص:</b> لا زكاة فيه إجماعًا.
+                    <br />
+                    <b>عقار التجارة</b> (مُعدّ للبيع): يُزكَّى بكامل قيمته السوقية يوم وجوب الزكاة.
+                    <br />
+                    <b>عقار الإيجار/الاستغلال:</b> لا زكاة في رقبته، وإنما في صافي إيراده المُدّخر بعد النفقات إذا بلغ النصاب وحال عليه الحول.
+                  </AlertDescription>
+                </Alert>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <NumField label="عقار للتجارة (القيمة السوقية)" value={realEstateTrade} onChange={setRealEstateTrade} unit={currencyName} />
+                  <NumField label="صافي إيراد الإيجار المُدّخر" value={realEstateRentIncome} onChange={setRealEstateRentIncome} unit={currencyName} hint="بعد خصم المصاريف والنفقات الضرورية" />
+                </div>
+              </div>
+
               <IncomeUsufructSection
                 currencyName={currencyName}
                 onTotalChange={setIncomeUsufructTotal}
@@ -967,30 +988,6 @@ export function IndividualTab() {
             </AccordionContent>
           </AccordionItem>
 
-          {/* العقار */}
-          <AccordionItem value="realestate" className="border rounded-xl shadow-soft bg-card px-4">
-            <AccordionTrigger className="hover:no-underline">
-              <span className="flex items-center gap-2 text-base font-semibold">
-                <Home className="h-5 w-5 text-primary" /> زكاة العقار
-              </span>
-            </AccordionTrigger>
-            <AccordionContent className="space-y-4 pb-4">
-              <Alert className="border-primary/20 bg-primary/5">
-                <Info className="h-4 w-4" />
-                <AlertDescription className="text-xs leading-relaxed">
-                  <b>عقار السكن الخاص:</b> لا زكاة فيه إجماعًا.
-                  <br />
-                  <b>عقار التجارة</b> (مُعدّ للبيع): يُزكَّى بكامل قيمته السوقية يوم وجوب الزكاة.
-                  <br />
-                  <b>عقار الإيجار/الاستغلال:</b> لا زكاة في رقبته، وإنما في صافي إيراده المُدّخر بعد النفقات إذا بلغ النصاب وحال عليه الحول.
-                </AlertDescription>
-              </Alert>
-              <div className="grid md:grid-cols-2 gap-4">
-                <NumField label="عقار للتجارة (القيمة السوقية)" value={realEstateTrade} onChange={setRealEstateTrade} unit={currencyName} />
-                <NumField label="صافي إيراد الإيجار المُدّخر" value={realEstateRentIncome} onChange={setRealEstateRentIncome} unit={currencyName} hint="بعد خصم المصاريف والنفقات الضرورية" />
-              </div>
-            </AccordionContent>
-          </AccordionItem>
 
           {/* الزروع */}
           <AccordionItem value="crops" className="border rounded-xl shadow-soft bg-card px-4">
