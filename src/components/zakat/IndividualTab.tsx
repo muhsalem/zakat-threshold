@@ -882,22 +882,10 @@ export function IndividualTab() {
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
-              <Alert className="border-primary/20 bg-primary/5">
-                <Info className="h-4 w-4" />
-                <AlertDescription className="text-xs leading-relaxed">
-                  <b>أسهم المتاجرة</b> (نية البيع والشراء): تُزكَّى بكامل قيمتها السوقية.
-                  <br />
-                  <b>أسهم الاستثمار طويل الأجل</b>: تُزكَّى حصة المساهم من الموجودات الزكوية للشركة (النقد + الذمم + المخزون) دون الأصول الثابتة.
-                  <br />
-                  <b>السندات</b>: الأصل فقط يُزكَّى، والفوائد محرّمة فيُتخلَّص منها في وجوه الخير دون نية الأجر.
-                </AlertDescription>
-              </Alert>
-              <div className="grid md:grid-cols-2 gap-4">
-                <NumField label="أسهم للمتاجرة (القيمة السوقية)" value={stocksTrade} onChange={setStocksTrade} unit={currencyName} />
-                <NumField label="أسهم استثمار (الموجودات الزكوية)" value={stocksInvest} onChange={setStocksInvest} unit={currencyName} />
-                <NumField label="صناديق استثمار وحقوق ملكية" value={mutualFunds} onChange={setMutualFunds} unit={currencyName} />
-                <NumField label="سندات/صكوك (الأصل دون الفوائد)" value={bonds} onChange={setBonds} unit={currencyName} />
-              </div>
+              <SecuritiesSection
+                currencyName={currencyName}
+                onTotalChange={setSecuritiesTotalFromSection}
+              />
             </AccordionContent>
           </AccordionItem>
 
