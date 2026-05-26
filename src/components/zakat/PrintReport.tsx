@@ -631,7 +631,7 @@ export function PrintReport({ data }: { data: PrintReportData }) {
               borderRight: `3pt solid ${C.primary}`,
             }}>
               <div style={{
-                background: `linear-gradient(135deg, ${C.gold}, ${C.goldDark})`,
+                background: C.gold,
                 color: "white", fontWeight: 900, width: "24pt", height: "24pt",
                 borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
                 fontSize: "12pt", flexShrink: 0,
