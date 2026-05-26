@@ -175,19 +175,41 @@ export function IndividualTab() {
     const gp = num(goldPrice);
     const sp = num(silverPrice);
 
-    // الذهب المكتنز
-    const hoardedGramsTotal = num(gold24) + num(gold21) + num(gold18);
-    const hoardedValue = num(gold24) * gp + num(gold21) * gp * (21 / 24) + num(gold18) * gp * (18 / 24);
+    // ====== الذهب: تحويل كل الأعيرة إلى ما يكافئها بعيار 24 ======
+    const OUNCE_G = 31.1035;
+    const conv = (grams: number, karat: number) => (grams * karat) / 24;
 
-    // ذهب الحلي للاستعمال
-    const useGramsTotal = num(goldUse24) + num(goldUse21) + num(goldUse18);
-    const useValue = num(goldUse24) * gp + num(goldUse21) * gp * (21 / 24) + num(goldUse18) * gp * (18 / 24);
+    // أ) السبائك والأونصات
+    const sabaikGrams24 =
+      conv(num(sb9), 9) + conv(num(sb14), 14) + conv(num(sb18), 18) +
+      conv(num(sb21), 21) + conv(num(sb22), 22) + num(sb24) +
+      num(ounces) * OUNCE_G;
 
-    // وفق الرأي المختار: الجمهور لا يزكّون المستعمل، الحنفية يزكّونه
-    const countableGoldGrams = jewelryOpinion === "hanafi" ? hoardedGramsTotal + useGramsTotal : hoardedGramsTotal;
-    const countableGoldValue = jewelryOpinion === "hanafi" ? hoardedValue + useValue : hoardedValue;
-    const goldEligible = countableGoldGrams >= GOLD_NISAB_GRAMS;
-    const goldZakat = goldEligible ? countableGoldValue * effectiveRate : 0;
+    // ب) الجنيهات والعملات الذهبية (الجنيه المصري عيار 21)
+    const coinsGrams21 = num(coinQuarter) * 2.125 + num(coinHalf) * 4.25 + num(coinFull) * 8.5;
+    const coinsCustomGrams = num(coinCustomWeight) * num(coinCustomQty);
+    const coinsGrams24 = conv(coinsGrams21, 21) + conv(coinsCustomGrams, num(coinCustomKarat));
+
+    // ج) المجوهرات
+    const jewelryGrams24Raw =
+      conv(num(jw9), 9) + conv(num(jw12), 12) + conv(num(jw14), 14) +
+      conv(num(jw18), 18) + conv(num(jw21), 21) + conv(num(jw22), 22) + num(jw24);
+    // ادخار وحفظ قيمة → دائماً، حلي وزينة → حسب الرأي الفقهي
+    const jewelryGrams24 = jewelryPurpose === "storage"
+      ? jewelryGrams24Raw
+      : (jewelryOpinion === "hanafi" ? jewelryGrams24Raw : 0);
+
+    // د) المشغولات الأخرى (كسر + ادخاري غير قابل للبس) → دائماً تُزكَّى
+    const brokenGrams24 =
+      conv(num(brk18), 18) + conv(num(brk21), 21) + num(brk24) +
+      conv(num(brkOtherWeight), num(brkOtherKarat));
+    const storageGrams24 = conv(num(storageWeight), num(storageKarat));
+    const otherGrams24 = brokenGrams24 + storageGrams24;
+
+    const totalGold24 = sabaikGrams24 + coinsGrams24 + jewelryGrams24 + otherGrams24;
+    const totalGoldValue = totalGold24 * gp;
+    const goldEligible = totalGold24 >= GOLD_NISAB_GRAMS;
+    const goldZakat = goldEligible ? totalGoldValue * effectiveRate : 0;
 
     const silverGrams = num(silver);
     const silverValue = silverGrams * sp;
