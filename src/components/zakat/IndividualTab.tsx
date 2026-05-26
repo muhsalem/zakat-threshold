@@ -868,12 +868,11 @@ export function IndividualTab() {
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
-              <div className="grid md:grid-cols-2 gap-4">
-                <NumField label="نقد في اليد" value={cashHand} onChange={setCashHand} unit={currencyName} />
-                <NumField label="حسابات جارية" value={cashBank} onChange={setCashBank} unit={currencyName} />
-                <NumField label="ودائع وحسابات توفير" value={savings} onChange={setSavings} unit={currencyName} hint="الأصل دون الفوائد الربوية" />
-                <NumField label="عملات أجنبية (مُقوَّمة)" value={foreignCurrency} onChange={setForeignCurrency} unit={currencyName} />
-              </div>
+              <CashBankSection
+                countryCode={countryCode}
+                currencyName={currencyName}
+                onTotalChange={setCashTotalFromSection}
+              />
             </AccordionContent>
           </AccordionItem>
 
