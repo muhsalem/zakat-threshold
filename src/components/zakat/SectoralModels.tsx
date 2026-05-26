@@ -545,15 +545,46 @@ function TaxZakatModel({ currency, nisab, yearMode }: { currency: string; nisab:
 }
 
 // ============ المكوّن الرئيسي ============
-export function SectoralModels({ activeTab, onTabChange, defaultCurrency }: { activeTab?: string; onTabChange?: (v: string) => void; defaultCurrency?: string } = {}) {
+export function SectoralModels({
+  activeTab, onTabChange, defaultCurrency,
+  goldGram: goldGramProp, yearMode: yearModeProp,
+  allowedTabs, locked = false, orgKind = "profit", sectorLabel,
+}: {
+  activeTab?: string;
+  onTabChange?: (v: string) => void;
+  defaultCurrency?: string;
+  goldGram?: string;
+  yearMode?: "hijri" | "solar";
+  allowedTabs?: string[];
+  locked?: boolean;
+  orgKind?: "profit" | "nonprofit";
+  sectorLabel?: string;
+} = {}) {
   const [currency, setCurrency] = useState(defaultCurrency ?? "ج.م");
-  const [goldGram, setGoldGram] = useState("5400");
-  const [yearMode, setYearMode] = useState<"hijri" | "solar">("hijri");
+  const [goldGramLocal, setGoldGramLocal] = useState("5400");
+  const [yearModeLocal, setYearModeLocal] = useState<"hijri" | "solar">("hijri");
+  const goldGram = goldGramProp ?? goldGramLocal;
+  const yearMode = yearModeProp ?? yearModeLocal;
   const [internalTab, setInternalTab] = useState(activeTab ?? "trade");
   const tab = activeTab ?? internalTab;
   const setTab = (v: string) => { setInternalTab(v); onTabChange?.(v); };
   useEffect(() => { if (defaultCurrency) setCurrency(defaultCurrency); }, [defaultCurrency]);
   const nisab = useMemo(() => num(goldGram) * GOLD_NISAB_GRAMS, [goldGram]);
+
+  const ALL_TABS = [
+    { v: "trade", icon: Briefcase, label: "تجاري" },
+    { v: "industry", icon: Factory, label: "صناعي" },
+    { v: "services", icon: Headset, label: "خدمي" },
+    { v: "mustaghal", icon: Building, label: "مُستغلات" },
+    { v: "free", icon: UserCog, label: "مهن حرة" },
+    { v: "marine", icon: Fish, label: "ثروة بحرية" },
+    { v: "minerals", icon: Pickaxe, label: "معادن" },
+    { v: "salary", icon: Wallet, label: "أجور ورواتب" },
+    { v: "tax", icon: Landmark, label: "زكاة وضريبة" },
+  ];
+  const visibleTabs = allowedTabs && allowedTabs.length
+    ? ALL_TABS.filter((t) => allowedTabs.includes(t.v))
+    : ALL_TABS;
 
   return (
     <div className="space-y-4">
@@ -564,30 +595,44 @@ export function SectoralModels({ activeTab, onTabChange, defaultCurrency }: { ac
             نماذج محاسبية متخصصة لحساب الزكاة
           </CardTitle>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            نماذج مطابقة لقوائم حساب الزكاة المعتمدة (المرجع: د. عصام أبو النصر — جامعة الأزهر). اختر نشاطك ثم أدخل الأرقام، يُحتسب الوعاء والزكاة تلقائياً.
+            {locked
+              ? <>النموذج مربوط بإعدادات حساب زكاة الشركة (العملة، سعر الذهب، نوع السنة){sectorLabel ? <> ومُهيَّأ لقطاع: <b className="text-primary">{sectorLabel}</b></> : null}.</>
+              : <>نماذج مطابقة لقوائم حساب الزكاة المعتمدة (المرجع: د. عصام أبو النصر — جامعة الأزهر).</>}
           </p>
         </CardHeader>
         <CardContent>
-          <TopBar
-            currency={currency} setCurrency={setCurrency}
-            goldGram={goldGram} setGoldGram={setGoldGram}
-            yearMode={yearMode} setYearMode={setYearMode}
-          />
-          <div className="text-xs text-muted-foreground mb-3 px-1">
-            النصاب الحالي: <b>{fmt(nisab)} {currency}</b> (= 85 جرام × {fmt(num(goldGram))})
+          {orgKind === "nonprofit" && (
+            <Alert className="border-amber-500/30 bg-amber-500/5 mb-3">
+              <Info className="h-4 w-4 text-amber-600" />
+              <AlertDescription className="text-xs">
+                المؤسسة غير ربحية — النماذج للعرض والتدقيق والإفصاح فقط، ولا تجب الزكاة على رأس مالها.
+              </AlertDescription>
+            </Alert>
+          )}
+          {!locked && (
+            <TopBar
+              currency={currency} setCurrency={setCurrency}
+              goldGram={goldGramLocal} setGoldGram={setGoldGramLocal}
+              yearMode={yearModeLocal} setYearMode={setYearModeLocal}
+            />
+          )}
+          <div className="text-xs text-muted-foreground mb-3 px-1 flex flex-wrap gap-x-4 gap-y-1">
+            <span>العملة: <b>{currency}</b></span>
+            <span>سعر جرام الذهب: <b>{fmt(num(goldGram))}</b></span>
+            <span>نوع السنة: <b>{yearMode === "hijri" ? "قمرية 2.5%" : "شمسية 2.5775%"}</b></span>
+            <span>النصاب: <b>{fmt(nisab)} {currency}</b></span>
           </div>
 
           <Tabs value={tab} onValueChange={setTab} className="space-y-4">
-            <TabsList className="grid grid-cols-3 md:grid-cols-9 h-auto">
-              <TabsTrigger value="trade" className="gap-1 text-xs py-2"><Briefcase className="h-3.5 w-3.5" />تجاري</TabsTrigger>
-              <TabsTrigger value="industry" className="gap-1 text-xs py-2"><Factory className="h-3.5 w-3.5" />صناعي</TabsTrigger>
-              <TabsTrigger value="services" className="gap-1 text-xs py-2"><Headset className="h-3.5 w-3.5" />خدمي</TabsTrigger>
-              <TabsTrigger value="mustaghal" className="gap-1 text-xs py-2"><Building className="h-3.5 w-3.5" />مُستغلات</TabsTrigger>
-              <TabsTrigger value="free" className="gap-1 text-xs py-2"><UserCog className="h-3.5 w-3.5" />مهن حرة</TabsTrigger>
-              <TabsTrigger value="marine" className="gap-1 text-xs py-2"><Fish className="h-3.5 w-3.5" />ثروة بحرية</TabsTrigger>
-              <TabsTrigger value="minerals" className="gap-1 text-xs py-2"><Pickaxe className="h-3.5 w-3.5" />معادن</TabsTrigger>
-              <TabsTrigger value="salary" className="gap-1 text-xs py-2"><Wallet className="h-3.5 w-3.5" />أجور ورواتب</TabsTrigger>
-              <TabsTrigger value="tax" className="gap-1 text-xs py-2"><Landmark className="h-3.5 w-3.5" />زكاة وضريبة</TabsTrigger>
+            <TabsList className="grid h-auto" style={{ gridTemplateColumns: `repeat(${Math.min(visibleTabs.length, 9)}, minmax(0, 1fr))` }}>
+              {visibleTabs.map((t) => {
+                const I = t.icon;
+                return (
+                  <TabsTrigger key={t.v} value={t.v} className="gap-1 text-xs py-2">
+                    <I className="h-3.5 w-3.5" />{t.label}
+                  </TabsTrigger>
+                );
+              })}
             </TabsList>
 
             <TabsContent value="trade"><TradeModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
