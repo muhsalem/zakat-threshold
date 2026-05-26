@@ -25,6 +25,7 @@ import {
   num, fmt, currency, camelZakat, cowZakat, sheepZakat,
   COUNTRY_PRICES, checkHawl, formatHijri, ZAKAT_RECIPIENTS,
 } from "@/lib/zakat";
+import { CashBankSection } from "./CashBankSection";
 
 interface NumFieldProps {
   label: string;
@@ -151,11 +152,8 @@ export function IndividualTab() {
   const [silverPurpose, setSilverPurpose] = useState<"storage" | "wear">("wear");
   const [silverOpinion, setSilverOpinion] = useState<"majority" | "hanafi">("majority");
 
-  // النقدية والبنوك
-  const [cashHand, setCashHand] = useState("");
-  const [cashBank, setCashBank] = useState("");
-  const [savings, setSavings] = useState("");
-  const [foreignCurrency, setForeignCurrency] = useState("");
+  // النقدية والبنوك (المجموع يُحسب داخل المكوّن المتخصّص ويُمرَّر هنا)
+  const [cashTotalFromSection, setCashTotalFromSection] = useState(0);
 
   // الأوراق المالية
   const [stocksTrade, setStocksTrade] = useState("");
@@ -260,7 +258,7 @@ export function IndividualTab() {
     const silverEligible = silverGrams >= SILVER_NISAB_GRAMS;
     const silverZakat = silverEligible ? silverValue * effectiveRate : 0;
 
-    const cashTotal = num(cashHand) + num(cashBank) + num(savings) + num(foreignCurrency);
+    const cashTotal = cashTotalFromSection;
     const securitiesTotal = num(stocksTrade) + num(stocksInvest) + num(mutualFunds) + num(bonds);
     const billsTotal = num(bills);
     const tradeTotal = num(inventory) + num(receivablesGood);
@@ -314,7 +312,7 @@ export function IndividualTab() {
     stocksTrade, stocksInvest, mutualFunds, bonds, bills,
     inventory, receivablesGood, realEstateTrade, realEstateRentIncome,
     shortDebts, expenses, cropsKg, cropsValuePerKg, cropsIrrigation,
-    camels, cows, sheep, effectiveRate, hawl,
+    camels, cows, sheep, effectiveRate, hawl, cashTotalFromSection,
   ]);
 
   const cur = (n: number) => currency(n, currencyName);
@@ -871,12 +869,11 @@ export function IndividualTab() {
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
-              <div className="grid md:grid-cols-2 gap-4">
-                <NumField label="نقد في اليد" value={cashHand} onChange={setCashHand} unit={currencyName} />
-                <NumField label="حسابات جارية" value={cashBank} onChange={setCashBank} unit={currencyName} />
-                <NumField label="ودائع وحسابات توفير" value={savings} onChange={setSavings} unit={currencyName} hint="الأصل دون الفوائد الربوية" />
-                <NumField label="عملات أجنبية (مُقوَّمة)" value={foreignCurrency} onChange={setForeignCurrency} unit={currencyName} />
-              </div>
+              <CashBankSection
+                countryCode={countryCode}
+                currencyName={currencyName}
+                onTotalChange={setCashTotalFromSection}
+              />
             </AccordionContent>
           </AccordionItem>
 
