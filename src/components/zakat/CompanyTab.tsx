@@ -12,10 +12,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import {
   Building2, Calculator, Shield, Gavel, CheckSquare, AlertTriangle, Info, Scale,
-  FileSpreadsheet, Upload, FileText, X,
+  FileSpreadsheet, Upload, FileText, X, Printer, Save, Coins, Users,
 } from "lucide-react";
-import { ZAKAT_RATE, num, fmt, currency as cFmt } from "@/lib/zakat";
+import { ZAKAT_RATE, GOLD_NISAB_GRAMS, num, fmt, currency as cFmt } from "@/lib/zakat";
 import { SectoralModels } from "./SectoralModels";
+import { PurificationCalculator } from "./PurificationCalculator";
+import { Button } from "@/components/ui/button";
 
 function NumField({ label, value, onChange, unit, hint }: {
   label: string; value: string; onChange: (v: string) => void; unit?: string; hint?: string;
@@ -267,8 +269,15 @@ export function CompanyTab() {
   }, [country, autoCurrency]);
 
   const [companyName, setCompanyName] = useState("");
+  const [crNumber, setCrNumber] = useState("");
+  const [taxId, setTaxId] = useState("");
+  const [zakatId, setZakatId] = useState("");
+  const [accountingStd, setAccountingStd] = useState<string>("IFRS");
+  const [consolidated, setConsolidated] = useState(false);
+
   const [fiscalStart, setFiscalStart] = useState("");
   const [fiscalEnd, setFiscalEnd] = useState("");
+  const [hawlStart, setHawlStart] = useState(""); // تاريخ ميلاد حول الزكاة المنفصل
   const [solarYear, setSolarYear] = useState<"hijri" | "solar">("hijri");
 
   const hijriEq = useMemo(() => {
@@ -281,13 +290,25 @@ export function CompanyTab() {
   const [sectorId, setSectorId] = useState<string>("trade_w");
   const sector = useMemo(() => SECTORS.find((s) => s.id === sectorId)!, [sectorId]);
 
+  // سعر جرام الذهب للتحقق من النصاب
+  const [goldGramPrice, setGoldGramPrice] = useState("415");
+
+  // هيكل المساهمين (نسب %)
+  const [shGcc, setShGcc] = useState("100");      // سعودي/خليجي/مواطن مسلم → خاضع للزكاة
+  const [shForeign, setShForeign] = useState(""); // أجنبي → ضريبة دخل لا زكاة
+  const [shGovt, setShGovt] = useState("");       // حكومي → معفى
+  const [shWaqf, setShWaqf] = useState("");       // وقفي → معفى
+  const [shNonMuslim, setShNonMuslim] = useState(""); // غير مسلم → معفى من الزكاة
+
   // طريقة الحساب
   const [method, setMethod] = useState<"net_assets" | "working_capital">("net_assets");
   const [cash, setCash] = useState("");
   const [banks, setBanks] = useState("");
   const [receivablesCo, setReceivablesCo] = useState("");
+  const [doubtfulDebts, setDoubtfulDebts] = useState(""); // ديون مشكوك فيها (تُخصم)
   const [inventoryCo, setInventoryCo] = useState("");
   const [investments, setInvestments] = useState("");
+  const [subsidiaryInv, setSubsidiaryInv] = useState(""); // استثمارات في شركات تابعة (تُعامل خاصة)
   const [otherCurrent, setOtherCurrent] = useState("");
   const [stPayables, setStPayables] = useState("");
   const [accruals, setAccruals] = useState("");
@@ -303,22 +324,87 @@ export function CompanyTab() {
   const [compliance, setCompliance] = useState<Record<string, boolean>>({});
   const toggleC = (id: string) => setCompliance((p) => ({ ...p, [id]: !p[id] }));
 
+  // ===== حفظ واسترجاع محلي =====
+  const STORAGE_KEY = "zakat_company_v1";
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const d = JSON.parse(raw);
+      const set = (fn: (v: string) => void, key: string) => d[key] !== undefined && fn(d[key]);
+      set(setCountryCode, "countryCode"); set(setCompanyName, "companyName"); set(setCrNumber, "crNumber");
+      set(setTaxId, "taxId"); set(setZakatId, "zakatId"); set(setFiscalStart, "fiscalStart");
+      set(setFiscalEnd, "fiscalEnd"); set(setHawlStart, "hawlStart"); set(setSectorId, "sectorId");
+      set(setGoldGramPrice, "goldGramPrice"); set(setShGcc, "shGcc"); set(setShForeign, "shForeign");
+      set(setShGovt, "shGovt"); set(setShWaqf, "shWaqf"); set(setShNonMuslim, "shNonMuslim");
+      set(setCash, "cash"); set(setBanks, "banks"); set(setReceivablesCo, "receivablesCo");
+      set(setDoubtfulDebts, "doubtfulDebts"); set(setInventoryCo, "inventoryCo");
+      set(setInvestments, "investments"); set(setSubsidiaryInv, "subsidiaryInv");
+      set(setOtherCurrent, "otherCurrent"); set(setStPayables, "stPayables"); set(setAccruals, "accruals");
+      set(setTaxDue, "taxDue"); set(setStLoans, "stLoans"); set(setEquity, "equity");
+      set(setLtLiabilities, "ltLiabilities"); set(setFixedAssets, "fixedAssets");
+      set(setIntangibles, "intangibles"); set(setLosses, "losses");
+      if (d.compliance) setCompliance(d.compliance);
+      if (d.accountingStd) setAccountingStd(d.accountingStd);
+      if (typeof d.consolidated === "boolean") setConsolidated(d.consolidated);
+      if (d.solarYear) setSolarYear(d.solarYear);
+      if (d.orgKind) setOrgKind(d.orgKind);
+      if (d.method) setMethod(d.method);
+    } catch { /* ignore */ }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const saveLocal = () => {
+    const payload = {
+      countryCode, companyName, crNumber, taxId, zakatId, accountingStd, consolidated,
+      fiscalStart, fiscalEnd, hawlStart, solarYear, orgKind, sectorId, goldGramPrice,
+      shGcc, shForeign, shGovt, shWaqf, shNonMuslim,
+      method, cash, banks, receivablesCo, doubtfulDebts, inventoryCo, investments, subsidiaryInv,
+      otherCurrent, stPayables, accruals, taxDue, stLoans,
+      equity, ltLiabilities, fixedAssets, intangibles, losses, compliance,
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  };
+
   const calc = useMemo(() => {
-    const curAssets = num(cash) + num(banks) + num(receivablesCo) + num(inventoryCo) + num(investments) + num(otherCurrent);
+    // الموجودات الزكوية مع خصم الديون المشكوك فيها
+    const grossAssets = num(cash) + num(banks) + num(receivablesCo) + num(inventoryCo)
+      + num(investments) + num(subsidiaryInv) + num(otherCurrent);
+    const curAssets = grossAssets - num(doubtfulDebts);
     const curLiabs = num(stPayables) + num(accruals) + num(taxDue) + num(stLoans);
     const netAssets = curAssets - curLiabs;
     const workingCapital = num(equity) + num(ltLiabilities) - num(fixedAssets) - num(intangibles) - num(losses);
-    const base = method === "net_assets" ? netAssets : workingCapital;
+    const baseGross = method === "net_assets" ? netAssets : workingCapital;
+
+    // استبعاد الحصص المعفاة من الوعاء
+    const exemptPct = (num(shForeign) + num(shGovt) + num(shWaqf) + num(shNonMuslim)) / 100;
+    const zakatableRatio = Math.max(0, 1 - exemptPct);
+    const base = baseGross * zakatableRatio;
+
+    // النصاب
+    const nisabValue = num(goldGramPrice) * GOLD_NISAB_GRAMS;
+    const reachesNisab = base >= nisabValue && nisabValue > 0;
+
     const rate = solarYear === "solar" ? 0.025775 : ZAKAT_RATE;
-    const zakat = orgKind === "nonprofit" ? 0 : base > 0 ? base * rate : 0;
+    const zakat = (orgKind === "nonprofit" || !reachesNisab) ? 0 : base > 0 ? base * rate : 0;
+
     const completed = Object.values(compliance).filter(Boolean).length;
     const complianceScore = Math.round((completed / ALL_ITEM_IDS.length) * 100);
-    return { curAssets, curLiabs, netAssets, workingCapital, base, rate, zakat, completed, complianceScore };
+
+    const totalShares = num(shGcc) + num(shForeign) + num(shGovt) + num(shWaqf) + num(shNonMuslim);
+    const sharesBalanced = Math.abs(totalShares - 100) < 0.01;
+
+    return {
+      grossAssets, curAssets, curLiabs, netAssets, workingCapital, baseGross, base,
+      rate, zakat, completed, complianceScore,
+      nisabValue, reachesNisab, exemptPct, zakatableRatio, totalShares, sharesBalanced,
+    };
   }, [
-    cash, banks, receivablesCo, inventoryCo, investments, otherCurrent,
+    cash, banks, receivablesCo, doubtfulDebts, inventoryCo, investments, subsidiaryInv, otherCurrent,
     stPayables, accruals, taxDue, stLoans,
     equity, ltLiabilities, fixedAssets, intangibles, losses,
-    method, solarYear, compliance, orgKind,
+    method, solarYear, compliance, orgKind, goldGramPrice,
+    shGcc, shForeign, shGovt, shWaqf, shNonMuslim,
   ]);
 
   return (
@@ -406,6 +492,39 @@ export function CompanyTab() {
                 </div>
               </div>
 
+              {/* أرقام تعريفية + معيار محاسبي */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div className="space-y-1.5">
+                  <Label className="text-xs">رقم السجل التجاري</Label>
+                  <Input value={crNumber} onChange={(e) => setCrNumber(e.target.value)} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">الرقم الضريبي (TIN)</Label>
+                  <Input value={taxId} onChange={(e) => setTaxId(e.target.value)} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">الرقم الزكوي</Label>
+                  <Input value={zakatId} onChange={(e) => setZakatId(e.target.value)} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">المعيار المحاسبي</Label>
+                  <Select value={accountingStd} onValueChange={setAccountingStd}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="IFRS">IFRS — المعايير الدولية</SelectItem>
+                      <SelectItem value="SOCPA">SOCPA — السعودي</SelectItem>
+                      <SelectItem value="AAOIFI">AAOIFI — المالية الإسلامية</SelectItem>
+                      <SelectItem value="EAS">EAS — المصري</SelectItem>
+                      <SelectItem value="GAAP">US GAAP</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <label className="flex items-center gap-2 text-xs cursor-pointer">
+                <Checkbox checked={consolidated} onCheckedChange={(v) => setConsolidated(!!v)} />
+                قوائم مالية مُوحّدة (Consolidated) — تشمل الشركات التابعة
+              </label>
+
               {/* السنة المالية */}
               <div className="rounded-lg border p-3 space-y-3 bg-muted/30">
                 <Label className="font-semibold">السنة المالية</Label>
@@ -424,6 +543,11 @@ export function CompanyTab() {
                       <div className="flex items-center gap-1.5"><RadioGroupItem value="hijri" id="hij" /><Label htmlFor="hij" className="text-xs">قمرية 2.5%</Label></div>
                       <div className="flex items-center gap-1.5"><RadioGroupItem value="solar" id="sol" /><Label htmlFor="sol" className="text-xs">شمسية 2.5775%</Label></div>
                     </RadioGroup>
+                  </div>
+                  <div className="space-y-1.5 md:col-span-3">
+                    <Label className="text-xs">تاريخ ميلاد حول الزكاة (إن اختلف عن السنة المالية)</Label>
+                    <Input type="date" value={hawlStart} onChange={(e) => setHawlStart(e.target.value)} />
+                    <p className="text-[11px] text-muted-foreground">العبرة في وجوب الزكاة بحولان الحول الهجري على المال، لا بالسنة المالية للشركة.</p>
                   </div>
                 </div>
                 {hijriEq > 0 && (
@@ -481,6 +605,61 @@ export function CompanyTab() {
             </Alert>
           )}
 
+          {/* هيكل المساهمين والإعفاءات */}
+          <Card className="shadow-soft border-primary/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-primary" />
+                هيكل المساهمين والإعفاءات الزكوية
+              </CardTitle>
+              <p className="text-xs text-muted-foreground">
+                تطبيق نظام {country.flag} {country.name}: حصص المسلمين الخليجيين/المواطنين خاضعة للزكاة،
+                وحصص الأجانب تخضع لضريبة الدخل، وحصص الجهات الحكومية والوقفية وغير المسلمين معفاة من الزكاة.
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="grid md:grid-cols-3 gap-3">
+                <NumField label="حصة المواطنين/الخليجيين المسلمين" value={shGcc} onChange={setShGcc} unit="%" hint="خاضعة للزكاة" />
+                <NumField label="حصة الأجانب" value={shForeign} onChange={setShForeign} unit="%" hint="ضريبة دخل بدلاً من الزكاة" />
+                <NumField label="حصة الجهات الحكومية" value={shGovt} onChange={setShGovt} unit="%" hint="معفاة" />
+                <NumField label="حصة الجهات الوقفية" value={shWaqf} onChange={setShWaqf} unit="%" hint="معفاة" />
+                <NumField label="حصة غير المسلمين" value={shNonMuslim} onChange={setShNonMuslim} unit="%" hint="معفاة من الزكاة" />
+              </div>
+              <div className={`rounded-lg p-3 text-sm flex items-center justify-between ${calc.sharesBalanced ? "bg-primary/5 border border-primary/20" : "bg-destructive/5 border border-destructive/30"}`}>
+                <span>إجمالي الحصص:</span>
+                <b>{fmt(calc.totalShares)}% {!calc.sharesBalanced && <span className="text-destructive text-xs"> — يجب أن يساوي 100%</span>}</b>
+              </div>
+              <div className="rounded-lg bg-muted/40 p-3 text-xs space-y-1">
+                <div className="flex justify-between"><span>نسبة الحصص المعفاة:</span><b>{(calc.exemptPct * 100).toFixed(2)}%</b></div>
+                <div className="flex justify-between text-primary"><span>نسبة الوعاء الخاضع للزكاة:</span><b>{(calc.zakatableRatio * 100).toFixed(2)}%</b></div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* النصاب */}
+          <Card className="shadow-soft border-gold/30">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Coins className="h-5 w-5 text-gold" />
+                التحقق من النصاب الشرعي
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="grid md:grid-cols-2 gap-3">
+                <NumField label="سعر جرام الذهب عيار 24 اليوم" value={goldGramPrice} onChange={setGoldGramPrice} unit={currencyName} hint="يُستخدم لحساب نصاب 85 جرام" />
+                <div className="rounded-lg bg-muted/40 p-3 text-sm flex flex-col justify-center">
+                  <div className="flex justify-between"><span>قيمة النصاب (85 جرام ذهب):</span><b>{cFmt(calc.nisabValue, currencyName)}</b></div>
+                  <div className="flex justify-between mt-1">
+                    <span>حالة الوعاء:</span>
+                    <Badge variant={calc.reachesNisab ? "default" : "destructive"}>
+                      {calc.reachesNisab ? "بلغ النصاب — تجب الزكاة" : "لم يبلغ النصاب — لا زكاة"}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* طريقة حساب الزكاة */}
           <Card className="shadow-soft">
             <CardHeader>
@@ -510,7 +689,9 @@ export function CompanyTab() {
                       <NumField label="أرصدة البنوك" value={banks} onChange={setBanks} unit={currencyName} />
                       <NumField label="العملاء والمدينون" value={receivablesCo} onChange={setReceivablesCo} unit={currencyName} hint="بعد استبعاد المشكوك" />
                       <NumField label="المخزون (بسعر السوق)" value={inventoryCo} onChange={setInventoryCo} unit={currencyName} />
-                      <NumField label="استثمارات قصيرة الأجل" value={investments} onChange={setInvestments} unit={currencyName} />
+                      <NumField label="استثمارات قصيرة الأجل" value={investments} onChange={setInvestments} unit={currencyName} hint="للمضاربة — تُزكى بالقيمة السوقية" />
+                      <NumField label="استثمارات في شركات تابعة/شقيقة" value={subsidiaryInv} onChange={setSubsidiaryInv} unit={currencyName} hint="نصيب المستثمر من زكاتها يُضاف هنا" />
+                      <NumField label="الديون المشكوك في تحصيلها (تُخصم)" value={doubtfulDebts} onChange={setDoubtfulDebts} unit={currencyName} hint="تُحسم من العملاء" />
                       <NumField label="أصول متداولة أخرى" value={otherCurrent} onChange={setOtherCurrent} unit={currencyName} />
                     </div>
                   </div>
@@ -569,10 +750,22 @@ export function CompanyTab() {
               <SectoralModels activeTab={sector.model} defaultCurrency={currencyName} />
             </CardContent>
           </Card>
+
+          {/* حاسبة التطهير الشرعي */}
+          <PurificationCalculator currencyName={currencyName} />
         </div>
 
         {/* النتيجة الجانبية */}
         <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">
+          <div className="flex gap-2 print:hidden">
+            <Button onClick={saveLocal} variant="outline" size="sm" className="flex-1 gap-1.5">
+              <Save className="h-3.5 w-3.5" /> حفظ
+            </Button>
+            <Button onClick={() => window.print()} variant="outline" size="sm" className="flex-1 gap-1.5">
+              <Printer className="h-3.5 w-3.5" /> تصدير PDF
+            </Button>
+          </div>
+
           <Card className="bg-gradient-primary text-primary-foreground shadow-gold border-0">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-primary-foreground">
@@ -584,18 +777,27 @@ export function CompanyTab() {
                 {fmt(calc.zakat)}
                 <span className="text-lg font-medium opacity-80 mr-2">{currencyName}</span>
               </div>
-              <p className="text-xs opacity-80 mt-3">النسبة المطبقة: <b>{(calc.rate * 100).toFixed(4)}%</b></p>
-              <p className="text-xs opacity-80">الطريقة: <b>{method === "net_assets" ? "صافي الموجودات الزكوية" : "رأس المال العامل"}</b></p>
+              {!calc.reachesNisab && calc.base > 0 && (
+                <p className="text-xs mt-2 bg-destructive/30 rounded px-2 py-1">⚠️ الوعاء لم يبلغ النصاب ({cFmt(calc.nisabValue, currencyName)})</p>
+              )}
+              <p className="text-xs opacity-80 mt-3">النسبة: <b>{(calc.rate * 100).toFixed(4)}%</b> ({solarYear === "hijri" ? "قمري" : "شمسي"})</p>
+              <p className="text-xs opacity-80">الطريقة: <b>{method === "net_assets" ? "صافي الموجودات" : "رأس المال العامل"}</b></p>
               <p className="text-xs opacity-80 mt-1">{country.flag} {country.name} — {companyType}</p>
               <p className="text-xs opacity-80">{GROUP_LABELS[sector.group]} — {sector.label}</p>
-              {companyName && <p className="text-xs opacity-80 mt-1">{companyName}</p>}
+              {companyName && <p className="text-xs opacity-80 mt-1 font-bold">{companyName}</p>}
+              <p className="text-[10px] opacity-60 mt-2">المعيار: {accountingStd}{consolidated ? " — موحّدة" : ""}</p>
             </CardContent>
           </Card>
 
           <Card className="shadow-soft">
             <CardHeader className="pb-3"><CardTitle className="flex items-center gap-2 text-base"><CheckSquare className="h-4 w-4" />ملخص الوعاء</CardTitle></CardHeader>
             <CardContent className="space-y-2 text-sm">
-              <div className="flex justify-between"><span className="text-muted-foreground">الوعاء الزكوي:</span><b>{cFmt(calc.base, currencyName)}</b></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">الوعاء الإجمالي:</span><b>{cFmt(calc.baseGross, currencyName)}</b></div>
+              {calc.exemptPct > 0 && (
+                <div className="flex justify-between text-xs"><span className="text-muted-foreground">حصص معفاة:</span><b className="text-destructive">−{(calc.exemptPct * 100).toFixed(1)}%</b></div>
+              )}
+              <div className="flex justify-between"><span className="text-muted-foreground">الوعاء الخاضع:</span><b>{cFmt(calc.base, currencyName)}</b></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">النصاب:</span><b>{cFmt(calc.nisabValue, currencyName)}</b></div>
               <div className="flex justify-between"><span className="text-muted-foreground">النسبة:</span><b>{(calc.rate * 100).toFixed(4)}%</b></div>
               <Separator />
               <div className="flex justify-between text-primary"><span>الزكاة الواجبة:</span><b>{cFmt(calc.zakat, currencyName)}</b></div>
