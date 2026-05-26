@@ -271,6 +271,8 @@ export function SecuritiesSection({
           <Button type="button" size="sm" variant="outline" onClick={() => add("mutual_islamic")}>+ صندوق إسلامي</Button>
           <Button type="button" size="sm" variant="outline" onClick={() => add("mutual_conv")}>+ صندوق تقليدي</Button>
           <Button type="button" size="sm" variant="outline" onClick={() => add("etf")}>+ ETF</Button>
+          <Button type="button" size="sm" variant="outline" onClick={() => add("takaful")}>+ تأمين تكافلي</Button>
+          <Button type="button" size="sm" variant="outline" onClick={() => add("insurance_conv")}>+ تأمين تقليدي</Button>
         </div>
       </div>
 
