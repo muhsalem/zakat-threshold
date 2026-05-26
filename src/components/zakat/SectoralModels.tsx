@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Briefcase, Factory, Building, UserCog, Fish, Pickaxe, Info, Calculator, Wallet, Landmark } from "lucide-react";
+import { Briefcase, Factory, Building, UserCog, Fish, Pickaxe, Info, Calculator, Wallet, Landmark, Headset } from "lucide-react";
 import { ZAKAT_RATE, ZAKAT_RATE_GREGORIAN, GOLD_NISAB_GRAMS, num, fmt } from "@/lib/zakat";
 
 // ============ مكوّن حقل رقمي مشترك ============
@@ -179,6 +179,62 @@ function IndustrialModel({ currency, nisab, yearMode }: { currency: string; nisa
           </CardContent>
         </Card>
         <ResultBox vessel={vessel} nisabValue={nisab} currency={currency} yearMode={yearMode} />
+      </div>
+    </div>
+  );
+}
+
+// ============ 2.5) زكاة النشاط الخدمي ============
+function ServicesModel({ currency, nisab, yearMode }: { currency: string; nisab: number; yearMode: "hijri" | "solar" }) {
+  const [a, set] = useState({
+    cash: "", banks: "", clients: "", wip_services: "", consumables: "",
+    accrued_fees: "", securities: "", other_debit: "",
+    suppliers: "", accrued_salaries: "", accrued_rent: "", tax_due: "", st_loans: "", provisions: "",
+  });
+  const u = (k: keyof typeof a) => (v: string) => set((s) => ({ ...s, [k]: v }));
+  const assets = num(a.cash) + num(a.banks) + num(a.clients) + num(a.wip_services) +
+    num(a.consumables) + num(a.accrued_fees) + num(a.securities) + num(a.other_debit);
+  const liabs = num(a.suppliers) + num(a.accrued_salaries) + num(a.accrued_rent) +
+    num(a.tax_due) + num(a.st_loans) + num(a.provisions);
+  const vessel = Math.max(0, assets - liabs);
+  return (
+    <div className="space-y-4">
+      <Alert className="bg-primary/5 border-primary/20">
+        <Info className="h-4 w-4" />
+        <AlertDescription className="text-xs">
+          النشاط الخدمي (استشارات، نقل، صحة، تعليم، سياحة، اتصالات، برمجيات...): تُزكى الموجودات المتداولة الزكوية (نقدية + ذمم العملاء + الخدمات تحت التنفيذ + المستهلكات) بعد حسم الالتزامات المتداولة، بنسبة 2.5%.
+        </AlertDescription>
+      </Alert>
+      <div className="grid md:grid-cols-2 gap-4">
+        <Card>
+          <CardHeader className="pb-3"><CardTitle className="text-sm text-primary">الموجودات الزكوية</CardTitle></CardHeader>
+          <CardContent className="space-y-2">
+            <NF label="النقدية بالخزائن" value={a.cash} onChange={u("cash")} unit={currency} />
+            <NF label="الأرصدة لدى البنوك" value={a.banks} onChange={u("banks")} unit={currency} />
+            <NF label="ذمم العملاء (الجيد التحصيل)" value={a.clients} onChange={u("clients")} unit={currency} />
+            <NF label="خدمات تحت التنفيذ (WIP)" value={a.wip_services} onChange={u("wip_services")} unit={currency} />
+            <NF label="مستهلكات وأدوات تشغيلية بسعر السوق" value={a.consumables} onChange={u("consumables")} unit={currency} />
+            <NF label="أتعاب/إيرادات خدمية مستحقة" value={a.accrued_fees} onChange={u("accrued_fees")} unit={currency} />
+            <NF label="أوراق مالية بالقيمة السوقية" value={a.securities} onChange={u("securities")} unit={currency} />
+            <NF label="أرصدة مدينة أخرى" value={a.other_debit} onChange={u("other_debit")} unit={currency} />
+            <div className="pt-2 text-sm flex justify-between border-t"><span>الإجمالي:</span><b>{fmt(assets)}</b></div>
+          </CardContent>
+        </Card>
+        <div className="space-y-4">
+          <Card>
+            <CardHeader className="pb-3"><CardTitle className="text-sm text-destructive">الالتزامات الزكوية</CardTitle></CardHeader>
+            <CardContent className="space-y-2">
+              <NF label="الموردون والدائنون" value={a.suppliers} onChange={u("suppliers")} unit={currency} />
+              <NF label="مرتبات وأجور مستحقة" value={a.accrued_salaries} onChange={u("accrued_salaries")} unit={currency} />
+              <NF label="إيجارات ومرافق مستحقة" value={a.accrued_rent} onChange={u("accrued_rent")} unit={currency} />
+              <NF label="ضرائب مستحقة" value={a.tax_due} onChange={u("tax_due")} unit={currency} />
+              <NF label="قروض/تسهيلات قصيرة الأجل" value={a.st_loans} onChange={u("st_loans")} unit={currency} />
+              <NF label="مخصصات لالتزامات حالة" value={a.provisions} onChange={u("provisions")} unit={currency} />
+              <div className="pt-2 text-sm flex justify-between border-t"><span>الإجمالي:</span><b>{fmt(liabs)}</b></div>
+            </CardContent>
+          </Card>
+          <ResultBox vessel={vessel} nisabValue={nisab} currency={currency} yearMode={yearMode} />
+        </div>
       </div>
     </div>
   );
@@ -518,9 +574,10 @@ export function SectoralModels() {
           </div>
 
           <Tabs defaultValue="trade" className="space-y-4">
-            <TabsList className="grid grid-cols-3 md:grid-cols-8 h-auto">
+            <TabsList className="grid grid-cols-3 md:grid-cols-9 h-auto">
               <TabsTrigger value="trade" className="gap-1 text-xs py-2"><Briefcase className="h-3.5 w-3.5" />تجاري</TabsTrigger>
               <TabsTrigger value="industry" className="gap-1 text-xs py-2"><Factory className="h-3.5 w-3.5" />صناعي</TabsTrigger>
+              <TabsTrigger value="services" className="gap-1 text-xs py-2"><Headset className="h-3.5 w-3.5" />خدمي</TabsTrigger>
               <TabsTrigger value="mustaghal" className="gap-1 text-xs py-2"><Building className="h-3.5 w-3.5" />مُستغلات</TabsTrigger>
               <TabsTrigger value="free" className="gap-1 text-xs py-2"><UserCog className="h-3.5 w-3.5" />مهن حرة</TabsTrigger>
               <TabsTrigger value="marine" className="gap-1 text-xs py-2"><Fish className="h-3.5 w-3.5" />ثروة بحرية</TabsTrigger>
@@ -531,6 +588,7 @@ export function SectoralModels() {
 
             <TabsContent value="trade"><TradeModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
             <TabsContent value="industry"><IndustrialModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
+            <TabsContent value="services"><ServicesModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
             <TabsContent value="mustaghal"><MustaghallatModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
             <TabsContent value="free"><FreeProfModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
             <TabsContent value="marine"><MarineModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
