@@ -1153,8 +1153,6 @@ export function CompanyTab() {
             </Card>
           )}
 
-          {/* ====== إيضاحات فقهية مكملة — مقارنة المذاهب ====== */}
-          <MadhabsComparison />
         </div>
 
         {/* النتيجة الجانبية */}
