@@ -337,7 +337,7 @@ export function PrintReport({ data }: { data: PrintReportData }) {
       </div>
 
       {/* ====== أنصبة الذهب والفضة ====== */}
-      <div className="print-card print-avoid-break" style={{ ...cardStyle(C, C.gold), background: `linear-gradient(180deg, ${C.goldLight} 0%, #fffdf5 100%)` }}>
+      <div className="print-card print-avoid-break" style={{ ...cardStyle(C, C.gold), background: C.goldLight }}>
         <div style={titleStyle(C)}>② الأنصبة الشرعية المرجعية</div>
         <table className="print-table" style={tableStyle}>
           <thead>
@@ -415,7 +415,7 @@ export function PrintReport({ data }: { data: PrintReportData }) {
               </td>
               <td style={{
                 ...tdCell("num"),
-                background: `linear-gradient(135deg, ${C.primary}, ${C.primaryLight})`,
+                background: C.primary,
                 color: "white", fontWeight: 900, fontSize: "11pt",
               }}>
                 {curFull(data.totalZakat)}
@@ -429,8 +429,8 @@ export function PrintReport({ data }: { data: PrintReportData }) {
       <div className="print-card print-avoid-break" style={{
         ...cardStyle(C, C.gold),
         background: reachedGoldNisab
-          ? `linear-gradient(180deg, #eaf5ee, #ffffff)`
-          : `linear-gradient(180deg, #fff8e6, #ffffff)`,
+          ? '#eaf5ee'
+          : '#fff8e6',
       }}>
         <div style={titleStyle(C)}>④ مقارنة الوعاء بالنصاب وخيار المُزكِّي</div>
 
@@ -466,7 +466,7 @@ export function PrintReport({ data }: { data: PrintReportData }) {
         {/* الخيار المقدم للمزكي */}
         <div style={{
           marginTop: "8pt", padding: "8pt 12pt", borderRadius: "5pt",
-          background: reachedGoldNisab ? `linear-gradient(135deg, #1f7a4d, #2d8a5c)` : `linear-gradient(135deg, ${C.goldDark}, ${C.gold})`,
+          background: reachedGoldNisab ? C.success : C.goldDark,
           color: "white", fontSize: "9.5pt", lineHeight: 1.7,
         }}>
           <div style={{ fontWeight: 800, fontSize: "10.5pt", marginBottom: "3pt" }}>
@@ -719,7 +719,7 @@ function titleStyle(C: any): React.CSSProperties {
 function thStyle(C: any): React.CSSProperties {
   return {
     border: `0.6pt solid ${C.border}`, padding: "5pt 7pt", textAlign: "right",
-    background: `linear-gradient(180deg, ${C.primary}, ${C.primaryLight})`,
+    background: C.primary,
     color: "white", fontWeight: 700, fontSize: "9pt",
   };
 }
