@@ -296,6 +296,7 @@ export function IndividualTab() {
       sabaikGrams24, coinsGrams24, jewelryGrams24, jewelryGrams24Raw, otherGrams24,
       totalGold24, totalGoldValue,
       goldEligible, goldZakat: hawlBlocks ? 0 : goldZakat,
+      svSabaikG999, svCoinsG999, svJewelryG999, svJewelryG999Raw,
       silverGrams, silverValue, silverEligible, silverZakat: hawlBlocks ? 0 : silverZakat,
       cashTotal, securitiesTotal, billsTotal, tradeTotal, realEstateZakatable, debts,
       monetaryGross, monetaryBase, monetaryEligible, monetaryZakat: hawlBlocks ? 0 : monetaryZakat,
