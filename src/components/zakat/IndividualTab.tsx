@@ -306,7 +306,7 @@ export function IndividualTab() {
     coinQuarter, coinHalf, coinFull, coinCustomKarat, coinCustomWeight, coinCustomQty,
     jw9, jw12, jw14, jw18, jw21, jw22, jw24, jewelryPurpose, jewelryOpinion,
     brk18, brk21, brk24, brkOtherKarat, brkOtherWeight, storageKarat, storageWeight,
-    stocksTrade, stocksInvest, mutualFunds, bonds, bills,
+    securitiesTotalFromSection, bills,
     inventory, receivablesGood, realEstateTrade, realEstateRentIncome,
     shortDebts, expenses, cropsKg, cropsValuePerKg, cropsIrrigation,
     camels, cows, sheep, effectiveRate, hawl, cashTotalFromSection,
