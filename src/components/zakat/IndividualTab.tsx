@@ -881,7 +881,7 @@ export function IndividualTab() {
           <AccordionItem value="securities" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
-                <TrendingUp className="h-5 w-5 text-primary" /> زكاة الأوراق المالية والاستثمارات
+                <TrendingUp className="h-5 w-5 text-primary" /> زكاة الأوراق المالية ووثائق التأمين
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
