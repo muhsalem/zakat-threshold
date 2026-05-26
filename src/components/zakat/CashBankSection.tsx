@@ -13,42 +13,141 @@ import { Info, RefreshCw, Wallet, Smartphone, CreditCard, Building2, PiggyBank, 
 import { COUNTRY_PRICES, currency as fmtCurrency, num } from "@/lib/zakat";
 import bankCardsImg from "@/assets/bank-cards.png";
 
-// ===== قوائم البنوك =====
-const ISLAMIC_BANKS = [
-  "بنك فيصل الإسلامي المصري",
-  "بنك البركة مصر",
-  "مصرف أبوظبي الإسلامي — ADIB",
-  "البنك الإسلامي الأردني",
-  "بيت التمويل الكويتي — KFH",
-  "مصرف الراجحي",
-  "بنك البلاد",
-  "بنك الجزيرة",
-  "مصرف الإنماء",
-  "مصرف الشارقة الإسلامي",
-  "مصرف الإمارات الإسلامي",
-  "بنك دبي الإسلامي",
-  "مصرف قطر الإسلامي — QIB",
-  "البنك الإسلامي القطري الدولي — QIIB",
-  "البنك الإسلامي الفلسطيني",
-  "بنك صفوة الإسلامي (الأردن)",
-  "أخرى",
-];
+// ===== قوائم البنوك حسب الدولة (إسلامية مستقلة + تقليدية وفروعها / نوافذها الإسلامية) =====
+type TradBank = { v: string; l: string; window: string };
+type CountryBanks = { islamic: string[]; traditional: TradBank[] };
 
-const TRADITIONAL_BANKS_WITH_WINDOWS = [
-  { v: "nbe", l: "البنك الأهلي المصري — NBE", window: "نافذة المعاملات الإسلامية" },
-  { v: "misr", l: "بنك مصر", window: "فرع المعاملات الإسلامية" },
-  { v: "cib", l: "البنك التجاري الدولي — CIB", window: "—" },
-  { v: "qnb", l: "بنك QNB الأهلي", window: "—" },
-  { v: "aaib", l: "البنك العربي الأفريقي الدولي", window: "—" },
-  { v: "hsbc", l: "بنك HSBC", window: "Amanah — أمانة" },
-  { v: "adcb", l: "بنك أبوظبي التجاري — ADCB", window: "إسلامي" },
-  { v: "fab", l: "بنك أبوظبي الأول — FAB", window: "إسلامي" },
-  { v: "enbd", l: "بنك الإمارات دبي الوطني", window: "إسلامي" },
-  { v: "mashreq", l: "بنك المشرق", window: "المشرق الإسلامي" },
-  { v: "samba", l: "سامبا — SNB", window: "إسلامي" },
-  { v: "alahli", l: "البنك الأهلي السعودي — SNB", window: "—" },
-  { v: "other", l: "بنك تقليدي آخر", window: "—" },
-];
+const BANKS_BY_COUNTRY: Record<string, CountryBanks> = {
+  EG: {
+    islamic: [
+      "بنك فيصل الإسلامي المصري",
+      "بنك البركة مصر",
+      "مصرف أبوظبي الإسلامي — ADIB مصر",
+      "البنك المصري الخليجي",
+    ],
+    traditional: [
+      { v: "nbe", l: "البنك الأهلي المصري — NBE", window: "كنانة — للمعاملات الإسلامية" },
+      { v: "misr", l: "بنك مصر", window: "شعاع — فروع المعاملات الإسلامية" },
+      { v: "umb", l: "المصرف المتحد", window: "فروع المعاملات الإسلامية" },
+      { v: "cib", l: "البنك التجاري الدولي — CIB", window: "—" },
+      { v: "qnb_eg", l: "بنك QNB الأهلي", window: "—" },
+      { v: "aaib", l: "البنك العربي الأفريقي الدولي", window: "—" },
+      { v: "hsbc_eg", l: "بنك HSBC مصر", window: "—" },
+      { v: "banque_du_caire", l: "بنك القاهرة", window: "—" },
+    ],
+  },
+  SA: {
+    islamic: ["مصرف الراجحي", "بنك البلاد", "بنك الجزيرة", "مصرف الإنماء"],
+    traditional: [
+      { v: "snb", l: "البنك الأهلي السعودي — SNB", window: "الأهلي إسلامي" },
+      { v: "riyad", l: "بنك الرياض", window: "نافذة إسلامية" },
+      { v: "sabb", l: "البنك السعودي البريطاني — SABB", window: "أمانة" },
+      { v: "anb", l: "البنك العربي الوطني — ANB", window: "تيسير الإسلامية" },
+      { v: "bsf", l: "البنك السعودي الفرنسي", window: "كنوز الإسلامي" },
+    ],
+  },
+  AE: {
+    islamic: [
+      "بنك دبي الإسلامي",
+      "مصرف أبوظبي الإسلامي — ADIB",
+      "مصرف الإمارات الإسلامي",
+      "مصرف الشارقة الإسلامي",
+      "مصرف عجمان",
+    ],
+    traditional: [
+      { v: "fab", l: "بنك أبوظبي الأول — FAB", window: "FAB Islamic" },
+      { v: "enbd", l: "بنك الإمارات دبي الوطني — ENBD", window: "Emirates Islamic" },
+      { v: "adcb", l: "بنك أبوظبي التجاري — ADCB", window: "ADCB Islamic" },
+      { v: "mashreq", l: "بنك المشرق", window: "المشرق الإسلامي" },
+      { v: "hsbc_ae", l: "HSBC الإمارات", window: "Amanah — أمانة" },
+    ],
+  },
+  KW: {
+    islamic: ["بيت التمويل الكويتي — KFH", "بنك بوبيان", "بنك وربة", "بنك الكويت الدولي — KIB"],
+    traditional: [
+      { v: "nbk", l: "بنك الكويت الوطني — NBK", window: "—" },
+      { v: "gbk", l: "بنك الخليج", window: "—" },
+      { v: "cbk", l: "البنك التجاري الكويتي", window: "—" },
+      { v: "burgan", l: "بنك برقان", window: "—" },
+    ],
+  },
+  QA: {
+    islamic: [
+      "مصرف قطر الإسلامي — QIB",
+      "بنك دخان",
+      "مصرف الريان",
+      "البنك الإسلامي القطري الدولي — QIIB",
+    ],
+    traditional: [
+      { v: "qnb", l: "بنك قطر الوطني — QNB", window: "QNB First Islamic" },
+      { v: "cbq", l: "البنك التجاري — CBQ", window: "—" },
+      { v: "doha", l: "بنك الدوحة", window: "—" },
+    ],
+  },
+  BH: {
+    islamic: [
+      "بنك البحرين الإسلامي — BisB",
+      "بيت التمويل الخليجي — GFH",
+      "بنك السلام البحرين",
+      "بنك الإثمار",
+      "مصرف الخير",
+    ],
+    traditional: [
+      { v: "aub_bh", l: "البنك الأهلي المتحد — AUB", window: "—" },
+      { v: "nbb", l: "بنك البحرين الوطني — NBB", window: "—" },
+      { v: "bbk", l: "بنك البحرين والكويت — BBK", window: "—" },
+    ],
+  },
+  OM: {
+    islamic: ["بنك نزوى", "بنك العز الإسلامي"],
+    traditional: [
+      { v: "muscat", l: "بنك مسقط", window: "ميثاق" },
+      { v: "sohar", l: "بنك صحار الدولي", window: "صحار الإسلامي" },
+      { v: "dhofar", l: "بنك ظفار", window: "مزن" },
+      { v: "nbo", l: "البنك الوطني العماني", window: "المزن" },
+    ],
+  },
+  JO: {
+    islamic: [
+      "البنك الإسلامي الأردني",
+      "البنك العربي الإسلامي الدولي",
+      "بنك صفوة الإسلامي",
+    ],
+    traditional: [
+      { v: "arab", l: "البنك العربي", window: "—" },
+      { v: "housing", l: "بنك الإسكان", window: "إسكان إسلامي" },
+      { v: "cab", l: "البنك التجاري الأردني", window: "—" },
+    ],
+  },
+  PS: {
+    islamic: ["البنك الإسلامي الفلسطيني", "البنك الإسلامي العربي"],
+    traditional: [
+      { v: "bop", l: "بنك فلسطين", window: "—" },
+      { v: "tnb", l: "البنك الوطني — TNB", window: "—" },
+    ],
+  },
+  TR: {
+    islamic: ["كويت ترك", "البركة تركيا", "ضمان تركيا", "زراعت بنك مشاركة"],
+    traditional: [
+      { v: "ziraat", l: "زراعت بنكاسي", window: "زراعت كاتيليم" },
+      { v: "isbank", l: "İş Bankası", window: "—" },
+      { v: "garanti", l: "Garanti BBVA", window: "—" },
+    ],
+  },
+};
+
+function getCountryBanks(code: string): CountryBanks {
+  const data = BANKS_BY_COUNTRY[code];
+  const fallback: CountryBanks = {
+    islamic: ["بنك إسلامي محلي", "أخرى"],
+    traditional: [{ v: "other", l: "بنك تقليدي محلي", window: "—" }],
+  };
+  if (!data) return fallback;
+  return {
+    islamic: [...data.islamic, "أخرى"],
+    traditional: [...data.traditional, { v: "other", l: "بنك تقليدي آخر", window: "—" }],
+  };
+}
 
 type BankType = "islamic" | "traditional";
 
@@ -90,13 +189,16 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   // تحديث الأسعار تلقائياً عند تغيير الدولة المختارة
   useEffect(() => { refreshFxRates(); /* eslint-disable-next-line */ }, [countryCode]);
 
+  // قائمة بنوك الدولة (تتغيّر مع الدولة)
+  const countryBanks = useMemo(() => getCountryBanks(country.code), [country.code]);
+
   // ج) الحسابات الجارية
   const [currType, setCurrType] = useState<BankType>("islamic");
   const [currBalance, setCurrBalance] = useState("");
   const [currOpenedAt, setCurrOpenedAt] = useState("");
   const [currBranch, setCurrBranch] = useState("");
-  const [currIslamicBank, setCurrIslamicBank] = useState(ISLAMIC_BANKS[0]);
-  const [currTradBank, setCurrTradBank] = useState("nbe");
+  const [currIslamicBank, setCurrIslamicBank] = useState("");
+  const [currTradBank, setCurrTradBank] = useState("");
   const [currUseWindow, setCurrUseWindow] = useState(false); // نافذة إسلامية داخل بنك تقليدي
 
   // د) التوفير والادخار
@@ -105,8 +207,8 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   const [savPurifyPct, setSavPurifyPct] = useState(""); // نسبة التطهير للإسلامي (لخفض الوعاء)
   const [savOpenedAt, setSavOpenedAt] = useState("");
   const [savBranch, setSavBranch] = useState("");
-  const [savIslamicBank, setSavIslamicBank] = useState(ISLAMIC_BANKS[0]);
-  const [savTradBank, setSavTradBank] = useState("nbe");
+  const [savIslamicBank, setSavIslamicBank] = useState("");
+  const [savTradBank, setSavTradBank] = useState("");
   const [savUseWindow, setSavUseWindow] = useState(false);
 
   // ودائع (مفصولة عن الشهادات)
@@ -114,16 +216,33 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   const [depBranch, setDepBranch] = useState("");
   const [depOpenedAt, setDepOpenedAt] = useState("");
   const [depPrincipal, setDepPrincipal] = useState(""); // أصل الوديعة
-  const [depIslamicBank, setDepIslamicBank] = useState(ISLAMIC_BANKS[0]);
-  const [depTradBank, setDepTradBank] = useState("nbe");
+  const [depIslamicBank, setDepIslamicBank] = useState("");
+  const [depTradBank, setDepTradBank] = useState("");
 
   // شهادات (قسم مستقل)
   const [certType, setCertType] = useState<BankType>("traditional");
   const [certBranch, setCertBranch] = useState("");
   const [certOpenedAt, setCertOpenedAt] = useState("");
   const [certPrincipal, setCertPrincipal] = useState(""); // أصل الشهادات
-  const [certIslamicBank, setCertIslamicBank] = useState(ISLAMIC_BANKS[0]);
-  const [certTradBank, setCertTradBank] = useState("nbe");
+  const [certIslamicBank, setCertIslamicBank] = useState("");
+  const [certTradBank, setCertTradBank] = useState("");
+
+  // عند تغيير الدولة → اضبط الاختيارات الافتراضية على بنوك الدولة
+  useEffect(() => {
+    const ib = countryBanks.islamic[0] ?? "";
+    const tb = countryBanks.traditional[0]?.v ?? "";
+    const isInIslamic = (v: string) => countryBanks.islamic.includes(v);
+    const isInTrad = (v: string) => countryBanks.traditional.some((b) => b.v === v);
+    if (!isInIslamic(currIslamicBank)) setCurrIslamicBank(ib);
+    if (!isInTrad(currTradBank)) setCurrTradBank(tb);
+    if (!isInIslamic(savIslamicBank)) setSavIslamicBank(ib);
+    if (!isInTrad(savTradBank)) setSavTradBank(tb);
+    if (!isInIslamic(depIslamicBank)) setDepIslamicBank(ib);
+    if (!isInTrad(depTradBank)) setDepTradBank(tb);
+    if (!isInIslamic(certIslamicBank)) setCertIslamicBank(ib);
+    if (!isInTrad(certTradBank)) setCertTradBank(tb);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [countryBanks]);
 
   // دفتر توفير البريد
   const [postSavings, setPostSavings] = useState("");
@@ -303,6 +422,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
               useWindow={currUseWindow} setUseWindow={setCurrUseWindow}
               branch={currBranch} setBranch={setCurrBranch}
               idPrefix="curr"
+              islamicBanks={countryBanks.islamic} traditionalBanks={countryBanks.traditional} countryName={country.name}
             />
           </div>
         </div>
@@ -369,6 +489,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
               useWindow={savUseWindow} setUseWindow={setSavUseWindow}
               branch={savBranch} setBranch={setSavBranch}
               idPrefix="sav"
+              islamicBanks={countryBanks.islamic} traditionalBanks={countryBanks.traditional} countryName={country.name}
             />
           </div>
         </div>
@@ -402,7 +523,8 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
               tradBank={depTradBank} setTradBank={setDepTradBank}
               useWindow={false} setUseWindow={() => {}}
               branch={depBranch} setBranch={setDepBranch}
-              idPrefix="dep" hideWindow
+              idPrefix="dep"
+              islamicBanks={countryBanks.islamic} traditionalBanks={countryBanks.traditional} countryName={country.name} hideWindow
             />
           </div>
           <div className="space-y-1.5 md:col-span-2">
@@ -442,7 +564,8 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
               tradBank={certTradBank} setTradBank={setCertTradBank}
               useWindow={false} setUseWindow={() => {}}
               branch={certBranch} setBranch={setCertBranch}
-              idPrefix="cert" hideWindow
+              idPrefix="cert"
+              islamicBanks={countryBanks.islamic} traditionalBanks={countryBanks.traditional} countryName={country.name} hideWindow
             />
           </div>
           <div className="space-y-1.5 md:col-span-2">
@@ -689,6 +812,7 @@ function WalletGroup({
 function BankPicker({
   type, islamicBank, setIslamicBank, tradBank, setTradBank,
   useWindow, setUseWindow, branch, setBranch, idPrefix, hideWindow,
+  islamicBanks, traditionalBanks, countryName,
 }: {
   type: BankType;
   islamicBank: string;
@@ -701,45 +825,53 @@ function BankPicker({
   setBranch: (v: string) => void;
   idPrefix: string;
   hideWindow?: boolean;
+  islamicBanks: string[];
+  traditionalBanks: TradBank[];
+  countryName: string;
 }) {
-  const selectedTrad = TRADITIONAL_BANKS_WITH_WINDOWS.find((b) => b.v === tradBank);
+  const selectedTrad = traditionalBanks.find((b) => b.v === tradBank);
   return (
     <div className="grid md:grid-cols-2 gap-3">
       {type === "islamic" ? (
         <div className="space-y-1.5">
-          <Label className="text-xs">اسم البنك الإسلامي</Label>
+          <Label className="text-xs">اسم البنك الإسلامي — {countryName}</Label>
           <Select value={islamicBank} onValueChange={setIslamicBank}>
-            <SelectTrigger id={`${idPrefix}-ib`}><SelectValue /></SelectTrigger>
+            <SelectTrigger id={`${idPrefix}-ib`}><SelectValue placeholder="اختر بنكاً" /></SelectTrigger>
             <SelectContent className="max-h-72">
-              {ISLAMIC_BANKS.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+              {islamicBanks.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}
             </SelectContent>
           </Select>
         </div>
       ) : (
         <>
           <div className="space-y-1.5">
-            <Label className="text-xs">اسم البنك التقليدي</Label>
+            <Label className="text-xs">اسم البنك التقليدي — {countryName}</Label>
             <Select value={tradBank} onValueChange={setTradBank}>
-              <SelectTrigger id={`${idPrefix}-tb`}><SelectValue /></SelectTrigger>
+              <SelectTrigger id={`${idPrefix}-tb`}><SelectValue placeholder="اختر بنكاً" /></SelectTrigger>
               <SelectContent className="max-h-72">
-                {TRADITIONAL_BANKS_WITH_WINDOWS.map((b) => (
-                  <SelectItem key={b.v} value={b.v}>{b.l}</SelectItem>
+                {traditionalBanks.map((b) => (
+                  <SelectItem key={b.v} value={b.v}>
+                    {b.l}{b.window && b.window !== "—" ? ` — (${b.window})` : ""}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
           {!hideWindow && (
             <div className="space-y-1.5">
-              <Label className="text-xs">النافذة الإسلامية</Label>
+              <Label className="text-xs">الفرع / النافذة الإسلامية</Label>
               <div className="flex items-center gap-2 border rounded-md px-3 py-2">
                 <input
                   type="checkbox"
                   id={`${idPrefix}-win`}
                   checked={useWindow}
                   onChange={(e) => setUseWindow(e.target.checked)}
+                  disabled={!selectedTrad?.window || selectedTrad.window === "—"}
                 />
                 <Label htmlFor={`${idPrefix}-win`} className="text-xs cursor-pointer">
-                  أستخدم النافذة الإسلامية {selectedTrad?.window && selectedTrad.window !== "—" ? `(${selectedTrad.window})` : ""}
+                  {selectedTrad?.window && selectedTrad.window !== "—"
+                    ? `أستخدم: ${selectedTrad.window}`
+                    : "لا توجد نافذة إسلامية معتمدة لهذا البنك"}
                 </Label>
               </div>
             </div>

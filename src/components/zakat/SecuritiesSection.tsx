@@ -19,7 +19,9 @@ type SecurityKind =
   | "bond"            // سندات (ربوية)
   | "mutual_islamic"  // صندوق استثمار إسلامي
   | "mutual_conv"     // صندوق استثمار تقليدي
-  | "etf";            // صندوق متداول ETF
+  | "etf"             // صندوق متداول ETF
+  | "takaful"         // وثيقة تأمين تكافلي (إسلامي)
+  | "insurance_conv"; // وثيقة تأمين تقليدي (تجاري)
 
 const KIND_LABEL: Record<SecurityKind, string> = {
   stock_trade: "سهم — للمتاجرة (نية البيع)",
@@ -29,6 +31,8 @@ const KIND_LABEL: Record<SecurityKind, string> = {
   mutual_islamic: "صندوق استثمار إسلامي",
   mutual_conv: "صندوق استثمار تقليدي",
   etf: "صندوق متداول ETF",
+  takaful: "وثيقة تأمين تكافلي — قيمة استرداد",
+  insurance_conv: "وثيقة تأمين تقليدي — الأصل المُسدَّد",
 };
 
 interface Row {
@@ -80,6 +84,14 @@ function rowZakatable(r: Row): { mv: number; zakatable: number; purify: number }
     case "mutual_conv":
       base = Math.max(0, mv - purify);
       break;
+    case "takaful":
+      // وثيقة تكافل: قيمة الاسترداد (الرصيد الادخاري) تُزكَّى بالكامل
+      base = mv;
+      break;
+    case "insurance_conv":
+      // تأمين تقليدي: الأصل المُسدَّد فقط دون أرباح الفوائد (تُصرف للخير)
+      base = mv;
+      break;
   }
   return { mv, zakatable: Math.max(0, base - (r.kind === "mutual_conv" ? 0 : purify)), purify };
 }
@@ -123,7 +135,8 @@ export function SecuritiesSection({
           <b>أسهم الاستثمار طويل الأجل</b>: تُزكَّى حصة الموجودات الزكوية للشركة (نقد + ذمم + مخزون) — أدرج نسبتها أو سيُستخدم تقدير 30% كتحفُّظ. <br />
           <b>السندات الربوية</b>: يُزكَّى الأصل فقط وتُصرف الفوائد في وجوه الخير دون نية الأجر. <br />
           <b>الصكوك الإسلامية</b>: تُزكَّى كأصل استثماري. <br />
-          <b>صناديق الاستثمار</b>: الإسلامية تُزكَّى بالكامل، والتقليدية يُخصم منها <b>نسبة التطهير</b> أولًا.
+          <b>صناديق الاستثمار</b>: الإسلامية تُزكَّى بالكامل، والتقليدية يُخصم منها <b>نسبة التطهير</b> أولًا. <br />
+          <b>وثائق التأمين</b>: <i>التكافلي</i> تُزكَّى قيمة الاسترداد (الرصيد الادخاري) بالكامل. <i>التأمين التقليدي</i> يُزكَّى <b>أصل الأقساط المُسدَّدة</b> فقط دون عوائد الفائدة (تُصرف في وجوه الخير).
         </AlertDescription>
       </Alert>
 
@@ -259,6 +272,8 @@ export function SecuritiesSection({
           <Button type="button" size="sm" variant="outline" onClick={() => add("mutual_islamic")}>+ صندوق إسلامي</Button>
           <Button type="button" size="sm" variant="outline" onClick={() => add("mutual_conv")}>+ صندوق تقليدي</Button>
           <Button type="button" size="sm" variant="outline" onClick={() => add("etf")}>+ ETF</Button>
+          <Button type="button" size="sm" variant="outline" onClick={() => add("takaful")}>+ تأمين تكافلي</Button>
+          <Button type="button" size="sm" variant="outline" onClick={() => add("insurance_conv")}>+ تأمين تقليدي</Button>
         </div>
       </div>
 

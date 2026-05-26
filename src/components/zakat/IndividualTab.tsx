@@ -85,6 +85,13 @@ export function IndividualTab() {
   const [pinDate, setPinDate] = useState<"yes" | "no">("no");
   const [notes, setNotes] = useState("");
 
+  // ديباجة محاسب الزكاة (تظهر في رأس التقرير عند الطباعة)
+  const [accountantName, setAccountantName] = useState("");
+  const [accountantLicense, setAccountantLicense] = useState("");
+  const [accountantPreamble, setAccountantPreamble] = useState(
+    "بسم الله الرحمن الرحيم\nأشهد بصفتي محاسب الزكاة المعتمد أنّ هذا الإقرار قد أُعِدّ بناءً على البيانات المُقدَّمة من المُزكِّي وفقاً للمعايير الشرعية المعتمدة (AAOIFI رقم 35 لزكاة الشركات والأفراد) وعلى ضوء فتاوى المجامع الفقهية المعاصرة، وبعد التحقق من بلوغ النصاب وحولان الحول وفق التقويم الهجري، وخصم الديون المستحقة والنفقات الواجبة. وقد رُوعي مبدأ «الأنفع للفقراء» في تقدير النصاب، وأُجريت عمليات التطهير على العوائد غير الشرعية. والله المستعان وعليه التُّكلان."
+  );
+
   // الدولة والأسعار
   const [countryCode, setCountryCode] = useState("EG");
   const country = COUNTRY_PRICES.find((c) => c.code === countryCode) ?? COUNTRY_PRICES[0];
@@ -364,6 +371,18 @@ export function IndividualTab() {
 
   return (
     <div dir="rtl" className="grid lg:grid-cols-3 gap-6 text-right">
+      {/* ديباجة الطباعة — تظهر في رأس التقرير عند طباعة الإقرار فقط */}
+      <div className="hidden print:block lg:col-span-3 border-b pb-4 mb-4">
+        <div className="text-center text-sm font-bold mb-2">إقرار زكوي — محاسب الزكاة المعتمد</div>
+        <div className="whitespace-pre-line text-xs leading-7">{accountantPreamble}</div>
+        {(accountantName || accountantLicense) && (
+          <div className="mt-3 text-xs">
+            {accountantName && <div>المحاسب: <b>{accountantName}</b></div>}
+            {accountantLicense && <div>رقم القيد / الترخيص: <b>{accountantLicense}</b></div>}
+            <div>التاريخ: <b>{new Date().toLocaleDateString("ar-EG")}</b></div>
+          </div>
+        )}
+      </div>
       <div className="lg:col-span-2 space-y-6">
         {/* بيانات المزكي + الإقرار وشرط الحول */}
         <Card className="shadow-soft">
@@ -1258,6 +1277,16 @@ export function IndividualTab() {
             <SectionResult format={cur} label="زكاة الفضة" value={calc.silverZakat} eligible={calc.silverEligible} />
             <SectionResult format={cur} label="زكاة النقد والاستثمارات والتجارة والعقار (صافي)" value={calc.monetaryZakat} eligible={calc.monetaryEligible} />
             <SectionResult format={cur} label="زكاة الزروع والثمار" value={calc.cropsZakat} eligible={calc.cropsEligible} />
+
+            {ownsLivestock && (calc.camelsN > 0 || calc.cowsN > 0 || calc.sheepN > 0) && (
+              <div className="rounded-md border border-primary/20 bg-primary/5 p-2 mt-1 space-y-1">
+                <div className="text-xs font-semibold text-primary">زكاة الأنعام (تُؤدّى عيناً لا قيمةً):</div>
+                {calc.camelsN > 0 && <div className="text-xs">• الإبل ({calc.camelsN}): <b>{camelZakat(calc.camelsN)}</b></div>}
+                {calc.cowsN > 0 && <div className="text-xs">• البقر ({calc.cowsN}): <b>{cowZakat(calc.cowsN)}</b></div>}
+                {calc.sheepN > 0 && <div className="text-xs">• الغنم ({calc.sheepN}): <b>{sheepZakat(calc.sheepN)}</b></div>}
+              </div>
+            )}
+
             <Separator className="my-2" />
             <div className="text-xs text-muted-foreground space-y-1">
               <div>الوعاء النقدي الإجمالي: <b>{cur(calc.monetaryGross)}</b></div>
@@ -1275,7 +1304,40 @@ export function IndividualTab() {
           </CardContent>
         </Card>
 
-        <Card className="border-primary/20 shadow-soft">
+        <Card className="shadow-soft print:hidden">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base flex items-center gap-2">
+              <User className="h-4 w-4 text-primary" /> ديباجة محاسب الزكاة
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1">
+                <Label className="text-xs">اسم محاسب الزكاة</Label>
+                <Input value={accountantName} onChange={(e) => setAccountantName(e.target.value)} placeholder="الاسم الكامل" />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">رقم القيد / الترخيص</Label>
+                <Input value={accountantLicense} onChange={(e) => setAccountantLicense(e.target.value)} placeholder="رقم الترخيص" />
+              </div>
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">نص الديباجة (يظهر في رأس التقرير)</Label>
+              <Textarea
+                value={accountantPreamble}
+                onChange={(e) => setAccountantPreamble(e.target.value)}
+                rows={6}
+                className="text-xs leading-6"
+              />
+            </div>
+            <p className="text-[11px] text-muted-foreground">
+              <Info className="inline h-3 w-3 ml-1" />
+              تظهر الديباجة في أعلى التقرير عند طباعة الإقرار، وتتضمَّن الشهادة الشرعية والمرجعية المعتمدة.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-primary/20 shadow-soft print:hidden">
           <CardContent className="pt-6">
             <Button className="w-full" size="lg" onClick={() => window.print()}>
               <CheckCircle2 className="h-4 w-4 ml-2" />
