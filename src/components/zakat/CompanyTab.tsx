@@ -704,7 +704,7 @@ export function CompanyTab() {
               {/* اعتبارات الحول والاحتساب السابق */}
               <div className="rounded-lg border border-gold/30 bg-gold/5 p-4 space-y-3">
                 <h4 className="font-semibold text-sm text-primary flex items-center gap-2">
-                  <CalendarClockIcon /> اعتبارات الحول والسنوات السابقة
+                  <Calculator className="h-4 w-4" /> اعتبارات الحول والسنوات السابقة
                 </h4>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
