@@ -144,8 +144,8 @@ function getCountryBanks(code: string): CountryBanks {
   };
   if (!data) return fallback;
   return {
-    islamic: [...data.islamic, "أخرى"],
-    traditional: [...data.traditional, { v: "other", l: "بنك تقليدي آخر", window: "—" }],
+    islamic: [...data.islamic],
+    traditional: [...data.traditional],
   };
 }
 
