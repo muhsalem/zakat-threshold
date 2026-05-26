@@ -939,6 +939,50 @@ export function IndividualTab() {
                   hint="لا تُزكَّى حتى تُقبض، ثم زكاة سنة واحدة فقط — لا تُحتسب الآن"
                 />
               </div>
+
+              {/* هل أنت مساهم في شركة */}
+              <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm font-semibold">هل أنت مساهم / شريك في شركة قائمة؟</Label>
+                  <Switch checked={tradeIsShareholder} onCheckedChange={setTradeIsShareholder} />
+                </div>
+                {tradeIsShareholder && (
+                  <>
+                    <Alert className="border-primary/20 bg-primary/5">
+                      <Info className="h-4 w-4" />
+                      <AlertDescription className="text-xs">
+                        إن كانت الشركة تُخرج زكاتها كاملةً عن وعائها فلا تُكرّر الحساب — اتركها صفراً. وإلا أدخل الوعاء الزكوي للشركة (من تبويب «زكاة الشركات») ونسبة حصتك.
+                      </AlertDescription>
+                    </Alert>
+                    <div className="grid md:grid-cols-3 gap-3">
+                      <div>
+                        <Label className="text-xs">اسم الشركة</Label>
+                        <Input value={tradeShareCompany} onChange={(e) => setTradeShareCompany(e.target.value)} placeholder="…" />
+                      </div>
+                      <NumField label="نسبة حصتك %" value={tradeSharePct} onChange={setTradeSharePct} unit="%" />
+                      <NumField label="وعاء الشركة الزكوي" value={tradeShareCompanyBase} onChange={setTradeShareCompanyBase} unit={currencyName} />
+                    </div>
+                    <p className="text-[11px] text-muted-foreground">
+                      نصيبك المُحتسب: <b className="text-primary">{cur(num(tradeShareCompanyBase) * (num(tradeSharePct) / 100))}</b>
+                    </p>
+                  </>
+                )}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          {/* المستغلات وزكاة الدخل */}
+          <AccordionItem value="income-usufruct" className="border rounded-xl shadow-soft bg-card px-4">
+            <AccordionTrigger className="hover:no-underline">
+              <span className="flex items-center gap-2 text-base font-semibold">
+                <HandHeart className="h-5 w-5 text-primary" /> زكاة المستغلات والإيرادات وزكاة الدخل
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="space-y-4 pb-4">
+              <IncomeUsufructSection
+                currencyName={currencyName}
+                onTotalChange={setIncomeUsufructTotal}
+              />
             </AccordionContent>
           </AccordionItem>
 
