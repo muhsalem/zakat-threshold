@@ -413,7 +413,7 @@ export function CompanyTab() {
   const toggleC = (id: string) => setCompliance((p) => ({ ...p, [id]: !p[id] }));
 
   // ===== حفظ واسترجاع محلي =====
-  const STORAGE_KEY = "zakat_company_v1";
+  const STORAGE_KEY = "zakat_company_v2";
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -425,19 +425,26 @@ export function CompanyTab() {
       set(setFiscalEnd, "fiscalEnd"); set(setHawlStart, "hawlStart"); set(setSectorId, "sectorId");
       set(setGoldGramPrice, "goldGramPrice"); set(setShGcc, "shGcc"); set(setShForeign, "shForeign");
       set(setShGovt, "shGovt"); set(setShWaqf, "shWaqf"); set(setShNonMuslim, "shNonMuslim");
-      set(setCash, "cash"); set(setBanks, "banks"); set(setReceivablesCo, "receivablesCo");
-      set(setDoubtfulDebts, "doubtfulDebts"); set(setInventoryCo, "inventoryCo");
-      set(setInvestments, "investments"); set(setSubsidiaryInv, "subsidiaryInv");
+      set(setCash, "cash"); set(setBanks, "banks");
+      set(setRecGood, "recGood"); set(setRecDoubtful, "recDoubtful");
+      set(setRecInsolvent, "recInsolvent"); set(setRecBad, "recBad");
+      set(setInvBook, "invBook"); set(setInvMarketDiff, "invMarketDiff");
+      set(setStkTrading, "stkTrading"); set(setStkLongTerm, "stkLongTerm"); set(setStkLongRatio, "stkLongRatio");
+      set(setSubsidiaryInv, "subsidiaryInv");
       set(setOtherCurrent, "otherCurrent"); set(setStPayables, "stPayables"); set(setAccruals, "accruals");
-      set(setTaxDue, "taxDue"); set(setStLoans, "stLoans"); set(setEquity, "equity");
+      set(setTaxDue, "taxDue");
+      set(setLoanPrincipal, "loanPrincipal"); set(setLoanInterest, "loanInterest");
+      set(setEquity, "equity");
       set(setLtLiabilities, "ltLiabilities"); set(setFixedAssets, "fixedAssets");
       set(setIntangibles, "intangibles"); set(setLosses, "losses");
+      set(setAccelerateYears, "accelerateYears");
       if (d.compliance) setCompliance(d.compliance);
       if (d.accountingStd) setAccountingStd(d.accountingStd);
       if (typeof d.consolidated === "boolean") setConsolidated(d.consolidated);
       if (d.solarYear) setSolarYear(d.solarYear);
       if (d.orgKind) setOrgKind(d.orgKind);
       if (d.method) setMethod(d.method);
+      if (d.recPolicy) setRecPolicy(d.recPolicy);
     } catch { /* ignore */ }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -447,12 +454,72 @@ export function CompanyTab() {
       countryCode, companyName, crNumber, taxId, zakatId, accountingStd, consolidated,
       fiscalStart, fiscalEnd, hawlStart, solarYear, orgKind, sectorId, goldGramPrice,
       shGcc, shForeign, shGovt, shWaqf, shNonMuslim,
-      method, cash, banks, receivablesCo, doubtfulDebts, inventoryCo, investments, subsidiaryInv,
-      otherCurrent, stPayables, accruals, taxDue, stLoans,
+      method, cash, banks,
+      recGood, recDoubtful, recInsolvent, recBad, recPolicy,
+      invBook, invMarketDiff,
+      stkTrading, stkLongTerm, stkLongRatio,
+      subsidiaryInv, otherCurrent, stPayables, accruals, taxDue,
+      loanPrincipal, loanInterest,
       equity, ltLiabilities, fixedAssets, intangibles, losses, compliance,
+      accelerateYears,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
   };
+
+  const calc = useMemo(() => {
+    // ① الذمم المدينة — الجيدة دائماً تُزكى. المشكوك حسب السياسة. المعسر/المعدوم لا يدخل
+    const recZakatable = num(recGood) + (recPolicy === "lenient" ? num(recDoubtful) : 0);
+
+    // ② المخزون بالقيمة السوقية = الدفتري + فرق التقييم
+    const inventoryMarket = num(invBook) + num(invMarketDiff);
+
+    // ③ الأوراق المالية: متاجرة كاملة + استثمار طويل × نسبة الموجودات الزكوية فقط
+    const stocksZakatable = num(stkTrading) + num(stkLongTerm) * (num(stkLongRatio) / 100);
+
+    const grossAssets = num(cash) + num(banks) + recZakatable + inventoryMarket
+      + stocksZakatable + num(subsidiaryInv) + num(otherCurrent);
+    const curAssets = grossAssets;
+    // ④ القروض: يُخصم الأصل فقط (الفوائد الربوية لا يُعتد بها شرعاً)
+    const curLiabs = num(stPayables) + num(accruals) + num(taxDue) + num(loanPrincipal);
+    const netAssets = curAssets - curLiabs;
+    const workingCapital = num(equity) + num(ltLiabilities) - num(fixedAssets) - num(intangibles) - num(losses);
+    const baseGross = method === "net_assets" ? netAssets : workingCapital;
+
+    // استبعاد الحصص المعفاة من الوعاء
+    const exemptPct = (num(shForeign) + num(shGovt) + num(shWaqf) + num(shNonMuslim)) / 100;
+    const zakatableRatio = Math.max(0, 1 - exemptPct);
+    const base = baseGross * zakatableRatio;
+
+    // النصاب
+    const nisabValue = num(goldGramPrice) * GOLD_NISAB_GRAMS;
+    const reachesNisab = base >= nisabValue && nisabValue > 0;
+
+    const rate = solarYear === "solar" ? 0.025775 : ZAKAT_RATE;
+    const zakatOneYear = (orgKind === "nonprofit" || !reachesNisab) ? 0 : base > 0 ? base * rate : 0;
+    const years = 1 + Math.min(2, Math.max(0, Math.round(num(accelerateYears))));
+    const zakat = zakatOneYear * years;
+
+    const completed = Object.values(compliance).filter(Boolean).length;
+    const complianceScore = Math.round((completed / ALL_ITEM_IDS.length) * 100);
+
+    const totalShares = num(shGcc) + num(shForeign) + num(shGovt) + num(shWaqf) + num(shNonMuslim);
+    const sharesBalanced = Math.abs(totalShares - 100) < 0.01;
+
+    return {
+      grossAssets, curAssets, curLiabs, netAssets, workingCapital, baseGross, base,
+      rate, zakatOneYear, zakat, years, completed, complianceScore,
+      nisabValue, reachesNisab, exemptPct, zakatableRatio, totalShares, sharesBalanced,
+      recZakatable, inventoryMarket, stocksZakatable,
+    };
+  }, [
+    cash, banks, recGood, recDoubtful, recInsolvent, recBad, recPolicy,
+    invBook, invMarketDiff, stkTrading, stkLongTerm, stkLongRatio,
+    subsidiaryInv, otherCurrent,
+    stPayables, accruals, taxDue, loanPrincipal, loanInterest,
+    equity, ltLiabilities, fixedAssets, intangibles, losses,
+    method, solarYear, compliance, orgKind, goldGramPrice,
+    shGcc, shForeign, shGovt, shWaqf, shNonMuslim, accelerateYears,
+  ]);
 
   const calc = useMemo(() => {
     // الموجودات الزكوية مع خصم الديون المشكوك فيها
