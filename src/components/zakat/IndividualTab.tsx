@@ -555,6 +555,20 @@ export function IndividualTab() {
                     <span className="text-lg font-bold text-primary">{fmt(calc.sabaikGrams24)} جم</span>
                   </div>
                 </div>
+                <div className="grid md:grid-cols-3 gap-3 pt-2 border-t">
+                  <div className="flex items-center justify-between rounded-md border px-3 py-2">
+                    <Label className="text-xs">من كسب حلال</Label>
+                    <Switch checked={sbHalal} onCheckedChange={setSbHalal} />
+                  </div>
+                  <div className="flex items-center justify-between rounded-md border px-3 py-2">
+                    <Label className="text-xs">مملوكة ملكاً تاماً</Label>
+                    <Switch checked={sbFullyOwned} onCheckedChange={setSbFullyOwned} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">تاريخ الاقتناء</Label>
+                    <Input type="date" value={sbAcquireDate} onChange={(e) => setSbAcquireDate(e.target.value)} />
+                  </div>
+                </div>
               </div>
 
               {/* ب) الجنيهات والعملات الذهبية */}
@@ -590,7 +604,29 @@ export function IndividualTab() {
                     <NumField label="عدد القطع" value={coinCustomQty} onChange={setCoinCustomQty} unit="قطعة" />
                   </div>
                 </div>
+                <div className="grid md:grid-cols-2 gap-3 pt-2 border-t">
+                  <div className="flex items-center justify-between rounded-md border px-3 py-2">
+                    <Label className="text-xs">من كسب حلال</Label>
+                    <Switch checked={coinHalal} onCheckedChange={setCoinHalal} />
+                  </div>
+                  <div className="flex items-center justify-between rounded-md border px-3 py-2">
+                    <Label className="text-xs">مملوكة ملكاً تاماً</Label>
+                    <Switch checked={coinFullyOwned} onCheckedChange={setCoinFullyOwned} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">تاريخ الاقتناء</Label>
+                    <Input type="date" value={coinAcquireDate} onChange={(e) => setCoinAcquireDate(e.target.value)} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">غرض الاقتناء</Label>
+                    <RadioGroup value={coinPurpose} onValueChange={(v) => setCoinPurpose(v as "storage" | "wear")} className="flex gap-4 pt-1">
+                      <div className="flex items-center gap-2"><RadioGroupItem value="wear" id="cp-w" /><Label htmlFor="cp-w" className="text-sm">حلي وزينة</Label></div>
+                      <div className="flex items-center gap-2"><RadioGroupItem value="storage" id="cp-s" /><Label htmlFor="cp-s" className="text-sm">ادخار وحفظ قيمة</Label></div>
+                    </RadioGroup>
+                  </div>
+                </div>
               </div>
+
 
               {/* ج) المجوهرات */}
               <div className="space-y-3 rounded-lg border border-gold/20 bg-gold/5 p-4">
