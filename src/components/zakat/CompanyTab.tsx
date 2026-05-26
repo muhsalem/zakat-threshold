@@ -1150,6 +1150,69 @@ export function CompanyTab() {
               <div className="flex justify-between text-primary"><span>الزكاة الواجبة:</span><b>{cFmt(calc.zakat, currencyName)}</b></div>
             </CardContent>
           </Card>
+
+          {/* النصاب + محوّل العملات + تعجيل الزكاة — مدمج */}
+          <Card className="shadow-soft border-gold/30">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Coins className="h-4 w-4 text-gold" /> النصاب والعملات والتعجيل
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4 text-sm">
+              {/* النصاب */}
+              <div className="space-y-2">
+                <NumField label="سعر جرام الذهب عيار 24" value={goldGramPrice} onChange={setGoldGramPrice} unit={currencyName} hint="لحساب نصاب 85 جرام" />
+                <div className="rounded-md bg-muted/40 p-2 text-xs space-y-1">
+                  <div className="flex justify-between"><span>قيمة النصاب:</span><b>{cFmt(calc.nisabValue, currencyName)}</b></div>
+                  <div className="flex justify-between items-center">
+                    <span>الحالة:</span>
+                    <Badge variant={calc.reachesNisab ? "default" : "destructive"} className="text-[10px]">
+                      {calc.reachesNisab ? "بلغ النصاب" : "دون النصاب"}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* محوّل العملات */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-primary">
+                  <Scale className="h-3.5 w-3.5" /> محوّل العملات (يوم الحول)
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <NumField label="المبلغ FX" value={fxAmount} onChange={setFxAmount} unit="FX" />
+                  <NumField label={`السعر → ${currencyName}`} value={fxRate} onChange={setFxRate} unit={currencyName} />
+                </div>
+                <div className="rounded-md bg-muted/40 p-2 text-xs flex justify-between">
+                  <span>المُقوَّم:</span><b className="text-primary">{cFmt(fxConverted, currencyName)}</b>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* تعجيل الزكاة */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-primary">
+                  <Calculator className="h-3.5 w-3.5" /> تعجيل الزكاة
+                </div>
+                <RadioGroup value={accelerateYears} onValueChange={setAccelerateYears} className="grid grid-cols-3 gap-1.5">
+                  <label className={`flex items-center justify-center gap-1 rounded-md border-2 px-1 py-1.5 cursor-pointer text-[11px] ${accelerateYears === "0" ? "border-primary bg-primary/5" : "border-border"}`}>
+                    <RadioGroupItem value="0" id="ac0" /><Label htmlFor="ac0" className="cursor-pointer">حالية</Label>
+                  </label>
+                  <label className={`flex items-center justify-center gap-1 rounded-md border-2 px-1 py-1.5 cursor-pointer text-[11px] ${accelerateYears === "1" ? "border-primary bg-primary/5" : "border-border"}`}>
+                    <RadioGroupItem value="1" id="ac1" /><Label htmlFor="ac1" className="cursor-pointer">+1</Label>
+                  </label>
+                  <label className={`flex items-center justify-center gap-1 rounded-md border-2 px-1 py-1.5 cursor-pointer text-[11px] ${accelerateYears === "2" ? "border-primary bg-primary/5" : "border-border"}`}>
+                    <RadioGroupItem value="2" id="ac2" /><Label htmlFor="ac2" className="cursor-pointer">+2</Label>
+                  </label>
+                </RadioGroup>
+                {calc.years > 1 && (
+                  <p className="text-[11px] text-primary">الإجمالي = زكاة سنة × <b>{calc.years}</b></p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </TabsContent>
 
