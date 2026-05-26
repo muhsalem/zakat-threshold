@@ -422,6 +422,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
               useWindow={currUseWindow} setUseWindow={setCurrUseWindow}
               branch={currBranch} setBranch={setCurrBranch}
               idPrefix="curr"
+              islamicBanks={countryBanks.islamic} traditionalBanks={countryBanks.traditional} countryName={country.name}
             />
           </div>
         </div>
@@ -488,6 +489,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
               useWindow={savUseWindow} setUseWindow={setSavUseWindow}
               branch={savBranch} setBranch={setSavBranch}
               idPrefix="sav"
+              islamicBanks={countryBanks.islamic} traditionalBanks={countryBanks.traditional} countryName={country.name}
             />
           </div>
         </div>
@@ -521,7 +523,8 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
               tradBank={depTradBank} setTradBank={setDepTradBank}
               useWindow={false} setUseWindow={() => {}}
               branch={depBranch} setBranch={setDepBranch}
-              idPrefix="dep" hideWindow
+              idPrefix="dep"
+              islamicBanks={countryBanks.islamic} traditionalBanks={countryBanks.traditional} countryName={country.name} hideWindow
             />
           </div>
           <div className="space-y-1.5 md:col-span-2">
@@ -561,7 +564,8 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
               tradBank={certTradBank} setTradBank={setCertTradBank}
               useWindow={false} setUseWindow={() => {}}
               branch={certBranch} setBranch={setCertBranch}
-              idPrefix="cert" hideWindow
+              idPrefix="cert"
+              islamicBanks={countryBanks.islamic} traditionalBanks={countryBanks.traditional} countryName={country.name} hideWindow
             />
           </div>
           <div className="space-y-1.5 md:col-span-2">
