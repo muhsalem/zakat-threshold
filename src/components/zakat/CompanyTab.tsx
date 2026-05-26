@@ -521,46 +521,7 @@ export function CompanyTab() {
     shGcc, shForeign, shGovt, shWaqf, shNonMuslim, accelerateYears,
   ]);
 
-  const calc = useMemo(() => {
-    // الموجودات الزكوية مع خصم الديون المشكوك فيها
-    const grossAssets = num(cash) + num(banks) + num(receivablesCo) + num(inventoryCo)
-      + num(investments) + num(subsidiaryInv) + num(otherCurrent);
-    const curAssets = grossAssets - num(doubtfulDebts);
-    const curLiabs = num(stPayables) + num(accruals) + num(taxDue) + num(stLoans);
-    const netAssets = curAssets - curLiabs;
-    const workingCapital = num(equity) + num(ltLiabilities) - num(fixedAssets) - num(intangibles) - num(losses);
-    const baseGross = method === "net_assets" ? netAssets : workingCapital;
 
-    // استبعاد الحصص المعفاة من الوعاء
-    const exemptPct = (num(shForeign) + num(shGovt) + num(shWaqf) + num(shNonMuslim)) / 100;
-    const zakatableRatio = Math.max(0, 1 - exemptPct);
-    const base = baseGross * zakatableRatio;
-
-    // النصاب
-    const nisabValue = num(goldGramPrice) * GOLD_NISAB_GRAMS;
-    const reachesNisab = base >= nisabValue && nisabValue > 0;
-
-    const rate = solarYear === "solar" ? 0.025775 : ZAKAT_RATE;
-    const zakat = (orgKind === "nonprofit" || !reachesNisab) ? 0 : base > 0 ? base * rate : 0;
-
-    const completed = Object.values(compliance).filter(Boolean).length;
-    const complianceScore = Math.round((completed / ALL_ITEM_IDS.length) * 100);
-
-    const totalShares = num(shGcc) + num(shForeign) + num(shGovt) + num(shWaqf) + num(shNonMuslim);
-    const sharesBalanced = Math.abs(totalShares - 100) < 0.01;
-
-    return {
-      grossAssets, curAssets, curLiabs, netAssets, workingCapital, baseGross, base,
-      rate, zakat, completed, complianceScore,
-      nisabValue, reachesNisab, exemptPct, zakatableRatio, totalShares, sharesBalanced,
-    };
-  }, [
-    cash, banks, receivablesCo, doubtfulDebts, inventoryCo, investments, subsidiaryInv, otherCurrent,
-    stPayables, accruals, taxDue, stLoans,
-    equity, ltLiabilities, fixedAssets, intangibles, losses,
-    method, solarYear, compliance, orgKind, goldGramPrice,
-    shGcc, shForeign, shGovt, shWaqf, shNonMuslim,
-  ]);
 
   return (
     <Tabs defaultValue="zakat" className="space-y-6">
