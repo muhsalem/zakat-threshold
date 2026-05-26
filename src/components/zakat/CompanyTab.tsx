@@ -492,6 +492,39 @@ export function CompanyTab() {
                 </div>
               </div>
 
+              {/* أرقام تعريفية + معيار محاسبي */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div className="space-y-1.5">
+                  <Label className="text-xs">رقم السجل التجاري</Label>
+                  <Input value={crNumber} onChange={(e) => setCrNumber(e.target.value)} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">الرقم الضريبي (TIN)</Label>
+                  <Input value={taxId} onChange={(e) => setTaxId(e.target.value)} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">الرقم الزكوي</Label>
+                  <Input value={zakatId} onChange={(e) => setZakatId(e.target.value)} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">المعيار المحاسبي</Label>
+                  <Select value={accountingStd} onValueChange={setAccountingStd}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="IFRS">IFRS — المعايير الدولية</SelectItem>
+                      <SelectItem value="SOCPA">SOCPA — السعودي</SelectItem>
+                      <SelectItem value="AAOIFI">AAOIFI — المالية الإسلامية</SelectItem>
+                      <SelectItem value="EAS">EAS — المصري</SelectItem>
+                      <SelectItem value="GAAP">US GAAP</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <label className="flex items-center gap-2 text-xs cursor-pointer">
+                <Checkbox checked={consolidated} onCheckedChange={(v) => setConsolidated(!!v)} />
+                قوائم مالية مُوحّدة (Consolidated) — تشمل الشركات التابعة
+              </label>
+
               {/* السنة المالية */}
               <div className="rounded-lg border p-3 space-y-3 bg-muted/30">
                 <Label className="font-semibold">السنة المالية</Label>
