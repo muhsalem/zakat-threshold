@@ -95,6 +95,9 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   const [currBalance, setCurrBalance] = useState("");
   const [currOpenedAt, setCurrOpenedAt] = useState("");
   const [currBranch, setCurrBranch] = useState("");
+  const [currIslamicBank, setCurrIslamicBank] = useState(ISLAMIC_BANKS[0]);
+  const [currTradBank, setCurrTradBank] = useState("nbe");
+  const [currUseWindow, setCurrUseWindow] = useState(false); // نافذة إسلامية داخل بنك تقليدي
 
   // د) التوفير والادخار
   const [savType, setSavType] = useState<BankType>("islamic");
@@ -102,15 +105,29 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   const [savPurifyPct, setSavPurifyPct] = useState(""); // نسبة التطهير للإسلامي (لخفض الوعاء)
   const [savOpenedAt, setSavOpenedAt] = useState("");
   const [savBranch, setSavBranch] = useState("");
+  const [savIslamicBank, setSavIslamicBank] = useState(ISLAMIC_BANKS[0]);
+  const [savTradBank, setSavTradBank] = useState("nbe");
+  const [savUseWindow, setSavUseWindow] = useState(false);
 
-  // ودائع وشهادات وبريد
+  // ودائع (مفصولة عن الشهادات)
   const [depType, setDepType] = useState<BankType>("traditional");
   const [depBranch, setDepBranch] = useState("");
   const [depOpenedAt, setDepOpenedAt] = useState("");
   const [depPrincipal, setDepPrincipal] = useState(""); // أصل الوديعة
+  const [depIslamicBank, setDepIslamicBank] = useState(ISLAMIC_BANKS[0]);
+  const [depTradBank, setDepTradBank] = useState("nbe");
+
+  // شهادات (قسم مستقل)
+  const [certType, setCertType] = useState<BankType>("traditional");
+  const [certBranch, setCertBranch] = useState("");
+  const [certOpenedAt, setCertOpenedAt] = useState("");
   const [certPrincipal, setCertPrincipal] = useState(""); // أصل الشهادات
-  const [postSavings, setPostSavings] = useState(""); // دفتر توفير البريد (الرصيد الحالي)
-  const [postPrincipal, setPostPrincipal] = useState(""); // أصل المبلغ عند الإيداع
+  const [certIslamicBank, setCertIslamicBank] = useState(ISLAMIC_BANKS[0]);
+  const [certTradBank, setCertTradBank] = useState("nbe");
+
+  // دفتر توفير البريد
+  const [postSavings, setPostSavings] = useState("");
+  const [postPrincipal, setPostPrincipal] = useState("");
 
   // هـ) البطاقات البنكية
   const [cardPrepaid, setCardPrepaid] = useState("");
@@ -121,9 +138,13 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   const [telcoWallets, setTelcoWallets] = useState<WalletRow[]>([
     { id: 1, provider: "vodafone", amount: "", linked: "standalone" },
   ]);
-  // ز) المحافظ البنكية (Meeza / Apple Pay / Google Pay / Samsung Pay / محافظ البنوك)
+  // ز) المحافظ البنكية
   const [bankWallets, setBankWallets] = useState<WalletRow[]>([
     { id: 1, provider: "meeza", amount: "", linked: "linked" },
+  ]);
+  // ح) محافظ العملات المشفّرة (Crypto)
+  const [cryptoWallets, setCryptoWallets] = useState<WalletRow[]>([
+    { id: 1, provider: "btc", amount: "", linked: "standalone" },
   ]);
 
   const addFx = () =>
