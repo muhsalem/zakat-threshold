@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -27,13 +27,63 @@ import {
   fmt,
   num,
 } from "@/lib/zakat";
-import { Scroll, Coins, Gem, Globe2, CalendarClock } from "lucide-react";
+import { Scroll, Coins, Gem, Globe2, CalendarClock, Database } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+
+const MONTHS_AR = [
+  "يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
+  "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر",
+];
+
+type NisabRow = {
+  id: string;
+  year: number;
+  month: number | null;
+  hijri_year: number | null;
+  currency: string;
+  gold_price: number;
+  silver_price: number;
+  event: string | null;
+};
 
 export function NisabHistory() {
   const [countryCode, setCountryCode] = useState("EG");
   const country = COUNTRY_PRICES.find((c) => c.code === countryCode) ?? COUNTRY_PRICES[0];
   const [goldPrice, setGoldPrice] = useState<string>(String(country.gold24));
   const [silverPrice, setSilverPrice] = useState<string>(String(country.silver));
+
+  // قاعدة بيانات الأنصبة
+  const [dbRows, setDbRows] = useState<NisabRow[]>([]);
+  const [selectedYear, setSelectedYear] = useState<number>(2026);
+  const [selectedMonth, setSelectedMonth] = useState<number>(1);
+
+  useEffect(() => {
+    supabase
+      .from("nisab_prices")
+      .select("*")
+      .order("year", { ascending: false })
+      .order("month", { ascending: false, nullsFirst: false })
+      .then(({ data }) => { if (data) setDbRows(data as NisabRow[]); });
+  }, []);
+
+  const dbYears = useMemo(() => {
+    const set = new Set<number>(dbRows.map((r) => r.year));
+    return [...set].sort((a, b) => b - a);
+  }, [dbRows]);
+
+  const monthsForYear = useMemo(
+    () => dbRows.filter((r) => r.year === selectedYear && r.month !== null)
+      .map((r) => r.month as number)
+      .sort((a, b) => a - b),
+    [dbRows, selectedYear]
+  );
+
+  const selectedRow = useMemo(() => {
+    if (monthsForYear.length > 0) {
+      return dbRows.find((r) => r.year === selectedYear && r.month === selectedMonth) ?? null;
+    }
+    return dbRows.find((r) => r.year === selectedYear && r.month === null) ?? null;
+  }, [dbRows, selectedYear, selectedMonth, monthsForYear]);
 
   const onCountryChange = (code: string) => {
     const c = COUNTRY_PRICES.find((x) => x.code === code);
@@ -51,6 +101,7 @@ export function NisabHistory() {
   );
 
   const years = useMemo(() => [...NISAB_LAST_100_YEARS].reverse(), []);
+
 
   return (
     <div className="space-y-6">
@@ -131,6 +182,90 @@ export function NisabHistory() {
           </div>
         </CardContent>
       </Card>
+
+      {/* قاعدة بيانات الأنصبة — اختيار السنة والشهر */}
+      <Card className="border-primary/30 shadow-soft" dir="rtl">
+        <CardHeader className="bg-gradient-to-l from-primary/10 to-transparent">
+          <CardTitle className="flex items-center gap-2 text-xl">
+            <Database className="h-5 w-5 text-primary" />
+            قاعدة بيانات الأنصبة — اختر السنة والشهر
+          </CardTitle>
+          <p className="text-sm text-muted-foreground text-right">
+            البيانات محفوظة في قاعدة بيانات النظام. اختر السنة، ولسنة 2026 يمكنك اختيار الشهر للاطلاع على
+            النصاب الشهري التفصيلي.
+          </p>
+        </CardHeader>
+        <CardContent className="pt-6 space-y-4 text-right">
+          <div className="grid sm:grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <Label className="text-xs">السنة</Label>
+              <Select
+                value={String(selectedYear)}
+                onValueChange={(v) => setSelectedYear(Number(v))}
+              >
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent className="max-h-72">
+                  {dbYears.map((y) => (
+                    <SelectItem key={y} value={String(y)}>{y}م</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {monthsForYear.length > 0 && (
+              <div className="space-y-1.5">
+                <Label className="text-xs">الشهر</Label>
+                <Select
+                  value={String(selectedMonth)}
+                  onValueChange={(v) => setSelectedMonth(Number(v))}
+                >
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent className="max-h-72">
+                    {monthsForYear.map((m) => (
+                      <SelectItem key={m} value={String(m)}>{MONTHS_AR[m - 1]}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </div>
+
+          {selectedRow ? (
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div className="rounded-lg border border-gold/30 bg-gold/10 p-4">
+                <div className="flex items-center gap-2 mb-2 text-gold-foreground">
+                  <Gem className="h-4 w-4" />
+                  <span className="font-semibold">سعر جرام الذهب</span>
+                  <Badge variant="secondary" className="text-[10px]">{selectedRow.currency}</Badge>
+                </div>
+                <p className="text-xl font-bold">{fmt(selectedRow.gold_price, 2)}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  نصاب الذهب = {fmt(selectedRow.gold_price * GOLD_NISAB_GRAMS, 0)} {selectedRow.currency}
+                </p>
+              </div>
+              <div className="rounded-lg border bg-muted p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Coins className="h-4 w-4" />
+                  <span className="font-semibold">سعر جرام الفضة</span>
+                  <Badge variant="secondary" className="text-[10px]">{selectedRow.currency}</Badge>
+                </div>
+                <p className="text-xl font-bold">{fmt(selectedRow.silver_price, 3)}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  نصاب الفضة = {fmt(selectedRow.silver_price * SILVER_NISAB_GRAMS, 0)} {selectedRow.currency}
+                </p>
+              </div>
+              {selectedRow.event && (
+                <p className="sm:col-span-2 text-xs text-muted-foreground">
+                  📌 {selectedRow.event}
+                  {selectedRow.hijri_year ? ` — الموافق ${selectedRow.hijri_year}هـ` : ""}
+                </p>
+              )}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">لا توجد بيانات متاحة لهذا الاختيار.</p>
+          )}
+        </CardContent>
+      </Card>
+
 
       {/* آخر 100 عام */}
       <Card className="border-gold/30 shadow-soft">
