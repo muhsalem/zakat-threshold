@@ -670,21 +670,24 @@ export function IndividualTab() {
                 <div className="text-sm font-semibold text-primary">د · المشغولات الذهبية الأخرى</div>
                 <p className="text-xs text-muted-foreground">ذهب مستعمل وكسر (للتهشيم — قِدَم الطراز — مكسور) + ذهب ادخاري غير قابل للبس</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <NumField label="كسر عيار 24" value={brk24} onChange={setBrk24} unit="جم" />
-                  <NumField label="كسر عيار 21" value={brk21} onChange={setBrk21} unit="جم" />
-                  <NumField label="كسر عيار 18" value={brk18} onChange={setBrk18} unit="جم" />
-                  <div className="rounded-md border bg-background p-3 space-y-1">
-                    <Label className="text-xs">كسر عيار آخر</Label>
-                    <div className="flex gap-1">
+                  <NumField label="عيار 24" value={brk24} onChange={setBrk24} unit="جم" />
+                  <NumField label="عيار 21" value={brk21} onChange={setBrk21} unit="جم" />
+                  <NumField label="عيار 18" value={brk18} onChange={setBrk18} unit="جم" />
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between gap-2">
+                      <Label className="text-sm">عيار آخر</Label>
                       <Select value={brkOtherKarat} onValueChange={setBrkOtherKarat}>
-                        <SelectTrigger className="w-20"><SelectValue /></SelectTrigger>
+                        <SelectTrigger className="h-7 w-16 text-xs"><SelectValue /></SelectTrigger>
                         <SelectContent>
                           {["9", "12", "14", "22"].map((k) => (
                             <SelectItem key={k} value={k}>{k}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
-                      <Input type="number" min="0" value={brkOtherWeight} onChange={(e) => setBrkOtherWeight(e.target.value)} placeholder="0" dir="ltr" style={{ textAlign: "right" }} />
+                    </div>
+                    <div className="relative">
+                      <Input type="number" min="0" value={brkOtherWeight} onChange={(e) => setBrkOtherWeight(e.target.value)} placeholder="0" dir="ltr" style={{ textAlign: "right" }} className="pl-10" />
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">جم</span>
                     </div>
                   </div>
                 </div>
