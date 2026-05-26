@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -545,10 +545,14 @@ function TaxZakatModel({ currency, nisab, yearMode }: { currency: string; nisab:
 }
 
 // ============ المكوّن الرئيسي ============
-export function SectoralModels() {
-  const [currency, setCurrency] = useState("ج.م");
+export function SectoralModels({ activeTab, onTabChange, defaultCurrency }: { activeTab?: string; onTabChange?: (v: string) => void; defaultCurrency?: string } = {}) {
+  const [currency, setCurrency] = useState(defaultCurrency ?? "ج.م");
   const [goldGram, setGoldGram] = useState("5400");
   const [yearMode, setYearMode] = useState<"hijri" | "solar">("hijri");
+  const [internalTab, setInternalTab] = useState(activeTab ?? "trade");
+  const tab = activeTab ?? internalTab;
+  const setTab = (v: string) => { setInternalTab(v); onTabChange?.(v); };
+  useEffect(() => { if (defaultCurrency) setCurrency(defaultCurrency); }, [defaultCurrency]);
   const nisab = useMemo(() => num(goldGram) * GOLD_NISAB_GRAMS, [goldGram]);
 
   return (
@@ -573,7 +577,7 @@ export function SectoralModels() {
             النصاب الحالي: <b>{fmt(nisab)} {currency}</b> (= 85 جرام × {fmt(num(goldGram))})
           </div>
 
-          <Tabs defaultValue="trade" className="space-y-4">
+          <Tabs value={tab} onValueChange={setTab} className="space-y-4">
             <TabsList className="grid grid-cols-3 md:grid-cols-9 h-auto">
               <TabsTrigger value="trade" className="gap-1 text-xs py-2"><Briefcase className="h-3.5 w-3.5" />تجاري</TabsTrigger>
               <TabsTrigger value="industry" className="gap-1 text-xs py-2"><Factory className="h-3.5 w-3.5" />صناعي</TabsTrigger>
