@@ -574,76 +574,57 @@ export function SectoralModels({
   const ALL_TABS = [
     { v: "trade", icon: Briefcase, label: "تجاري" },
     { v: "industry", icon: Factory, label: "صناعي" },
-    { v: "services", icon: Headset, label: "خدمي" },
+    { v: "services", icon: Headset, label: "خدمي (شامل المهن الحرة)" },
     { v: "mustaghal", icon: Building, label: "مُستغلات" },
-    { v: "free", icon: UserCog, label: "مهن حرة" },
     { v: "marine", icon: Fish, label: "ثروة بحرية" },
     { v: "minerals", icon: Pickaxe, label: "معادن" },
-    { v: "salary", icon: Wallet, label: "أجور ورواتب" },
-    { v: "tax", icon: Landmark, label: "زكاة وضريبة" },
   ];
   const visibleTabs = allowedTabs && allowedTabs.length
     ? ALL_TABS.filter((t) => allowedTabs.includes(t.v))
     : ALL_TABS;
 
-  return (
-    <div className="space-y-4">
-      <Card className="shadow-soft">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Calculator className="h-5 w-5 text-primary" />
-            نماذج محاسبية متخصصة لحساب الزكاة
-          </CardTitle>
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            {locked
-              ? <>النموذج مربوط بإعدادات حساب زكاة الشركة (العملة، سعر الذهب، نوع السنة){sectorLabel ? <> ومُهيَّأ لقطاع: <b className="text-primary">{sectorLabel}</b></> : null}.</>
-              : <>نماذج مطابقة لقوائم حساب الزكاة المعتمدة (المرجع: د. عصام أبو النصر — جامعة الأزهر).</>}
-          </p>
-        </CardHeader>
-        <CardContent>
-          {orgKind === "nonprofit" && (
-            <Alert className="border-amber-500/30 bg-amber-500/5 mb-3">
-              <Info className="h-4 w-4 text-amber-600" />
-              <AlertDescription className="text-xs">
-                المؤسسة غير ربحية — النماذج للعرض والتدقيق والإفصاح فقط، ولا تجب الزكاة على رأس مالها.
-              </AlertDescription>
-            </Alert>
-          )}
-          {!locked && (
-            <TopBar
-              currency={currency} setCurrency={setCurrency}
-              goldGram={goldGramLocal} setGoldGram={setGoldGramLocal}
-              yearMode={yearModeLocal} setYearMode={setYearModeLocal}
-            />
-          )}
-          <div className="text-xs text-muted-foreground mb-3 px-1 flex flex-wrap gap-x-4 gap-y-1">
-            <span>العملة: <b>{currency}</b></span>
-            <span>سعر جرام الذهب: <b>{fmt(num(goldGram))}</b></span>
-            <span>نوع السنة: <b>{yearMode === "hijri" ? "قمرية 2.5%" : "شمسية 2.5775%"}</b></span>
-            <span>النصاب: <b>{fmt(nisab)} {currency}</b></span>
-          </div>
+  // قسم تكميلي للأجور والضرائب يُلحَق بكل نموذج (بدل التبويبات المستقلة)
+  const Addons = (
+    <div className="space-y-4 mt-6 pt-6 border-t-2 border-dashed border-primary/20">
+      <Alert className="border-primary/30 bg-primary/5">
+        <Info className="h-4 w-4" />
+        <AlertDescription className="text-xs leading-relaxed">
+          <b>أقسام تكميلية:</b> الأجور والمرتبات وما يلزم من الضرائب أصبحت <b>بنوداً مدمجة</b> ضمن النموذج القطاعي
+          (بدلاً من تبويبات مستقلة)، لارتباطها بنوع نشاط الشركة لا بحساب مستقل.
+        </AlertDescription>
+      </Alert>
 
-          <Tabs value={tab} onValueChange={setTab} className="space-y-4">
-            <TabsList className="grid h-auto" style={{ gridTemplateColumns: `repeat(${Math.min(visibleTabs.length, 9)}, minmax(0, 1fr))` }}>
-              {visibleTabs.map((t) => {
-                const I = t.icon;
-                return (
-                  <TabsTrigger key={t.v} value={t.v} className="gap-1 text-xs py-2">
-                    <I className="h-3.5 w-3.5" />{t.label}
-                  </TabsTrigger>
-                );
-              })}
-            </TabsList>
+      <details className="group rounded-xl border bg-card overflow-hidden">
+        <summary className="cursor-pointer px-4 py-3 font-semibold text-sm flex items-center gap-2 bg-muted/40 hover:bg-muted/60">
+          <Wallet className="h-4 w-4 text-primary" /> ➊ زكاة الأجور والرواتب (المرتبطة بالشركة)
+        </summary>
+        <div className="p-4"><SalaryModel currency={currency} nisab={nisab} yearMode={yearMode} /></div>
+      </details>
 
-            <TabsContent value="trade"><TradeModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
-            <TabsContent value="industry"><IndustrialModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
-            <TabsContent value="services"><ServicesModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
-            <TabsContent value="mustaghal"><MustaghallatModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
-            <TabsContent value="free"><FreeProfModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
-            <TabsContent value="marine"><MarineModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
-            <TabsContent value="minerals"><MineralsModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
-            <TabsContent value="salary"><SalaryModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
-            <TabsContent value="tax"><TaxZakatModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
+      <details className="group rounded-xl border bg-card overflow-hidden">
+        <summary className="cursor-pointer px-4 py-3 font-semibold text-sm flex items-center gap-2 bg-muted/40 hover:bg-muted/60">
+          <Landmark className="h-4 w-4 text-primary" /> ➋ معالجة الزكاة والضريبة معاً
+        </summary>
+        <div className="p-4"><TaxZakatModel currency={currency} nisab={nisab} yearMode={yearMode} /></div>
+      </details>
+    </div>
+  );
+
+            <TabsContent value="trade"><TradeModel currency={currency} nisab={nisab} yearMode={yearMode} />{Addons}</TabsContent>
+            <TabsContent value="industry"><IndustrialModel currency={currency} nisab={nisab} yearMode={yearMode} />{Addons}</TabsContent>
+            <TabsContent value="services">
+              <ServicesModel currency={currency} nisab={nisab} yearMode={yearMode} />
+              <div className="mt-6 pt-6 border-t-2 border-dashed border-gold/30">
+                <h4 className="font-semibold text-sm text-primary mb-3 flex items-center gap-2">
+                  <UserCog className="h-4 w-4" /> ملحق: نموذج المهن الحرة (طبيب، محامٍ، مهندس، استشاري...)
+                </h4>
+                <FreeProfModel currency={currency} nisab={nisab} yearMode={yearMode} />
+              </div>
+              {Addons}
+            </TabsContent>
+            <TabsContent value="mustaghal"><MustaghallatModel currency={currency} nisab={nisab} yearMode={yearMode} />{Addons}</TabsContent>
+            <TabsContent value="marine"><MarineModel currency={currency} nisab={nisab} yearMode={yearMode} />{Addons}</TabsContent>
+            <TabsContent value="minerals"><MineralsModel currency={currency} nisab={nisab} yearMode={yearMode} />{Addons}</TabsContent>
           </Tabs>
         </CardContent>
       </Card>
