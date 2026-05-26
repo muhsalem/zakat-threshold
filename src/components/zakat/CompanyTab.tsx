@@ -102,22 +102,40 @@ const COUNTRIES: CountryInfo[] = [
 // ============ القطاعات والربط بالنماذج ============
 type Sector = { id: string; label: string; group: "primary" | "industrial" | "commercial" | "services"; model: string };
 const SECTORS: Sector[] = [
-  // أولى
-  { id: "agri",     label: "زراعي (نباتي/حيواني)",         group: "primary",     model: "trade" },
-  { id: "minerals", label: "استخراج معادن",                 group: "primary",     model: "minerals" },
-  { id: "oilgas",   label: "استخراج بترول وغاز",            group: "primary",     model: "minerals" },
-  { id: "fishing",  label: "صيد الأسماك / ثروة بحرية",     group: "primary",     model: "marine" },
-  // صناعي
-  { id: "manuf",    label: "صناعي تحويلي",                  group: "industrial",  model: "industry" },
-  { id: "construct",label: "إنشاءات ومقاولات",              group: "industrial",  model: "industry" },
-  // تجاري
-  { id: "trade_w",  label: "تجارة جملة وتجزئة",             group: "commercial",  model: "trade" },
-  { id: "import",   label: "استيراد وتصدير",                group: "commercial",  model: "trade" },
-  // خدمي
-  { id: "consult",  label: "استشارات وخدمات مهنية",         group: "services",    model: "services" },
-  { id: "transport",label: "نقل ولوجستيات",                  group: "services",    model: "services" },
-  { id: "software", label: "تقنية وبرمجيات",                 group: "services",    model: "services" },
-  { id: "realestate",label:"عقارات ومُستغلات",              group: "services",    model: "mustaghal" },
+  // ===== أولى (استخراجي/زراعي) =====
+  { id: "agri",        label: "زراعي (نباتي)",                      group: "primary",    model: "trade" },
+  { id: "livestock",   label: "ثروة حيوانية ودواجن",                group: "primary",    model: "trade" },
+  { id: "forestry",    label: "حراجة وقطع أخشاب",                   group: "primary",    model: "trade" },
+  { id: "minerals",    label: "استخراج معادن",                       group: "primary",    model: "minerals" },
+  { id: "oilgas",      label: "استخراج بترول وغاز",                  group: "primary",    model: "minerals" },
+  { id: "quarries",    label: "محاجر أحجار ورمال ومواد بناء",       group: "primary",    model: "minerals" },
+  { id: "fishing",     label: "صيد الأسماك والثروة البحرية",         group: "primary",    model: "marine" },
+  // ===== صناعي =====
+  { id: "manuf",       label: "صناعي تحويلي عام",                    group: "industrial", model: "industry" },
+  { id: "food",        label: "صناعات غذائية ومشروبات",              group: "industrial", model: "industry" },
+  { id: "pharma",      label: "صناعات دوائية وكيماوية",              group: "industrial", model: "industry" },
+  { id: "textile",     label: "نسيج وملابس",                          group: "industrial", model: "industry" },
+  { id: "auto",        label: "صناعة السيارات والمعدات الثقيلة",    group: "industrial", model: "industry" },
+  { id: "utilities",   label: "طاقة وكهرباء ومياه (مرافق)",          group: "industrial", model: "services" },
+  { id: "renewable",   label: "طاقة متجددة وإعادة تدوير",            group: "industrial", model: "industry" },
+  { id: "construct",   label: "إنشاءات ومقاولات",                    group: "industrial", model: "industry" },
+  // ===== تجاري =====
+  { id: "trade_w",     label: "تجارة جملة وتجزئة",                   group: "commercial", model: "trade" },
+  { id: "import",      label: "استيراد وتصدير",                       group: "commercial", model: "trade" },
+  { id: "ecommerce",   label: "تجارة إلكترونية (E-commerce)",         group: "commercial", model: "trade" },
+  { id: "gold_trade",  label: "تجارة الذهب والمعادن الثمينة",         group: "commercial", model: "trade" },
+  { id: "used_goods",  label: "تجارة سيارات ومعدات مستعملة",         group: "commercial", model: "trade" },
+  // ===== خدمي =====
+  { id: "islamic_fin", label: "مصارف ومؤسسات مالية إسلامية",         group: "services",   model: "services" },
+  { id: "takaful",     label: "تأمين تكافلي إسلامي",                  group: "services",   model: "services" },
+  { id: "consult",     label: "استشارات وخدمات مهنية",                group: "services",   model: "services" },
+  { id: "health",      label: "رعاية صحية ومستشفيات",                 group: "services",   model: "services" },
+  { id: "education",   label: "تعليم خاص وتدريب",                     group: "services",   model: "services" },
+  { id: "tourism",     label: "سياحة وفنادق ومطاعم (HORECA)",         group: "services",   model: "mustaghal" },
+  { id: "transport",   label: "نقل ولوجستيات وشحن دولي",              group: "services",   model: "services" },
+  { id: "software",    label: "تقنية وبرمجيات و SaaS",                group: "services",   model: "services" },
+  { id: "media",       label: "إعلام ونشر وإنتاج",                    group: "services",   model: "services" },
+  { id: "realestate",  label: "عقارات ومُستغلَّات",                  group: "services",   model: "mustaghal" },
 ];
 
 const GROUP_LABELS: Record<Sector["group"], string> = {
@@ -132,20 +150,37 @@ function getAllowedSectoralTabs(sectorId: string, group: Sector["group"]): strin
   const supporting = ["salary", "tax"]; // الأجور والضريبة مرتبطة دائماً
   let primary: string[] = [];
   switch (sectorId) {
-    case "agri":      primary = ["trade"]; break;
+    case "agri":
+    case "livestock":
+    case "forestry":   primary = ["trade"]; break;
     case "minerals":
-    case "oilgas":    primary = ["minerals"]; break;
-    case "fishing":   primary = ["marine"]; break;
+    case "oilgas":
+    case "quarries":   primary = ["minerals"]; break;
+    case "fishing":    primary = ["marine"]; break;
     case "manuf":
-    case "construct": primary = ["industry", "trade"]; break;
+    case "food":
+    case "pharma":
+    case "textile":
+    case "auto":
+    case "renewable":
+    case "construct":  primary = ["industry", "trade"]; break;
+    case "utilities":  primary = ["services", "industry"]; break;
     case "trade_w":
-    case "import":    primary = ["trade"]; break;
-    case "realestate":primary = ["mustaghal", "services"]; break;
+    case "import":
+    case "ecommerce":
+    case "gold_trade":
+    case "used_goods": primary = ["trade"]; break;
+    case "tourism":
+    case "realestate": primary = ["mustaghal", "services"]; break;
+    case "islamic_fin":
+    case "takaful":    primary = ["services", "trade"]; break;
     case "consult":
+    case "health":
+    case "education":
     case "transport":
-    case "software":  primary = ["services", "free"]; break;
+    case "software":
+    case "media":      primary = ["services", "free"]; break;
     default:
-      // افتراضي حسب المجموعة
       primary = group === "industrial" ? ["industry"]
         : group === "commercial" ? ["trade"]
         : group === "services" ? ["services"]
