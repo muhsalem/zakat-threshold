@@ -167,17 +167,27 @@ export function IndividualTab() {
   const [inventory, setInventory] = useState("");
   const [receivablesGood, setReceivablesGood] = useState(""); // ديون مرجوّة
   const [receivablesBad, setReceivablesBad] = useState(""); // ديون متعذّرة (لا تُزكَّى الآن)
+  // هل المزكي مساهم في شركة (داخل قسم عروض التجارة)
+  const [tradeIsShareholder, setTradeIsShareholder] = useState(false);
+  const [tradeShareCompany, setTradeShareCompany] = useState("");
+  const [tradeSharePct, setTradeSharePct] = useState("");
+  const [tradeShareCompanyBase, setTradeShareCompanyBase] = useState("");
 
   // العقار
   const [realEstateTrade, setRealEstateTrade] = useState(""); // عقار للتجارة (بقيمته السوقية)
   const [realEstateRentIncome, setRealEstateRentIncome] = useState(""); // صافي إيراد الإيجار المُدّخر
 
-  // الزروع
+  // المستغلات والدخل (المجموع يُحسب داخل المكوّن)
+  const [incomeUsufructTotal, setIncomeUsufructTotal] = useState(0);
+
+  // الزروع — هل يملك أرضاً زراعية
+  const [ownsFarmland, setOwnsFarmland] = useState(false);
   const [cropsKg, setCropsKg] = useState("");
   const [cropsValuePerKg, setCropsValuePerKg] = useState("");
   const [cropsIrrigation, setCropsIrrigation] = useState<"rain" | "irrigated">("rain");
 
-  // الأنعام
+  // الأنعام — هل يملك مواشي
+  const [ownsLivestock, setOwnsLivestock] = useState(false);
   const [camels, setCamels] = useState("");
   const [cows, setCows] = useState("");
   const [sheep, setSheep] = useState("");
