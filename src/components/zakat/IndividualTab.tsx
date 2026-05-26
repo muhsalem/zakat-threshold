@@ -23,8 +23,9 @@ import {
   ZAKAT_RATE, ZAKAT_RATE_GREGORIAN, GOLD_NISAB_GRAMS, SILVER_NISAB_GRAMS,
   CROPS_NISAB_KG, HAWL_DAYS_HIJRI,
   num, fmt, currency, camelZakat, cowZakat, sheepZakat,
-  COUNTRY_PRICES, checkHawl, formatHijri, ZAKAT_RECIPIENTS,
+  COUNTRY_PRICES, checkHawl, formatHijri, gregorianToHijri, ZAKAT_RECIPIENTS,
 } from "@/lib/zakat";
+import { SaveToHistoryCard } from "./SaveToHistoryCard";
 import { CashBankSection } from "./CashBankSection";
 import { SecuritiesSection } from "./SecuritiesSection";
 import { IncomeUsufructSection } from "./IncomeUsufructSection";
@@ -1404,7 +1405,7 @@ export function IndividualTab() {
         <SaveToHistoryCard
           payload={{
             record_type: "individual",
-            hijri_year: hawl ? formatHijri(new Date()) : null,
+            hijri_year: (() => { const d = new Date(); return formatHijri(gregorianToHijri(d.getFullYear(), d.getMonth() + 1, d.getDate())); })(),
             currency: currencyName,
             total_assets: calc.monetaryGross + calc.totalGoldValue + calc.silverValue + calc.cropsValue,
             total_liabilities: calc.debts,
