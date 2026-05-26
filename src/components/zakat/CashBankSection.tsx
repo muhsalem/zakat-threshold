@@ -9,9 +9,46 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Info, RefreshCw, Wallet, Smartphone, CreditCard, Building2, PiggyBank, Banknote } from "lucide-react";
+import { Info, RefreshCw, Wallet, Smartphone, CreditCard, Building2, PiggyBank, Banknote, Bitcoin, Award } from "lucide-react";
 import { COUNTRY_PRICES, currency as fmtCurrency, num } from "@/lib/zakat";
 import bankCardsImg from "@/assets/bank-cards.png";
+
+// ===== قوائم البنوك =====
+const ISLAMIC_BANKS = [
+  "بنك فيصل الإسلامي المصري",
+  "بنك البركة مصر",
+  "مصرف أبوظبي الإسلامي — ADIB",
+  "البنك الإسلامي الأردني",
+  "بيت التمويل الكويتي — KFH",
+  "مصرف الراجحي",
+  "بنك البلاد",
+  "بنك الجزيرة",
+  "مصرف الإنماء",
+  "مصرف الشارقة الإسلامي",
+  "مصرف الإمارات الإسلامي",
+  "بنك دبي الإسلامي",
+  "مصرف قطر الإسلامي — QIB",
+  "البنك الإسلامي القطري الدولي — QIIB",
+  "البنك الإسلامي الفلسطيني",
+  "بنك صفوة الإسلامي (الأردن)",
+  "أخرى",
+];
+
+const TRADITIONAL_BANKS_WITH_WINDOWS = [
+  { v: "nbe", l: "البنك الأهلي المصري — NBE", window: "نافذة المعاملات الإسلامية" },
+  { v: "misr", l: "بنك مصر", window: "فرع المعاملات الإسلامية" },
+  { v: "cib", l: "البنك التجاري الدولي — CIB", window: "—" },
+  { v: "qnb", l: "بنك QNB الأهلي", window: "—" },
+  { v: "aaib", l: "البنك العربي الأفريقي الدولي", window: "—" },
+  { v: "hsbc", l: "بنك HSBC", window: "Amanah — أمانة" },
+  { v: "adcb", l: "بنك أبوظبي التجاري — ADCB", window: "إسلامي" },
+  { v: "fab", l: "بنك أبوظبي الأول — FAB", window: "إسلامي" },
+  { v: "enbd", l: "بنك الإمارات دبي الوطني", window: "إسلامي" },
+  { v: "mashreq", l: "بنك المشرق", window: "المشرق الإسلامي" },
+  { v: "samba", l: "سامبا — SNB", window: "إسلامي" },
+  { v: "alahli", l: "البنك الأهلي السعودي — SNB", window: "—" },
+  { v: "other", l: "بنك تقليدي آخر", window: "—" },
+];
 
 type BankType = "islamic" | "traditional";
 
