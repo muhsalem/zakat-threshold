@@ -462,7 +462,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
           <span className="text-muted-foreground">دفتر توفير البريد</span><b>{cur(totals.tPost)}</b>
         </div>
         <div className="flex items-center justify-between text-xs">
-          <span className="text-muted-foreground">بطاقات Debit/Prepaid</span><b>{cur(totals.tCards)}</b>
+          <span className="text-muted-foreground">بطاقات Prepaid</span><b>{cur(totals.tCards)}</b>
         </div>
         <div className="flex items-center justify-between text-xs">
           <span className="text-muted-foreground">محافظ شركات الاتصالات</span><b>{cur(totals.tTelco)}</b>
