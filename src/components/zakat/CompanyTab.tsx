@@ -127,6 +127,34 @@ const GROUP_LABELS: Record<Sector["group"], string> = {
   services: "نشاط خدمي",
 };
 
+// التبويبات المسموح بها في النموذج القطاعي حسب القطاع المحدد (مع تبويبات مساندة دائمة)
+function getAllowedSectoralTabs(sectorId: string, group: Sector["group"]): string[] {
+  const supporting = ["salary", "tax"]; // الأجور والضريبة مرتبطة دائماً
+  let primary: string[] = [];
+  switch (sectorId) {
+    case "agri":      primary = ["trade"]; break;
+    case "minerals":
+    case "oilgas":    primary = ["minerals"]; break;
+    case "fishing":   primary = ["marine"]; break;
+    case "manuf":
+    case "construct": primary = ["industry", "trade"]; break;
+    case "trade_w":
+    case "import":    primary = ["trade"]; break;
+    case "realestate":primary = ["mustaghal", "services"]; break;
+    case "consult":
+    case "transport":
+    case "software":  primary = ["services", "free"]; break;
+    default:
+      // افتراضي حسب المجموعة
+      primary = group === "industrial" ? ["industry"]
+        : group === "commercial" ? ["trade"]
+        : group === "services" ? ["services"]
+        : ["trade"];
+  }
+  return [...primary, ...supporting];
+}
+
+
 // تقريب التحويل الميلادي/الهجري
 function gregorianToHijri(gYear: number) {
   return Math.round((gYear - 622) * 33 / 32);
@@ -735,7 +763,7 @@ export function CompanyTab() {
             </CardContent>
           </Card>
 
-          {/* النموذج القطاعي مرتبط بقطاع النشاط المحدد */}
+          {/* النموذج القطاعي مرتبط بقطاع النشاط المحدد وطبيعة المؤسسة وإعدادات حساب زكاة الشركة */}
           <Card className="shadow-soft border-gold/30">
             <CardHeader className="bg-gradient-to-l from-gold/10 to-transparent">
               <CardTitle className="flex items-center gap-2">
@@ -743,13 +771,24 @@ export function CompanyTab() {
                 النموذج القطاعي التفصيلي
               </CardTitle>
               <p className="text-xs text-muted-foreground">
-                مرتبط بقطاع النشاط المختار أعلاه: <b>{sector.label}</b> — يمكنك تغيير التبويب القطاعي بحرية للمقارنة.
+                مفعّل تلقائياً وفق <b>{GROUP_LABELS[sector.group]}</b> → <b>{sector.label}</b>،
+                ومربوط بإعدادات حساب زكاة الشركة أعلاه (العملة، سعر الذهب، نوع السنة، النصاب){orgKind === "nonprofit" ? " — للعرض فقط لأن المؤسسة غير ربحية" : ""}.
               </p>
             </CardHeader>
             <CardContent className="pt-4">
-              <SectoralModels activeTab={sector.model} defaultCurrency={currencyName} />
+              <SectoralModels
+                activeTab={sector.model}
+                defaultCurrency={currencyName}
+                goldGram={goldGramPrice}
+                yearMode={solarYear}
+                allowedTabs={getAllowedSectoralTabs(sector.id, sector.group)}
+                locked
+                orgKind={orgKind}
+                sectorLabel={sector.label}
+              />
             </CardContent>
           </Card>
+
 
           {/* حاسبة التطهير الشرعي */}
           <PurificationCalculator currencyName={currencyName} />
