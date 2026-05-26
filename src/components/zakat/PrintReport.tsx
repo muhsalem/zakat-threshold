@@ -291,7 +291,7 @@ export function PrintReport({ data }: { data: PrintReportData }) {
         على عاتق المزكي، ويُنصح بمراجعة عالم أو مفتٍ معتمد وهيئة الفتوى المحلية للحالات الخاصة.
         تحتفظ منصة «حاسبة الزكاة» بحقوق الملكية الفكرية للنموذج والتصميم والمعادلات الحسابية.
         <div style={{ marginTop: "4pt", textAlign: "center", fontWeight: 700 }}>
-          © {issueDate.getFullYear()} منصة حاسبة الزكاة الشاملة — جميع الحقوق محفوظة.
+          © {(issueDate ?? new Date()).getFullYear()} منصة حاسبة الزكاة الشاملة — جميع الحقوق محفوظة.
           &nbsp;|&nbsp; رقم التقرير: <span style={{ fontFamily: "monospace" }}>{reportId}</span>
         </div>
       </div>
