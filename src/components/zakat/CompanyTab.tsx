@@ -608,7 +608,7 @@ export function CompanyTab() {
 
     return {
       grossAssets, curAssets, curLiabs, netAssets, workingCapital, baseGross, base,
-      rate, zakatOneYear, zakat, years, completed, complianceScore,
+      rate, zakatOneYear, zakat, years, completed, complianceScore, totalCount, activeSections,
       nisabValue, reachesNisab, exemptPct, zakatableRatio, totalShares, sharesBalanced,
       recZakatable, inventoryMarket, stocksZakatable,
     };
