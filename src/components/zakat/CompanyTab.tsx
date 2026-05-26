@@ -634,7 +634,9 @@ export function CompanyTab() {
                       <NumField label="أرصدة البنوك" value={banks} onChange={setBanks} unit={currencyName} />
                       <NumField label="العملاء والمدينون" value={receivablesCo} onChange={setReceivablesCo} unit={currencyName} hint="بعد استبعاد المشكوك" />
                       <NumField label="المخزون (بسعر السوق)" value={inventoryCo} onChange={setInventoryCo} unit={currencyName} />
-                      <NumField label="استثمارات قصيرة الأجل" value={investments} onChange={setInvestments} unit={currencyName} />
+                      <NumField label="استثمارات قصيرة الأجل" value={investments} onChange={setInvestments} unit={currencyName} hint="للمضاربة — تُزكى بالقيمة السوقية" />
+                      <NumField label="استثمارات في شركات تابعة/شقيقة" value={subsidiaryInv} onChange={setSubsidiaryInv} unit={currencyName} hint="نصيب المستثمر من زكاتها يُضاف هنا" />
+                      <NumField label="الديون المشكوك في تحصيلها (تُخصم)" value={doubtfulDebts} onChange={setDoubtfulDebts} unit={currencyName} hint="تُحسم من العملاء" />
                       <NumField label="أصول متداولة أخرى" value={otherCurrent} onChange={setOtherCurrent} unit={currencyName} />
                     </div>
                   </div>
