@@ -1035,67 +1035,63 @@ export function IndividualTab() {
             </AccordionContent>
           </AccordionItem>
 
-          {/* عروض التجارة */}
-          <AccordionItem value="trade" className="border rounded-xl shadow-soft bg-card px-4">
+          {/* زكاة دخل وعروض التجارة والمستغلات والإيرادات (مدمجة) */}
+          <AccordionItem value="income-trade-usufruct" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
-                <Package className="h-5 w-5 text-primary" /> زكاة عروض التجارة والديون
+                <Package className="h-5 w-5 text-primary" /> زكاة دخل وعروض التجارة والمستغلات والإيرادات
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
-              <div className="grid md:grid-cols-2 gap-4">
-                <NumField label="قيمة البضاعة بسعر السوق" value={inventory} onChange={setInventory} unit={currencyName} hint="تُقوَّم بسعر بيع الجملة يوم وجوب الزكاة" />
-                <NumField label="ديون مرجوّة لك على الغير" value={receivablesGood} onChange={setReceivablesGood} unit={currencyName} hint="على مَليء مُقرّ بها" />
-                <NumField
-                  label="ديون متعذّرة (على معسر أو جاحد)"
-                  value={receivablesBad} onChange={setReceivablesBad} unit={currencyName}
-                  hint="لا تُزكَّى حتى تُقبض، ثم زكاة سنة واحدة فقط — لا تُحتسب الآن"
-                />
-              </div>
-
-              {/* هل أنت مساهم في شركة */}
-              <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
-                <div className="flex items-center justify-between">
-                  <Label className="text-sm font-semibold">هل أنت مساهم / شريك في شركة قائمة؟</Label>
-                  <Switch checked={tradeIsShareholder} onCheckedChange={setTradeIsShareholder} />
-                </div>
-                {tradeIsShareholder && (
-                  <>
-                    <Alert className="border-primary/20 bg-primary/5">
-                      <Info className="h-4 w-4" />
-                      <AlertDescription className="text-xs">
-                        إن كانت الشركة تُخرج زكاتها كاملةً عن وعائها فلا تُكرّر الحساب — اتركها صفراً. وإلا أدخل الوعاء الزكوي للشركة (من تبويب «زكاة الشركات») ونسبة حصتك.
-                      </AlertDescription>
-                    </Alert>
-                    <div className="grid md:grid-cols-3 gap-3">
-                      <div>
-                        <Label className="text-xs">اسم الشركة</Label>
-                        <Input value={tradeShareCompany} onChange={(e) => setTradeShareCompany(e.target.value)} placeholder="…" />
-                      </div>
-                      <NumField label="نسبة حصتك %" value={tradeSharePct} onChange={setTradeSharePct} unit="%" />
-                      <NumField label="وعاء الشركة الزكوي" value={tradeShareCompanyBase} onChange={setTradeShareCompanyBase} unit={currencyName} />
-                    </div>
-                    <p className="text-[11px] text-muted-foreground">
-                      نصيبك المُحتسب: <b className="text-primary">{cur(num(tradeShareCompanyBase) * (num(tradeSharePct) / 100))}</b>
-                    </p>
-                  </>
-                )}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-
-          {/* المستغلات وزكاة الدخل + العقار */}
-          <AccordionItem value="income-usufruct" className="border rounded-xl shadow-soft bg-card px-4">
-            <AccordionTrigger className="hover:no-underline">
-              <span className="flex items-center gap-2 text-base font-semibold">
-                <HandHeart className="h-5 w-5 text-primary" /> زكاة المستغلات والإيرادات والدخل (شاملاً العقار)
-              </span>
-            </AccordionTrigger>
-            <AccordionContent className="space-y-4 pb-4">
-              {/* قسم العقار مُدمج هنا */}
+              {/* أولاً: عروض التجارة والديون */}
               <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-3">
                 <div className="flex items-center gap-2 text-sm font-semibold text-primary">
-                  <Home className="h-4 w-4" /> زكاة العقار
+                  <Package className="h-4 w-4" /> أولاً: عروض التجارة والديون
+                </div>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <NumField label="قيمة البضاعة بسعر السوق" value={inventory} onChange={setInventory} unit={currencyName} hint="تُقوَّم بسعر بيع الجملة يوم وجوب الزكاة" />
+                  <NumField label="ديون مرجوّة لك على الغير" value={receivablesGood} onChange={setReceivablesGood} unit={currencyName} hint="على مَليء مُقرّ بها" />
+                  <NumField
+                    label="ديون متعذّرة (على معسر أو جاحد)"
+                    value={receivablesBad} onChange={setReceivablesBad} unit={currencyName}
+                    hint="لا تُزكَّى حتى تُقبض، ثم زكاة سنة واحدة فقط — لا تُحتسب الآن"
+                  />
+                </div>
+
+                {/* هل أنت مساهم في شركة */}
+                <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-semibold">هل أنت مساهم / شريك في شركة قائمة؟</Label>
+                    <Switch checked={tradeIsShareholder} onCheckedChange={setTradeIsShareholder} />
+                  </div>
+                  {tradeIsShareholder && (
+                    <>
+                      <Alert className="border-primary/20 bg-primary/5">
+                        <Info className="h-4 w-4" />
+                        <AlertDescription className="text-xs">
+                          إن كانت الشركة تُخرج زكاتها كاملةً عن وعائها فلا تُكرّر الحساب — اتركها صفراً. وإلا أدخل الوعاء الزكوي للشركة (من تبويب «زكاة الشركات») ونسبة حصتك.
+                        </AlertDescription>
+                      </Alert>
+                      <div className="grid md:grid-cols-3 gap-3">
+                        <div>
+                          <Label className="text-xs">اسم الشركة</Label>
+                          <Input value={tradeShareCompany} onChange={(e) => setTradeShareCompany(e.target.value)} placeholder="…" />
+                        </div>
+                        <NumField label="نسبة حصتك %" value={tradeSharePct} onChange={setTradeSharePct} unit="%" />
+                        <NumField label="وعاء الشركة الزكوي" value={tradeShareCompanyBase} onChange={setTradeShareCompanyBase} unit={currencyName} />
+                      </div>
+                      <p className="text-[11px] text-muted-foreground">
+                        نصيبك المُحتسب: <b className="text-primary">{cur(num(tradeShareCompanyBase) * (num(tradeSharePct) / 100))}</b>
+                      </p>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* ثانياً: العقار */}
+              <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-3">
+                <div className="flex items-center gap-2 text-sm font-semibold text-primary">
+                  <Home className="h-4 w-4" /> ثانياً: زكاة العقار
                 </div>
                 <Alert className="border-primary/20 bg-background">
                   <Info className="h-4 w-4" />
@@ -1113,12 +1109,19 @@ export function IndividualTab() {
                 </div>
               </div>
 
-              <IncomeUsufructSection
-                currencyName={currencyName}
-                onTotalChange={setIncomeUsufructTotal}
-              />
+              {/* ثالثاً: المستغلات والدخل والإيرادات */}
+              <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-3">
+                <div className="flex items-center gap-2 text-sm font-semibold text-primary">
+                  <HandHeart className="h-4 w-4" /> ثالثاً: المستغلات والدخل والإيرادات
+                </div>
+                <IncomeUsufructSection
+                  currencyName={currencyName}
+                  onTotalChange={setIncomeUsufructTotal}
+                />
+              </div>
             </AccordionContent>
           </AccordionItem>
+
 
 
           {/* الزروع */}
