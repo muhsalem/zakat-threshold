@@ -55,20 +55,8 @@ function Index() {
           </TabsList>
 
           <TabsContent value="individual"><IndividualTab /></TabsContent>
-          <TabsContent value="company">
-            <Tabs defaultValue="main" className="space-y-4">
-              <TabsList className="grid grid-cols-2 w-full max-w-xl mx-auto h-auto">
-                <TabsTrigger value="main" className="gap-2 text-sm py-2.5">
-                  <Building2 className="h-4 w-4" /> النموذج الرئيسي
-                </TabsTrigger>
-                <TabsTrigger value="sectoral" className="gap-2 text-sm py-2.5">
-                  <FileSpreadsheet className="h-4 w-4" /> نماذج محاسبية قطاعية
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent value="main"><CompanyTab /></TabsContent>
-              <TabsContent value="sectoral"><SectoralModels /></TabsContent>
-            </Tabs>
-          </TabsContent>
+          <TabsContent value="company"><CompanyTab /></TabsContent>
+
           <TabsContent value="history" className="max-w-4xl mx-auto"><NisabHistory /></TabsContent>
         </Tabs>
       </main>
