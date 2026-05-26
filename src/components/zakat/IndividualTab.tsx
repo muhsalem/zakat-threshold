@@ -91,6 +91,10 @@ export function IndividualTab() {
   const [accountantPreamble, setAccountantPreamble] = useState(
     "بسم الله الرحمن الرحيم\nأشهد بصفتي محاسب الزكاة المعتمد أنّ هذا الإقرار قد أُعِدّ بناءً على البيانات المُقدَّمة من المُزكِّي وفقاً للمعايير الشرعية المعتمدة (AAOIFI رقم 35 لزكاة الشركات والأفراد) وعلى ضوء فتاوى المجامع الفقهية المعاصرة، وبعد التحقق من بلوغ النصاب وحولان الحول وفق التقويم الهجري، وخصم الديون المستحقة والنفقات الواجبة. وقد رُوعي مبدأ «الأنفع للفقراء» في تقدير النصاب، وأُجريت عمليات التطهير على العوائد غير الشرعية. والله المستعان وعليه التُّكلان."
   );
+  const [accountantOpinion, setAccountantOpinion] = useState("");
+  const [opinionType, setOpinionType] = useState<"clean" | "qualified" | "adverse">("clean");
+  const [previousYearZakat, setPreviousYearZakat] = useState("");
+
 
   // الدولة والأسعار
   const [countryCode, setCountryCode] = useState("EG");
