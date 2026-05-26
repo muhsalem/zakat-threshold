@@ -122,6 +122,9 @@ export function IndividualTab() {
   const [sb18, setSb18] = useState(""); const [sb21, setSb21] = useState("");
   const [sb22, setSb22] = useState(""); const [sb24, setSb24] = useState("");
   const [ounces, setOunces] = useState("");
+  const [sbHalal, setSbHalal] = useState(true);
+  const [sbFullyOwned, setSbFullyOwned] = useState(true);
+  const [sbAcquireDate, setSbAcquireDate] = useState("");
   // ب) الجنيهات والعملات الذهبية (عيار 21)
   const [coinQuarter, setCoinQuarter] = useState(""); // 2.125 جم
   const [coinHalf, setCoinHalf] = useState("");       // 4.25 جم
@@ -129,6 +132,10 @@ export function IndividualTab() {
   const [coinCustomKarat, setCoinCustomKarat] = useState("21");
   const [coinCustomWeight, setCoinCustomWeight] = useState("8.5");
   const [coinCustomQty, setCoinCustomQty] = useState("");
+  const [coinHalal, setCoinHalal] = useState(true);
+  const [coinFullyOwned, setCoinFullyOwned] = useState(true);
+  const [coinAcquireDate, setCoinAcquireDate] = useState("");
+  const [coinPurpose, setCoinPurpose] = useState<"storage" | "wear">("storage");
   // ج) المجوهرات
   const [jw9, setJw9] = useState(""); const [jw12, setJw12] = useState("");
   const [jw14, setJw14] = useState(""); const [jw18, setJw18] = useState("");
@@ -548,6 +555,20 @@ export function IndividualTab() {
                     <span className="text-lg font-bold text-primary">{fmt(calc.sabaikGrams24)} جم</span>
                   </div>
                 </div>
+                <div className="grid md:grid-cols-3 gap-3 pt-2 border-t">
+                  <div className="flex items-center justify-between rounded-md border px-3 py-2">
+                    <Label className="text-xs">من كسب حلال</Label>
+                    <Switch checked={sbHalal} onCheckedChange={setSbHalal} />
+                  </div>
+                  <div className="flex items-center justify-between rounded-md border px-3 py-2">
+                    <Label className="text-xs">مملوكة ملكاً تاماً</Label>
+                    <Switch checked={sbFullyOwned} onCheckedChange={setSbFullyOwned} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">تاريخ الاقتناء</Label>
+                    <Input type="date" value={sbAcquireDate} onChange={(e) => setSbAcquireDate(e.target.value)} />
+                  </div>
+                </div>
               </div>
 
               {/* ب) الجنيهات والعملات الذهبية */}
@@ -583,7 +604,29 @@ export function IndividualTab() {
                     <NumField label="عدد القطع" value={coinCustomQty} onChange={setCoinCustomQty} unit="قطعة" />
                   </div>
                 </div>
+                <div className="grid md:grid-cols-2 gap-3 pt-2 border-t">
+                  <div className="flex items-center justify-between rounded-md border px-3 py-2">
+                    <Label className="text-xs">من كسب حلال</Label>
+                    <Switch checked={coinHalal} onCheckedChange={setCoinHalal} />
+                  </div>
+                  <div className="flex items-center justify-between rounded-md border px-3 py-2">
+                    <Label className="text-xs">مملوكة ملكاً تاماً</Label>
+                    <Switch checked={coinFullyOwned} onCheckedChange={setCoinFullyOwned} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">تاريخ الاقتناء</Label>
+                    <Input type="date" value={coinAcquireDate} onChange={(e) => setCoinAcquireDate(e.target.value)} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">غرض الاقتناء</Label>
+                    <RadioGroup value={coinPurpose} onValueChange={(v) => setCoinPurpose(v as "storage" | "wear")} className="flex gap-4 pt-1">
+                      <div className="flex items-center gap-2"><RadioGroupItem value="wear" id="cp-w" /><Label htmlFor="cp-w" className="text-sm">حلي وزينة</Label></div>
+                      <div className="flex items-center gap-2"><RadioGroupItem value="storage" id="cp-s" /><Label htmlFor="cp-s" className="text-sm">ادخار وحفظ قيمة</Label></div>
+                    </RadioGroup>
+                  </div>
+                </div>
               </div>
+
 
               {/* ج) المجوهرات */}
               <div className="space-y-3 rounded-lg border border-gold/20 bg-gold/5 p-4">
@@ -627,21 +670,24 @@ export function IndividualTab() {
                 <div className="text-sm font-semibold text-primary">د · المشغولات الذهبية الأخرى</div>
                 <p className="text-xs text-muted-foreground">ذهب مستعمل وكسر (للتهشيم — قِدَم الطراز — مكسور) + ذهب ادخاري غير قابل للبس</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <NumField label="كسر عيار 24" value={brk24} onChange={setBrk24} unit="جم" />
-                  <NumField label="كسر عيار 21" value={brk21} onChange={setBrk21} unit="جم" />
-                  <NumField label="كسر عيار 18" value={brk18} onChange={setBrk18} unit="جم" />
-                  <div className="rounded-md border bg-background p-3 space-y-1">
-                    <Label className="text-xs">كسر عيار آخر</Label>
-                    <div className="flex gap-1">
+                  <NumField label="عيار 24" value={brk24} onChange={setBrk24} unit="جم" />
+                  <NumField label="عيار 21" value={brk21} onChange={setBrk21} unit="جم" />
+                  <NumField label="عيار 18" value={brk18} onChange={setBrk18} unit="جم" />
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between gap-2">
+                      <Label className="text-sm">عيار آخر</Label>
                       <Select value={brkOtherKarat} onValueChange={setBrkOtherKarat}>
-                        <SelectTrigger className="w-20"><SelectValue /></SelectTrigger>
+                        <SelectTrigger className="h-7 w-16 text-xs"><SelectValue /></SelectTrigger>
                         <SelectContent>
                           {["9", "12", "14", "22"].map((k) => (
                             <SelectItem key={k} value={k}>{k}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
-                      <Input type="number" min="0" value={brkOtherWeight} onChange={(e) => setBrkOtherWeight(e.target.value)} placeholder="0" dir="ltr" style={{ textAlign: "right" }} />
+                    </div>
+                    <div className="relative">
+                      <Input type="number" min="0" value={brkOtherWeight} onChange={(e) => setBrkOtherWeight(e.target.value)} placeholder="0" dir="ltr" style={{ textAlign: "right" }} className="pl-10" />
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">جم</span>
                     </div>
                   </div>
                 </div>
