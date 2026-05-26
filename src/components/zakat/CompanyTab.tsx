@@ -619,7 +619,7 @@ export function CompanyTab() {
     stPayables, accruals, taxDue, loanPrincipal, loanInterest,
     equity, ltLiabilities, fixedAssets, intangibles, losses,
     method, solarYear, compliance, orgKind, goldGramPrice,
-    shGcc, shForeign, shGovt, shWaqf, shNonMuslim, accelerateYears,
+    shGcc, shForeign, shGovt, shWaqf, shNonMuslim, accelerateYears, sector.group,
   ]);
 
 
