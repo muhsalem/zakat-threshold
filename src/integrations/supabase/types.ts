@@ -59,6 +59,39 @@ export type Database = {
         }
         Relationships: []
       }
+      nisab_records: {
+        Row: {
+          calendar_basis: string
+          created_at: string
+          hijri_label: string | null
+          id: string
+          notes: string | null
+          owner_label: string
+          unified_nisab_date: string
+          updated_at: string
+        }
+        Insert: {
+          calendar_basis?: string
+          created_at?: string
+          hijri_label?: string | null
+          id?: string
+          notes?: string | null
+          owner_label: string
+          unified_nisab_date: string
+          updated_at?: string
+        }
+        Update: {
+          calendar_basis?: string
+          created_at?: string
+          hijri_label?: string | null
+          id?: string
+          notes?: string | null
+          owner_label?: string
+          unified_nisab_date?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
