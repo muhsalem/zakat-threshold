@@ -85,6 +85,13 @@ export function IndividualTab() {
   const [pinDate, setPinDate] = useState<"yes" | "no">("no");
   const [notes, setNotes] = useState("");
 
+  // ديباجة محاسب الزكاة (تظهر في رأس التقرير عند الطباعة)
+  const [accountantName, setAccountantName] = useState("");
+  const [accountantLicense, setAccountantLicense] = useState("");
+  const [accountantPreamble, setAccountantPreamble] = useState(
+    "بسم الله الرحمن الرحيم\nأشهد بصفتي محاسب الزكاة المعتمد أنّ هذا الإقرار قد أُعِدّ بناءً على البيانات المُقدَّمة من المُزكِّي وفقاً للمعايير الشرعية المعتمدة (AAOIFI رقم 35 لزكاة الشركات والأفراد) وعلى ضوء فتاوى المجامع الفقهية المعاصرة، وبعد التحقق من بلوغ النصاب وحولان الحول وفق التقويم الهجري، وخصم الديون المستحقة والنفقات الواجبة. وقد رُوعي مبدأ «الأنفع للفقراء» في تقدير النصاب، وأُجريت عمليات التطهير على العوائد غير الشرعية. والله المستعان وعليه التُّكلان."
+  );
+
   // الدولة والأسعار
   const [countryCode, setCountryCode] = useState("EG");
   const country = COUNTRY_PRICES.find((c) => c.code === countryCode) ?? COUNTRY_PRICES[0];
