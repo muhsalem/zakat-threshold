@@ -663,7 +663,7 @@ export function PrintReport({ data }: { data: PrintReportData }) {
       {/* ====== التذييل القانوني + ختم الـ branding ====== */}
       <div style={{
         marginTop: "8pt", padding: "10pt 14pt", borderRadius: "6pt",
-        background: `linear-gradient(180deg, ${C.deepCream}, ${C.cream})`,
+        background: C.deepCream,
         border: `0.6pt dashed ${C.border}`,
         fontSize: "8pt", color: C.soft, lineHeight: 1.65, textAlign: "justify",
       }}>
@@ -676,10 +676,10 @@ export function PrintReport({ data }: { data: PrintReportData }) {
           marginTop: "8pt", paddingTop: "6pt", borderTop: `0.6pt solid ${C.gold}`,
           display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10pt", flexWrap: "wrap",
         }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "6pt" }}>
-            <img src={logoUrl} alt="" style={{ width: "26pt", height: "26pt", objectFit: "contain" }} />
+          <div style={{ display: "flex", alignItems: "center", gap: "8pt" }}>
+            <img src={logoUrl} alt="" style={{ width: "30pt", height: "30pt", objectFit: "contain" }} />
             <div>
-              <div style={{ fontWeight: 900, color: C.primary, fontSize: "10pt", letterSpacing: "1pt" }}>{PLATFORM_NAME_AR}</div>
+              <div style={{ fontWeight: 900, color: C.primary, fontSize: "11pt" }}>{PLATFORM_NAME_AR}</div>
               <div style={{ fontSize: "7.5pt", color: C.goldDark }}>{PLATFORM_TAGLINE}</div>
             </div>
           </div>
