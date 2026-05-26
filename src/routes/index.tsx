@@ -51,7 +51,7 @@ function Index() {
         </section>
 
         <Tabs defaultValue="individual" className="space-y-6">
-          <TabsList dir="rtl" className="grid grid-cols-3 md:grid-cols-7 w-full max-w-5xl mx-auto h-auto gap-1">
+          <TabsList dir="rtl" className="grid grid-cols-3 md:grid-cols-5 w-full max-w-4xl mx-auto h-auto gap-1">
 
             <TabsTrigger value="wizard" className="gap-1.5 text-xs md:text-sm py-2.5">
               <Sparkles className="h-3.5 w-3.5 md:h-4 md:w-4" /> المبتدئ
@@ -65,12 +65,6 @@ function Index() {
             <TabsTrigger value="fitr" className="gap-1.5 text-xs md:text-sm py-2.5">
               <Wheat className="h-3.5 w-3.5 md:h-4 md:w-4" /> زكاة الفطر
             </TabsTrigger>
-            <TabsTrigger value="rikaz" className="gap-1.5 text-xs md:text-sm py-2.5">
-              <Gem className="h-3.5 w-3.5 md:h-4 md:w-4" /> الركاز والمعادن
-            </TabsTrigger>
-            <TabsTrigger value="madhabs" className="gap-1.5 text-xs md:text-sm py-2.5">
-              <Scale className="h-3.5 w-3.5 md:h-4 md:w-4" /> المذاهب
-            </TabsTrigger>
             <TabsTrigger value="history" className="gap-1.5 text-xs md:text-sm py-2.5">
               <Scroll className="h-3.5 w-3.5 md:h-4 md:w-4" /> الأنصبة
             </TabsTrigger>
@@ -80,8 +74,6 @@ function Index() {
           <TabsContent value="individual"><IndividualTab /></TabsContent>
           <TabsContent value="company"><CompanyTab /></TabsContent>
           <TabsContent value="fitr" className="max-w-6xl mx-auto"><FitrCalculator /></TabsContent>
-          <TabsContent value="rikaz" className="max-w-6xl mx-auto"><RikazSection /></TabsContent>
-          <TabsContent value="madhabs" className="max-w-5xl mx-auto"><MadhabsComparison /></TabsContent>
           <TabsContent value="history" className="max-w-4xl mx-auto"><NisabHistory /></TabsContent>
         </Tabs>
       </main>
