@@ -50,7 +50,7 @@ function Index() {
               <Building2 className="h-4 w-4" /> الشركات
             </TabsTrigger>
             <TabsTrigger value="history" className="gap-2 text-sm">
-              <Scroll className="h-4 w-4" /> تطور النصاب
+              <Scroll className="h-4 w-4" /> النصاب اليوم
             </TabsTrigger>
           </TabsList>
 
