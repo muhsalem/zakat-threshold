@@ -1023,34 +1023,32 @@ export function CompanyTab() {
                   </div>
                 </TabsContent>
               </Tabs>
+              </div>
+
+              <Separator />
+
+              {/* النموذج القطاعي مدمج هنا */}
+              <div>
+                <h4 className="font-semibold text-sm mb-2 text-primary flex items-center gap-2">
+                  <FileSpreadsheet className="h-4 w-4" /> النموذج القطاعي التفصيلي
+                </h4>
+                <p className="text-[11px] text-muted-foreground mb-3">
+                  مفعّل تلقائياً وفق <b>{GROUP_LABELS[sector.group]}</b> → <b>{sector.label}</b>.
+                </p>
+                <SectoralModels
+                  activeTab={sector.model}
+                  defaultCurrency={currencyName}
+                  goldGram={goldGramPrice}
+                  yearMode={solarYear}
+                  allowedTabs={getAllowedSectoralTabs(sector.id, sector.group)}
+                  locked
+                  orgKind={orgKind}
+                  sectorLabel={sector.label}
+                />
+              </div>
             </CardContent>
           </Card>
 
-          {/* النموذج القطاعي مرتبط بقطاع النشاط المحدد وطبيعة المؤسسة وإعدادات حساب زكاة الشركة */}
-          <Card className="shadow-soft border-gold/30">
-            <CardHeader className="bg-gradient-to-l from-gold/10 to-transparent">
-              <CardTitle className="flex items-center gap-2">
-                <FileSpreadsheet className="h-5 w-5 text-primary" />
-                النموذج القطاعي التفصيلي
-              </CardTitle>
-              <p className="text-xs text-muted-foreground">
-                مفعّل تلقائياً وفق <b>{GROUP_LABELS[sector.group]}</b> → <b>{sector.label}</b>،
-                ومربوط بإعدادات حساب زكاة الشركة أعلاه (العملة، سعر الذهب، نوع السنة، النصاب){orgKind === "nonprofit" ? " — للعرض فقط لأن المؤسسة غير ربحية" : ""}.
-              </p>
-            </CardHeader>
-            <CardContent className="pt-4">
-              <SectoralModels
-                activeTab={sector.model}
-                defaultCurrency={currencyName}
-                goldGram={goldGramPrice}
-                yearMode={solarYear}
-                allowedTabs={getAllowedSectoralTabs(sector.id, sector.group)}
-                locked
-                orgKind={orgKind}
-                sectorLabel={sector.label}
-              />
-            </CardContent>
-          </Card>
 
 
           {/* حاسبة التطهير الشرعي */}
