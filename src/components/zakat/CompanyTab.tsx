@@ -368,7 +368,18 @@ export function CompanyTab() {
   // طبيعة المؤسسة والقطاع
   const [orgKind, setOrgKind] = useState<"profit" | "nonprofit">("profit");
   const [sectorId, setSectorId] = useState<string>("trade_w");
-  const sector = useMemo(() => SECTORS.find((s) => s.id === sectorId)!, [sectorId]);
+  const activeSectorList = orgKind === "nonprofit" ? NONPROFIT_SECTORS : SECTORS;
+  const sector = useMemo(
+    () => activeSectorList.find((s) => s.id === sectorId) ?? activeSectorList[0],
+    [sectorId, activeSectorList]
+  );
+  useEffect(() => {
+    if (!activeSectorList.find((s) => s.id === sectorId)) {
+      setSectorId(activeSectorList[0].id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orgKind]);
+
 
   // سعر جرام الذهب للتحقق من النصاب
   const [goldGramPrice, setGoldGramPrice] = useState("415");
