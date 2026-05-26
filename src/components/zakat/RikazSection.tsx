@@ -1,0 +1,361 @@
+import { useMemo, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Accordion, AccordionContent, AccordionItem, AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
+import {
+  Gem, Pickaxe, FlaskConical, Fish, Drumstick, Info, Calculator,
+} from "lucide-react";
+import { num, fmt, currency, COUNTRY_PRICES, ZAKAT_RATE } from "@/lib/zakat";
+
+/**
+ * زكاة الركاز والمعادن والعسل والثروات المستحدثة
+ *
+ * المراجع الشرعية:
+ * - الركاز: «وفي الركاز الخُمس» (متفق عليه) — 20% فوراً بلا نصاب ولا حول.
+ * - المعادن: 2.5% عند الجمهور (مالك والشافعي وأحمد) على الذهب والفضة بعد بلوغ النصاب،
+ *   و 20% عند أبي حنيفة قياساً على الركاز. والمختار في الفتوى المعاصرة (AAOIFI):
+ *   2.5% على صافي قيمة المعدن المستخرج بعد خصم تكاليف الاستخراج.
+ * - العسل: 10% عند أبي حنيفة وأحمد إن بلغ النصاب (≈ 653 كجم أو ما يساوي قيمة 5 أوسق من غالب القوت)
+ *   قياساً على الزروع. ولا زكاة فيه عند الشافعية.
+ * - الثروة السمكية والدواجن: عند المعاصرين تُعامل معاملة عروض التجارة (2.5% على صافي
+ *   قيمة الأصول المتداولة بعد خصم التكاليف والديون) إذا كانت بقصد التجارة.
+ *   انظر: قرار المجمع الفقهي رقم 28، وفتاوى دار الإفتاء المصرية.
+ */
+
+const RIKAZ_RATE = 0.20;
+const MINERALS_RATE_HANAFI = 0.20;
+const HONEY_RATE = 0.10;
+const HONEY_NISAB_KG = 653; // قياساً على نصاب الزروع
+
+interface NumFieldProps {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  unit?: string;
+  hint?: string;
+}
+function NumField({ label, value, onChange, unit, hint }: NumFieldProps) {
+  return (
+    <div className="space-y-1.5">
+      <Label className="text-sm font-medium">{label}</Label>
+      <div className="relative">
+        <Input
+          type="number" min="0" step="0.01" inputMode="decimal"
+          value={value} onChange={(e) => onChange(e.target.value)}
+          placeholder="0" className="pl-16" dir="ltr"
+          style={{ textAlign: "right" }}
+        />
+        {unit && (
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
+            {unit}
+          </span>
+        )}
+      </div>
+      {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
+    </div>
+  );
+}
+
+export function RikazSection() {
+  const [countryCode, setCountryCode] = useState("EG");
+  const country = COUNTRY_PRICES.find((c) => c.code === countryCode) ?? COUNTRY_PRICES[0];
+
+  // ① الركاز (كنوز الجاهلية المدفونة)
+  const [rikazValue, setRikazValue] = useState("");
+
+  // ② المعادن المستخرجة
+  const [mineralsValue, setMineralsValue] = useState("");
+  const [mineralsCost, setMineralsCost] = useState("");
+  const [mineralsOpinion, setMineralsOpinion] = useState<"jumhur" | "hanafi">("jumhur");
+
+  // ③ العسل
+  const [honeyKg, setHoneyKg] = useState("");
+  const [honeyPricePerKg, setHoneyPricePerKg] = useState("");
+
+  // ④ الثروة السمكية / مزارع الأسماك
+  const [fishValue, setFishValue] = useState("");
+  const [fishCost, setFishCost] = useState("");
+
+  // ⑤ مزارع الدواجن
+  const [poultryValue, setPoultryValue] = useState("");
+  const [poultryCost, setPoultryCost] = useState("");
+
+  const calc = useMemo(() => {
+    const rikazZakat = num(rikazValue) * RIKAZ_RATE;
+
+    const mineralsNet = Math.max(0, num(mineralsValue) - num(mineralsCost));
+    const mineralsRate = mineralsOpinion === "hanafi" ? MINERALS_RATE_HANAFI : ZAKAT_RATE;
+    const mineralsZakat = mineralsNet * mineralsRate;
+
+    const honeyEligible = num(honeyKg) >= HONEY_NISAB_KG;
+    const honeyValue = num(honeyKg) * num(honeyPricePerKg);
+    const honeyZakat = honeyEligible ? honeyValue * HONEY_RATE : 0;
+
+    const fishNet = Math.max(0, num(fishValue) - num(fishCost));
+    const fishZakat = fishNet * ZAKAT_RATE;
+
+    const poultryNet = Math.max(0, num(poultryValue) - num(poultryCost));
+    const poultryZakat = poultryNet * ZAKAT_RATE;
+
+    const total = rikazZakat + mineralsZakat + honeyZakat + fishZakat + poultryZakat;
+
+    return {
+      rikazZakat, mineralsNet, mineralsZakat, mineralsRate,
+      honeyEligible, honeyValue, honeyZakat,
+      fishNet, fishZakat, poultryNet, poultryZakat, total,
+    };
+  }, [
+    rikazValue, mineralsValue, mineralsCost, mineralsOpinion,
+    honeyKg, honeyPricePerKg, fishValue, fishCost, poultryValue, poultryCost,
+  ]);
+
+  const cur = (n: number) => currency(n, country.currency);
+
+  return (
+    <div dir="rtl" className="grid lg:grid-cols-3 gap-6 text-right">
+      <div className="lg:col-span-2 space-y-6">
+        <Card className="shadow-soft">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Gem className="h-5 w-5 text-primary" />
+              زكاة الركاز والمعادن والثروات المستحدثة
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Alert className="border-primary/30 bg-primary/5">
+              <Info className="h-4 w-4" />
+              <AlertDescription className="text-xs leading-relaxed">
+                هذا القسم يجمع أنواع الزكاة التي يقلّ السؤال عنها لكنها <b>واجبة شرعاً</b> متى تحققت شروطها:
+                الركاز (الكنوز المدفونة) والمعادن المستخرجة من الأرض، والعسل، والثروات السمكية والداجنة المعدّة للتجارة.
+              </AlertDescription>
+            </Alert>
+
+            <div className="space-y-1.5">
+              <Label>الدولة</Label>
+              <Select value={countryCode} onValueChange={setCountryCode}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent className="max-h-72">
+                  {COUNTRY_PRICES.map((c) => (
+                    <SelectItem key={c.code} value={c.code}>{c.name} ({c.currency})</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Accordion type="multiple" defaultValue={["rikaz"]} className="space-y-3">
+          {/* ① الركاز */}
+          <AccordionItem value="rikaz" className="border rounded-xl shadow-soft bg-card px-4">
+            <AccordionTrigger className="hover:no-underline">
+              <span className="flex items-center gap-2 text-base font-semibold">
+                <Pickaxe className="h-5 w-5 text-gold" /> ① الركاز — الخُمس (20%)
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="space-y-4 pb-4">
+              <Alert>
+                <Info className="h-4 w-4" />
+                <AlertDescription className="text-xs leading-relaxed">
+                  <b>الركاز:</b> هو ما وُجد مدفوناً من كنوز الجاهلية (قبل الإسلام). فيه <b>الخُمس (20%) فوراً</b>
+                  بلا اشتراط نصاب ولا حول لقوله ﷺ: «وفي الركاز الخُمس» (متفق عليه).
+                  أما إن كان عليه علامات الإسلام فهو لُقطة تُعامل معاملتها.
+                </AlertDescription>
+              </Alert>
+              <NumField
+                label="قيمة الركاز المُكتشف"
+                value={rikazValue} onChange={setRikazValue}
+                unit={country.currency}
+                hint="إجمالي القيمة السوقية للكنز يوم اكتشافه"
+              />
+              {num(rikazValue) > 0 && (
+                <div className="rounded-lg bg-primary/10 border border-primary/30 p-3 text-sm">
+                  الزكاة المستحقة: <b className="text-primary">{cur(calc.rikazZakat)}</b> (20%)
+                </div>
+              )}
+            </AccordionContent>
+          </AccordionItem>
+
+          {/* ② المعادن */}
+          <AccordionItem value="minerals" className="border rounded-xl shadow-soft bg-card px-4">
+            <AccordionTrigger className="hover:no-underline">
+              <span className="flex items-center gap-2 text-base font-semibold">
+                <FlaskConical className="h-5 w-5 text-primary" /> ② المعادن المستخرجة
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="space-y-4 pb-4">
+              <Alert>
+                <Info className="h-4 w-4" />
+                <AlertDescription className="text-xs leading-relaxed">
+                  المعادن النفيسة (ذهب، فضة، نحاس، حديد، بترول، فوسفات...) المستخرجة من باطن الأرض.
+                  <b> الجمهور:</b> فيها 2.5% على صافي القيمة بعد خصم التكاليف.
+                  <b> أبو حنيفة:</b> فيها 20% قياساً على الركاز.
+                  المختار محاسبياً (AAOIFI): قول الجمهور لأنه أرفق وأقرب لطبيعة النشاط الاستثماري.
+                </AlertDescription>
+              </Alert>
+              <div>
+                <Label className="mb-2 block text-xs">القول المختار</Label>
+                <div className="flex flex-wrap gap-3">
+                  <Badge
+                    variant={mineralsOpinion === "jumhur" ? "default" : "outline"}
+                    className="cursor-pointer px-3 py-1.5"
+                    onClick={() => setMineralsOpinion("jumhur")}
+                  >
+                    الجمهور — 2.5%
+                  </Badge>
+                  <Badge
+                    variant={mineralsOpinion === "hanafi" ? "default" : "outline"}
+                    className="cursor-pointer px-3 py-1.5"
+                    onClick={() => setMineralsOpinion("hanafi")}
+                  >
+                    الحنفية — 20%
+                  </Badge>
+                </div>
+              </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <NumField label="إجمالي قيمة المعدن المستخرج" value={mineralsValue} onChange={setMineralsValue} unit={country.currency} />
+                <NumField label="تكاليف الاستخراج والتنقية" value={mineralsCost} onChange={setMineralsCost} unit={country.currency} hint="معدات، أجور عمالة، مصاريف مباشرة" />
+              </div>
+              {calc.mineralsNet > 0 && (
+                <div className="rounded-lg bg-primary/10 border border-primary/30 p-3 text-sm space-y-1">
+                  <div>الصافي الزكوي: <b>{cur(calc.mineralsNet)}</b></div>
+                  <div>الزكاة المستحقة: <b className="text-primary">{cur(calc.mineralsZakat)}</b> ({(calc.mineralsRate * 100).toFixed(1)}%)</div>
+                </div>
+              )}
+            </AccordionContent>
+          </AccordionItem>
+
+          {/* ③ العسل */}
+          <AccordionItem value="honey" className="border rounded-xl shadow-soft bg-card px-4">
+            <AccordionTrigger className="hover:no-underline">
+              <span className="flex items-center gap-2 text-base font-semibold">
+                <FlaskConical className="h-5 w-5 text-gold" /> ③ العسل — العُشر (10%)
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="space-y-4 pb-4">
+              <Alert>
+                <Info className="h-4 w-4" />
+                <AlertDescription className="text-xs leading-relaxed">
+                  ذهب أبو حنيفة وأحمد إلى وجوب العُشر (10%) في العسل إذا بلغ النصاب قياساً على الزروع،
+                  والنصاب التقريبي <b>653 كجم</b> (ما يعادل 5 أوسق من غالب القوت).
+                  وذهب الشافعي إلى أنه لا زكاة فيه. والأحوط الإخراج.
+                </AlertDescription>
+              </Alert>
+              <div className="grid md:grid-cols-2 gap-4">
+                <NumField label="كمية العسل المُنتَجة" value={honeyKg} onChange={setHoneyKg} unit="كجم" hint={`النصاب: ${HONEY_NISAB_KG} كجم`} />
+                <NumField label="سعر الكيلو" value={honeyPricePerKg} onChange={setHoneyPricePerKg} unit={country.currency} />
+              </div>
+              {num(honeyKg) > 0 && (
+                <div className={`rounded-lg p-3 text-sm border ${calc.honeyEligible ? "bg-primary/10 border-primary/30" : "bg-muted/40 border-border"}`}>
+                  {calc.honeyEligible ? (
+                    <>
+                      <div>قيمة العسل: <b>{cur(calc.honeyValue)}</b></div>
+                      <div>الزكاة المستحقة: <b className="text-primary">{cur(calc.honeyZakat)}</b> (10%)</div>
+                    </>
+                  ) : (
+                    <span className="text-muted-foreground">لم يبلغ النصاب ({HONEY_NISAB_KG} كجم) — لا زكاة.</span>
+                  )}
+                </div>
+              )}
+            </AccordionContent>
+          </AccordionItem>
+
+          {/* ④ الأسماك */}
+          <AccordionItem value="fish" className="border rounded-xl shadow-soft bg-card px-4">
+            <AccordionTrigger className="hover:no-underline">
+              <span className="flex items-center gap-2 text-base font-semibold">
+                <Fish className="h-5 w-5 text-primary" /> ④ الثروة السمكية / مزارع الأسماك
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="space-y-4 pb-4">
+              <Alert>
+                <Info className="h-4 w-4" />
+                <AlertDescription className="text-xs leading-relaxed">
+                  لا زكاة في الأسماك إن كانت لغير التجارة. أما إن كانت <b>مُعدَّة للبيع</b> (مزارع تجارية أو
+                  صيد تجاري) فتُعامل معاملة <b>عروض التجارة (2.5%)</b> على صافي قيمة المخزون والإيرادات
+                  بعد خصم التكاليف والديون المستحقة، وذلك بعد بلوغ النصاب وحولان الحول.
+                </AlertDescription>
+              </Alert>
+              <div className="grid md:grid-cols-2 gap-4">
+                <NumField label="قيمة المخزون السمكي وإيرادات البيع" value={fishValue} onChange={setFishValue} unit={country.currency} />
+                <NumField label="التكاليف والمصاريف المباشرة" value={fishCost} onChange={setFishCost} unit={country.currency} hint="أعلاف، عمالة، صيانة" />
+              </div>
+              {calc.fishNet > 0 && (
+                <div className="rounded-lg bg-primary/10 border border-primary/30 p-3 text-sm space-y-1">
+                  <div>الصافي الزكوي: <b>{cur(calc.fishNet)}</b></div>
+                  <div>الزكاة المستحقة: <b className="text-primary">{cur(calc.fishZakat)}</b> (2.5%)</div>
+                </div>
+              )}
+            </AccordionContent>
+          </AccordionItem>
+
+          {/* ⑤ الدواجن */}
+          <AccordionItem value="poultry" className="border rounded-xl shadow-soft bg-card px-4">
+            <AccordionTrigger className="hover:no-underline">
+              <span className="flex items-center gap-2 text-base font-semibold">
+                <Drumstick className="h-5 w-5 text-gold" /> ⑤ مزارع الدواجن
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="space-y-4 pb-4">
+              <Alert>
+                <Info className="h-4 w-4" />
+                <AlertDescription className="text-xs leading-relaxed">
+                  الدواجن (دجاج، بط، إوز...) لا تدخل في نصاب الأنعام السائمة. تُزكَّى زكاة عروض التجارة (2.5%)
+                  على صافي قيمة المخزون والإيرادات إذا كانت بقصد البيع. أما إن كانت للاستهلاك المنزلي فلا زكاة فيها.
+                </AlertDescription>
+              </Alert>
+              <div className="grid md:grid-cols-2 gap-4">
+                <NumField label="قيمة المخزون والإيرادات" value={poultryValue} onChange={setPoultryValue} unit={country.currency} />
+                <NumField label="التكاليف والمصاريف المباشرة" value={poultryCost} onChange={setPoultryCost} unit={country.currency} />
+              </div>
+              {calc.poultryNet > 0 && (
+                <div className="rounded-lg bg-primary/10 border border-primary/30 p-3 text-sm space-y-1">
+                  <div>الصافي الزكوي: <b>{cur(calc.poultryNet)}</b></div>
+                  <div>الزكاة المستحقة: <b className="text-primary">{cur(calc.poultryZakat)}</b> (2.5%)</div>
+                </div>
+              )}
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </div>
+
+      <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">
+        <Card className="bg-gradient-primary text-primary-foreground shadow-gold border-0">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-primary-foreground">
+              <Calculator className="h-5 w-5" /> إجمالي زكاة هذا القسم
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-4xl font-black tracking-tight">
+              {fmt(calc.total)}
+              <span className="text-lg font-medium opacity-80 mr-2">{country.currency}</span>
+            </div>
+            <p className="text-xs opacity-80 mt-2">مجموع زكاة الركاز والمعادن والثروات المستحدثة</p>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-soft">
+          <CardHeader className="pb-3"><CardTitle className="text-base">تفصيل النتيجة</CardTitle></CardHeader>
+          <CardContent className="space-y-2 text-sm">
+            <div className="flex justify-between"><span>الركاز (20%)</span><b>{cur(calc.rikazZakat)}</b></div>
+            <div className="flex justify-between"><span>المعادن</span><b>{cur(calc.mineralsZakat)}</b></div>
+            <div className="flex justify-between"><span>العسل (10%)</span><b>{cur(calc.honeyZakat)}</b></div>
+            <div className="flex justify-between"><span>الأسماك (2.5%)</span><b>{cur(calc.fishZakat)}</b></div>
+            <div className="flex justify-between"><span>الدواجن (2.5%)</span><b>{cur(calc.poultryZakat)}</b></div>
+            <Separator className="my-2" />
+            <div className="flex justify-between text-primary font-bold"><span>المجموع</span><span>{cur(calc.total)}</span></div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
