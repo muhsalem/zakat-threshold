@@ -1155,11 +1155,13 @@ export function CompanyTab() {
           {/* حاسبة التطهير الشرعي */}
           <PurificationCalculator currencyName={currencyName} />
 
-          {/* ====== الركاز والمعادن — مدمجة ضمن النشاط التجاري ====== */}
-          {sector.group === "commercial" && (
+          {/* ====== الركاز والمعادن — مدمجة ضمن نماذج النشاط الأولى ====== */}
+          {sector.group === "primary" && (
             <Card className="shadow-soft border-primary/20">
               <CardHeader className="pb-3">
-                <CardTitle className="text-base">ضمن النشاط التجاري — زكاة الركاز والمعادن والثروات المستحدثة</CardTitle>
+                <CardTitle className="text-base">
+                  ضمن النشاط الأولى — زكاة الركاز والمعادن والعسل والثروة السمكية والدواجن
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <RikazSection />

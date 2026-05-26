@@ -179,7 +179,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   const [fxRows, setFxRows] = useState<FxRow[]>([
     { id: 1, code: "US", amount: "", rate: "" },
   ]);
-  const [fxUpdatedAt, setFxUpdatedAt] = useState<string>(new Date().toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" }));
+  const [fxUpdatedAt, setFxUpdatedAt] = useState<string>("");
 
   const refreshFxRates = () => {
     setFxRows((rows) => rows.map((r) => {
