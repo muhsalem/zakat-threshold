@@ -561,8 +561,8 @@ export function CompanyTab() {
 
   return (
     <div dir="rtl" className="text-right">
-    <Tabs defaultValue="zakat" className="space-y-6">
-      <TabsList className="grid grid-cols-2 w-full max-w-2xl mx-auto h-auto">
+    <Tabs defaultValue="zakat" className="space-y-6" dir="rtl">
+      <TabsList dir="rtl" className="grid grid-cols-2 w-full max-w-2xl mx-auto h-auto">
         <TabsTrigger value="zakat" className="gap-2 text-sm py-2.5">
           <Calculator className="h-4 w-4" /> حساب زكاة الشركة
         </TabsTrigger>
@@ -570,6 +570,7 @@ export function CompanyTab() {
           <Gavel className="h-4 w-4" /> التدقيق والامتثال والحوكمة الشرعية
         </TabsTrigger>
       </TabsList>
+
 
 
       {/* ======================= تبويب الحساب ======================= */}
