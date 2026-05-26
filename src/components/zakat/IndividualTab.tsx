@@ -332,7 +332,7 @@ export function IndividualTab() {
   const cur = (n: number) => currency(n, currencyName);
 
   return (
-    <div className="grid lg:grid-cols-3 gap-6">
+    <div dir="rtl" className="grid lg:grid-cols-3 gap-6 text-right">
       <div className="lg:col-span-2 space-y-6">
         {/* بيانات المزكي + الإقرار وشرط الحول */}
         <Card className="shadow-soft">
