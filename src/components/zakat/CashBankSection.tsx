@@ -361,14 +361,19 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
             <Label className="text-xs">تاريخ فتح الحساب</Label>
             <Input type="date" value={savOpenedAt} onChange={(e) => setSavOpenedAt(e.target.value)} />
           </div>
-          {savType === "islamic" && (
-            <div className="space-y-1.5 md:col-span-2">
-              <Label className="text-xs">فرع البنك الإسلامي</Label>
-              <Input value={savBranch} onChange={(e) => setSavBranch(e.target.value)} placeholder="فيصل / البركة / ADIB / KFH ..." />
-            </div>
-          )}
+          <div className="space-y-1.5 md:col-span-2">
+            <BankPicker
+              type={savType}
+              islamicBank={savIslamicBank} setIslamicBank={setSavIslamicBank}
+              tradBank={savTradBank} setTradBank={setSavTradBank}
+              useWindow={savUseWindow} setUseWindow={setSavUseWindow}
+              branch={savBranch} setBranch={setSavBranch}
+              idPrefix="sav"
+            />
+          </div>
         </div>
       </div>
+
 
       {/* ودائع وشهادات وبريد */}
       <div className="rounded-lg border bg-card p-4 space-y-3">
