@@ -189,13 +189,16 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   // تحديث الأسعار تلقائياً عند تغيير الدولة المختارة
   useEffect(() => { refreshFxRates(); /* eslint-disable-next-line */ }, [countryCode]);
 
+  // قائمة بنوك الدولة (تتغيّر مع الدولة)
+  const countryBanks = useMemo(() => getCountryBanks(country.code), [country.code]);
+
   // ج) الحسابات الجارية
   const [currType, setCurrType] = useState<BankType>("islamic");
   const [currBalance, setCurrBalance] = useState("");
   const [currOpenedAt, setCurrOpenedAt] = useState("");
   const [currBranch, setCurrBranch] = useState("");
-  const [currIslamicBank, setCurrIslamicBank] = useState(ISLAMIC_BANKS[0]);
-  const [currTradBank, setCurrTradBank] = useState("nbe");
+  const [currIslamicBank, setCurrIslamicBank] = useState("");
+  const [currTradBank, setCurrTradBank] = useState("");
   const [currUseWindow, setCurrUseWindow] = useState(false); // نافذة إسلامية داخل بنك تقليدي
 
   // د) التوفير والادخار
@@ -204,8 +207,8 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   const [savPurifyPct, setSavPurifyPct] = useState(""); // نسبة التطهير للإسلامي (لخفض الوعاء)
   const [savOpenedAt, setSavOpenedAt] = useState("");
   const [savBranch, setSavBranch] = useState("");
-  const [savIslamicBank, setSavIslamicBank] = useState(ISLAMIC_BANKS[0]);
-  const [savTradBank, setSavTradBank] = useState("nbe");
+  const [savIslamicBank, setSavIslamicBank] = useState("");
+  const [savTradBank, setSavTradBank] = useState("");
   const [savUseWindow, setSavUseWindow] = useState(false);
 
   // ودائع (مفصولة عن الشهادات)
@@ -213,16 +216,33 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   const [depBranch, setDepBranch] = useState("");
   const [depOpenedAt, setDepOpenedAt] = useState("");
   const [depPrincipal, setDepPrincipal] = useState(""); // أصل الوديعة
-  const [depIslamicBank, setDepIslamicBank] = useState(ISLAMIC_BANKS[0]);
-  const [depTradBank, setDepTradBank] = useState("nbe");
+  const [depIslamicBank, setDepIslamicBank] = useState("");
+  const [depTradBank, setDepTradBank] = useState("");
 
   // شهادات (قسم مستقل)
   const [certType, setCertType] = useState<BankType>("traditional");
   const [certBranch, setCertBranch] = useState("");
   const [certOpenedAt, setCertOpenedAt] = useState("");
   const [certPrincipal, setCertPrincipal] = useState(""); // أصل الشهادات
-  const [certIslamicBank, setCertIslamicBank] = useState(ISLAMIC_BANKS[0]);
-  const [certTradBank, setCertTradBank] = useState("nbe");
+  const [certIslamicBank, setCertIslamicBank] = useState("");
+  const [certTradBank, setCertTradBank] = useState("");
+
+  // عند تغيير الدولة → اضبط الاختيارات الافتراضية على بنوك الدولة
+  useEffect(() => {
+    const ib = countryBanks.islamic[0] ?? "";
+    const tb = countryBanks.traditional[0]?.v ?? "";
+    const isInIslamic = (v: string) => countryBanks.islamic.includes(v);
+    const isInTrad = (v: string) => countryBanks.traditional.some((b) => b.v === v);
+    if (!isInIslamic(currIslamicBank)) setCurrIslamicBank(ib);
+    if (!isInTrad(currTradBank)) setCurrTradBank(tb);
+    if (!isInIslamic(savIslamicBank)) setSavIslamicBank(ib);
+    if (!isInTrad(savTradBank)) setSavTradBank(tb);
+    if (!isInIslamic(depIslamicBank)) setDepIslamicBank(ib);
+    if (!isInTrad(depTradBank)) setDepTradBank(tb);
+    if (!isInIslamic(certIslamicBank)) setCertIslamicBank(ib);
+    if (!isInTrad(certTradBank)) setCertTradBank(tb);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [countryBanks]);
 
   // دفتر توفير البريد
   const [postSavings, setPostSavings] = useState("");
