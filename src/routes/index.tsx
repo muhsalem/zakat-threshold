@@ -53,9 +53,8 @@ function Index() {
         </section>
 
         <Tabs defaultValue="individual" className="space-y-6">
-          <TabsList dir="rtl" className="grid grid-cols-2 md:grid-cols-5 w-full max-w-4xl mx-auto h-auto gap-1">
-        <Tabs defaultValue="individual" className="space-y-6">
           <TabsList dir="rtl" className="grid grid-cols-3 md:grid-cols-7 w-full max-w-5xl mx-auto h-auto gap-1">
+
             <TabsTrigger value="wizard" className="gap-1.5 text-xs md:text-sm py-2.5">
               <Sparkles className="h-3.5 w-3.5 md:h-4 md:w-4" /> المبتدئ
             </TabsTrigger>
