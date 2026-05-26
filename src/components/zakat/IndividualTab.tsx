@@ -652,10 +652,10 @@ export function IndividualTab() {
         <Card className="shadow-soft">
           <CardHeader className="pb-3"><CardTitle className="text-base">تفصيل النتيجة</CardTitle></CardHeader>
           <CardContent className="space-y-2">
-            <SectionResult currency={cur} label="زكاة الذهب" value={calc.goldZakat} eligible={calc.goldEligible} />
-            <SectionResult currency={cur} label="زكاة الفضة" value={calc.silverZakat} eligible={calc.silverEligible} />
-            <SectionResult currency={cur} label="زكاة النقد والاستثمارات والتجارة والعقار (صافي)" value={calc.monetaryZakat} eligible={calc.monetaryEligible} />
-            <SectionResult currency={cur} label="زكاة الزروع والثمار" value={calc.cropsZakat} eligible={calc.cropsEligible} />
+            <SectionResult format={cur} label="زكاة الذهب" value={calc.goldZakat} eligible={calc.goldEligible} />
+            <SectionResult format={cur} label="زكاة الفضة" value={calc.silverZakat} eligible={calc.silverEligible} />
+            <SectionResult format={cur} label="زكاة النقد والاستثمارات والتجارة والعقار (صافي)" value={calc.monetaryZakat} eligible={calc.monetaryEligible} />
+            <SectionResult format={cur} label="زكاة الزروع والثمار" value={calc.cropsZakat} eligible={calc.cropsEligible} />
             <Separator className="my-2" />
             <div className="text-xs text-muted-foreground space-y-1">
               <div>الوعاء النقدي الإجمالي: <b>{cur(calc.monetaryGross)}</b></div>
