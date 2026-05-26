@@ -620,7 +620,7 @@ interface WalletOps {
   update: (id: number, patch: Partial<WalletRowT>) => void;
 }
 function WalletGroup({
-  title, rows, ops, currencyName, providers, note,
+  title, rows, ops, currencyName, providers, note, forceStandalone,
 }: {
   title: string;
   rows: WalletRowT[];
@@ -628,7 +628,9 @@ function WalletGroup({
   currencyName: string;
   providers: { v: string; l: string }[];
   note: string;
+  forceStandalone?: boolean;
 }) {
+  void forceStandalone;
   return (
     <div className="rounded-lg border bg-card p-4 space-y-3">
       <div className="flex items-center gap-2 text-sm font-semibold text-primary">
