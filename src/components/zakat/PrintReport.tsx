@@ -582,45 +582,45 @@ export function PrintReport({ data }: { data: PrintReportData }) {
       </div>
 
       <div className="print-avoid-break" style={{
-        background: `linear-gradient(135deg, ${C.gold} 0%, #e6c673 50%, ${C.goldDark} 100%)`,
+        background: C.gold,
         color: C.primaryDark, padding: "16pt 18pt", borderRadius: "8pt",
         marginBottom: "12pt", textAlign: "center",
-        border: `1pt solid ${C.primary}`,
-        boxShadow: "0 3pt 6pt rgba(0,0,0,0.12)",
+        border: `1.5pt solid ${C.primary}`,
       }}>
         <div style={{
-          fontFamily: "Amiri, Tajawal, serif", fontSize: "16pt", fontWeight: 700,
-          letterSpacing: "1pt", marginBottom: "4pt",
+          fontFamily: "'Amiri', 'Tajawal', serif", fontSize: "20pt", fontWeight: 700,
+          marginBottom: "6pt", lineHeight: 1.3,
         }}>
-          ﷽
+          بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
         </div>
-        <div style={{ fontSize: "20pt", fontWeight: 900, fontFamily: "Amiri, Tajawal, serif", letterSpacing: "1pt" }}>
+        <div style={{ fontSize: "22pt", fontWeight: 900, fontFamily: "'Tajawal', sans-serif", lineHeight: 1.2 }}>
           مصارف الزكاة الثمانية الشرعية
         </div>
-        <div style={{ fontSize: "9pt", marginTop: "3pt", opacity: 0.85 }}>
+        <div style={{ fontSize: "9.5pt", marginTop: "4pt", opacity: 0.9 }}>
           المُستحقّون شرعاً لأخذ الزكاة وفق نصّ القرآن الكريم
         </div>
       </div>
 
       <div className="print-card" style={{
         ...cardStyle(C, C.gold),
-        background: `linear-gradient(180deg, #fffdf5 0%, ${C.cream} 100%)`,
+        background: C.cream,
       }}>
         <div className="print-avoid-break" style={{
-          background: `linear-gradient(135deg, ${C.primaryDark}, ${C.primary})`,
+          background: C.primary,
           color: "white", padding: "12pt 16pt",
           borderRadius: "6pt", textAlign: "center", fontSize: "11pt", lineHeight: 2,
-          marginBottom: "12pt", fontFamily: "Amiri, Tajawal, serif",
+          marginBottom: "12pt",
           border: `0.6pt solid ${C.gold}`,
         }}>
           <div style={{ fontSize: "9pt", color: C.goldLight, marginBottom: "4pt" }}>قال تعالى:</div>
-          <div style={{ fontSize: "13pt", fontWeight: 700, color: C.goldLight, letterSpacing: "0.5pt" }}>
+          <div style={{ fontSize: "13pt", fontWeight: 700, color: C.goldLight, fontFamily: "'Amiri', 'Tajawal', serif", lineHeight: 1.9 }}>
             ﴿إِنَّمَا الصَّدَقَاتُ لِلْفُقَرَاءِ وَالْمَسَاكِينِ وَالْعَامِلِينَ عَلَيْهَا وَالْمُؤَلَّفَةِ قُلُوبُهُمْ
             وَفِي الرِّقَابِ وَالْغَارِمِينَ وَفِي سَبِيلِ اللَّهِ وَابْنِ السَّبِيلِ ۖ
             فَرِيضَةً مِّنَ اللَّهِ ۗ وَاللَّهُ عَلِيمٌ حَكِيمٌ﴾
           </div>
           <div style={{ fontSize: "8.5pt", marginTop: "4pt", opacity: 0.9 }}>[سورة التوبة: 60]</div>
         </div>
+
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "9pt" }}>
           {ZAKAT_RECIPIENTS.map((r, i) => (
