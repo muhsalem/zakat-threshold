@@ -360,59 +360,125 @@ export function NisabHistory() {
       </Card>
 
 
-      {/* آخر 100 عام */}
+      {/* رسم بياني — آخر 100 عام + نسبة الذهب/الفضة */}
       <Card className="border-gold/30 shadow-soft">
         <CardHeader className="bg-gradient-to-l from-gold/15 to-transparent">
-          <CardTitle className="flex items-center gap-2 text-xl">
-            <CalendarClock className="h-5 w-5 text-gold" />
-            النصاب خلال آخر 100 عام (هجري / ميلادي)
-          </CardTitle>
-          <p className="text-sm text-muted-foreground">
-            متوسط سعر جرام الذهب عيار 24 والفضة بالدولار الأمريكي عبر العقود الماضية،
-            مع قيمة النصاب المقابلة بالدولار.
-          </p>
-        </CardHeader>
-        <CardContent className="pt-4">
-          <div className="overflow-x-auto rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="text-right">هجري</TableHead>
-                  <TableHead className="text-right">ميلادي</TableHead>
-                  <TableHead className="text-right">جرام الذهب ($)</TableHead>
-                  <TableHead className="text-right">نصاب الذهب ($)</TableHead>
-                  <TableHead className="text-right">جرام الفضة ($)</TableHead>
-                  <TableHead className="text-right">نصاب الفضة ($)</TableHead>
-                  <TableHead className="text-right">حدث</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {years.map((y) => (
-                  <TableRow key={y.gregorian}>
-                    <TableCell className="font-semibold text-primary">{y.hijri}هـ</TableCell>
-                    <TableCell>{y.gregorian}م</TableCell>
-                    <TableCell>{fmt(y.goldUsd, 2)}</TableCell>
-                    <TableCell className="font-semibold text-gold-foreground">
-                      {fmt(y.goldUsd * GOLD_NISAB_GRAMS, 0)}
-                    </TableCell>
-                    <TableCell>{fmt(y.silverUsd, 3)}</TableCell>
-                    <TableCell className="font-semibold">
-                      {fmt(y.silverUsd * SILVER_NISAB_GRAMS, 0)}
-                    </TableCell>
-                    <TableCell className="text-xs text-muted-foreground">
-                      {y.event ?? "—"}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <CalendarClock className="h-5 w-5 text-gold" />
+                النصاب خلال آخر 100 عام — مخطط بياني
+              </CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">
+                تطور سعر جرام الذهب والفضة ونسبة الذهب/الفضة (Gold-Silver Ratio) سنويًا.
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant={chartMode === "USD" ? "default" : "outline"}
+                onClick={() => setChartMode("USD")}
+              >
+                بالدولار
+              </Button>
+              <Button
+                size="sm"
+                variant={chartMode === "LOCAL" ? "default" : "outline"}
+                onClick={() => setChartMode("LOCAL")}
+              >
+                بعملة {country.name}
+              </Button>
+            </div>
           </div>
-          <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
-            * البيانات تقديرية مبنية على متوسط الأسعار العالمية السنوية، والمرجع الشرعي
-            هو الوزن (85 جم ذهبًا و595 جم فضة) لا قيمة العملة.
+        </CardHeader>
+        <CardContent className="pt-4 space-y-4">
+          <div className="h-80 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="year" tick={{ fontSize: 11 }} />
+                <YAxis
+                  yAxisId="price"
+                  tick={{ fontSize: 11 }}
+                  label={{ value: `سعر الجرام (${currencyLabel})`, angle: -90, position: "insideLeft", style: { fontSize: 11 } }}
+                />
+                <YAxis
+                  yAxisId="ratio"
+                  orientation="right"
+                  tick={{ fontSize: 11 }}
+                  label={{ value: "النسبة (Ratio)", angle: 90, position: "insideRight", style: { fontSize: 11 } }}
+                />
+                <Tooltip
+                  contentStyle={{ fontSize: 12, direction: "rtl" }}
+                  formatter={(value: number, name: string) => {
+                    if (name === "ratio") return [`${value} : 1`, "نسبة الذهب/الفضة"];
+                    if (name === "gold") return [`${fmt(value, 2)} ${currencyLabel}`, "جرام الذهب"];
+                    if (name === "silver") return [`${fmt(value, 3)} ${currencyLabel}`, "جرام الفضة"];
+                    return [value, name];
+                  }}
+                  labelFormatter={(label) => `سنة ${label}م`}
+                />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Line
+                  yAxisId="price"
+                  type="monotone"
+                  dataKey="gold"
+                  name="الذهب"
+                  stroke="hsl(45 90% 50%)"
+                  strokeWidth={2.5}
+                  dot={{ r: 2 }}
+                />
+                <Line
+                  yAxisId="price"
+                  type="monotone"
+                  dataKey="silver"
+                  name="الفضة"
+                  stroke="hsl(220 10% 60%)"
+                  strokeWidth={2}
+                  dot={{ r: 2 }}
+                />
+                <Line
+                  yAxisId="ratio"
+                  type="monotone"
+                  dataKey="ratio"
+                  name="نسبة الذهب/الفضة"
+                  stroke="hsl(var(--primary))"
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                  dot={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-3 text-xs">
+            <div className="rounded-md border border-gold/30 bg-gold/10 p-3">
+              <div className="flex items-center gap-1.5 font-semibold text-gold-foreground mb-1">
+                <Gem className="h-3.5 w-3.5" /> الذهب
+              </div>
+              متوسط جرام الذهب — خط ذهبي متصل (محور أيسر).
+            </div>
+            <div className="rounded-md border bg-muted p-3">
+              <div className="flex items-center gap-1.5 font-semibold mb-1">
+                <Coins className="h-3.5 w-3.5" /> الفضة
+              </div>
+              متوسط جرام الفضة — خط رمادي متصل (محور أيسر).
+            </div>
+            <div className="rounded-md border border-primary/30 bg-primary/5 p-3">
+              <div className="flex items-center gap-1.5 font-semibold text-primary mb-1">
+                <TrendingUp className="h-3.5 w-3.5" /> نسبة الذهب/الفضة
+              </div>
+              كم جرام فضة يساوي جرام ذهب — متقطّع (محور أيمن). كلما زادت النسبة كانت الفضة هي
+              الأنفع للفقراء.
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            * بيانات تاريخية تقديرية بالدولار. وضع &quot;بعملة الدولة&quot; يستخدم سعر صرف
+            تقديري حالي وليس تاريخيًّا — للمقارنة البصرية فقط. المرجع الشرعي هو الوزن (85 جم
+            ذهبًا و595 جم فضة).
           </p>
         </CardContent>
       </Card>
+
 
       {/* التطور التاريخي عبر العصور */}
       <Card className="border-gold/30 shadow-soft">
