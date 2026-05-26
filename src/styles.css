@@ -129,3 +129,47 @@
     box-shadow: 0 8px 32px -8px color-mix(in oklab, var(--gold) 40%, transparent);
   }
 }
+
+/* تقرير الطباعة الاحترافي — مخفي افتراضياً، يظهر فقط في الطباعة */
+#print-report { display: none; }
+
+@media print {
+  @page {
+    size: A4;
+    margin: 18mm 14mm 22mm 14mm;
+  }
+
+  html, body {
+    background: white !important;
+    background-image: none !important;
+    color: #111 !important;
+    font-family: "Tajawal", "Amiri", system-ui, sans-serif !important;
+    font-size: 11pt;
+    line-height: 1.55;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* إخفاء واجهة التطبيق، إظهار تقرير الطباعة فقط */
+  body > *:not(#print-report) { display: none !important; }
+  #print-report {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    background: white !important;
+    color: #111 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* فاصل صفحات + منع تقطيع البطاقات والجداول */
+  .print-page-break { page-break-before: always; break-before: page; }
+  .print-avoid-break, .print-card, .print-table, tr, td, th {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  h1, h2, h3, h4 { page-break-after: avoid; break-after: avoid; }
+
+  a { color: #111 !important; text-decoration: none !important; }
+}
+
