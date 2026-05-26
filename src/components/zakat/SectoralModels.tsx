@@ -574,9 +574,10 @@ export function SectoralModels() {
           </div>
 
           <Tabs defaultValue="trade" className="space-y-4">
-            <TabsList className="grid grid-cols-3 md:grid-cols-8 h-auto">
+            <TabsList className="grid grid-cols-3 md:grid-cols-9 h-auto">
               <TabsTrigger value="trade" className="gap-1 text-xs py-2"><Briefcase className="h-3.5 w-3.5" />تجاري</TabsTrigger>
               <TabsTrigger value="industry" className="gap-1 text-xs py-2"><Factory className="h-3.5 w-3.5" />صناعي</TabsTrigger>
+              <TabsTrigger value="services" className="gap-1 text-xs py-2"><Headset className="h-3.5 w-3.5" />خدمي</TabsTrigger>
               <TabsTrigger value="mustaghal" className="gap-1 text-xs py-2"><Building className="h-3.5 w-3.5" />مُستغلات</TabsTrigger>
               <TabsTrigger value="free" className="gap-1 text-xs py-2"><UserCog className="h-3.5 w-3.5" />مهن حرة</TabsTrigger>
               <TabsTrigger value="marine" className="gap-1 text-xs py-2"><Fish className="h-3.5 w-3.5" />ثروة بحرية</TabsTrigger>
@@ -587,6 +588,7 @@ export function SectoralModels() {
 
             <TabsContent value="trade"><TradeModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
             <TabsContent value="industry"><IndustrialModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
+            <TabsContent value="services"><ServicesModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
             <TabsContent value="mustaghal"><MustaghallatModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
             <TabsContent value="free"><FreeProfModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
             <TabsContent value="marine"><MarineModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
