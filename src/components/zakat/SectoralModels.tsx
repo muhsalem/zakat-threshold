@@ -518,13 +518,15 @@ export function SectoralModels() {
           </div>
 
           <Tabs defaultValue="trade" className="space-y-4">
-            <TabsList className="grid grid-cols-3 md:grid-cols-6 h-auto">
+            <TabsList className="grid grid-cols-3 md:grid-cols-8 h-auto">
               <TabsTrigger value="trade" className="gap-1 text-xs py-2"><Briefcase className="h-3.5 w-3.5" />تجاري</TabsTrigger>
               <TabsTrigger value="industry" className="gap-1 text-xs py-2"><Factory className="h-3.5 w-3.5" />صناعي</TabsTrigger>
               <TabsTrigger value="mustaghal" className="gap-1 text-xs py-2"><Building className="h-3.5 w-3.5" />مُستغلات</TabsTrigger>
               <TabsTrigger value="free" className="gap-1 text-xs py-2"><UserCog className="h-3.5 w-3.5" />مهن حرة</TabsTrigger>
               <TabsTrigger value="marine" className="gap-1 text-xs py-2"><Fish className="h-3.5 w-3.5" />ثروة بحرية</TabsTrigger>
               <TabsTrigger value="minerals" className="gap-1 text-xs py-2"><Pickaxe className="h-3.5 w-3.5" />معادن</TabsTrigger>
+              <TabsTrigger value="salary" className="gap-1 text-xs py-2"><Wallet className="h-3.5 w-3.5" />أجور ورواتب</TabsTrigger>
+              <TabsTrigger value="tax" className="gap-1 text-xs py-2"><Landmark className="h-3.5 w-3.5" />زكاة وضريبة</TabsTrigger>
             </TabsList>
 
             <TabsContent value="trade"><TradeModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
@@ -533,6 +535,8 @@ export function SectoralModels() {
             <TabsContent value="free"><FreeProfModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
             <TabsContent value="marine"><MarineModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
             <TabsContent value="minerals"><MineralsModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
+            <TabsContent value="salary"><SalaryModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
+            <TabsContent value="tax"><TaxZakatModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
           </Tabs>
         </CardContent>
       </Card>
