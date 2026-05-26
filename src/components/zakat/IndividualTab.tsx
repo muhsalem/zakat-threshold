@@ -26,6 +26,7 @@ import {
   COUNTRY_PRICES, checkHawl, formatHijri, ZAKAT_RECIPIENTS,
 } from "@/lib/zakat";
 import { CashBankSection } from "./CashBankSection";
+import { SecuritiesSection } from "./SecuritiesSection";
 
 interface NumFieldProps {
   label: string;
@@ -155,11 +156,8 @@ export function IndividualTab() {
   // النقدية والبنوك (المجموع يُحسب داخل المكوّن المتخصّص ويُمرَّر هنا)
   const [cashTotalFromSection, setCashTotalFromSection] = useState(0);
 
-  // الأوراق المالية
-  const [stocksTrade, setStocksTrade] = useState("");
-  const [stocksInvest, setStocksInvest] = useState("");
-  const [mutualFunds, setMutualFunds] = useState("");
-  const [bonds, setBonds] = useState("");
+  // الأوراق المالية — يُحسب الإجمالي داخل مكوّن مخصّص
+  const [securitiesTotalFromSection, setSecuritiesTotalFromSection] = useState(0);
 
   // الأوراق التجارية
   const [bills, setBills] = useState("");
@@ -259,7 +257,7 @@ export function IndividualTab() {
     const silverZakat = silverEligible ? silverValue * effectiveRate : 0;
 
     const cashTotal = cashTotalFromSection;
-    const securitiesTotal = num(stocksTrade) + num(stocksInvest) + num(mutualFunds) + num(bonds);
+    const securitiesTotal = securitiesTotalFromSection;
     const billsTotal = num(bills);
     const tradeTotal = num(inventory) + num(receivablesGood);
     const realEstateZakatable = num(realEstateTrade) + num(realEstateRentIncome);
@@ -309,7 +307,7 @@ export function IndividualTab() {
     coinQuarter, coinHalf, coinFull, coinCustomKarat, coinCustomWeight, coinCustomQty,
     jw9, jw12, jw14, jw18, jw21, jw22, jw24, jewelryPurpose, jewelryOpinion,
     brk18, brk21, brk24, brkOtherKarat, brkOtherWeight, storageKarat, storageWeight,
-    stocksTrade, stocksInvest, mutualFunds, bonds, bills,
+    securitiesTotalFromSection, bills,
     inventory, receivablesGood, realEstateTrade, realEstateRentIncome,
     shortDebts, expenses, cropsKg, cropsValuePerKg, cropsIrrigation,
     camels, cows, sheep, effectiveRate, hawl, cashTotalFromSection,
@@ -885,22 +883,10 @@ export function IndividualTab() {
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
-              <Alert className="border-primary/20 bg-primary/5">
-                <Info className="h-4 w-4" />
-                <AlertDescription className="text-xs leading-relaxed">
-                  <b>أسهم المتاجرة</b> (نية البيع والشراء): تُزكَّى بكامل قيمتها السوقية.
-                  <br />
-                  <b>أسهم الاستثمار طويل الأجل</b>: تُزكَّى حصة المساهم من الموجودات الزكوية للشركة (النقد + الذمم + المخزون) دون الأصول الثابتة.
-                  <br />
-                  <b>السندات</b>: الأصل فقط يُزكَّى، والفوائد محرّمة فيُتخلَّص منها في وجوه الخير دون نية الأجر.
-                </AlertDescription>
-              </Alert>
-              <div className="grid md:grid-cols-2 gap-4">
-                <NumField label="أسهم للمتاجرة (القيمة السوقية)" value={stocksTrade} onChange={setStocksTrade} unit={currencyName} />
-                <NumField label="أسهم استثمار (الموجودات الزكوية)" value={stocksInvest} onChange={setStocksInvest} unit={currencyName} />
-                <NumField label="صناديق استثمار وحقوق ملكية" value={mutualFunds} onChange={setMutualFunds} unit={currencyName} />
-                <NumField label="سندات/صكوك (الأصل دون الفوائد)" value={bonds} onChange={setBonds} unit={currencyName} />
-              </div>
+              <SecuritiesSection
+                currencyName={currencyName}
+                onTotalChange={setSecuritiesTotalFromSection}
+              />
             </AccordionContent>
           </AccordionItem>
 
