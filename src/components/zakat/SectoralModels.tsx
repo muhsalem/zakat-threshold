@@ -610,6 +610,55 @@ export function SectoralModels({
     </div>
   );
 
+  return (
+    <div className="space-y-4">
+      <Card className="shadow-soft">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Calculator className="h-5 w-5 text-primary" />
+            نماذج محاسبية متخصصة لحساب الزكاة
+          </CardTitle>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            {locked
+              ? <>النموذج مربوط بإعدادات حساب زكاة الشركة (العملة، سعر الذهب، نوع السنة){sectorLabel ? <> ومُهيَّأ لقطاع: <b className="text-primary">{sectorLabel}</b></> : null}.</>
+              : <>نماذج مطابقة لقوائم حساب الزكاة المعتمدة (المرجع: د. عصام أبو النصر — جامعة الأزهر).</>}
+          </p>
+        </CardHeader>
+        <CardContent>
+          {orgKind === "nonprofit" && (
+            <Alert className="border-amber-500/30 bg-amber-500/5 mb-3">
+              <Info className="h-4 w-4 text-amber-600" />
+              <AlertDescription className="text-xs">
+                المؤسسة غير ربحية — النماذج للعرض والتدقيق والإفصاح فقط، ولا تجب الزكاة على رأس مالها.
+              </AlertDescription>
+            </Alert>
+          )}
+          {!locked && (
+            <TopBar
+              currency={currency} setCurrency={setCurrency}
+              goldGram={goldGramLocal} setGoldGram={setGoldGramLocal}
+              yearMode={yearModeLocal} setYearMode={setYearModeLocal}
+            />
+          )}
+          <div className="text-xs text-muted-foreground mb-3 px-1 flex flex-wrap gap-x-4 gap-y-1">
+            <span>العملة: <b>{currency}</b></span>
+            <span>سعر جرام الذهب: <b>{fmt(num(goldGram))}</b></span>
+            <span>نوع السنة: <b>{yearMode === "hijri" ? "قمرية 2.5%" : "شمسية 2.5775%"}</b></span>
+            <span>النصاب: <b>{fmt(nisab)} {currency}</b></span>
+          </div>
+
+          <Tabs value={tab} onValueChange={setTab} className="space-y-4">
+            <TabsList className="grid h-auto" style={{ gridTemplateColumns: `repeat(${Math.min(visibleTabs.length, 6)}, minmax(0, 1fr))` }}>
+              {visibleTabs.map((t) => {
+                const I = t.icon;
+                return (
+                  <TabsTrigger key={t.v} value={t.v} className="gap-1 text-xs py-2">
+                    <I className="h-3.5 w-3.5" />{t.label}
+                  </TabsTrigger>
+                );
+              })}
+            </TabsList>
+
             <TabsContent value="trade"><TradeModel currency={currency} nisab={nisab} yearMode={yearMode} />{Addons}</TabsContent>
             <TabsContent value="industry"><IndustrialModel currency={currency} nisab={nisab} yearMode={yearMode} />{Addons}</TabsContent>
             <TabsContent value="services">
