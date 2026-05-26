@@ -103,11 +103,14 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
       return next;
     }));
 
-  const addWallet = () =>
-    setWalletRows((r) => [...r, { id: Date.now(), provider: "vodafone", amount: "", linked: "standalone" }]);
-  const removeWallet = (id: number) => setWalletRows((r) => r.filter((x) => x.id !== id));
-  const updateWallet = (id: number, patch: Partial<WalletRow>) =>
-    setWalletRows((rows) => rows.map((r) => (r.id === id ? { ...r, ...patch } : r)));
+  const makeWalletOps = (setter: React.Dispatch<React.SetStateAction<WalletRow[]>>, defaultProvider: string) => ({
+    add: () => setter((r) => [...r, { id: Date.now(), provider: defaultProvider, amount: "", linked: "standalone" }]),
+    remove: (id: number) => setter((r) => r.filter((x) => x.id !== id)),
+    update: (id: number, patch: Partial<WalletRow>) =>
+      setter((rows) => rows.map((r) => (r.id === id ? { ...r, ...patch } : r))),
+  });
+  const telcoOps = makeWalletOps(setTelcoWallets, "vodafone");
+  const bankOps = makeWalletOps(setBankWallets, "meeza");
 
   // ========= الحسابات =========
   const totals = useMemo(() => {
