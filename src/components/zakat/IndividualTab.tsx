@@ -371,6 +371,18 @@ export function IndividualTab() {
 
   return (
     <div dir="rtl" className="grid lg:grid-cols-3 gap-6 text-right">
+      {/* ديباجة الطباعة — تظهر في رأس التقرير عند طباعة الإقرار فقط */}
+      <div className="hidden print:block lg:col-span-3 border-b pb-4 mb-4">
+        <div className="text-center text-sm font-bold mb-2">إقرار زكوي — محاسب الزكاة المعتمد</div>
+        <div className="whitespace-pre-line text-xs leading-7">{accountantPreamble}</div>
+        {(accountantName || accountantLicense) && (
+          <div className="mt-3 text-xs">
+            {accountantName && <div>المحاسب: <b>{accountantName}</b></div>}
+            {accountantLicense && <div>رقم القيد / الترخيص: <b>{accountantLicense}</b></div>}
+            <div>التاريخ: <b>{new Date().toLocaleDateString("ar-EG")}</b></div>
+          </div>
+        )}
+      </div>
       <div className="lg:col-span-2 space-y-6">
         {/* بيانات المزكي + الإقرار وشرط الحول */}
         <Card className="shadow-soft">
