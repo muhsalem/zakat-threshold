@@ -13,42 +13,141 @@ import { Info, RefreshCw, Wallet, Smartphone, CreditCard, Building2, PiggyBank, 
 import { COUNTRY_PRICES, currency as fmtCurrency, num } from "@/lib/zakat";
 import bankCardsImg from "@/assets/bank-cards.png";
 
-// ===== قوائم البنوك =====
-const ISLAMIC_BANKS = [
-  "بنك فيصل الإسلامي المصري",
-  "بنك البركة مصر",
-  "مصرف أبوظبي الإسلامي — ADIB",
-  "البنك الإسلامي الأردني",
-  "بيت التمويل الكويتي — KFH",
-  "مصرف الراجحي",
-  "بنك البلاد",
-  "بنك الجزيرة",
-  "مصرف الإنماء",
-  "مصرف الشارقة الإسلامي",
-  "مصرف الإمارات الإسلامي",
-  "بنك دبي الإسلامي",
-  "مصرف قطر الإسلامي — QIB",
-  "البنك الإسلامي القطري الدولي — QIIB",
-  "البنك الإسلامي الفلسطيني",
-  "بنك صفوة الإسلامي (الأردن)",
-  "أخرى",
-];
+// ===== قوائم البنوك حسب الدولة (إسلامية مستقلة + تقليدية وفروعها / نوافذها الإسلامية) =====
+type TradBank = { v: string; l: string; window: string };
+type CountryBanks = { islamic: string[]; traditional: TradBank[] };
 
-const TRADITIONAL_BANKS_WITH_WINDOWS = [
-  { v: "nbe", l: "البنك الأهلي المصري — NBE", window: "نافذة المعاملات الإسلامية" },
-  { v: "misr", l: "بنك مصر", window: "فرع المعاملات الإسلامية" },
-  { v: "cib", l: "البنك التجاري الدولي — CIB", window: "—" },
-  { v: "qnb", l: "بنك QNB الأهلي", window: "—" },
-  { v: "aaib", l: "البنك العربي الأفريقي الدولي", window: "—" },
-  { v: "hsbc", l: "بنك HSBC", window: "Amanah — أمانة" },
-  { v: "adcb", l: "بنك أبوظبي التجاري — ADCB", window: "إسلامي" },
-  { v: "fab", l: "بنك أبوظبي الأول — FAB", window: "إسلامي" },
-  { v: "enbd", l: "بنك الإمارات دبي الوطني", window: "إسلامي" },
-  { v: "mashreq", l: "بنك المشرق", window: "المشرق الإسلامي" },
-  { v: "samba", l: "سامبا — SNB", window: "إسلامي" },
-  { v: "alahli", l: "البنك الأهلي السعودي — SNB", window: "—" },
-  { v: "other", l: "بنك تقليدي آخر", window: "—" },
-];
+const BANKS_BY_COUNTRY: Record<string, CountryBanks> = {
+  EG: {
+    islamic: [
+      "بنك فيصل الإسلامي المصري",
+      "بنك البركة مصر",
+      "مصرف أبوظبي الإسلامي — ADIB مصر",
+      "البنك المصري الخليجي",
+    ],
+    traditional: [
+      { v: "nbe", l: "البنك الأهلي المصري — NBE", window: "كنانة — للمعاملات الإسلامية" },
+      { v: "misr", l: "بنك مصر", window: "شعاع — فروع المعاملات الإسلامية" },
+      { v: "umb", l: "المصرف المتحد", window: "فروع المعاملات الإسلامية" },
+      { v: "cib", l: "البنك التجاري الدولي — CIB", window: "—" },
+      { v: "qnb_eg", l: "بنك QNB الأهلي", window: "—" },
+      { v: "aaib", l: "البنك العربي الأفريقي الدولي", window: "—" },
+      { v: "hsbc_eg", l: "بنك HSBC مصر", window: "—" },
+      { v: "banque_du_caire", l: "بنك القاهرة", window: "—" },
+    ],
+  },
+  SA: {
+    islamic: ["مصرف الراجحي", "بنك البلاد", "بنك الجزيرة", "مصرف الإنماء"],
+    traditional: [
+      { v: "snb", l: "البنك الأهلي السعودي — SNB", window: "الأهلي إسلامي" },
+      { v: "riyad", l: "بنك الرياض", window: "نافذة إسلامية" },
+      { v: "sabb", l: "البنك السعودي البريطاني — SABB", window: "أمانة" },
+      { v: "anb", l: "البنك العربي الوطني — ANB", window: "تيسير الإسلامية" },
+      { v: "bsf", l: "البنك السعودي الفرنسي", window: "كنوز الإسلامي" },
+    ],
+  },
+  AE: {
+    islamic: [
+      "بنك دبي الإسلامي",
+      "مصرف أبوظبي الإسلامي — ADIB",
+      "مصرف الإمارات الإسلامي",
+      "مصرف الشارقة الإسلامي",
+      "مصرف عجمان",
+    ],
+    traditional: [
+      { v: "fab", l: "بنك أبوظبي الأول — FAB", window: "FAB Islamic" },
+      { v: "enbd", l: "بنك الإمارات دبي الوطني — ENBD", window: "Emirates Islamic" },
+      { v: "adcb", l: "بنك أبوظبي التجاري — ADCB", window: "ADCB Islamic" },
+      { v: "mashreq", l: "بنك المشرق", window: "المشرق الإسلامي" },
+      { v: "hsbc_ae", l: "HSBC الإمارات", window: "Amanah — أمانة" },
+    ],
+  },
+  KW: {
+    islamic: ["بيت التمويل الكويتي — KFH", "بنك بوبيان", "بنك وربة", "بنك الكويت الدولي — KIB"],
+    traditional: [
+      { v: "nbk", l: "بنك الكويت الوطني — NBK", window: "—" },
+      { v: "gbk", l: "بنك الخليج", window: "—" },
+      { v: "cbk", l: "البنك التجاري الكويتي", window: "—" },
+      { v: "burgan", l: "بنك برقان", window: "—" },
+    ],
+  },
+  QA: {
+    islamic: [
+      "مصرف قطر الإسلامي — QIB",
+      "بنك دخان",
+      "مصرف الريان",
+      "البنك الإسلامي القطري الدولي — QIIB",
+    ],
+    traditional: [
+      { v: "qnb", l: "بنك قطر الوطني — QNB", window: "QNB First Islamic" },
+      { v: "cbq", l: "البنك التجاري — CBQ", window: "—" },
+      { v: "doha", l: "بنك الدوحة", window: "—" },
+    ],
+  },
+  BH: {
+    islamic: [
+      "بنك البحرين الإسلامي — BisB",
+      "بيت التمويل الخليجي — GFH",
+      "بنك السلام البحرين",
+      "بنك الإثمار",
+      "مصرف الخير",
+    ],
+    traditional: [
+      { v: "aub_bh", l: "البنك الأهلي المتحد — AUB", window: "—" },
+      { v: "nbb", l: "بنك البحرين الوطني — NBB", window: "—" },
+      { v: "bbk", l: "بنك البحرين والكويت — BBK", window: "—" },
+    ],
+  },
+  OM: {
+    islamic: ["بنك نزوى", "بنك العز الإسلامي"],
+    traditional: [
+      { v: "muscat", l: "بنك مسقط", window: "ميثاق" },
+      { v: "sohar", l: "بنك صحار الدولي", window: "صحار الإسلامي" },
+      { v: "dhofar", l: "بنك ظفار", window: "مزن" },
+      { v: "nbo", l: "البنك الوطني العماني", window: "المزن" },
+    ],
+  },
+  JO: {
+    islamic: [
+      "البنك الإسلامي الأردني",
+      "البنك العربي الإسلامي الدولي",
+      "بنك صفوة الإسلامي",
+    ],
+    traditional: [
+      { v: "arab", l: "البنك العربي", window: "—" },
+      { v: "housing", l: "بنك الإسكان", window: "إسكان إسلامي" },
+      { v: "cab", l: "البنك التجاري الأردني", window: "—" },
+    ],
+  },
+  PS: {
+    islamic: ["البنك الإسلامي الفلسطيني", "البنك الإسلامي العربي"],
+    traditional: [
+      { v: "bop", l: "بنك فلسطين", window: "—" },
+      { v: "tnb", l: "البنك الوطني — TNB", window: "—" },
+    ],
+  },
+  TR: {
+    islamic: ["كويت ترك", "البركة تركيا", "ضمان تركيا", "زراعت بنك مشاركة"],
+    traditional: [
+      { v: "ziraat", l: "زراعت بنكاسي", window: "زراعت كاتيليم" },
+      { v: "isbank", l: "İş Bankası", window: "—" },
+      { v: "garanti", l: "Garanti BBVA", window: "—" },
+    ],
+  },
+};
+
+function getCountryBanks(code: string): CountryBanks {
+  const data = BANKS_BY_COUNTRY[code];
+  const fallback: CountryBanks = {
+    islamic: ["بنك إسلامي محلي", "أخرى"],
+    traditional: [{ v: "other", l: "بنك تقليدي محلي", window: "—" }],
+  };
+  if (!data) return fallback;
+  return {
+    islamic: [...data.islamic, "أخرى"],
+    traditional: [...data.traditional, { v: "other", l: "بنك تقليدي آخر", window: "—" }],
+  };
+}
 
 type BankType = "islamic" | "traditional";
 
