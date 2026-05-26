@@ -72,11 +72,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "حاسبة الزكاة — للأفراد والشركات" },
+      { name: "description", content: "تطبيق شامل لحساب زكاة الأفراد والشركات وفق الضوابط الشرعية، مع التدقيق والامتثال الشرعي والتطور التاريخي للنصاب." },
+      { name: "author", content: "Zakat Calculator" },
+      { property: "og:title", content: "حاسبة الزكاة — للأفراد والشركات" },
+      { property: "og:description", content: "احسب زكاة المال والذهب والفضة والأنعام والزروع وعروض التجارة بدقة، مع نموذج خاص بزكاة الشركات." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
@@ -96,9 +96,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="ar" dir="rtl">
       <head>
         <HeadContent />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Amiri:wght@400;700&display=swap"
+        />
       </head>
       <body>
         {children}
