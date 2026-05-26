@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -27,13 +27,63 @@ import {
   fmt,
   num,
 } from "@/lib/zakat";
-import { Scroll, Coins, Gem, Globe2, CalendarClock } from "lucide-react";
+import { Scroll, Coins, Gem, Globe2, CalendarClock, Database } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+
+const MONTHS_AR = [
+  "يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
+  "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر",
+];
+
+type NisabRow = {
+  id: string;
+  year: number;
+  month: number | null;
+  hijri_year: number | null;
+  currency: string;
+  gold_price: number;
+  silver_price: number;
+  event: string | null;
+};
 
 export function NisabHistory() {
   const [countryCode, setCountryCode] = useState("EG");
   const country = COUNTRY_PRICES.find((c) => c.code === countryCode) ?? COUNTRY_PRICES[0];
   const [goldPrice, setGoldPrice] = useState<string>(String(country.gold24));
   const [silverPrice, setSilverPrice] = useState<string>(String(country.silver));
+
+  // قاعدة بيانات الأنصبة
+  const [dbRows, setDbRows] = useState<NisabRow[]>([]);
+  const [selectedYear, setSelectedYear] = useState<number>(2026);
+  const [selectedMonth, setSelectedMonth] = useState<number>(1);
+
+  useEffect(() => {
+    supabase
+      .from("nisab_prices")
+      .select("*")
+      .order("year", { ascending: false })
+      .order("month", { ascending: false, nullsFirst: false })
+      .then(({ data }) => { if (data) setDbRows(data as NisabRow[]); });
+  }, []);
+
+  const dbYears = useMemo(() => {
+    const set = new Set<number>(dbRows.map((r) => r.year));
+    return [...set].sort((a, b) => b - a);
+  }, [dbRows]);
+
+  const monthsForYear = useMemo(
+    () => dbRows.filter((r) => r.year === selectedYear && r.month !== null)
+      .map((r) => r.month as number)
+      .sort((a, b) => a - b),
+    [dbRows, selectedYear]
+  );
+
+  const selectedRow = useMemo(() => {
+    if (monthsForYear.length > 0) {
+      return dbRows.find((r) => r.year === selectedYear && r.month === selectedMonth) ?? null;
+    }
+    return dbRows.find((r) => r.year === selectedYear && r.month === null) ?? null;
+  }, [dbRows, selectedYear, selectedMonth, monthsForYear]);
 
   const onCountryChange = (code: string) => {
     const c = COUNTRY_PRICES.find((x) => x.code === code);
@@ -51,6 +101,7 @@ export function NisabHistory() {
   );
 
   const years = useMemo(() => [...NISAB_LAST_100_YEARS].reverse(), []);
+
 
   return (
     <div className="space-y-6">
