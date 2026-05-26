@@ -763,7 +763,7 @@ export function CompanyTab() {
             </CardContent>
           </Card>
 
-          {/* النموذج القطاعي مرتبط بقطاع النشاط المحدد */}
+          {/* النموذج القطاعي مرتبط بقطاع النشاط المحدد وطبيعة المؤسسة وإعدادات حساب زكاة الشركة */}
           <Card className="shadow-soft border-gold/30">
             <CardHeader className="bg-gradient-to-l from-gold/10 to-transparent">
               <CardTitle className="flex items-center gap-2">
@@ -771,13 +771,24 @@ export function CompanyTab() {
                 النموذج القطاعي التفصيلي
               </CardTitle>
               <p className="text-xs text-muted-foreground">
-                مرتبط بقطاع النشاط المختار أعلاه: <b>{sector.label}</b> — يمكنك تغيير التبويب القطاعي بحرية للمقارنة.
+                مفعّل تلقائياً وفق <b>{GROUP_LABELS[sector.group]}</b> → <b>{sector.label}</b>،
+                ومربوط بإعدادات حساب زكاة الشركة أعلاه (العملة، سعر الذهب، نوع السنة، النصاب){orgKind === "nonprofit" ? " — للعرض فقط لأن المؤسسة غير ربحية" : ""}.
               </p>
             </CardHeader>
             <CardContent className="pt-4">
-              <SectoralModels activeTab={sector.model} defaultCurrency={currencyName} />
+              <SectoralModels
+                activeTab={sector.model}
+                defaultCurrency={currencyName}
+                goldGram={goldGramPrice}
+                yearMode={solarYear}
+                allowedTabs={getAllowedSectoralTabs(sector.id, sector.group)}
+                locked
+                orgKind={orgKind}
+                sectorLabel={sector.label}
+              />
             </CardContent>
           </Card>
+
 
           {/* حاسبة التطهير الشرعي */}
           <PurificationCalculator currencyName={currencyName} />
