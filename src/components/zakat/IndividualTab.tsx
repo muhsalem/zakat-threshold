@@ -130,7 +130,26 @@ export function IndividualTab() {
   const [storageKarat, setStorageKarat] = useState("21");
   const [storageWeight, setStorageWeight] = useState("");
   // الفضة
-  const [silver, setSilver] = useState("");
+  // ========= الفضة: 3 أقسام =========
+  // أ) السبائك والأونصات الفضية (المفتاح = العيار/الألفي)
+  const [sv999, setSv999] = useState(""); const [sv960, setSv960] = useState("");
+  const [sv925, setSv925] = useState(""); const [sv900, setSv900] = useState("");
+  const [sv835, setSv835] = useState(""); const [sv800, setSv800] = useState("");
+  const [sv750, setSv750] = useState(""); const [svOunces, setSvOunces] = useState("");
+  // ب) الجنيهات والعملات الفضية
+  const [coinLira, setCoinLira] = useState("");        // ليرة عثمانية 12جم عيار 830
+  const [coinRiyal, setCoinRiyal] = useState("");      // ريال فضة (وزن كلي بعيار 900)
+  const [coinSvOtherKarat, setCoinSvOtherKarat] = useState("800");
+  const [coinSvOther, setCoinSvOther] = useState("");
+  // ج) مجوهرات ومشغولات وأدوات
+  const [svJewelry, setSvJewelry] = useState("");      // مجوهرات وإكسسوارات
+  const [svJewelryKarat, setSvJewelryKarat] = useState("925");
+  const [svUtensils, setSvUtensils] = useState("");    // ملاعق صواني فناجين سبح
+  const [svUtensilsKarat, setSvUtensilsKarat] = useState("925");
+  const [svTools, setSvTools] = useState("");          // أدوات ومستلزمات وتحف
+  const [svToolsKarat, setSvToolsKarat] = useState("800");
+  const [silverPurpose, setSilverPurpose] = useState<"storage" | "wear">("wear");
+  const [silverOpinion, setSilverOpinion] = useState<"majority" | "hanafi">("majority");
 
   // النقدية والبنوك
   const [cashHand, setCashHand] = useState("");
