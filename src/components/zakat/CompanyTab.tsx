@@ -605,6 +605,61 @@ export function CompanyTab() {
             </Alert>
           )}
 
+          {/* هيكل المساهمين والإعفاءات */}
+          <Card className="shadow-soft border-primary/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-primary" />
+                هيكل المساهمين والإعفاءات الزكوية
+              </CardTitle>
+              <p className="text-xs text-muted-foreground">
+                تطبيق نظام {country.flag} {country.name}: حصص المسلمين الخليجيين/المواطنين خاضعة للزكاة،
+                وحصص الأجانب تخضع لضريبة الدخل، وحصص الجهات الحكومية والوقفية وغير المسلمين معفاة من الزكاة.
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="grid md:grid-cols-3 gap-3">
+                <NumField label="حصة المواطنين/الخليجيين المسلمين" value={shGcc} onChange={setShGcc} unit="%" hint="خاضعة للزكاة" />
+                <NumField label="حصة الأجانب" value={shForeign} onChange={setShForeign} unit="%" hint="ضريبة دخل بدلاً من الزكاة" />
+                <NumField label="حصة الجهات الحكومية" value={shGovt} onChange={setShGovt} unit="%" hint="معفاة" />
+                <NumField label="حصة الجهات الوقفية" value={shWaqf} onChange={setShWaqf} unit="%" hint="معفاة" />
+                <NumField label="حصة غير المسلمين" value={shNonMuslim} onChange={setShNonMuslim} unit="%" hint="معفاة من الزكاة" />
+              </div>
+              <div className={`rounded-lg p-3 text-sm flex items-center justify-between ${calc.sharesBalanced ? "bg-primary/5 border border-primary/20" : "bg-destructive/5 border border-destructive/30"}`}>
+                <span>إجمالي الحصص:</span>
+                <b>{fmt(calc.totalShares)}% {!calc.sharesBalanced && <span className="text-destructive text-xs"> — يجب أن يساوي 100%</span>}</b>
+              </div>
+              <div className="rounded-lg bg-muted/40 p-3 text-xs space-y-1">
+                <div className="flex justify-between"><span>نسبة الحصص المعفاة:</span><b>{(calc.exemptPct * 100).toFixed(2)}%</b></div>
+                <div className="flex justify-between text-primary"><span>نسبة الوعاء الخاضع للزكاة:</span><b>{(calc.zakatableRatio * 100).toFixed(2)}%</b></div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* النصاب */}
+          <Card className="shadow-soft border-gold/30">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Coins className="h-5 w-5 text-gold" />
+                التحقق من النصاب الشرعي
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="grid md:grid-cols-2 gap-3">
+                <NumField label="سعر جرام الذهب عيار 24 اليوم" value={goldGramPrice} onChange={setGoldGramPrice} unit={currencyName} hint="يُستخدم لحساب نصاب 85 جرام" />
+                <div className="rounded-lg bg-muted/40 p-3 text-sm flex flex-col justify-center">
+                  <div className="flex justify-between"><span>قيمة النصاب (85 جرام ذهب):</span><b>{cFmt(calc.nisabValue, currencyName)}</b></div>
+                  <div className="flex justify-between mt-1">
+                    <span>حالة الوعاء:</span>
+                    <Badge variant={calc.reachesNisab ? "default" : "destructive"}>
+                      {calc.reachesNisab ? "بلغ النصاب — تجب الزكاة" : "لم يبلغ النصاب — لا زكاة"}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* طريقة حساب الزكاة */}
           <Card className="shadow-soft">
             <CardHeader>
