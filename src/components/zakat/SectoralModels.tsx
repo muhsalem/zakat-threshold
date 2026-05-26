@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Briefcase, Factory, Building, UserCog, Fish, Pickaxe, Info, Calculator } from "lucide-react";
+import { Briefcase, Factory, Building, UserCog, Fish, Pickaxe, Info, Calculator, Wallet, Landmark } from "lucide-react";
 import { ZAKAT_RATE, ZAKAT_RATE_GREGORIAN, GOLD_NISAB_GRAMS, num, fmt } from "@/lib/zakat";
 
 // ============ مكوّن حقل رقمي مشترك ============
