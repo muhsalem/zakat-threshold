@@ -1403,10 +1403,41 @@ export function IndividualTab() {
                 className="text-xs leading-6"
               />
             </div>
+
+            <Separator />
+
+            <div className="space-y-2">
+              <Label className="text-xs font-semibold">صنف الرأي المهني</Label>
+              <RadioGroup value={opinionType} onValueChange={(v) => setOpinionType(v as "clean" | "qualified" | "adverse")} className="flex flex-wrap gap-3">
+                <div className="flex items-center gap-1.5"><RadioGroupItem value="clean" id="op-clean" /><Label htmlFor="op-clean" className="text-xs">نظيف</Label></div>
+                <div className="flex items-center gap-1.5"><RadioGroupItem value="qualified" id="op-qual" /><Label htmlFor="op-qual" className="text-xs">متحفظ</Label></div>
+                <div className="flex items-center gap-1.5"><RadioGroupItem value="adverse" id="op-adv" /><Label htmlFor="op-adv" className="text-xs">معاكس</Label></div>
+              </RadioGroup>
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-xs">نص الرأي المهني التفصيلي (اختياري)</Label>
+              <Textarea
+                value={accountantOpinion}
+                onChange={(e) => setAccountantOpinion(e.target.value)}
+                rows={3}
+                placeholder="ملاحظات المحاسب على بنود التقرير أو تحفظاته…"
+                className="text-xs leading-6"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-xs">إجمالي زكاة العام السابق (للمقارنة)</Label>
+              <Input type="number" min="0" step="0.01" value={previousYearZakat}
+                onChange={(e) => setPreviousYearZakat(e.target.value)}
+                dir="ltr" style={{ textAlign: "right" }} placeholder="0" />
+            </div>
+
             <p className="text-[11px] text-muted-foreground">
               <Info className="inline h-3 w-3 ml-1" />
-              تظهر الديباجة في أعلى التقرير عند طباعة الإقرار، وتتضمَّن الشهادة الشرعية والمرجعية المعتمدة.
+              تظهر الديباجة والرأي المهني والمقارنة في التقرير المطبوع، إضافةً إلى رقم تسلسلي وQR للتحقق.
             </p>
+
           </CardContent>
         </Card>
 
