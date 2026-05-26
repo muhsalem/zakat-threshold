@@ -270,29 +270,32 @@ export function IndividualTab() {
     const cashTotal = cashTotalFromSection;
     const securitiesTotal = securitiesTotalFromSection;
     const billsTotal = num(bills);
-    const tradeTotal = num(inventory) + num(receivablesGood);
+    const tradeShareholderBase = tradeIsShareholder
+      ? num(tradeShareCompanyBase) * (num(tradeSharePct) / 100) : 0;
+    const tradeTotal = num(inventory) + num(receivablesGood) + tradeShareholderBase;
     const realEstateZakatable = num(realEstateTrade) + num(realEstateRentIncome);
+    const incomeUsufruct = incomeUsufructTotal;
 
     const goldNisabValue = GOLD_NISAB_GRAMS * gp;
     const silverNisabValue = SILVER_NISAB_GRAMS * sp;
     const moneyNisab = Math.min(goldNisabValue, silverNisabValue);
 
     const debts = num(shortDebts) + num(expenses);
-    const monetaryGross = cashTotal + securitiesTotal + billsTotal + tradeTotal + realEstateZakatable;
+    const monetaryGross = cashTotal + securitiesTotal + billsTotal + tradeTotal + realEstateZakatable + incomeUsufruct;
     const monetaryBase = monetaryGross - debts;
     const monetaryEligible = monetaryBase >= moneyNisab && monetaryBase > 0;
     const monetaryZakat = monetaryEligible ? monetaryBase * effectiveRate : 0;
 
-    // الزروع (لا يُشترط لها حول)
-    const cropsKgN = num(cropsKg);
+    // الزروع (لا يُشترط لها حول) — تُحسب فقط إذا كان يملك أرضاً زراعية
+    const cropsKgN = ownsFarmland ? num(cropsKg) : 0;
     const cropsValue = cropsKgN * num(cropsValuePerKg);
     const cropsRate = cropsIrrigation === "rain" ? 0.1 : 0.05;
-    const cropsEligible = cropsKgN >= CROPS_NISAB_KG;
+    const cropsEligible = ownsFarmland && cropsKgN >= CROPS_NISAB_KG;
     const cropsZakat = cropsEligible ? cropsValue * cropsRate : 0;
 
-    const camelsN = Math.floor(num(camels));
-    const cowsN = Math.floor(num(cows));
-    const sheepN = Math.floor(num(sheep));
+    const camelsN = ownsLivestock ? Math.floor(num(camels)) : 0;
+    const cowsN = ownsLivestock ? Math.floor(num(cows)) : 0;
+    const sheepN = ownsLivestock ? Math.floor(num(sheep)) : 0;
 
     // الزكاة المالية (تشترط الحول) — لا نحسبها إن لم يكتمل الحول وكان التاريخ مُدخلًا
     const hawlBlocks = hawl !== null && !hawl.hawlComplete;
