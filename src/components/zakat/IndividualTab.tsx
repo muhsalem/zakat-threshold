@@ -1330,18 +1330,73 @@ export function IndividualTab() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-black tracking-tight">
-              {fmt(calc.total)}
-              <span className="text-lg font-medium opacity-80 mr-2">{currencyName}</span>
+            {(() => {
+              const prepaid = num(prepaidZakat);
+              const netDue = Math.max(0, calc.total - prepaid);
+              return (
+                <>
+                  <div className="text-4xl font-black tracking-tight">
+                    {fmt(netDue)}
+                    <span className="text-lg font-medium opacity-80 mr-2">{currencyName}</span>
+                  </div>
+                  <p className="text-xs opacity-80 mt-2">
+                    نسبة: {(effectiveRate * 100).toFixed(3)}% — تقويم {calendarBasis === "hijri" ? "هجري" : "ميلادي"}
+                  </p>
+                  {prepaid > 0 && (
+                    <p className="text-xs opacity-80 mt-1">
+                      الإجمالي قبل خصم المعجَّل: <b>{fmt(calc.total)}</b> — مدفوع مقدماً: <b>{fmt(prepaid)}</b>
+                    </p>
+                  )}
+                  {name && <p className="text-xs opacity-80 mt-1">{name}{profession && ` — ${profession}`}</p>}
+                  {hawl && (
+                    <p className="text-xs opacity-80 mt-1">
+                      {hawl.hawlComplete ? "✓ اكتمل الحول" : `⏳ الحول لم يكتمل (${hawl.daysRemaining} يوم متبقي)`}
+                    </p>
+                  )}
+                </>
+              );
+            })()}
+          </CardContent>
+        </Card>
+
+        {/* تعجيل الزكاة */}
+        <Card className="shadow-soft print:hidden">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base flex items-center gap-2">
+              <CalendarClock className="h-4 w-4 text-primary" /> تعجيل الزكاة (مدفوعة مقدماً)
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Alert className="border-primary/20 bg-primary/5">
+              <Info className="h-4 w-4" />
+              <AlertDescription className="text-xs leading-relaxed">
+                يجوز تعجيل الزكاة لسنة أو سنتين عند الجمهور إذا بلغ المال النصاب،
+                لحديث: «أنّ النبي ﷺ تعجَّل من العباس صدقة سنتين» (رواه أبو داود والترمذي).
+                المبلغ المُعجَّل يُخصم من الواجب هذا العام.
+              </AlertDescription>
+            </Alert>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1">
+                <Label className="text-xs">المبلغ المعجَّل المدفوع</Label>
+                <Input type="number" min="0" step="0.01" value={prepaidZakat}
+                  onChange={(e) => setPrepaidZakat(e.target.value)}
+                  dir="ltr" style={{ textAlign: "right" }} placeholder="0" />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">عدد السنوات المعجَّلة</Label>
+                <Input type="number" min="1" max="2" step="1" value={prepaidYears}
+                  onChange={(e) => setPrepaidYears(e.target.value)}
+                  dir="ltr" style={{ textAlign: "right" }} />
+              </div>
             </div>
-            <p className="text-xs opacity-80 mt-2">
-              نسبة: {(effectiveRate * 100).toFixed(3)}% — تقويم {calendarBasis === "hijri" ? "هجري" : "ميلادي"}
-            </p>
-            {name && <p className="text-xs opacity-80 mt-1">{name}{profession && ` — ${profession}`}</p>}
-            {hawl && (
-              <p className="text-xs opacity-80 mt-1">
-                {hawl.hawlComplete ? "✓ اكتمل الحول" : `⏳ الحول لم يكتمل (${hawl.daysRemaining} يوم متبقي)`}
-              </p>
+            {num(prepaidZakat) > 0 && (
+              <div className="rounded-md bg-primary/5 border border-primary/20 p-2 text-xs">
+                <div>الواجب الإجمالي: <b>{cur(calc.total)}</b></div>
+                <div>المعجَّل: <b>{cur(num(prepaidZakat))}</b> عن <b>{prepaidYears}</b> سنة</div>
+                <div className="text-primary font-bold">
+                  المتبقي للسداد الآن: {cur(Math.max(0, calc.total - num(prepaidZakat)))}
+                </div>
+              </div>
             )}
           </CardContent>
         </Card>
