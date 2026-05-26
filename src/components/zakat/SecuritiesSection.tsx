@@ -84,6 +84,14 @@ function rowZakatable(r: Row): { mv: number; zakatable: number; purify: number }
     case "mutual_conv":
       base = Math.max(0, mv - purify);
       break;
+    case "takaful":
+      // وثيقة تكافل: قيمة الاسترداد (الرصيد الادخاري) تُزكَّى بالكامل
+      base = mv;
+      break;
+    case "insurance_conv":
+      // تأمين تقليدي: الأصل المُسدَّد فقط دون أرباح الفوائد (تُصرف للخير)
+      base = mv;
+      break;
   }
   return { mv, zakatable: Math.max(0, base - (r.kind === "mutual_conv" ? 0 : purify)), purify };
 }
