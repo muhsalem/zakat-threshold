@@ -12,10 +12,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import {
   Building2, Calculator, Shield, Gavel, CheckSquare, AlertTriangle, Info, Scale,
-  FileSpreadsheet, Upload, FileText, X,
+  FileSpreadsheet, Upload, FileText, X, Printer, Save, Coins, Users,
 } from "lucide-react";
-import { ZAKAT_RATE, num, fmt, currency as cFmt } from "@/lib/zakat";
+import { ZAKAT_RATE, GOLD_NISAB_GRAMS, num, fmt, currency as cFmt } from "@/lib/zakat";
 import { SectoralModels } from "./SectoralModels";
+import { PurificationCalculator } from "./PurificationCalculator";
+import { Button } from "@/components/ui/button";
 
 function NumField({ label, value, onChange, unit, hint }: {
   label: string; value: string; onChange: (v: string) => void; unit?: string; hint?: string;
