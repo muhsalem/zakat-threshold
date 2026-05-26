@@ -183,6 +183,90 @@ export function NisabHistory() {
         </CardContent>
       </Card>
 
+      {/* قاعدة بيانات الأنصبة — اختيار السنة والشهر */}
+      <Card className="border-primary/30 shadow-soft" dir="rtl">
+        <CardHeader className="bg-gradient-to-l from-primary/10 to-transparent">
+          <CardTitle className="flex items-center gap-2 text-xl">
+            <Database className="h-5 w-5 text-primary" />
+            قاعدة بيانات الأنصبة — اختر السنة والشهر
+          </CardTitle>
+          <p className="text-sm text-muted-foreground text-right">
+            البيانات محفوظة في قاعدة بيانات النظام. اختر السنة، ولسنة 2026 يمكنك اختيار الشهر للاطلاع على
+            النصاب الشهري التفصيلي.
+          </p>
+        </CardHeader>
+        <CardContent className="pt-6 space-y-4 text-right">
+          <div className="grid sm:grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <Label className="text-xs">السنة</Label>
+              <Select
+                value={String(selectedYear)}
+                onValueChange={(v) => setSelectedYear(Number(v))}
+              >
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent className="max-h-72">
+                  {dbYears.map((y) => (
+                    <SelectItem key={y} value={String(y)}>{y}م</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {monthsForYear.length > 0 && (
+              <div className="space-y-1.5">
+                <Label className="text-xs">الشهر</Label>
+                <Select
+                  value={String(selectedMonth)}
+                  onValueChange={(v) => setSelectedMonth(Number(v))}
+                >
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent className="max-h-72">
+                    {monthsForYear.map((m) => (
+                      <SelectItem key={m} value={String(m)}>{MONTHS_AR[m - 1]}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </div>
+
+          {selectedRow ? (
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div className="rounded-lg border border-gold/30 bg-gold/10 p-4">
+                <div className="flex items-center gap-2 mb-2 text-gold-foreground">
+                  <Gem className="h-4 w-4" />
+                  <span className="font-semibold">سعر جرام الذهب</span>
+                  <Badge variant="secondary" className="text-[10px]">{selectedRow.currency}</Badge>
+                </div>
+                <p className="text-xl font-bold">{fmt(selectedRow.gold_price, 2)}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  نصاب الذهب = {fmt(selectedRow.gold_price * GOLD_NISAB_GRAMS, 0)} {selectedRow.currency}
+                </p>
+              </div>
+              <div className="rounded-lg border bg-muted p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Coins className="h-4 w-4" />
+                  <span className="font-semibold">سعر جرام الفضة</span>
+                  <Badge variant="secondary" className="text-[10px]">{selectedRow.currency}</Badge>
+                </div>
+                <p className="text-xl font-bold">{fmt(selectedRow.silver_price, 3)}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  نصاب الفضة = {fmt(selectedRow.silver_price * SILVER_NISAB_GRAMS, 0)} {selectedRow.currency}
+                </p>
+              </div>
+              {selectedRow.event && (
+                <p className="sm:col-span-2 text-xs text-muted-foreground">
+                  📌 {selectedRow.event}
+                  {selectedRow.hijri_year ? ` — الموافق ${selectedRow.hijri_year}هـ` : ""}
+                </p>
+              )}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">لا توجد بيانات متاحة لهذا الاختيار.</p>
+          )}
+        </CardContent>
+      </Card>
+
+
       {/* آخر 100 عام */}
       <Card className="border-gold/30 shadow-soft">
         <CardHeader className="bg-gradient-to-l from-gold/15 to-transparent">
