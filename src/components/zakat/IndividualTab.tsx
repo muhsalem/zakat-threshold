@@ -26,6 +26,7 @@ import {
   COUNTRY_PRICES, checkHawl, formatHijri, ZAKAT_RECIPIENTS,
 } from "@/lib/zakat";
 import { CashBankSection } from "./CashBankSection";
+import { SecuritiesSection } from "./SecuritiesSection";
 
 interface NumFieldProps {
   label: string;
