@@ -269,8 +269,15 @@ export function CompanyTab() {
   }, [country, autoCurrency]);
 
   const [companyName, setCompanyName] = useState("");
+  const [crNumber, setCrNumber] = useState("");
+  const [taxId, setTaxId] = useState("");
+  const [zakatId, setZakatId] = useState("");
+  const [accountingStd, setAccountingStd] = useState<string>("IFRS");
+  const [consolidated, setConsolidated] = useState(false);
+
   const [fiscalStart, setFiscalStart] = useState("");
   const [fiscalEnd, setFiscalEnd] = useState("");
+  const [hawlStart, setHawlStart] = useState(""); // تاريخ ميلاد حول الزكاة المنفصل
   const [solarYear, setSolarYear] = useState<"hijri" | "solar">("hijri");
 
   const hijriEq = useMemo(() => {
@@ -283,13 +290,25 @@ export function CompanyTab() {
   const [sectorId, setSectorId] = useState<string>("trade_w");
   const sector = useMemo(() => SECTORS.find((s) => s.id === sectorId)!, [sectorId]);
 
+  // سعر جرام الذهب للتحقق من النصاب
+  const [goldGramPrice, setGoldGramPrice] = useState("415");
+
+  // هيكل المساهمين (نسب %)
+  const [shGcc, setShGcc] = useState("100");      // سعودي/خليجي/مواطن مسلم → خاضع للزكاة
+  const [shForeign, setShForeign] = useState(""); // أجنبي → ضريبة دخل لا زكاة
+  const [shGovt, setShGovt] = useState("");       // حكومي → معفى
+  const [shWaqf, setShWaqf] = useState("");       // وقفي → معفى
+  const [shNonMuslim, setShNonMuslim] = useState(""); // غير مسلم → معفى من الزكاة
+
   // طريقة الحساب
   const [method, setMethod] = useState<"net_assets" | "working_capital">("net_assets");
   const [cash, setCash] = useState("");
   const [banks, setBanks] = useState("");
   const [receivablesCo, setReceivablesCo] = useState("");
+  const [doubtfulDebts, setDoubtfulDebts] = useState(""); // ديون مشكوك فيها (تُخصم)
   const [inventoryCo, setInventoryCo] = useState("");
   const [investments, setInvestments] = useState("");
+  const [subsidiaryInv, setSubsidiaryInv] = useState(""); // استثمارات في شركات تابعة (تُعامل خاصة)
   const [otherCurrent, setOtherCurrent] = useState("");
   const [stPayables, setStPayables] = useState("");
   const [accruals, setAccruals] = useState("");
@@ -305,22 +324,87 @@ export function CompanyTab() {
   const [compliance, setCompliance] = useState<Record<string, boolean>>({});
   const toggleC = (id: string) => setCompliance((p) => ({ ...p, [id]: !p[id] }));
 
+  // ===== حفظ واسترجاع محلي =====
+  const STORAGE_KEY = "zakat_company_v1";
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const d = JSON.parse(raw);
+      const set = (fn: (v: string) => void, key: string) => d[key] !== undefined && fn(d[key]);
+      set(setCountryCode, "countryCode"); set(setCompanyName, "companyName"); set(setCrNumber, "crNumber");
+      set(setTaxId, "taxId"); set(setZakatId, "zakatId"); set(setFiscalStart, "fiscalStart");
+      set(setFiscalEnd, "fiscalEnd"); set(setHawlStart, "hawlStart"); set(setSectorId, "sectorId");
+      set(setGoldGramPrice, "goldGramPrice"); set(setShGcc, "shGcc"); set(setShForeign, "shForeign");
+      set(setShGovt, "shGovt"); set(setShWaqf, "shWaqf"); set(setShNonMuslim, "shNonMuslim");
+      set(setCash, "cash"); set(setBanks, "banks"); set(setReceivablesCo, "receivablesCo");
+      set(setDoubtfulDebts, "doubtfulDebts"); set(setInventoryCo, "inventoryCo");
+      set(setInvestments, "investments"); set(setSubsidiaryInv, "subsidiaryInv");
+      set(setOtherCurrent, "otherCurrent"); set(setStPayables, "stPayables"); set(setAccruals, "accruals");
+      set(setTaxDue, "taxDue"); set(setStLoans, "stLoans"); set(setEquity, "equity");
+      set(setLtLiabilities, "ltLiabilities"); set(setFixedAssets, "fixedAssets");
+      set(setIntangibles, "intangibles"); set(setLosses, "losses");
+      if (d.compliance) setCompliance(d.compliance);
+      if (d.accountingStd) setAccountingStd(d.accountingStd);
+      if (typeof d.consolidated === "boolean") setConsolidated(d.consolidated);
+      if (d.solarYear) setSolarYear(d.solarYear);
+      if (d.orgKind) setOrgKind(d.orgKind);
+      if (d.method) setMethod(d.method);
+    } catch { /* ignore */ }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const saveLocal = () => {
+    const payload = {
+      countryCode, companyName, crNumber, taxId, zakatId, accountingStd, consolidated,
+      fiscalStart, fiscalEnd, hawlStart, solarYear, orgKind, sectorId, goldGramPrice,
+      shGcc, shForeign, shGovt, shWaqf, shNonMuslim,
+      method, cash, banks, receivablesCo, doubtfulDebts, inventoryCo, investments, subsidiaryInv,
+      otherCurrent, stPayables, accruals, taxDue, stLoans,
+      equity, ltLiabilities, fixedAssets, intangibles, losses, compliance,
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  };
+
   const calc = useMemo(() => {
-    const curAssets = num(cash) + num(banks) + num(receivablesCo) + num(inventoryCo) + num(investments) + num(otherCurrent);
+    // الموجودات الزكوية مع خصم الديون المشكوك فيها
+    const grossAssets = num(cash) + num(banks) + num(receivablesCo) + num(inventoryCo)
+      + num(investments) + num(subsidiaryInv) + num(otherCurrent);
+    const curAssets = grossAssets - num(doubtfulDebts);
     const curLiabs = num(stPayables) + num(accruals) + num(taxDue) + num(stLoans);
     const netAssets = curAssets - curLiabs;
     const workingCapital = num(equity) + num(ltLiabilities) - num(fixedAssets) - num(intangibles) - num(losses);
-    const base = method === "net_assets" ? netAssets : workingCapital;
+    const baseGross = method === "net_assets" ? netAssets : workingCapital;
+
+    // استبعاد الحصص المعفاة من الوعاء
+    const exemptPct = (num(shForeign) + num(shGovt) + num(shWaqf) + num(shNonMuslim)) / 100;
+    const zakatableRatio = Math.max(0, 1 - exemptPct);
+    const base = baseGross * zakatableRatio;
+
+    // النصاب
+    const nisabValue = num(goldGramPrice) * GOLD_NISAB_GRAMS;
+    const reachesNisab = base >= nisabValue && nisabValue > 0;
+
     const rate = solarYear === "solar" ? 0.025775 : ZAKAT_RATE;
-    const zakat = orgKind === "nonprofit" ? 0 : base > 0 ? base * rate : 0;
+    const zakat = (orgKind === "nonprofit" || !reachesNisab) ? 0 : base > 0 ? base * rate : 0;
+
     const completed = Object.values(compliance).filter(Boolean).length;
     const complianceScore = Math.round((completed / ALL_ITEM_IDS.length) * 100);
-    return { curAssets, curLiabs, netAssets, workingCapital, base, rate, zakat, completed, complianceScore };
+
+    const totalShares = num(shGcc) + num(shForeign) + num(shGovt) + num(shWaqf) + num(shNonMuslim);
+    const sharesBalanced = Math.abs(totalShares - 100) < 0.01;
+
+    return {
+      grossAssets, curAssets, curLiabs, netAssets, workingCapital, baseGross, base,
+      rate, zakat, completed, complianceScore,
+      nisabValue, reachesNisab, exemptPct, zakatableRatio, totalShares, sharesBalanced,
+    };
   }, [
-    cash, banks, receivablesCo, inventoryCo, investments, otherCurrent,
+    cash, banks, receivablesCo, doubtfulDebts, inventoryCo, investments, subsidiaryInv, otherCurrent,
     stPayables, accruals, taxDue, stLoans,
     equity, ltLiabilities, fixedAssets, intangibles, losses,
-    method, solarYear, compliance, orgKind,
+    method, solarYear, compliance, orgKind, goldGramPrice,
+    shGcc, shForeign, shGovt, shWaqf, shNonMuslim,
   ]);
 
   return (
