@@ -139,8 +139,8 @@ const BANKS_BY_COUNTRY: Record<string, CountryBanks> = {
 function getCountryBanks(code: string): CountryBanks {
   const data = BANKS_BY_COUNTRY[code];
   const fallback: CountryBanks = {
-    islamic: ["بنك إسلامي محلي", "أخرى"],
-    traditional: [{ v: "other", l: "بنك تقليدي محلي", window: "—" }],
+    islamic: ["بنك إسلامي محلي"],
+    traditional: [{ v: "local", l: "بنك تقليدي محلي", window: "—" }],
   };
   if (!data) return fallback;
   return {
