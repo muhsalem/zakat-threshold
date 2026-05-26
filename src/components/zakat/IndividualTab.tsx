@@ -1304,7 +1304,40 @@ export function IndividualTab() {
           </CardContent>
         </Card>
 
-        <Card className="border-primary/20 shadow-soft">
+        <Card className="shadow-soft print:hidden">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base flex items-center gap-2">
+              <User className="h-4 w-4 text-primary" /> ديباجة محاسب الزكاة
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1">
+                <Label className="text-xs">اسم محاسب الزكاة</Label>
+                <Input value={accountantName} onChange={(e) => setAccountantName(e.target.value)} placeholder="الاسم الكامل" />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">رقم القيد / الترخيص</Label>
+                <Input value={accountantLicense} onChange={(e) => setAccountantLicense(e.target.value)} placeholder="رقم الترخيص" />
+              </div>
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">نص الديباجة (يظهر في رأس التقرير)</Label>
+              <Textarea
+                value={accountantPreamble}
+                onChange={(e) => setAccountantPreamble(e.target.value)}
+                rows={6}
+                className="text-xs leading-6"
+              />
+            </div>
+            <p className="text-[11px] text-muted-foreground">
+              <Info className="inline h-3 w-3 ml-1" />
+              تظهر الديباجة في أعلى التقرير عند طباعة الإقرار، وتتضمَّن الشهادة الشرعية والمرجعية المعتمدة.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-primary/20 shadow-soft print:hidden">
           <CardContent className="pt-6">
             <Button className="w-full" size="lg" onClick={() => window.print()}>
               <CheckCircle2 className="h-4 w-4 ml-2" />
