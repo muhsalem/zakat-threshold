@@ -130,7 +130,26 @@ export function IndividualTab() {
   const [storageKarat, setStorageKarat] = useState("21");
   const [storageWeight, setStorageWeight] = useState("");
   // الفضة
-  const [silver, setSilver] = useState("");
+  // ========= الفضة: 3 أقسام =========
+  // أ) السبائك والأونصات الفضية (المفتاح = العيار/الألفي)
+  const [sv999, setSv999] = useState(""); const [sv960, setSv960] = useState("");
+  const [sv925, setSv925] = useState(""); const [sv900, setSv900] = useState("");
+  const [sv835, setSv835] = useState(""); const [sv800, setSv800] = useState("");
+  const [sv750, setSv750] = useState(""); const [svOunces, setSvOunces] = useState("");
+  // ب) الجنيهات والعملات الفضية
+  const [coinLira, setCoinLira] = useState("");        // ليرة عثمانية 12جم عيار 830
+  const [coinRiyal, setCoinRiyal] = useState("");      // ريال فضة (وزن كلي بعيار 900)
+  const [coinSvOtherKarat, setCoinSvOtherKarat] = useState("800");
+  const [coinSvOther, setCoinSvOther] = useState("");
+  // ج) مجوهرات ومشغولات وأدوات
+  const [svJewelry, setSvJewelry] = useState("");      // مجوهرات وإكسسوارات
+  const [svJewelryKarat, setSvJewelryKarat] = useState("925");
+  const [svUtensils, setSvUtensils] = useState("");    // ملاعق صواني فناجين سبح
+  const [svUtensilsKarat, setSvUtensilsKarat] = useState("925");
+  const [svTools, setSvTools] = useState("");          // أدوات ومستلزمات وتحف
+  const [svToolsKarat, setSvToolsKarat] = useState("800");
+  const [silverPurpose, setSilverPurpose] = useState<"storage" | "wear">("wear");
+  const [silverOpinion, setSilverOpinion] = useState<"majority" | "hanafi">("majority");
 
   // النقدية والبنوك
   const [cashHand, setCashHand] = useState("");
@@ -211,7 +230,32 @@ export function IndividualTab() {
     const goldEligible = totalGold24 >= GOLD_NISAB_GRAMS;
     const goldZakat = goldEligible ? totalGoldValue * effectiveRate : 0;
 
-    const silverGrams = num(silver);
+    // ====== الفضة: تحويل كل العيارات إلى ما يكافئها بعيار 999 ======
+    const OUNCE_SV = 31.1035;
+    const convSv = (grams: number, purity: number) => (grams * purity) / 1000;
+
+    // أ) السبائك والأونصات (الأونصة الفضية عيار 999)
+    const svSabaikG999 =
+      num(sv999) + convSv(num(sv960), 960) + convSv(num(sv925), 925) +
+      convSv(num(sv900), 900) + convSv(num(sv835), 835) + convSv(num(sv800), 800) +
+      convSv(num(sv750), 750) + num(svOunces) * OUNCE_SV;
+
+    // ب) العملات الفضية
+    const svCoinsG999 =
+      convSv(num(coinLira) * 12, 830) +
+      convSv(num(coinRiyal), 900) +
+      convSv(num(coinSvOther), num(coinSvOtherKarat));
+
+    // ج) المجوهرات والمشغولات (تخضع حسب رأي/غرض الاقتناء — كالذهب)
+    const svJewelryG999Raw =
+      convSv(num(svJewelry), num(svJewelryKarat)) +
+      convSv(num(svUtensils), num(svUtensilsKarat)) +
+      convSv(num(svTools), num(svToolsKarat));
+    const svJewelryG999 = silverPurpose === "storage"
+      ? svJewelryG999Raw
+      : (silverOpinion === "hanafi" ? svJewelryG999Raw : 0);
+
+    const silverGrams = svSabaikG999 + svCoinsG999 + svJewelryG999;
     const silverValue = silverGrams * sp;
     const silverEligible = silverGrams >= SILVER_NISAB_GRAMS;
     const silverZakat = silverEligible ? silverValue * effectiveRate : 0;
@@ -252,6 +296,7 @@ export function IndividualTab() {
       sabaikGrams24, coinsGrams24, jewelryGrams24, jewelryGrams24Raw, otherGrams24,
       totalGold24, totalGoldValue,
       goldEligible, goldZakat: hawlBlocks ? 0 : goldZakat,
+      svSabaikG999, svCoinsG999, svJewelryG999, svJewelryG999Raw,
       silverGrams, silverValue, silverEligible, silverZakat: hawlBlocks ? 0 : silverZakat,
       cashTotal, securitiesTotal, billsTotal, tradeTotal, realEstateZakatable, debts,
       monetaryGross, monetaryBase, monetaryEligible, monetaryZakat: hawlBlocks ? 0 : monetaryZakat,
@@ -603,12 +648,217 @@ export function IndividualTab() {
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
                 <Coins className="h-5 w-5 text-muted-foreground" /> زكاة الفضة
+                <Badge variant="secondary" className="text-[10px] mr-2">النصاب: {SILVER_NISAB_GRAMS} جم عيار 999</Badge>
               </span>
             </AccordionTrigger>
-            <AccordionContent className="space-y-3 pb-4">
-              <NumField label="الفضة الخالصة" value={silver} onChange={setSilver} unit="جرام" hint={`النصاب: ${SILVER_NISAB_GRAMS} جم`} />
-              <div className="rounded-lg bg-muted/50 p-3 text-xs">
-                الفضة: <b>{fmt(calc.silverGrams)} جم</b> — قيمتها: <b>{cur(calc.silverValue)}</b>
+            <AccordionContent className="space-y-6 pb-4">
+              {/* أ) السبائك والأونصات الفضية */}
+              <div className="space-y-3 rounded-lg border border-muted-foreground/20 bg-muted/30 p-4">
+                <div className="text-sm font-semibold text-primary">أ · السبائك والأونصات الفضية</div>
+                <p className="text-xs text-muted-foreground">أدخل الأوزان بالجرام — السعر يُؤخذ للحساب أسفل القسم</p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <NumField label="عيار 999 (خالصة)" value={sv999} onChange={setSv999} unit="جم" />
+                  <NumField label="عيار 960" value={sv960} onChange={setSv960} unit="جم" />
+                  <NumField label="عيار 925 (استرلينج)" value={sv925} onChange={setSv925} unit="جم" />
+                  <NumField label="عيار 900" value={sv900} onChange={setSv900} unit="جم" />
+                  <NumField label="عيار 835" value={sv835} onChange={setSv835} unit="جم" />
+                  <NumField label="عيار 800" value={sv800} onChange={setSv800} unit="جم" />
+                  <NumField label="عيار 750" value={sv750} onChange={setSv750} unit="جم" />
+                  <NumField label="أونصات" value={svOunces} onChange={setSvOunces} unit="أوقية" hint="1 أونصة = 31.1 جم" />
+                </div>
+                <div className="rounded-md border bg-background p-3 flex items-center justify-between">
+                  <span className="text-xs text-muted-foreground">إجمالي وزن الفضة المكافئ بعيار 999 (جميع الأعيرة + الأونصات)</span>
+                  <span className="text-lg font-bold text-gold">{fmt(calc.svSabaikG999)} جم عيار 999</span>
+                </div>
+              </div>
+
+              {/* ب) الجنيهات والعملات الفضية */}
+              <div className="space-y-3 rounded-lg border border-muted-foreground/20 bg-muted/30 p-4">
+                <div className="text-sm font-semibold text-primary">ب · الجنيهات والعملات الفضية</div>
+                <div className="grid md:grid-cols-2 gap-3">
+                  <NumField label="ليرة عثمانية فضة" value={coinLira} onChange={setCoinLira} unit="قطعة" hint="≈ 12 جم عيار 830" />
+                  <NumField label="ريال فضة / مسكوكات (الوزن الكلي)" value={coinRiyal} onChange={setCoinRiyal} unit="جم" hint="افتراض عيار 900" />
+                </div>
+                <div className="rounded-md border border-dashed p-3 space-y-2">
+                  <div className="text-xs text-muted-foreground">عملات فضية أخرى — العيار والوزن الكلي</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div className="space-y-1.5">
+                      <Label className="text-sm">العيار</Label>
+                      <Select value={coinSvOtherKarat} onValueChange={setCoinSvOtherKarat}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          {["999", "960", "925", "900", "835", "800", "750"].map((k) => (
+                            <SelectItem key={k} value={k}>{k}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <NumField label="الوزن الكلي (جم)" value={coinSvOther} onChange={setCoinSvOther} unit="جم" />
+                    <div className="rounded-md border bg-background p-3 flex flex-col justify-center">
+                      <span className="text-xs text-muted-foreground">إجمالي العملات بعيار 999</span>
+                      <span className="text-lg font-bold text-gold">{fmt(calc.svCoinsG999)} جم</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* ج) المجوهرات والمشغولات */}
+              <div className="space-y-3 rounded-lg border border-muted-foreground/20 bg-muted/30 p-4">
+                <div className="text-sm font-semibold text-primary">ج · مجوهرات ومشغولات فضية</div>
+                <Alert className="border-muted-foreground/30 bg-background">
+                  <Info className="h-4 w-4" />
+                  <AlertDescription className="text-xs leading-relaxed">
+                    <b>متى تجب الزكاة على الحُلي الفضي؟</b> الجمهور: لا زكاة على الحلي المستعمل المباح. الحنفية: تجب إذا بلغ النصاب. أمّا المعدّ للادخار وحفظ القيمة فتجب فيه الزكاة باتفاق.
+                  </AlertDescription>
+                </Alert>
+
+                <div className="grid md:grid-cols-3 gap-3 items-end">
+                  <div className="md:col-span-2">
+                    <NumField label="وزن المجوهرات (خواتم · أساور · سلاسل · أقراط · دلايات · خلاخل)" value={svJewelry} onChange={setSvJewelry} unit="جم" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-sm">العيار</Label>
+                    <Select value={svJewelryKarat} onValueChange={setSvJewelryKarat}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {["999", "925", "900", "835", "800", "750"].map((k) => (
+                          <SelectItem key={k} value={k}>{k}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-3 items-end">
+                  <div className="md:col-span-2">
+                    <NumField label="وزن المشغولات (ملاعق · صواني · فناجين · سبح)" value={svUtensils} onChange={setSvUtensils} unit="جم" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-sm">العيار</Label>
+                    <Select value={svUtensilsKarat} onValueChange={setSvUtensilsKarat}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {["999", "925", "900", "835", "800", "750"].map((k) => (
+                          <SelectItem key={k} value={k}>{k}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-3 items-end">
+                  <div className="md:col-span-2">
+                    <NumField label="وزن الأدوات والتحف" value={svTools} onChange={setSvTools} unit="جم" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-sm">العيار</Label>
+                    <Select value={svToolsKarat} onValueChange={setSvToolsKarat}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {["999", "925", "900", "835", "800", "750"].map((k) => (
+                          <SelectItem key={k} value={k}>{k}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-3 pt-2">
+                  <div className="space-y-1.5">
+                    <Label className="text-sm">غرض الاقتناء</Label>
+                    <RadioGroup value={silverPurpose} onValueChange={(v) => setSilverPurpose(v as "storage" | "wear")} className="flex gap-4">
+                      <div className="flex items-center gap-2"><RadioGroupItem value="wear" id="sp-w" /><Label htmlFor="sp-w" className="text-sm">حلي وزينة</Label></div>
+                      <div className="flex items-center gap-2"><RadioGroupItem value="storage" id="sp-s" /><Label htmlFor="sp-s" className="text-sm">ادخار وحفظ قيمة</Label></div>
+                    </RadioGroup>
+                  </div>
+                  {silverPurpose === "wear" && (
+                    <div className="flex items-center justify-between rounded-md border px-3 py-2">
+                      <div className="space-y-0.5">
+                        <Label className="text-sm">إخضاع حلي الزينة للزكاة (رأي الحنفية)</Label>
+                        <p className="text-[10px] text-muted-foreground">إيقافه = رأي الجمهور</p>
+                      </div>
+                      <Switch checked={silverOpinion === "hanafi"} onCheckedChange={(v) => setSilverOpinion(v ? "hanafi" : "majority")} />
+                    </div>
+                  )}
+                </div>
+
+                <div className="rounded-md border bg-background p-3 flex items-center justify-between">
+                  <span className="text-xs text-muted-foreground">إجمالي المجوهرات والمشغولات (الخاضع للزكاة) بعيار 999</span>
+                  <span className="text-lg font-bold text-gold">{fmt(calc.svJewelryG999)} جم</span>
+                </div>
+              </div>
+
+              {/* السعر والإجمالي */}
+              <div className="rounded-lg border border-muted-foreground/30 bg-background p-4 space-y-2">
+                <Label className="text-sm">سعر جرام الفضة عيار 999 (الخالصة)</Label>
+                <Input type="number" min="0" value={silverPrice} onChange={(e) => setSilverPrice(e.target.value)} dir="ltr" style={{ textAlign: "right" }} />
+                <p className="text-[11px] text-muted-foreground">{currencyName} / جرام</p>
+              </div>
+
+              <div className="rounded-xl border-2 border-primary/40 bg-gradient-to-l from-primary/10 to-muted/20 p-4 space-y-3">
+                <div className="flex items-center justify-between flex-wrap gap-3">
+                  <div className="text-sm font-bold text-primary">إجمالي الوعاء الزكوي من الفضة</div>
+                  {calc.silverEligible
+                    ? <Badge className="bg-primary">بلغ النصاب</Badge>
+                    : <Badge variant="secondary">دون النصاب ({SILVER_NISAB_GRAMS} جم)</Badge>}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                  <div className="rounded-md bg-background border p-3">
+                    <div className="text-xs text-muted-foreground">سبائك وأونصات</div>
+                    <div className="font-bold">{fmt(calc.svSabaikG999)} جم</div>
+                  </div>
+                  <div className="rounded-md bg-background border p-3">
+                    <div className="text-xs text-muted-foreground">عملات</div>
+                    <div className="font-bold">{fmt(calc.svCoinsG999)} جم</div>
+                  </div>
+                  <div className="rounded-md bg-background border p-3">
+                    <div className="text-xs text-muted-foreground">مجوهرات (خاضعة)</div>
+                    <div className="font-bold">{fmt(calc.svJewelryG999)} جم</div>
+                  </div>
+                </div>
+                <Separator />
+                <div className="grid md:grid-cols-3 gap-3 text-sm">
+                  <div>
+                    <div className="text-xs text-muted-foreground">إجمالي الوزن بعيار 999</div>
+                    <div className="text-xl font-extrabold text-gold">{fmt(calc.silverGrams)} جم</div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-muted-foreground">× سعر جرام عيار 999</div>
+                    <div className="text-xl font-extrabold">{cur(num(silverPrice))}</div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-muted-foreground">قيمة الوعاء الفضي</div>
+                    <div className="text-xl font-extrabold text-primary">{cur(calc.silverValue)}</div>
+                  </div>
+                </div>
+                <p className="text-[11px] text-muted-foreground leading-relaxed">
+                  تمت معادلة جميع العيارات (750 · 800 · 835 · 900 · 925 · 960) إلى عيار 999 بمعامل (العيار ÷ 1000)، ثم ضُربت في سعر اليوم لجرام عيار 999.
+                </p>
+              </div>
+
+              {/* إجمالي وعاء الذهب + الفضة */}
+              <div className="rounded-xl border-2 border-gold/50 bg-gold/10 p-4 space-y-2">
+                <div className="text-sm font-bold text-gold flex items-center gap-2">
+                  <Coins className="h-4 w-4" /> إجمالي وعاء زكاة الذهب والفضة
+                </div>
+                <div className="space-y-1 text-sm">
+                  <div className="flex items-center justify-between border-b border-dashed py-1.5">
+                    <span>الوعاء من الذهب</span>
+                    <span className="font-bold">{cur(calc.totalGoldValue)}</span>
+                  </div>
+                  <div className="flex items-center justify-between border-b border-dashed py-1.5">
+                    <span>الوعاء من الفضة</span>
+                    <span className="font-bold">{cur(calc.silverValue)}</span>
+                  </div>
+                  <div className="flex items-center justify-between border-b border-dashed py-1.5">
+                    <span>إجمالي الوعاء (الذهب + الفضة)</span>
+                    <span className="font-bold text-primary">{cur(calc.totalGoldValue + calc.silverValue)}</span>
+                  </div>
+                  <div className="flex items-center justify-between py-1.5">
+                    <span>الزكاة الواجبة على الذهب والفضة ({(effectiveRate * 100).toFixed(3)}%)</span>
+                    <span className="font-extrabold text-gold text-lg">{cur(calc.goldZakat + calc.silverZakat)}</span>
+                  </div>
+                </div>
               </div>
             </AccordionContent>
           </AccordionItem>
