@@ -750,10 +750,22 @@ export function CompanyTab() {
               <SectoralModels activeTab={sector.model} defaultCurrency={currencyName} />
             </CardContent>
           </Card>
+
+          {/* حاسبة التطهير الشرعي */}
+          <PurificationCalculator currencyName={currencyName} />
         </div>
 
         {/* النتيجة الجانبية */}
         <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">
+          <div className="flex gap-2 print:hidden">
+            <Button onClick={saveLocal} variant="outline" size="sm" className="flex-1 gap-1.5">
+              <Save className="h-3.5 w-3.5" /> حفظ
+            </Button>
+            <Button onClick={() => window.print()} variant="outline" size="sm" className="flex-1 gap-1.5">
+              <Printer className="h-3.5 w-3.5" /> تصدير PDF
+            </Button>
+          </div>
+
           <Card className="bg-gradient-primary text-primary-foreground shadow-gold border-0">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-primary-foreground">
@@ -765,18 +777,27 @@ export function CompanyTab() {
                 {fmt(calc.zakat)}
                 <span className="text-lg font-medium opacity-80 mr-2">{currencyName}</span>
               </div>
-              <p className="text-xs opacity-80 mt-3">النسبة المطبقة: <b>{(calc.rate * 100).toFixed(4)}%</b></p>
-              <p className="text-xs opacity-80">الطريقة: <b>{method === "net_assets" ? "صافي الموجودات الزكوية" : "رأس المال العامل"}</b></p>
+              {!calc.reachesNisab && calc.base > 0 && (
+                <p className="text-xs mt-2 bg-destructive/30 rounded px-2 py-1">⚠️ الوعاء لم يبلغ النصاب ({cFmt(calc.nisabValue, currencyName)})</p>
+              )}
+              <p className="text-xs opacity-80 mt-3">النسبة: <b>{(calc.rate * 100).toFixed(4)}%</b> ({solarYear === "hijri" ? "قمري" : "شمسي"})</p>
+              <p className="text-xs opacity-80">الطريقة: <b>{method === "net_assets" ? "صافي الموجودات" : "رأس المال العامل"}</b></p>
               <p className="text-xs opacity-80 mt-1">{country.flag} {country.name} — {companyType}</p>
               <p className="text-xs opacity-80">{GROUP_LABELS[sector.group]} — {sector.label}</p>
-              {companyName && <p className="text-xs opacity-80 mt-1">{companyName}</p>}
+              {companyName && <p className="text-xs opacity-80 mt-1 font-bold">{companyName}</p>}
+              <p className="text-[10px] opacity-60 mt-2">المعيار: {accountingStd}{consolidated ? " — موحّدة" : ""}</p>
             </CardContent>
           </Card>
 
           <Card className="shadow-soft">
             <CardHeader className="pb-3"><CardTitle className="flex items-center gap-2 text-base"><CheckSquare className="h-4 w-4" />ملخص الوعاء</CardTitle></CardHeader>
             <CardContent className="space-y-2 text-sm">
-              <div className="flex justify-between"><span className="text-muted-foreground">الوعاء الزكوي:</span><b>{cFmt(calc.base, currencyName)}</b></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">الوعاء الإجمالي:</span><b>{cFmt(calc.baseGross, currencyName)}</b></div>
+              {calc.exemptPct > 0 && (
+                <div className="flex justify-between text-xs"><span className="text-muted-foreground">حصص معفاة:</span><b className="text-destructive">−{(calc.exemptPct * 100).toFixed(1)}%</b></div>
+              )}
+              <div className="flex justify-between"><span className="text-muted-foreground">الوعاء الخاضع:</span><b>{cFmt(calc.base, currencyName)}</b></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">النصاب:</span><b>{cFmt(calc.nisabValue, currencyName)}</b></div>
               <div className="flex justify-between"><span className="text-muted-foreground">النسبة:</span><b>{(calc.rate * 100).toFixed(4)}%</b></div>
               <Separator />
               <div className="flex justify-between text-primary"><span>الزكاة الواجبة:</span><b>{cFmt(calc.zakat, currencyName)}</b></div>
