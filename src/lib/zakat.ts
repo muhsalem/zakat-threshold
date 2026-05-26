@@ -183,3 +183,72 @@ export const NISAB_LAST_100_YEARS: YearlyNisabRow[] = [
   { hijri: 1445, gregorian: 2024, goldUsd: 75.20, silverUsd: 0.95 },
   { hijri: 1447, gregorian: 2026, goldUsd: 95.50, silverUsd: 1.30, event: "أعلى مستوى تاريخي" },
 ];
+
+// ============ شرط الحول والتقويم الهجري ============
+export const HAWL_DAYS_HIJRI = 354; // السنة الهجرية القمرية
+export const ZAKAT_RATE_GREGORIAN = 0.02577; // معدل معدّل عند استخدام التاريخ الميلادي (الندوة السابعة للزكاة)
+
+// تحويل ميلادي إلى هجري (الخوارزمية الكويتية المعتمدة)
+export interface HijriDate { hy: number; hm: number; hd: number; }
+export function gregorianToHijri(gy: number, gm: number, gd: number): HijriDate {
+  const jd = Math.floor((1461 * (gy + 4800 + Math.floor((gm - 14) / 12))) / 4)
+    + Math.floor((367 * (gm - 2 - 12 * Math.floor((gm - 14) / 12))) / 12)
+    - Math.floor((3 * Math.floor((gy + 4900 + Math.floor((gm - 14) / 12)) / 100)) / 4)
+    + gd - 32075;
+  const l = jd - 1948440 + 10632;
+  const n = Math.floor((l - 1) / 10631);
+  const l2 = l - 10631 * n + 354;
+  const j = Math.floor((10985 - l2) / 5316) * Math.floor((50 * l2) / 17719)
+    + Math.floor(l2 / 5670) * Math.floor((43 * l2) / 15238);
+  const l3 = l2 - Math.floor((30 - j) / 15) * Math.floor((17719 * j) / 50)
+    - Math.floor(j / 16) * Math.floor((15238 * j) / 43) + 29;
+  const hm = Math.floor((24 * l3) / 709);
+  const hd = l3 - Math.floor((709 * hm) / 24);
+  const hy = 30 * n + j - 30;
+  return { hy, hm, hd };
+}
+
+const HIJRI_MONTHS = [
+  "محرّم", "صفر", "ربيع الأول", "ربيع الآخر", "جمادى الأولى", "جمادى الآخرة",
+  "رجب", "شعبان", "رمضان", "شوال", "ذو القعدة", "ذو الحجة",
+];
+export function formatHijri(h: HijriDate): string {
+  return `${h.hd} ${HIJRI_MONTHS[h.hm - 1] ?? ""} ${h.hy}هـ`;
+}
+
+export interface HawlStatus {
+  hijriStart: HijriDate;
+  daysPassed: number;
+  hawlComplete: boolean;
+  daysRemaining: number;
+}
+export function checkHawl(startDateISO: string, today = new Date()): HawlStatus | null {
+  if (!startDateISO) return null;
+  const start = new Date(startDateISO);
+  if (isNaN(start.getTime())) return null;
+  const hijriStart = gregorianToHijri(start.getFullYear(), start.getMonth() + 1, start.getDate());
+  const daysPassed = Math.floor((today.getTime() - start.getTime()) / 86400000);
+  const hawlComplete = daysPassed >= HAWL_DAYS_HIJRI;
+  return {
+    hijriStart,
+    daysPassed,
+    hawlComplete,
+    daysRemaining: Math.max(0, HAWL_DAYS_HIJRI - daysPassed),
+  };
+}
+
+// ============ مصارف الزكاة الثمانية (التوبة: 60) ============
+export interface ZakatRecipient {
+  name: string;
+  description: string;
+}
+export const ZAKAT_RECIPIENTS: ZakatRecipient[] = [
+  { name: "الفقراء", description: "من لا يجد ما يكفيه أو يجد أقلّ من نصف كفايته" },
+  { name: "المساكين", description: "من يجد أكثر من نصف كفايته ولا تكفيه" },
+  { name: "العاملون عليها", description: "السعاة والجباة والموظفون على شؤون الزكاة" },
+  { name: "المؤلفة قلوبهم", description: "حديثو الإسلام أو من يُرجى إسلامهم تأليفًا لقلوبهم" },
+  { name: "في الرقاب", description: "تحرير الأرقّاء، ويُلحق بهم فكّ الأسرى ومعونة المكاتبين" },
+  { name: "الغارمون", description: "المدينون العاجزون عن سداد ديونهم في غير معصية" },
+  { name: "في سبيل الله", description: "الجهاد في سبيل الله، وعند بعض العلماء: كل وجوه الخير العامة" },
+  { name: "ابن السبيل", description: "المسافر المنقطع عن ماله ولو كان غنيًا في بلده" },
+];
