@@ -32,6 +32,8 @@ import { LivePricesCard } from "./LivePricesCard";
 import { downloadReportPdf } from "@/lib/exportPdf";
 import { IncomeUsufructSection } from "./IncomeUsufructSection";
 import { PrintReport } from "./PrintReport";
+import { RikazSection } from "./RikazSection";
+import { MadhabsComparison } from "./MadhabsComparison";
 import { supabase } from "@/integrations/supabase/client";
 
 
@@ -1535,6 +1537,16 @@ export function IndividualTab() {
           </CardContent>
         </Card>
 
+      </div>
+
+      {/* ====== الركاز والمعادن (مدمج كقسم تكميلي) ====== */}
+      <div className="lg:col-span-3 mt-8">
+        <RikazSection />
+      </div>
+
+      {/* ====== إيضاحات فقهية مكملة — مقارنة المذاهب ====== */}
+      <div className="lg:col-span-3 mt-6">
+        <MadhabsComparison />
       </div>
     </div>
   );

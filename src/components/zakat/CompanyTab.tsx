@@ -17,6 +17,8 @@ import {
 import { ZAKAT_RATE, GOLD_NISAB_GRAMS, num, fmt, currency as cFmt, ZAKAT_RECIPIENTS } from "@/lib/zakat";
 import { SectoralModels } from "./SectoralModels";
 import { PurificationCalculator } from "./PurificationCalculator";
+import { RikazSection } from "./RikazSection";
+import { MadhabsComparison } from "./MadhabsComparison";
 import { Button } from "@/components/ui/button";
 
 function NumField({ label, value, onChange, unit, hint }: {
@@ -164,7 +166,6 @@ const GROUP_LABELS: Record<Sector["group"], string> = {
 
 // التبويبات المسموح بها في النموذج القطاعي حسب القطاع المحدد (مع تبويبات مساندة دائمة)
 function getAllowedSectoralTabs(sectorId: string, group: Sector["group"]): string[] {
-  const supporting = ["salary", "tax"]; // الأجور والضريبة مرتبطة دائماً
   let primary: string[] = [];
   switch (sectorId) {
     case "agri":
@@ -196,14 +197,14 @@ function getAllowedSectoralTabs(sectorId: string, group: Sector["group"]): strin
     case "education":
     case "transport":
     case "software":
-    case "media":      primary = ["services", "free"]; break;
+    case "media":      primary = ["services"]; break;
     default:
       primary = group === "industrial" ? ["industry"]
         : group === "commercial" ? ["trade"]
         : group === "services" ? ["services"]
         : ["trade"];
   }
-  return [...primary, ...supporting];
+  return primary;
 }
 
 
@@ -352,6 +353,15 @@ export function CompanyTab() {
   const [crNumber, setCrNumber] = useState("");
   const [taxId, setTaxId] = useState("");
   const [zakatId, setZakatId] = useState("");
+  // أشخاص الشركة الرئيسيون
+  const [managerName, setManagerName] = useState("");
+  const [ownerName, setOwnerName] = useState("");
+  const [sameOwnerManager, setSameOwnerManager] = useState(false);
+  const [cfoName, setCfoName] = useState("");
+  // إعدادات الحول والاحتساب السابق
+  const [calcPrevYears, setCalcPrevYears] = useState<"yes" | "no">("no");
+  const [prevYearsCount, setPrevYearsCount] = useState("");
+  const [fixHawlYear, setFixHawlYear] = useState<"yes" | "no">("no");
   const [accountingStd, setAccountingStd] = useState<string>("IFRS");
   const [consolidated, setConsolidated] = useState(false);
 
@@ -644,7 +654,98 @@ export function CompanyTab() {
                       ))}
                     </SelectContent>
                   </Select>
+              </div>
+
+              {/* أشخاص الشركة الرئيسيون */}
+              <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-3">
+                <h4 className="font-semibold text-sm text-primary flex items-center gap-2">
+                  <Users className="h-4 w-4" /> الأشخاص المعنيون بالشركة
+                </h4>
+                <div className="grid md:grid-cols-3 gap-3">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">اسم مدير الشركة</Label>
+                    <Input
+                      value={managerName}
+                      onChange={(e) => {
+                        setManagerName(e.target.value);
+                        if (sameOwnerManager) setOwnerName(e.target.value);
+                      }}
+                      placeholder="المدير العام"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">اسم مالك الشركة</Label>
+                    <Input
+                      value={ownerName}
+                      onChange={(e) => setOwnerName(e.target.value)}
+                      placeholder="المالك / الشريك الرئيس"
+                      disabled={sameOwnerManager}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">اسم محاسب الشركة / المدير المالي</Label>
+                    <Input value={cfoName} onChange={(e) => setCfoName(e.target.value)} placeholder="المدير المالي" />
+                  </div>
                 </div>
+                <label className="flex items-center gap-2 text-xs cursor-pointer">
+                  <Checkbox
+                    checked={sameOwnerManager}
+                    onCheckedChange={(v) => {
+                      const c = !!v;
+                      setSameOwnerManager(c);
+                      if (c) setOwnerName(managerName);
+                    }}
+                  />
+                  المالك هو نفسه المدير
+                </label>
+              </div>
+
+              {/* اعتبارات الحول والاحتساب السابق */}
+              <div className="rounded-lg border border-gold/30 bg-gold/5 p-4 space-y-3">
+                <h4 className="font-semibold text-sm text-primary flex items-center gap-2">
+                  <Calculator className="h-4 w-4" /> اعتبارات الحول والسنوات السابقة
+                </h4>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-xs mb-1.5 block">هل حسبت زكاة عن السنوات السابقة؟</Label>
+                    <RadioGroup value={calcPrevYears} onValueChange={(v) => setCalcPrevYears(v as "yes" | "no")} className="flex gap-3">
+                      <label className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs cursor-pointer ${calcPrevYears === "yes" ? "border-primary bg-primary/10" : ""}`}>
+                        <RadioGroupItem value="yes" id="cpy-y" /> نعم
+                      </label>
+                      <label className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs cursor-pointer ${calcPrevYears === "no" ? "border-primary bg-primary/10" : ""}`}>
+                        <RadioGroupItem value="no" id="cpy-n" /> لا
+                      </label>
+                    </RadioGroup>
+                    {calcPrevYears === "yes" && (
+                      <div className="mt-2">
+                        <Input
+                          type="number" min="0" step="1"
+                          placeholder="عدد السنوات المحتسبة"
+                          value={prevYearsCount}
+                          onChange={(e) => setPrevYearsCount(e.target.value)}
+                          dir="ltr" style={{ textAlign: "right" }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <Label className="text-xs mb-1.5 block">هل ترغب في تثبيت سنة بلوغ الحول؟</Label>
+                    <RadioGroup value={fixHawlYear} onValueChange={(v) => setFixHawlYear(v as "yes" | "no")} className="flex gap-3">
+                      <label className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs cursor-pointer ${fixHawlYear === "yes" ? "border-primary bg-primary/10" : ""}`}>
+                        <RadioGroupItem value="yes" id="fhy-y" /> نعم — تثبيت تاريخ الحول
+                      </label>
+                      <label className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs cursor-pointer ${fixHawlYear === "no" ? "border-primary bg-primary/10" : ""}`}>
+                        <RadioGroupItem value="no" id="fhy-n" /> لا
+                      </label>
+                    </RadioGroup>
+                    <p className="text-[11px] text-muted-foreground mt-1.5">
+                      <Info className="inline h-3 w-3 ml-1" />
+                      عند التثبيت يُعتمد تاريخ ميلاد الحول كمرجع دائم للسنوات اللاحقة.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
               </div>
 
               {/* أرقام تعريفية + معيار محاسبي */}
@@ -1053,6 +1154,12 @@ export function CompanyTab() {
 
           {/* حاسبة التطهير الشرعي */}
           <PurificationCalculator currencyName={currencyName} />
+
+          {/* ====== الركاز والمعادن — قسم تكميلي للشركات ====== */}
+          <RikazSection />
+
+          {/* ====== إيضاحات فقهية مكملة — مقارنة المذاهب ====== */}
+          <MadhabsComparison />
         </div>
 
         {/* النتيجة الجانبية */}
