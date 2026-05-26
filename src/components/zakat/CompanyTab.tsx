@@ -17,6 +17,8 @@ import {
 import { ZAKAT_RATE, GOLD_NISAB_GRAMS, num, fmt, currency as cFmt, ZAKAT_RECIPIENTS } from "@/lib/zakat";
 import { SectoralModels } from "./SectoralModels";
 import { PurificationCalculator } from "./PurificationCalculator";
+import { RikazSection } from "./RikazSection";
+import { MadhabsComparison } from "./MadhabsComparison";
 import { Button } from "@/components/ui/button";
 
 function NumField({ label, value, onChange, unit, hint }: {
