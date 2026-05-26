@@ -1342,7 +1342,7 @@ export function CompanyTab() {
               <div className="h-2 rounded-full bg-muted overflow-hidden">
                 <div className="h-full bg-gradient-to-l from-primary to-gold transition-all" style={{ width: `${calc.complianceScore}%` }} />
               </div>
-              <p className="text-xs text-muted-foreground mt-2">{calc.completed} من {ALL_ITEM_IDS.length} بند مُحقَّق</p>
+              <p className="text-xs text-muted-foreground mt-2">{calc.completed} من {calc.totalCount} بند مُحقَّق</p>
               {calc.complianceScore < 80 && (
                 <Alert className="mt-3 border-destructive/30 bg-destructive/5">
                   <AlertTriangle className="h-4 w-4 text-destructive" />
