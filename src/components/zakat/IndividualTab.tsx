@@ -249,7 +249,8 @@ export function IndividualTab() {
     const total = monetaryGoldZakat + cropsZakat;
 
     return {
-      hoardedGramsTotal, useGramsTotal, countableGoldGrams, countableGoldValue,
+      sabaikGrams24, coinsGrams24, jewelryGrams24, jewelryGrams24Raw, otherGrams24,
+      totalGold24, totalGoldValue,
       goldEligible, goldZakat: hawlBlocks ? 0 : goldZakat,
       silverGrams, silverValue, silverEligible, silverZakat: hawlBlocks ? 0 : silverZakat,
       cashTotal, securitiesTotal, billsTotal, tradeTotal, realEstateZakatable, debts,
