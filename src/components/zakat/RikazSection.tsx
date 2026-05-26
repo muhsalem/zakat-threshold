@@ -158,7 +158,7 @@ export function RikazSection() {
           <AccordionItem value="rikaz" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
-                <Pickaxe className="h-5 w-5 text-gold" /> ① الركاز — الخُمس (20%)
+                <Pickaxe className="h-5 w-5 text-gold" /> ① هل اكتشفت ركازاً (كنزاً مدفوناً)؟ — الخُمس (20%)
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
