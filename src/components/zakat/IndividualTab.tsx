@@ -1301,35 +1301,9 @@ export function IndividualTab() {
             </AccordionContent>
           </AccordionItem>
 
-          {/* مصارف الزكاة */}
-          <AccordionItem value="recipients" className="border rounded-xl shadow-soft bg-card px-4">
-            <AccordionTrigger className="hover:no-underline">
-              <span className="flex items-center gap-2 text-base font-semibold">
-                <HandHeart className="h-5 w-5 text-gold" /> مصارف الزكاة الثمانية
-              </span>
-            </AccordionTrigger>
-            <AccordionContent className="space-y-3 pb-4">
-              <Alert className="border-gold/30 bg-gold/5">
-                <Info className="h-4 w-4" />
-                <AlertDescription className="text-xs leading-relaxed">
-                  قال تعالى: ﴿إِنَّمَا الصَّدَقَاتُ لِلْفُقَرَاءِ وَالْمَسَاكِينِ وَالْعَامِلِينَ عَلَيْهَا وَالْمُؤَلَّفَةِ قُلُوبُهُمْ وَفِي الرِّقَابِ وَالْغَارِمِينَ وَفِي سَبِيلِ اللَّهِ وَابْنِ السَّبِيلِ﴾ [التوبة: 60].
-                </AlertDescription>
-              </Alert>
-              <div className="grid sm:grid-cols-2 gap-2">
-                {ZAKAT_RECIPIENTS.map((r, i) => (
-                  <div key={i} className="rounded-md border bg-card/50 px-3 py-2">
-                    <div className="flex items-center gap-2 mb-0.5">
-                      <Badge className="bg-gradient-gold text-gold-foreground text-[10px]">{i + 1}</Badge>
-                      <span className="font-semibold text-sm text-primary">{r.name}</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{r.description}</p>
-                  </div>
-                ))}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
         </Accordion>
       </div>
+
 
       {/* ملخص النتيجة */}
       <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">
