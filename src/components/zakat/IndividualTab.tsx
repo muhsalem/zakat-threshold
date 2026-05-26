@@ -230,7 +230,32 @@ export function IndividualTab() {
     const goldEligible = totalGold24 >= GOLD_NISAB_GRAMS;
     const goldZakat = goldEligible ? totalGoldValue * effectiveRate : 0;
 
-    const silverGrams = num(silver);
+    // ====== الفضة: تحويل كل العيارات إلى ما يكافئها بعيار 999 ======
+    const OUNCE_SV = 31.1035;
+    const convSv = (grams: number, purity: number) => (grams * purity) / 1000;
+
+    // أ) السبائك والأونصات (الأونصة الفضية عيار 999)
+    const svSabaikG999 =
+      num(sv999) + convSv(num(sv960), 960) + convSv(num(sv925), 925) +
+      convSv(num(sv900), 900) + convSv(num(sv835), 835) + convSv(num(sv800), 800) +
+      convSv(num(sv750), 750) + num(svOunces) * OUNCE_SV;
+
+    // ب) العملات الفضية
+    const svCoinsG999 =
+      convSv(num(coinLira) * 12, 830) +
+      convSv(num(coinRiyal), 900) +
+      convSv(num(coinSvOther), num(coinSvOtherKarat));
+
+    // ج) المجوهرات والمشغولات (تخضع حسب رأي/غرض الاقتناء — كالذهب)
+    const svJewelryG999Raw =
+      convSv(num(svJewelry), num(svJewelryKarat)) +
+      convSv(num(svUtensils), num(svUtensilsKarat)) +
+      convSv(num(svTools), num(svToolsKarat));
+    const svJewelryG999 = silverPurpose === "storage"
+      ? svJewelryG999Raw
+      : (silverOpinion === "hanafi" ? svJewelryG999Raw : 0);
+
+    const silverGrams = svSabaikG999 + svCoinsG999 + svJewelryG999;
     const silverValue = silverGrams * sp;
     const silverEligible = silverGrams >= SILVER_NISAB_GRAMS;
     const silverZakat = silverEligible ? silverValue * effectiveRate : 0;
