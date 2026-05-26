@@ -14,7 +14,7 @@ import {
   Building2, Calculator, Shield, Gavel, CheckSquare, AlertTriangle, Info, Scale,
   FileSpreadsheet, Upload, FileText, X, Printer, Save, Coins, Users,
 } from "lucide-react";
-import { ZAKAT_RATE, GOLD_NISAB_GRAMS, num, fmt, currency as cFmt } from "@/lib/zakat";
+import { ZAKAT_RATE, GOLD_NISAB_GRAMS, num, fmt, currency as cFmt, ZAKAT_RECIPIENTS } from "@/lib/zakat";
 import { SectoralModels } from "./SectoralModels";
 import { PurificationCalculator } from "./PurificationCalculator";
 import { Button } from "@/components/ui/button";
