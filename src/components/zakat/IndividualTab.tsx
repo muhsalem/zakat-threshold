@@ -257,7 +257,7 @@ export function IndividualTab() {
     const silverEligible = silverGrams >= SILVER_NISAB_GRAMS;
     const silverZakat = silverEligible ? silverValue * effectiveRate : 0;
 
-    const cashTotal = num(cashHand) + num(cashBank) + num(savings) + num(foreignCurrency);
+    const cashTotal = cashTotalFromSection;
     const securitiesTotal = num(stocksTrade) + num(stocksInvest) + num(mutualFunds) + num(bonds);
     const billsTotal = num(bills);
     const tradeTotal = num(inventory) + num(receivablesGood);
