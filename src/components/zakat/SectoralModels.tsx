@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Briefcase, Factory, Building, UserCog, Fish, Pickaxe, Info, Calculator } from "lucide-react";
+import { Briefcase, Factory, Building, UserCog, Fish, Pickaxe, Info, Calculator, Wallet, Landmark } from "lucide-react";
 import { ZAKAT_RATE, ZAKAT_RATE_GREGORIAN, GOLD_NISAB_GRAMS, num, fmt } from "@/lib/zakat";
 
 // ============ مكوّن حقل رقمي مشترك ============
@@ -348,6 +348,146 @@ function MineralsModel({ currency, nisab, yearMode }: { currency: string; nisab:
   );
 }
 
+// ============ 7) زكاة الأجور والرواتب (مرجع: د. عصام أبو النصر) ============
+function SalaryModel({ currency, nisab, yearMode }: { currency: string; nisab: number; yearMode: "hijri" | "solar" }) {
+  const [a, set] = useState({
+    salaryRemain: "", bonusDue: "", commissionDue: "", incentiveDue: "",
+    cashHome: "", currentAccount: "", savings: "", goodDebts: "",
+    nonFixedDebts: "", taxesDue: "", socialDues: "",
+  });
+  const u = (k: keyof typeof a) => (v: string) => set((s) => ({ ...s, [k]: v }));
+  const assets = num(a.salaryRemain) + num(a.bonusDue) + num(a.commissionDue) + num(a.incentiveDue) +
+    num(a.cashHome) + num(a.currentAccount) + num(a.savings) + num(a.goodDebts);
+  const liabs = num(a.nonFixedDebts) + num(a.taxesDue) + num(a.socialDues);
+  const vessel = Math.max(0, assets - liabs);
+  return (
+    <div className="space-y-4">
+      <Alert className="border-primary/20 bg-primary/5">
+        <Info className="h-4 w-4" />
+        <AlertDescription className="text-xs leading-relaxed">
+          <b>قاعدة الحساب:</b> المتبقي لدى المزكي في نهاية الحول (الراتب الفائض + الحوافز/العمولات المستحقة + النقدية والحسابات + الديون الجيدة)
+          <b> ناقص</b> الديون التي لم تُستخدم في الحصول على أصول ثابتة (أقساط واجبة السداد خلال السنة + تأمينات/نقابات + ضرائب مستحقة).
+          <br />
+          ملاحظة: <b>أقساط الأصول الثابتة (سيارة/عقار)</b> لا تُخصم وفق الراجح؛ يُخصم فقط ما كان ديناً تشغيلياً واجب السداد خلال السنة دون مقابل أصل ثابت.
+        </AlertDescription>
+      </Alert>
+      <div className="grid md:grid-cols-2 gap-4">
+        <Card>
+          <CardHeader className="pb-3"><CardTitle className="text-sm text-primary">الموجودات الزكوية</CardTitle></CardHeader>
+          <CardContent className="space-y-2">
+            <NF label="المتبقي من الراتب في نهاية الحول" value={a.salaryRemain} onChange={u("salaryRemain")} unit={currency} />
+            <NF label="حوافز مستحقة (تصدير/أداء)" value={a.bonusDue} onChange={u("bonusDue")} unit={currency} />
+            <NF label="عمولات مستحقة" value={a.commissionDue} onChange={u("commissionDue")} unit={currency} />
+            <NF label="مكافآت/أرباح سنوية مستحقة" value={a.incentiveDue} onChange={u("incentiveDue")} unit={currency} />
+            <NF label="نقدية في خزنة المنزل" value={a.cashHome} onChange={u("cashHome")} unit={currency} />
+            <NF label="رصيد الحساب الجاري" value={a.currentAccount} onChange={u("currentAccount")} unit={currency} />
+            <NF label="رصيد التوفير/الادخار" value={a.savings} onChange={u("savings")} unit={currency} />
+            <NF label="ديون جيدة التحصيل (المرجوّة)" value={a.goodDebts} onChange={u("goodDebts")} unit={currency} />
+            <div className="pt-2 text-sm flex justify-between border-t"><span>إجمالي الموجودات:</span><b>{fmt(assets)}</b></div>
+          </CardContent>
+        </Card>
+        <div className="space-y-4">
+          <Card>
+            <CardHeader className="pb-3"><CardTitle className="text-sm text-destructive">الالتزامات الزكوية (تُحسم)</CardTitle></CardHeader>
+            <CardContent className="space-y-2">
+              <NF label="ديون تشغيلية واجبة السداد خلال السنة (دون مقابل أصل ثابت)" value={a.nonFixedDebts} onChange={u("nonFixedDebts")} unit={currency} />
+              <NF label="ضرائب مستحقة لم تُسدَّد بعد" value={a.taxesDue} onChange={u("taxesDue")} unit={currency} />
+              <NF label="اشتراكات تأمينات اجتماعية / نقابة" value={a.socialDues} onChange={u("socialDues")} unit={currency} />
+              <div className="pt-2 text-sm flex justify-between border-t"><span>إجمالي الالتزامات:</span><b>{fmt(liabs)}</b></div>
+            </CardContent>
+          </Card>
+          <ResultBox vessel={vessel} nisabValue={nisab} currency={currency} yearMode={yearMode} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============ 8) الزكاة والضريبة ============
+function TaxZakatModel({ currency, nisab, yearMode }: { currency: string; nisab: number; yearMode: "hijri" | "solar" }) {
+  // الحالة 1: معالجة الضرائب في وعاء الزكاة
+  const [c1, setC1] = useState({ zakatableAssets: "", taxesDue: "", otherDebts: "" });
+  const u1 = (k: keyof typeof c1) => (v: string) => setC1((s) => ({ ...s, [k]: v }));
+  const c1Vessel = Math.max(0, num(c1.zakatableAssets) - num(c1.taxesDue) - num(c1.otherDebts));
+
+  // الحالة 2: معالجة الزكاة في مقدار الضريبة
+  const [c2, setC2] = useState({ revenues: "", expensesExZakat: "", zakatPaid: "", taxRate: "40" });
+  const u2 = (k: keyof typeof c2) => (v: string) => setC2((s) => ({ ...s, [k]: v }));
+  const taxBase = Math.max(0, num(c2.revenues) - num(c2.expensesExZakat));
+  const grossTax = taxBase * (num(c2.taxRate) / 100);
+  const netTax = Math.max(0, grossTax - num(c2.zakatPaid));
+
+  const rate = yearMode === "solar" ? ZAKAT_RATE_GREGORIAN : ZAKAT_RATE;
+  const c1Reached = c1Vessel >= nisab && c1Vessel > 0;
+  const c1Zakat = c1Reached ? c1Vessel * rate : 0;
+
+  return (
+    <div className="space-y-6">
+      <Alert className="border-primary/20 bg-primary/5">
+        <Info className="h-4 w-4" />
+        <AlertDescription className="text-xs leading-relaxed">
+          القاعدتان الفقهيتان عند الجمع بين الزكاة والضريبة:
+          <br />
+          <b>1) الضرائب المدفوعة فعلاً</b> أنقصت النقدية تلقائياً فلا تُطرح مرة أخرى. <b>الضرائب المستحقة</b> تُعدّ التزاماً زكوياً يُخصم من وعاء الزكاة.
+          <br />
+          <b>2)</b> إذا فرضت الدولة ضريبةً وزكاةً معاً، فمقدار الزكاة المدفوع يُخصم من الضريبة المستحقة (لا من وعائها).
+        </AlertDescription>
+      </Alert>
+
+      {/* الحالة 1 */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm text-primary">الحالة الأولى — معالجة الضرائب في وعاء الزكاة</CardTitle>
+        </CardHeader>
+        <CardContent className="grid md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <NF label="الموجودات الزكوية (بعد خصم الضريبة المدفوعة فعلياً)" value={c1.zakatableAssets} onChange={u1("zakatableAssets")} unit={currency} />
+            <NF label="الضرائب المستحقة الأداء (لم تُسدَّد بعد)" value={c1.taxesDue} onChange={u1("taxesDue")} unit={currency} />
+            <NF label="ديون أخرى" value={c1.otherDebts} onChange={u1("otherDebts")} unit={currency} />
+          </div>
+          <div className="rounded-xl border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-gold/5 p-4 space-y-2">
+            <div className="flex justify-between text-sm"><span className="text-muted-foreground">وعاء الزكاة:</span><b className="text-primary">{fmt(c1Vessel)} {currency}</b></div>
+            <div className="flex justify-between text-sm"><span className="text-muted-foreground">النصاب:</span><b>{fmt(nisab)} {currency}</b></div>
+            <div className="flex justify-between text-sm"><span className="text-muted-foreground">نسبة الزكاة:</span><b>{(rate * 100).toFixed(3)}%</b></div>
+            <Separator />
+            <div className="flex justify-between text-base">
+              <span className="font-semibold">الزكاة الواجبة:</span>
+              <b className={c1Reached ? "text-primary text-lg" : "text-muted-foreground"}>
+                {c1Reached ? `${fmt(c1Zakat)} ${currency}` : "لا تجب (دون النصاب)"}
+              </b>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* الحالة 2 */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm text-primary">الحالة الثانية — خصم الزكاة من مقدار الضريبة</CardTitle>
+        </CardHeader>
+        <CardContent className="grid md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <NF label="إجمالي الإيرادات" value={c2.revenues} onChange={u2("revenues")} unit={currency} />
+            <NF label="إجمالي النفقات (فيما عدا الزكاة)" value={c2.expensesExZakat} onChange={u2("expensesExZakat")} unit={currency} />
+            <NF label="مقدار الزكاة المدفوعة" value={c2.zakatPaid} onChange={u2("zakatPaid")} unit={currency} />
+            <NF label="سعر ضريبة الأرباح %" value={c2.taxRate} onChange={u2("taxRate")} unit="%" />
+          </div>
+          <div className="rounded-xl border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-gold/5 p-4 space-y-2 text-sm">
+            <div className="flex justify-between"><span className="text-muted-foreground">وعاء الضريبة (الإيرادات − النفقات):</span><b>{fmt(taxBase)} {currency}</b></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">مقدار الضريبة (الوعاء × {num(c2.taxRate)}%):</span><b>{fmt(grossTax)} {currency}</b></div>
+            <div className="flex justify-between text-destructive"><span>− الزكاة المدفوعة:</span><b>−{fmt(num(c2.zakatPaid))} {currency}</b></div>
+            <Separator />
+            <div className="flex justify-between text-base">
+              <span className="font-semibold">الضريبة الواجبة الأداء:</span>
+              <b className="text-primary text-lg">{fmt(netTax)} {currency}</b>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 // ============ المكوّن الرئيسي ============
 export function SectoralModels() {
   const [currency, setCurrency] = useState("ج.م");
@@ -378,13 +518,15 @@ export function SectoralModels() {
           </div>
 
           <Tabs defaultValue="trade" className="space-y-4">
-            <TabsList className="grid grid-cols-3 md:grid-cols-6 h-auto">
+            <TabsList className="grid grid-cols-3 md:grid-cols-8 h-auto">
               <TabsTrigger value="trade" className="gap-1 text-xs py-2"><Briefcase className="h-3.5 w-3.5" />تجاري</TabsTrigger>
               <TabsTrigger value="industry" className="gap-1 text-xs py-2"><Factory className="h-3.5 w-3.5" />صناعي</TabsTrigger>
               <TabsTrigger value="mustaghal" className="gap-1 text-xs py-2"><Building className="h-3.5 w-3.5" />مُستغلات</TabsTrigger>
               <TabsTrigger value="free" className="gap-1 text-xs py-2"><UserCog className="h-3.5 w-3.5" />مهن حرة</TabsTrigger>
               <TabsTrigger value="marine" className="gap-1 text-xs py-2"><Fish className="h-3.5 w-3.5" />ثروة بحرية</TabsTrigger>
               <TabsTrigger value="minerals" className="gap-1 text-xs py-2"><Pickaxe className="h-3.5 w-3.5" />معادن</TabsTrigger>
+              <TabsTrigger value="salary" className="gap-1 text-xs py-2"><Wallet className="h-3.5 w-3.5" />أجور ورواتب</TabsTrigger>
+              <TabsTrigger value="tax" className="gap-1 text-xs py-2"><Landmark className="h-3.5 w-3.5" />زكاة وضريبة</TabsTrigger>
             </TabsList>
 
             <TabsContent value="trade"><TradeModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
@@ -393,6 +535,8 @@ export function SectoralModels() {
             <TabsContent value="free"><FreeProfModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
             <TabsContent value="marine"><MarineModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
             <TabsContent value="minerals"><MineralsModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
+            <TabsContent value="salary"><SalaryModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
+            <TabsContent value="tax"><TaxZakatModel currency={currency} nisab={nisab} yearMode={yearMode} /></TabsContent>
           </Tabs>
         </CardContent>
       </Card>
