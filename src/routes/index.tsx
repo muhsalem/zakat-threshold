@@ -1,9 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { IndividualTab } from "@/components/zakat/IndividualTab";
 import { CompanyTab } from "@/components/zakat/CompanyTab";
 import { NisabHistory } from "@/components/zakat/NisabHistory";
-import { Users, Building2, Scroll, Moon } from "lucide-react";
+import { Users, Building2, Scroll, Moon, ShieldCheck, FileText } from "lucide-react";
+
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -61,9 +62,37 @@ function Index() {
         </Tabs>
       </main>
 
-      <footer className="border-t border-border/60 mt-16 py-6 text-center text-xs text-muted-foreground">
-        <p>هذه الحاسبة أداة إرشادية. للحالات الخاصة يُرجى مراجعة عالم/مفتٍ معتمد أو هيئة الفتوى المحلية.</p>
+      <footer className="border-t border-border/60 mt-16 bg-card/40">
+        <div className="container mx-auto px-4 py-8 grid md:grid-cols-3 gap-6 text-xs text-muted-foreground">
+          <div>
+            <div className="flex items-center gap-2 font-bold text-foreground mb-2">
+              <Moon className="h-4 w-4 text-primary" /> حاسبة الزكاة الشاملة
+            </div>
+            <p className="leading-relaxed">
+              أداة استرشادية فقهية‑محاسبية وفق المعايير الشرعية الدولية (AAOIFI رقم 35)
+              وفتاوى المجامع الفقهية وبيت الزكاة الكويتي.
+            </p>
+          </div>
+          <div>
+            <div className="font-bold text-foreground mb-2">روابط قانونية</div>
+            <ul className="space-y-1.5">
+              <li><Link to="/legal/privacy" className="hover:text-primary inline-flex items-center gap-1"><ShieldCheck className="h-3 w-3" /> سياسة الخصوصية</Link></li>
+              <li><Link to="/legal/terms" className="hover:text-primary inline-flex items-center gap-1"><FileText className="h-3 w-3" /> شروط الاستخدام وإخلاء المسؤولية</Link></li>
+            </ul>
+          </div>
+          <div>
+            <div className="font-bold text-foreground mb-2">إخلاء مسؤولية</div>
+            <p className="leading-relaxed">
+              نتائج هذه الحاسبة <b>استرشادية</b> وليست فتوى ملزمة ولا تقريراً حكومياً معتمداً.
+              للحالات الخاصة يُرجى مراجعة عالم/مفتٍ معتمد أو هيئة الفتوى المحلية.
+            </p>
+          </div>
+        </div>
+        <div className="border-t border-border/40 py-4 text-center text-xs text-muted-foreground">
+          © {new Date().getFullYear()} منصة حاسبة الزكاة الشاملة — جميع الحقوق محفوظة.
+        </div>
       </footer>
     </div>
   );
 }
+
