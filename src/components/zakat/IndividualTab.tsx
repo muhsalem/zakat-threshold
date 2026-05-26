@@ -332,14 +332,14 @@ export function IndividualTab() {
   const cur = (n: number) => currency(n, currencyName);
 
   return (
-    <div className="grid lg:grid-cols-3 gap-6">
+    <div dir="rtl" className="grid lg:grid-cols-3 gap-6 text-right">
       <div className="lg:col-span-2 space-y-6">
-        {/* بيانات المزكي */}
+        {/* بيانات المزكي + الإقرار وشرط الحول */}
         <Card className="shadow-soft">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <User className="h-5 w-5 text-primary" />
-              بيانات المزكي
+              بيانات المزكي والإقرار وشرط الحَوْل
             </CardTitle>
           </CardHeader>
           <CardContent className="grid md:grid-cols-2 gap-4">
@@ -366,18 +366,14 @@ export function IndividualTab() {
               <Label>العملة</Label>
               <Input value={currencyName} onChange={(e) => setCurrencyName(e.target.value)} />
             </div>
-          </CardContent>
-        </Card>
 
-        {/* الإقرار وشرط الحول */}
-        <Card className="shadow-soft">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CalendarClock className="h-5 w-5 text-primary" />
-              الإقرار وشرط الحَوْل
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-5">
+            <div className="md:col-span-2">
+              <Separator className="my-2" />
+              <div className="flex items-center gap-2 text-sm font-semibold text-primary mb-3">
+                <CalendarClock className="h-4 w-4" /> الإقرار وشرط الحَوْل
+              </div>
+            </div>
+
             <div>
               <Label className="mb-2 block">هل سبق لك حساب الزكاة من قبل؟</Label>
               <RadioGroup value={calculatedBefore} onValueChange={(v) => setCalculatedBefore(v as "yes" | "no")} className="flex gap-6">
@@ -393,72 +389,56 @@ export function IndividualTab() {
               </RadioGroup>
             </div>
 
-            <Separator />
-
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <Label>تاريخ بلوغ النصاب (ميلادي)</Label>
-                <Input type="date" value={nisabStartDate} onChange={(e) => setNisabStartDate(e.target.value)} />
-                {hawl && (
-                  <p className="text-xs text-muted-foreground">
-                    الموافق هجريًا: <b>{formatHijri(hawl.hijriStart)}</b>
-                  </p>
-                )}
-              </div>
-              <div className="space-y-1.5">
-                <Label>أساس حساب الحول</Label>
-                <RadioGroup value={calendarBasis} onValueChange={(v) => setCalendarBasis(v as "hijri" | "gregorian")} className="flex flex-col gap-2 pt-1">
-                  <div className="flex items-center gap-2"><RadioGroupItem value="hijri" id="cb-h" /><Label htmlFor="cb-h" className="text-sm">هجري — نسبة 2.5%</Label></div>
-                  <div className="flex items-center gap-2"><RadioGroupItem value="gregorian" id="cb-g" /><Label htmlFor="cb-g" className="text-sm">ميلادي — نسبة 2.577% (معدّلة)</Label></div>
-                </RadioGroup>
-              </div>
+            <div className="space-y-1.5">
+              <Label>تاريخ بلوغ النصاب (ميلادي)</Label>
+              <Input type="date" value={nisabStartDate} onChange={(e) => setNisabStartDate(e.target.value)} />
+              {hawl && (
+                <p className="text-xs text-muted-foreground">
+                  الموافق هجريًا: <b>{formatHijri(hawl.hijriStart)}</b>
+                </p>
+              )}
+            </div>
+            <div className="space-y-1.5">
+              <Label>أساس حساب الحول</Label>
+              <RadioGroup value={calendarBasis} onValueChange={(v) => setCalendarBasis(v as "hijri" | "gregorian")} className="flex flex-col gap-2 pt-1">
+                <div className="flex items-center gap-2"><RadioGroupItem value="hijri" id="cb-h" /><Label htmlFor="cb-h" className="text-sm">هجري — نسبة 2.5%</Label></div>
+                <div className="flex items-center gap-2"><RadioGroupItem value="gregorian" id="cb-g" /><Label htmlFor="cb-g" className="text-sm">ميلادي — نسبة 2.577% (معدّلة)</Label></div>
+              </RadioGroup>
             </div>
 
             {hawl && (
-              <Alert className={hawl.hawlComplete ? "border-primary/30 bg-primary/5" : "border-destructive/40 bg-destructive/5"}>
-                <Info className="h-4 w-4" />
-                <AlertDescription className="text-xs">
-                  {hawl.hawlComplete ? (
-                    <>اكتمل الحَوْل (مضى <b>{hawl.daysPassed} يومًا</b> ≥ {HAWL_DAYS_HIJRI} يوم هجري). تجب الزكاة على الأموال التي حال عليها الحول.</>
-                  ) : (
-                    <>لم يكتمل الحول بعد — مضى <b>{hawl.daysPassed} يومًا</b> ويتبقى <b>{hawl.daysRemaining} يومًا</b> لإكمال 354 يومًا هجريًا. لا تجب زكاة النقد والذهب الآن (الزروع والثمار لا تشترط حولًا).</>
-                  )}
-                </AlertDescription>
-              </Alert>
+              <div className="md:col-span-2">
+                <Alert className={hawl.hawlComplete ? "border-primary/30 bg-primary/5" : "border-destructive/40 bg-destructive/5"}>
+                  <Info className="h-4 w-4" />
+                  <AlertDescription className="text-xs">
+                    {hawl.hawlComplete ? (
+                      <>اكتمل الحَوْل (مضى <b>{hawl.daysPassed} يومًا</b> ≥ {HAWL_DAYS_HIJRI} يوم هجري). تجب الزكاة على الأموال التي حال عليها الحول.</>
+                    ) : (
+                      <>لم يكتمل الحول بعد — مضى <b>{hawl.daysPassed} يومًا</b> ويتبقى <b>{hawl.daysRemaining} يومًا</b> لإكمال 354 يومًا هجريًا. لا تجب زكاة النقد والذهب الآن (الزروع والثمار لا تشترط حولًا).</>
+                    )}
+                  </AlertDescription>
+                </Alert>
+              </div>
             )}
 
             {calendarBasis === "gregorian" && (
-              <Alert className="border-gold/30 bg-gold/5">
-                <Info className="h-4 w-4" />
-                <AlertDescription className="text-xs">
-                  وفق قرار الندوة السابعة لقضايا الزكاة (الكويت 1417هـ): من حسب زكاته على السنة الميلادية يُضاعف المعدل من 2.5% إلى <b>2.577%</b> لجبر فرق 11 يومًا تقريبًا بين السنتين.
-                </AlertDescription>
-              </Alert>
+              <div className="md:col-span-2">
+                <Alert className="border-gold/30 bg-gold/5">
+                  <Info className="h-4 w-4" />
+                  <AlertDescription className="text-xs">
+                    وفق قرار الندوة السابعة لقضايا الزكاة (الكويت 1417هـ): من حسب زكاته على السنة الميلادية يُضاعف المعدل من 2.5% إلى <b>2.577%</b> لجبر فرق 11 يومًا تقريبًا بين السنتين.
+                  </AlertDescription>
+                </Alert>
+              </div>
             )}
 
-            <div>
+            <div className="md:col-span-2">
               <Label className="mb-2 block">ملاحظات</Label>
               <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="أي ملاحظات إضافية" rows={2} />
             </div>
           </CardContent>
         </Card>
 
-        {/* الأسعار */}
-        <Card className="border-gold/30 shadow-soft">
-          <CardHeader className="bg-gradient-to-l from-gold/15 to-transparent">
-            <CardTitle className="flex items-center gap-2">
-              <Coins className="h-5 w-5 text-gold" />
-              الأسعار المرجعية اليوم — {country.name}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="grid md:grid-cols-2 gap-4 pt-6">
-            <NumField label="سعر جرام الذهب عيار 24" value={goldPrice} onChange={setGoldPrice} unit={currencyName} />
-            <NumField label="سعر جرام الفضة الخالصة" value={silverPrice} onChange={setSilverPrice} unit={currencyName} />
-            <div className="md:col-span-2 text-xs text-muted-foreground bg-muted/40 rounded-md px-3 py-2">
-              نصاب الذهب: <b>{cur(calc.goldNisabValue)}</b> — نصاب الفضة: <b>{cur(calc.silverNisabValue)}</b> — الأنفع للفقراء: <b>{cur(calc.moneyNisab)}</b>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* الأبواب */}
         <Accordion type="multiple" defaultValue={["gold", "cash"]} className="space-y-3">
@@ -800,13 +780,7 @@ export function IndividualTab() {
                 </div>
               </div>
 
-              {/* السعر والإجمالي */}
-              <div className="rounded-lg border border-muted-foreground/30 bg-background p-4 space-y-2">
-                <Label className="text-sm">سعر جرام الفضة عيار 999 (الخالصة)</Label>
-                <Input type="number" min="0" value={silverPrice} onChange={(e) => setSilverPrice(e.target.value)} dir="ltr" style={{ textAlign: "right" }} />
-                <p className="text-[11px] text-muted-foreground">{currencyName} / جرام</p>
-              </div>
-
+              {/* الإجمالي الفضي */}
               <div className="rounded-xl border-2 border-primary/40 bg-gradient-to-l from-primary/10 to-muted/20 p-4 space-y-3">
                 <div className="flex items-center justify-between flex-wrap gap-3">
                   <div className="text-sm font-bold text-primary">إجمالي الوعاء الزكوي من الفضة</div>
@@ -843,16 +817,23 @@ export function IndividualTab() {
                     <div className="text-xl font-extrabold text-primary">{cur(calc.silverValue)}</div>
                   </div>
                 </div>
-                <p className="text-[11px] text-muted-foreground leading-relaxed">
-                  تمت معادلة جميع العيارات (750 · 800 · 835 · 900 · 925 · 960) إلى عيار 999 بمعامل (العيار ÷ 1000)، ثم ضُربت في سعر اليوم لجرام عيار 999.
-                </p>
               </div>
 
-              {/* إجمالي وعاء الذهب + الفضة */}
-              <div className="rounded-xl border-2 border-gold/50 bg-gold/10 p-4 space-y-2">
+              {/* إجمالي وعاء الذهب + الفضة + الأسعار المرجعية اليوم */}
+              <div className="rounded-xl border-2 border-gold/50 bg-gold/10 p-4 space-y-3">
                 <div className="text-sm font-bold text-gold flex items-center gap-2">
-                  <Coins className="h-4 w-4" /> إجمالي وعاء زكاة الذهب والفضة
+                  <Coins className="h-4 w-4" /> إجمالي وعاء زكاة الذهب والفضة — الأسعار المرجعية اليوم ({country.name})
                 </div>
+
+                {/* الأسعار المرجعية */}
+                <div className="grid md:grid-cols-2 gap-3 rounded-lg border bg-background/60 p-3">
+                  <NumField label="سعر جرام الذهب عيار 24" value={goldPrice} onChange={setGoldPrice} unit={currencyName} />
+                  <NumField label="سعر جرام الفضة الخالصة (عيار 999)" value={silverPrice} onChange={setSilverPrice} unit={currencyName} />
+                  <div className="md:col-span-2 text-xs text-muted-foreground bg-muted/40 rounded-md px-3 py-2 text-right">
+                    نصاب الذهب: <b>{cur(calc.goldNisabValue)}</b> — نصاب الفضة: <b>{cur(calc.silverNisabValue)}</b> — الأنفع للفقراء: <b>{cur(calc.moneyNisab)}</b>
+                  </div>
+                </div>
+
                 <div className="space-y-1 text-sm">
                   <div className="flex items-center justify-between border-b border-dashed py-1.5">
                     <span>الوعاء من الذهب</span>
@@ -971,14 +952,35 @@ export function IndividualTab() {
             </AccordionContent>
           </AccordionItem>
 
-          {/* المستغلات وزكاة الدخل */}
+          {/* المستغلات وزكاة الدخل + العقار */}
           <AccordionItem value="income-usufruct" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
-                <HandHeart className="h-5 w-5 text-primary" /> زكاة المستغلات والإيرادات وزكاة الدخل
+                <HandHeart className="h-5 w-5 text-primary" /> زكاة المستغلات والإيرادات والدخل (شاملاً العقار)
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
+              {/* قسم العقار مُدمج هنا */}
+              <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-3">
+                <div className="flex items-center gap-2 text-sm font-semibold text-primary">
+                  <Home className="h-4 w-4" /> زكاة العقار
+                </div>
+                <Alert className="border-primary/20 bg-background">
+                  <Info className="h-4 w-4" />
+                  <AlertDescription className="text-xs leading-relaxed text-right">
+                    <b>عقار السكن الخاص:</b> لا زكاة فيه إجماعًا.
+                    <br />
+                    <b>عقار التجارة</b> (مُعدّ للبيع): يُزكَّى بكامل قيمته السوقية يوم وجوب الزكاة.
+                    <br />
+                    <b>عقار الإيجار/الاستغلال:</b> لا زكاة في رقبته، وإنما في صافي إيراده المُدّخر بعد النفقات إذا بلغ النصاب وحال عليه الحول.
+                  </AlertDescription>
+                </Alert>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <NumField label="عقار للتجارة (القيمة السوقية)" value={realEstateTrade} onChange={setRealEstateTrade} unit={currencyName} />
+                  <NumField label="صافي إيراد الإيجار المُدّخر" value={realEstateRentIncome} onChange={setRealEstateRentIncome} unit={currencyName} hint="بعد خصم المصاريف والنفقات الضرورية" />
+                </div>
+              </div>
+
               <IncomeUsufructSection
                 currencyName={currencyName}
                 onTotalChange={setIncomeUsufructTotal}
@@ -986,30 +988,6 @@ export function IndividualTab() {
             </AccordionContent>
           </AccordionItem>
 
-          {/* العقار */}
-          <AccordionItem value="realestate" className="border rounded-xl shadow-soft bg-card px-4">
-            <AccordionTrigger className="hover:no-underline">
-              <span className="flex items-center gap-2 text-base font-semibold">
-                <Home className="h-5 w-5 text-primary" /> زكاة العقار
-              </span>
-            </AccordionTrigger>
-            <AccordionContent className="space-y-4 pb-4">
-              <Alert className="border-primary/20 bg-primary/5">
-                <Info className="h-4 w-4" />
-                <AlertDescription className="text-xs leading-relaxed">
-                  <b>عقار السكن الخاص:</b> لا زكاة فيه إجماعًا.
-                  <br />
-                  <b>عقار التجارة</b> (مُعدّ للبيع): يُزكَّى بكامل قيمته السوقية يوم وجوب الزكاة.
-                  <br />
-                  <b>عقار الإيجار/الاستغلال:</b> لا زكاة في رقبته، وإنما في صافي إيراده المُدّخر بعد النفقات إذا بلغ النصاب وحال عليه الحول.
-                </AlertDescription>
-              </Alert>
-              <div className="grid md:grid-cols-2 gap-4">
-                <NumField label="عقار للتجارة (القيمة السوقية)" value={realEstateTrade} onChange={setRealEstateTrade} unit={currencyName} />
-                <NumField label="صافي إيراد الإيجار المُدّخر" value={realEstateRentIncome} onChange={setRealEstateRentIncome} unit={currencyName} hint="بعد خصم المصاريف والنفقات الضرورية" />
-              </div>
-            </AccordionContent>
-          </AccordionItem>
 
           {/* الزروع */}
           <AccordionItem value="crops" className="border rounded-xl shadow-soft bg-card px-4">
