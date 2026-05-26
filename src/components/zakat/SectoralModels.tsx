@@ -742,8 +742,8 @@ export function SectoralModels({
               })}
             </TabsList>
 
-            <TabsContent value="trade"><TradeModel currency={currency} nisab={nisab} yearMode={yearMode} />{Addons}</TabsContent>
-            <TabsContent value="industry"><IndustrialModel currency={currency} nisab={nisab} yearMode={yearMode} />{Addons}</TabsContent>
+            <TabsContent value="trade"><TradeModel currency={currency} nisab={nisab} yearMode={yearMode} /><MadhabBlock topic="trade" />{Addons}</TabsContent>
+            <TabsContent value="industry"><IndustrialModel currency={currency} nisab={nisab} yearMode={yearMode} /><MadhabBlock topic="industry" />{Addons}</TabsContent>
             <TabsContent value="services">
               <ServicesModel currency={currency} nisab={nisab} yearMode={yearMode} />
               <div className="mt-6 pt-6 border-t-2 border-dashed border-gold/30">
@@ -752,11 +752,12 @@ export function SectoralModels({
                 </h4>
                 <FreeProfModel currency={currency} nisab={nisab} yearMode={yearMode} />
               </div>
+              <MadhabBlock topic="services" />
               {Addons}
             </TabsContent>
-            <TabsContent value="mustaghal"><MustaghallatModel currency={currency} nisab={nisab} yearMode={yearMode} />{Addons}</TabsContent>
-            <TabsContent value="marine"><MarineModel currency={currency} nisab={nisab} yearMode={yearMode} />{Addons}</TabsContent>
-            <TabsContent value="minerals"><MineralsModel currency={currency} nisab={nisab} yearMode={yearMode} />{Addons}</TabsContent>
+            <TabsContent value="mustaghal"><MustaghallatModel currency={currency} nisab={nisab} yearMode={yearMode} /><MadhabBlock topic="mustaghal" />{Addons}</TabsContent>
+            <TabsContent value="marine"><MarineModel currency={currency} nisab={nisab} yearMode={yearMode} /><MadhabBlock topic="marine" />{Addons}</TabsContent>
+            <TabsContent value="minerals"><MineralsModel currency={currency} nisab={nisab} yearMode={yearMode} /><MadhabBlock topic="minerals" />{Addons}</TabsContent>
           </Tabs>
         </CardContent>
       </Card>
