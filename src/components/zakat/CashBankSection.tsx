@@ -808,6 +808,7 @@ function WalletGroup({
 function BankPicker({
   type, islamicBank, setIslamicBank, tradBank, setTradBank,
   useWindow, setUseWindow, branch, setBranch, idPrefix, hideWindow,
+  islamicBanks, traditionalBanks, countryName,
 }: {
   type: BankType;
   islamicBank: string;
@@ -820,45 +821,53 @@ function BankPicker({
   setBranch: (v: string) => void;
   idPrefix: string;
   hideWindow?: boolean;
+  islamicBanks: string[];
+  traditionalBanks: TradBank[];
+  countryName: string;
 }) {
-  const selectedTrad = TRADITIONAL_BANKS_WITH_WINDOWS.find((b) => b.v === tradBank);
+  const selectedTrad = traditionalBanks.find((b) => b.v === tradBank);
   return (
     <div className="grid md:grid-cols-2 gap-3">
       {type === "islamic" ? (
         <div className="space-y-1.5">
-          <Label className="text-xs">اسم البنك الإسلامي</Label>
+          <Label className="text-xs">اسم البنك الإسلامي — {countryName}</Label>
           <Select value={islamicBank} onValueChange={setIslamicBank}>
-            <SelectTrigger id={`${idPrefix}-ib`}><SelectValue /></SelectTrigger>
+            <SelectTrigger id={`${idPrefix}-ib`}><SelectValue placeholder="اختر بنكاً" /></SelectTrigger>
             <SelectContent className="max-h-72">
-              {ISLAMIC_BANKS.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+              {islamicBanks.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}
             </SelectContent>
           </Select>
         </div>
       ) : (
         <>
           <div className="space-y-1.5">
-            <Label className="text-xs">اسم البنك التقليدي</Label>
+            <Label className="text-xs">اسم البنك التقليدي — {countryName}</Label>
             <Select value={tradBank} onValueChange={setTradBank}>
-              <SelectTrigger id={`${idPrefix}-tb`}><SelectValue /></SelectTrigger>
+              <SelectTrigger id={`${idPrefix}-tb`}><SelectValue placeholder="اختر بنكاً" /></SelectTrigger>
               <SelectContent className="max-h-72">
-                {TRADITIONAL_BANKS_WITH_WINDOWS.map((b) => (
-                  <SelectItem key={b.v} value={b.v}>{b.l}</SelectItem>
+                {traditionalBanks.map((b) => (
+                  <SelectItem key={b.v} value={b.v}>
+                    {b.l}{b.window && b.window !== "—" ? ` — (${b.window})` : ""}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
           {!hideWindow && (
             <div className="space-y-1.5">
-              <Label className="text-xs">النافذة الإسلامية</Label>
+              <Label className="text-xs">الفرع / النافذة الإسلامية</Label>
               <div className="flex items-center gap-2 border rounded-md px-3 py-2">
                 <input
                   type="checkbox"
                   id={`${idPrefix}-win`}
                   checked={useWindow}
                   onChange={(e) => setUseWindow(e.target.checked)}
+                  disabled={!selectedTrad?.window || selectedTrad.window === "—"}
                 />
                 <Label htmlFor={`${idPrefix}-win`} className="text-xs cursor-pointer">
-                  أستخدم النافذة الإسلامية {selectedTrad?.window && selectedTrad.window !== "—" ? `(${selectedTrad.window})` : ""}
+                  {selectedTrad?.window && selectedTrad.window !== "—"
+                    ? `أستخدم: ${selectedTrad.window}`
+                    : "لا توجد نافذة إسلامية معتمدة لهذا البنك"}
                 </Label>
               </div>
             </div>
