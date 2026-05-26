@@ -375,10 +375,10 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
       </div>
 
 
-      {/* ودائع وشهادات وبريد */}
+      {/* هـ-١) الودائع */}
       <div className="rounded-lg border bg-card p-4 space-y-3">
         <div className="flex items-center gap-2 text-sm font-semibold text-primary">
-          <Banknote className="h-4 w-4" /> ودائع وشهادات وبريد
+          <Banknote className="h-4 w-4" /> هـ-١ · الودائع
           <Badge variant={depType === "islamic" ? "default" : "secondary"} className="text-[10px]">
             {depType === "islamic" ? "إسلامي" : "تقليدي — أصل فقط بدون العائد الربوي"}
           </Badge>
@@ -392,56 +392,95 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
             </RadioGroup>
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs">تاريخ فتح الحساب / الوديعة</Label>
+            <Label className="text-xs">تاريخ فتح الوديعة</Label>
             <Input type="date" value={depOpenedAt} onChange={(e) => setDepOpenedAt(e.target.value)} />
           </div>
-          {depType === "islamic" && (
-            <div className="space-y-1.5 md:col-span-2">
-              <Label className="text-xs">فرع البنك الإسلامي</Label>
-              <Input value={depBranch} onChange={(e) => setDepBranch(e.target.value)} placeholder="فيصل / البركة / ADIB / KFH ..." />
-            </div>
-          )}
-          <div className="space-y-1.5">
+          <div className="md:col-span-2">
+            <BankPicker
+              type={depType}
+              islamicBank={depIslamicBank} setIslamicBank={setDepIslamicBank}
+              tradBank={depTradBank} setTradBank={setDepTradBank}
+              useWindow={false} setUseWindow={() => {}}
+              branch={depBranch} setBranch={setDepBranch}
+              idPrefix="dep" hideWindow
+            />
+          </div>
+          <div className="space-y-1.5 md:col-span-2">
             <Label className="text-xs">أصل الودائع</Label>
             <div className="relative">
               <Input type="number" min="0" step="0.01" value={depPrincipal} onChange={(e) => setDepPrincipal(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* هـ-٢) الشهادات */}
+      <div className="rounded-lg border bg-card p-4 space-y-3">
+        <div className="flex items-center gap-2 text-sm font-semibold text-primary">
+          <Award className="h-4 w-4" /> هـ-٢ · الشهادات الادخارية والاستثمارية
+          <Badge variant={certType === "islamic" ? "default" : "secondary"} className="text-[10px]">
+            {certType === "islamic" ? "صكوك / شهادات إسلامية" : "تقليدية — أصل فقط"}
+          </Badge>
+        </div>
+        <div className="grid md:grid-cols-2 gap-3">
           <div className="space-y-1.5">
-            <Label className="text-xs">أصل الشهادات</Label>
+            <Label className="text-xs">نوع البنك</Label>
+            <RadioGroup value={certType} onValueChange={(v) => setCertType(v as BankType)} className="flex gap-3 pt-2">
+              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer"><RadioGroupItem value="islamic" id="cert-i" /><Label htmlFor="cert-i" className="text-xs cursor-pointer">بنك إسلامي</Label></div>
+              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer"><RadioGroupItem value="traditional" id="cert-t" /><Label htmlFor="cert-t" className="text-xs cursor-pointer">بنك تقليدي</Label></div>
+            </RadioGroup>
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs">تاريخ شراء الشهادة</Label>
+            <Input type="date" value={certOpenedAt} onChange={(e) => setCertOpenedAt(e.target.value)} />
+          </div>
+          <div className="md:col-span-2">
+            <BankPicker
+              type={certType}
+              islamicBank={certIslamicBank} setIslamicBank={setCertIslamicBank}
+              tradBank={certTradBank} setTradBank={setCertTradBank}
+              useWindow={false} setUseWindow={() => {}}
+              branch={certBranch} setBranch={setCertBranch}
+              idPrefix="cert" hideWindow
+            />
+          </div>
+          <div className="space-y-1.5 md:col-span-2">
+            <Label className="text-xs">أصل الشهادات (دون العائد الربوي)</Label>
             <div className="relative">
               <Input type="number" min="0" step="0.01" value={certPrincipal} onChange={(e) => setCertPrincipal(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
             </div>
           </div>
         </div>
+      </div>
 
-        <Separator />
-
-        <div className="rounded-md border border-dashed p-3 space-y-3">
-          <div className="text-xs font-semibold text-muted-foreground">دفتر توفير البريد</div>
-          <div className="grid md:grid-cols-2 gap-3">
-            <div className="space-y-1.5">
-              <Label className="text-xs">رصيد الدفتر الحالي (للعلم)</Label>
-              <div className="relative">
-                <Input type="number" min="0" step="0.01" value={postSavings} onChange={(e) => setPostSavings(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
-              </div>
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs">أصل المبلغ عند الإيداع (يُزكَّى)</Label>
-              <div className="relative">
-                <Input type="number" min="0" step="0.01" value={postPrincipal} onChange={(e) => setPostPrincipal(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
-              </div>
+      {/* هـ-٣) دفتر توفير البريد */}
+      <div className="rounded-lg border bg-card p-4 space-y-3">
+        <div className="flex items-center gap-2 text-sm font-semibold text-primary">
+          <PiggyBank className="h-4 w-4" /> هـ-٣ · دفتر توفير البريد
+        </div>
+        <div className="grid md:grid-cols-2 gap-3">
+          <div className="space-y-1.5">
+            <Label className="text-xs">رصيد الدفتر الحالي (للعلم)</Label>
+            <div className="relative">
+              <Input type="number" min="0" step="0.01" value={postSavings} onChange={(e) => setPostSavings(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
             </div>
           </div>
-          <p className="text-xs text-muted-foreground">
-            دفتر توفير البريد يُعدّ من المعاملات الربوية — تُزكَّى <b>أصل المبالغ المُودَعة فقط</b> دون الفوائد المتراكمة.
-          </p>
+          <div className="space-y-1.5">
+            <Label className="text-xs">أصل المبلغ عند الإيداع (يُزكَّى)</Label>
+            <div className="relative">
+              <Input type="number" min="0" step="0.01" value={postPrincipal} onChange={(e) => setPostPrincipal(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
+            </div>
+          </div>
         </div>
+        <p className="text-xs text-muted-foreground">
+          دفتر توفير البريد يُعدّ من المعاملات الربوية — تُزكَّى <b>أصل المبالغ المُودَعة فقط</b> دون الفوائد المتراكمة.
+        </p>
       </div>
+
 
       {/* هـ) البطاقات البنكية */}
       <div className="rounded-lg border bg-card p-4 space-y-3">
