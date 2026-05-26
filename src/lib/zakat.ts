@@ -110,3 +110,76 @@ export const NISAB_HISTORY: NisabHistoryItem[] = [
     note: "اعتمدت المجامع الفقهية (المجمع الفقهي الإسلامي، دار الإفتاء) تقدير النصاب بالوزن مع تقويمه بالعملات المعاصرة، والعبرة بالأنفع للفقراء",
   },
 ];
+
+// أسعار الذهب والفضة الحالية التقريبية للجرام حسب الدولة (للإرشاد فقط — قابلة للتعديل)
+export interface CountryPrice {
+  code: string;
+  name: string;
+  currency: string;
+  gold24: number; // سعر جرام الذهب عيار 24
+  silver: number; // سعر جرام الفضة
+}
+
+export const COUNTRY_PRICES: CountryPrice[] = [
+  { code: "EG", name: "مصر", currency: "ج.م", gold24: 5400, silver: 65 },
+  { code: "SA", name: "السعودية", currency: "ر.س", gold24: 415, silver: 5.1 },
+  { code: "AE", name: "الإمارات", currency: "د.إ", gold24: 405, silver: 5.0 },
+  { code: "KW", name: "الكويت", currency: "د.ك", gold24: 34, silver: 0.42 },
+  { code: "QA", name: "قطر", currency: "ر.ق", gold24: 405, silver: 5.0 },
+  { code: "BH", name: "البحرين", currency: "د.ب", gold24: 42, silver: 0.51 },
+  { code: "OM", name: "عُمان", currency: "ر.ع", gold24: 43, silver: 0.52 },
+  { code: "JO", name: "الأردن", currency: "د.أ", gold24: 78, silver: 0.95 },
+  { code: "MA", name: "المغرب", currency: "د.م", gold24: 1100, silver: 13 },
+  { code: "DZ", name: "الجزائر", currency: "د.ج", gold24: 14800, silver: 180 },
+  { code: "TN", name: "تونس", currency: "د.ت", gold24: 345, silver: 4.2 },
+  { code: "IQ", name: "العراق", currency: "د.ع", gold24: 145000, silver: 1750 },
+  { code: "SY", name: "سوريا", currency: "ل.س", gold24: 1400000, silver: 17000 },
+  { code: "LB", name: "لبنان", currency: "ل.ل", gold24: 9900000, silver: 120000 },
+  { code: "YE", name: "اليمن", currency: "ر.ي", gold24: 27000, silver: 325 },
+  { code: "SD", name: "السودان", currency: "ج.س", gold24: 66000, silver: 800 },
+  { code: "LY", name: "ليبيا", currency: "د.ل", gold24: 535, silver: 6.5 },
+  { code: "PS", name: "فلسطين", currency: "₪", gold24: 405, silver: 4.9 },
+  { code: "TR", name: "تركيا", currency: "₺", gold24: 3850, silver: 47 },
+  { code: "US", name: "الولايات المتحدة", currency: "$", gold24: 110, silver: 1.35 },
+  { code: "EU", name: "الاتحاد الأوروبي", currency: "€", gold24: 102, silver: 1.25 },
+  { code: "GB", name: "المملكة المتحدة", currency: "£", gold24: 87, silver: 1.07 },
+];
+
+// التطور التاريخي لسعر جرام الذهب عيار 24 والفضة بالدولار الأمريكي خلال آخر 100 عام
+export interface YearlyNisabRow {
+  hijri: number;
+  gregorian: number;
+  goldUsd: number;   // سعر جرام الذهب عيار 24 بالدولار
+  silverUsd: number; // سعر جرام الفضة بالدولار
+  event?: string;
+}
+
+// قيم تقريبية مبنية على متوسط أسعار السوق العالمية (للإرشاد التاريخي)
+export const NISAB_LAST_100_YEARS: YearlyNisabRow[] = [
+  { hijri: 1344, gregorian: 1925, goldUsd: 0.67, silverUsd: 0.022, event: "معيار الذهب الكلاسيكي" },
+  { hijri: 1349, gregorian: 1930, goldUsd: 0.67, silverUsd: 0.012, event: "الكساد الكبير" },
+  { hijri: 1354, gregorian: 1935, goldUsd: 1.13, silverUsd: 0.021, event: "رفع سعر الذهب لـ35$/أوقية" },
+  { hijri: 1359, gregorian: 1940, goldUsd: 1.13, silverUsd: 0.011 },
+  { hijri: 1364, gregorian: 1945, goldUsd: 1.13, silverUsd: 0.016, event: "نهاية الحرب العالمية الثانية" },
+  { hijri: 1369, gregorian: 1950, goldUsd: 1.13, silverUsd: 0.024 },
+  { hijri: 1374, gregorian: 1955, goldUsd: 1.13, silverUsd: 0.028 },
+  { hijri: 1380, gregorian: 1960, goldUsd: 1.13, silverUsd: 0.029 },
+  { hijri: 1385, gregorian: 1965, goldUsd: 1.13, silverUsd: 0.042 },
+  { hijri: 1390, gregorian: 1970, goldUsd: 1.18, silverUsd: 0.057, event: "بداية تحرير سعر الذهب" },
+  { hijri: 1395, gregorian: 1975, goldUsd: 5.18, silverUsd: 0.142, event: "انهيار بريتون وودز" },
+  { hijri: 1400, gregorian: 1980, goldUsd: 19.81, silverUsd: 0.65, event: "ذروة الذهب التاريخية" },
+  { hijri: 1405, gregorian: 1985, goldUsd: 10.29, silverUsd: 0.197 },
+  { hijri: 1410, gregorian: 1990, goldUsd: 12.32, silverUsd: 0.155, event: "حرب الخليج" },
+  { hijri: 1415, gregorian: 1995, goldUsd: 12.43, silverUsd: 0.168 },
+  { hijri: 1420, gregorian: 2000, goldUsd: 8.97, silverUsd: 0.161 },
+  { hijri: 1425, gregorian: 2005, goldUsd: 14.31, silverUsd: 0.235 },
+  { hijri: 1430, gregorian: 2009, goldUsd: 31.25, silverUsd: 0.475, event: "الأزمة المالية العالمية" },
+  { hijri: 1432, gregorian: 2011, goldUsd: 50.41, silverUsd: 1.13, event: "قفزة قياسية" },
+  { hijri: 1435, gregorian: 2014, goldUsd: 40.51, silverUsd: 0.61 },
+  { hijri: 1437, gregorian: 2016, goldUsd: 40.16, silverUsd: 0.55 },
+  { hijri: 1440, gregorian: 2019, goldUsd: 45.01, silverUsd: 0.52 },
+  { hijri: 1441, gregorian: 2020, goldUsd: 57.07, silverUsd: 0.66, event: "جائحة كوفيد-19" },
+  { hijri: 1443, gregorian: 2022, goldUsd: 58.40, silverUsd: 0.71 },
+  { hijri: 1445, gregorian: 2024, goldUsd: 75.20, silverUsd: 0.95 },
+  { hijri: 1447, gregorian: 2026, goldUsd: 95.50, silverUsd: 1.30, event: "أعلى مستوى تاريخي" },
+];

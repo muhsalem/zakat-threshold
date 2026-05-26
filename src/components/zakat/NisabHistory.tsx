@@ -1,47 +1,230 @@
+import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { NISAB_HISTORY } from "@/lib/zakat";
-import { Scroll } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  COUNTRY_PRICES,
+  GOLD_NISAB_GRAMS,
+  SILVER_NISAB_GRAMS,
+  NISAB_HISTORY,
+  NISAB_LAST_100_YEARS,
+  fmt,
+  num,
+} from "@/lib/zakat";
+import { Scroll, Coins, Gem, Globe2, CalendarClock } from "lucide-react";
 
 export function NisabHistory() {
+  const [countryCode, setCountryCode] = useState("EG");
+  const country = COUNTRY_PRICES.find((c) => c.code === countryCode) ?? COUNTRY_PRICES[0];
+  const [goldPrice, setGoldPrice] = useState<string>(String(country.gold24));
+  const [silverPrice, setSilverPrice] = useState<string>(String(country.silver));
+
+  const onCountryChange = (code: string) => {
+    const c = COUNTRY_PRICES.find((x) => x.code === code);
+    if (!c) return;
+    setCountryCode(code);
+    setGoldPrice(String(c.gold24));
+    setSilverPrice(String(c.silver));
+  };
+
+  const goldNisabValue = num(goldPrice) * GOLD_NISAB_GRAMS;
+  const silverNisabValue = num(silverPrice) * SILVER_NISAB_GRAMS;
+  const lowerNisab = Math.min(
+    goldNisabValue || Infinity,
+    silverNisabValue || Infinity,
+  );
+
+  const years = useMemo(() => [...NISAB_LAST_100_YEARS].reverse(), []);
+
   return (
-    <Card className="border-gold/30 shadow-soft">
-      <CardHeader className="bg-gradient-to-l from-gold/15 to-transparent">
-        <CardTitle className="flex items-center gap-2 text-xl">
-          <Scroll className="h-5 w-5 text-gold" />
-          التطور التاريخي لنصاب الذهب والفضة
-        </CardTitle>
-        <p className="text-sm text-muted-foreground">
-          من العهد النبوي حتى العصر الحديث — مع توثيق المعيار الشرعي عبر العصور
-        </p>
-      </CardHeader>
-      <CardContent className="pt-6">
-        <div className="relative">
-          <div className="absolute right-3 top-2 bottom-2 w-px bg-gradient-to-b from-gold via-primary/30 to-transparent" />
-          <div className="space-y-6">
-            {NISAB_HISTORY.map((item, idx) => (
-              <div key={idx} className="relative pr-10">
-                <div className="absolute right-1.5 top-1.5 h-3 w-3 rounded-full bg-gradient-gold ring-4 ring-background shadow-gold" />
-                <div className="flex flex-wrap items-baseline gap-2 mb-2">
-                  <h3 className="text-lg font-bold text-primary">{item.era}</h3>
-                  <Badge variant="secondary" className="text-xs">{item.period}</Badge>
-                </div>
-                <div className="grid sm:grid-cols-2 gap-2 mb-2">
-                  <div className="rounded-md bg-gold/10 border border-gold/20 px-3 py-2 text-sm">
-                    <span className="font-semibold text-gold-foreground">الذهب: </span>
-                    {item.gold}
-                  </div>
-                  <div className="rounded-md bg-muted px-3 py-2 text-sm">
-                    <span className="font-semibold">الفضة: </span>
-                    {item.silver}
-                  </div>
-                </div>
-                <p className="text-sm text-muted-foreground leading-relaxed">{item.note}</p>
-              </div>
-            ))}
+    <div className="space-y-6">
+      {/* نصاب اليوم */}
+      <Card className="border-gold/30 shadow-soft">
+        <CardHeader className="bg-gradient-to-l from-gold/15 to-transparent">
+          <CardTitle className="flex items-center gap-2 text-xl">
+            <Globe2 className="h-5 w-5 text-gold" />
+            نصاب اليوم — حسب الدولة
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">
+            اختر دولتك لعرض السعر التقريبي لجرام الذهب والفضة، ويمكنك تعديل القيم لتطابق
+            السعر الحالي في السوق.
+          </p>
+        </CardHeader>
+        <CardContent className="pt-6 space-y-5">
+          <div className="grid sm:grid-cols-3 gap-3">
+            <div className="space-y-1.5">
+              <Label className="text-xs">الدولة</Label>
+              <Select value={countryCode} onValueChange={onCountryChange}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="max-h-72">
+                  {COUNTRY_PRICES.map((c) => (
+                    <SelectItem key={c.code} value={c.code}>
+                      {c.name} ({c.currency})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">سعر جرام الذهب عيار 24 ({country.currency})</Label>
+              <Input
+                type="number"
+                value={goldPrice}
+                onChange={(e) => setGoldPrice(e.target.value)}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">سعر جرام الفضة ({country.currency})</Label>
+              <Input
+                type="number"
+                value={silverPrice}
+                onChange={(e) => setSilverPrice(e.target.value)}
+              />
+            </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+
+          <div className="grid sm:grid-cols-2 gap-3">
+            <div className="rounded-lg border border-gold/30 bg-gold/10 p-4">
+              <div className="flex items-center gap-2 mb-2 text-gold-foreground">
+                <Gem className="h-4 w-4" />
+                <span className="font-semibold">نصاب الذهب</span>
+                <Badge variant="secondary" className="text-[10px]">85 جم</Badge>
+              </div>
+              <p className="text-2xl font-bold">
+                {fmt(goldNisabValue)} <span className="text-sm font-normal">{country.currency}</span>
+              </p>
+            </div>
+            <div className="rounded-lg border bg-muted p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Coins className="h-4 w-4" />
+                <span className="font-semibold">نصاب الفضة</span>
+                <Badge variant="secondary" className="text-[10px]">595 جم</Badge>
+              </div>
+              <p className="text-2xl font-bold">
+                {fmt(silverNisabValue)} <span className="text-sm font-normal">{country.currency}</span>
+              </p>
+            </div>
+          </div>
+
+          <div className="rounded-md bg-primary/10 border border-primary/20 px-4 py-3 text-sm leading-relaxed">
+            <span className="font-semibold text-primary">القيمة الواجب اعتبارها (الأنفع للفقراء): </span>
+            {isFinite(lowerNisab) ? `${fmt(lowerNisab)} ${country.currency}` : "—"}
+            <span className="text-muted-foreground"> — تجب الزكاة إذا بلغ مالك هذا الحد وحال عليه الحول.</span>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* آخر 100 عام */}
+      <Card className="border-gold/30 shadow-soft">
+        <CardHeader className="bg-gradient-to-l from-gold/15 to-transparent">
+          <CardTitle className="flex items-center gap-2 text-xl">
+            <CalendarClock className="h-5 w-5 text-gold" />
+            النصاب خلال آخر 100 عام (هجري / ميلادي)
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">
+            متوسط سعر جرام الذهب عيار 24 والفضة بالدولار الأمريكي عبر العقود الماضية،
+            مع قيمة النصاب المقابلة بالدولار.
+          </p>
+        </CardHeader>
+        <CardContent className="pt-4">
+          <div className="overflow-x-auto rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-right">هجري</TableHead>
+                  <TableHead className="text-right">ميلادي</TableHead>
+                  <TableHead className="text-right">جرام الذهب ($)</TableHead>
+                  <TableHead className="text-right">نصاب الذهب ($)</TableHead>
+                  <TableHead className="text-right">جرام الفضة ($)</TableHead>
+                  <TableHead className="text-right">نصاب الفضة ($)</TableHead>
+                  <TableHead className="text-right">حدث</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {years.map((y) => (
+                  <TableRow key={y.gregorian}>
+                    <TableCell className="font-semibold text-primary">{y.hijri}هـ</TableCell>
+                    <TableCell>{y.gregorian}م</TableCell>
+                    <TableCell>{fmt(y.goldUsd, 2)}</TableCell>
+                    <TableCell className="font-semibold text-gold-foreground">
+                      {fmt(y.goldUsd * GOLD_NISAB_GRAMS, 0)}
+                    </TableCell>
+                    <TableCell>{fmt(y.silverUsd, 3)}</TableCell>
+                    <TableCell className="font-semibold">
+                      {fmt(y.silverUsd * SILVER_NISAB_GRAMS, 0)}
+                    </TableCell>
+                    <TableCell className="text-xs text-muted-foreground">
+                      {y.event ?? "—"}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+          <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
+            * البيانات تقديرية مبنية على متوسط الأسعار العالمية السنوية، والمرجع الشرعي
+            هو الوزن (85 جم ذهبًا و595 جم فضة) لا قيمة العملة.
+          </p>
+        </CardContent>
+      </Card>
+
+      {/* التطور التاريخي عبر العصور */}
+      <Card className="border-gold/30 shadow-soft">
+        <CardHeader className="bg-gradient-to-l from-gold/15 to-transparent">
+          <CardTitle className="flex items-center gap-2 text-xl">
+            <Scroll className="h-5 w-5 text-gold" />
+            التطور التاريخي للنصاب عبر العصور
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">
+            من العهد النبوي حتى العصر الحديث — مع توثيق المعيار الشرعي عبر العصور.
+          </p>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="relative">
+            <div className="absolute right-3 top-2 bottom-2 w-px bg-gradient-to-b from-gold via-primary/30 to-transparent" />
+            <div className="space-y-6">
+              {NISAB_HISTORY.map((item, idx) => (
+                <div key={idx} className="relative pr-10">
+                  <div className="absolute right-1.5 top-1.5 h-3 w-3 rounded-full bg-gradient-gold ring-4 ring-background shadow-gold" />
+                  <div className="flex flex-wrap items-baseline gap-2 mb-2">
+                    <h3 className="text-lg font-bold text-primary">{item.era}</h3>
+                    <Badge variant="secondary" className="text-xs">{item.period}</Badge>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-2 mb-2">
+                    <div className="rounded-md bg-gold/10 border border-gold/20 px-3 py-2 text-sm">
+                      <span className="font-semibold text-gold-foreground">الذهب: </span>
+                      {item.gold}
+                    </div>
+                    <div className="rounded-md bg-muted px-3 py-2 text-sm">
+                      <span className="font-semibold">الفضة: </span>
+                      {item.silver}
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{item.note}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
