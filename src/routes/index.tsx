@@ -42,15 +42,15 @@ function Index() {
         </section>
 
         <Tabs defaultValue="individual" className="space-y-6">
-          <TabsList className="grid grid-cols-3 w-full max-w-2xl mx-auto h-auto">
+          <TabsList dir="rtl" className="grid grid-cols-3 w-full max-w-2xl mx-auto h-auto">
             <TabsTrigger value="individual" className="gap-2 text-sm py-2.5">
-              <Users className="h-4 w-4" /> الأفراد
+              <Users className="h-4 w-4" /> حساب زكاة الأفراد
             </TabsTrigger>
             <TabsTrigger value="company" className="gap-2 text-sm py-2.5">
               <Building2 className="h-4 w-4" /> حساب زكاة الشركات
             </TabsTrigger>
             <TabsTrigger value="history" className="gap-2 text-sm py-2.5">
-              <Scroll className="h-4 w-4" /> النصاب اليوم
+              <Scroll className="h-4 w-4" /> قوائم أنصبة الزكاة
             </TabsTrigger>
           </TabsList>
 
