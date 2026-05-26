@@ -878,15 +878,22 @@ export function CompanyTab() {
           </div>
 
 
-          {/* طريقة حساب الزكاة */}
-          <Card className="shadow-soft">
-            <CardHeader>
+          {/* حساب زكاة الشركة (طريقة الاحتساب + النموذج القطاعي التفصيلي) */}
+          <Card className="shadow-soft border-gold/30">
+            <CardHeader className="bg-gradient-to-l from-gold/10 to-transparent">
               <CardTitle className="flex items-center gap-2">
                 <Calculator className="h-5 w-5 text-primary" />
-                طريقة حساب زكاة الشركة
+                حساب زكاة الشركة
               </CardTitle>
+              <p className="text-xs text-muted-foreground">
+                طريقة الاحتساب الشرعية + النموذج القطاعي التفصيلي المربوط تلقائياً بقطاع <b>{sector.label}</b>
+                {orgKind === "nonprofit" ? " — للعرض فقط لأن المؤسسة غير ربحية" : ""}.
+              </p>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-6">
+              <div>
+                <h4 className="font-semibold text-sm mb-2 text-primary">طريقة احتساب الوعاء الزكوي</h4>
+
               <Tabs value={method} onValueChange={(v) => setMethod(v as "net_assets" | "working_capital")}>
                 <TabsList className="grid grid-cols-2 w-full">
                   <TabsTrigger value="net_assets">صافي الموجودات الزكوية</TabsTrigger>
