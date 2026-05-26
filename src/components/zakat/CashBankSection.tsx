@@ -295,14 +295,18 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
             <Label className="text-xs">تاريخ فتح الحساب</Label>
             <Input type="date" value={currOpenedAt} onChange={(e) => setCurrOpenedAt(e.target.value)} />
           </div>
-          {currType === "islamic" && (
-            <div className="space-y-1.5">
-              <Label className="text-xs">فرع البنك الإسلامي</Label>
-              <Input value={currBranch} onChange={(e) => setCurrBranch(e.target.value)} placeholder="مثال: فيصل / البركة / ADIB" />
-            </div>
-          )}
+          <div className="space-y-1.5 md:col-span-2">
+            <BankPicker
+              type={currType}
+              islamicBank={currIslamicBank} setIslamicBank={setCurrIslamicBank}
+              tradBank={currTradBank} setTradBank={setCurrTradBank}
+              useWindow={currUseWindow} setUseWindow={setCurrUseWindow}
+              branch={currBranch} setBranch={setCurrBranch}
+              idPrefix="curr"
+            />
+          </div>
         </div>
-        {currType === "traditional" && (
+        {currType === "traditional" && !currUseWindow && (
           <Alert className="border-info/30 bg-info/5">
             <Info className="h-4 w-4" />
             <AlertDescription className="text-xs">
@@ -310,7 +314,16 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
             </AlertDescription>
           </Alert>
         )}
+        {currType === "traditional" && currUseWindow && (
+          <Alert className="border-primary/30 bg-primary/5">
+            <Info className="h-4 w-4" />
+            <AlertDescription className="text-xs">
+              نافذة إسلامية داخل بنك تقليدي — تعامل معاملة البنوك الإسلامية: زكاة الرصيد كاملاً مع خصم نسبة التطهير إن وجدت في التقرير الشرعي.
+            </AlertDescription>
+          </Alert>
+        )}
       </div>
+
 
       {/* د) التوفير والادخار */}
       <div className="rounded-lg border bg-card p-4 space-y-3">
