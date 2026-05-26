@@ -155,11 +155,8 @@ export function IndividualTab() {
   // النقدية والبنوك (المجموع يُحسب داخل المكوّن المتخصّص ويُمرَّر هنا)
   const [cashTotalFromSection, setCashTotalFromSection] = useState(0);
 
-  // الأوراق المالية
-  const [stocksTrade, setStocksTrade] = useState("");
-  const [stocksInvest, setStocksInvest] = useState("");
-  const [mutualFunds, setMutualFunds] = useState("");
-  const [bonds, setBonds] = useState("");
+  // الأوراق المالية — يُحسب الإجمالي داخل مكوّن مخصّص
+  const [securitiesTotalFromSection, setSecuritiesTotalFromSection] = useState(0);
 
   // الأوراق التجارية
   const [bills, setBills] = useState("");
