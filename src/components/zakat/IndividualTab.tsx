@@ -334,12 +334,12 @@ export function IndividualTab() {
   return (
     <div className="grid lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2 space-y-6">
-        {/* بيانات المزكي */}
+        {/* بيانات المزكي + الإقرار وشرط الحول */}
         <Card className="shadow-soft">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <User className="h-5 w-5 text-primary" />
-              بيانات المزكي
+              بيانات المزكي والإقرار وشرط الحَوْل
             </CardTitle>
           </CardHeader>
           <CardContent className="grid md:grid-cols-2 gap-4">
@@ -366,18 +366,14 @@ export function IndividualTab() {
               <Label>العملة</Label>
               <Input value={currencyName} onChange={(e) => setCurrencyName(e.target.value)} />
             </div>
-          </CardContent>
-        </Card>
 
-        {/* الإقرار وشرط الحول */}
-        <Card className="shadow-soft">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CalendarClock className="h-5 w-5 text-primary" />
-              الإقرار وشرط الحَوْل
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-5">
+            <div className="md:col-span-2">
+              <Separator className="my-2" />
+              <div className="flex items-center gap-2 text-sm font-semibold text-primary mb-3">
+                <CalendarClock className="h-4 w-4" /> الإقرار وشرط الحَوْل
+              </div>
+            </div>
+
             <div>
               <Label className="mb-2 block">هل سبق لك حساب الزكاة من قبل؟</Label>
               <RadioGroup value={calculatedBefore} onValueChange={(v) => setCalculatedBefore(v as "yes" | "no")} className="flex gap-6">
@@ -393,72 +389,56 @@ export function IndividualTab() {
               </RadioGroup>
             </div>
 
-            <Separator />
-
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <Label>تاريخ بلوغ النصاب (ميلادي)</Label>
-                <Input type="date" value={nisabStartDate} onChange={(e) => setNisabStartDate(e.target.value)} />
-                {hawl && (
-                  <p className="text-xs text-muted-foreground">
-                    الموافق هجريًا: <b>{formatHijri(hawl.hijriStart)}</b>
-                  </p>
-                )}
-              </div>
-              <div className="space-y-1.5">
-                <Label>أساس حساب الحول</Label>
-                <RadioGroup value={calendarBasis} onValueChange={(v) => setCalendarBasis(v as "hijri" | "gregorian")} className="flex flex-col gap-2 pt-1">
-                  <div className="flex items-center gap-2"><RadioGroupItem value="hijri" id="cb-h" /><Label htmlFor="cb-h" className="text-sm">هجري — نسبة 2.5%</Label></div>
-                  <div className="flex items-center gap-2"><RadioGroupItem value="gregorian" id="cb-g" /><Label htmlFor="cb-g" className="text-sm">ميلادي — نسبة 2.577% (معدّلة)</Label></div>
-                </RadioGroup>
-              </div>
+            <div className="space-y-1.5">
+              <Label>تاريخ بلوغ النصاب (ميلادي)</Label>
+              <Input type="date" value={nisabStartDate} onChange={(e) => setNisabStartDate(e.target.value)} />
+              {hawl && (
+                <p className="text-xs text-muted-foreground">
+                  الموافق هجريًا: <b>{formatHijri(hawl.hijriStart)}</b>
+                </p>
+              )}
+            </div>
+            <div className="space-y-1.5">
+              <Label>أساس حساب الحول</Label>
+              <RadioGroup value={calendarBasis} onValueChange={(v) => setCalendarBasis(v as "hijri" | "gregorian")} className="flex flex-col gap-2 pt-1">
+                <div className="flex items-center gap-2"><RadioGroupItem value="hijri" id="cb-h" /><Label htmlFor="cb-h" className="text-sm">هجري — نسبة 2.5%</Label></div>
+                <div className="flex items-center gap-2"><RadioGroupItem value="gregorian" id="cb-g" /><Label htmlFor="cb-g" className="text-sm">ميلادي — نسبة 2.577% (معدّلة)</Label></div>
+              </RadioGroup>
             </div>
 
             {hawl && (
-              <Alert className={hawl.hawlComplete ? "border-primary/30 bg-primary/5" : "border-destructive/40 bg-destructive/5"}>
-                <Info className="h-4 w-4" />
-                <AlertDescription className="text-xs">
-                  {hawl.hawlComplete ? (
-                    <>اكتمل الحَوْل (مضى <b>{hawl.daysPassed} يومًا</b> ≥ {HAWL_DAYS_HIJRI} يوم هجري). تجب الزكاة على الأموال التي حال عليها الحول.</>
-                  ) : (
-                    <>لم يكتمل الحول بعد — مضى <b>{hawl.daysPassed} يومًا</b> ويتبقى <b>{hawl.daysRemaining} يومًا</b> لإكمال 354 يومًا هجريًا. لا تجب زكاة النقد والذهب الآن (الزروع والثمار لا تشترط حولًا).</>
-                  )}
-                </AlertDescription>
-              </Alert>
+              <div className="md:col-span-2">
+                <Alert className={hawl.hawlComplete ? "border-primary/30 bg-primary/5" : "border-destructive/40 bg-destructive/5"}>
+                  <Info className="h-4 w-4" />
+                  <AlertDescription className="text-xs">
+                    {hawl.hawlComplete ? (
+                      <>اكتمل الحَوْل (مضى <b>{hawl.daysPassed} يومًا</b> ≥ {HAWL_DAYS_HIJRI} يوم هجري). تجب الزكاة على الأموال التي حال عليها الحول.</>
+                    ) : (
+                      <>لم يكتمل الحول بعد — مضى <b>{hawl.daysPassed} يومًا</b> ويتبقى <b>{hawl.daysRemaining} يومًا</b> لإكمال 354 يومًا هجريًا. لا تجب زكاة النقد والذهب الآن (الزروع والثمار لا تشترط حولًا).</>
+                    )}
+                  </AlertDescription>
+                </Alert>
+              </div>
             )}
 
             {calendarBasis === "gregorian" && (
-              <Alert className="border-gold/30 bg-gold/5">
-                <Info className="h-4 w-4" />
-                <AlertDescription className="text-xs">
-                  وفق قرار الندوة السابعة لقضايا الزكاة (الكويت 1417هـ): من حسب زكاته على السنة الميلادية يُضاعف المعدل من 2.5% إلى <b>2.577%</b> لجبر فرق 11 يومًا تقريبًا بين السنتين.
-                </AlertDescription>
-              </Alert>
+              <div className="md:col-span-2">
+                <Alert className="border-gold/30 bg-gold/5">
+                  <Info className="h-4 w-4" />
+                  <AlertDescription className="text-xs">
+                    وفق قرار الندوة السابعة لقضايا الزكاة (الكويت 1417هـ): من حسب زكاته على السنة الميلادية يُضاعف المعدل من 2.5% إلى <b>2.577%</b> لجبر فرق 11 يومًا تقريبًا بين السنتين.
+                  </AlertDescription>
+                </Alert>
+              </div>
             )}
 
-            <div>
+            <div className="md:col-span-2">
               <Label className="mb-2 block">ملاحظات</Label>
               <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="أي ملاحظات إضافية" rows={2} />
             </div>
           </CardContent>
         </Card>
 
-        {/* الأسعار */}
-        <Card className="border-gold/30 shadow-soft">
-          <CardHeader className="bg-gradient-to-l from-gold/15 to-transparent">
-            <CardTitle className="flex items-center gap-2">
-              <Coins className="h-5 w-5 text-gold" />
-              الأسعار المرجعية اليوم — {country.name}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="grid md:grid-cols-2 gap-4 pt-6">
-            <NumField label="سعر جرام الذهب عيار 24" value={goldPrice} onChange={setGoldPrice} unit={currencyName} />
-            <NumField label="سعر جرام الفضة الخالصة" value={silverPrice} onChange={setSilverPrice} unit={currencyName} />
-            <div className="md:col-span-2 text-xs text-muted-foreground bg-muted/40 rounded-md px-3 py-2">
-              نصاب الذهب: <b>{cur(calc.goldNisabValue)}</b> — نصاب الفضة: <b>{cur(calc.silverNisabValue)}</b> — الأنفع للفقراء: <b>{cur(calc.moneyNisab)}</b>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* الأبواب */}
         <Accordion type="multiple" defaultValue={["gold", "cash"]} className="space-y-3">
