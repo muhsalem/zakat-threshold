@@ -544,6 +544,11 @@ export function CompanyTab() {
                       <div className="flex items-center gap-1.5"><RadioGroupItem value="solar" id="sol" /><Label htmlFor="sol" className="text-xs">شمسية 2.5775%</Label></div>
                     </RadioGroup>
                   </div>
+                  <div className="space-y-1.5 md:col-span-3">
+                    <Label className="text-xs">تاريخ ميلاد حول الزكاة (إن اختلف عن السنة المالية)</Label>
+                    <Input type="date" value={hawlStart} onChange={(e) => setHawlStart(e.target.value)} />
+                    <p className="text-[11px] text-muted-foreground">العبرة في وجوب الزكاة بحولان الحول الهجري على المال، لا بالسنة المالية للشركة.</p>
+                  </div>
                 </div>
                 {hijriEq > 0 && (
                   <div className="text-xs text-muted-foreground flex items-center gap-2">
