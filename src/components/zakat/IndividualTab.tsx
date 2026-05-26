@@ -256,7 +256,7 @@ export function IndividualTab() {
     const silverZakat = silverEligible ? silverValue * effectiveRate : 0;
 
     const cashTotal = cashTotalFromSection;
-    const securitiesTotal = num(stocksTrade) + num(stocksInvest) + num(mutualFunds) + num(bonds);
+    const securitiesTotal = securitiesTotalFromSection;
     const billsTotal = num(bills);
     const tradeTotal = num(inventory) + num(receivablesGood);
     const realEstateZakatable = num(realEstateTrade) + num(realEstateRentIncome);
