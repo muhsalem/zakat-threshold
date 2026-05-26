@@ -18,33 +18,49 @@ export const fmt = (n: number, digits = 2): string =>
 
 export const currency = (n: number, c = "ج.م"): string => `${fmt(n)} ${c}`;
 
-// نصاب الأنعام - الإبل
+// نصاب الإبل ومقدار الزكاة فيها (المرجع: فقه الزكاة + ملحق نصاب الأنعام)
 export const camelZakat = (count: number): string => {
   if (count < 5) return "لا زكاة";
   if (count <= 9) return "شاة واحدة";
   if (count <= 14) return "شاتان";
   if (count <= 19) return "ثلاث شياه";
   if (count <= 24) return "أربع شياه";
-  if (count <= 35) return "بنت مخاض (أنثى إبل عمر سنة)";
-  if (count <= 45) return "بنت لبون (أنثى إبل عمر سنتين)";
-  if (count <= 60) return "حِقَّة (أنثى إبل عمر ثلاث سنوات)";
-  if (count <= 75) return "جَذَعة (أنثى إبل عمر أربع سنوات)";
+  if (count <= 35) return "بنت مخاض (أنثى إبل أتمت سنة)";
+  if (count <= 45) return "بنت لبون (أتمت سنتين)";
+  if (count <= 60) return "حِقَّة (أتمت ثلاث سنين)";
+  if (count <= 75) return "جَذَعة (أتمت أربع سنين)";
   if (count <= 90) return "بنتا لبون";
   if (count <= 120) return "حِقَّتان";
-  // فوق 120: في كل 40 بنت لبون، وفي كل 50 حقة
+  if (count <= 129) return "ثلاث بنات لبون";
+  if (count <= 139) return "حِقَّة + بنتا لبون";
+  if (count <= 149) return "حِقَّتان + بنت لبون";
+  if (count <= 159) return "ثلاث حِقاق";
+  if (count <= 169) return "أربع بنات لبون";
+  if (count <= 179) return "ثلاث بنات لبون + حِقَّة";
+  if (count <= 189) return "بنتا لبون + حِقَّتان";
+  if (count <= 199) return "ثلاث حِقاق + بنت لبون";
+  if (count <= 209) return "أربع حِقاق أو خمس بنات لبون";
+  // ثم في كل 50 حقة وفي كل 40 بنت لبون
   const hiqqah = Math.floor(count / 50);
   const bintLabun = Math.floor((count % 50) / 40);
-  return `${hiqqah} حقة + ${bintLabun} بنت لبون (تقدير)`;
+  return `${hiqqah} حِقَّة + ${bintLabun} بنت لبون`;
 };
 
-// زكاة البقر
+// زكاة البقر (يُضم إليها الجاموس)
 export const cowZakat = (count: number): string => {
   if (count < 30) return "لا زكاة";
-  const tabee = Math.floor(count / 30); // تبيع لكل 30
-  const musinnah = Math.floor(count / 40); // مسنّة لكل 40
-  if (count < 40) return `${tabee} تبيع (عجل عمر سنة)`;
-  if (count < 60) return `${musinnah} مسنّة (بقرة عمر سنتين)`;
-  return `حسب الجمع: ${tabee} تبيع و/أو ${musinnah} مسنّة`;
+  if (count <= 39) return "تبيع (عمر سنة)";
+  if (count <= 59) return "مسنّة (أتمت سنتين)";
+  if (count <= 69) return "تبيعان";
+  if (count <= 79) return "مسنّة + تبيع";
+  if (count <= 89) return "مسنّتان";
+  if (count <= 99) return "ثلاثة أتبعة";
+  if (count <= 109) return "مسنّة + تبيعان";
+  if (count <= 119) return "مسنّتان + تبيع";
+  if (count <= 129) return "ثلاث مسنّات أو أربعة أتبعة";
+  const tabee = Math.floor(count / 30);
+  const musinnah = Math.floor(count / 40);
+  return `في كل 30: تبيع (≈${tabee}) أو في كل 40: مسنّة (≈${musinnah})`;
 };
 
 // زكاة الغنم
@@ -53,9 +69,21 @@ export const sheepZakat = (count: number): string => {
   if (count <= 120) return "شاة واحدة";
   if (count <= 200) return "شاتان";
   if (count <= 399) return "ثلاث شياه";
-  // ثم في كل 100 شاة شاة
+  if (count <= 499) return "أربع شياه";
+  if (count <= 599) return "خمس شياه";
   return `${Math.floor(count / 100)} شياه`;
 };
+
+// تحويل الذهب من أي عيار إلى ما يعادله من عيار 24
+export const karatToPure24 = (grams: number, karat: number): number => {
+  if (!grams || !karat) return 0;
+  return (grams * karat) / 24;
+};
+
+// معدلات زكاة الزروع والثمار
+export const CROPS_RATE_NATURAL = 0.10;     // الري بدون كلفة (الأنهار/الأمطار)
+export const CROPS_RATE_IRRIGATED = 0.05;   // الري بكلفة
+export const CROPS_RATE_MIXED = 0.075;      // ري مشترك
 
 // التطور التاريخي للنصاب
 export interface NisabHistoryItem {

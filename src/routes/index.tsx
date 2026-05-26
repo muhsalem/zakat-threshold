@@ -3,7 +3,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { IndividualTab } from "@/components/zakat/IndividualTab";
 import { CompanyTab } from "@/components/zakat/CompanyTab";
 import { NisabHistory } from "@/components/zakat/NisabHistory";
-import { Users, Building2, Scroll, Moon } from "lucide-react";
+import { SectoralModels } from "@/components/zakat/SectoralModels";
+import { Users, Building2, Scroll, Moon, FileSpreadsheet } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -42,20 +43,24 @@ function Index() {
         </section>
 
         <Tabs defaultValue="individual" className="space-y-6">
-          <TabsList className="grid grid-cols-3 w-full max-w-2xl mx-auto h-12">
-            <TabsTrigger value="individual" className="gap-2 text-sm">
+          <TabsList className="grid grid-cols-2 md:grid-cols-4 w-full max-w-3xl mx-auto h-auto">
+            <TabsTrigger value="individual" className="gap-2 text-sm py-2.5">
               <Users className="h-4 w-4" /> الأفراد
             </TabsTrigger>
-            <TabsTrigger value="company" className="gap-2 text-sm">
+            <TabsTrigger value="company" className="gap-2 text-sm py-2.5">
               <Building2 className="h-4 w-4" /> الشركات
             </TabsTrigger>
-            <TabsTrigger value="history" className="gap-2 text-sm">
+            <TabsTrigger value="sectoral" className="gap-2 text-sm py-2.5">
+              <FileSpreadsheet className="h-4 w-4" /> نماذج محاسبية
+            </TabsTrigger>
+            <TabsTrigger value="history" className="gap-2 text-sm py-2.5">
               <Scroll className="h-4 w-4" /> النصاب اليوم
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="individual"><IndividualTab /></TabsContent>
           <TabsContent value="company"><CompanyTab /></TabsContent>
+          <TabsContent value="sectoral"><SectoralModels /></TabsContent>
           <TabsContent value="history" className="max-w-4xl mx-auto"><NisabHistory /></TabsContent>
         </Tabs>
       </main>
