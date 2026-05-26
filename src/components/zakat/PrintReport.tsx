@@ -66,11 +66,12 @@ export function PrintReport({ data }: { data: PrintReportData }) {
   // توليد على العميل فقط لتفادي عدم تطابق SSR
   const [reportId, setReportId] = useState<string>("ZK-PENDING");
   useEffect(() => { setReportId(generateReportId(data.name)); }, [data.name]);
-  const issueDate = new Date();
-  const issueDateAr = issueDate.toLocaleDateString("ar-EG", {
+  const [issueDate, setIssueDate] = useState<Date | null>(null);
+  useEffect(() => { setIssueDate(new Date()); }, []);
+  const issueDateAr = issueDate ? issueDate.toLocaleDateString("ar-EG", {
     weekday: "long", year: "numeric", month: "long", day: "numeric",
-  });
-  const issueDateIso = issueDate.toISOString().slice(0, 10);
+  }) : "";
+  const issueDateIso = issueDate ? issueDate.toISOString().slice(0, 10) : "";
 
   // QR Code يحوي معرّف التقرير وملخص النتيجة
   const qrPayload = `ZakatReport|${reportId}|${data.name || "-"}|${data.totalZakat.toFixed(2)} ${data.currencyName}|${issueDateIso}`;
@@ -290,7 +291,7 @@ export function PrintReport({ data }: { data: PrintReportData }) {
         على عاتق المزكي، ويُنصح بمراجعة عالم أو مفتٍ معتمد وهيئة الفتوى المحلية للحالات الخاصة.
         تحتفظ منصة «حاسبة الزكاة» بحقوق الملكية الفكرية للنموذج والتصميم والمعادلات الحسابية.
         <div style={{ marginTop: "4pt", textAlign: "center", fontWeight: 700 }}>
-          © {issueDate.getFullYear()} منصة حاسبة الزكاة الشاملة — جميع الحقوق محفوظة.
+          © {(issueDate ?? new Date()).getFullYear()} منصة حاسبة الزكاة الشاملة — جميع الحقوق محفوظة.
           &nbsp;|&nbsp; رقم التقرير: <span style={{ fontFamily: "monospace" }}>{reportId}</span>
         </div>
       </div>
