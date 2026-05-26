@@ -1519,10 +1519,6 @@ export function IndividualTab() {
 
       </div>
 
-      {/* ====== إيضاحات فقهية مكملة — مقارنة المذاهب ====== */}
-      <div className="lg:col-span-3 mt-6">
-        <MadhabsComparison />
-      </div>
     </div>
   );
 }
