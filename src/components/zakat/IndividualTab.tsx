@@ -25,6 +25,7 @@ import {
   num, fmt, currency, camelZakat, cowZakat, sheepZakat,
   COUNTRY_PRICES, checkHawl, formatHijri, ZAKAT_RECIPIENTS,
 } from "@/lib/zakat";
+import { CashBankSection } from "./CashBankSection";
 
 interface NumFieldProps {
   label: string;
