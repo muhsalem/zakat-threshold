@@ -138,12 +138,29 @@ const SECTORS: Sector[] = [
   { id: "realestate",  label: "عقارات ومُستغلَّات",                  group: "services",   model: "mustaghal" },
 ];
 
+// قطاعات المؤسسات غير الربحية
+const NONPROFIT_SECTORS: Sector[] = [
+  { id: "np_mosque",     label: "مساجد ودور عبادة وأوقاف دينية",       group: "services", model: "services" },
+  { id: "np_charity",    label: "جمعيات خيرية وإغاثة إنسانية",          group: "services", model: "services" },
+  { id: "np_orphan",     label: "كفالة الأيتام والأسر المحتاجة",        group: "services", model: "services" },
+  { id: "np_edu",        label: "جمعيات تعليمية ومنح دراسية",           group: "services", model: "services" },
+  { id: "np_health",     label: "جمعيات صحية ومستشفيات خيرية",         group: "services", model: "services" },
+  { id: "np_dev",        label: "جمعيات تنموية وتدريب مهني",            group: "services", model: "services" },
+  { id: "np_waqf",       label: "وقفيات استثمارية (تُزكى غلتها)",       group: "services", model: "mustaghal" },
+  { id: "np_dawah",      label: "مؤسسات دعوية وبحث شرعي",               group: "services", model: "services" },
+  { id: "np_water",      label: "مشاريع المياه والآبار",                 group: "services", model: "services" },
+  { id: "np_food",       label: "بنوك الطعام وكفالة الإفطار",            group: "services", model: "services" },
+  { id: "np_culture",    label: "مؤسسات ثقافية وفنية غير ربحية",         group: "services", model: "services" },
+  { id: "np_envir",      label: "جمعيات بيئية ومناخية",                  group: "services", model: "services" },
+];
+
 const GROUP_LABELS: Record<Sector["group"], string> = {
   primary: "نشاط أولى (استخراجي/زراعي)",
   industrial: "نشاط صناعي",
   commercial: "نشاط تجاري",
   services: "نشاط خدمي",
 };
+
 
 // التبويبات المسموح بها في النموذج القطاعي حسب القطاع المحدد (مع تبويبات مساندة دائمة)
 function getAllowedSectoralTabs(sectorId: string, group: Sector["group"]): string[] {
@@ -351,7 +368,18 @@ export function CompanyTab() {
   // طبيعة المؤسسة والقطاع
   const [orgKind, setOrgKind] = useState<"profit" | "nonprofit">("profit");
   const [sectorId, setSectorId] = useState<string>("trade_w");
-  const sector = useMemo(() => SECTORS.find((s) => s.id === sectorId)!, [sectorId]);
+  const activeSectorList = orgKind === "nonprofit" ? NONPROFIT_SECTORS : SECTORS;
+  const sector = useMemo(
+    () => activeSectorList.find((s) => s.id === sectorId) ?? activeSectorList[0],
+    [sectorId, activeSectorList]
+  );
+  useEffect(() => {
+    if (!activeSectorList.find((s) => s.id === sectorId)) {
+      setSectorId(activeSectorList[0].id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orgKind]);
+
 
   // سعر جرام الذهب للتحقق من النصاب
   const [goldGramPrice, setGoldGramPrice] = useState("415");
@@ -533,8 +561,8 @@ export function CompanyTab() {
 
   return (
     <div dir="rtl" className="text-right">
-    <Tabs defaultValue="zakat" className="space-y-6">
-      <TabsList className="grid grid-cols-2 w-full max-w-2xl mx-auto h-auto">
+    <Tabs defaultValue="zakat" className="space-y-6" dir="rtl">
+      <TabsList dir="rtl" className="grid grid-cols-2 w-full max-w-2xl mx-auto h-auto">
         <TabsTrigger value="zakat" className="gap-2 text-sm py-2.5">
           <Calculator className="h-4 w-4" /> حساب زكاة الشركة
         </TabsTrigger>
@@ -542,6 +570,7 @@ export function CompanyTab() {
           <Gavel className="h-4 w-4" /> التدقيق والامتثال والحوكمة الشرعية
         </TabsTrigger>
       </TabsList>
+
 
 
       {/* ======================= تبويب الحساب ======================= */}
@@ -684,10 +713,10 @@ export function CompanyTab() {
                 )}
               </div>
 
-              {/* طبيعة المؤسسة + قطاع النشاط */}
+              {/* قطاع المؤسسة + قطاع النشاط */}
               <div className="space-y-3">
                 <div>
-                  <Label className="mb-2 block">طبيعة المؤسسة</Label>
+                  <Label className="mb-2 block">قطاع المؤسسة</Label>
                   <RadioGroup value={orgKind} onValueChange={(v) => setOrgKind(v as "profit" | "nonprofit")} className="flex flex-wrap gap-3">
                     <label className={`flex items-center gap-2 rounded-md border-2 px-4 py-2 cursor-pointer transition ${orgKind === "profit" ? "border-primary bg-primary/5" : "border-border"}`}>
                       <RadioGroupItem value="profit" id="pf" /><span>ربحية</span>
@@ -699,24 +728,66 @@ export function CompanyTab() {
                 </div>
 
                 <div>
-                  <Label className="mb-2 block">قطاع النشاط</Label>
+                  <Label className="mb-2 block">
+                    {orgKind === "nonprofit" ? "نوع النشاط غير الربحي" : "قطاع النشاط"}
+                  </Label>
                   <Select value={sectorId} onValueChange={setSectorId}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      {(["primary","industrial","commercial","services"] as const).map((g) => (
-                        <div key={g}>
-                          <div className="px-2 py-1 text-[11px] font-bold text-primary bg-primary/5">{GROUP_LABELS[g]}</div>
-                          {SECTORS.filter((s) => s.group === g).map((s) => (
+                      {orgKind === "nonprofit" ? (
+                        <div>
+                          <div className="px-2 py-1 text-[11px] font-bold text-primary bg-primary/5">أنشطة غير ربحية</div>
+                          {NONPROFIT_SECTORS.map((s) => (
                             <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>
                           ))}
                         </div>
-                      ))}
+                      ) : (
+                        (["primary","industrial","commercial","services"] as const).map((g) => (
+                          <div key={g}>
+                            <div className="px-2 py-1 text-[11px] font-bold text-primary bg-primary/5">{GROUP_LABELS[g]}</div>
+                            {SECTORS.filter((s) => s.group === g).map((s) => (
+                              <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>
+                            ))}
+                          </div>
+                        ))
+                      )}
                     </SelectContent>
                   </Select>
                   <p className="text-[11px] text-muted-foreground mt-1.5">
-                    <Info className="h-3 w-3 inline mr-1" />
+                    <Info className="h-3 w-3 inline ml-1" />
                     سيتم فتح النموذج القطاعي المناسب تلقائياً أدناه: <b>{sector.label}</b>
                   </p>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* هيكل المساهمين والإعفاءات — مدمج داخل بيانات الشركة */}
+              <div className="space-y-3">
+                <div>
+                  <h4 className="font-semibold flex items-center gap-2 text-sm">
+                    <Users className="h-4 w-4 text-primary" />
+                    هيكل المساهمين والإعفاءات الزكوية
+                  </h4>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    تطبيق نظام {country.flag} {country.name}: حصص المسلمين الخليجيين/المواطنين خاضعة للزكاة،
+                    وحصص الأجانب تخضع لضريبة الدخل، وحصص الجهات الحكومية والوقفية وغير المسلمين معفاة من الزكاة.
+                  </p>
+                </div>
+                <div className="grid md:grid-cols-3 gap-3">
+                  <NumField label="حصة المواطنين/الخليجيين المسلمين" value={shGcc} onChange={setShGcc} unit="%" hint="خاضعة للزكاة" />
+                  <NumField label="حصة الأجانب" value={shForeign} onChange={setShForeign} unit="%" hint="ضريبة دخل بدلاً من الزكاة" />
+                  <NumField label="حصة الجهات الحكومية" value={shGovt} onChange={setShGovt} unit="%" hint="معفاة" />
+                  <NumField label="حصة الجهات الوقفية" value={shWaqf} onChange={setShWaqf} unit="%" hint="معفاة" />
+                  <NumField label="حصة غير المسلمين" value={shNonMuslim} onChange={setShNonMuslim} unit="%" hint="معفاة من الزكاة" />
+                </div>
+                <div className={`rounded-lg p-3 text-sm flex items-center justify-between ${calc.sharesBalanced ? "bg-primary/5 border border-primary/20" : "bg-destructive/5 border border-destructive/30"}`}>
+                  <span>إجمالي الحصص:</span>
+                  <b>{fmt(calc.totalShares)}% {!calc.sharesBalanced && <span className="text-destructive text-xs"> — يجب أن يساوي 100%</span>}</b>
+                </div>
+                <div className="rounded-lg bg-muted/40 p-3 text-xs space-y-1">
+                  <div className="flex justify-between"><span>نسبة الحصص المعفاة:</span><b>{(calc.exemptPct * 100).toFixed(2)}%</b></div>
+                  <div className="flex justify-between text-primary"><span>نسبة الوعاء الخاضع للزكاة:</span><b>{(calc.zakatableRatio * 100).toFixed(2)}%</b></div>
                 </div>
               </div>
             </CardContent>
@@ -726,41 +797,12 @@ export function CompanyTab() {
             <Alert className="border-amber-500/30 bg-amber-500/5">
               <Info className="h-4 w-4 text-amber-600" />
               <AlertDescription className="text-xs">
-                المؤسسات غير الربحية لا تجب عليها الزكاة في الأصل (لانتفاء الملك التام والقصد التجاري). يبقى التدقيق الشرعي لازماً لمواردها ومصارفها.
+                المؤسسات غير الربحية لا تجب عليها الزكاة في الأصل (لانتفاء الملك التام والقصد التجاري). يبقى التدقيق الشرعي لازماً لمواردها ومصارفها،
+                مع وجوب زكاة عروض التجارة في الأنشطة الاستثمارية التابعة (كالوقف الاستثماري وغلة العقارات).
               </AlertDescription>
             </Alert>
           )}
 
-          {/* هيكل المساهمين والإعفاءات */}
-          <Card className="shadow-soft border-primary/20">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="h-5 w-5 text-primary" />
-                هيكل المساهمين والإعفاءات الزكوية
-              </CardTitle>
-              <p className="text-xs text-muted-foreground">
-                تطبيق نظام {country.flag} {country.name}: حصص المسلمين الخليجيين/المواطنين خاضعة للزكاة،
-                وحصص الأجانب تخضع لضريبة الدخل، وحصص الجهات الحكومية والوقفية وغير المسلمين معفاة من الزكاة.
-              </p>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="grid md:grid-cols-3 gap-3">
-                <NumField label="حصة المواطنين/الخليجيين المسلمين" value={shGcc} onChange={setShGcc} unit="%" hint="خاضعة للزكاة" />
-                <NumField label="حصة الأجانب" value={shForeign} onChange={setShForeign} unit="%" hint="ضريبة دخل بدلاً من الزكاة" />
-                <NumField label="حصة الجهات الحكومية" value={shGovt} onChange={setShGovt} unit="%" hint="معفاة" />
-                <NumField label="حصة الجهات الوقفية" value={shWaqf} onChange={setShWaqf} unit="%" hint="معفاة" />
-                <NumField label="حصة غير المسلمين" value={shNonMuslim} onChange={setShNonMuslim} unit="%" hint="معفاة من الزكاة" />
-              </div>
-              <div className={`rounded-lg p-3 text-sm flex items-center justify-between ${calc.sharesBalanced ? "bg-primary/5 border border-primary/20" : "bg-destructive/5 border border-destructive/30"}`}>
-                <span>إجمالي الحصص:</span>
-                <b>{fmt(calc.totalShares)}% {!calc.sharesBalanced && <span className="text-destructive text-xs"> — يجب أن يساوي 100%</span>}</b>
-              </div>
-              <div className="rounded-lg bg-muted/40 p-3 text-xs space-y-1">
-                <div className="flex justify-between"><span>نسبة الحصص المعفاة:</span><b>{(calc.exemptPct * 100).toFixed(2)}%</b></div>
-                <div className="flex justify-between text-primary"><span>نسبة الوعاء الخاضع للزكاة:</span><b>{(calc.zakatableRatio * 100).toFixed(2)}%</b></div>
-              </div>
-            </CardContent>
-          </Card>
 
           {/* النصاب */}
           <Card className="shadow-soft border-gold/30">
@@ -836,15 +878,22 @@ export function CompanyTab() {
           </div>
 
 
-          {/* طريقة حساب الزكاة */}
-          <Card className="shadow-soft">
-            <CardHeader>
+          {/* حساب زكاة الشركة (طريقة الاحتساب + النموذج القطاعي التفصيلي) */}
+          <Card className="shadow-soft border-gold/30">
+            <CardHeader className="bg-gradient-to-l from-gold/10 to-transparent">
               <CardTitle className="flex items-center gap-2">
                 <Calculator className="h-5 w-5 text-primary" />
-                طريقة حساب زكاة الشركة
+                حساب زكاة الشركة
               </CardTitle>
+              <p className="text-xs text-muted-foreground">
+                طريقة الاحتساب الشرعية + النموذج القطاعي التفصيلي المربوط تلقائياً بقطاع <b>{sector.label}</b>
+                {orgKind === "nonprofit" ? " — للعرض فقط لأن المؤسسة غير ربحية" : ""}.
+              </p>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-6">
+              <div>
+                <h4 className="font-semibold text-sm mb-2 text-primary">طريقة احتساب الوعاء الزكوي</h4>
+
               <Tabs value={method} onValueChange={(v) => setMethod(v as "net_assets" | "working_capital")}>
                 <TabsList className="grid grid-cols-2 w-full">
                   <TabsTrigger value="net_assets">صافي الموجودات الزكوية</TabsTrigger>
@@ -974,34 +1023,32 @@ export function CompanyTab() {
                   </div>
                 </TabsContent>
               </Tabs>
+              </div>
+
+              <Separator />
+
+              {/* النموذج القطاعي مدمج هنا */}
+              <div>
+                <h4 className="font-semibold text-sm mb-2 text-primary flex items-center gap-2">
+                  <FileSpreadsheet className="h-4 w-4" /> النموذج القطاعي التفصيلي
+                </h4>
+                <p className="text-[11px] text-muted-foreground mb-3">
+                  مفعّل تلقائياً وفق <b>{GROUP_LABELS[sector.group]}</b> → <b>{sector.label}</b>.
+                </p>
+                <SectoralModels
+                  activeTab={sector.model}
+                  defaultCurrency={currencyName}
+                  goldGram={goldGramPrice}
+                  yearMode={solarYear}
+                  allowedTabs={getAllowedSectoralTabs(sector.id, sector.group)}
+                  locked
+                  orgKind={orgKind}
+                  sectorLabel={sector.label}
+                />
+              </div>
             </CardContent>
           </Card>
 
-          {/* النموذج القطاعي مرتبط بقطاع النشاط المحدد وطبيعة المؤسسة وإعدادات حساب زكاة الشركة */}
-          <Card className="shadow-soft border-gold/30">
-            <CardHeader className="bg-gradient-to-l from-gold/10 to-transparent">
-              <CardTitle className="flex items-center gap-2">
-                <FileSpreadsheet className="h-5 w-5 text-primary" />
-                النموذج القطاعي التفصيلي
-              </CardTitle>
-              <p className="text-xs text-muted-foreground">
-                مفعّل تلقائياً وفق <b>{GROUP_LABELS[sector.group]}</b> → <b>{sector.label}</b>،
-                ومربوط بإعدادات حساب زكاة الشركة أعلاه (العملة، سعر الذهب، نوع السنة، النصاب){orgKind === "nonprofit" ? " — للعرض فقط لأن المؤسسة غير ربحية" : ""}.
-              </p>
-            </CardHeader>
-            <CardContent className="pt-4">
-              <SectoralModels
-                activeTab={sector.model}
-                defaultCurrency={currencyName}
-                goldGram={goldGramPrice}
-                yearMode={solarYear}
-                allowedTabs={getAllowedSectoralTabs(sector.id, sector.group)}
-                locked
-                orgKind={orgKind}
-                sectorLabel={sector.label}
-              />
-            </CardContent>
-          </Card>
 
 
           {/* حاسبة التطهير الشرعي */}
