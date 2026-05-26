@@ -107,10 +107,51 @@ export function NisabHistory() {
     return dbRows.find((r) => r.year === selectedYear && r.month === null) ?? null;
   }, [dbRows, selectedYear, selectedMonth, monthsForYear]);
 
+  // --- Live prices ---
+  const fetchPrices = useServerFn(getLivePrices);
+  const [livePrices, setLivePrices] = useState<{
+    goldPerGram: number;
+    silverPerGram: number;
+    fetchedAt: string;
+  } | null>(null);
+  const [liveLoading, setLiveLoading] = useState(false);
+  const [liveError, setLiveError] = useState<string | null>(null);
+
+  const refreshLive = useCallback(
+    async (code: string) => {
+      const iso = ISO_CURRENCY[code] ?? "USD";
+      setLiveLoading(true);
+      setLiveError(null);
+      try {
+        const res = await fetchPrices({ data: { currency: iso } });
+        setLivePrices({
+          goldPerGram: res.goldPerGram,
+          silverPerGram: res.silverPerGram,
+          fetchedAt: res.fetchedAt,
+        });
+        setGoldPrice(res.goldPerGram.toFixed(2));
+        setSilverPrice(res.silverPerGram.toFixed(3));
+      } catch (e) {
+        setLiveError(e instanceof Error ? e.message : "تعذّر جلب الأسعار");
+      } finally {
+        setLiveLoading(false);
+      }
+    },
+    [fetchPrices],
+  );
+
+  // Initial + on country change: live fetch, with 5-min auto refresh
+  useEffect(() => {
+    refreshLive(countryCode);
+    const t = setInterval(() => refreshLive(countryCode), 5 * 60 * 1000);
+    return () => clearInterval(t);
+  }, [countryCode, refreshLive]);
+
   const onCountryChange = (code: string) => {
     const c = COUNTRY_PRICES.find((x) => x.code === code);
     if (!c) return;
     setCountryCode(code);
+    // fallback defaults while live fetch is pending
     setGoldPrice(String(c.gold24));
     setSilverPrice(String(c.silver));
   };
@@ -122,7 +163,37 @@ export function NisabHistory() {
     silverNisabValue || Infinity,
   );
 
-  const years = useMemo(() => [...NISAB_LAST_100_YEARS].reverse(), []);
+  // --- Historical chart data (USD baseline) ---
+  const [chartMode, setChartMode] = useState<"USD" | "LOCAL">("USD");
+  const liveFxRate = useMemo(() => {
+    if (chartMode === "USD" || !livePrices) return 1;
+    // derive USD->local fx from live data (gold per gram local / gold per gram usd-equivalent)
+    // We don't have the raw USD value here, so use a simpler proxy: pull from country defaults
+    const c = COUNTRY_PRICES.find((x) => x.code === countryCode);
+    const usd = COUNTRY_PRICES.find((x) => x.code === "US");
+    if (!c || !usd) return 1;
+    return c.gold24 / usd.gold24;
+  }, [chartMode, livePrices, countryCode]);
+
+  const chartData = useMemo(
+    () =>
+      NISAB_LAST_100_YEARS.map((y) => {
+        const gold = y.goldUsd * liveFxRate;
+        const silver = y.silverUsd * liveFxRate;
+        return {
+          year: y.gregorian,
+          gold: Number(gold.toFixed(2)),
+          silver: Number(silver.toFixed(3)),
+          ratio: silver > 0 ? Number((gold / silver).toFixed(1)) : 0,
+          event: y.event,
+        };
+      }),
+    [liveFxRate],
+  );
+
+  const currencyLabel = chartMode === "USD" ? "$" : country.currency;
+
+
 
 
   return (
