@@ -237,7 +237,7 @@ export function RikazSection() {
           <AccordionItem value="honey" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
-                <FlaskConical className="h-5 w-5 text-gold" /> ③ العسل — العُشر (10%)
+                <FlaskConical className="h-5 w-5 text-gold" /> ③ هل تملك إنتاج عسل؟ — العُشر (10%)
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
