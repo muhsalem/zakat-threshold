@@ -367,21 +367,46 @@ export function CompanyTab() {
   const [method, setMethod] = useState<"net_assets" | "working_capital">("net_assets");
   const [cash, setCash] = useState("");
   const [banks, setBanks] = useState("");
-  const [receivablesCo, setReceivablesCo] = useState("");
-  const [doubtfulDebts, setDoubtfulDebts] = useState(""); // ديون مشكوك فيها (تُخصم)
-  const [inventoryCo, setInventoryCo] = useState("");
-  const [investments, setInvestments] = useState("");
-  const [subsidiaryInv, setSubsidiaryInv] = useState(""); // استثمارات في شركات تابعة (تُعامل خاصة)
+
+  // ===== الذمم المدينة — تصنيف رباعي =====
+  const [recGood, setRecGood] = useState("");        // ① جيدة → تُزكى كاملة
+  const [recDoubtful, setRecDoubtful] = useState(""); // ② مشكوك فيها → اختياري
+  const [recInsolvent, setRecInsolvent] = useState(""); // ③ على معسرين/مماطلين → تُزكى عند القبض (لا تُدخل في الوعاء)
+  const [recBad, setRecBad] = useState("");          // ④ معدومة → لا تُزكى
+  const [recPolicy, setRecPolicy] = useState<"strict" | "lenient">("strict"); // strict: استبعاد المشكوك / lenient: تزكية المشكوك أيضاً
+
+  // ===== المخزون — تقييم سوقي =====
+  const [invBook, setInvBook] = useState("");           // قيمة دفترية (محاسبية)
+  const [invMarketDiff, setInvMarketDiff] = useState(""); // فرق التقييم لسعر بيع الجملة (موجب/سالب)
+
+  // ===== الاستثمارات في الأوراق المالية — فصل المتاجرة عن الاستثمار طويل الأجل =====
+  const [stkTrading, setStkTrading] = useState("");        // أسهم بنية المتاجرة → كامل القيمة السوقية
+  const [stkLongTerm, setStkLongTerm] = useState("");      // أسهم استثمارية → نصيب الموجودات الزكوية فقط
+  const [stkLongRatio, setStkLongRatio] = useState("30");  // نسبة الموجودات الزكوية بالقيمة الدفترية للسهم (افتراضي 30%)
+
+  const [subsidiaryInv, setSubsidiaryInv] = useState("");
   const [otherCurrent, setOtherCurrent] = useState("");
   const [stPayables, setStPayables] = useState("");
   const [accruals, setAccruals] = useState("");
   const [taxDue, setTaxDue] = useState("");
-  const [stLoans, setStLoans] = useState("");
+
+  // ===== القروض — فصل الأصل عن الفوائد الربوية =====
+  const [loanPrincipal, setLoanPrincipal] = useState("");  // أصل القرض → يُخصم
+  const [loanInterest, setLoanInterest] = useState("");    // الفوائد الربوية → لا تُخصم شرعاً
+
   const [equity, setEquity] = useState("");
   const [ltLiabilities, setLtLiabilities] = useState("");
   const [fixedAssets, setFixedAssets] = useState("");
   const [intangibles, setIntangibles] = useState("");
   const [losses, setLosses] = useState("");
+
+  // ===== تعجيل الزكاة =====
+  const [accelerateYears, setAccelerateYears] = useState("0"); // 0/1/2
+
+  // ===== محوّل العملات (لتقويم العملات الأجنبية يوم الحول) =====
+  const [fxAmount, setFxAmount] = useState("");
+  const [fxRate, setFxRate] = useState("");
+  const fxConverted = useMemo(() => num(fxAmount) * num(fxRate), [fxAmount, fxRate]);
 
   // الامتثال الشرعي
   const [compliance, setCompliance] = useState<Record<string, boolean>>({});
