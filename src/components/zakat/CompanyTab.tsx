@@ -166,7 +166,6 @@ const GROUP_LABELS: Record<Sector["group"], string> = {
 
 // التبويبات المسموح بها في النموذج القطاعي حسب القطاع المحدد (مع تبويبات مساندة دائمة)
 function getAllowedSectoralTabs(sectorId: string, group: Sector["group"]): string[] {
-  const supporting = ["salary", "tax"]; // الأجور والضريبة مرتبطة دائماً
   let primary: string[] = [];
   switch (sectorId) {
     case "agri":
@@ -198,14 +197,14 @@ function getAllowedSectoralTabs(sectorId: string, group: Sector["group"]): strin
     case "education":
     case "transport":
     case "software":
-    case "media":      primary = ["services", "free"]; break;
+    case "media":      primary = ["services"]; break;
     default:
       primary = group === "industrial" ? ["industry"]
         : group === "commercial" ? ["trade"]
         : group === "services" ? ["services"]
         : ["trade"];
   }
-  return [...primary, ...supporting];
+  return primary;
 }
 
 
