@@ -28,6 +28,7 @@ import {
 import { CashBankSection } from "./CashBankSection";
 import { SecuritiesSection } from "./SecuritiesSection";
 import { IncomeUsufructSection } from "./IncomeUsufructSection";
+import { supabase } from "@/integrations/supabase/client";
 
 interface NumFieldProps {
   label: string;
