@@ -382,18 +382,36 @@ export function IndividualTab() {
 
   return (
     <div dir="rtl" className="grid lg:grid-cols-3 gap-6 text-right">
-      {/* ديباجة الطباعة — تظهر في رأس التقرير عند طباعة الإقرار فقط */}
-      <div className="hidden print:block lg:col-span-3 border-b pb-4 mb-4">
-        <div className="text-center text-sm font-bold mb-2">إقرار زكوي — محاسب الزكاة المعتمد</div>
-        <div className="whitespace-pre-line text-xs leading-7">{accountantPreamble}</div>
-        {(accountantName || accountantLicense) && (
-          <div className="mt-3 text-xs">
-            {accountantName && <div>المحاسب: <b>{accountantName}</b></div>}
-            {accountantLicense && <div>رقم القيد / الترخيص: <b>{accountantLicense}</b></div>}
-            <div>التاريخ: <b>{new Date().toLocaleDateString("ar-EG")}</b></div>
-          </div>
-        )}
-      </div>
+      {/* تقرير الطباعة الاحترافي — يظهر فقط عند الطباعة */}
+      <PrintReport
+        data={{
+          name, profession, countryCode, currencyName,
+          calendarBasis, effectiveRate,
+          rows: [
+            { label: "زكاة الذهب", gross: calc.totalGoldValue, nisab: calc.goldNisabValue, eligible: calc.goldEligible, zakat: calc.goldZakat },
+            { label: "زكاة الفضة", gross: calc.silverValue, nisab: calc.silverNisabValue, eligible: calc.silverEligible, zakat: calc.silverZakat },
+            { label: "النقدية والبنوك", gross: calc.cashTotal, eligible: true, zakat: 0 },
+            { label: "الأوراق المالية والاستثمارات", gross: calc.securitiesTotal, eligible: true, zakat: 0 },
+            { label: "كمبيالات وأوراق قبض", gross: calc.billsTotal, eligible: true, zakat: 0 },
+            { label: "عروض التجارة والديون المرجوّة", gross: calc.tradeTotal, eligible: true, zakat: 0 },
+            { label: "العقار والمستغلات (صافي)", gross: calc.realEstateZakatable + incomeUsufructTotal, eligible: true, zakat: 0 },
+            { label: "زكاة الزروع والثمار", gross: calc.cropsValue, eligible: calc.cropsEligible, zakat: calc.cropsZakat },
+          ],
+          livestock: { camels: calc.camelsN, cows: calc.cowsN, sheep: calc.sheepN, show: ownsLivestock },
+          monetaryGross: calc.monetaryGross,
+          debts: calc.debts,
+          monetaryBase: calc.monetaryBase,
+          moneyNisab: calc.moneyNisab,
+          totalZakat: calc.total,
+          hawlComplete: hawl ? hawl.hawlComplete : null,
+          hawlDate: nisabStartDate,
+          accountantName, accountantLicense, accountantPreamble,
+          accountantOpinion, opinionType,
+          previousYearZakat,
+        }}
+      />
+
+
       <div className="lg:col-span-2 space-y-6">
         {/* بيانات المزكي + الإقرار وشرط الحول */}
         <Card className="shadow-soft">
