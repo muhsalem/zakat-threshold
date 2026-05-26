@@ -23,7 +23,7 @@ const BANKS_BY_COUNTRY: Record<string, CountryBanks> = {
       "بنك فيصل الإسلامي المصري",
       "بنك البركة مصر",
       "مصرف أبوظبي الإسلامي — ADIB مصر",
-      "البنك المصري الخليجي",
+      "بيت التمويل الكويتي — مصر (KFH Egypt)",
     ],
     traditional: [
       { v: "nbe", l: "البنك الأهلي المصري — NBE", window: "كنانة — للمعاملات الإسلامية" },
@@ -139,13 +139,13 @@ const BANKS_BY_COUNTRY: Record<string, CountryBanks> = {
 function getCountryBanks(code: string): CountryBanks {
   const data = BANKS_BY_COUNTRY[code];
   const fallback: CountryBanks = {
-    islamic: ["بنك إسلامي محلي", "أخرى"],
-    traditional: [{ v: "other", l: "بنك تقليدي محلي", window: "—" }],
+    islamic: ["بنك إسلامي محلي"],
+    traditional: [{ v: "local", l: "بنك تقليدي محلي", window: "—" }],
   };
   if (!data) return fallback;
   return {
-    islamic: [...data.islamic, "أخرى"],
-    traditional: [...data.traditional, { v: "other", l: "بنك تقليدي آخر", window: "—" }],
+    islamic: [...data.islamic],
+    traditional: [...data.traditional],
   };
 }
 
@@ -856,6 +856,17 @@ function BankPicker({
                 ))}
               </SelectContent>
             </Select>
+            <div className="flex items-center gap-2 pt-1">
+              <input
+                type="checkbox"
+                id={`${idPrefix}-isvc`}
+                checked={useWindow}
+                onChange={(e) => setUseWindow(e.target.checked)}
+              />
+              <Label htmlFor={`${idPrefix}-isvc`} className="text-xs cursor-pointer text-muted-foreground">
+                المنتج أو الخدمة إسلامية (متوافقة مع الشريعة)
+              </Label>
+            </div>
           </div>
           {!hideWindow && (
             <div className="space-y-1.5">
