@@ -1,6 +1,18 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import {
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -11,14 +23,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
   COUNTRY_PRICES,
   GOLD_NISAB_GRAMS,
   SILVER_NISAB_GRAMS,
@@ -27,8 +31,26 @@ import {
   fmt,
   num,
 } from "@/lib/zakat";
-import { Scroll, Coins, Gem, Globe2, CalendarClock, Database } from "lucide-react";
+import {
+  Scroll,
+  Coins,
+  Gem,
+  Globe2,
+  CalendarClock,
+  Database,
+  RefreshCw,
+  TrendingUp,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { getLivePrices } from "@/lib/prices.functions";
+
+// Map internal country code -> ISO 4217 currency
+const ISO_CURRENCY: Record<string, string> = {
+  EG: "EGP", SA: "SAR", AE: "AED", KW: "KWD", QA: "QAR", BH: "BHD",
+  OM: "OMR", JO: "JOD", MA: "MAD", DZ: "DZD", TN: "TND", IQ: "IQD",
+  SY: "SYP", LB: "LBP", YE: "YER", SD: "SDG", LY: "LYD", PS: "ILS",
+  TR: "TRY", US: "USD", EU: "EUR", GB: "GBP",
+};
 
 const MONTHS_AR = [
   "يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
@@ -85,10 +107,51 @@ export function NisabHistory() {
     return dbRows.find((r) => r.year === selectedYear && r.month === null) ?? null;
   }, [dbRows, selectedYear, selectedMonth, monthsForYear]);
 
+  // --- Live prices ---
+  const fetchPrices = useServerFn(getLivePrices);
+  const [livePrices, setLivePrices] = useState<{
+    goldPerGram: number;
+    silverPerGram: number;
+    fetchedAt: string;
+  } | null>(null);
+  const [liveLoading, setLiveLoading] = useState(false);
+  const [liveError, setLiveError] = useState<string | null>(null);
+
+  const refreshLive = useCallback(
+    async (code: string) => {
+      const iso = ISO_CURRENCY[code] ?? "USD";
+      setLiveLoading(true);
+      setLiveError(null);
+      try {
+        const res = await fetchPrices({ data: { currency: iso } });
+        setLivePrices({
+          goldPerGram: res.goldPerGram,
+          silverPerGram: res.silverPerGram,
+          fetchedAt: res.fetchedAt,
+        });
+        setGoldPrice(res.goldPerGram.toFixed(2));
+        setSilverPrice(res.silverPerGram.toFixed(3));
+      } catch (e) {
+        setLiveError(e instanceof Error ? e.message : "تعذّر جلب الأسعار");
+      } finally {
+        setLiveLoading(false);
+      }
+    },
+    [fetchPrices],
+  );
+
+  // Initial + on country change: live fetch, with 5-min auto refresh
+  useEffect(() => {
+    refreshLive(countryCode);
+    const t = setInterval(() => refreshLive(countryCode), 5 * 60 * 1000);
+    return () => clearInterval(t);
+  }, [countryCode, refreshLive]);
+
   const onCountryChange = (code: string) => {
     const c = COUNTRY_PRICES.find((x) => x.code === code);
     if (!c) return;
     setCountryCode(code);
+    // fallback defaults while live fetch is pending
     setGoldPrice(String(c.gold24));
     setSilverPrice(String(c.silver));
   };
@@ -100,7 +163,37 @@ export function NisabHistory() {
     silverNisabValue || Infinity,
   );
 
-  const years = useMemo(() => [...NISAB_LAST_100_YEARS].reverse(), []);
+  // --- Historical chart data (USD baseline) ---
+  const [chartMode, setChartMode] = useState<"USD" | "LOCAL">("USD");
+  const liveFxRate = useMemo(() => {
+    if (chartMode === "USD" || !livePrices) return 1;
+    // derive USD->local fx from live data (gold per gram local / gold per gram usd-equivalent)
+    // We don't have the raw USD value here, so use a simpler proxy: pull from country defaults
+    const c = COUNTRY_PRICES.find((x) => x.code === countryCode);
+    const usd = COUNTRY_PRICES.find((x) => x.code === "US");
+    if (!c || !usd) return 1;
+    return c.gold24 / usd.gold24;
+  }, [chartMode, livePrices, countryCode]);
+
+  const chartData = useMemo(
+    () =>
+      NISAB_LAST_100_YEARS.map((y) => {
+        const gold = y.goldUsd * liveFxRate;
+        const silver = y.silverUsd * liveFxRate;
+        return {
+          year: y.gregorian,
+          gold: Number(gold.toFixed(2)),
+          silver: Number(silver.toFixed(3)),
+          ratio: silver > 0 ? Number((gold / silver).toFixed(1)) : 0,
+          event: y.event,
+        };
+      }),
+    [liveFxRate],
+  );
+
+  const currencyLabel = chartMode === "USD" ? "$" : country.currency;
+
+
 
 
   return (
@@ -108,15 +201,39 @@ export function NisabHistory() {
       {/* نصاب اليوم */}
       <Card className="border-gold/30 shadow-soft">
         <CardHeader className="bg-gradient-to-l from-gold/15 to-transparent">
-          <CardTitle className="flex items-center gap-2 text-xl">
-            <Globe2 className="h-5 w-5 text-gold" />
-            نصاب اليوم — حسب الدولة
-          </CardTitle>
-          <p className="text-sm text-muted-foreground">
-            اختر دولتك لعرض السعر التقريبي لجرام الذهب والفضة، ويمكنك تعديل القيم لتطابق
-            السعر الحالي في السوق.
-          </p>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <Globe2 className="h-5 w-5 text-gold" />
+                نصاب اليوم — حسب الدولة (تحديث لحظي)
+              </CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">
+                الأسعار محدّثة لحظيًّا من مصادر السوق العالمية (XAU/XAG + سعر صرف USD)،
+                ويعاد التحديث تلقائيًّا كل 5 دقائق. يمكنك تعديل القيم يدويًّا للسعر المحلي.
+              </p>
+            </div>
+            <div className="flex flex-col items-end gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => refreshLive(countryCode)}
+                disabled={liveLoading}
+              >
+                <RefreshCw className={`h-3.5 w-3.5 ml-1 ${liveLoading ? "animate-spin" : ""}`} />
+                تحديث الأسعار
+              </Button>
+              {livePrices && !liveError && (
+                <Badge variant="secondary" className="text-[10px]">
+                  ● حيّ — {new Date(livePrices.fetchedAt).toLocaleTimeString("ar-EG")}
+                </Badge>
+              )}
+              {liveError && (
+                <Badge variant="destructive" className="text-[10px]">تعذّر التحديث</Badge>
+              )}
+            </div>
+          </div>
         </CardHeader>
+
         <CardContent className="pt-6 space-y-5">
           <div className="grid sm:grid-cols-3 gap-3">
             <div className="space-y-1.5">
@@ -267,59 +384,125 @@ export function NisabHistory() {
       </Card>
 
 
-      {/* آخر 100 عام */}
+      {/* رسم بياني — آخر 100 عام + نسبة الذهب/الفضة */}
       <Card className="border-gold/30 shadow-soft">
         <CardHeader className="bg-gradient-to-l from-gold/15 to-transparent">
-          <CardTitle className="flex items-center gap-2 text-xl">
-            <CalendarClock className="h-5 w-5 text-gold" />
-            النصاب خلال آخر 100 عام (هجري / ميلادي)
-          </CardTitle>
-          <p className="text-sm text-muted-foreground">
-            متوسط سعر جرام الذهب عيار 24 والفضة بالدولار الأمريكي عبر العقود الماضية،
-            مع قيمة النصاب المقابلة بالدولار.
-          </p>
-        </CardHeader>
-        <CardContent className="pt-4">
-          <div className="overflow-x-auto rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="text-right">هجري</TableHead>
-                  <TableHead className="text-right">ميلادي</TableHead>
-                  <TableHead className="text-right">جرام الذهب ($)</TableHead>
-                  <TableHead className="text-right">نصاب الذهب ($)</TableHead>
-                  <TableHead className="text-right">جرام الفضة ($)</TableHead>
-                  <TableHead className="text-right">نصاب الفضة ($)</TableHead>
-                  <TableHead className="text-right">حدث</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {years.map((y) => (
-                  <TableRow key={y.gregorian}>
-                    <TableCell className="font-semibold text-primary">{y.hijri}هـ</TableCell>
-                    <TableCell>{y.gregorian}م</TableCell>
-                    <TableCell>{fmt(y.goldUsd, 2)}</TableCell>
-                    <TableCell className="font-semibold text-gold-foreground">
-                      {fmt(y.goldUsd * GOLD_NISAB_GRAMS, 0)}
-                    </TableCell>
-                    <TableCell>{fmt(y.silverUsd, 3)}</TableCell>
-                    <TableCell className="font-semibold">
-                      {fmt(y.silverUsd * SILVER_NISAB_GRAMS, 0)}
-                    </TableCell>
-                    <TableCell className="text-xs text-muted-foreground">
-                      {y.event ?? "—"}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <CalendarClock className="h-5 w-5 text-gold" />
+                النصاب خلال آخر 100 عام — مخطط بياني
+              </CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">
+                تطور سعر جرام الذهب والفضة ونسبة الذهب/الفضة (Gold-Silver Ratio) سنويًا.
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant={chartMode === "USD" ? "default" : "outline"}
+                onClick={() => setChartMode("USD")}
+              >
+                بالدولار
+              </Button>
+              <Button
+                size="sm"
+                variant={chartMode === "LOCAL" ? "default" : "outline"}
+                onClick={() => setChartMode("LOCAL")}
+              >
+                بعملة {country.name}
+              </Button>
+            </div>
           </div>
-          <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
-            * البيانات تقديرية مبنية على متوسط الأسعار العالمية السنوية، والمرجع الشرعي
-            هو الوزن (85 جم ذهبًا و595 جم فضة) لا قيمة العملة.
+        </CardHeader>
+        <CardContent className="pt-4 space-y-4">
+          <div className="h-80 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="year" tick={{ fontSize: 11 }} />
+                <YAxis
+                  yAxisId="price"
+                  tick={{ fontSize: 11 }}
+                  label={{ value: `سعر الجرام (${currencyLabel})`, angle: -90, position: "insideLeft", style: { fontSize: 11 } }}
+                />
+                <YAxis
+                  yAxisId="ratio"
+                  orientation="right"
+                  tick={{ fontSize: 11 }}
+                  label={{ value: "النسبة (Ratio)", angle: 90, position: "insideRight", style: { fontSize: 11 } }}
+                />
+                <Tooltip
+                  contentStyle={{ fontSize: 12, direction: "rtl" }}
+                  formatter={(value: number, name: string) => {
+                    if (name === "ratio") return [`${value} : 1`, "نسبة الذهب/الفضة"];
+                    if (name === "gold") return [`${fmt(value, 2)} ${currencyLabel}`, "جرام الذهب"];
+                    if (name === "silver") return [`${fmt(value, 3)} ${currencyLabel}`, "جرام الفضة"];
+                    return [value, name];
+                  }}
+                  labelFormatter={(label) => `سنة ${label}م`}
+                />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Line
+                  yAxisId="price"
+                  type="monotone"
+                  dataKey="gold"
+                  name="الذهب"
+                  stroke="hsl(45 90% 50%)"
+                  strokeWidth={2.5}
+                  dot={{ r: 2 }}
+                />
+                <Line
+                  yAxisId="price"
+                  type="monotone"
+                  dataKey="silver"
+                  name="الفضة"
+                  stroke="hsl(220 10% 60%)"
+                  strokeWidth={2}
+                  dot={{ r: 2 }}
+                />
+                <Line
+                  yAxisId="ratio"
+                  type="monotone"
+                  dataKey="ratio"
+                  name="نسبة الذهب/الفضة"
+                  stroke="hsl(var(--primary))"
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                  dot={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-3 text-xs">
+            <div className="rounded-md border border-gold/30 bg-gold/10 p-3">
+              <div className="flex items-center gap-1.5 font-semibold text-gold-foreground mb-1">
+                <Gem className="h-3.5 w-3.5" /> الذهب
+              </div>
+              متوسط جرام الذهب — خط ذهبي متصل (محور أيسر).
+            </div>
+            <div className="rounded-md border bg-muted p-3">
+              <div className="flex items-center gap-1.5 font-semibold mb-1">
+                <Coins className="h-3.5 w-3.5" /> الفضة
+              </div>
+              متوسط جرام الفضة — خط رمادي متصل (محور أيسر).
+            </div>
+            <div className="rounded-md border border-primary/30 bg-primary/5 p-3">
+              <div className="flex items-center gap-1.5 font-semibold text-primary mb-1">
+                <TrendingUp className="h-3.5 w-3.5" /> نسبة الذهب/الفضة
+              </div>
+              كم جرام فضة يساوي جرام ذهب — متقطّع (محور أيمن). كلما زادت النسبة كانت الفضة هي
+              الأنفع للفقراء.
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            * بيانات تاريخية تقديرية بالدولار. وضع &quot;بعملة الدولة&quot; يستخدم سعر صرف
+            تقديري حالي وليس تاريخيًّا — للمقارنة البصرية فقط. المرجع الشرعي هو الوزن (85 جم
+            ذهبًا و595 جم فضة).
           </p>
         </CardContent>
       </Card>
+
 
       {/* التطور التاريخي عبر العصور */}
       <Card className="border-gold/30 shadow-soft">
