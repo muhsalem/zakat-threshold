@@ -1157,5 +1157,83 @@ export function CompanyTab() {
         </div>
       </TabsContent>
     </Tabs>
+
+    {/* ====== ديباجة المحاسب + مصارف الزكاة الثمانية (للطباعة والعرض) ====== */}
+    <Card className="shadow-soft border-primary/30 mt-6">
+      <CardHeader className="bg-gradient-to-l from-primary/10 to-transparent">
+        <CardTitle className="flex items-center gap-2">
+          <FileText className="h-5 w-5 text-primary" />
+          ديباجة المحاسب القانوني ومصارف الزكاة الثمانية
+        </CardTitle>
+        <p className="text-xs text-muted-foreground">تظهر هذه البيانات في التقرير النهائي عند الطباعة.</p>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid md:grid-cols-3 gap-3 print:hidden">
+          <div className="space-y-1.5">
+            <Label className="text-xs">اسم المحاسب القانوني</Label>
+            <Input value={accName} onChange={(e) => setAccName(e.target.value)} placeholder="الاسم رباعياً" />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs">رقم القيد / الترخيص المهني</Label>
+            <Input value={accLicense} onChange={(e) => setAccLicense(e.target.value)} placeholder="رقم العضوية" />
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs">اسم المكتب / الجهة</Label>
+            <Input value={accFirm} onChange={(e) => setAccFirm(e.target.value)} placeholder="مكتب المحاسبة" />
+          </div>
+          <div className="md:col-span-3 space-y-1.5">
+            <Label className="text-xs">نص الديباجة / الإقرار المهني</Label>
+            <Textarea value={accStatement} onChange={(e) => setAccStatement(e.target.value)} rows={3} />
+          </div>
+        </div>
+
+        {/* مصارف الزكاة الثمانية */}
+        <div className="rounded-lg border border-gold/30 bg-gold/5 p-4 space-y-3">
+          <div className="text-sm font-semibold text-primary flex items-center gap-2">
+            <HandHeart className="h-4 w-4 text-gold" /> مصارف الزكاة الثمانية
+          </div>
+          <Alert className="border-gold/30 bg-background">
+            <Info className="h-4 w-4" />
+            <AlertDescription className="text-xs leading-relaxed">
+              قال تعالى: ﴿إِنَّمَا الصَّدَقَاتُ لِلْفُقَرَاءِ وَالْمَسَاكِينِ وَالْعَامِلِينَ عَلَيْهَا وَالْمُؤَلَّفَةِ قُلُوبُهُمْ وَفِي الرِّقَابِ وَالْغَارِمِينَ وَفِي سَبِيلِ اللَّهِ وَابْنِ السَّبِيلِ فَرِيضَةً مِنَ اللَّهِ﴾ [التوبة: 60].
+            </AlertDescription>
+          </Alert>
+          <div className="grid sm:grid-cols-2 gap-2">
+            {ZAKAT_RECIPIENTS.map((r, i) => (
+              <div key={i} className="rounded-md border bg-card/50 px-3 py-2">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <Badge className="bg-gradient-gold text-gold-foreground text-[10px]">{i + 1}</Badge>
+                  <span className="font-semibold text-sm text-primary">{r.name}</span>
+                </div>
+                <p className="text-xs text-muted-foreground leading-relaxed">{r.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* بلوك التوقيع */}
+        <div className="rounded-lg border border-primary/30 bg-background p-4 space-y-3">
+          <p className="text-sm leading-relaxed">{accStatement}</p>
+          <div className="grid md:grid-cols-3 gap-4 pt-3 border-t border-dashed text-sm">
+            <div>
+              <div className="text-xs text-muted-foreground">المحاسب القانوني</div>
+              <div className="font-bold text-primary">{accName || "—"}</div>
+              {accLicense && <div className="text-xs">رقم القيد: {accLicense}</div>}
+            </div>
+            <div>
+              <div className="text-xs text-muted-foreground">الجهة / المكتب</div>
+              <div className="font-bold">{accFirm || "—"}</div>
+            </div>
+            <div>
+              <div className="text-xs text-muted-foreground">التاريخ</div>
+              <div className="font-bold">{new Date().toLocaleDateString("ar-EG")}</div>
+              <div className="text-xs mt-3 pt-3 border-t border-dotted">التوقيع: ____________</div>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+    </div>
   );
 }
+
