@@ -1155,6 +1155,12 @@ export function CompanyTab() {
 
           {/* حاسبة التطهير الشرعي */}
           <PurificationCalculator currencyName={currencyName} />
+
+          {/* ====== الركاز والمعادن — قسم تكميلي للشركات ====== */}
+          <RikazSection />
+
+          {/* ====== إيضاحات فقهية مكملة — مقارنة المذاهب ====== */}
+          <MadhabsComparison />
         </div>
 
         {/* النتيجة الجانبية */}
