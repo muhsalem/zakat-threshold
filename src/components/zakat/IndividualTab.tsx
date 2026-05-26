@@ -27,6 +27,7 @@ import {
 } from "@/lib/zakat";
 import { CashBankSection } from "./CashBankSection";
 import { SecuritiesSection } from "./SecuritiesSection";
+import { IncomeUsufructSection } from "./IncomeUsufructSection";
 
 interface NumFieldProps {
   label: string;
