@@ -138,12 +138,29 @@ const SECTORS: Sector[] = [
   { id: "realestate",  label: "عقارات ومُستغلَّات",                  group: "services",   model: "mustaghal" },
 ];
 
+// قطاعات المؤسسات غير الربحية
+const NONPROFIT_SECTORS: Sector[] = [
+  { id: "np_mosque",     label: "مساجد ودور عبادة وأوقاف دينية",       group: "services", model: "services" },
+  { id: "np_charity",    label: "جمعيات خيرية وإغاثة إنسانية",          group: "services", model: "services" },
+  { id: "np_orphan",     label: "كفالة الأيتام والأسر المحتاجة",        group: "services", model: "services" },
+  { id: "np_edu",        label: "جمعيات تعليمية ومنح دراسية",           group: "services", model: "services" },
+  { id: "np_health",     label: "جمعيات صحية ومستشفيات خيرية",         group: "services", model: "services" },
+  { id: "np_dev",        label: "جمعيات تنموية وتدريب مهني",            group: "services", model: "services" },
+  { id: "np_waqf",       label: "وقفيات استثمارية (تُزكى غلتها)",       group: "services", model: "mustaghal" },
+  { id: "np_dawah",      label: "مؤسسات دعوية وبحث شرعي",               group: "services", model: "services" },
+  { id: "np_water",      label: "مشاريع المياه والآبار",                 group: "services", model: "services" },
+  { id: "np_food",       label: "بنوك الطعام وكفالة الإفطار",            group: "services", model: "services" },
+  { id: "np_culture",    label: "مؤسسات ثقافية وفنية غير ربحية",         group: "services", model: "services" },
+  { id: "np_envir",      label: "جمعيات بيئية ومناخية",                  group: "services", model: "services" },
+];
+
 const GROUP_LABELS: Record<Sector["group"], string> = {
   primary: "نشاط أولى (استخراجي/زراعي)",
   industrial: "نشاط صناعي",
   commercial: "نشاط تجاري",
   services: "نشاط خدمي",
 };
+
 
 // التبويبات المسموح بها في النموذج القطاعي حسب القطاع المحدد (مع تبويبات مساندة دائمة)
 function getAllowedSectoralTabs(sectorId: string, group: Sector["group"]): string[] {
