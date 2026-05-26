@@ -311,7 +311,7 @@ export function IndividualTab() {
     stocksTrade, stocksInvest, mutualFunds, bonds, bills,
     inventory, receivablesGood, realEstateTrade, realEstateRentIncome,
     shortDebts, expenses, cropsKg, cropsValuePerKg, cropsIrrigation,
-    camels, cows, sheep, effectiveRate, hawl,
+    camels, cows, sheep, effectiveRate, hawl, cashTotalFromSection,
   ]);
 
   const cur = (n: number) => currency(n, currencyName);
