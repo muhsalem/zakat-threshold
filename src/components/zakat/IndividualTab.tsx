@@ -107,6 +107,17 @@ export function IndividualTab() {
   const [prepaidZakat, setPrepaidZakat] = useState("");
   const [prepaidYears, setPrepaidYears] = useState("1");
 
+  // === زكاة الفطر التلقائية (أواخر شعبان + رمضان) ===
+  const [fitrFamilySize, setFitrFamilySize] = useState("1");
+  const [fitrEnabled, setFitrEnabled] = useState(true);
+  // سعر تقريبي لكيلو القمح حسب الدولة (نفس الجدول المعتمد في حاسبة الفطر)
+  const WHEAT_PRICE_PER_KG: Record<string, number> = {
+    EG: 22, SA: 5, AE: 5, KW: 0.5, QA: 5, BH: 0.5, OM: 0.5,
+    JO: 1, MA: 12, DZ: 90, TN: 3, IQ: 1300, SY: 5500, LB: 50000,
+    YE: 250, SD: 600, LY: 5, PS: 4, TR: 35, US: 1.2, EU: 1.1, GB: 0.95,
+  };
+  const FITR_SAA_KG = 2.176; // صاع نبوي بالقمح
+
 
   // الدولة والأسعار
   const [countryCode, setCountryCode] = useState("EG");
