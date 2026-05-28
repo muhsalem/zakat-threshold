@@ -403,6 +403,20 @@ export function IndividualTab() {
 
   const cur = (n: number) => currency(n, currencyName);
 
+  // === حساب زكاة الفطر التلقائية (أواخر شعبان أو رمضان) ===
+  const fitrAuto = useMemo(() => {
+    const today = new Date();
+    const h = gregorianToHijri(today.getFullYear(), today.getMonth() + 1, today.getDate());
+    const active = (h.hm === 8 && h.hd >= 25) || h.hm === 9;
+    if (!active) return { active: false, total: 0, hijri: h };
+    const persons = Math.max(0, Math.floor(num(fitrFamilySize)));
+    const pricePerKg = WHEAT_PRICE_PER_KG[countryCode] ?? WHEAT_PRICE_PER_KG.EG;
+    return { active: true, total: persons * FITR_SAA_KG * pricePerKg, hijri: h, persons, pricePerKg };
+  }, [fitrFamilySize, countryCode]);
+  const fitrContribution = fitrEnabled && fitrAuto.active ? fitrAuto.total : 0;
+
+
+
   return (
     <div dir="rtl" className="text-right">
       {/* تقرير الطباعة الاحترافي — يظهر فقط عند الطباعة */}
