@@ -240,13 +240,17 @@ export function PrintReport({ data }: { data: PrintReportData }) {
 
   return (
     <div id="print-report" dir="rtl" style={{
-      fontFamily: FONT_UI, color: C.text, fontSize: "10.5pt", lineHeight: 1.65,
+      fontFamily: FONT_UI, color: C.text, fontSize: "11pt", lineHeight: 1.75,
+      letterSpacing: "0.1pt", WebkitFontSmoothing: "antialiased",
     }}>
       {/* تحميل خطوط أنظف من Google Fonts (لـ html2canvas في PDF و الطباعة) */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=Amiri+Quran&family=Amiri:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Amiri+Quran&family=Amiri:wght@400;700&display=swap');
+        #print-report { text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
         #print-report table { border-collapse: collapse; }
-        #print-report .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; text-align: left; direction: ltr; }
+        #print-report td, #print-report th { vertical-align: middle; }
+        #print-report .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum","lnum"; text-align: left; direction: ltr; letter-spacing: 0; }
+        #print-report h1, #print-report h2, #print-report h3 { letter-spacing: -0.2pt; }
       `}</style>
 
       {/* ============================================================ */}
@@ -534,30 +538,44 @@ export function PrintReport({ data }: { data: PrintReportData }) {
             </tr>
           </thead>
           <tbody>
-            {sortedRows.map((r, i) => (
-              <tr key={i} style={i % 2 ? { background: C.cream } : undefined}>
-                <td style={tdCell()}>{r.label}</td>
-                <td style={tdCell("num")}>{curFull(r.gross)}</td>
-                <td style={tdCell("num")}>{r.nisab !== undefined ? curFull(r.nisab) : "—"}</td>
-                <td style={{ ...tdCell("center"), color: r.eligible ? C.success : C.danger, fontWeight: 700 }}>
-                  {r.eligible ? "✓" : "✗"}
-                </td>
-                <td style={{ ...tdCell("num"), fontWeight: 700, color: r.zakat > 0 ? C.primary : C.soft }}>
-                  {curFull(r.zakat)}
-                </td>
-              </tr>
-            ))}
+            {sortedRows.map((r, i) => {
+              // للبنود التي تُجمَع في الوعاء النقدي (zakat===0) — نعرض زكاة تقديرية = gross × النسبة
+              const isPooled = r.zakat === 0 && r.eligible && r.gross > 0;
+              const shownZakat = isPooled ? r.gross * data.effectiveRate : r.zakat;
+              return (
+                <tr key={i} style={i % 2 ? { background: C.cream } : undefined}>
+                  <td style={tdCell()}>{r.label}</td>
+                  <td style={tdCell("num")}>{curFull(r.gross)}</td>
+                  <td style={tdCell("num")}>{r.nisab !== undefined ? curFull(r.nisab) : "—"}</td>
+                  <td style={{ ...tdCell("center"), color: r.eligible ? C.success : C.danger, fontWeight: 700 }}>
+                    {r.eligible ? "✓" : "✗"}
+                  </td>
+                  <td style={{ ...tdCell("num"), fontWeight: 700, color: shownZakat > 0 ? C.primary : C.soft }}>
+                    {curFull(shownZakat)}
+                    {isPooled && (
+                      <div style={{ fontSize: "7.5pt", color: C.soft, fontWeight: 400, marginTop: "1pt", direction: "rtl", textAlign: "right" }}>
+                        تقديري قبل خصم الديون
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
           <tfoot>
             <tr>
               <td style={{ ...tdCell(), fontWeight: 700 }}>إجمالي الوعاء النقدي قبل الخصم</td>
               <td style={tdCell("num")} colSpan={3}>{curFull(data.monetaryGross)}</td>
-              <td style={tdCell()}></td>
+              <td style={{ ...tdCell("num"), fontWeight: 700, color: C.soft }}>
+                {curFull(data.monetaryGross * data.effectiveRate)}
+              </td>
             </tr>
             <tr>
               <td style={{ ...tdCell(), fontWeight: 700, color: C.danger }}>(−) الديون والالتزامات المخصومة</td>
               <td style={{ ...tdCell("num"), color: C.danger }} colSpan={3}>{curFull(data.debts)}</td>
-              <td style={tdCell()}></td>
+              <td style={{ ...tdCell("num"), color: C.danger, fontWeight: 700 }}>
+                − {curFull(data.debts * data.effectiveRate)}
+              </td>
             </tr>
             <tr>
               <td style={{ ...tdCell(), fontWeight: 800, background: C.goldLight, color: C.primary }}>= الوعاء النقدي الصافي</td>
@@ -566,13 +584,40 @@ export function PrintReport({ data }: { data: PrintReportData }) {
               </td>
               <td style={{
                 ...tdCell("num"), background: C.primary,
-                color: "white", fontWeight: 900, fontSize: "11.5pt",
+                color: "white", fontWeight: 900, fontSize: "12pt",
               }}>
                 {curFull(data.totalZakat)}
               </td>
             </tr>
           </tfoot>
         </table>
+
+        {/* ملخّص الإجماليات حسب كل نوع — يجمع الزكاة التقديرية لكل بند مع الإجمالي النهائي */}
+        <div style={{
+          marginTop: "10pt", padding: "10pt 12pt", background: C.cream,
+          border: `0.4pt solid ${C.softBorder}`, borderRight: `3pt solid ${C.gold}`,
+          borderRadius: "5pt", fontSize: "9.5pt", lineHeight: 1.9,
+        }}>
+          <div style={{ fontWeight: 800, color: C.primary, marginBottom: "5pt", fontSize: "10.5pt" }}>
+            ملخّص الإجماليات حسب نوع الزكاة
+          </div>
+          {sortedRows.filter((r) => r.gross > 0).map((r, i) => {
+            const isPooled = r.zakat === 0 && r.eligible;
+            const z = isPooled ? r.gross * data.effectiveRate : r.zakat;
+            return (
+              <div key={i} style={{ display: "flex", justifyContent: "space-between", borderBottom: `0.3pt dashed ${C.softBorder}`, padding: "2pt 0" }}>
+                <span style={{ color: C.text }}>{r.label}</span>
+                <span className="num" style={{ fontWeight: 700, color: z > 0 ? C.primary : C.soft }}>
+                  {curFull(z)}{isPooled && <span style={{ fontSize: "7.5pt", color: C.soft, fontWeight: 400, marginInlineStart: "4pt" }}>(تقديري)</span>}
+                </span>
+              </div>
+            );
+          })}
+          <div style={{ display: "flex", justifyContent: "space-between", marginTop: "6pt", paddingTop: "6pt", borderTop: `1pt solid ${C.gold}` }}>
+            <span style={{ fontWeight: 800, color: C.primary }}>الإجمالي النهائي للزكاة المستحقة (بعد خصم الديون)</span>
+            <span className="num" style={{ fontWeight: 900, color: C.primary, fontSize: "12pt" }}>{curFull(data.totalZakat)}</span>
+          </div>
+        </div>
       </div>
 
       {/* ⑤ تفصيل الديون المخصومة (إن وُجد) */}
@@ -904,7 +949,7 @@ export function PrintReport({ data }: { data: PrintReportData }) {
 
 // ===== أنماط مساعدة (إطارات أنحف، محاذاة أرقام أدق) =====
 const tableStyle: React.CSSProperties = {
-  width: "100%", borderCollapse: "collapse", fontSize: "9.5pt",
+  width: "100%", borderCollapse: "collapse", fontSize: "10pt",
 };
 
 function cardStyle(C: any): React.CSSProperties {
@@ -919,31 +964,35 @@ function cardStyle(C: any): React.CSSProperties {
 }
 function titleStyle(C: any): React.CSSProperties {
   return {
-    fontSize: "12pt", fontWeight: 800, color: C.primary,
-    paddingBottom: "5pt", marginBottom: "8pt",
-    borderBottom: `0.6pt solid ${C.gold}`,
+    fontSize: "13pt", fontWeight: 800, color: C.primary,
+    paddingBottom: "6pt", marginBottom: "10pt",
+    borderBottom: `0.6pt solid ${C.gold}`, letterSpacing: "-0.2pt",
   };
 }
 function thStyle(C: any): React.CSSProperties {
   return {
-    border: `0.3pt solid ${C.softBorder}`, padding: "6pt 8pt", textAlign: "right",
-    background: C.primary, color: "white", fontWeight: 700, fontSize: "9pt",
+    border: `0.3pt solid ${C.softBorder}`, padding: "7pt 9pt", textAlign: "right",
+    background: C.primary, color: "white", fontWeight: 700, fontSize: "9.5pt",
+    letterSpacing: "0.1pt",
   };
 }
 function thLabel(C: any): React.CSSProperties {
   return {
-    border: `0.3pt solid ${C.softBorder}`, padding: "6pt 8pt", textAlign: "right",
+    border: `0.3pt solid ${C.softBorder}`, padding: "7pt 9pt", textAlign: "right",
     background: C.cream, fontWeight: 700, color: C.primary, width: "25%",
+    fontSize: "9.75pt",
   };
 }
 function tdCell(kind?: "num" | "center"): React.CSSProperties {
   const base: React.CSSProperties = {
-    border: "0.3pt solid #e7e1c8", padding: "5pt 8pt", textAlign: "right",
+    border: "0.3pt solid #e7e1c8", padding: "6pt 9pt", textAlign: "right",
+    fontSize: "10pt", lineHeight: 1.6,
   };
   if (kind === "num") return {
     ...base, textAlign: "left", direction: "ltr",
     fontVariantNumeric: "tabular-nums",
-    fontFeatureSettings: '"tnum"',
+    fontFeatureSettings: '"tnum","lnum"',
+    fontWeight: 600, letterSpacing: 0,
   };
   if (kind === "center") return { ...base, textAlign: "center" };
   return base;

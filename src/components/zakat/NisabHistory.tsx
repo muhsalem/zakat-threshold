@@ -63,9 +63,16 @@ type NisabRow = {
   month: number | null;
   hijri_year: number | null;
   currency: string;
+  country_code?: string;
   gold_price: number;
   silver_price: number;
   event: string | null;
+};
+
+const COUNTRY_LABEL_AR: Record<string, string> = {
+  GLOBAL: "السوق العالمية (XAU/XAG)",
+  EG: "مصر", SA: "السعودية", AE: "الإمارات", KW: "الكويت", QA: "قطر",
+  BH: "البحرين", OM: "عُمان", JO: "الأردن", US: "الولايات المتحدة",
 };
 
 export function NisabHistory() {
@@ -346,38 +353,77 @@ export function NisabHistory() {
             )}
           </div>
 
-          {selectedRow ? (
-            <div className="grid sm:grid-cols-2 gap-3">
-              <div className="rounded-lg border border-gold/30 bg-gold/10 p-4">
-                <div className="flex items-center gap-2 mb-2 text-gold-foreground">
-                  <Gem className="h-4 w-4" />
-                  <span className="font-semibold">سعر جرام الذهب</span>
-                  <Badge variant="secondary" className="text-[10px]">{selectedRow.currency}</Badge>
+          {selectedRow ? (() => {
+            // هل هذا الشهر/السنة في المستقبل؟ (مقارنة بتاريخ اليوم)
+            const today = new Date();
+            const rowDate = new Date(selectedRow.year, (selectedRow.month ?? 1) - 1, 1);
+            const isForecast = rowDate > new Date(today.getFullYear(), today.getMonth(), 1);
+            const countryLabel = COUNTRY_LABEL_AR[selectedRow.country_code || "GLOBAL"] || (selectedRow.country_code || "GLOBAL");
+            return (
+              <div className="space-y-3">
+                <div className="flex flex-wrap items-center gap-2 text-xs">
+                  <Badge variant="outline" className="gap-1">
+                    <Globe2 className="h-3 w-3" /> {countryLabel}
+                  </Badge>
+                  <Badge variant="secondary">عملة المرجع: {selectedRow.currency}</Badge>
+                  {isForecast ? (
+                    <Badge className="bg-amber-100 text-amber-900 border border-amber-300 gap-1">
+                      <TrendingUp className="h-3 w-3" /> توقع مستقبلي — ليس سعر فعلي
+                    </Badge>
+                  ) : (
+                    <Badge className="bg-emerald-100 text-emerald-900 border border-emerald-300">سعر فعلي مسجل</Badge>
+                  )}
                 </div>
-                <p className="text-xl font-bold">{fmt(selectedRow.gold_price, 2)}</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  نصاب الذهب = {fmt(selectedRow.gold_price * GOLD_NISAB_GRAMS, 0)} {selectedRow.currency}
-                </p>
-              </div>
-              <div className="rounded-lg border bg-muted p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <Coins className="h-4 w-4" />
-                  <span className="font-semibold">سعر جرام الفضة</span>
-                  <Badge variant="secondary" className="text-[10px]">{selectedRow.currency}</Badge>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <div className="rounded-lg border border-gold/30 bg-gold/10 p-4">
+                    <div className="flex items-center gap-2 mb-2 text-gold-foreground">
+                      <Gem className="h-4 w-4" />
+                      <span className="font-semibold">سعر جرام الذهب</span>
+                      <Badge variant="secondary" className="text-[10px]">{selectedRow.currency}</Badge>
+                    </div>
+                    <p className="text-xl font-bold">{fmt(selectedRow.gold_price, 2)}</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      نصاب الذهب = {fmt(selectedRow.gold_price * GOLD_NISAB_GRAMS, 0)} {selectedRow.currency}
+                    </p>
+                  </div>
+                  <div className="rounded-lg border bg-muted p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Coins className="h-4 w-4" />
+                      <span className="font-semibold">سعر جرام الفضة</span>
+                      <Badge variant="secondary" className="text-[10px]">{selectedRow.currency}</Badge>
+                    </div>
+                    <p className="text-xl font-bold">{fmt(selectedRow.silver_price, 3)}</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      نصاب الفضة = {fmt(selectedRow.silver_price * SILVER_NISAB_GRAMS, 0)} {selectedRow.currency}
+                    </p>
+                  </div>
                 </div>
-                <p className="text-xl font-bold">{fmt(selectedRow.silver_price, 3)}</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  نصاب الفضة = {fmt(selectedRow.silver_price * SILVER_NISAB_GRAMS, 0)} {selectedRow.currency}
-                </p>
+                {selectedRow.event && (
+                  <p className="text-xs text-muted-foreground">
+                    📌 {selectedRow.event}
+                    {selectedRow.hijri_year ? ` — الموافق ${selectedRow.hijri_year}هـ` : ""}
+                  </p>
+                )}
+                {isForecast && (
+                  <div className="rounded-md border border-amber-300 bg-amber-50 p-3 text-xs leading-relaxed text-amber-900">
+                    <div className="font-bold mb-1 flex items-center gap-1">
+                      <TrendingUp className="h-3.5 w-3.5" /> كيف تم احتساب هذا التوقع؟
+                    </div>
+                    <p>
+                      هذا الشهر لم يحلّ بعد، فالسعر المعروض ليس قراءة سوقية فعلية، بل
+                      <b> توقع خطي (Linear Extrapolation)</b> مبني على متوسط الاتجاه الشهري
+                      للسنوات السابقة (2020–2025) مُسقَطًا على شهور 2026، مع تنعيم بسيط (Smoothing)
+                      وفق متوسط نمو الذهب التاريخي ~٨٪ سنوياً والفضة ~٦٪ سنوياً.
+                    </p>
+                    <p className="mt-1.5 opacity-90">
+                      ⚠️ التوقع لأغراض تخطيطية فقط، ولا يجوز اعتماده فقهيًا لحساب الزكاة قبل
+                      حلول وقته. استخدم بطاقة "نصاب اليوم" أعلاه لقراءة لحظية حقيقية من السوق.
+                    </p>
+                  </div>
+                )}
               </div>
-              {selectedRow.event && (
-                <p className="sm:col-span-2 text-xs text-muted-foreground">
-                  📌 {selectedRow.event}
-                  {selectedRow.hijri_year ? ` — الموافق ${selectedRow.hijri_year}هـ` : ""}
-                </p>
-              )}
-            </div>
-          ) : (
+            );
+          })() : (
             <p className="text-sm text-muted-foreground">لا توجد بيانات متاحة لهذا الاختيار.</p>
           )}
         </CardContent>
