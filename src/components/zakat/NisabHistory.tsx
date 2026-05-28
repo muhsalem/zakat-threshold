@@ -85,6 +85,16 @@ export function NisabHistory() {
   const [dbRows, setDbRows] = useState<NisabRow[]>([]);
   const [selectedYear, setSelectedYear] = useState<number>(2026);
   const [selectedMonth, setSelectedMonth] = useState<number>(1);
+  // فلتر الدولة/العملة لقاعدة بيانات الأنصبة (مستقل)
+  const [dbCountryCode, setDbCountryCode] = useState<string>("EG");
+  const dbCountry = COUNTRY_PRICES.find((c) => c.code === dbCountryCode) ?? COUNTRY_PRICES[0];
+  // معامل تحويل USD → العملة المحلية (تقديري عبر نسبة سعر جرام الذهب)
+  const dbFx = useMemo(() => {
+    if (dbCountryCode === "US") return 1;
+    const us = COUNTRY_PRICES.find((c) => c.code === "US");
+    if (!us || !dbCountry) return 1;
+    return dbCountry.gold24 / us.gold24;
+  }, [dbCountry, dbCountryCode]);
 
   useEffect(() => {
     supabase
@@ -113,6 +123,52 @@ export function NisabHistory() {
     }
     return dbRows.find((r) => r.year === selectedYear && r.month === null) ?? null;
   }, [dbRows, selectedYear, selectedMonth, monthsForYear]);
+
+  // === توقّع بقيّة العام بسيناريوهات (Scenario-Based) ===
+  const forecastScenarios = useMemo(() => {
+    const today = new Date();
+    const curYear = today.getFullYear();
+    const curMonth = today.getMonth() + 1;
+    const yearRows = dbRows
+      .filter((r) => r.year === curYear && r.month !== null)
+      .sort((a, b) => (a.month ?? 0) - (b.month ?? 0));
+    if (yearRows.length < 2) return null;
+    const first = yearRows[0];
+    const last = yearRows[yearRows.length - 1];
+    const months = (last.month ?? 1) - (first.month ?? 1) || 1;
+    const goldRate = (last.gold_price - first.gold_price) / months;
+    const silverRate = (last.silver_price - first.silver_price) / months;
+    const remaining: number[] = [];
+    for (let m = (last.month ?? curMonth) + 1; m <= 12; m++) remaining.push(m);
+    const project = (base: number, rate: number, factor: number) =>
+      remaining.map((m) => ({
+        month: m,
+        value: Math.max(0, base + rate * factor * (m - (last.month ?? curMonth))),
+      }));
+    return {
+      remaining,
+      gold: {
+        conservative: project(last.gold_price, goldRate, 0.5),
+        base: project(last.gold_price, goldRate, 1),
+        optimistic: project(last.gold_price, goldRate, 1.5),
+      },
+      silver: {
+        conservative: project(last.silver_price, silverRate, 0.5),
+        base: project(last.silver_price, silverRate, 1),
+        optimistic: project(last.silver_price, silverRate, 1.5),
+      },
+      asOfMonth: last.month ?? curMonth,
+      asOfYear: last.year,
+    };
+  }, [dbRows]);
+
+  // اعتماد توقّع كنصاب اليوم في القسم (أ)
+  const applyForecast = (goldUsd: number, silverUsd: number) => {
+    setCountryCode(dbCountryCode);
+    setGoldPrice((goldUsd * dbFx).toFixed(2));
+    setSilverPrice((silverUsd * dbFx).toFixed(3));
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   // --- Live prices ---
   const fetchPrices = useServerFn(getLivePrices);
