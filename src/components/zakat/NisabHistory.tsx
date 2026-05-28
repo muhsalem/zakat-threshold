@@ -376,7 +376,21 @@ export function NisabHistory() {
           </p>
         </CardHeader>
         <CardContent className="pt-6 space-y-4 text-right">
-          <div className="grid sm:grid-cols-2 gap-3">
+          <div className="grid sm:grid-cols-3 gap-3">
+            <div className="space-y-1.5">
+              <Label className="text-xs">الدولة / العملة</Label>
+              <Select value={dbCountryCode} onValueChange={setDbCountryCode}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent className="max-h-72">
+                  {COUNTRY_PRICES.map((c) => (
+                    <SelectItem key={c.code} value={c.code}>{c.name} ({c.currency})</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-[10px] text-muted-foreground">
+                يُحوَّل سعر السوق العالمية (USD) إلى عملة الدولة عبر معامل تقريبي.
+              </p>
+            </div>
             <div className="space-y-1.5">
               <Label className="text-xs">السنة</Label>
               <Select
@@ -408,6 +422,7 @@ export function NisabHistory() {
               </div>
             )}
           </div>
+
 
           {selectedRow ? (() => {
             // هل هذا الشهر/السنة في المستقبل؟ (مقارنة بتاريخ اليوم)
