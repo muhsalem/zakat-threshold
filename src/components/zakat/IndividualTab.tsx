@@ -15,9 +15,11 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   User, Coins, Landmark, TrendingUp, FileText, Package, Wheat, Home,
   MinusCircle, Calculator, Info, CheckCircle2, Sprout, CalendarClock, HandHeart,
+  ShieldCheck, ClipboardCheck,
 } from "lucide-react";
 import {
   ZAKAT_RATE, ZAKAT_RATE_GREGORIAN, GOLD_NISAB_GRAMS, SILVER_NISAB_GRAMS,
@@ -391,7 +393,32 @@ export function IndividualTab() {
   const cur = (n: number) => currency(n, currencyName);
 
   return (
-    <div dir="rtl" className="grid lg:grid-cols-3 gap-6 text-right">
+    <div dir="rtl" className="text-right">
+      {/* تقرير الطباعة الاحترافي — يظهر فقط عند الطباعة */}
+      <PrintReportWrapper
+        name={name} profession={profession} countryCode={countryCode} currencyName={currencyName}
+        calendarBasis={calendarBasis} effectiveRate={effectiveRate}
+        calc={calc} incomeUsufructTotal={incomeUsufructTotal} ownsLivestock={ownsLivestock}
+        hawl={hawl} nisabStartDate={nisabStartDate}
+        goldPrice={goldPrice} silverPrice={silverPrice}
+        accountantName={accountantName} accountantLicense={accountantLicense}
+        accountantPreamble={accountantPreamble} accountantOpinion={accountantOpinion}
+        opinionType={opinionType} previousYearZakat={previousYearZakat}
+      />
+
+      <Tabs defaultValue="calc" className="space-y-5">
+        <TabsList dir="rtl" className="grid grid-cols-2 w-full max-w-2xl mx-auto print:hidden">
+          <TabsTrigger value="calc" className="gap-1.5 text-sm py-2.5">
+            <Calculator className="h-4 w-4" /> حساب الزكاة
+          </TabsTrigger>
+          <TabsTrigger value="audit" className="gap-1.5 text-sm py-2.5">
+            <ShieldCheck className="h-4 w-4" /> المراجعة والتدقيق والإمتثال
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="calc" className="mt-0">
+          <div className="grid lg:grid-cols-3 gap-6">
+
       {/* تقرير الطباعة الاحترافي — يظهر فقط عند الطباعة */}
       <PrintReport
         data={{
