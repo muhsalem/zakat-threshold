@@ -1457,6 +1457,59 @@ export function IndividualTab() {
           }}
         />
 
+        {/* === زكاة الفطر التلقائية === */}
+        {(() => {
+          const today = new Date();
+          const h = gregorianToHijri(today.getFullYear(), today.getMonth() + 1, today.getDate());
+          // مفعّل: أواخر شعبان (اليوم 25+) أو طوال رمضان
+          const isLateShaaban = h.hm === 8 && h.hd >= 25;
+          const isRamadan = h.hm === 9;
+          const fitrActive = isLateShaaban || isRamadan;
+          if (!fitrActive) return null;
+          const persons = Math.max(0, Math.floor(num(fitrFamilySize)));
+          const pricePerKg = WHEAT_PRICE_PER_KG[countryCode] ?? WHEAT_PRICE_PER_KG.EG;
+          const fitrTotal = persons * FITR_SAA_KG * pricePerKg;
+          return (
+            <Card className="border-gold/40 bg-gold/5 shadow-soft print:hidden">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Wheat className="h-4 w-4 text-gold" /> زكاة الفطر (إضافة تلقائية)
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Alert className="border-gold/30 bg-gold/10">
+                  <Info className="h-4 w-4" />
+                  <AlertDescription className="text-xs leading-relaxed">
+                    تم تفعيلها تلقائيًا لأن التاريخ الهجري الحالي هو
+                    <b> {isRamadan ? "شهر رمضان" : "أواخر شعبان"}</b> ({h.hd}/{h.hm}/{h.hy}هـ).
+                    صاع نبوي ≈ {FITR_SAA_KG} كجم من القمح × سعر الكيلو في {country.name}.
+                  </AlertDescription>
+                </Alert>
+                <div className="flex items-center justify-between gap-3">
+                  <Label className="text-xs">إدراج في الإجمالي</Label>
+                  <Switch checked={fitrEnabled} onCheckedChange={setFitrEnabled} />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">عدد أفراد الأسرة</Label>
+                  <Input
+                    type="number" min="1" step="1" value={fitrFamilySize}
+                    onChange={(e) => setFitrFamilySize(e.target.value)}
+                    dir="ltr" style={{ textAlign: "right" }}
+                  />
+                </div>
+                <div className="rounded-md bg-background border border-gold/30 p-2 text-xs space-y-0.5">
+                  <div>سعر الكيلو المرجعي: <b>{cur(pricePerKg)}</b></div>
+                  <div>إجمالي الوزن: <b>{fmt(persons * FITR_SAA_KG)} كجم</b></div>
+                  <div className="text-gold-foreground font-bold pt-1 border-t border-gold/20">
+                    قيمة زكاة الفطر النقدية: {cur(fitrTotal)}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })()}
+
+
 
         <Card className="shadow-soft">
           <CardHeader className="pb-3"><CardTitle className="text-base">تفصيل النتيجة</CardTitle></CardHeader>
