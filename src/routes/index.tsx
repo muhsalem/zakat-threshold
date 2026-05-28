@@ -50,7 +50,7 @@ function Index() {
           </p>
         </section>
 
-        <Tabs defaultValue="individual" className="space-y-6">
+        <Tabs defaultValue="individual" className="space-y-6" dir="rtl">
           <TabsList dir="rtl" className="grid grid-cols-3 md:grid-cols-5 w-full max-w-4xl mx-auto h-auto gap-1">
 
             <TabsTrigger value="wizard" className="gap-1.5 text-xs md:text-sm py-2.5">

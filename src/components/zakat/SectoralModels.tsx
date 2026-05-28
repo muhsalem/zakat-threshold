@@ -730,8 +730,8 @@ export function SectoralModels({
             <span>النصاب: <b>{fmt(nisab)} {currency}</b></span>
           </div>
 
-          <Tabs value={tab} onValueChange={setTab} className="space-y-4">
-            <TabsList className="grid h-auto" style={{ gridTemplateColumns: `repeat(${Math.min(visibleTabs.length, 6)}, minmax(0, 1fr))` }}>
+          <Tabs value={tab} onValueChange={setTab} className="space-y-4" dir="rtl">
+            <TabsList dir="rtl" className="grid h-auto" style={{ gridTemplateColumns: `repeat(${Math.min(visibleTabs.length, 6)}, minmax(0, 1fr))` }}>
               {visibleTabs.map((t) => {
                 const I = t.icon;
                 return (

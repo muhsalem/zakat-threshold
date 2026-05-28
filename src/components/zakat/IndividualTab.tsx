@@ -424,7 +424,7 @@ export function IndividualTab() {
         }}
       />
 
-      <Tabs defaultValue="calc" className="space-y-5">
+      <Tabs defaultValue="calc" className="space-y-5" dir="rtl">
         <TabsList dir="rtl" className="grid grid-cols-2 w-full max-w-2xl mx-auto print:hidden">
           <TabsTrigger value="calc" className="gap-1.5 text-sm py-2.5">
             <Calculator className="h-4 w-4" /> حساب الزكاة

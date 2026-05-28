@@ -78,8 +78,8 @@ function AuthPage() {
             <CardTitle className="text-center">الدخول إلى حسابك</CardTitle>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="login">
-              <TabsList className="grid grid-cols-2 w-full">
+            <Tabs defaultValue="login" dir="rtl">
+              <TabsList dir="rtl" className="grid grid-cols-2 w-full">
                 <TabsTrigger value="login" className="gap-1.5"><LogIn className="h-4 w-4" /> دخول</TabsTrigger>
                 <TabsTrigger value="signup" className="gap-1.5"><UserPlus className="h-4 w-4" /> إنشاء حساب</TabsTrigger>
               </TabsList>
