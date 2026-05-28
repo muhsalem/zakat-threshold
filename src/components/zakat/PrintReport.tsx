@@ -949,7 +949,7 @@ export function PrintReport({ data }: { data: PrintReportData }) {
 
 // ===== أنماط مساعدة (إطارات أنحف، محاذاة أرقام أدق) =====
 const tableStyle: React.CSSProperties = {
-  width: "100%", borderCollapse: "collapse", fontSize: "9.5pt",
+  width: "100%", borderCollapse: "collapse", fontSize: "10pt",
 };
 
 function cardStyle(C: any): React.CSSProperties {
@@ -964,31 +964,35 @@ function cardStyle(C: any): React.CSSProperties {
 }
 function titleStyle(C: any): React.CSSProperties {
   return {
-    fontSize: "12pt", fontWeight: 800, color: C.primary,
-    paddingBottom: "5pt", marginBottom: "8pt",
-    borderBottom: `0.6pt solid ${C.gold}`,
+    fontSize: "13pt", fontWeight: 800, color: C.primary,
+    paddingBottom: "6pt", marginBottom: "10pt",
+    borderBottom: `0.6pt solid ${C.gold}`, letterSpacing: "-0.2pt",
   };
 }
 function thStyle(C: any): React.CSSProperties {
   return {
-    border: `0.3pt solid ${C.softBorder}`, padding: "6pt 8pt", textAlign: "right",
-    background: C.primary, color: "white", fontWeight: 700, fontSize: "9pt",
+    border: `0.3pt solid ${C.softBorder}`, padding: "7pt 9pt", textAlign: "right",
+    background: C.primary, color: "white", fontWeight: 700, fontSize: "9.5pt",
+    letterSpacing: "0.1pt",
   };
 }
 function thLabel(C: any): React.CSSProperties {
   return {
-    border: `0.3pt solid ${C.softBorder}`, padding: "6pt 8pt", textAlign: "right",
+    border: `0.3pt solid ${C.softBorder}`, padding: "7pt 9pt", textAlign: "right",
     background: C.cream, fontWeight: 700, color: C.primary, width: "25%",
+    fontSize: "9.75pt",
   };
 }
 function tdCell(kind?: "num" | "center"): React.CSSProperties {
   const base: React.CSSProperties = {
-    border: "0.3pt solid #e7e1c8", padding: "5pt 8pt", textAlign: "right",
+    border: "0.3pt solid #e7e1c8", padding: "6pt 9pt", textAlign: "right",
+    fontSize: "10pt", lineHeight: 1.6,
   };
   if (kind === "num") return {
     ...base, textAlign: "left", direction: "ltr",
     fontVariantNumeric: "tabular-nums",
-    fontFeatureSettings: '"tnum"',
+    fontFeatureSettings: '"tnum","lnum"',
+    fontWeight: 600, letterSpacing: 0,
   };
   if (kind === "center") return { ...base, textAlign: "center" };
   return base;
