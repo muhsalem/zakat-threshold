@@ -171,14 +171,23 @@ export function PrintReport({ data }: { data: PrintReportData }) {
     const now = new Date();
     setIssueDate(now);
     const origin = typeof window !== "undefined" ? window.location.origin : "";
-    setVerifyUrl(`${origin}/?verify=${id}`);
     const payload = [
       id, data.name, data.countryCode, data.totalZakat.toFixed(2),
       data.monetaryBase.toFixed(2), data.moneyNisab.toFixed(2),
       now.toISOString(),
     ].join("|");
-    computeHash(payload).then(setDocHash);
-  }, [data.name, data.countryCode, data.totalZakat, data.monetaryBase, data.moneyNisab]);
+    computeHash(payload).then((h) => {
+      setDocHash(h);
+      const basis = data.nisabBasis ?? "beneficial";
+      const params = new URLSearchParams({
+        id, hash: h, basis, v: "Nisab v1.0",
+        method: "AAOIFI-35",
+        issuer: "Nisab Platform",
+        issued: now.toISOString(),
+      });
+      setVerifyUrl(`${origin}/verify?${params.toString()}`);
+    });
+  }, [data.name, data.countryCode, data.totalZakat, data.monetaryBase, data.moneyNisab, data.nisabBasis]);
 
   const issueGregorian = issueDate ? fmtGregorian(issueDate) : "";
   const issueHijri = issueDate ? fmtHijri(issueDate) : "";
@@ -701,13 +710,49 @@ export function PrintReport({ data }: { data: PrintReportData }) {
         </div>
       )}
 
-      {/* ⑨ الرأي المهني */}
+      {/* ⑨ تفاصيل المعالجة الزكوية */}
       <div className="print-avoid-break" style={cardStyle(C)}>
-        <div style={titleStyle(C)}>⑨ الرأي المهني لمحاسب الزكاة</div>
+        <div style={titleStyle(C)}>⑨ تفاصيل المعالجة الزكوية</div>
+        <table style={tableStyle}>
+          <thead>
+            <tr>
+              <th style={thStyle(C)}>البند</th>
+              <th style={thStyle(C)}>المعالجة</th>
+              <th style={thStyle(C)}>السبب الشرعي / المرجع الفقهي</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              ["الذهب للزينة والاستعمال", "غير خاضع", "وفق رأي الجمهور (مالك والشافعي وأحمد) إذا لم يكن للادخار"],
+              ["الذهب للادخار وحفظ القيمة", "خاضع للزكاة", "إجماع الفقهاء عند بلوغ النصاب (85 جم)"],
+              ["الفضة (مشغولات وسبائك)", "خاضعة", "حسب غرض الاقتناء — نصاب 595 جم"],
+              ["النقد والحسابات البنكية والمحافظ الرقمية", "خاضع", "أصول نقدية نامية بالقوة"],
+              ["الأسهم والأوراق المالية", "خاضعة", "أصول نامية — قرار مجمع الفقه الإسلامي رقم 28"],
+              ["وثائق التأمين التكافلي", "خاضعة بقيمتها الاستردادية", "AAOIFI رقم 26 — جزء نقدي مملوك"],
+              ["الأوراق التجارية (الكمبيالات)", "خاضعة", "ديون مرجوّة في حكم الحاضر"],
+              ["عروض التجارة والمستغلات", "خاضعة بالقيمة السوقية", "إجماع الفقهاء — قيمة عرض البيع"],
+              ["الدين الحالّ (واجب السداد)", "يُخصم من الوعاء", "اتفاق الفقهاء — مستحق في ذمة المُزكِّي"],
+              ["الدين طويل الأجل / المؤجل", "يُخصم قسط السنة فقط", "الفتوى المعاصرة — الباقي غير حالٍّ"],
+              ["النفقة الواجبة إذا صارت ديناً", "تُخصم", "حنابلة + قول معاصر — صارت ديناً مستقراً"],
+              ["الزروع والثمار", "خاضعة عند بلوغ النصاب", "5% بالكلفة أو 10% بدونها — نص حديث صحيح"],
+            ].map(([item, treat, why], i) => (
+              <tr key={i}>
+                <td style={tdCell()}><b>{item}</b></td>
+                <td style={{ ...tdCell("center"), color: treat.startsWith("غير") ? C.warn : C.primary, fontWeight: 700 }}>{treat}</td>
+                <td style={{ ...tdCell(), fontSize: "9pt", color: C.soft }}>{why}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* ⑩ النتيجة الشرعية التقديرية */}
+      <div className="print-avoid-break" style={cardStyle(C)}>
+        <div style={titleStyle(C)}>⑩ النتيجة الشرعية التقديرية</div>
         <div style={{
-          background: C.goldLight, borderRadius: "4pt",
-          padding: "8pt 11pt", fontSize: "10pt", fontWeight: 700, color: C.primary,
-          marginBottom: "6pt", borderRight: `3pt solid ${C.gold}`,
+          background: C.cream, borderRadius: "4pt",
+          padding: "10pt 13pt", fontSize: "10pt", fontWeight: 600, color: C.primary,
+          marginBottom: "6pt", lineHeight: 1.8,
         }}>
           {OPINION_LABELS[data.opinionType]}
         </div>
@@ -865,11 +910,11 @@ const tableStyle: React.CSSProperties = {
 function cardStyle(C: any): React.CSSProperties {
   return {
     background: "white",
-    border: `0.4pt solid ${C.softBorder}`,
-    borderRadius: "6pt",
-    padding: "11pt 13pt",
-    marginBottom: "9pt",
-    borderRight: `2.5pt solid ${C.primary}`,
+    border: `0.3pt solid ${C.softBorder}`,
+    borderRadius: "8pt",
+    padding: "14pt 16pt",
+    marginBottom: "12pt",
+    boxShadow: "0 1pt 3pt rgba(14,59,42,0.04)",
   };
 }
 function titleStyle(C: any): React.CSSProperties {
