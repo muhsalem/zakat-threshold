@@ -1537,6 +1537,9 @@ export function IndividualTab() {
             <SectionResult format={cur} label="زكاة الفضة" value={calc.silverZakat} eligible={calc.silverEligible} />
             <SectionResult format={cur} label="زكاة النقد والاستثمارات والتجارة والعقار (صافي)" value={calc.monetaryZakat} eligible={calc.monetaryEligible} />
             <SectionResult format={cur} label="زكاة الزروع والثمار" value={calc.cropsZakat} eligible={calc.cropsEligible} />
+            {fitrContribution > 0 && (
+              <SectionResult format={cur} label="🌾 زكاة الفطر (تلقائي — رمضان)" value={fitrContribution} />
+            )}
 
             {ownsLivestock && (calc.camelsN > 0 || calc.cowsN > 0 || calc.sheepN > 0) && (
               <div className="rounded-md border border-primary/20 bg-primary/5 p-2 mt-1 space-y-1">
