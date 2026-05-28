@@ -1388,7 +1388,7 @@ export function IndividualTab() {
           <CardContent>
             {(() => {
               const prepaid = num(prepaidZakat);
-              const netDue = Math.max(0, calc.total - prepaid);
+              const netDue = Math.max(0, calc.total - prepaid) + fitrContribution;
               return (
                 <>
                   <div className="text-4xl font-black tracking-tight">
@@ -1401,6 +1401,11 @@ export function IndividualTab() {
                   {prepaid > 0 && (
                     <p className="text-xs opacity-80 mt-1">
                       الإجمالي قبل خصم المعجَّل: <b>{fmt(calc.total)}</b> — مدفوع مقدماً: <b>{fmt(prepaid)}</b>
+                    </p>
+                  )}
+                  {fitrContribution > 0 && (
+                    <p className="text-xs opacity-80 mt-1">
+                      🌾 يشمل زكاة الفطر تلقائياً: <b>{fmt(fitrContribution)} {currencyName}</b>
                     </p>
                   )}
                   {name && <p className="text-xs opacity-80 mt-1">{name}{profession && ` — ${profession}`}</p>}
