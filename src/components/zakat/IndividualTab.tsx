@@ -107,6 +107,17 @@ export function IndividualTab() {
   const [prepaidZakat, setPrepaidZakat] = useState("");
   const [prepaidYears, setPrepaidYears] = useState("1");
 
+  // === زكاة الفطر التلقائية (أواخر شعبان + رمضان) ===
+  const [fitrFamilySize, setFitrFamilySize] = useState("1");
+  const [fitrEnabled, setFitrEnabled] = useState(true);
+  // سعر تقريبي لكيلو القمح حسب الدولة (نفس الجدول المعتمد في حاسبة الفطر)
+  const WHEAT_PRICE_PER_KG: Record<string, number> = {
+    EG: 22, SA: 5, AE: 5, KW: 0.5, QA: 5, BH: 0.5, OM: 0.5,
+    JO: 1, MA: 12, DZ: 90, TN: 3, IQ: 1300, SY: 5500, LB: 50000,
+    YE: 250, SD: 600, LY: 5, PS: 4, TR: 35, US: 1.2, EU: 1.1, GB: 0.95,
+  };
+  const FITR_SAA_KG = 2.176; // صاع نبوي بالقمح
+
 
   // الدولة والأسعار
   const [countryCode, setCountryCode] = useState("EG");
@@ -391,6 +402,20 @@ export function IndividualTab() {
   ]);
 
   const cur = (n: number) => currency(n, currencyName);
+
+  // === حساب زكاة الفطر التلقائية (أواخر شعبان أو رمضان) ===
+  const fitrAuto = useMemo(() => {
+    const today = new Date();
+    const h = gregorianToHijri(today.getFullYear(), today.getMonth() + 1, today.getDate());
+    const active = (h.hm === 8 && h.hd >= 25) || h.hm === 9;
+    if (!active) return { active: false, total: 0, hijri: h };
+    const persons = Math.max(0, Math.floor(num(fitrFamilySize)));
+    const pricePerKg = WHEAT_PRICE_PER_KG[countryCode] ?? WHEAT_PRICE_PER_KG.EG;
+    return { active: true, total: persons * FITR_SAA_KG * pricePerKg, hijri: h, persons, pricePerKg };
+  }, [fitrFamilySize, countryCode]);
+  const fitrContribution = fitrEnabled && fitrAuto.active ? fitrAuto.total : 0;
+
+
 
   return (
     <div dir="rtl" className="text-right">
@@ -1363,7 +1388,7 @@ export function IndividualTab() {
           <CardContent>
             {(() => {
               const prepaid = num(prepaidZakat);
-              const netDue = Math.max(0, calc.total - prepaid);
+              const netDue = Math.max(0, calc.total - prepaid) + fitrContribution;
               return (
                 <>
                   <div className="text-4xl font-black tracking-tight">
@@ -1376,6 +1401,11 @@ export function IndividualTab() {
                   {prepaid > 0 && (
                     <p className="text-xs opacity-80 mt-1">
                       الإجمالي قبل خصم المعجَّل: <b>{fmt(calc.total)}</b> — مدفوع مقدماً: <b>{fmt(prepaid)}</b>
+                    </p>
+                  )}
+                  {fitrContribution > 0 && (
+                    <p className="text-xs opacity-80 mt-1">
+                      🌾 يشمل زكاة الفطر تلقائياً: <b>{fmt(fitrContribution)} {currencyName}</b>
                     </p>
                   )}
                   {name && <p className="text-xs opacity-80 mt-1">{name}{profession && ` — ${profession}`}</p>}
@@ -1446,6 +1476,59 @@ export function IndividualTab() {
           }}
         />
 
+        {/* === زكاة الفطر التلقائية === */}
+        {(() => {
+          const today = new Date();
+          const h = gregorianToHijri(today.getFullYear(), today.getMonth() + 1, today.getDate());
+          // مفعّل: أواخر شعبان (اليوم 25+) أو طوال رمضان
+          const isLateShaaban = h.hm === 8 && h.hd >= 25;
+          const isRamadan = h.hm === 9;
+          const fitrActive = isLateShaaban || isRamadan;
+          if (!fitrActive) return null;
+          const persons = Math.max(0, Math.floor(num(fitrFamilySize)));
+          const pricePerKg = WHEAT_PRICE_PER_KG[countryCode] ?? WHEAT_PRICE_PER_KG.EG;
+          const fitrTotal = persons * FITR_SAA_KG * pricePerKg;
+          return (
+            <Card className="border-gold/40 bg-gold/5 shadow-soft print:hidden">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Wheat className="h-4 w-4 text-gold" /> زكاة الفطر (إضافة تلقائية)
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Alert className="border-gold/30 bg-gold/10">
+                  <Info className="h-4 w-4" />
+                  <AlertDescription className="text-xs leading-relaxed">
+                    تم تفعيلها تلقائيًا لأن التاريخ الهجري الحالي هو
+                    <b> {isRamadan ? "شهر رمضان" : "أواخر شعبان"}</b> ({h.hd}/{h.hm}/{h.hy}هـ).
+                    صاع نبوي ≈ {FITR_SAA_KG} كجم من القمح × سعر الكيلو في {country.name}.
+                  </AlertDescription>
+                </Alert>
+                <div className="flex items-center justify-between gap-3">
+                  <Label className="text-xs">إدراج في الإجمالي</Label>
+                  <Switch checked={fitrEnabled} onCheckedChange={setFitrEnabled} />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">عدد أفراد الأسرة</Label>
+                  <Input
+                    type="number" min="1" step="1" value={fitrFamilySize}
+                    onChange={(e) => setFitrFamilySize(e.target.value)}
+                    dir="ltr" style={{ textAlign: "right" }}
+                  />
+                </div>
+                <div className="rounded-md bg-background border border-gold/30 p-2 text-xs space-y-0.5">
+                  <div>سعر الكيلو المرجعي: <b>{cur(pricePerKg)}</b></div>
+                  <div>إجمالي الوزن: <b>{fmt(persons * FITR_SAA_KG)} كجم</b></div>
+                  <div className="text-gold-foreground font-bold pt-1 border-t border-gold/20">
+                    قيمة زكاة الفطر النقدية: {cur(fitrTotal)}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })()}
+
+
 
         <Card className="shadow-soft">
           <CardHeader className="pb-3"><CardTitle className="text-base">تفصيل النتيجة</CardTitle></CardHeader>
@@ -1454,6 +1537,9 @@ export function IndividualTab() {
             <SectionResult format={cur} label="زكاة الفضة" value={calc.silverZakat} eligible={calc.silverEligible} />
             <SectionResult format={cur} label="زكاة النقد والاستثمارات والتجارة والعقار (صافي)" value={calc.monetaryZakat} eligible={calc.monetaryEligible} />
             <SectionResult format={cur} label="زكاة الزروع والثمار" value={calc.cropsZakat} eligible={calc.cropsEligible} />
+            {fitrContribution > 0 && (
+              <SectionResult format={cur} label="🌾 زكاة الفطر (تلقائي — رمضان)" value={fitrContribution} />
+            )}
 
             {ownsLivestock && (calc.camelsN > 0 || calc.cowsN > 0 || calc.sheepN > 0) && (
               <div className="rounded-md border border-primary/20 bg-primary/5 p-2 mt-1 space-y-1">
