@@ -395,15 +395,33 @@ export function IndividualTab() {
   return (
     <div dir="rtl" className="text-right">
       {/* تقرير الطباعة الاحترافي — يظهر فقط عند الطباعة */}
-      <PrintReportWrapper
-        name={name} profession={profession} countryCode={countryCode} currencyName={currencyName}
-        calendarBasis={calendarBasis} effectiveRate={effectiveRate}
-        calc={calc} incomeUsufructTotal={incomeUsufructTotal} ownsLivestock={ownsLivestock}
-        hawl={hawl} nisabStartDate={nisabStartDate}
-        goldPrice={goldPrice} silverPrice={silverPrice}
-        accountantName={accountantName} accountantLicense={accountantLicense}
-        accountantPreamble={accountantPreamble} accountantOpinion={accountantOpinion}
-        opinionType={opinionType} previousYearZakat={previousYearZakat}
+      <PrintReport
+        data={{
+          name, profession, countryCode, currencyName,
+          calendarBasis, effectiveRate,
+          rows: [
+            { label: "زكاة الذهب", gross: calc.totalGoldValue, nisab: calc.goldNisabValue, eligible: calc.goldEligible, zakat: calc.goldZakat },
+            { label: "زكاة الفضة", gross: calc.silverValue, nisab: calc.silverNisabValue, eligible: calc.silverEligible, zakat: calc.silverZakat },
+            { label: "زكاة الأوراق النقدية والحسابات البنكية والمحافظ الرقمية", gross: calc.cashTotal, eligible: true, zakat: 0 },
+            { label: "زكاة الأوراق المالية ووثائق التأمين", gross: calc.securitiesTotal, eligible: true, zakat: 0 },
+            { label: "زكاة الأوراق التجارية (الكمبيالات وأوراق القبض)", gross: calc.billsTotal, eligible: true, zakat: 0 },
+            { label: "زكاة الدخل وعروض التجارة والمستغلات", gross: calc.tradeTotal + calc.realEstateZakatable + incomeUsufructTotal, eligible: true, zakat: 0 },
+            { label: "زكاة الزروع والثمار", gross: calc.cropsValue, eligible: calc.cropsEligible, zakat: calc.cropsZakat },
+          ],
+          livestock: { camels: calc.camelsN, cows: calc.cowsN, sheep: calc.sheepN, show: ownsLivestock },
+          monetaryGross: calc.monetaryGross,
+          debts: calc.debts,
+          monetaryBase: calc.monetaryBase,
+          moneyNisab: calc.moneyNisab,
+          totalZakat: calc.total,
+          hawlComplete: hawl ? hawl.hawlComplete : null,
+          hawlDate: nisabStartDate,
+          goldPricePerGram: num(goldPrice),
+          silverPricePerGram: num(silverPrice),
+          accountantName, accountantLicense, accountantPreamble,
+          accountantOpinion, opinionType,
+          previousYearZakat,
+        }}
       />
 
       <Tabs defaultValue="calc" className="space-y-5">
@@ -418,6 +436,7 @@ export function IndividualTab() {
 
         <TabsContent value="calc" className="mt-0">
           <div className="grid lg:grid-cols-3 gap-6">
+
 
       {/* تقرير الطباعة الاحترافي — يظهر فقط عند الطباعة */}
       <PrintReport
