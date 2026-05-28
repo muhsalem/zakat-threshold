@@ -425,70 +425,100 @@ export function NisabHistory() {
 
 
           {selectedRow ? (() => {
-            // هل هذا الشهر/السنة في المستقبل؟ (مقارنة بتاريخ اليوم)
             const today = new Date();
             const rowDate = new Date(selectedRow.year, (selectedRow.month ?? 1) - 1, 1);
             const isForecast = rowDate > new Date(today.getFullYear(), today.getMonth(), 1);
             const countryLabel = COUNTRY_LABEL_AR[selectedRow.country_code || "GLOBAL"] || (selectedRow.country_code || "GLOBAL");
+            const goldLocal = selectedRow.gold_price * dbFx;
+            const silverLocal = selectedRow.silver_price * dbFx;
             return (
               <div className="space-y-3">
                 <div className="flex flex-wrap items-center gap-2 text-xs">
                   <Badge variant="outline" className="gap-1">
                     <Globe2 className="h-3 w-3" /> {countryLabel}
                   </Badge>
-                  <Badge variant="secondary">عملة المرجع: {selectedRow.currency}</Badge>
+                  <Badge variant="secondary">مرجع: {selectedRow.currency}</Badge>
+                  <Badge className="bg-primary/10 text-primary border border-primary/30">
+                    العرض: {dbCountry.name} ({dbCountry.currency})
+                  </Badge>
                   {isForecast ? (
                     <Badge className="bg-amber-100 text-amber-900 border border-amber-300 gap-1">
-                      <TrendingUp className="h-3 w-3" /> توقع مستقبلي — ليس سعر فعلي
+                      <TrendingUp className="h-3 w-3" /> توقع مستقبلي
                     </Badge>
                   ) : (
                     <Badge className="bg-emerald-100 text-emerald-900 border border-emerald-300">سعر فعلي مسجل</Badge>
                   )}
                 </div>
+
                 <div className="grid sm:grid-cols-2 gap-3">
                   <div className="rounded-lg border border-gold/30 bg-gold/10 p-4">
                     <div className="flex items-center gap-2 mb-2 text-gold-foreground">
                       <Gem className="h-4 w-4" />
                       <span className="font-semibold">سعر جرام الذهب</span>
-                      <Badge variant="secondary" className="text-[10px]">{selectedRow.currency}</Badge>
                     </div>
-                    <p className="text-xl font-bold">{fmt(selectedRow.gold_price, 2)}</p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      نصاب الذهب = {fmt(selectedRow.gold_price * GOLD_NISAB_GRAMS, 0)} {selectedRow.currency}
+                    <p className="text-xl font-bold">
+                      {fmt(goldLocal, 2)} <span className="text-xs font-normal">{dbCountry.currency}</span>
+                    </p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">
+                      عالميًا: {fmt(selectedRow.gold_price, 2)} {selectedRow.currency}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1.5 border-t pt-1.5">
+                      نصاب الذهب = <b>{fmt(goldLocal * GOLD_NISAB_GRAMS, 0)} {dbCountry.currency}</b>
                     </p>
                   </div>
                   <div className="rounded-lg border bg-muted p-4">
                     <div className="flex items-center gap-2 mb-2">
                       <Coins className="h-4 w-4" />
                       <span className="font-semibold">سعر جرام الفضة</span>
-                      <Badge variant="secondary" className="text-[10px]">{selectedRow.currency}</Badge>
                     </div>
-                    <p className="text-xl font-bold">{fmt(selectedRow.silver_price, 3)}</p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      نصاب الفضة = {fmt(selectedRow.silver_price * SILVER_NISAB_GRAMS, 0)} {selectedRow.currency}
+                    <p className="text-xl font-bold">
+                      {fmt(silverLocal, 3)} <span className="text-xs font-normal">{dbCountry.currency}</span>
+                    </p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">
+                      عالميًا: {fmt(selectedRow.silver_price, 3)} {selectedRow.currency}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1.5 border-t pt-1.5">
+                      نصاب الفضة = <b>{fmt(silverLocal * SILVER_NISAB_GRAMS, 0)} {dbCountry.currency}</b>
                     </p>
                   </div>
                 </div>
+
+                {/* انحراف معياري: محلي vs عالمي */}
+                <div className="rounded-md border border-primary/20 bg-primary/5 p-3 text-xs leading-relaxed">
+                  <div className="font-semibold text-primary mb-1">📊 مقارنة السعر المحلي بالعالمي</div>
+                  <div className="grid sm:grid-cols-2 gap-2">
+                    <div>
+                      الذهب — محلي حالي: <b>{fmt(dbCountry.gold24, 2)} {dbCountry.currency}</b>{" "}
+                      / مرجع السوق (محوّل): <b>{fmt(goldLocal, 2)} {dbCountry.currency}</b>{" "}
+                      <span className={dbCountry.gold24 > goldLocal ? "text-amber-700" : "text-emerald-700"}>
+                        ({dbCountry.gold24 > goldLocal ? "+" : ""}{(((dbCountry.gold24 - goldLocal) / Math.max(1, goldLocal)) * 100).toFixed(1)}%)
+                      </span>
+                    </div>
+                    <div>
+                      الفضة — محلي حالي: <b>{fmt(dbCountry.silver, 3)} {dbCountry.currency}</b>{" "}
+                      / مرجع السوق (محوّل): <b>{fmt(silverLocal, 3)} {dbCountry.currency}</b>
+                    </div>
+                  </div>
+                </div>
+
                 {selectedRow.event && (
                   <p className="text-xs text-muted-foreground">
                     📌 {selectedRow.event}
                     {selectedRow.hijri_year ? ` — الموافق ${selectedRow.hijri_year}هـ` : ""}
                   </p>
                 )}
+
                 {isForecast && (
                   <div className="rounded-md border border-amber-300 bg-amber-50 p-3 text-xs leading-relaxed text-amber-900">
                     <div className="font-bold mb-1 flex items-center gap-1">
                       <TrendingUp className="h-3.5 w-3.5" /> كيف تم احتساب هذا التوقع؟
                     </div>
                     <p>
-                      هذا الشهر لم يحلّ بعد، فالسعر المعروض ليس قراءة سوقية فعلية، بل
-                      <b> توقع خطي (Linear Extrapolation)</b> مبني على متوسط الاتجاه الشهري
-                      للسنوات السابقة (2020–2025) مُسقَطًا على شهور 2026، مع تنعيم بسيط (Smoothing)
-                      وفق متوسط نمو الذهب التاريخي ~٨٪ سنوياً والفضة ~٦٪ سنوياً.
+                      <b>توقع اتجاهي خطي (Trend-Based Linear Extrapolation)</b> مبني على متوسط الاتجاه
+                      الشهري للسنوات (2020–2025)، مع تنعيم بسيط ونمو الذهب التاريخي ~٨٪ سنوياً والفضة ~٦٪ سنوياً.
                     </p>
                     <p className="mt-1.5 opacity-90">
-                      ⚠️ التوقع لأغراض تخطيطية فقط، ولا يجوز اعتماده فقهيًا لحساب الزكاة قبل
-                      حلول وقته. استخدم بطاقة "نصاب اليوم" أعلاه لقراءة لحظية حقيقية من السوق.
+                      ⚠️ التوقع لأغراض تخطيطية فقط، ولا يجوز اعتماده فقهيًا لحساب الزكاة قبل حلول وقته.
                     </p>
                   </div>
                 )}
@@ -497,8 +527,91 @@ export function NisabHistory() {
           })() : (
             <p className="text-sm text-muted-foreground">لا توجد بيانات متاحة لهذا الاختيار.</p>
           )}
+
+          {/* === توقّع بقيّة العام بالسيناريوهات (الأفضل للزكاة) === */}
+          {forecastScenarios && forecastScenarios.remaining.length > 0 && (
+            <div className="rounded-lg border border-primary/30 bg-gradient-to-bl from-primary/5 to-transparent p-4 space-y-3 mt-2">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div>
+                  <div className="font-bold text-primary flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4" /> توقع النصاب لبقيّة العام — بالسيناريوهات
+                  </div>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">
+                    الأنسب للزكاة: يقارن سيناريو محافظ/أساسي/متفائل لمساعدتك في تخطيط حولان النصاب.
+                    المرجع: آخر قراءة مسجّلة ({MONTHS_AR[forecastScenarios.asOfMonth - 1]} {forecastScenarios.asOfYear}).
+                  </p>
+                </div>
+                <Badge variant="outline" className="text-[10px]">
+                  العملة المعروضة: {dbCountry.currency}
+                </Badge>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs border-collapse">
+                  <thead>
+                    <tr className="bg-muted/60">
+                      <th className="border px-2 py-1.5 text-right">الشهر</th>
+                      <th className="border px-2 py-1.5">محافظ — ذهب</th>
+                      <th className="border px-2 py-1.5">أساسي — ذهب</th>
+                      <th className="border px-2 py-1.5">متفائل — ذهب</th>
+                      <th className="border px-2 py-1.5">أساسي — فضة</th>
+                      <th className="border px-2 py-1.5 print:hidden">اعتماد</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {forecastScenarios.remaining.map((m, idx) => {
+                      const gC = forecastScenarios.gold.conservative[idx].value * dbFx;
+                      const gB = forecastScenarios.gold.base[idx].value * dbFx;
+                      const gO = forecastScenarios.gold.optimistic[idx].value * dbFx;
+                      const sB = forecastScenarios.silver.base[idx].value * dbFx;
+                      return (
+                        <tr key={m} className="hover:bg-muted/30">
+                          <td className="border px-2 py-1.5 text-right font-semibold">
+                            {MONTHS_AR[m - 1]}
+                          </td>
+                          <td className="border px-2 py-1.5 text-center text-emerald-700">{fmt(gC, 2)}</td>
+                          <td className="border px-2 py-1.5 text-center font-bold text-primary">{fmt(gB, 2)}</td>
+                          <td className="border px-2 py-1.5 text-center text-amber-700">{fmt(gO, 2)}</td>
+                          <td className="border px-2 py-1.5 text-center">{fmt(sB, 3)}</td>
+                          <td className="border px-2 py-1.5 text-center print:hidden">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-6 px-2 text-[10px]"
+                              onClick={() => applyForecast(
+                                forecastScenarios.gold.base[idx].value,
+                                forecastScenarios.silver.base[idx].value
+                              )}
+                            >
+                              اعتماد في (أ)
+                            </Button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="grid sm:grid-cols-3 gap-2 text-[11px]">
+                <div className="rounded-md border border-emerald-300 bg-emerald-50 p-2 text-emerald-900">
+                  <b>محافظ (Conservative)</b> — يفترض تباطؤ النمو (50% من الاتجاه). الأكثر احتياطًا لحماية الفقير.
+                </div>
+                <div className="rounded-md border border-primary/30 bg-primary/5 p-2">
+                  <b>أساسي (Base)</b> — استمرار الاتجاه الحالي كما هو. هو السيناريو المعتمد افتراضيًا.
+                </div>
+                <div className="rounded-md border border-amber-300 bg-amber-50 p-2 text-amber-900">
+                  <b>متفائل (Optimistic)</b> — تسارع الاتجاه (150%). للتخطيط الأقصى.
+                </div>
+              </div>
+              <p className="text-[10px] text-muted-foreground leading-relaxed">
+                * هذه توقعات إحصائية وليست فتوى. عند حلول وقت الزكاة فعليًا، اعتمد دائمًا على القراءة اللحظية من بطاقة "نصاب اليوم" أعلاه.
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
+
 
 
       {/* رسم بياني — آخر 100 عام + نسبة الذهب/الفضة */}
