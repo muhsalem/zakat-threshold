@@ -3,9 +3,10 @@ import { currency as fmtCurrency, camelZakat, cowZakat, sheepZakat, ZAKAT_RECIPI
 import logoUrl from "@/assets/zakat-logo.png";
 
 /**
- * تقرير زكوي احترافي للطباعة (A4) — صفحتان:
- *   ص1: ترويسة + بيانات المزكي + الأنصبة + الوعاء + المقارنة + الرأي المهني
- *   ص2: مصارف الزكاة الثمانية (صفحة مستقلة بفواصل مميزة)
+ * تقرير زكوي احترافي (A4) — ثلاث صفحات:
+ *   ص1: غلاف الهوية — لوجو كبير، عنوان، إصدار، QR، تحذير قانوني بارز
+ *   ص2: البيانات + الأنصبة + الوعاء + المقارنة + المنهجية + الديون + الرأي + التوقيع الرقمي
+ *   ص3: مصارف الزكاة الثمانية
  *
  * منصة: نِصاب — الحاسبة الشرعية المعتمدة للزكاة
  */
@@ -45,6 +46,16 @@ export interface PrintReportData {
   accountantOpinion: string;
   opinionType: "clean" | "qualified" | "adverse";
   previousYearZakat: string;
+  /** اختياري — لاعتماد قاعدة النصاب: ذهب / فضة / الأنفع للفقراء (الافتراضي) */
+  nisabBasis?: "gold" | "silver" | "beneficial";
+  /** اختياري — أساس تقييم الأصول */
+  valuationBasis?: "market" | "book";
+  /** اختياري — تاريخ التقييم (نص حر) */
+  valuationDate?: string;
+  /** اختياري — تفصيل الديون المخصومة */
+  debtsBreakdown?: { current: number; longTerm: number; installmentsDueInHawl: number };
+  /** اختياري — الافتراضات والإفصاحات الإضافية */
+  assumptions?: string;
 }
 
 const COUNTRY_FULL: Record<string, string> = {
@@ -65,10 +76,26 @@ const CURRENCY_FULL: Record<string, string> = {
   US: "دولار أمريكي", EU: "يورو", GB: "جنيه إسترليني",
 };
 
+/** صياغة محايدة شرعياً — لا تستخدم لغة تدقيق محاسبية ملزمة */
 const OPINION_LABELS: Record<PrintReportData["opinionType"], string> = {
-  clean: "رأي نظيف غير متحفظ — التقرير يعبّر بصدق وعدالة عن الوعاء الزكوي.",
-  qualified: "رأي متحفظ — توجد بنود استرشادية تحتاج لمراجعة فقهية تخصصية.",
-  adverse: "رأي معاكس — البيانات المُدخلة غير كافية أو يشوبها لبس يحول دون الجزم بالنتيجة.",
+  clean: "بحسب البيانات المُدخَلة، يظهر أن الوعاء الزكوي قد استوفى شروط الوجوب الشرعية، والنتائج المعروضة تعكس ما أُفصح عنه من أرصدة والتزامات.",
+  qualified: "بحسب البيانات المُدخَلة، توجد بنود تحتاج إلى مراجعة فقهية أو محاسبية تخصصية قبل اعتماد النتيجة نهائياً.",
+  adverse: "بحسب البيانات المُدخَلة، يظهر أن الوعاء الزكوي أقل من النصاب الشرعي، وعليه لا تجب الزكاة في هذا الحول، ويُستحبّ التصدّق بما تيسّر.",
+};
+
+const NISAB_BASIS_LABELS: Record<NonNullable<PrintReportData["nisabBasis"]>, { name: string; fiqh: string }> = {
+  gold: {
+    name: "نصاب الذهب (٨٥ جم)",
+    fiqh: "مذهب جمهور الفقهاء قديماً ومذهب الحنفية في النقد الورقي اليوم؛ يعتمد قيمة ٨٥ جراماً من الذهب الخالص حداً أدنى للوجوب، وهو الأشدّ وأبرأ للذمّة عند بعض المعاصرين.",
+  },
+  silver: {
+    name: "نصاب الفضة (٥٩٥ جم)",
+    fiqh: "مذهب الحنابلة والشافعية والمالكية في الأصل؛ يعتمد قيمة ٥٩٥ جراماً من الفضة، وهو في العادة أدنى من نصاب الذهب فيكون أيسر في وجوب الزكاة.",
+  },
+  beneficial: {
+    name: "الأنفع للفقراء (الأدنى بين النصابين)",
+    fiqh: "ترجيح مَجمَع الفقه الإسلامي وكثير من الهيئات الشرعية المعاصرة — يُؤخذ بالنصاب الأدنى (غالباً الفضة) تحقيقاً لمصلحة الفقراء وتعميماً للنفع وبراءةً للذمّة.",
+  },
 };
 
 function generateReportId(name: string): string {
@@ -76,6 +103,21 @@ function generateReportId(name: string): string {
   const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
   const seed = (name || "ZK").replace(/\s+/g, "").slice(0, 3).toUpperCase() || "ZK";
   return `NS-${seed}-${ts}-${rand}`;
+}
+
+async function computeHash(payload: string): Promise<string> {
+  try {
+    if (typeof crypto !== "undefined" && crypto.subtle) {
+      const buf = new TextEncoder().encode(payload);
+      const hashBuf = await crypto.subtle.digest("SHA-256", buf);
+      return Array.from(new Uint8Array(hashBuf))
+        .map((b) => b.toString(16).padStart(2, "0")).join("").slice(0, 32).toUpperCase();
+    }
+  } catch {/* ignore */}
+  // fallback بسيط
+  let h = 0;
+  for (let i = 0; i < payload.length; i++) h = ((h << 5) - h + payload.charCodeAt(i)) | 0;
+  return Math.abs(h).toString(16).toUpperCase().padStart(16, "0");
 }
 
 const ORDER_PRIORITY = [
@@ -96,27 +138,21 @@ function fmtHijri(d: Date): string {
     return new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura", {
       day: "numeric", month: "long", year: "numeric",
     }).format(d) + " هـ";
-  } catch {
-    return "";
-  }
+  } catch { return ""; }
 }
 function fmtGregorian(d: Date): string {
   try {
     return new Intl.DateTimeFormat("ar-EG", {
       weekday: "long", day: "numeric", month: "long", year: "numeric",
     }).format(d) + " م";
-  } catch {
-    return d.toDateString();
-  }
+  } catch { return d.toDateString(); }
 }
 function fmtTime(d: Date): string {
   try {
     return new Intl.DateTimeFormat("ar-EG", {
       hour: "2-digit", minute: "2-digit", hour12: true,
     }).format(d);
-  } catch {
-    return d.toTimeString().slice(0, 5);
-  }
+  } catch { return d.toTimeString().slice(0, 5); }
 }
 
 export function PrintReport({ data }: { data: PrintReportData }) {
@@ -124,10 +160,10 @@ export function PrintReport({ data }: { data: PrintReportData }) {
   const countryLong = COUNTRY_FULL[data.countryCode] ?? data.countryCode;
   const curFull = (n: number) => fmtCurrency(n, currencyLong);
 
-  // كل القيم المتغيرة (الوقت/التاريخ/المعرّف/الرابط) تُحسب بعد التحميل لتفادي أخطاء الـ SSR/Hydration
   const [reportId, setReportId] = useState<string>("NS-PENDING");
   const [issueDate, setIssueDate] = useState<Date | null>(null);
   const [verifyUrl, setVerifyUrl] = useState<string>("");
+  const [docHash, setDocHash] = useState<string>("—");
 
   useEffect(() => {
     const id = generateReportId(data.name);
@@ -136,21 +172,25 @@ export function PrintReport({ data }: { data: PrintReportData }) {
     setIssueDate(now);
     const origin = typeof window !== "undefined" ? window.location.origin : "";
     setVerifyUrl(`${origin}/?verify=${id}`);
-  }, [data.name]);
+    const payload = [
+      id, data.name, data.countryCode, data.totalZakat.toFixed(2),
+      data.monetaryBase.toFixed(2), data.moneyNisab.toFixed(2),
+      now.toISOString(),
+    ].join("|");
+    computeHash(payload).then(setDocHash);
+  }, [data.name, data.countryCode, data.totalZakat, data.monetaryBase, data.moneyNisab]);
 
-  // التواريخ المعروضة (الميلادي + الهجري + الوقت + حولان الحول)
   const issueGregorian = issueDate ? fmtGregorian(issueDate) : "";
   const issueHijri = issueDate ? fmtHijri(issueDate) : "";
   const issueTime = issueDate ? fmtTime(issueDate) : "";
 
-  // تاريخ حولان الحول القادم: من تاريخ بدء الحول الحالي + 354 يوماً (هجري) أو من تاريخ الإصدار
   const baseHawl = data.hawlDate ? new Date(data.hawlDate) : (issueDate ?? null);
   const nextHawl = baseHawl ? new Date(baseHawl.getTime() + HAWL_DAYS_HIJRI * 86400000) : null;
   const nextHawlGreg = nextHawl ? fmtGregorian(nextHawl) : "";
   const nextHawlHijri = nextHawl ? fmtHijri(nextHawl) : "";
 
   const qrPayload = verifyUrl || reportId;
-  const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=0&data=${encodeURIComponent(qrPayload)}`;
+  const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=0&data=${encodeURIComponent(qrPayload)}`;
 
   const prevYear = parseFloat(data.previousYearZakat || "0") || 0;
   const diff = data.totalZakat - prevYear;
@@ -158,142 +198,180 @@ export function PrintReport({ data }: { data: PrintReportData }) {
 
   const sortedRows = [...data.rows].sort((a, b) => rowOrder(a.label) - rowOrder(b.label));
 
-  // مقارنة الوعاء الصافي بنصاب الذهب
   const goldNisabValue = (data.goldPricePerGram ?? 0) * GOLD_NISAB_GRAMS;
   const silverNisabValue = (data.silverPricePerGram ?? 0) * SILVER_NISAB_GRAMS;
   const reachedGoldNisab = goldNisabValue > 0 && data.monetaryBase >= goldNisabValue;
   const reachedSilverNisab = silverNisabValue > 0 && data.monetaryBase >= silverNisabValue;
-  // الأنفع للفقير = أدنى النصابين (عادةً الفضة) فيكون أيسر للوجوب
-  const benefactorNisab = (silverNisabValue > 0 && goldNisabValue > 0)
-    ? Math.min(silverNisabValue, goldNisabValue)
-    : Math.max(silverNisabValue, goldNisabValue);
 
+  const nisabBasis = data.nisabBasis ?? "beneficial";
+  const basisInfo = NISAB_BASIS_LABELS[nisabBasis];
+  const valuationBasis = data.valuationBasis ?? "market";
+
+  // باليتة هادئة، إطارات أنحف، خطوط محسّنة (Cairo قياسي / Amiri للنصوص الشرعية)
   const C = {
     primary: "#0e3b2a",
     primaryLight: "#1e6b4a",
     primaryDark: "#072a1d",
     gold: "#c9a84c",
     goldDark: "#9b8030",
-    goldLight: "#f3e8c4",
-    cream: "#faf7ee",
-    deepCream: "#f0ede0",
-    border: "#bda867",
-    text: "#1a1a1a",
-    soft: "#4a5246",
-    danger: "#a33",
+    goldLight: "#f6efd3",
+    cream: "#fbf9f0",
+    deepCream: "#f1ede0",
+    border: "#d8cfae",
+    softBorder: "#e7e1c8",
+    text: "#1a2018",
+    soft: "#5a615a",
+    danger: "#b03a2e",
+    warn: "#a06000",
     success: "#1f7a4d",
   };
 
+  const FONT_UI = "'Cairo', 'IBM Plex Sans Arabic', 'Tajawal', system-ui, sans-serif";
+  const FONT_QURAN = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
+
   return (
-    <div id="print-report" dir="rtl" style={{ fontFamily: "Tajawal, Amiri, sans-serif", color: C.text, fontSize: "10pt" }}>
-      {/* ============================================================ */}
-      {/* صفحة 1 — تقرير حساب زكاة الأفراد */}
-      {/* ============================================================ */}
+    <div id="print-report" dir="rtl" style={{
+      fontFamily: FONT_UI, color: C.text, fontSize: "10.5pt", lineHeight: 1.65,
+    }}>
+      {/* تحميل خطوط أنظف من Google Fonts (لـ html2canvas في PDF و الطباعة) */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=Amiri+Quran&family=Amiri:wght@400;700&display=swap');
+        #print-report table { border-collapse: collapse; }
+        #print-report .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; text-align: left; direction: ltr; }
+      `}</style>
 
-      {/* ====== شريط الهوية العلوي (لاتيني فقط لتفادي كسر اتصال الحروف) ====== */}
-      <div className="print-avoid-break" style={{
-        textAlign: "center",
-        padding: "5pt 0 7pt",
-        borderBottom: `2pt double ${C.gold}`,
-        marginBottom: "10pt",
-        fontSize: "8.5pt",
-        color: C.goldDark,
-        fontWeight: 700,
-        letterSpacing: "2pt",
+      {/* ============================================================ */}
+      {/* صفحة 1 — الغلاف */}
+      {/* ============================================================ */}
+      <div style={{
+        minHeight: "260mm", display: "flex", flexDirection: "column",
+        background: C.cream, padding: "20pt 18pt", borderRadius: "10pt",
       }}>
-        ◆ NISAB · CERTIFIED ZAKAT CALCULATOR ◆
-      </div>
-
-      {/* ====== الترويسة الفاخرة (خلفية صلبة بدل التدرج لتفادي مشاكل html2canvas) ====== */}
-      <div className="print-avoid-break" style={{
-        background: C.primary,
-        color: "white",
-        padding: "16pt 18pt",
-        borderRadius: "8pt",
-        marginBottom: "10pt",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: "14pt",
-        border: `1.5pt solid ${C.gold}`,
-      }}>
-        {/* لوجو كبير */}
+        {/* شريط هوية لاتيني */}
         <div style={{
-          width: "115pt", height: "115pt", flexShrink: 0,
-          background: "rgba(255,255,255,0.06)",
-          border: `1pt solid ${C.gold}`,
-          borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-          padding: "6pt",
+          textAlign: "center", fontSize: "8.5pt", color: C.goldDark,
+          letterSpacing: "3pt", fontWeight: 700, paddingBottom: "8pt",
+          borderBottom: `1pt double ${C.gold}`,
         }}>
-          <img src={logoUrl} alt={`شعار ${PLATFORM_NAME_AR}`}
-            style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+          ◆ NISAB · CERTIFIED ZAKAT CALCULATOR ◆
         </div>
 
-        {/* العنوان والبسملة (بدون letter-spacing لحماية اتصال الحروف) */}
-        <div style={{ flex: 1, textAlign: "center" }}>
+        {/* اللوجو الكبير + البسملة */}
+        <div style={{ textAlign: "center", marginTop: "26pt" }}>
           <div style={{
-            fontFamily: "'Amiri', 'Tajawal', serif",
-            fontSize: "22pt",
-            fontWeight: 700,
-            color: C.goldLight,
-            lineHeight: 1.4,
-            padding: "4pt 14pt",
-            borderTop: `0.6pt solid ${C.gold}`,
-            borderBottom: `0.6pt solid ${C.gold}`,
-            display: "inline-block",
+            width: "170pt", height: "170pt", margin: "0 auto",
+            borderRadius: "50%", background: "white",
+            border: `2pt solid ${C.gold}`, padding: "10pt",
+            boxShadow: "0 4pt 18pt rgba(14,59,42,0.18)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}>
+            <img src={logoUrl} alt={`شعار ${PLATFORM_NAME_AR}`}
+              style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+          </div>
+
+          <div style={{
+            fontFamily: FONT_QURAN, fontSize: "26pt", color: C.primary,
+            marginTop: "22pt", lineHeight: 1.4, fontWeight: 700,
           }}>
             بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
           </div>
+
           <div style={{
-            fontSize: "22pt", fontWeight: 900, marginTop: "8pt",
-            fontFamily: "'Tajawal', sans-serif",
-            color: "white",
-            lineHeight: 1.2,
+            display: "inline-block", marginTop: "18pt", padding: "10pt 26pt",
+            background: C.primary, color: "white", borderRadius: "8pt",
+            fontSize: "22pt", fontWeight: 900, letterSpacing: "0",
           }}>
             تقرير حساب زكاة الأفراد
           </div>
-          <div style={{ fontSize: "9pt", opacity: 0.92, marginTop: "3pt", color: C.goldLight }}>
+
+          <div style={{
+            marginTop: "10pt", fontSize: "11pt", color: C.soft,
+          }}>
             وفق المعايير الشرعية والمحاسبية الدولية (AAOIFI)
+          </div>
+
+          <div style={{
+            marginTop: "14pt", fontSize: "18pt", color: C.primary, fontWeight: 800,
+            fontFamily: FONT_QURAN,
+          }}>
+            {PLATFORM_NAME_AR}
+            <span style={{ fontFamily: FONT_UI, fontSize: "11pt", color: C.goldDark, marginInlineStart: "10pt", fontWeight: 600 }}>
+              — {PLATFORM_TAGLINE}
+            </span>
           </div>
         </div>
 
-        {/* QR + رابط التحقق */}
-        <div style={{ textAlign: "center", flexShrink: 0 }}>
-          <img src={qrSrc} alt="QR"
-            style={{ width: "82pt", height: "82pt", background: "white", padding: "3pt", borderRadius: "5pt" }} />
-          <div style={{ fontSize: "7pt", marginTop: "3pt", opacity: 0.9 }}>امسح للتحقق</div>
+        {/* بيانات الإصدار + QR */}
+        <div style={{
+          marginTop: "auto", paddingTop: "30pt",
+          display: "grid", gridTemplateColumns: "1fr auto", gap: "16pt", alignItems: "center",
+        }}>
+          <div style={{
+            background: "white", border: `0.6pt solid ${C.softBorder}`, borderRadius: "8pt",
+            padding: "12pt 14pt", fontSize: "9.5pt", lineHeight: 1.8,
+          }}>
+            <div><b style={{ color: C.primary }}>المُزكِّي:</b> {data.name || "—"}</div>
+            <div><b style={{ color: C.primary }}>الدولة:</b> {countryLong} — <b style={{ color: C.primary }}>العملة:</b> {currencyLong}</div>
+            <div><b style={{ color: C.primary }}>التاريخ:</b> {issueGregorian}</div>
+            <div><b style={{ color: C.primary }}>الموافق:</b> {issueHijri}</div>
+            <div><b style={{ color: C.primary }}>الوقت:</b> {issueTime}</div>
+            <div><b style={{ color: C.primary }}>رقم التقرير:</b> <span style={{ fontFamily: "monospace", color: C.goldDark, fontWeight: 700 }}>{reportId}</span></div>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <img src={qrSrc} alt="QR" style={{
+              width: "110pt", height: "110pt", background: "white",
+              padding: "5pt", border: `0.6pt solid ${C.softBorder}`, borderRadius: "6pt",
+            }} />
+            <div style={{ fontSize: "8pt", marginTop: "4pt", color: C.soft }}>امسح للتحقق</div>
+          </div>
+        </div>
+
+        {/* التحذير القانوني البارز */}
+        <div className="print-avoid-break" style={{
+          marginTop: "16pt", padding: "12pt 14pt", borderRadius: "8pt",
+          background: "#fff5e0", border: `1pt solid ${C.warn}`,
+          display: "flex", gap: "10pt", alignItems: "flex-start",
+        }}>
+          <div style={{
+            width: "26pt", height: "26pt", borderRadius: "50%",
+            background: C.warn, color: "white", flexShrink: 0,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontWeight: 900, fontSize: "15pt",
+          }}>!</div>
+          <div style={{ fontSize: "10pt", color: "#5b3a00", lineHeight: 1.7 }}>
+            <b style={{ fontSize: "11pt" }}>تنبيه قانوني وشرعي:</b><br />
+            هذا التقرير <b>أداة مساعدة للحساب وفق مدخلات المستخدم، وليس فتوى شرعية ملزمة</b> ولا تقريراً معتمداً من جهة حكومية.
+            تظلّ المسؤولية الشرعية والمالية على عاتق المُزكِّي، ويُنصح بمراجعة مفتٍ أو محاسب زكاة معتمد للحالات الخاصة.
+          </div>
         </div>
       </div>
 
-      {/* ====== شريط معلومات الإصدار ====== */}
+      {/* ============================================================ */}
+      {/* صفحة 2 — البيانات والوعاء */}
+      {/* ============================================================ */}
+      <div className="print-page-break" />
+
+      {/* ترويسة مبسّطة للصفحة الثانية */}
       <div className="print-avoid-break" style={{
-        background: C.deepCream,
-        border: `0.6pt solid ${C.border}`, borderRadius: "5pt",
-        padding: "8pt 12pt", marginBottom: "10pt", fontSize: "8.5pt",
-        display: "grid", gridTemplateColumns: "1fr 1fr", gap: "5pt 16pt",
+        background: C.primary, color: "white", padding: "10pt 14pt",
+        borderRadius: "6pt", marginBottom: "10pt",
+        display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10pt",
       }}>
-        <span><b style={{ color: C.primary }}>رقم التقرير:</b> <span style={{ fontFamily: "monospace", color: C.goldDark, fontWeight: 700 }}>{reportId}</span></span>
-        <span><b style={{ color: C.primary }}>التقويم المعتمد:</b> {data.calendarBasis === "hijri" ? "هجري (354 يوم)" : "ميلادي (365 يوم)"}</span>
-        <span><b style={{ color: C.primary }}>التاريخ الميلادي:</b> {issueGregorian}</span>
-        <span><b style={{ color: C.primary }}>التاريخ الهجري:</b> {issueHijri}</span>
-        <span><b style={{ color: C.primary }}>وقت الإصدار:</b> {issueTime}</span>
-        {nextHawl && (
-          <span><b style={{ color: C.primary }}>حلول الحول القادم:</b> {nextHawlGreg} — {nextHawlHijri}</span>
-        )}
-        <span style={{ gridColumn: "1 / -1", borderTop: `0.4pt dashed ${C.border}`, paddingTop: "4pt", marginTop: "2pt" }}>
-          <b style={{ color: C.primary }}>رابط التحقق / إعادة الطباعة:</b>{" "}
-          <a href={verifyUrl} style={{ color: C.primaryLight, textDecoration: "underline", wordBreak: "break-all", fontFamily: "monospace", fontSize: "8pt" }}>{verifyUrl || "—"}</a>
-        </span>
+        <div style={{ display: "flex", alignItems: "center", gap: "10pt" }}>
+          <img src={logoUrl} alt="" style={{ width: "26pt", height: "26pt", background: "white", borderRadius: "50%", padding: "2pt" }} />
+          <div style={{ fontWeight: 800, fontSize: "12pt" }}>{PLATFORM_NAME_AR} — تفصيل الوعاء الزكوي</div>
+        </div>
+        <div style={{ fontSize: "8.5pt", opacity: 0.9, fontFamily: "monospace" }}>{reportId}</div>
       </div>
 
-      {/* ====== مقدمة المحاسب (بدون عنوان "ديباجة محاسب الزكاة") ====== */}
+      {/* مقدمة المحاسب */}
       {(data.accountantPreamble || data.accountantName) && (
-        <div className="print-card print-avoid-break" style={cardStyle(C, C.gold)}>
+        <div className="print-avoid-break" style={cardStyle(C)}>
           {data.accountantPreamble && (
             <div style={{
-              fontSize: "9.5pt", lineHeight: 1.85, whiteSpace: "pre-line",
-              textAlign: "justify", fontStyle: "italic", color: C.soft,
-              borderRight: `3pt solid ${C.gold}`, paddingRight: "10pt",
+              fontSize: "10pt", lineHeight: 1.85, whiteSpace: "pre-line",
+              textAlign: "justify", color: C.soft,
+              borderRight: `2pt solid ${C.gold}`, paddingRight: "10pt",
             }}>
               {data.accountantPreamble}
             </div>
@@ -307,10 +385,10 @@ export function PrintReport({ data }: { data: PrintReportData }) {
         </div>
       )}
 
-      {/* ====== بيانات المزكي ====== */}
-      <div className="print-card print-avoid-break" style={cardStyle(C)}>
+      {/* ① بيانات المزكي */}
+      <div className="print-avoid-break" style={cardStyle(C)}>
         <div style={titleStyle(C)}>① بيانات المُزكِّي</div>
-        <table className="print-table" style={tableStyle}>
+        <table style={tableStyle}>
           <tbody>
             <tr>
               <td style={thLabel(C)}>الاسم</td>
@@ -332,47 +410,111 @@ export function PrintReport({ data }: { data: PrintReportData }) {
                 {data.hawlComplete === null ? "غير محدد" : data.hawlComplete ? "✓ مكتمل" : "⏳ لم يكتمل"}
               </td>
             </tr>
+            {nextHawl && (
+              <tr>
+                <td style={thLabel(C)}>تاريخ حلول الحول القادم</td>
+                <td style={tdCell()} colSpan={3}>{nextHawlGreg} — {nextHawlHijri}</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
 
-      {/* ====== أنصبة الذهب والفضة ====== */}
-      <div className="print-card print-avoid-break" style={{ ...cardStyle(C, C.gold), background: C.goldLight }}>
-        <div style={titleStyle(C)}>② الأنصبة الشرعية المرجعية</div>
-        <table className="print-table" style={tableStyle}>
+      {/* ② قاعدة النصاب المختارة + شرح فقهي */}
+      <div className="print-avoid-break" style={cardStyle(C)}>
+        <div style={titleStyle(C)}>② قاعدة النصاب المعتمدة في هذا التقرير</div>
+        <div style={{
+          padding: "10pt 12pt", background: C.goldLight, borderRadius: "5pt",
+          borderRight: `3pt solid ${C.gold}`, fontSize: "10pt", lineHeight: 1.8,
+        }}>
+          <div style={{ fontWeight: 800, color: C.primary, fontSize: "11pt", marginBottom: "4pt" }}>
+            {basisInfo.name}
+          </div>
+          <div style={{ color: C.soft }}>{basisInfo.fiqh}</div>
+        </div>
+
+        <table style={{ ...tableStyle, marginTop: "8pt" }}>
           <thead>
             <tr>
               <th style={thStyle(C)}>الصنف</th>
               <th style={thStyle(C)}>النصاب الشرعي</th>
               <th style={thStyle(C)}>سعر الجرام</th>
-              <th style={thStyle(C)}>قيمة النصاب بالعملة</th>
+              <th style={thStyle(C)}>قيمة النصاب</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
+            <tr style={nisabBasis === "gold" ? { background: C.goldLight } : undefined}>
               <td style={tdCell()}><b>الذهب</b> (عيار 24)</td>
-              <td style={tdCell("center")}>{GOLD_NISAB_GRAMS} جرام (20 مثقالاً)</td>
+              <td style={tdCell("center")}>{GOLD_NISAB_GRAMS} جرام</td>
               <td style={tdCell("num")}>{data.goldPricePerGram ? curFull(data.goldPricePerGram) : "—"}</td>
               <td style={tdCell("num")}>{data.goldPricePerGram ? curFull(goldNisabValue) : "—"}</td>
             </tr>
-            <tr>
+            <tr style={nisabBasis === "silver" ? { background: C.goldLight } : undefined}>
               <td style={tdCell()}><b>الفضة</b></td>
-              <td style={tdCell("center")}>{SILVER_NISAB_GRAMS} جرام (200 درهم)</td>
+              <td style={tdCell("center")}>{SILVER_NISAB_GRAMS} جرام</td>
               <td style={tdCell("num")}>{data.silverPricePerGram ? curFull(data.silverPricePerGram) : "—"}</td>
               <td style={tdCell("num")}>{data.silverPricePerGram ? curFull(silverNisabValue) : "—"}</td>
             </tr>
             <tr style={{ background: C.cream }}>
-              <td style={{ ...tdCell(), fontWeight: 700, color: C.primary }} colSpan={3}>نصاب المال المعتمد في الحساب (الأنفع للفقراء)</td>
+              <td style={{ ...tdCell(), fontWeight: 700, color: C.primary }} colSpan={3}>
+                النصاب المعتمد في هذا التقرير
+              </td>
               <td style={{ ...tdCell("num"), fontWeight: 800, color: C.primary }}>{curFull(data.moneyNisab)}</td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      {/* ====== تحديد الوعاء الزكوي ====== */}
-      <div className="print-card" style={cardStyle(C)}>
-        <div style={titleStyle(C)}>③ تحديد الوعاء الزكوي</div>
-        <table className="print-table" style={tableStyle}>
+      {/* ③ المنهجية وأسس التقييم */}
+      <div className="print-avoid-break" style={cardStyle(C)}>
+        <div style={titleStyle(C)}>③ المنهجية وأسس التقييم</div>
+        <table style={tableStyle}>
+          <tbody>
+            <tr>
+              <td style={thLabel(C)}>أساس القياس</td>
+              <td style={tdCell()}>
+                {valuationBasis === "market"
+                  ? "القيمة السوقية العادلة في تاريخ حلول الحول"
+                  : "القيمة الدفترية وفق سجلات المُزكِّي"}
+              </td>
+            </tr>
+            <tr>
+              <td style={thLabel(C)}>تاريخ التقييم المرجعي</td>
+              <td style={tdCell()}>{data.valuationDate || issueGregorian}</td>
+            </tr>
+            <tr>
+              <td style={thLabel(C)}>التقويم الزمني</td>
+              <td style={tdCell()}>{data.calendarBasis === "hijri" ? "هجري — ٣٥٤ يوماً" : "ميلادي — ٣٦٥ يوماً"}</td>
+            </tr>
+            <tr>
+              <td style={thLabel(C)}>نسبة الزكاة المطبّقة</td>
+              <td style={tdCell()}>
+                {(data.effectiveRate * 100).toFixed(3)}%
+                {data.calendarBasis === "gregorian" && " (مُعدَّلة لتفاوت السنة الميلادية)"}
+              </td>
+            </tr>
+            <tr>
+              <td style={thLabel(C)}>أصول الزروع والأنعام</td>
+              <td style={tdCell()}>تُقدَّر شرعاً وفق فقه الأبواب الخاصة (٥٪ أو ١٠٪ للزروع، عيناً للأنعام).</td>
+            </tr>
+          </tbody>
+        </table>
+        {data.assumptions && (
+          <div style={{
+            marginTop: "8pt", padding: "8pt 10pt", background: C.cream, borderRadius: "4pt",
+            fontSize: "9.5pt", color: C.soft, lineHeight: 1.7, whiteSpace: "pre-line",
+            borderRight: `2pt solid ${C.gold}`,
+          }}>
+            <b style={{ color: C.primary }}>الافتراضات والإفصاحات الإضافية:</b><br />
+            {data.assumptions}
+          </div>
+        )}
+      </div>
+
+      {/* ④ تحديد الوعاء الزكوي */}
+      <div style={cardStyle(C)}>
+        <div style={titleStyle(C)}>④ تحديد الوعاء الزكوي</div>
+        <table style={tableStyle}>
           <thead>
             <tr>
               <th style={thStyle(C)}>البند</th>
@@ -414,9 +556,8 @@ export function PrintReport({ data }: { data: PrintReportData }) {
                 {curFull(data.monetaryBase)}
               </td>
               <td style={{
-                ...tdCell("num"),
-                background: C.primary,
-                color: "white", fontWeight: 900, fontSize: "11pt",
+                ...tdCell("num"), background: C.primary,
+                color: "white", fontWeight: 900, fontSize: "11.5pt",
               }}>
                 {curFull(data.totalZakat)}
               </td>
@@ -425,23 +566,57 @@ export function PrintReport({ data }: { data: PrintReportData }) {
         </table>
       </div>
 
-      {/* ====== مقارنة الوعاء بالنصاب وخيار المُزكِّي ====== */}
-      <div className="print-card print-avoid-break" style={{
-        ...cardStyle(C, C.gold),
-        background: reachedGoldNisab
-          ? '#eaf5ee'
-          : '#fff8e6',
-      }}>
-        <div style={titleStyle(C)}>④ مقارنة الوعاء بالنصاب وخيار المُزكِّي</div>
+      {/* ⑤ تفصيل الديون المخصومة (إن وُجد) */}
+      {data.debtsBreakdown && (data.debtsBreakdown.current + data.debtsBreakdown.longTerm + data.debtsBreakdown.installmentsDueInHawl > 0) && (
+        <div className="print-avoid-break" style={cardStyle(C)}>
+          <div style={titleStyle(C)}>⑤ تفصيل الديون والالتزامات المخصومة</div>
+          <div style={{ fontSize: "9pt", color: C.soft, marginBottom: "6pt" }}>
+            ضابط شرعي: <b>لا يُخصم كلُّ دين</b>. يُخصم الدين الحالّ، وأقساط الديون طويلة الأجل المستحقة خلال الحول فقط — وفق ترجيح كثير من المعاصرين ومجمع الفقه الإسلامي الدولي.
+          </div>
+          <table style={tableStyle}>
+            <thead>
+              <tr>
+                <th style={thStyle(C)}>نوع الالتزام</th>
+                <th style={thStyle(C)}>المبلغ</th>
+                <th style={thStyle(C)}>المعالجة</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style={tdCell()}>ديون حالّة الأداء</td>
+                <td style={tdCell("num")}>{curFull(data.debtsBreakdown.current)}</td>
+                <td style={{ ...tdCell("center"), color: C.success, fontWeight: 700 }}>تُخصم بالكامل</td>
+              </tr>
+              <tr style={{ background: C.cream }}>
+                <td style={tdCell()}>أقساط مستحقة خلال الحول</td>
+                <td style={tdCell("num")}>{curFull(data.debtsBreakdown.installmentsDueInHawl)}</td>
+                <td style={{ ...tdCell("center"), color: C.success, fontWeight: 700 }}>تُخصم</td>
+              </tr>
+              <tr>
+                <td style={tdCell()}>ديون طويلة الأجل (ما بعد الحول)</td>
+                <td style={tdCell("num")}>{curFull(data.debtsBreakdown.longTerm)}</td>
+                <td style={{ ...tdCell("center"), color: C.warn, fontWeight: 700 }}>لا تُخصم</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      )}
 
-        <table className="print-table" style={tableStyle}>
+      {/* ⑥ مقارنة الوعاء بالنصاب وخيار المُزكِّي */}
+      <div className="print-avoid-break" style={{
+        ...cardStyle(C),
+        background: reachedGoldNisab ? '#eaf5ee' : '#fff8e6',
+      }}>
+        <div style={titleStyle(C)}>⑥ مقارنة الوعاء بالنصاب وخيار المُزكِّي</div>
+
+        <table style={tableStyle}>
           <tbody>
             <tr>
               <td style={thLabel(C)}>الوعاء الصافي المحسوب</td>
               <td style={{ ...tdCell("num"), fontWeight: 800, color: C.primary }}>{curFull(data.monetaryBase)}</td>
             </tr>
             <tr>
-              <td style={thLabel(C)}>نصاب الذهب (الأشد)</td>
+              <td style={thLabel(C)}>نصاب الذهب (الأشدّ)</td>
               <td style={tdCell("num")}>{goldNisabValue > 0 ? curFull(goldNisabValue) : "—"}</td>
             </tr>
             <tr>
@@ -451,59 +626,48 @@ export function PrintReport({ data }: { data: PrintReportData }) {
             <tr>
               <td style={thLabel(C)}>النتيجة مقارنةً بنصاب الذهب</td>
               <td style={{ ...tdCell(), fontWeight: 800, color: reachedGoldNisab ? C.success : C.danger }}>
-                {reachedGoldNisab ? "✓ بلغ الوعاءُ نصابَ الذهب — الزكاة واجبة قطعاً" : "✗ لم يبلغ الوعاءُ نصابَ الذهب"}
+                {reachedGoldNisab ? "✓ بلغ الوعاءُ نصابَ الذهب" : "✗ لم يبلغ الوعاءُ نصابَ الذهب"}
               </td>
             </tr>
             <tr>
               <td style={thLabel(C)}>النتيجة مقارنةً بنصاب الفضة</td>
               <td style={{ ...tdCell(), fontWeight: 800, color: reachedSilverNisab ? C.success : C.danger }}>
-                {reachedSilverNisab ? "✓ بلغ الوعاءُ نصابَ الفضة — يجب الإخراج على الراجح" : "✗ لم يبلغ نصابَ الفضة"}
+                {reachedSilverNisab ? "✓ بلغ الوعاءُ نصابَ الفضة" : "✗ لم يبلغ نصابَ الفضة"}
               </td>
             </tr>
           </tbody>
         </table>
 
-        {/* الخيار المقدم للمزكي */}
         <div style={{
-          marginTop: "8pt", padding: "8pt 12pt", borderRadius: "5pt",
+          marginTop: "8pt", padding: "10pt 12pt", borderRadius: "5pt",
           background: reachedGoldNisab ? C.success : C.goldDark,
-          color: "white", fontSize: "9.5pt", lineHeight: 1.7,
+          color: "white", fontSize: "10pt", lineHeight: 1.7,
         }}>
-          <div style={{ fontWeight: 800, fontSize: "10.5pt", marginBottom: "3pt" }}>
-            {reachedGoldNisab ? "◆ الحكم المقترح:" : "◆ خيار المُزكِّي:"}
+          <div style={{ fontWeight: 800, fontSize: "11pt", marginBottom: "4pt" }}>
+            ◆ خيارات المُزكِّي وفق المذاهب الفقهية:
           </div>
           {reachedGoldNisab ? (
-            <>
-              بلغ الوعاء النقدي الصافي ({curFull(data.monetaryBase)}) نصابَ الذهب ({curFull(goldNisabValue)})،
-              وعليه تجب الزكاة بنسبة {(data.effectiveRate * 100).toFixed(3)}% بمبلغ <b>{curFull(data.totalZakat)}</b>.
-            </>
+            <>بلغ الوعاء النقدي الصافي ({curFull(data.monetaryBase)}) نصابَ الذهب — تجب الزكاة قطعاً بمبلغ <b>{curFull(data.totalZakat)}</b>.</>
           ) : reachedSilverNisab ? (
             <>
-              لم يبلغ الوعاء نصابَ الذهب، لكنه بلغ نصابَ الفضة ({curFull(silverNisabValue)}).
-              <br />
-              <b>للمُزكِّي الاختيار بين أمرين:</b>
+              <b>للمُزكِّي الاختيار بين ثلاثة مذاهب:</b>
               <ol style={{ margin: "4pt 18pt 0", padding: 0 }}>
-                <li><b>الأخذ بالأنفع للفقراء</b> (مذهب جمهور الفقهاء في النقود اليوم): إخراج زكاة قدرها {curFull(data.totalZakat)}.</li>
-                <li><b>الأخذ بنصاب الذهب</b>: لا تجب الزكاة هذا العام لعدم بلوغ النصاب الأشد.</li>
+                <li><b>اعتماد نصاب الذهب:</b> لا تجب الزكاة هذا العام لعدم بلوغ النصاب الأشدّ.</li>
+                <li><b>اعتماد نصاب الفضة:</b> تجب الزكاة بمبلغ <b>{curFull(data.totalZakat)}</b>.</li>
+                <li><b>اعتماد الأنفع للفقراء:</b> ترجيح إخراج الزكاة لما فيه من النفع للمستحقّين وبراءة الذمّة.</li>
               </ol>
-              <div style={{ marginTop: "4pt", fontSize: "8.5pt", opacity: 0.95 }}>
-                ⓘ المنصة توصي بالخيار الأول لما فيه من النفع لمستحقي الزكاة وبراءة الذمة.
-              </div>
             </>
           ) : (
-            <>
-              <b>لم يبلغ الوعاء النصاب الشرعي</b> (لا الذهب ولا الفضة)، وعليه فلا تجب الزكاة في هذا العام،
-              ويُستحب التصدق بما تيسّر دون لزوم.
-            </>
+            <><b>لم يبلغ الوعاء النصاب الشرعي</b> لا الذهب ولا الفضة — فلا تجب الزكاة هذا العام، ويُستحبّ التصدّق بما تيسّر.</>
           )}
         </div>
       </div>
 
-      {/* ====== زكاة الأنعام ====== */}
+      {/* ⑦ زكاة الأنعام */}
       {data.livestock.show && (data.livestock.camels > 0 || data.livestock.cows > 0 || data.livestock.sheep > 0) && (
-        <div className="print-card print-avoid-break" style={cardStyle(C)}>
-          <div style={titleStyle(C)}>⑤ زكاة الأنعام (تُؤدَّى عيناً لا قيمةً)</div>
-          <table className="print-table" style={tableStyle}>
+        <div className="print-avoid-break" style={cardStyle(C)}>
+          <div style={titleStyle(C)}>⑦ زكاة الأنعام (تُؤدَّى عيناً لا قيمةً)</div>
+          <table style={tableStyle}>
             <thead><tr><th style={thStyle(C)}>النوع</th><th style={thStyle(C)}>العدد</th><th style={thStyle(C)}>الواجب الشرعي</th></tr></thead>
             <tbody>
               {data.livestock.camels > 0 && <tr><td style={tdCell()}>الإبل</td><td style={tdCell("center")}>{data.livestock.camels}</td><td style={tdCell()}>{camelZakat(data.livestock.camels)}</td></tr>}
@@ -514,11 +678,11 @@ export function PrintReport({ data }: { data: PrintReportData }) {
         </div>
       )}
 
-      {/* ====== المقارنة السنوية ====== */}
+      {/* ⑧ مقارنة سنوية */}
       {prevYear > 0 && (
-        <div className="print-card print-avoid-break" style={cardStyle(C)}>
-          <div style={titleStyle(C)}>⑥ المقارنة السنوية</div>
-          <table className="print-table" style={tableStyle}>
+        <div className="print-avoid-break" style={cardStyle(C)}>
+          <div style={titleStyle(C)}>⑧ المقارنة السنوية</div>
+          <table style={tableStyle}>
             <thead><tr><th style={thStyle(C)}>البيان</th><th style={thStyle(C)}>العام السابق</th><th style={thStyle(C)}>العام الحالي</th><th style={thStyle(C)}>الفرق</th><th style={thStyle(C)}>نسبة التغير</th></tr></thead>
             <tbody>
               <tr>
@@ -537,22 +701,40 @@ export function PrintReport({ data }: { data: PrintReportData }) {
         </div>
       )}
 
-      {/* ====== الرأي المهني ====== */}
-      <div className="print-card print-avoid-break" style={cardStyle(C)}>
-        <div style={titleStyle(C)}>⑦ الرأي المهني لمحاسب الزكاة</div>
+      {/* ⑨ الرأي المهني */}
+      <div className="print-avoid-break" style={cardStyle(C)}>
+        <div style={titleStyle(C)}>⑨ الرأي المهني لمحاسب الزكاة</div>
         <div style={{
-          background: C.goldLight, border: `0.6pt solid ${C.gold}`, borderRadius: "4pt",
-          padding: "6pt 9pt", fontSize: "10pt", fontWeight: 700, color: C.primary, marginBottom: "6pt",
+          background: C.goldLight, borderRadius: "4pt",
+          padding: "8pt 11pt", fontSize: "10pt", fontWeight: 700, color: C.primary,
+          marginBottom: "6pt", borderRight: `3pt solid ${C.gold}`,
         }}>
           {OPINION_LABELS[data.opinionType]}
         </div>
         {data.accountantOpinion && (
-          <div style={{ fontSize: "9.5pt", lineHeight: 1.7, whiteSpace: "pre-line", textAlign: "justify", color: C.text }}>
+          <div style={{ fontSize: "10pt", lineHeight: 1.75, whiteSpace: "pre-line", textAlign: "justify", color: C.text }}>
             {data.accountantOpinion}
           </div>
         )}
+
+        {/* التوقيع الرقمي والـ Hash */}
+        <div className="print-avoid-break" style={{
+          marginTop: "14pt", padding: "10pt 12pt", borderRadius: "6pt",
+          background: C.cream, border: `0.6pt solid ${C.softBorder}`,
+        }}>
+          <div style={{ fontSize: "9pt", color: C.primary, fontWeight: 800, marginBottom: "4pt" }}>
+            ◆ التوقيع الرقمي والاعتماد الإلكتروني
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "4pt 12pt", fontSize: "9pt" }}>
+            <span style={{ color: C.soft }}>بصمة التوثيق (SHA‑256):</span>
+            <span style={{ fontFamily: "monospace", color: C.goldDark, fontWeight: 700, wordBreak: "break-all" }}>{docHash}</span>
+            <span style={{ color: C.soft }}>رابط التحقق:</span>
+            <a href={verifyUrl} style={{ fontFamily: "monospace", color: C.primaryLight, fontSize: "8.5pt", wordBreak: "break-all" }}>{verifyUrl || "—"}</a>
+          </div>
+        </div>
+
         <div style={{
-          marginTop: "20pt", display: "flex", justifyContent: "space-between", gap: "30pt", fontSize: "9pt",
+          marginTop: "16pt", display: "flex", justifyContent: "space-between", gap: "30pt", fontSize: "9pt",
         }}>
           <div style={{ flex: 1 }}>
             <div style={{ borderTop: `0.8pt solid ${C.primary}`, paddingTop: "3pt", textAlign: "center", color: C.primary, fontWeight: 700 }}>
@@ -561,7 +743,7 @@ export function PrintReport({ data }: { data: PrintReportData }) {
           </div>
           <div style={{ flex: 1 }}>
             <div style={{ borderTop: `0.8pt solid ${C.primary}`, paddingTop: "3pt", textAlign: "center", color: C.primary, fontWeight: 700 }}>
-              توقيع وختم المحاسب
+              ختم وتوقيع المحاسب
               {data.accountantName && <div style={{ fontSize: "8.5pt", color: C.soft, marginTop: "2pt", fontWeight: 500 }}>{data.accountantName}</div>}
             </div>
           </div>
@@ -569,11 +751,10 @@ export function PrintReport({ data }: { data: PrintReportData }) {
       </div>
 
       {/* ============================================================ */}
-      {/* صفحة 2 — مصارف الزكاة الثمانية (مستقلة بفواصل مميزة) */}
+      {/* صفحة 3 — مصارف الزكاة */}
       {/* ============================================================ */}
       <div className="print-page-break" />
 
-      {/* فاصل علوي مميز */}
       <div className="print-avoid-break" style={{
         textAlign: "center", marginBottom: "8pt",
         fontSize: "10pt", color: C.goldDark, letterSpacing: "4pt", fontWeight: 700,
@@ -582,18 +763,16 @@ export function PrintReport({ data }: { data: PrintReportData }) {
       </div>
 
       <div className="print-avoid-break" style={{
-        background: C.gold,
-        color: C.primaryDark, padding: "16pt 18pt", borderRadius: "8pt",
+        background: C.gold, color: C.primaryDark, padding: "16pt 18pt", borderRadius: "8pt",
         marginBottom: "12pt", textAlign: "center",
-        border: `1.5pt solid ${C.primary}`,
       }}>
         <div style={{
-          fontFamily: "'Amiri', 'Tajawal', serif", fontSize: "20pt", fontWeight: 700,
-          marginBottom: "6pt", lineHeight: 1.3,
+          fontFamily: FONT_QURAN, fontSize: "20pt", fontWeight: 700,
+          marginBottom: "6pt", lineHeight: 1.4,
         }}>
           بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
         </div>
-        <div style={{ fontSize: "22pt", fontWeight: 900, fontFamily: "'Tajawal', sans-serif", lineHeight: 1.2 }}>
+        <div style={{ fontSize: "22pt", fontWeight: 900, lineHeight: 1.2 }}>
           مصارف الزكاة الثمانية الشرعية
         </div>
         <div style={{ fontSize: "9.5pt", marginTop: "4pt", opacity: 0.9 }}>
@@ -601,76 +780,60 @@ export function PrintReport({ data }: { data: PrintReportData }) {
         </div>
       </div>
 
-      <div className="print-card" style={{
-        ...cardStyle(C, C.gold),
-        background: C.cream,
+      <div className="print-avoid-break" style={{
+        background: C.primary, color: "white", padding: "14pt 16pt",
+        borderRadius: "6pt", textAlign: "center", marginBottom: "12pt",
       }}>
-        <div className="print-avoid-break" style={{
-          background: C.primary,
-          color: "white", padding: "12pt 16pt",
-          borderRadius: "6pt", textAlign: "center", fontSize: "11pt", lineHeight: 2,
-          marginBottom: "12pt",
-          border: `0.6pt solid ${C.gold}`,
-        }}>
-          <div style={{ fontSize: "9pt", color: C.goldLight, marginBottom: "4pt" }}>قال تعالى:</div>
-          <div style={{ fontSize: "13pt", fontWeight: 700, color: C.goldLight, fontFamily: "'Amiri', 'Tajawal', serif", lineHeight: 1.9 }}>
-            ﴿إِنَّمَا الصَّدَقَاتُ لِلْفُقَرَاءِ وَالْمَسَاكِينِ وَالْعَامِلِينَ عَلَيْهَا وَالْمُؤَلَّفَةِ قُلُوبُهُمْ
-            وَفِي الرِّقَابِ وَالْغَارِمِينَ وَفِي سَبِيلِ اللَّهِ وَابْنِ السَّبِيلِ ۖ
-            فَرِيضَةً مِّنَ اللَّهِ ۗ وَاللَّهُ عَلِيمٌ حَكِيمٌ﴾
-          </div>
-          <div style={{ fontSize: "8.5pt", marginTop: "4pt", opacity: 0.9 }}>[سورة التوبة: 60]</div>
+        <div style={{ fontSize: "9pt", color: C.goldLight, marginBottom: "6pt" }}>قال تعالى:</div>
+        <div style={{ fontSize: "14pt", fontWeight: 700, color: C.goldLight, fontFamily: FONT_QURAN, lineHeight: 2 }}>
+          ﴿إِنَّمَا الصَّدَقَاتُ لِلْفُقَرَاءِ وَالْمَسَاكِينِ وَالْعَامِلِينَ عَلَيْهَا وَالْمُؤَلَّفَةِ قُلُوبُهُمْ
+          وَفِي الرِّقَابِ وَالْغَارِمِينَ وَفِي سَبِيلِ اللَّهِ وَابْنِ السَّبِيلِ ۖ
+          فَرِيضَةً مِّنَ اللَّهِ ۗ وَاللَّهُ عَلِيمٌ حَكِيمٌ﴾
         </div>
-
-
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "9pt" }}>
-          {ZAKAT_RECIPIENTS.map((r, i) => (
-            <div key={i} className="print-avoid-break" style={{
-              background: "white", border: `0.8pt solid ${C.gold}`, borderRadius: "6pt",
-              padding: "9pt 11pt", display: "flex", gap: "9pt", alignItems: "flex-start",
-              boxShadow: "0 1pt 3pt rgba(0,0,0,0.06)",
-              borderRight: `3pt solid ${C.primary}`,
-            }}>
-              <div style={{
-                background: C.gold,
-                color: "white", fontWeight: 900, width: "24pt", height: "24pt",
-                borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: "12pt", flexShrink: 0,
-                boxShadow: "0 1pt 2pt rgba(0,0,0,0.15)",
-              }}>
-                {i + 1}
-              </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 800, color: C.primary, fontSize: "10.5pt", marginBottom: "3pt" }}>
-                  {r.name}
-                </div>
-                <div style={{ fontSize: "8.5pt", color: C.soft, lineHeight: 1.6 }}>
-                  {r.description}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        <div style={{ fontSize: "8.5pt", marginTop: "4pt", opacity: 0.9 }}>[سورة التوبة: 60]</div>
       </div>
 
-      {/* فاصل سفلي مميز */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "9pt" }}>
+        {ZAKAT_RECIPIENTS.map((r, i) => (
+          <div key={i} className="print-avoid-break" style={{
+            background: "white", border: `0.6pt solid ${C.softBorder}`, borderRadius: "6pt",
+            padding: "10pt 12pt", display: "flex", gap: "10pt", alignItems: "flex-start",
+            borderRight: `3pt solid ${C.gold}`,
+          }}>
+            <div style={{
+              background: C.primary, color: "white", fontWeight: 900,
+              width: "26pt", height: "26pt", borderRadius: "50%",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: "12pt", flexShrink: 0,
+            }}>
+              {i + 1}
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontWeight: 800, color: C.primary, fontSize: "10.5pt", marginBottom: "3pt" }}>
+                {r.name}
+              </div>
+              <div style={{ fontSize: "9pt", color: C.soft, lineHeight: 1.65 }}>
+                {r.description}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
       <div className="print-avoid-break" style={{
-        textAlign: "center", margin: "10pt 0 6pt",
+        textAlign: "center", margin: "12pt 0 6pt",
         fontSize: "9pt", color: C.goldDark, letterSpacing: "4pt",
       }}>
         ❖ ✦ ❖ ✦ ❖
       </div>
 
-      {/* ====== التذييل القانوني + ختم الـ branding ====== */}
+      {/* تذييل قانوني خفيف + branding */}
       <div style={{
         marginTop: "8pt", padding: "10pt 14pt", borderRadius: "6pt",
-        background: C.deepCream,
-        border: `0.6pt dashed ${C.border}`,
-        fontSize: "8pt", color: C.soft, lineHeight: 1.65, textAlign: "justify",
+        background: C.deepCream, fontSize: "8.5pt", color: C.soft, lineHeight: 1.7, textAlign: "justify",
       }}>
-        <div style={{ fontWeight: 700, marginBottom: "3pt", color: C.primary }}>إخلاء مسؤولية (Disclaimer):</div>
-        هذا التقرير وثيقة <b>استرشادية فقهية‑محاسبية</b> تستند إلى البيانات التي أدخلها المستخدم،
-        ولا يُعدّ فتوى شرعية ملزمة ولا تقريراً معتمداً من جهة رسمية حكومية. تظل المسؤولية الشرعية والمالية
-        على عاتق المُزكِّي، ويُنصح بمراجعة مفتٍ معتمد للحالات الخاصة.
+        هذا التقرير وثيقة <b>استرشادية فقهية‑محاسبية</b> تستند إلى مدخلات المستخدم، ولا يُعدّ فتوى ملزمة.
+        تظلّ المسؤولية الشرعية على عاتق المُزكِّي.
 
         <div style={{
           marginTop: "8pt", paddingTop: "6pt", borderTop: `0.6pt solid ${C.gold}`,
@@ -685,8 +848,8 @@ export function PrintReport({ data }: { data: PrintReportData }) {
           </div>
           <div style={{ textAlign: "left", fontSize: "8pt", color: C.primary }}>
             <div>© {(issueDate ?? new Date()).getFullYear()} جميع الحقوق محفوظة</div>
-            <div>رقم التقرير: <span style={{ fontFamily: "monospace", fontWeight: 700, color: C.goldDark }}>{reportId}</span></div>
-            {verifyUrl && <div style={{ fontSize: "7pt" }}>للتحقق أو إعادة الطباعة: <a href={verifyUrl} style={{ color: C.primaryLight }}>{verifyUrl}</a></div>}
+            <div>التقرير: <span style={{ fontFamily: "monospace", fontWeight: 700, color: C.goldDark }}>{reportId}</span></div>
+            <div style={{ fontSize: "7pt" }}>بصمة: <span style={{ fontFamily: "monospace" }}>{docHash.slice(0, 16)}…</span></div>
           </div>
         </div>
       </div>
@@ -694,44 +857,49 @@ export function PrintReport({ data }: { data: PrintReportData }) {
   );
 }
 
-// ===== أنماط مساعدة =====
-const tableStyle: React.CSSProperties = { width: "100%", borderCollapse: "collapse", fontSize: "9pt" };
+// ===== أنماط مساعدة (إطارات أنحف، محاذاة أرقام أدق) =====
+const tableStyle: React.CSSProperties = {
+  width: "100%", borderCollapse: "collapse", fontSize: "9.5pt",
+};
 
-function cardStyle(C: any, accent?: string): React.CSSProperties {
+function cardStyle(C: any): React.CSSProperties {
   return {
     background: "white",
-    border: `0.6pt solid ${accent ?? C.border}`,
+    border: `0.4pt solid ${C.softBorder}`,
     borderRadius: "6pt",
-    padding: "10pt 12pt",
+    padding: "11pt 13pt",
     marginBottom: "9pt",
-    boxShadow: "0 1pt 3pt rgba(0,0,0,0.05)",
-    borderRight: accent ? `3pt solid ${accent}` : `2pt solid ${C.primary}`,
+    borderRight: `2.5pt solid ${C.primary}`,
   };
 }
 function titleStyle(C: any): React.CSSProperties {
   return {
-    fontSize: "11.5pt", fontWeight: 800, color: C.primary,
-    paddingBottom: "5pt", marginBottom: "7pt",
-    borderBottom: `0.8pt solid ${C.gold}`,
-    fontFamily: "Amiri, Tajawal, serif",
+    fontSize: "12pt", fontWeight: 800, color: C.primary,
+    paddingBottom: "5pt", marginBottom: "8pt",
+    borderBottom: `0.6pt solid ${C.gold}`,
   };
 }
 function thStyle(C: any): React.CSSProperties {
   return {
-    border: `0.6pt solid ${C.border}`, padding: "5pt 7pt", textAlign: "right",
-    background: C.primary,
-    color: "white", fontWeight: 700, fontSize: "9pt",
+    border: `0.3pt solid ${C.softBorder}`, padding: "6pt 8pt", textAlign: "right",
+    background: C.primary, color: "white", fontWeight: 700, fontSize: "9pt",
   };
 }
 function thLabel(C: any): React.CSSProperties {
   return {
-    border: `0.6pt solid ${C.border}`, padding: "5pt 7pt", textAlign: "right",
+    border: `0.3pt solid ${C.softBorder}`, padding: "6pt 8pt", textAlign: "right",
     background: C.cream, fontWeight: 700, color: C.primary, width: "25%",
   };
 }
 function tdCell(kind?: "num" | "center"): React.CSSProperties {
-  const base: React.CSSProperties = { border: "0.5pt solid #c9bf9a", padding: "4pt 7pt", textAlign: "right" };
-  if (kind === "num") return { ...base, textAlign: "left", fontFamily: "monospace" };
+  const base: React.CSSProperties = {
+    border: "0.3pt solid #e7e1c8", padding: "5pt 8pt", textAlign: "right",
+  };
+  if (kind === "num") return {
+    ...base, textAlign: "left", direction: "ltr",
+    fontVariantNumeric: "tabular-nums",
+    fontFeatureSettings: '"tnum"',
+  };
   if (kind === "center") return { ...base, textAlign: "center" };
   return base;
 }
