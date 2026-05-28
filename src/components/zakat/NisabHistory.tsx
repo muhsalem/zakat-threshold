@@ -63,9 +63,16 @@ type NisabRow = {
   month: number | null;
   hijri_year: number | null;
   currency: string;
+  country_code?: string;
   gold_price: number;
   silver_price: number;
   event: string | null;
+};
+
+const COUNTRY_LABEL_AR: Record<string, string> = {
+  GLOBAL: "السوق العالمية (XAU/XAG)",
+  EG: "مصر", SA: "السعودية", AE: "الإمارات", KW: "الكويت", QA: "قطر",
+  BH: "البحرين", OM: "عُمان", JO: "الأردن", US: "الولايات المتحدة",
 };
 
 export function NisabHistory() {
