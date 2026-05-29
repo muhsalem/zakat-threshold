@@ -843,6 +843,17 @@ export function IndividualTab() {
                     </div>
                   </div>
                 </div>
+                <div className="grid md:grid-cols-2 gap-3">
+                  <NumField
+                    label="وزن الأحجار الكريمة في المشغولات (للاستبعاد)"
+                    value={brkStoneGrams}
+                    onChange={setBrkStoneGrams}
+                    unit="جم"
+                  />
+                  <div className="rounded-md border bg-primary/5 border-primary/20 p-3 text-[11px] leading-relaxed flex items-center">
+                    <span><b className="text-primary">المصنعية مستبعَدة تلقائياً</b> — الحساب بوزن الذهب الصافي فقط.</span>
+                  </div>
+                </div>
                 <div className="rounded-md border border-dashed p-3 space-y-2">
                   <div className="text-xs text-muted-foreground">ذهب ادخاري غير قابل للبس (ميداليات · جُعَل · ألواح · قطع تذكارية)</div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
