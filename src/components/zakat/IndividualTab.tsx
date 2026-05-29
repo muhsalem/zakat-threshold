@@ -762,6 +762,18 @@ export function IndividualTab() {
                   </div>
                 </div>
                 <div className="grid md:grid-cols-2 gap-3 pt-2">
+                  <NumField
+                    label="وزن الأحجار الكريمة المُدمجة (للاستبعاد)"
+                    value={jwStoneGrams}
+                    onChange={setJwStoneGrams}
+                    unit="جم"
+                    hint="الألماس · الياقوت · الزمرد · اللؤلؤ — لا زكاة فيها لذاتها"
+                  />
+                  <div className="rounded-md border bg-primary/5 border-primary/20 p-3 text-[11px] leading-relaxed">
+                    <b className="text-primary">المصنعية مستبعَدة تلقائياً</b> — لأن الحساب يتم بوزن الذهب الصافي × سعر الجرام، فلا تدخل أجرة الصياغة في الوعاء.
+                  </div>
+                </div>
+                <div className="grid md:grid-cols-2 gap-3 pt-2">
                   <div className="space-y-1.5">
                     <Label className="text-sm">غرض الاقتناء</Label>
                     <RadioGroup value={jewelryPurpose} onValueChange={(v) => setJewelryPurpose(v as "storage" | "wear")} className="flex gap-4">
@@ -773,12 +785,36 @@ export function IndividualTab() {
                     <div className="flex items-center justify-between rounded-md border px-3 py-2">
                       <div className="space-y-0.5">
                         <Label className="text-sm">إخضاع حلي الزينة للزكاة (رأي الحنفية)</Label>
-                        <p className="text-[10px] text-muted-foreground">إيقافه = رأي الجمهور (لا زكاة على المستعمل)</p>
+                        <p className="text-[10px] text-muted-foreground">إيقافه = رأي الجمهور (لا زكاة على المستعمل بشروطه)</p>
                       </div>
                       <Switch checked={jewelryOpinion === "hanafi"} onCheckedChange={(v) => setJewelryOpinion(v ? "hanafi" : "majority")} />
                     </div>
                   )}
                 </div>
+                {jewelryPurpose === "wear" && jewelryOpinion === "majority" && (
+                  <div className="rounded-md border border-primary/30 bg-primary/5 p-3 space-y-2">
+                    <div className="text-xs font-semibold text-primary">شروط إعفاء حلي الزينة (رأي الجمهور)</div>
+                    <div className="grid sm:grid-cols-3 gap-2">
+                      <div className="flex items-center justify-between rounded-md border bg-background px-2.5 py-1.5">
+                        <Label htmlFor="jw-haal" className="text-[11px]">حال غير مؤجل (مستعمل فعلاً)</Label>
+                        <Switch id="jw-haal" checked={jwHaal} onCheckedChange={setJwHaal} />
+                      </div>
+                      <div className="flex items-center justify-between rounded-md border bg-background px-2.5 py-1.5">
+                        <Label htmlFor="jw-mod" className="text-[11px]">في حدود القصد والاعتدال</Label>
+                        <Switch id="jw-mod" checked={jwModeration} onCheckedChange={setJwModeration} />
+                      </div>
+                      <div className="flex items-center justify-between rounded-md border bg-background px-2.5 py-1.5">
+                        <Label htmlFor="jw-perm" className="text-[11px]">استعمال مباح (لا تبرّج محرّم)</Label>
+                        <Switch id="jw-perm" checked={jwPermissible} onCheckedChange={setJwPermissible} />
+                      </div>
+                    </div>
+                    {!(jwHaal && jwModeration && jwPermissible) && (
+                      <p className="text-[11px] text-destructive leading-relaxed">
+                        ⚠ لاختلال أحد الشروط الثلاثة يخضع الحلي للزكاة احتياطاً حتى على رأي الجمهور.
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* د) المشغولات الذهبية الأخرى */}
