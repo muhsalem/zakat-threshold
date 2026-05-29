@@ -35,6 +35,7 @@ import { downloadReportPdf } from "@/lib/exportPdf";
 import { IncomeUsufructSection } from "./IncomeUsufructSection";
 import { PrintReport } from "./PrintReport";
 import { RikazSection } from "./RikazSection";
+import { ShariaStandardsCard } from "./ShariaStandardsCard";
 
 import { supabase } from "@/integrations/supabase/client";
 
@@ -168,13 +169,20 @@ export function IndividualTab() {
   const [jw14, setJw14] = useState(""); const [jw18, setJw18] = useState("");
   const [jw21, setJw21] = useState(""); const [jw22, setJw22] = useState("");
   const [jw24, setJw24] = useState("");
+  // وزن الأحجار الكريمة المُدمجة (لاستبعادها) — المصنعية مستبعَدة تلقائياً
+  const [jwStoneGrams, setJwStoneGrams] = useState("");
   const [jewelryPurpose, setJewelryPurpose] = useState<"storage" | "wear">("wear");
   const [jewelryOpinion, setJewelryOpinion] = useState<"majority" | "hanafi">("majority");
+  // شروط إعفاء حلي الزينة عند رأي الجمهور
+  const [jwHaal, setJwHaal] = useState(true);          // حال غير مؤجل (مستعمل فعلاً)
+  const [jwModeration, setJwModeration] = useState(true); // في حدود القصد والاعتدال
+  const [jwPermissible, setJwPermissible] = useState(true); // استعمال مباح (لا تبرّج محرّم ولا تشبّه)
   // د) المشغولات الذهبية الأخرى
   const [brk18, setBrk18] = useState(""); const [brk21, setBrk21] = useState("");
   const [brk24, setBrk24] = useState("");
   const [brkOtherKarat, setBrkOtherKarat] = useState("9");
   const [brkOtherWeight, setBrkOtherWeight] = useState("");
+  const [brkStoneGrams, setBrkStoneGrams] = useState("");
   const [storageKarat, setStorageKarat] = useState("21");
   const [storageWeight, setStorageWeight] = useState("");
   // الفضة
@@ -275,19 +283,22 @@ export function IndividualTab() {
     const coinsCustomGrams = num(coinCustomWeight) * num(coinCustomQty);
     const coinsGrams24 = conv(coinsGrams21, 21) + conv(coinsCustomGrams, num(coinCustomKarat));
 
-    // ج) المجوهرات
-    const jewelryGrams24Raw =
+    // ج) المجوهرات — استبعاد وزن الأحجار الكريمة (المصنعية مستبعَدة تلقائياً لأن الحساب بالوزن الصافي × سعر السبيكة)
+    const jewelryGramsGross =
       conv(num(jw9), 9) + conv(num(jw12), 12) + conv(num(jw14), 14) +
       conv(num(jw18), 18) + conv(num(jw21), 21) + conv(num(jw22), 22) + num(jw24);
-    // ادخار وحفظ قيمة → دائماً، حلي وزينة → حسب الرأي الفقهي
+    const jewelryGrams24Raw = Math.max(0, jewelryGramsGross - num(jwStoneGrams));
+    // إعفاء حلي الزينة عند الجمهور مشروط بـ: حال غير مؤجل، وفي حدود القصد والاعتدال، واستعمال مباح
+    const jwWearExempt = jwHaal && jwModeration && jwPermissible;
     const jewelryGrams24 = jewelryPurpose === "storage"
       ? jewelryGrams24Raw
-      : (jewelryOpinion === "hanafi" ? jewelryGrams24Raw : 0);
+      : (jewelryOpinion === "hanafi" || !jwWearExempt ? jewelryGrams24Raw : 0);
 
-    // د) المشغولات الأخرى (كسر + ادخاري غير قابل للبس) → دائماً تُزكَّى
-    const brokenGrams24 =
+    // د) المشغولات الأخرى (كسر + ادخاري غير قابل للبس) → دائماً تُزكَّى — مع استبعاد الأحجار الكريمة
+    const brokenGrossGrams =
       conv(num(brk18), 18) + conv(num(brk21), 21) + num(brk24) +
       conv(num(brkOtherWeight), num(brkOtherKarat));
+    const brokenGrams24 = Math.max(0, brokenGrossGrams - num(brkStoneGrams));
     const storageGrams24 = conv(num(storageWeight), num(storageKarat));
     const otherGrams24 = brokenGrams24 + storageGrams24;
 
@@ -390,7 +401,8 @@ export function IndividualTab() {
     sb9, sb14, sb18, sb21, sb22, sb24, ounces,
     coinQuarter, coinHalf, coinFull, coinCustomKarat, coinCustomWeight, coinCustomQty,
     jw9, jw12, jw14, jw18, jw21, jw22, jw24, jewelryPurpose, jewelryOpinion,
-    brk18, brk21, brk24, brkOtherKarat, brkOtherWeight, storageKarat, storageWeight,
+    jwStoneGrams, jwHaal, jwModeration, jwPermissible,
+    brk18, brk21, brk24, brkOtherKarat, brkOtherWeight, brkStoneGrams, storageKarat, storageWeight,
     securitiesTotalFromSection, bills,
     inventory, receivablesGood, realEstateTrade, realEstateRentIncome,
     tradeIsShareholder, tradeSharePct, tradeShareCompanyBase,
@@ -750,6 +762,18 @@ export function IndividualTab() {
                   </div>
                 </div>
                 <div className="grid md:grid-cols-2 gap-3 pt-2">
+                  <NumField
+                    label="وزن الأحجار الكريمة المُدمجة (للاستبعاد)"
+                    value={jwStoneGrams}
+                    onChange={setJwStoneGrams}
+                    unit="جم"
+                    hint="الألماس · الياقوت · الزمرد · اللؤلؤ — لا زكاة فيها لذاتها"
+                  />
+                  <div className="rounded-md border bg-primary/5 border-primary/20 p-3 text-[11px] leading-relaxed">
+                    <b className="text-primary">المصنعية مستبعَدة تلقائياً</b> — لأن الحساب يتم بوزن الذهب الصافي × سعر الجرام، فلا تدخل أجرة الصياغة في الوعاء.
+                  </div>
+                </div>
+                <div className="grid md:grid-cols-2 gap-3 pt-2">
                   <div className="space-y-1.5">
                     <Label className="text-sm">غرض الاقتناء</Label>
                     <RadioGroup value={jewelryPurpose} onValueChange={(v) => setJewelryPurpose(v as "storage" | "wear")} className="flex gap-4">
@@ -761,12 +785,36 @@ export function IndividualTab() {
                     <div className="flex items-center justify-between rounded-md border px-3 py-2">
                       <div className="space-y-0.5">
                         <Label className="text-sm">إخضاع حلي الزينة للزكاة (رأي الحنفية)</Label>
-                        <p className="text-[10px] text-muted-foreground">إيقافه = رأي الجمهور (لا زكاة على المستعمل)</p>
+                        <p className="text-[10px] text-muted-foreground">إيقافه = رأي الجمهور (لا زكاة على المستعمل بشروطه)</p>
                       </div>
                       <Switch checked={jewelryOpinion === "hanafi"} onCheckedChange={(v) => setJewelryOpinion(v ? "hanafi" : "majority")} />
                     </div>
                   )}
                 </div>
+                {jewelryPurpose === "wear" && jewelryOpinion === "majority" && (
+                  <div className="rounded-md border border-primary/30 bg-primary/5 p-3 space-y-2">
+                    <div className="text-xs font-semibold text-primary">شروط إعفاء حلي الزينة (رأي الجمهور)</div>
+                    <div className="grid sm:grid-cols-3 gap-2">
+                      <div className="flex items-center justify-between rounded-md border bg-background px-2.5 py-1.5">
+                        <Label htmlFor="jw-haal" className="text-[11px]">حال غير مؤجل (مستعمل فعلاً)</Label>
+                        <Switch id="jw-haal" checked={jwHaal} onCheckedChange={setJwHaal} />
+                      </div>
+                      <div className="flex items-center justify-between rounded-md border bg-background px-2.5 py-1.5">
+                        <Label htmlFor="jw-mod" className="text-[11px]">في حدود القصد والاعتدال</Label>
+                        <Switch id="jw-mod" checked={jwModeration} onCheckedChange={setJwModeration} />
+                      </div>
+                      <div className="flex items-center justify-between rounded-md border bg-background px-2.5 py-1.5">
+                        <Label htmlFor="jw-perm" className="text-[11px]">استعمال مباح (لا تبرّج محرّم)</Label>
+                        <Switch id="jw-perm" checked={jwPermissible} onCheckedChange={setJwPermissible} />
+                      </div>
+                    </div>
+                    {!(jwHaal && jwModeration && jwPermissible) && (
+                      <p className="text-[11px] text-destructive leading-relaxed">
+                        ⚠ لاختلال أحد الشروط الثلاثة يخضع الحلي للزكاة احتياطاً حتى على رأي الجمهور.
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* د) المشغولات الذهبية الأخرى */}
@@ -793,6 +841,17 @@ export function IndividualTab() {
                       <Input type="number" min="0" value={brkOtherWeight} onChange={(e) => setBrkOtherWeight(e.target.value)} placeholder="0" dir="ltr" style={{ textAlign: "right" }} className="pl-10" />
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">جم</span>
                     </div>
+                  </div>
+                </div>
+                <div className="grid md:grid-cols-2 gap-3">
+                  <NumField
+                    label="وزن الأحجار الكريمة في المشغولات (للاستبعاد)"
+                    value={brkStoneGrams}
+                    onChange={setBrkStoneGrams}
+                    unit="جم"
+                  />
+                  <div className="rounded-md border bg-primary/5 border-primary/20 p-3 text-[11px] leading-relaxed flex items-center">
+                    <span><b className="text-primary">المصنعية مستبعَدة تلقائياً</b> — الحساب بوزن الذهب الصافي فقط.</span>
                   </div>
                 </div>
                 <div className="rounded-md border border-dashed p-3 space-y-2">
@@ -1703,6 +1762,9 @@ export function IndividualTab() {
                   </ul>
                 </CardContent>
               </Card>
+
+              {/* المعايير الشرعية حسب النشاط — مدمَجة في تبويب المراجعة والتدقيق */}
+              <ShariaStandardsCard defaultSector="general" />
             </div>
 
             <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">
