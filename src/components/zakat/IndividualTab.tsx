@@ -35,6 +35,7 @@ import { downloadReportPdf } from "@/lib/exportPdf";
 import { IncomeUsufructSection } from "./IncomeUsufructSection";
 import { PrintReport } from "./PrintReport";
 import { RikazSection } from "./RikazSection";
+import { ShariaStandardsCard } from "./ShariaStandardsCard";
 
 import { supabase } from "@/integrations/supabase/client";
 
@@ -168,13 +169,20 @@ export function IndividualTab() {
   const [jw14, setJw14] = useState(""); const [jw18, setJw18] = useState("");
   const [jw21, setJw21] = useState(""); const [jw22, setJw22] = useState("");
   const [jw24, setJw24] = useState("");
+  // وزن الأحجار الكريمة المُدمجة (لاستبعادها) — المصنعية مستبعَدة تلقائياً
+  const [jwStoneGrams, setJwStoneGrams] = useState("");
   const [jewelryPurpose, setJewelryPurpose] = useState<"storage" | "wear">("wear");
   const [jewelryOpinion, setJewelryOpinion] = useState<"majority" | "hanafi">("majority");
+  // شروط إعفاء حلي الزينة عند رأي الجمهور
+  const [jwHaal, setJwHaal] = useState(true);          // حال غير مؤجل (مستعمل فعلاً)
+  const [jwModeration, setJwModeration] = useState(true); // في حدود القصد والاعتدال
+  const [jwPermissible, setJwPermissible] = useState(true); // استعمال مباح (لا تبرّج محرّم ولا تشبّه)
   // د) المشغولات الذهبية الأخرى
   const [brk18, setBrk18] = useState(""); const [brk21, setBrk21] = useState("");
   const [brk24, setBrk24] = useState("");
   const [brkOtherKarat, setBrkOtherKarat] = useState("9");
   const [brkOtherWeight, setBrkOtherWeight] = useState("");
+  const [brkStoneGrams, setBrkStoneGrams] = useState("");
   const [storageKarat, setStorageKarat] = useState("21");
   const [storageWeight, setStorageWeight] = useState("");
   // الفضة
