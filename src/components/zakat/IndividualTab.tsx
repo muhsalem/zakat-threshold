@@ -1762,6 +1762,9 @@ export function IndividualTab() {
                   </ul>
                 </CardContent>
               </Card>
+
+              {/* المعايير الشرعية حسب النشاط — مدمَجة في تبويب المراجعة والتدقيق */}
+              <ShariaStandardsCard defaultSector="general" />
             </div>
 
             <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">
