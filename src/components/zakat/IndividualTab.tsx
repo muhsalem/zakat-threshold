@@ -283,19 +283,22 @@ export function IndividualTab() {
     const coinsCustomGrams = num(coinCustomWeight) * num(coinCustomQty);
     const coinsGrams24 = conv(coinsGrams21, 21) + conv(coinsCustomGrams, num(coinCustomKarat));
 
-    // ج) المجوهرات
-    const jewelryGrams24Raw =
+    // ج) المجوهرات — استبعاد وزن الأحجار الكريمة (المصنعية مستبعَدة تلقائياً لأن الحساب بالوزن الصافي × سعر السبيكة)
+    const jewelryGramsGross =
       conv(num(jw9), 9) + conv(num(jw12), 12) + conv(num(jw14), 14) +
       conv(num(jw18), 18) + conv(num(jw21), 21) + conv(num(jw22), 22) + num(jw24);
-    // ادخار وحفظ قيمة → دائماً، حلي وزينة → حسب الرأي الفقهي
+    const jewelryGrams24Raw = Math.max(0, jewelryGramsGross - num(jwStoneGrams));
+    // إعفاء حلي الزينة عند الجمهور مشروط بـ: حال غير مؤجل، وفي حدود القصد والاعتدال، واستعمال مباح
+    const jwWearExempt = jwHaal && jwModeration && jwPermissible;
     const jewelryGrams24 = jewelryPurpose === "storage"
       ? jewelryGrams24Raw
-      : (jewelryOpinion === "hanafi" ? jewelryGrams24Raw : 0);
+      : (jewelryOpinion === "hanafi" || !jwWearExempt ? jewelryGrams24Raw : 0);
 
-    // د) المشغولات الأخرى (كسر + ادخاري غير قابل للبس) → دائماً تُزكَّى
-    const brokenGrams24 =
+    // د) المشغولات الأخرى (كسر + ادخاري غير قابل للبس) → دائماً تُزكَّى — مع استبعاد الأحجار الكريمة
+    const brokenGrossGrams =
       conv(num(brk18), 18) + conv(num(brk21), 21) + num(brk24) +
       conv(num(brkOtherWeight), num(brkOtherKarat));
+    const brokenGrams24 = Math.max(0, brokenGrossGrams - num(brkStoneGrams));
     const storageGrams24 = conv(num(storageWeight), num(storageKarat));
     const otherGrams24 = brokenGrams24 + storageGrams24;
 
