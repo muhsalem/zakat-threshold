@@ -30,11 +30,24 @@ export function SaveToHistoryCard({ payload }: { payload: Payload }) {
   async function handleSave() {
     if (!user) return;
     setBusy(true); setError(null);
-    const { error } = await supabase.from("zakat_records").insert({
+    const { data, error } = await supabase.from("zakat_records").insert({
       user_id: user.id,
       ...payload,
       notes: notes || null,
-    });
+    }).select("id").single();
+    if (!error && data) {
+      // سجل التدقيق الشرعي
+      const fp = `${user.id}-${data.id}-${payload.zakat_due}`.slice(0, 32);
+      await supabase.from("sharia_audit_log").insert({
+        user_id: user.id,
+        zakat_record_id: data.id,
+        action: "create_zakat_record",
+        fingerprint: fp,
+        payload: payload as any,
+        sharia_refs: ["AAOIFI-35", "MAJMAA-FIQHI-3/1", "QURAN-9:60"],
+        user_agent: navigator.userAgent.slice(0, 200),
+      });
+    }
     setBusy(false);
     if (error) setError(error.message);
     else { setSaved(true); setTimeout(() => setSaved(false), 4000); }
