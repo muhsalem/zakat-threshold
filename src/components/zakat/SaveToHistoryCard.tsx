@@ -85,7 +85,8 @@ export function SaveToHistoryCard({ payload }: { payload: Payload }) {
               <Button onClick={handleSave} disabled={busy || saved} className="gap-1.5 flex-1">
                 {saved ? <><CheckCircle2 className="h-4 w-4" /> تم الحفظ</> : busy ? "جاري الحفظ..." : <><Save className="h-4 w-4" /> حفظ هذه السنة</>}
               </Button>
-              <Link to="/history"><Button variant="outline">عرض السجل</Button></Link>
+              <Link to="/history"><Button variant="outline">السجل</Button></Link>
+              <Link to="/audit"><Button variant="outline">التدقيق</Button></Link>
             </div>
             {error && <Alert variant="destructive"><AlertDescription className="text-xs">{error}</AlertDescription></Alert>}
           </>
