@@ -19,8 +19,10 @@ import type { PrintReportData } from "./PrintReport";
 Font.register({
   family: "Cairo",
   fonts: [
-    { src: cairoRegular, fontWeight: 400 },
-    { src: cairoBold, fontWeight: 700 },
+    { src: cairoRegular, fontWeight: 400, fontStyle: "normal" },
+    { src: cairoRegular, fontWeight: 400, fontStyle: "italic" },
+    { src: cairoBold, fontWeight: 700, fontStyle: "normal" },
+    { src: cairoBold, fontWeight: 700, fontStyle: "italic" },
   ],
 });
 // منع كسر الكلمات العربية
