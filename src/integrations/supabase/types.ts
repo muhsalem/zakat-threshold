@@ -116,6 +116,53 @@ export type Database = {
         }
         Relationships: []
       }
+      sharia_audit_log: {
+        Row: {
+          action: string
+          created_at: string
+          fingerprint: string | null
+          id: string
+          ip_address: string | null
+          payload: Json | null
+          sharia_refs: string[] | null
+          user_agent: string | null
+          user_id: string
+          zakat_record_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          fingerprint?: string | null
+          id?: string
+          ip_address?: string | null
+          payload?: Json | null
+          sharia_refs?: string[] | null
+          user_agent?: string | null
+          user_id: string
+          zakat_record_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          fingerprint?: string | null
+          id?: string
+          ip_address?: string | null
+          payload?: Json | null
+          sharia_refs?: string[] | null
+          user_agent?: string | null
+          user_id?: string
+          zakat_record_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sharia_audit_log_zakat_record_id_fkey"
+            columns: ["zakat_record_id"]
+            isOneToOne: false
+            referencedRelation: "zakat_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       zakat_records: {
         Row: {
           created_at: string
