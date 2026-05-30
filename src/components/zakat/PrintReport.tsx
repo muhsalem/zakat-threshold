@@ -530,6 +530,19 @@ export function PrintReport({ data }: { data: PrintReportData }) {
           <div style={{ color: C.soft }}>{basisInfo.fiqh}</div>
         </div>
 
+        {/* ميتاداتا التسعير — مصدر، تاريخ، نوع السعر */}
+        <div style={{
+          marginTop: "8pt", padding: "8pt 10pt", background: C.cream, borderRadius: "5pt",
+          border: `0.4pt solid ${C.softBorder}`, fontSize: "9pt", color: C.soft,
+          display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "6pt",
+        }}>
+          <div><b style={{ color: C.primary }}>مصدر التسعير:</b><br/>السوق العالمية (XAU/XAG) + تحويل لحظي</div>
+          <div><b style={{ color: C.primary }}>تاريخ التسعير:</b><br/>{data.valuationDate || issueGregorian}</div>
+          <div><b style={{ color: C.primary }}>نوع السعر:</b><br/>متوسط بيع/شراء (Spot Mid)</div>
+          <div><b style={{ color: C.primary }}>التقويم:</b><br/>{data.calendarBasis === "hijri" ? "هجري — 354 يوم" : "ميلادي — 365 يوم"}</div>
+        </div>
+
+
         <table style={{ ...tableStyle, marginTop: "8pt" }}>
           <thead>
             <tr>
