@@ -15,6 +15,12 @@ export async function downloadReportPdf(filename = "zakat-report.pdf") {
   el.style.position = "static";
   document.documentElement.classList.add("pdf-export-mode");
 
+  // انتظر جاهزية الخطوط العربية قبل التصدير لضمان عرضها داخل PDF
+  try {
+    // @ts-ignore
+    if (document.fonts?.ready) await document.fonts.ready;
+  } catch {}
+
   try {
     const mod = await import("html2pdf.js");
     const html2pdf = (mod as any).default ?? mod;
