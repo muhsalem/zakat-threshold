@@ -335,7 +335,15 @@ export function PrintReport({ data }: { data: PrintReportData }) {
               width: "110pt", height: "110pt", background: "white",
               padding: "5pt", border: `0.6pt solid ${C.softBorder}`, borderRadius: "6pt",
             }} />
-            <div style={{ fontSize: "8pt", marginTop: "4pt", color: C.soft }}>امسح للتحقق</div>
+            <div style={{ fontSize: "9pt", marginTop: "5pt", color: C.primary, fontWeight: 800, lineHeight: 1.4 }}>
+              تحقّق من التقرير
+              <div style={{ fontSize: "7.5pt", fontWeight: 600, color: C.goldDark, letterSpacing: "1pt" }}>
+                VERIFY REPORT
+              </div>
+            </div>
+            <div style={{ fontSize: "7.5pt", color: C.soft, marginTop: "2pt" }}>
+              امسح لفتح رابط الحاسبة والتحقق
+            </div>
           </div>
         </div>
 
