@@ -56,6 +56,8 @@ export interface PrintReportData {
   debtsBreakdown?: { current: number; longTerm: number; installmentsDueInHawl: number };
   /** اختياري — الافتراضات والإفصاحات الإضافية */
   assumptions?: string;
+  /** اختياري — Data URL لرمز QR متوافق مع ZATCA (TLV) */
+  zatcaQrDataUrl?: string;
 }
 
 const COUNTRY_FULL: Record<string, string> = {
