@@ -607,6 +607,15 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
               الصادرة بقرار مجلس الوزراء رقم (61) لعام 1442هـ. هذا التقرير لا يُعدّ بديلاً
               عن الإقرار الرسمي لدى ZATCA.
             </Text>
+            {data.zatcaQrDataUrl && (
+              <View style={{ flexDirection: "row-reverse", alignItems: "center", gap: 10, marginTop: 8 }}>
+                <Image src={data.zatcaQrDataUrl} style={{ width: 80, height: 80 }} />
+                <Text style={[styles.small, { flex: 1 }]}>
+                  رمز QR متوافق مع المرحلة الأولى من ZATCA (TLV-Base64) — يحتوي على اسم المنصة،
+                  المعرّف الضريبي، التاريخ، وإجمالي الزكاة.
+                </Text>
+              </View>
+            )}
           </View>
         )}
 
