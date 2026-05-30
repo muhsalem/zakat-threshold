@@ -6,7 +6,7 @@ import { NisabHistory } from "@/components/zakat/NisabHistory";
 import { FitrCalculator } from "@/components/zakat/FitrCalculator";
 import { BeginnerWizard } from "@/components/zakat/BeginnerWizard";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { Users, Building2, Scroll, Moon, ShieldCheck, FileText, Wheat, History, LogIn, LogOut, Sparkles } from "lucide-react";
+import { Users, Building2, Scroll, Moon, ShieldCheck, FileText, Wheat, History, LogIn, LogOut, Sparkles, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -120,7 +120,9 @@ function HeaderAuth() {
   if (user) {
     return (
       <div className="flex items-center gap-2">
-        <Link to="/history"><Button variant="outline" size="sm" className="gap-1.5"><History className="h-4 w-4" /> <span className="hidden sm:inline">سجل الزكاة</span></Button></Link>
+        <Link to="/history"><Button variant="outline" size="sm" className="gap-1.5"><History className="h-4 w-4" /> <span className="hidden sm:inline">السجل</span></Button></Link>
+        <Link to="/audit"><Button variant="outline" size="sm" className="gap-1.5"><ShieldCheck className="h-4 w-4" /> <span className="hidden sm:inline">التدقيق</span></Button></Link>
+        <Link to="/security"><Button variant="outline" size="sm" className="gap-1.5"><Lock className="h-4 w-4" /> <span className="hidden sm:inline">الأمان</span></Button></Link>
         <Button variant="ghost" size="sm" onClick={() => supabase.auth.signOut()} className="gap-1.5">
           <LogOut className="h-4 w-4" /> <span className="hidden sm:inline">خروج</span>
         </Button>
