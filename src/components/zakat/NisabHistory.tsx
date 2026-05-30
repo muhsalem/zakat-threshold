@@ -228,15 +228,16 @@ export function NisabHistory() {
 
   // --- Historical chart data (USD baseline) ---
   const [chartMode, setChartMode] = useState<"USD" | "LOCAL">("USD");
+  // محدِّد دولة مستقل لمخطط 100 عام
+  const [chartCountryCode, setChartCountryCode] = useState<string>("EG");
+  const chartCountry = COUNTRY_PRICES.find((c) => c.code === chartCountryCode) ?? COUNTRY_PRICES[0];
   const liveFxRate = useMemo(() => {
-    if (chartMode === "USD" || !livePrices) return 1;
-    // derive USD->local fx from live data (gold per gram local / gold per gram usd-equivalent)
-    // We don't have the raw USD value here, so use a simpler proxy: pull from country defaults
-    const c = COUNTRY_PRICES.find((x) => x.code === countryCode);
+    if (chartMode === "USD") return 1;
+    const c = COUNTRY_PRICES.find((x) => x.code === chartCountryCode);
     const usd = COUNTRY_PRICES.find((x) => x.code === "US");
     if (!c || !usd) return 1;
     return c.gold24 / usd.gold24;
-  }, [chartMode, livePrices, countryCode]);
+  }, [chartMode, chartCountryCode]);
 
   const chartData = useMemo(
     () =>
@@ -254,7 +255,7 @@ export function NisabHistory() {
     [liveFxRate],
   );
 
-  const currencyLabel = chartMode === "USD" ? "$" : country.currency;
+  const currencyLabel = chartMode === "USD" ? "$" : chartCountry.currency;
 
 
 
@@ -627,7 +628,22 @@ export function NisabHistory() {
                 تطور سعر جرام الذهب والفضة ونسبة الذهب/الفضة (Gold-Silver Ratio) سنويًا.
               </p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2 items-end">
+              <div className="space-y-1">
+                <Label className="text-[10px]">الدولة المرجعية للعرض</Label>
+                <Select value={chartCountryCode} onValueChange={setChartCountryCode}>
+                  <SelectTrigger className="h-8 min-w-[160px] text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-72">
+                    {COUNTRY_PRICES.map((c) => (
+                      <SelectItem key={c.code} value={c.code}>
+                        {c.name} ({c.currency})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               <Button
                 size="sm"
                 variant={chartMode === "USD" ? "default" : "outline"}
@@ -640,7 +656,7 @@ export function NisabHistory() {
                 variant={chartMode === "LOCAL" ? "default" : "outline"}
                 onClick={() => setChartMode("LOCAL")}
               >
-                بعملة {country.name}
+                بعملة {chartCountry.name}
               </Button>
             </div>
           </div>

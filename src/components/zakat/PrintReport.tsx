@@ -235,7 +235,7 @@ export function PrintReport({ data }: { data: PrintReportData }) {
     success: "#1f7a4d",
   };
 
-  const FONT_UI = "'Cairo', 'IBM Plex Sans Arabic', 'Tajawal', system-ui, sans-serif";
+  const FONT_UI = "'Cairo', 'Noto Kufi Arabic', 'IBM Plex Sans Arabic', 'GE SS', 'DIN Next Arabic', 'Tajawal', system-ui, sans-serif";
   const FONT_QURAN = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 
   return (
@@ -243,11 +243,11 @@ export function PrintReport({ data }: { data: PrintReportData }) {
       fontFamily: FONT_UI, color: C.text, fontSize: "11pt", lineHeight: 1.75,
       letterSpacing: "0.1pt", WebkitFontSmoothing: "antialiased",
     }}>
-      {/* تحميل خطوط أنظف من Google Fonts (لـ html2canvas في PDF و الطباعة) */}
+      {/* تحميل خطوط عربية احترافية — تُضمَّن في PDF عبر html2canvas */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Amiri+Quran&family=Amiri:wght@400;700&display=swap');
-        #print-report { text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
-        #print-report table { border-collapse: collapse; }
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Noto+Kufi+Arabic:wght@400;500;600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Amiri+Quran&family=Amiri:wght@400;700&display=swap');
+        #print-report { text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; font-kerning: normal; }
+        #print-report table { border-collapse: separate; border-spacing: 0; }
         #print-report td, #print-report th { vertical-align: middle; }
         #print-report .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum","lnum"; text-align: left; direction: ltr; letter-spacing: 0; }
         #print-report h1, #print-report h2, #print-report h3 { letter-spacing: -0.2pt; }
@@ -335,7 +335,15 @@ export function PrintReport({ data }: { data: PrintReportData }) {
               width: "110pt", height: "110pt", background: "white",
               padding: "5pt", border: `0.6pt solid ${C.softBorder}`, borderRadius: "6pt",
             }} />
-            <div style={{ fontSize: "8pt", marginTop: "4pt", color: C.soft }}>امسح للتحقق</div>
+            <div style={{ fontSize: "9pt", marginTop: "5pt", color: C.primary, fontWeight: 800, lineHeight: 1.4 }}>
+              تحقّق من التقرير
+              <div style={{ fontSize: "7.5pt", fontWeight: 600, color: C.goldDark, letterSpacing: "1pt" }}>
+                VERIFY REPORT
+              </div>
+            </div>
+            <div style={{ fontSize: "7.5pt", color: C.soft, marginTop: "2pt" }}>
+              امسح لفتح رابط الحاسبة والتحقق
+            </div>
           </div>
         </div>
 
@@ -376,6 +384,82 @@ export function PrintReport({ data }: { data: PrintReportData }) {
         </div>
         <div style={{ fontSize: "8.5pt", opacity: 0.9, fontFamily: "monospace" }}>{reportId}</div>
       </div>
+
+      {/* ★ بطاقة البطل — إجمالي الزكاة الواجبة (أكبر عنصر بصري) */}
+      <div className="print-avoid-break" style={{
+        background: `linear-gradient(135deg, ${C.primaryDark}, ${C.primary})`,
+        color: "white", padding: "18pt 20pt", borderRadius: "10pt",
+        marginBottom: "12pt", boxShadow: "0 4pt 14pt rgba(14,59,42,0.18)",
+        display: "grid", gridTemplateColumns: "1.2fr 1fr 1fr", gap: "14pt", alignItems: "center",
+      }}>
+        <div>
+          <div style={{ fontSize: "10pt", color: C.goldLight, fontWeight: 700, letterSpacing: "1pt", marginBottom: "4pt" }}>
+            ◆ إجمالي الزكاة الواجبة
+          </div>
+          <div className="num" style={{
+            fontSize: "30pt", fontWeight: 900, lineHeight: 1.1, color: "white",
+            textAlign: "right", direction: "rtl",
+          }}>
+            {curFull(data.totalZakat)}
+          </div>
+          <div style={{ fontSize: "9pt", marginTop: "4pt", opacity: 0.85 }}>
+            بعد خصم الديون والالتزامات المخصومة شرعاً
+          </div>
+        </div>
+        <div style={{
+          background: C.gold, color: C.primaryDark, padding: "12pt 10pt",
+          borderRadius: "8pt", textAlign: "center",
+        }}>
+          <div style={{ fontSize: "8.5pt", fontWeight: 700, opacity: 0.85 }}>نسبة الزكاة المطبّقة</div>
+          <div className="num" style={{ fontSize: "22pt", fontWeight: 900, lineHeight: 1.2 }}>
+            {(data.effectiveRate * 100).toFixed(3)}%
+          </div>
+          <div style={{ fontSize: "7.5pt", marginTop: "2pt" }}>
+            {data.calendarBasis === "hijri" ? "هجري — 354 يوم" : "ميلادي — 365 يوم"}
+          </div>
+        </div>
+        <div style={{
+          background: "rgba(255,255,255,0.08)", border: `0.6pt solid ${C.goldLight}`,
+          padding: "10pt", borderRadius: "8pt", textAlign: "center",
+        }}>
+          <div style={{ fontSize: "8.5pt", color: C.goldLight, fontWeight: 700 }}>النصاب المعتمد</div>
+          <div className="num" style={{ fontSize: "14pt", fontWeight: 800, lineHeight: 1.3, marginTop: "2pt" }}>
+            {curFull(data.moneyNisab)}
+          </div>
+          <div style={{ fontSize: "7.5pt", marginTop: "2pt", opacity: 0.9 }}>
+            {basisInfo.name}
+          </div>
+        </div>
+      </div>
+
+      {/* ★ ما الذي تم احتسابه؟ — خطوات الحساب */}
+      <div className="print-avoid-break" style={cardStyle(C)}>
+        <div style={titleStyle(C)}>ما الذي تم احتسابه؟ — خطوات الحساب باختصار</div>
+        <div style={{
+          display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "8pt", fontSize: "9pt",
+        }}>
+          {[
+            { n: "1", t: "حصر الأصول النامية", d: "نقد، ذهب، فضة، عروض تجارة، أسهم، ديون مرجوّة" },
+            { n: "2", t: "خصم الديون الحالّة", d: `(${curFull(data.debts)}) من الوعاء الإجمالي` },
+            { n: "3", t: "التأكد من بلوغ النصاب", d: `≥ ${curFull(data.moneyNisab)}` },
+            { n: "4", t: "تطبيق النسبة الشرعية", d: `× ${(data.effectiveRate * 100).toFixed(3)}% = ${curFull(data.totalZakat)}` },
+          ].map((s) => (
+            <div key={s.n} style={{
+              background: C.cream, border: `0.4pt solid ${C.softBorder}`,
+              borderRight: `3pt solid ${C.gold}`, borderRadius: "5pt", padding: "8pt 10pt",
+            }}>
+              <div style={{
+                display: "inline-block", background: C.primary, color: "white",
+                width: "18pt", height: "18pt", borderRadius: "50%", textAlign: "center",
+                fontWeight: 900, lineHeight: "18pt", fontSize: "10pt", marginBottom: "4pt",
+              }}>{s.n}</div>
+              <div style={{ fontWeight: 800, color: C.primary, fontSize: "9.5pt", marginBottom: "2pt" }}>{s.t}</div>
+              <div style={{ color: C.soft, lineHeight: 1.6 }}>{s.d}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
 
       {/* مقدمة المحاسب */}
       {(data.accountantPreamble || data.accountantName) && (
@@ -445,6 +529,19 @@ export function PrintReport({ data }: { data: PrintReportData }) {
           </div>
           <div style={{ color: C.soft }}>{basisInfo.fiqh}</div>
         </div>
+
+        {/* ميتاداتا التسعير — مصدر، تاريخ، نوع السعر */}
+        <div style={{
+          marginTop: "8pt", padding: "8pt 10pt", background: C.cream, borderRadius: "5pt",
+          border: `0.4pt solid ${C.softBorder}`, fontSize: "9pt", color: C.soft,
+          display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "6pt",
+        }}>
+          <div><b style={{ color: C.primary }}>مصدر التسعير:</b><br/>السوق العالمية (XAU/XAG) + تحويل لحظي</div>
+          <div><b style={{ color: C.primary }}>تاريخ التسعير:</b><br/>{data.valuationDate || issueGregorian}</div>
+          <div><b style={{ color: C.primary }}>نوع السعر:</b><br/>متوسط بيع/شراء (Spot Mid)</div>
+          <div><b style={{ color: C.primary }}>التقويم:</b><br/>{data.calendarBasis === "hijri" ? "هجري — 354 يوم" : "ميلادي — 365 يوم"}</div>
+        </div>
+
 
         <table style={{ ...tableStyle, marginTop: "8pt" }}>
           <thead>
