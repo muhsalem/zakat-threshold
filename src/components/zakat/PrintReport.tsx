@@ -235,7 +235,7 @@ export function PrintReport({ data }: { data: PrintReportData }) {
     success: "#1f7a4d",
   };
 
-  const FONT_UI = "'Cairo', 'IBM Plex Sans Arabic', 'Tajawal', system-ui, sans-serif";
+  const FONT_UI = "'Cairo', 'Noto Kufi Arabic', 'IBM Plex Sans Arabic', 'GE SS', 'DIN Next Arabic', 'Tajawal', system-ui, sans-serif";
   const FONT_QURAN = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 
   return (
@@ -243,11 +243,11 @@ export function PrintReport({ data }: { data: PrintReportData }) {
       fontFamily: FONT_UI, color: C.text, fontSize: "11pt", lineHeight: 1.75,
       letterSpacing: "0.1pt", WebkitFontSmoothing: "antialiased",
     }}>
-      {/* تحميل خطوط أنظف من Google Fonts (لـ html2canvas في PDF و الطباعة) */}
+      {/* تحميل خطوط عربية احترافية — تُضمَّن في PDF عبر html2canvas */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Amiri+Quran&family=Amiri:wght@400;700&display=swap');
-        #print-report { text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
-        #print-report table { border-collapse: collapse; }
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Noto+Kufi+Arabic:wght@400;500;600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Amiri+Quran&family=Amiri:wght@400;700&display=swap');
+        #print-report { text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; font-kerning: normal; }
+        #print-report table { border-collapse: separate; border-spacing: 0; }
         #print-report td, #print-report th { vertical-align: middle; }
         #print-report .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum","lnum"; text-align: left; direction: ltr; letter-spacing: 0; }
         #print-report h1, #print-report h2, #print-report h3 { letter-spacing: -0.2pt; }
