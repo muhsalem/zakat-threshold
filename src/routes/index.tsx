@@ -6,7 +6,7 @@ import { NisabHistory } from "@/components/zakat/NisabHistory";
 import { FitrCalculator } from "@/components/zakat/FitrCalculator";
 import { BeginnerWizard } from "@/components/zakat/BeginnerWizard";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { Users, Building2, Scroll, Moon, ShieldCheck, FileText, Wheat, History, LogIn, LogOut, Sparkles } from "lucide-react";
+import { Users, Building2, Scroll, Moon, ShieldCheck, FileText, Wheat, History, LogIn, LogOut, Sparkles, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
