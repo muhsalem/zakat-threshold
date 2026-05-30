@@ -648,7 +648,24 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
  * يدعم العربية بشكل كامل عبر تسجيل خط Cairo و direction:rtl.
  */
 export async function downloadZakatPdf(data: PrintReportData, filename = "zakat-report.pdf") {
-  const blob = await pdf(<ZakatPdfDocument data={data} />).toBlob();
+  // توليد رمز QR ZATCA للسعودية تلقائيًا
+  let enriched = data;
+  if (data.countryCode === "SA" && !data.zatcaQrDataUrl) {
+    try {
+      const { buildZatcaTlvQr } = await import("@/lib/zatcaTlv");
+      const QRCode = (await import("qrcode")).default;
+      const tlv = buildZatcaTlvQr({
+        sellerName: "منصة نِصاب",
+        vatNumber: "NISAB-PLATFORM",
+        timestampIso: new Date().toISOString(),
+        invoiceTotal: data.totalZakat,
+        vatTotal: 0,
+      });
+      const qrDataUrl = await QRCode.toDataURL(tlv, { margin: 1, width: 240 });
+      enriched = { ...data, zatcaQrDataUrl: qrDataUrl };
+    } catch (e) { console.warn("ZATCA QR generation failed", e); }
+  }
+  const blob = await pdf(<ZakatPdfDocument data={enriched} />).toBlob();
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
