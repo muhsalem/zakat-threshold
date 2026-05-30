@@ -628,7 +628,22 @@ export function NisabHistory() {
                 تطور سعر جرام الذهب والفضة ونسبة الذهب/الفضة (Gold-Silver Ratio) سنويًا.
               </p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2 items-end">
+              <div className="space-y-1">
+                <Label className="text-[10px]">الدولة المرجعية للعرض</Label>
+                <Select value={chartCountryCode} onValueChange={setChartCountryCode}>
+                  <SelectTrigger className="h-8 min-w-[160px] text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-72">
+                    {COUNTRY_PRICES.map((c) => (
+                      <SelectItem key={c.code} value={c.code}>
+                        {c.name} ({c.currency})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               <Button
                 size="sm"
                 variant={chartMode === "USD" ? "default" : "outline"}
@@ -641,7 +656,7 @@ export function NisabHistory() {
                 variant={chartMode === "LOCAL" ? "default" : "outline"}
                 onClick={() => setChartMode("LOCAL")}
               >
-                بعملة {country.name}
+                بعملة {chartCountry.name}
               </Button>
             </div>
           </div>
