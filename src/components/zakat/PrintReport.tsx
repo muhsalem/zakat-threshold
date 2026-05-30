@@ -243,9 +243,8 @@ export function PrintReport({ data }: { data: PrintReportData }) {
       fontFamily: FONT_UI, color: C.text, fontSize: "11pt", lineHeight: 1.75,
       letterSpacing: "0.1pt", WebkitFontSmoothing: "antialiased",
     }}>
-      {/* تحميل خطوط عربية احترافية — تُضمَّن في PDF عبر html2canvas */}
+      {/* الخطوط محمّلة من __root.tsx لضمان جاهزيتها قبل تصدير PDF */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Noto+Kufi+Arabic:wght@400;500;600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Amiri+Quran&family=Amiri:wght@400;700&display=swap');
         #print-report { text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; font-kerning: normal; }
         #print-report table { border-collapse: separate; border-spacing: 0; }
         #print-report td, #print-report th { vertical-align: middle; }
