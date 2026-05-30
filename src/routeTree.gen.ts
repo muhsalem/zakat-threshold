@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VerifyRouteImport } from './routes/verify'
+import { Route as SecurityRouteImport } from './routes/security'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuditRouteImport } from './routes/audit'
@@ -20,6 +21,11 @@ import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
 const VerifyRoute = VerifyRouteImport.update({
   id: '/verify',
   path: '/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecurityRoute = SecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HistoryRoute = HistoryRouteImport.update({
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/history': typeof HistoryRoute
+  '/security': typeof SecurityRoute
   '/verify': typeof VerifyRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/history': typeof HistoryRoute
+  '/security': typeof SecurityRoute
   '/verify': typeof VerifyRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/history': typeof HistoryRoute
+  '/security': typeof SecurityRoute
   '/verify': typeof VerifyRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
     | '/audit'
     | '/auth'
     | '/history'
+    | '/security'
     | '/verify'
     | '/legal/privacy'
     | '/legal/terms'
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/audit'
     | '/auth'
     | '/history'
+    | '/security'
     | '/verify'
     | '/legal/privacy'
     | '/legal/terms'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/audit'
     | '/auth'
     | '/history'
+    | '/security'
     | '/verify'
     | '/legal/privacy'
     | '/legal/terms'
@@ -116,6 +128,7 @@ export interface RootRouteChildren {
   AuditRoute: typeof AuditRoute
   AuthRoute: typeof AuthRoute
   HistoryRoute: typeof HistoryRoute
+  SecurityRoute: typeof SecurityRoute
   VerifyRoute: typeof VerifyRoute
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   LegalTermsRoute: typeof LegalTermsRoute
@@ -128,6 +141,13 @@ declare module '@tanstack/react-router' {
       path: '/verify'
       fullPath: '/verify'
       preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/security': {
+      id: '/security'
+      path: '/security'
+      fullPath: '/security'
+      preLoaderRoute: typeof SecurityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/history': {
@@ -180,6 +200,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuditRoute: AuditRoute,
   AuthRoute: AuthRoute,
   HistoryRoute: HistoryRoute,
+  SecurityRoute: SecurityRoute,
   VerifyRoute: VerifyRoute,
   LegalPrivacyRoute: LegalPrivacyRoute,
   LegalTermsRoute: LegalTermsRoute,
@@ -187,3 +208,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
