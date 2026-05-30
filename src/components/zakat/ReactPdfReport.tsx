@@ -12,6 +12,7 @@ import cairoRegular from "@/assets/fonts/Cairo-Regular.ttf";
 import cairoBold from "@/assets/fonts/Cairo-Bold.ttf";
 import logoUrl from "@/assets/zakat-logo.png";
 import { currency as fmtCurrency, ZAKAT_RECIPIENTS, GOLD_NISAB_GRAMS, SILVER_NISAB_GRAMS } from "@/lib/zakat";
+import { SHARIA_REFERENCES, RULING_LEVEL_LABELS } from "@/lib/shariaReferences";
 import type { PrintReportData } from "./PrintReport";
 
 // تسجيل خط Cairo لدعم العربية
@@ -238,7 +239,77 @@ const styles = StyleSheet.create({
   },
   recipientTitle: { ...BASE_TEXT, fontSize: 11, fontWeight: 700, color: C.primary, marginBottom: 2 },
   recipientDesc: { ...BASE_TEXT, fontSize: 9, color: C.text, lineHeight: 1.6 },
+  // العلامة المائية
+  watermark: {
+    position: "absolute",
+    top: "45%",
+    left: "10%",
+    right: "10%",
+    textAlign: "center",
+    fontSize: 72,
+    color: C.gold,
+    opacity: 0.08,
+    fontWeight: 700,
+    fontFamily: "Cairo",
+    transform: "rotate(-30deg)",
+  },
+  // بصمة التحقق
+  hashBox: {
+    backgroundColor: C.bgAlt,
+    border: `0.5pt dashed ${C.goldDark}`,
+    borderRadius: 4,
+    padding: 6,
+    marginTop: 6,
+  },
+  hashText: {
+    fontFamily: "Courier",
+    fontSize: 7,
+    color: C.goldDark,
+    textAlign: "center",
+    letterSpacing: 1,
+  },
+  // مرجع شرعي
+  refRow: {
+    flexDirection: "row-reverse",
+    borderBottom: `0.5pt solid ${C.border}`,
+    padding: 6,
+    gap: 6,
+  },
+  refTopic: { ...BASE_TEXT, fontSize: 9, fontWeight: 700, color: C.primary, flex: 1.2 },
+  refRuling: { ...BASE_TEXT, fontSize: 8, color: C.text, flex: 2 },
+  refSource: { ...BASE_TEXT, fontSize: 7, color: C.muted, flex: 1.5 },
+  refBadge: {
+    ...BASE_TEXT,
+    fontSize: 7,
+    color: "white",
+    backgroundColor: C.goldDark,
+    padding: 3,
+    borderRadius: 3,
+    textAlign: "center",
+    flex: 0.6,
+    fontWeight: 700,
+  },
 });
+
+// بصمة بسيطة (FNV-1a 32-bit hex) — للتحقق من سلامة بيانات التقرير
+function fingerprint(data: PrintReportData): string {
+  const seed = [
+    data.name, data.profession, data.countryCode, data.currencyName,
+    data.calendarBasis, data.effectiveRate.toFixed(6),
+    data.monetaryGross.toFixed(2), data.debts.toFixed(2),
+    data.monetaryBase.toFixed(2), data.totalZakat.toFixed(2),
+    data.goldPricePerGram?.toFixed(4) ?? "", data.silverPricePerGram?.toFixed(4) ?? "",
+    ...data.rows.map((r) => `${r.label}|${r.gross.toFixed(2)}|${r.zakat.toFixed(2)}`),
+  ].join("§");
+  let h1 = 0x811c9dc5, h2 = 0xdeadbeef;
+  for (let i = 0; i < seed.length; i++) {
+    const c = seed.charCodeAt(i);
+    h1 = Math.imul(h1 ^ c, 0x01000193) >>> 0;
+    h2 = Math.imul(h2 ^ c, 0x85ebca6b) >>> 0;
+  }
+  const hex = (h1.toString(16).padStart(8, "0") + h2.toString(16).padStart(8, "0")).toUpperCase();
+  return `${hex.slice(0, 4)}-${hex.slice(4, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}`;
+}
 
 const PLATFORM_NAME_AR = "نِصاب";
 const PLATFORM_TAGLINE = "الحاسبة الشرعية المعتمدة للزكاة";
