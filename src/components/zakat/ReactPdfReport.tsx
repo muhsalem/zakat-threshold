@@ -464,8 +464,8 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
 
         {ZAKAT_RECIPIENTS.map((r, i) => (
           <View key={i} style={styles.recipient} wrap={false}>
-            <Text style={styles.recipientTitle}>{`${i + 1}. ${r.title}`}</Text>
-            <Text style={styles.recipientDesc}>{r.desc}</Text>
+            <Text style={styles.recipientTitle}>{`${i + 1}. ${r.name}`}</Text>
+            <Text style={styles.recipientDesc}>{r.description}</Text>
           </View>
         ))}
 
