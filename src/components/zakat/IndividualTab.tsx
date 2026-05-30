@@ -36,6 +36,7 @@ import { IncomeUsufructSection } from "./IncomeUsufructSection";
 import { PrintReport } from "./PrintReport";
 import { RikazSection } from "./RikazSection";
 import { ShariaStandardsCard } from "./ShariaStandardsCard";
+import { DigitalAssetsSection } from "./DigitalAssetsSection";
 
 import { supabase } from "@/integrations/supabase/client";
 
@@ -213,6 +214,9 @@ export function IndividualTab() {
   // الأوراق المالية — يُحسب الإجمالي داخل مكوّن مخصّص
   const [securitiesTotalFromSection, setSecuritiesTotalFromSection] = useState(0);
 
+  // الأصول الرقمية والاستثمارية (عملات رقمية + محفظة أسهم وفق AAOIFI 35)
+  const [digitalAssetsTotal, setDigitalAssetsTotal] = useState(0);
+
   // الأوراق التجارية
   const [bills, setBills] = useState("");
 
@@ -362,7 +366,7 @@ export function IndividualTab() {
     // ③ النفقة الواجبة إذا صارت ديناً — تُخصم
     const alimony = num(debtAlimony);
     const debts = dueDebts + deferredDeduction + alimony + num(expenses);
-    const monetaryGross = cashTotal + securitiesTotal + billsTotal + tradeTotal + realEstateZakatable + incomeUsufruct;
+    const monetaryGross = cashTotal + securitiesTotal + digitalAssetsTotal + billsTotal + tradeTotal + realEstateZakatable + incomeUsufruct;
     const monetaryBase = monetaryGross - debts;
     const monetaryEligible = monetaryBase >= moneyNisab && monetaryBase > 0;
     const monetaryZakat = monetaryEligible ? monetaryBase * effectiveRate : 0;
@@ -410,7 +414,7 @@ export function IndividualTab() {
     debtPersonalLoan, debtBankLoan, debtConsumerFinance, debtCarInstall, debtTradePayable, debtPurchases,
     debtDeferredPolicy, debtDeferredYearly, debtMortgage, debtMahr, debtAlimony,
     expenses, cropsKg, cropsValuePerKg, cropsIrrigation,
-    camels, cows, sheep, effectiveRate, hawl, cashTotalFromSection,
+    camels, cows, sheep, effectiveRate, hawl, cashTotalFromSection, digitalAssetsTotal,
   ]);
 
   const cur = (n: number) => currency(n, currencyName);
@@ -1194,6 +1198,22 @@ export function IndividualTab() {
                 label="كمبيالات وشيكات وأوراق قبض محققة الأداء"
                 value={bills} onChange={setBills} unit={currencyName}
                 hint="المرجوة السداد فقط؛ أما المشكوك في تحصيلها فلا تُزكَّى حتى تُقبض، ثم زكاة سنة واحدة"
+              />
+            </AccordionContent>
+          </AccordionItem>
+
+          {/* العملات الرقمية والمحافظ الاستثمارية — AAOIFI 35 */}
+          <AccordionItem value="digital-assets" className="border rounded-xl shadow-soft bg-card px-4">
+            <AccordionTrigger className="hover:no-underline">
+              <span className="flex items-center gap-2 text-base font-semibold">
+                <TrendingUp className="h-5 w-5 text-gold" /> زكاة العملات الرقمية والمحافظ الاستثمارية
+                <Badge variant="outline" className="text-[10px] mr-2">AAOIFI 35</Badge>
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="space-y-4 pb-4">
+              <DigitalAssetsSection
+                currencyName={currencyName}
+                onTotalChange={setDigitalAssetsTotal}
               />
             </AccordionContent>
           </AccordionItem>
