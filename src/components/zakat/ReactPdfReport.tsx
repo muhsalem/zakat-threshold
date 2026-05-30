@@ -341,6 +341,9 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
   const cur = data.currencyName || "";
   const eligibleRows = data.rows.filter((r) => r.gross > 0 || r.zakat > 0);
   const monetaryZakat = data.totalZakat;
+  const integrity = fingerprint(data);
+  const TOTAL_PAGES = 4;
+  const isSaudi = data.countryCode === "SA";
 
   return (
     <Document
@@ -350,8 +353,10 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
     >
       {/* ========== صفحة 1 — الغلاف ========== */}
       <Page size="A4" style={styles.page}>
+        <Text style={styles.watermark} fixed>استرشادي · INDICATIVE</Text>
         <View style={styles.coverWrap}>
           <Text style={styles.ribbon}>◆ NISAB · CERTIFIED ZAKAT CALCULATOR ◆</Text>
+
 
           <View style={styles.logoBox}>
             <Image src={logoUrl} style={styles.logo} />
@@ -402,21 +407,32 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
                 <Text style={styles.kvLabel}>رقم التقرير</Text>
                 <Text style={[styles.kvValue, { color: C.goldDark }]}>{reportId}</Text>
               </View>
+              <View style={styles.col}>
+                <Text style={styles.kvLabel}>بصمة التحقق (Integrity)</Text>
+                <Text style={[styles.kvValue, { color: C.goldDark, fontSize: 9, fontFamily: "Courier" }]}>
+                  {integrity}
+                </Text>
+              </View>
             </View>
           </View>
 
           <Text style={styles.disclaimer}>
-            هذا التقرير أداة استرشاديّة لحساب الزكاة وفق المعايير الشرعية المعروفة، وهو مبني
-            على البيانات المُدخلة من المُزكِّي. النتائج لا تُغني عن سؤال أهل العلم في الحالات
-            الخاصة، ولا تُعدّ فتوى ملزمة. مَن أراد الاطمئنان فليراجع عالماً معتمداً.
+            هذا التقرير أداة استرشاديّة لحساب الزكاة وفق المعايير الشرعية المعروفة (AAOIFI رقم 35
+            وقرارات مجمع الفقه الإسلامي الدولي)، وهو مبني على البيانات المُدخلة من المُزكِّي.
+            النتائج لا تُغني عن سؤال أهل العلم في الحالات الخاصة، ولا تُعدّ فتوى ملزمة. مَن أراد
+            الاطمئنان فليراجع عالماً معتمداً. للتحقق من سلامة التقرير قارِن بصمة التحقق أعلاه برمز
+            QR (إن وُجد) عبر منصة «نِصاب».
           </Text>
         </View>
-        <ReportFooter reportId={reportId} page={1} total={3} />
+        <ReportFooter reportId={reportId} page={1} total={TOTAL_PAGES} />
       </Page>
+
 
       {/* ========== صفحة 2 — الحسابات ========== */}
       <Page size="A4" style={styles.page}>
+        <Text style={styles.watermark} fixed>استرشادي · INDICATIVE</Text>
         <Text style={styles.h1}>ملخص النتيجة</Text>
+
 
         <View style={styles.hero}>
           <Text style={styles.heroLabel}>إجمالي الزكاة الواجبة</Text>
@@ -521,11 +537,12 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
           </>
         )}
 
-        <ReportFooter reportId={reportId} page={2} total={3} />
+        <ReportFooter reportId={reportId} page={2} total={TOTAL_PAGES} />
       </Page>
 
       {/* ========== صفحة 3 — مصارف الزكاة ========== */}
       <Page size="A4" style={styles.page}>
+        <Text style={styles.watermark} fixed>استرشادي · INDICATIVE</Text>
         <Text style={styles.h1}>مصارف الزكاة الثمانية</Text>
         <Text style={[styles.text, { color: C.muted, marginBottom: 8 }]}>
           قال تعالى: «إِنَّمَا الصَّدَقَاتُ لِلْفُقَرَاءِ وَالْمَسَاكِينِ وَالْعَامِلِينَ
@@ -546,11 +563,74 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
           مساعدة في تقدير مقدار الزكاة بناءً على البيانات المُدخَلة.
         </Text>
 
-        <ReportFooter reportId={reportId} page={3} total={3} />
+        <ReportFooter reportId={reportId} page={3} total={TOTAL_PAGES} />
+      </Page>
+
+      {/* ========== صفحة 4 — المراجع والتدقيق الشرعي ========== */}
+      <Page size="A4" style={styles.page}>
+        <Text style={styles.watermark} fixed>استرشادي · INDICATIVE</Text>
+        <Text style={styles.h1}>المراجع والتدقيق الشرعي (Sharia Audit Trail)</Text>
+        <Text style={[styles.text, { color: C.muted, marginBottom: 6 }]}>
+          فيما يلي قائمة المراجع الشرعية المعتمدة في كل حكم طُبِّق ضمن هذا التقرير. تستند الحاسبة
+          إلى المعيار الشرعي AAOIFI رقم (35) للزكاة، وقرارات مجمع الفقه الإسلامي الدولي بجدة،
+          وقرارات المجمع الفقهي الإسلامي بمكة المكرمة، والندوات المعاصرة لقضايا الزكاة.
+        </Text>
+
+        <View style={styles.table}>
+          <View style={styles.tr}>
+            <Text style={[styles.th, { flex: 1.2 }]}>الموضوع</Text>
+            <Text style={[styles.th, { flex: 2 }]}>الحكم المُطبَّق</Text>
+            <Text style={[styles.th, { flex: 1.5 }]}>المرجع</Text>
+            <Text style={[styles.th, { flex: 0.6 }]}>الدرجة</Text>
+          </View>
+          {SHARIA_REFERENCES.map((r, i) => (
+            <View key={i} style={[styles.refRow, ...(i % 2 === 1 ? [styles.trAlt] : [])]} wrap={false}>
+              <Text style={styles.refTopic}>{r.topic}</Text>
+              <Text style={styles.refRuling}>{r.ruling}</Text>
+              <View style={{ flex: 1.5 }}>
+                <Text style={styles.refSource}>{r.source}</Text>
+                <Text style={[styles.refSource, { fontSize: 6, fontStyle: "italic" }]}>{r.citation}</Text>
+              </View>
+              <Text style={styles.refBadge}>{RULING_LEVEL_LABELS[r.level]}</Text>
+            </View>
+          ))}
+        </View>
+
+        {isSaudi && (
+          <View style={[styles.cardAccent, { marginTop: 10 }]} wrap={false}>
+            <Text style={[styles.h2, { marginTop: 0 }]}>ملاحظة ضريبية — المملكة العربية السعودية</Text>
+            <Text style={styles.text}>
+              يُرجى تقديم إقرار الزكاة عبر بوابة هيئة الزكاة والضريبة والجمارك (ZATCA)
+              خلال 120 يوماً من نهاية السنة المالية للمنشأة، طبقاً للائحة جباية الزكاة
+              الصادرة بقرار مجلس الوزراء رقم (61) لعام 1442هـ. هذا التقرير لا يُعدّ بديلاً
+              عن الإقرار الرسمي لدى ZATCA.
+            </Text>
+          </View>
+        )}
+
+        <View style={styles.hashBox} wrap={false}>
+          <Text style={[styles.small, { textAlign: "center", marginBottom: 2, color: C.goldDark, fontWeight: 700 }]}>
+            بصمة التحقق الرقمية — Report Integrity Fingerprint
+          </Text>
+          <Text style={styles.hashText}>{integrity}</Text>
+          <Text style={[styles.small, { textAlign: "center", marginTop: 4 }]}>
+            رقم التقرير: {reportId}  ·  {issued}
+          </Text>
+        </View>
+
+        <Text style={styles.disclaimer}>
+          إعداد: منصة «نِصاب» للحوكمة الشرعية للزكاة. جميع المراجع المستخدمة في الحاسبة قابلة
+          للمراجعة على المنصة. الدرجات: «إجماع» = إجماع الفقهاء، «قول الجمهور» = رأي ثلاثة من
+          المذاهب الأربعة، «قرار مجمعي» = قرار من مجمع فقهي معتبر، «اجتهاد معاصر» = اجتهاد
+          العلماء المعاصرين في النوازل.
+        </Text>
+
+        <ReportFooter reportId={reportId} page={4} total={TOTAL_PAGES} />
       </Page>
     </Document>
   );
 }
+
 
 /**
  * توليد ملف PDF عبر @react-pdf/renderer وتنزيله للمستخدم.
