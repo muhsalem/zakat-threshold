@@ -13,6 +13,27 @@ import { supabase } from "@/integrations/supabase/client";
 
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { property: "og:url", content: "/" },
+    ],
+    links: [
+      { rel: "canonical", href: "/" },
+    ],
+    scripts: [{
+      type: "application/ld+json",
+      children: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        name: "حاسبة الزكاة الشاملة",
+        description: "أداة شاملة لحساب زكاة الأفراد والشركات وفق المعايير الشرعية الدولية (AAOIFI 35)",
+        applicationCategory: "FinanceApplication",
+        operatingSystem: "Web",
+        inLanguage: "ar",
+        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+      }),
+    }],
+  }),
   component: Index,
 });
 
@@ -39,6 +60,15 @@ function Index() {
       </header>
 
       <main className="container mx-auto px-4 py-8">
+
+        <div role="note" className="mb-6 max-w-4xl mx-auto rounded-lg border border-primary/30 bg-primary/5 px-4 py-3 text-sm text-foreground/90 flex items-start gap-2">
+          <ShieldCheck className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+          <p>
+            <b>إخلاء مسؤولية شرعي:</b> هذه الحاسبة <b>استرشادية</b> ومبنية على المعايير الفقهية المعتمدة (AAOIFI، المجامع الفقهية، بيت الزكاة الكويتي).
+            للحالات الخاصة والفتاوى الملزمة، يُرجى مراجعة <b>دار الإفتاء</b> أو <b>عالم/مفتٍ معتمد</b> في بلدك.
+          </p>
+        </div>
+
 
         <section className="mb-8 text-center max-w-3xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-l from-primary via-primary to-gold bg-clip-text text-transparent">
