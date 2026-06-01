@@ -37,6 +37,7 @@ import { PrintReport } from "./PrintReport";
 import { RikazSection } from "./RikazSection";
 import { ShariaStandardsCard } from "./ShariaStandardsCard";
 import { DigitalAssetsSection } from "./DigitalAssetsSection";
+import { CryptoFatwasCard } from "./CryptoFatwasCard";
 
 import { supabase } from "@/integrations/supabase/client";
 
@@ -1215,6 +1216,7 @@ export function IndividualTab() {
                 currencyName={currencyName}
                 onTotalChange={setDigitalAssetsTotal}
               />
+              <CryptoFatwasCard />
             </AccordionContent>
           </AccordionItem>
 
