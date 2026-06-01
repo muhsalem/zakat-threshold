@@ -23,6 +23,8 @@ import { TaxZakatReconciliation } from "./TaxZakatReconciliation";
 
 import { Button } from "@/components/ui/button";
 import { downloadZakatPdf } from "./ReactPdfReport";
+import { downloadReportExcel } from "@/lib/exportExcel";
+import { FileSpreadsheet } from "lucide-react";
 
 function NumField({ label, value, onChange, unit, hint }: {
   label: string; value: string; onChange: (v: string) => void; unit?: string; hint?: string;
