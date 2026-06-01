@@ -31,6 +31,8 @@ export function LivePricesCard({ currency, onApply }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<{ goldUsd: number; silverUsd: number; updatedAt: string } | null>(null);
   const [usdRate, setUsdRate] = useState(String(DEFAULT_USD_RATES[currency] ?? 1));
+  const [localGold, setLocalGold] = useState("");
+  const [localSilver, setLocalSilver] = useState("");
 
   async function refresh() {
     setBusy(true); setError(null);
@@ -50,6 +52,14 @@ export function LivePricesCard({ currency, onApply }: Props) {
     const rate = Number(usdRate) || 1;
     onApply(data.goldUsd * rate, data.silverUsd * rate);
   }
+
+  const globalGoldLocal = data ? data.goldUsd * (Number(usdRate) || 1) : 0;
+  const globalSilverLocal = data ? data.silverUsd * (Number(usdRate) || 1) : 0;
+  const goldDeviation = globalGoldLocal > 0 && Number(localGold) > 0
+    ? ((Number(localGold) - globalGoldLocal) / globalGoldLocal) * 100 : 0;
+  const silverDeviation = globalSilverLocal > 0 && Number(localSilver) > 0
+    ? ((Number(localSilver) - globalSilverLocal) / globalSilverLocal) * 100 : 0;
+  const highDeviation = Math.abs(goldDeviation) > 3 || Math.abs(silverDeviation) > 3;
 
   return (
     <Card className="shadow-soft print:hidden border-primary/20">

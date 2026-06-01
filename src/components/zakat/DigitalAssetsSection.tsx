@@ -253,6 +253,114 @@ export function DigitalAssetsSection({ currencyName, onTotalChange }: Props) {
         </p>
       </div>
 
+      {/* أرباح Staking / Mining / DeFi */}
+      <div className="rounded-lg border border-primary/20 bg-card p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <Label className="text-sm font-semibold text-primary">خامساً: أرباح Staking / Mining / DeFi Yield</Label>
+          <Badge variant="outline" className="text-[10px]">تُضمّ إلى الوعاء</Badge>
+        </div>
+        <div className="grid md:grid-cols-3 gap-2">
+          <div>
+            <Label className="text-xs">أرباح Staking</Label>
+            <Input type="number" dir="ltr" style={{ textAlign: "right" }}
+              value={stakingYield} onChange={(e) => setStakingYield(e.target.value)} placeholder="0" />
+          </div>
+          <div>
+            <Label className="text-xs">عوائد التعدين (Mining)</Label>
+            <Input type="number" dir="ltr" style={{ textAlign: "right" }}
+              value={miningYield} onChange={(e) => setMiningYield(e.target.value)} placeholder="0" />
+          </div>
+          <div>
+            <Label className="text-xs">عوائد DeFi / Yield Farming</Label>
+            <Input type="number" dir="ltr" style={{ textAlign: "right" }}
+              value={defiYield} onChange={(e) => setDefiYield(e.target.value)} placeholder="0" />
+          </div>
+        </div>
+        <p className="text-[11px] text-muted-foreground">
+          الأرباح المحقّقة تُعامَل معاملة المستفاد من المال (كأرباح التجارة) وتُزكَّى مع رأس المال.
+        </p>
+        <div className="text-xs border-t pt-2">إجمالي الأرباح: <b className="text-primary">{fmt(cryptoYieldTotal)} {currencyName}</b></div>
+      </div>
+
+      {/* الصناديق الاستثمارية المشتركة */}
+      <div className="rounded-lg border border-primary/20 bg-card p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <Label className="text-sm font-semibold text-primary">سادساً: صناديق الاستثمار المشتركة (Mutual Funds)</Label>
+          <Badge variant="outline" className="text-[10px]">نسبة التطهير من تقرير الصندوق</Badge>
+        </div>
+        {funds.map((r) => (
+          <div key={r.id} className="grid grid-cols-12 gap-2 items-end">
+            <div className="col-span-4">
+              <Label className="text-xs">اسم الصندوق</Label>
+              <Input value={r.name} onChange={(e) => setFunds((rows) => rows.map((x) => x.id === r.id ? { ...x, name: e.target.value } : x))} placeholder="مثال: صندوق الراجحي للأسهم" />
+            </div>
+            <div className="col-span-4">
+              <Label className="text-xs">القيمة السوقية ({currencyName})</Label>
+              <Input type="number" dir="ltr" style={{ textAlign: "right" }} value={r.marketValue}
+                onChange={(e) => setFunds((rows) => rows.map((x) => x.id === r.id ? { ...x, marketValue: e.target.value } : x))} />
+            </div>
+            <div className="col-span-3">
+              <Label className="text-xs">نسبة الزكاة %</Label>
+              <Input type="number" dir="ltr" style={{ textAlign: "right" }} value={r.zakatableRatio}
+                onChange={(e) => setFunds((rows) => rows.map((x) => x.id === r.id ? { ...x, zakatableRatio: e.target.value } : x))} />
+            </div>
+            <div className="col-span-1">
+              <Button type="button" variant="ghost" size="icon"
+                onClick={() => setFunds((rows) => rows.filter((x) => x.id !== r.id))}
+                disabled={funds.length === 1}>
+                <Trash2 className="h-4 w-4 text-destructive" />
+              </Button>
+            </div>
+          </div>
+        ))}
+        <Button type="button" variant="outline" size="sm"
+          onClick={() => setFunds((rows) => [...rows, { id: rid(), name: "", marketValue: "", zakatableRatio: "25.7" }])}>
+          <Plus className="h-3 w-3 ml-1" /> إضافة صندوق
+        </Button>
+        <div className="text-xs border-t pt-2">الوعاء الزكوي للصناديق: <b className="text-primary">{fmt(fundsZakatable)} {currencyName}</b></div>
+      </div>
+
+      {/* REITs — صناديق الاستثمار العقاري */}
+      <div className="rounded-lg border border-primary/20 bg-card p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <Label className="text-sm font-semibold text-primary">سابعاً: صناديق الاستثمار العقاري (REITs)</Label>
+          <Badge variant="outline" className="text-[10px]">الإيجار + النقد فقط</Badge>
+        </div>
+        {reits.map((r) => (
+          <div key={r.id} className="grid grid-cols-12 gap-2 items-end">
+            <div className="col-span-4">
+              <Label className="text-xs">اسم الصندوق</Label>
+              <Input value={r.name} onChange={(e) => setReits((rows) => rows.map((x) => x.id === r.id ? { ...x, name: e.target.value } : x))} placeholder="مثال: ريت سدكو كابيتال" />
+            </div>
+            <div className="col-span-4">
+              <Label className="text-xs">القيمة السوقية ({currencyName})</Label>
+              <Input type="number" dir="ltr" style={{ textAlign: "right" }} value={r.marketValue}
+                onChange={(e) => setReits((rows) => rows.map((x) => x.id === r.id ? { ...x, marketValue: e.target.value } : x))} />
+            </div>
+            <div className="col-span-3">
+              <Label className="text-xs">نسبة الزكاة %</Label>
+              <Input type="number" dir="ltr" style={{ textAlign: "right" }} value={r.zakatableRatio}
+                onChange={(e) => setReits((rows) => rows.map((x) => x.id === r.id ? { ...x, zakatableRatio: e.target.value } : x))} />
+            </div>
+            <div className="col-span-1">
+              <Button type="button" variant="ghost" size="icon"
+                onClick={() => setReits((rows) => rows.filter((x) => x.id !== r.id))}
+                disabled={reits.length === 1}>
+                <Trash2 className="h-4 w-4 text-destructive" />
+              </Button>
+            </div>
+          </div>
+        ))}
+        <Button type="button" variant="outline" size="sm"
+          onClick={() => setReits((rows) => [...rows, { id: rid(), name: "", marketValue: "", zakatableRatio: "10" }])}>
+          <Plus className="h-3 w-3 ml-1" /> إضافة ريت
+        </Button>
+        <p className="text-[11px] text-muted-foreground">
+          العقار المؤجَّر لا تجب الزكاة في عينه، بل في الأجرة والنقد المحتفظ به (تقريباً 10% من قيمة الصندوق).
+        </p>
+        <div className="text-xs border-t pt-2">الوعاء الزكوي للريتس: <b className="text-primary">{fmt(reitsZakatable)} {currencyName}</b></div>
+      </div>
+
       {/* الإجمالي */}
       <div className="rounded-lg border-2 border-primary/40 bg-primary/10 p-4">
         <div className="flex items-center justify-between">
