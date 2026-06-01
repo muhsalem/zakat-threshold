@@ -6,7 +6,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 
 interface Notification {
@@ -145,8 +144,8 @@ export function NotificationsBell() {
                       <div className="text-[11px] text-muted-foreground mt-1.5 flex items-center gap-2 flex-wrap">
                         <span>{new Date(n.created_at).toLocaleString("ar-EG")}</span>
                         {n.link && (
-                          <Link
-                            to={n.link}
+                          <a
+                            href={n.link}
                             onClick={() => {
                               markRead(n.id);
                               setOpen(false);
@@ -154,7 +153,7 @@ export function NotificationsBell() {
                             className="inline-flex items-center gap-1 text-primary hover:underline"
                           >
                             <ExternalLink className="h-3 w-3" /> فتح
-                          </Link>
+                          </a>
                         )}
                       </div>
                     </div>
