@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /audit
+Disallow: /history
+Disallow: /security
+Disallow: /verify
