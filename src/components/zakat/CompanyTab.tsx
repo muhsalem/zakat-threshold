@@ -24,7 +24,6 @@ import { TaxZakatReconciliation } from "./TaxZakatReconciliation";
 import { Button } from "@/components/ui/button";
 import { downloadZakatPdf } from "./ReactPdfReport";
 import { downloadReportExcel } from "@/lib/exportExcel";
-import { FileSpreadsheet } from "lucide-react";
 
 function NumField({ label, value, onChange, unit, hint }: {
   label: string; value: string; onChange: (v: string) => void; unit?: string; hint?: string;
@@ -1208,6 +1207,28 @@ export function CompanyTab() {
               }, `zakat-company-${companyName || "report"}-${new Date().toISOString().slice(0,10)}.pdf`)}
             >
               <FileText className="h-3.5 w-3.5" /> تحميل التقرير
+            </Button>
+            <Button
+              variant="secondary" size="sm" className="flex-1 gap-1.5 min-w-[140px]"
+              onClick={() => downloadReportExcel({
+                name: companyName || country.name,
+                profession: `${companyType} — ${sector.label}`,
+                countryCode, currencyName,
+                calendarBasis: solarYear === "hijri" ? "hijri" : "gregorian",
+                effectiveRate: calc.rate,
+                rows: [{ label: `الوعاء الزكوي (${method === "net_assets" ? "صافي الموجودات" : "رأس المال العامل"})`, gross: calc.baseGross, nisab: calc.nisabValue, eligible: calc.reachesNisab, zakat: calc.zakat }],
+                livestock: { camels: 0, cows: 0, sheep: 0, show: false },
+                monetaryGross: calc.baseGross, debts: calc.curLiabs, monetaryBase: calc.base,
+                moneyNisab: calc.nisabValue, totalZakat: calc.zakat, hawlComplete: null,
+                goldPricePerGram: num(goldGramPrice),
+                accountantName: "", accountantLicense: "",
+                accountantPreamble: `إقرار زكاة شركة — ${companyName || ""}`,
+                accountantOpinion: calc.reachesNisab ? "بلغ الوعاء النصاب." : "لم يبلغ النصاب.",
+                opinionType: calc.reachesNisab ? "clean" : "adverse",
+                previousYearZakat: "", nisabBasis: "gold", valuationBasis: "market",
+              }, `zakat-company-${companyName || "report"}-${new Date().toISOString().slice(0,10)}.xlsx`)}
+            >
+              <FileSpreadsheet className="h-3.5 w-3.5" /> Excel
             </Button>
             <Button onClick={() => window.print()} variant="outline" size="sm" className="flex-1 gap-1.5 min-w-[110px]">
               <Printer className="h-3.5 w-3.5" /> طباعة التقرير
