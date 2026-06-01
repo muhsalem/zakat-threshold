@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as SecurityRouteImport } from './routes/security'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuditRouteImport } from './routes/audit'
@@ -26,6 +27,11 @@ const VerifyRoute = VerifyRouteImport.update({
 const SecurityRoute = SecurityRouteImport.update({
   id: '/security',
   path: '/security',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HistoryRoute = HistoryRouteImport.update({
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/history': typeof HistoryRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/verify': typeof VerifyRoute
   '/legal/privacy': typeof LegalPrivacyRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/history': typeof HistoryRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/verify': typeof VerifyRoute
   '/legal/privacy': typeof LegalPrivacyRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/history': typeof HistoryRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/verify': typeof VerifyRoute
   '/legal/privacy': typeof LegalPrivacyRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/audit'
     | '/auth'
     | '/history'
+    | '/reset-password'
     | '/security'
     | '/verify'
     | '/legal/privacy'
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/audit'
     | '/auth'
     | '/history'
+    | '/reset-password'
     | '/security'
     | '/verify'
     | '/legal/privacy'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/audit'
     | '/auth'
     | '/history'
+    | '/reset-password'
     | '/security'
     | '/verify'
     | '/legal/privacy'
@@ -128,6 +140,7 @@ export interface RootRouteChildren {
   AuditRoute: typeof AuditRoute
   AuthRoute: typeof AuthRoute
   HistoryRoute: typeof HistoryRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SecurityRoute: typeof SecurityRoute
   VerifyRoute: typeof VerifyRoute
   LegalPrivacyRoute: typeof LegalPrivacyRoute
@@ -148,6 +161,13 @@ declare module '@tanstack/react-router' {
       path: '/security'
       fullPath: '/security'
       preLoaderRoute: typeof SecurityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/history': {
@@ -200,6 +220,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuditRoute: AuditRoute,
   AuthRoute: AuthRoute,
   HistoryRoute: HistoryRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SecurityRoute: SecurityRoute,
   VerifyRoute: VerifyRoute,
   LegalPrivacyRoute: LegalPrivacyRoute,
