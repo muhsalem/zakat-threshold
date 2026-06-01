@@ -15,6 +15,7 @@ interface Props {
 
 interface CryptoRow { id: string; name: string; qty: string; price: string; }
 interface StockRow  { id: string; name: string; marketValue: string; }
+interface FundRow   { id: string; name: string; marketValue: string; zakatableRatio: string; }
 
 const rid = () => Math.random().toString(36).slice(2, 9);
 
@@ -37,10 +38,24 @@ export function DigitalAssetsSection({ currencyName, onTotalChange }: Props) {
   // الصكوك
   const [sukuk, setSukuk] = useState("");
 
+  // أرباح Staking / Mining / Yield Farming (تُزكَّى مع رأس المال)
+  const [stakingYield, setStakingYield] = useState("");
+  const [miningYield, setMiningYield] = useState("");
+  const [defiYield, setDefiYield] = useState("");
+
+  // الصناديق الاستثمارية المشتركة والـREITs (نسبة التطهير الشرعي حسب التقرير السنوي للصندوق)
+  const [funds, setFunds] = useState<FundRow[]>([
+    { id: rid(), name: "", marketValue: "", zakatableRatio: "25.7" },
+  ]);
+  const [reits, setReits] = useState<FundRow[]>([
+    { id: rid(), name: "", marketValue: "", zakatableRatio: "10" },
+  ]);
+
   const cryptoTotal = useMemo(
     () => cryptos.reduce((s, r) => s + num(r.qty) * num(r.price), 0),
     [cryptos],
   );
+  const cryptoYieldTotal = num(stakingYield) + num(miningYield) + num(defiYield);
   const stocksTradeTotal = useMemo(
     () => stocksTrade.reduce((s, r) => s + num(r.marketValue), 0),
     [stocksTrade],
@@ -51,8 +66,16 @@ export function DigitalAssetsSection({ currencyName, onTotalChange }: Props) {
   );
   const stocksInvestZakatable = stocksInvestRaw * AAOIFI_INVEST_RATIO;
   const sukukTotal = num(sukuk);
+  const fundsZakatable = useMemo(
+    () => funds.reduce((s, r) => s + num(r.marketValue) * (num(r.zakatableRatio) / 100), 0),
+    [funds],
+  );
+  const reitsZakatable = useMemo(
+    () => reits.reduce((s, r) => s + num(r.marketValue) * (num(r.zakatableRatio) / 100), 0),
+    [reits],
+  );
 
-  const total = cryptoTotal + stocksTradeTotal + stocksInvestZakatable + sukukTotal;
+  const total = cryptoTotal + cryptoYieldTotal + stocksTradeTotal + stocksInvestZakatable + sukukTotal + fundsZakatable + reitsZakatable;
 
   useEffect(() => { onTotalChange(total); }, [total, onTotalChange]);
 
