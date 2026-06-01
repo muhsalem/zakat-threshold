@@ -20,6 +20,7 @@ import { PurificationCalculator } from "./PurificationCalculator";
 import { RikazSection } from "./RikazSection";
 
 import { Button } from "@/components/ui/button";
+import { downloadZakatPdf } from "./ReactPdfReport";
 
 function NumField({ label, value, onChange, unit, hint }: {
   label: string; value: string; onChange: (v: string) => void; unit?: string; hint?: string;
@@ -1157,12 +1158,47 @@ export function CompanyTab() {
 
         {/* النتيجة الجانبية */}
         <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">
-          <div className="flex gap-2 print:hidden">
-            <Button onClick={saveLocal} variant="outline" size="sm" className="flex-1 gap-1.5">
+          <div className="flex flex-wrap gap-2 print:hidden">
+            <Button onClick={saveLocal} variant="outline" size="sm" className="flex-1 gap-1.5 min-w-[90px]">
               <Save className="h-3.5 w-3.5" /> حفظ
             </Button>
-            <Button onClick={() => window.print()} variant="outline" size="sm" className="flex-1 gap-1.5">
-              <Printer className="h-3.5 w-3.5" /> تصدير PDF
+            <Button
+              size="sm"
+              className="flex-1 gap-1.5 min-w-[140px]"
+              onClick={() => downloadZakatPdf({
+                name: companyName || country.name,
+                profession: `${companyType} — ${sector.label}`,
+                countryCode,
+                currencyName,
+                calendarBasis: solarYear === "hijri" ? "hijri" : "gregorian",
+                effectiveRate: calc.rate,
+                rows: [
+                  { label: `الوعاء الزكوي (${method === "net_assets" ? "صافي الموجودات" : "رأس المال العامل"})`, gross: calc.baseGross, nisab: calc.nisabValue, eligible: calc.reachesNisab, zakat: calc.zakat },
+                ],
+                livestock: { camels: 0, cows: 0, sheep: 0, show: false },
+                monetaryGross: calc.baseGross,
+                debts: calc.curLiabs,
+                monetaryBase: calc.base,
+                moneyNisab: calc.nisabValue,
+                totalZakat: calc.zakat,
+                hawlComplete: null,
+                goldPricePerGram: num(goldGramPrice),
+                accountantName: "",
+                accountantLicense: "",
+                accountantPreamble: `إقرار زكاة شركة — ${companyName || ""} — ${GROUP_LABELS[sector.group]} / ${sector.label}. المعيار المحاسبي: ${accountingStd}${consolidated ? " (موحّدة)" : ""}.`,
+                accountantOpinion: calc.reachesNisab
+                  ? "بلغ الوعاء الزكوي النصاب الشرعي وتم احتساب الزكاة وفق الطريقة المختارة."
+                  : "الوعاء الزكوي لم يبلغ النصاب الشرعي، ولا تجب الزكاة في هذا الحول.",
+                opinionType: calc.reachesNisab ? "clean" : "adverse",
+                previousYearZakat: "",
+                nisabBasis: "gold",
+                valuationBasis: "market",
+              }, `zakat-company-${companyName || "report"}-${new Date().toISOString().slice(0,10)}.pdf`)}
+            >
+              <FileText className="h-3.5 w-3.5" /> تحميل التقرير
+            </Button>
+            <Button onClick={() => window.print()} variant="outline" size="sm" className="flex-1 gap-1.5 min-w-[110px]">
+              <Printer className="h-3.5 w-3.5" /> طباعة التقرير
             </Button>
           </div>
 
