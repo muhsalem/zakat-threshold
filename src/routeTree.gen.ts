@@ -18,6 +18,7 @@ import { Route as AuditRouteImport } from './routes/audit'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LegalTermsRouteImport } from './routes/legal.terms'
 import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
+import { Route as ApiPublicHooksHawlRemindersRouteImport } from './routes/api/public/hooks/hawl-reminders'
 
 const VerifyRoute = VerifyRouteImport.update({
   id: '/verify',
@@ -64,6 +65,12 @@ const LegalPrivacyRoute = LegalPrivacyRouteImport.update({
   path: '/legal/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHooksHawlRemindersRoute =
+  ApiPublicHooksHawlRemindersRouteImport.update({
+    id: '/api/public/hooks/hawl-reminders',
+    path: '/api/public/hooks/hawl-reminders',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/verify': typeof VerifyRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
+  '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -86,6 +94,7 @@ export interface FileRoutesByTo {
   '/verify': typeof VerifyRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
+  '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -98,6 +107,7 @@ export interface FileRoutesById {
   '/verify': typeof VerifyRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
+  '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/verify'
     | '/legal/privacy'
     | '/legal/terms'
+    | '/api/public/hooks/hawl-reminders'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -122,6 +133,7 @@ export interface FileRouteTypes {
     | '/verify'
     | '/legal/privacy'
     | '/legal/terms'
+    | '/api/public/hooks/hawl-reminders'
   id:
     | '__root__'
     | '/'
@@ -133,6 +145,7 @@ export interface FileRouteTypes {
     | '/verify'
     | '/legal/privacy'
     | '/legal/terms'
+    | '/api/public/hooks/hawl-reminders'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -145,6 +158,7 @@ export interface RootRouteChildren {
   VerifyRoute: typeof VerifyRoute
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   LegalTermsRoute: typeof LegalTermsRoute
+  ApiPublicHooksHawlRemindersRoute: typeof ApiPublicHooksHawlRemindersRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -212,6 +226,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LegalPrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/hawl-reminders': {
+      id: '/api/public/hooks/hawl-reminders'
+      path: '/api/public/hooks/hawl-reminders'
+      fullPath: '/api/public/hooks/hawl-reminders'
+      preLoaderRoute: typeof ApiPublicHooksHawlRemindersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -225,7 +246,18 @@ const rootRouteChildren: RootRouteChildren = {
   VerifyRoute: VerifyRoute,
   LegalPrivacyRoute: LegalPrivacyRoute,
   LegalTermsRoute: LegalTermsRoute,
+  ApiPublicHooksHawlRemindersRoute: ApiPublicHooksHawlRemindersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
