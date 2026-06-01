@@ -6,6 +6,7 @@ import { NisabHistory } from "@/components/zakat/NisabHistory";
 import { FitrCalculator } from "@/components/zakat/FitrCalculator";
 import { BeginnerWizard } from "@/components/zakat/BeginnerWizard";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { NotificationsBell } from "@/components/NotificationsBell";
 import { Users, Building2, Scroll, Moon, ShieldCheck, FileText, Wheat, History, LogIn, LogOut, Sparkles, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -52,6 +53,7 @@ function Index() {
             </div>
           </div>
           <div className="flex items-center gap-1">
+            <NotificationsBell />
             <ThemeToggle />
             <HeaderAuth />
           </div>

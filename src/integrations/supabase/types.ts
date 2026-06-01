@@ -92,6 +92,45 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          due_date: string | null
+          id: string
+          link: string | null
+          read_at: string | null
+          title: string
+          type: string
+          user_id: string
+          zakat_record_id: string | null
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          link?: string | null
+          read_at?: string | null
+          title: string
+          type?: string
+          user_id: string
+          zakat_record_id?: string | null
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          link?: string | null
+          read_at?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+          zakat_record_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -225,7 +264,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_hawl_reminders: { Args: never; Returns: number }
     }
     Enums: {
       [_ in never]: never
