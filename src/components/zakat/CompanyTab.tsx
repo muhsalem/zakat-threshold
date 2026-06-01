@@ -20,6 +20,7 @@ import { PurificationCalculator } from "./PurificationCalculator";
 import { RikazSection } from "./RikazSection";
 
 import { Button } from "@/components/ui/button";
+import { downloadZakatPdf } from "./ReactPdfReport";
 
 function NumField({ label, value, onChange, unit, hint }: {
   label: string; value: string; onChange: (v: string) => void; unit?: string; hint?: string;
