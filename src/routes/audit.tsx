@@ -36,11 +36,42 @@ function AuditPage() {
 
   if (loading) return null;
 
+  const downloadPdf = async () => {
+    const el = document.getElementById("audit-report");
+    if (!el) { window.print(); return; }
+    try {
+      const mod = await import("html2pdf.js");
+      const html2pdf = (mod as any).default ?? mod;
+      await html2pdf().from(el).set({
+        margin: [10, 8, 12, 8],
+        filename: `sharia-audit-${new Date().toISOString().slice(0,10)}.pdf`,
+        image: { type: "jpeg", quality: 0.96 },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        pagebreak: { mode: ["css", "legacy"] },
+      }).save();
+    } catch {
+      window.print();
+    }
+  };
+
   return (
-    <div className="container max-w-4xl py-8 space-y-6" dir="rtl">
-      <div className="flex items-center gap-2">
-        <ShieldCheck className="h-6 w-6 text-primary" />
-        <h1 className="text-2xl font-bold">سجل التدقيق الشرعي</h1>
+    <div className="container max-w-4xl py-8 space-y-6" dir="rtl" id="audit-report">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <ShieldCheck className="h-6 w-6 text-primary" />
+          <h1 className="text-2xl font-bold">سجل التدقيق الشرعي</h1>
+        </div>
+        {user && rows.length > 0 && (
+          <div className="flex gap-2 print:hidden">
+            <Button size="sm" onClick={downloadPdf} className="gap-1.5">
+              <Download className="h-4 w-4" /> تحميل التقرير
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => window.print()} className="gap-1.5">
+              <Printer className="h-4 w-4" /> طباعة التقرير
+            </Button>
+          </div>
+        )}
       </div>
       <p className="text-sm text-muted-foreground">
         كل عملية حساب وحفظ زكاة تُسجَّل هنا ببصمة فريدة والمراجع الشرعية المستخدمة، لضمان الشفافية وإمكانية المراجعة.
