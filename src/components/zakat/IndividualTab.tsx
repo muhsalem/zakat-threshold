@@ -32,6 +32,8 @@ import { CashBankSection } from "./CashBankSection";
 import { SecuritiesSection } from "./SecuritiesSection";
 import { LivePricesCard } from "./LivePricesCard";
 import { downloadZakatPdf } from "./ReactPdfReport";
+import { downloadReportExcel } from "@/lib/exportExcel";
+import { FileSpreadsheet } from "lucide-react";
 import { IncomeUsufructSection } from "./IncomeUsufructSection";
 import { PrintReport } from "./PrintReport";
 import { RikazSection } from "./RikazSection";
@@ -1672,6 +1674,29 @@ export function IndividualTab() {
             }, `zakat-${name || "report"}-${new Date().toISOString().slice(0,10)}.pdf`)}>
               <FileText className="h-4 w-4 ml-2" />
               تحميل التقرير PDF
+            </Button>
+            <Button variant="secondary" className="w-full" onClick={() => downloadReportExcel({
+              name, profession, countryCode, currencyName,
+              calendarBasis, effectiveRate,
+              rows: [
+                { label: "زكاة الذهب", gross: calc.totalGoldValue, nisab: calc.goldNisabValue, eligible: calc.goldEligible, zakat: calc.goldZakat },
+                { label: "زكاة الفضة", gross: calc.silverValue, nisab: calc.silverNisabValue, eligible: calc.silverEligible, zakat: calc.silverZakat },
+                { label: "زكاة الأوراق النقدية والحسابات البنكية والمحافظ الرقمية", gross: calc.cashTotal, eligible: true, zakat: 0 },
+                { label: "زكاة الأوراق المالية ووثائق التأمين", gross: calc.securitiesTotal, eligible: true, zakat: 0 },
+                { label: "زكاة الأوراق التجارية (الكمبيالات وأوراق القبض)", gross: calc.billsTotal, eligible: true, zakat: 0 },
+                { label: "زكاة الدخل وعروض التجارة والمستغلات", gross: calc.tradeTotal + calc.realEstateZakatable + incomeUsufructTotal, eligible: true, zakat: 0 },
+                { label: "زكاة الزروع والثمار", gross: calc.cropsValue, eligible: calc.cropsEligible, zakat: calc.cropsZakat },
+              ],
+              livestock: { camels: calc.camelsN, cows: calc.cowsN, sheep: calc.sheepN, show: ownsLivestock },
+              monetaryGross: calc.monetaryGross, debts: calc.debts, monetaryBase: calc.monetaryBase,
+              moneyNisab: calc.moneyNisab, totalZakat: calc.total,
+              hawlComplete: hawl ? hawl.hawlComplete : null, hawlDate: nisabStartDate,
+              goldPricePerGram: num(goldPrice), silverPricePerGram: num(silverPrice),
+              accountantName, accountantLicense, accountantPreamble,
+              accountantOpinion, opinionType, previousYearZakat,
+            }, `zakat-${name || "report"}-${new Date().toISOString().slice(0,10)}.xlsx`)}>
+              <FileSpreadsheet className="h-4 w-4 ml-2" />
+              تحميل التقرير Excel
             </Button>
             <Button variant="outline" className="w-full" onClick={() => window.print()}>
               <CheckCircle2 className="h-4 w-4 ml-2" />
