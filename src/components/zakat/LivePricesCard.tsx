@@ -31,6 +31,8 @@ export function LivePricesCard({ currency, onApply }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<{ goldUsd: number; silverUsd: number; updatedAt: string } | null>(null);
   const [usdRate, setUsdRate] = useState(String(DEFAULT_USD_RATES[currency] ?? 1));
+  const [localGold, setLocalGold] = useState("");
+  const [localSilver, setLocalSilver] = useState("");
 
   async function refresh() {
     setBusy(true); setError(null);
@@ -50,6 +52,14 @@ export function LivePricesCard({ currency, onApply }: Props) {
     const rate = Number(usdRate) || 1;
     onApply(data.goldUsd * rate, data.silverUsd * rate);
   }
+
+  const globalGoldLocal = data ? data.goldUsd * (Number(usdRate) || 1) : 0;
+  const globalSilverLocal = data ? data.silverUsd * (Number(usdRate) || 1) : 0;
+  const goldDeviation = globalGoldLocal > 0 && Number(localGold) > 0
+    ? ((Number(localGold) - globalGoldLocal) / globalGoldLocal) * 100 : 0;
+  const silverDeviation = globalSilverLocal > 0 && Number(localSilver) > 0
+    ? ((Number(localSilver) - globalSilverLocal) / globalSilverLocal) * 100 : 0;
+  const highDeviation = Math.abs(goldDeviation) > 3 || Math.abs(silverDeviation) > 3;
 
   return (
     <Card className="shadow-soft print:hidden border-primary/20">
@@ -91,9 +101,37 @@ export function LivePricesCard({ currency, onApply }: Props) {
               <Input type="number" step="0.0001" value={usdRate} onChange={(e) => setUsdRate(e.target.value)} dir="ltr" style={{ textAlign: "right" }} />
             </div>
             <div className="rounded-md bg-primary/5 border border-primary/20 p-2 text-xs space-y-0.5">
-              <div>الذهب بـ{currency}/غرام: <b>{(data.goldUsd * (Number(usdRate) || 1)).toFixed(2)}</b></div>
-              <div>الفضة بـ{currency}/غرام: <b>{(data.silverUsd * (Number(usdRate) || 1)).toFixed(3)}</b></div>
+              <div>الذهب بـ{currency}/غرام: <b>{globalGoldLocal.toFixed(2)}</b></div>
+              <div>الفضة بـ{currency}/غرام: <b>{globalSilverLocal.toFixed(3)}</b></div>
             </div>
+
+            <div className="rounded-md border border-dashed border-primary/30 p-2 space-y-2">
+              <div className="text-xs font-semibold text-primary">مقارنة السوق المحلي (اختياري)</div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <Label className="text-[10px]">سعر الذهب المحلي/غرام</Label>
+                  <Input type="number" step="0.01" value={localGold} onChange={(e) => setLocalGold(e.target.value)} dir="ltr" style={{ textAlign: "right" }} placeholder="0" />
+                </div>
+                <div>
+                  <Label className="text-[10px]">سعر الفضة المحلي/غرام</Label>
+                  <Input type="number" step="0.001" value={localSilver} onChange={(e) => setLocalSilver(e.target.value)} dir="ltr" style={{ textAlign: "right" }} placeholder="0" />
+                </div>
+              </div>
+              {(Number(localGold) > 0 || Number(localSilver) > 0) && (
+                <div className="text-[11px] space-y-0.5">
+                  {Number(localGold) > 0 && <div>فرق الذهب: <b className={Math.abs(goldDeviation) > 3 ? "text-destructive" : "text-primary"}>{goldDeviation.toFixed(2)}%</b></div>}
+                  {Number(localSilver) > 0 && <div>فرق الفضة: <b className={Math.abs(silverDeviation) > 3 ? "text-destructive" : "text-primary"}>{silverDeviation.toFixed(2)}%</b></div>}
+                </div>
+              )}
+              {highDeviation && (
+                <Alert variant="destructive" className="py-2">
+                  <AlertDescription className="text-[11px]">
+                    تنبيه: فرق السعر المحلي مقابل العالمي يتجاوز 3% — راجع سعر الصرف أو اعتمد السعر المحلي للتقييم.
+                  </AlertDescription>
+                </Alert>
+              )}
+            </div>
+
             <Button onClick={apply} className="w-full">تطبيق على الحاسبة</Button>
             <div className="text-[10px] text-muted-foreground text-center">آخر تحديث: {new Date(data.updatedAt).toLocaleString("ar")}</div>
           </>

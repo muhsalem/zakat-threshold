@@ -18,6 +18,8 @@ import { ZAKAT_RATE, GOLD_NISAB_GRAMS, num, fmt, currency as cFmt, ZAKAT_RECIPIE
 import { SectoralModels } from "./SectoralModels";
 import { PurificationCalculator } from "./PurificationCalculator";
 import { RikazSection } from "./RikazSection";
+import { TakafulSection } from "./TakafulSection";
+import { TaxZakatReconciliation } from "./TaxZakatReconciliation";
 
 import { Button } from "@/components/ui/button";
 import { downloadZakatPdf } from "./ReactPdfReport";
@@ -1153,6 +1155,14 @@ export function CompanyTab() {
               </CardContent>
             </Card>
           )}
+
+          {/* ====== شركات التأمين التكافلي ====== */}
+          {(sector.id === "insurance" || sector.id === "takaful" || sector.label?.includes("تكافل") || sector.label?.includes("تأمين")) && (
+            <TakafulSection currencyName={currencyName} />
+          )}
+
+          {/* ====== مطابقة الوعاء الزكوي مع الضريبي ====== */}
+          <TaxZakatReconciliation currencyName={currencyName} />
 
         </div>
 
