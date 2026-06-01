@@ -1669,11 +1669,11 @@ export function IndividualTab() {
               accountantOpinion, opinionType, previousYearZakat,
             }, `zakat-${name || "report"}-${new Date().toISOString().slice(0,10)}.pdf`)}>
               <FileText className="h-4 w-4 ml-2" />
-              تحميل الإقرار PDF
+              تحميل التقرير PDF
             </Button>
             <Button variant="outline" className="w-full" onClick={() => window.print()}>
               <CheckCircle2 className="h-4 w-4 ml-2" />
-              طباعة الإقرار
+              طباعة التقرير
             </Button>
           </CardContent>
         </Card>
