@@ -1282,9 +1282,15 @@ export function CompanyTab() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-sm">
+              {/* أسعار السوق العالمية اللحظية */}
+              <LivePricesCard
+                currency={currencyName}
+                onApply={(gold24) => setGoldGramPrice(gold24.toFixed(2))}
+              />
+
               {/* النصاب */}
               <div className="space-y-2">
-                <NumField label="سعر جرام الذهب عيار 24" value={goldGramPrice} onChange={setGoldGramPrice} unit={currencyName} hint="لحساب نصاب 85 جرام" />
+                <NumField label="سعر جرام الذهب عيار 24" value={goldGramPrice} onChange={setGoldGramPrice} unit={currencyName} hint="لحساب نصاب 85 جرام — يمكن جلبه تلقائياً من السوق العالمي أعلاه" />
                 <div className="rounded-md bg-muted/40 p-2 text-xs space-y-1">
                   <div className="flex justify-between"><span>قيمة النصاب:</span><b>{cFmt(calc.nisabValue, currencyName)}</b></div>
                   <div className="flex justify-between items-center">
