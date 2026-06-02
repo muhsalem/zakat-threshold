@@ -20,6 +20,7 @@ import { PurificationCalculator } from "./PurificationCalculator";
 import { RikazSection } from "./RikazSection";
 import { TakafulSection } from "./TakafulSection";
 import { TaxZakatReconciliation } from "./TaxZakatReconciliation";
+import { LivePricesCard } from "./LivePricesCard";
 
 import { Button } from "@/components/ui/button";
 import { downloadZakatPdf } from "./ReactPdfReport";
