@@ -947,9 +947,74 @@ export function PrintReport({ data }: { data: PrintReportData }) {
       </div>
 
       {/* ============================================================ */}
+      {/* ملحق المراجعة والتدقيق الشرعي (اختياري) */}
+      {/* ============================================================ */}
+      {data.auditEntries && data.auditEntries.length > 0 && (
+        <>
+          <div className="print-page-break" />
+          <div className="print-avoid-break" style={{
+            background: C.primary, color: "white", padding: "12pt 16pt",
+            borderRadius: "8pt", marginBottom: "12pt", textAlign: "center",
+          }}>
+            <div style={{ fontSize: "9pt", color: C.goldLight, letterSpacing: "3pt", fontWeight: 700 }}>
+              ◆ SHARIA AUDIT TRAIL ◆
+            </div>
+            <div style={{ fontSize: "18pt", fontWeight: 900, marginTop: "4pt" }}>
+              ملحق المراجعة والتدقيق الشرعي
+            </div>
+            <div style={{ fontSize: "9.5pt", opacity: 0.85, marginTop: "2pt" }}>
+              سلسلة عمليات الحساب والحفظ الموثقة ببصمة فريدة والمراجع الشرعية المستخدمة
+            </div>
+          </div>
+
+          <div style={cardStyle(C)}>
+            <div style={titleStyle(C)}>سجل العمليات السابقة ({data.auditEntries.length})</div>
+            <table style={tableStyle}>
+              <thead>
+                <tr>
+                  <th style={thStyle(C)}>#</th>
+                  <th style={thStyle(C)}>تاريخ العملية</th>
+                  <th style={thStyle(C)}>نوع العملية</th>
+                  <th style={thStyle(C)}>بصمة التوثيق</th>
+                  <th style={thStyle(C)}>المراجع الشرعية</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.auditEntries.map((e, i) => (
+                  <tr key={e.id} style={i % 2 ? { background: C.cream } : undefined}>
+                    <td style={tdCell("center")}>{i + 1}</td>
+                    <td style={tdCell()}>
+                      {(() => { try { return new Date(e.created_at).toLocaleString("ar-EG"); } catch { return e.created_at; } })()}
+                    </td>
+                    <td style={tdCell()}>
+                      {e.action === "create_zakat_record" ? "إنشاء سجل زكاة" : e.action}
+                    </td>
+                    <td style={{ ...tdCell(), fontFamily: "monospace", fontSize: "8.5pt", color: C.goldDark, wordBreak: "break-all" }}>
+                      {e.fingerprint || "—"}
+                    </td>
+                    <td style={{ ...tdCell(), fontSize: "8.5pt" }}>
+                      {e.sharia_refs && e.sharia_refs.length > 0 ? e.sharia_refs.join("، ") : "—"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div style={{
+              marginTop: "10pt", padding: "8pt 10pt", background: C.goldLight,
+              borderRight: `3pt solid ${C.gold}`, borderRadius: "5pt",
+              fontSize: "9pt", color: C.soft, lineHeight: 1.7,
+            }}>
+              <b style={{ color: C.primary }}>ملاحظة:</b> يُسجَّل في هذا الملحق كل حساب أو حفظ ببصمة فريدة (SHA‑256) مع المراجع الشرعية المعتمدة (AAOIFI، قرارات المجامع الفقهية) لضمان الشفافية وإمكانية المراجعة لاحقاً.
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* ============================================================ */}
       {/* صفحة 3 — مصارف الزكاة */}
       {/* ============================================================ */}
       <div className="print-page-break" />
+
 
       <div className="print-avoid-break" style={{
         textAlign: "center", marginBottom: "8pt",
