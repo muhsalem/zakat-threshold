@@ -344,7 +344,8 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
   const eligibleRows = data.rows.filter((r) => r.gross > 0 || r.zakat > 0);
   const monetaryZakat = data.totalZakat;
   const integrity = fingerprint(data);
-  const TOTAL_PAGES = 4;
+  const hasAudit = !!(data.auditEntries && data.auditEntries.length > 0);
+  const TOTAL_PAGES = hasAudit ? 5 : 4;
   const isSaudi = data.countryCode === "SA";
 
   return (
