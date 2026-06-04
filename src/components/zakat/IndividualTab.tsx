@@ -109,6 +109,9 @@ export function IndividualTab() {
   const [accountantOpinion, setAccountantOpinion] = useState("");
   const [opinionType, setOpinionType] = useState<"clean" | "qualified" | "adverse">("clean");
   const [previousYearZakat, setPreviousYearZakat] = useState("");
+  // إدراج سجل المراجعة والتدقيق الشرعي ضمن التقرير
+  const [includeAuditReport, setIncludeAuditReport] = useState(false);
+  const { entries: auditEntries, loading: auditLoading } = useAuditEntries(includeAuditReport);
   // الزكاة المعجَّلة المدفوعة مقدماً (تُخصم من الواجب)
   const [prepaidZakat, setPrepaidZakat] = useState("");
   const [prepaidYears, setPrepaidYears] = useState("1");
