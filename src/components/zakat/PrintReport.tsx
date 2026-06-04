@@ -249,18 +249,22 @@ export function PrintReport({ data }: { data: PrintReportData }) {
   const FONT_QURAN = "'Amiri Quran', 'Amiri', 'Scheherazade New', serif";
 
   return (
-    <div id="print-report" dir="rtl" style={{
+    <div id="print-report" dir="rtl" lang="ar" style={{
       fontFamily: FONT_UI, color: C.text, fontSize: "11pt", lineHeight: 1.75,
       letterSpacing: "0.1pt", WebkitFontSmoothing: "antialiased",
+      MozOsxFontSmoothing: "grayscale",
     }}>
       {/* الخطوط محمّلة من __root.tsx لضمان جاهزيتها قبل تصدير PDF */}
       <style>{`
-        #print-report { text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; font-kerning: normal; }
+        #print-report { text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; font-kerning: normal; font-feature-settings: "kern","liga","calt","ss01"; }
+        #print-report * { font-family: inherit; }
         #print-report table { border-collapse: separate; border-spacing: 0; }
         #print-report td, #print-report th { vertical-align: middle; }
-        #print-report .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum","lnum"; text-align: left; direction: ltr; letter-spacing: 0; }
-        #print-report h1, #print-report h2, #print-report h3 { letter-spacing: -0.2pt; }
+        #print-report .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum","lnum"; text-align: left; direction: ltr; letter-spacing: 0; font-family: 'Cairo','Inter',system-ui,sans-serif; }
+        #print-report h1, #print-report h2, #print-report h3 { letter-spacing: -0.2pt; font-family: ${FONT_UI}; }
+        #print-report .quran { font-family: ${FONT_QURAN}; }
       `}</style>
+
 
       {/* ============================================================ */}
       {/* صفحة 1 — الغلاف */}
