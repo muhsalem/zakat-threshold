@@ -397,6 +397,9 @@ function FinancialUpload() {
 export function CompanyTab() {
   // ---- بيانات الشركة + الدولة والإطار القانوني ----
   const [countryCode, setCountryCode] = useState<string>("SA");
+  // إدراج سجل المراجعة والتدقيق الشرعي ضمن تقرير الشركة
+  const [includeAuditReport, setIncludeAuditReport] = useState(false);
+  const { entries: auditEntries, loading: auditLoading } = useAuditEntries(includeAuditReport);
   const country = useMemo(() => COUNTRIES.find((c) => c.code === countryCode)!, [countryCode]);
   const [autoCurrency, setAutoCurrency] = useState(true);
   const [currencyName, setCurrencyName] = useState(country.symbol);
