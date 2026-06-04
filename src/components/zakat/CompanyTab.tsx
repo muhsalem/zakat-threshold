@@ -10,6 +10,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { useAuditEntries } from "@/hooks/useAuditEntries";
 import {
   Building2, Calculator, Shield, Gavel, CheckSquare, AlertTriangle, Info, Scale,
   FileSpreadsheet, Upload, FileText, X, Printer, Save, Coins, Users, HandHeart,
