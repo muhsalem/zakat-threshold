@@ -40,6 +40,7 @@ import { RikazSection } from "./RikazSection";
 import { ShariaStandardsCard } from "./ShariaStandardsCard";
 import { DigitalAssetsSection } from "./DigitalAssetsSection";
 import { CryptoFatwasCard } from "./CryptoFatwasCard";
+import { useAuditEntries } from "@/hooks/useAuditEntries";
 
 import { supabase } from "@/integrations/supabase/client";
 
