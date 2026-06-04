@@ -639,6 +639,53 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
 
         <ReportFooter reportId={reportId} page={4} total={TOTAL_PAGES} />
       </Page>
+
+      {/* ========== صفحة 5 — ملحق سجل المراجعة والتدقيق ========== */}
+      {hasAudit && (
+        <Page size="A4" style={styles.page}>
+          <Text style={styles.watermark} fixed>استرشادي · INDICATIVE</Text>
+          <Text style={styles.h1}>ملحق سجل المراجعة والتدقيق</Text>
+          <Text style={[styles.text, { color: C.muted, marginBottom: 8 }]}>
+            سلسلة العمليات الموثقة لهذا الحساب، تتضمن نوع العملية، التاريخ، بصمة التوثيق الفريدة،
+            والمراجع الشرعية المعتمدة. تُستخدَم للتدقيق والمراجعة الداخلية.
+          </Text>
+
+          <View style={styles.table}>
+            <View style={styles.tr}>
+              <Text style={[styles.th, { flex: 0.4 }]}>#</Text>
+              <Text style={[styles.th, { flex: 1.4 }]}>التاريخ</Text>
+              <Text style={[styles.th, { flex: 1.2 }]}>نوع العملية</Text>
+              <Text style={[styles.th, { flex: 1.6 }]}>بصمة التوثيق</Text>
+              <Text style={[styles.th, { flex: 1.4 }]}>المراجع الشرعية</Text>
+            </View>
+            {data.auditEntries!.map((e, i) => (
+              <View key={e.id} style={[styles.tr, ...(i % 2 === 1 ? [styles.trAlt] : [])]} wrap={false}>
+                <Text style={[styles.td, { flex: 0.4, textAlign: "center" }]}>{i + 1}</Text>
+                <Text style={[styles.td, { flex: 1.4 }]}>
+                  {(() => { try { return new Date(e.created_at).toLocaleString("ar-EG"); } catch { return e.created_at; } })()}
+                </Text>
+                <Text style={[styles.td, { flex: 1.2 }]}>
+                  {e.action === "create_zakat_record" ? "إنشاء سجل زكاة" : e.action}
+                </Text>
+                <Text style={[styles.td, { flex: 1.6, fontFamily: "Courier", fontSize: 7, color: C.goldDark }]}>
+                  {e.fingerprint || "—"}
+                </Text>
+                <Text style={[styles.td, { flex: 1.4, fontSize: 8 }]}>
+                  {e.sharia_refs && e.sharia_refs.length > 0 ? e.sharia_refs.join("، ") : "—"}
+                </Text>
+              </View>
+            ))}
+          </View>
+
+          <Text style={styles.disclaimer}>
+            يُسجَّل في هذا الملحق كل حساب أو حفظ ببصمة فريدة (SHA‑256) مع المراجع الشرعية
+            المعتمدة (AAOIFI رقم 35، قرارات مجمع الفقه الإسلامي الدولي) لضمان الشفافية
+            وإمكانية المراجعة لاحقاً. عدد العمليات المُسجَّلة: {data.auditEntries!.length}.
+          </Text>
+
+          <ReportFooter reportId={reportId} page={5} total={TOTAL_PAGES} />
+        </Page>
+      )}
     </Document>
   );
 }
