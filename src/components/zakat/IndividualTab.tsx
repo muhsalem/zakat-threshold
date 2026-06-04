@@ -514,6 +514,7 @@ export function IndividualTab() {
           accountantName, accountantLicense, accountantPreamble,
           accountantOpinion, opinionType,
           previousYearZakat,
+          auditEntries: includeAuditReport ? auditEntries : undefined,
         }}
       />
 
