@@ -1210,6 +1210,7 @@ export function CompanyTab() {
                 previousYearZakat: "",
                 nisabBasis: "gold",
                 valuationBasis: "market",
+                auditEntries: includeAuditReport ? auditEntries : undefined,
               }, `zakat-company-${companyName || "report"}-${new Date().toISOString().slice(0,10)}.pdf`)}
             >
               <FileText className="h-3.5 w-3.5" /> تحميل التقرير
