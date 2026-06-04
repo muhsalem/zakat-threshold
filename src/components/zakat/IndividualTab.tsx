@@ -1675,6 +1675,7 @@ export function IndividualTab() {
               goldPricePerGram: num(goldPrice), silverPricePerGram: num(silverPrice),
               accountantName, accountantLicense, accountantPreamble,
               accountantOpinion, opinionType, previousYearZakat,
+              auditEntries: includeAuditReport ? auditEntries : undefined,
             }, `zakat-${name || "report"}-${new Date().toISOString().slice(0,10)}.pdf`)}>
               <FileText className="h-4 w-4 ml-2" />
               تحميل التقرير PDF
@@ -1698,6 +1699,7 @@ export function IndividualTab() {
               goldPricePerGram: num(goldPrice), silverPricePerGram: num(silverPrice),
               accountantName, accountantLicense, accountantPreamble,
               accountantOpinion, opinionType, previousYearZakat,
+              auditEntries: includeAuditReport ? auditEntries : undefined,
             }, `zakat-${name || "report"}-${new Date().toISOString().slice(0,10)}.xlsx`)}>
               <FileSpreadsheet className="h-4 w-4 ml-2" />
               تحميل التقرير Excel
