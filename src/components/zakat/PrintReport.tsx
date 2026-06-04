@@ -58,6 +58,14 @@ export interface PrintReportData {
   assumptions?: string;
   /** اختياري — Data URL لرمز QR متوافق مع ZATCA (TLV) */
   zatcaQrDataUrl?: string;
+  /** اختياري — سجلات المراجعة والتدقيق الشرعي (تُدمَج كملحق في نهاية التقرير) */
+  auditEntries?: Array<{
+    id: string;
+    action: string;
+    fingerprint: string | null;
+    sharia_refs: string[] | null;
+    created_at: string;
+  }>;
 }
 
 const COUNTRY_FULL: Record<string, string> = {
