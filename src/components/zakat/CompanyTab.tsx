@@ -10,6 +10,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { useAuditEntries } from "@/hooks/useAuditEntries";
 import {
   Building2, Calculator, Shield, Gavel, CheckSquare, AlertTriangle, Info, Scale,
   FileSpreadsheet, Upload, FileText, X, Printer, Save, Coins, Users, HandHeart,
@@ -395,6 +397,9 @@ function FinancialUpload() {
 export function CompanyTab() {
   // ---- بيانات الشركة + الدولة والإطار القانوني ----
   const [countryCode, setCountryCode] = useState<string>("SA");
+  // إدراج سجل المراجعة والتدقيق الشرعي ضمن تقرير الشركة
+  const [includeAuditReport, setIncludeAuditReport] = useState(false);
+  const { entries: auditEntries, loading: auditLoading } = useAuditEntries(includeAuditReport);
   const country = useMemo(() => COUNTRIES.find((c) => c.code === countryCode)!, [countryCode]);
   const [autoCurrency, setAutoCurrency] = useState(true);
   const [currencyName, setCurrencyName] = useState(country.symbol);
@@ -1170,7 +1175,31 @@ export function CompanyTab() {
 
         {/* النتيجة الجانبية */}
         <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">
+          {/* خيار دمج سجل المراجعة والتدقيق ضمن التقرير */}
+          <Card className="shadow-soft border-primary/30 print:hidden">
+            <CardContent className="pt-4 pb-4 space-y-2">
+              <div className="flex items-start justify-between gap-3">
+                <div className="space-y-1 flex-1">
+                  <Label className="text-sm font-bold flex items-center gap-1.5">
+                    <FileText className="h-3.5 w-3.5 text-primary" /> دمج سجل المراجعة والتدقيق
+                  </Label>
+                  <p className="text-[11px] text-muted-foreground leading-relaxed">
+                    يُضاف ملحق ببصمات SHA‑256 والمراجع الشرعية في نهاية تقرير الشركة (يتطلب تسجيل الدخول).
+                  </p>
+                </div>
+                <Switch checked={includeAuditReport} onCheckedChange={setIncludeAuditReport} />
+              </div>
+              {includeAuditReport && (
+                <p className="text-[11px] text-primary">
+                  {auditLoading ? "جاري التحميل…" : auditEntries.length > 0
+                    ? `سيُضاف ${auditEntries.length} سجل مراجعة للتقرير.`
+                    : "لا توجد سجلات بعد. احفظ أول حساب لتظهر هنا."}
+                </p>
+              )}
+            </CardContent>
+          </Card>
           <div className="flex flex-wrap gap-2 print:hidden">
+
             <Button onClick={saveLocal} variant="outline" size="sm" className="flex-1 gap-1.5 min-w-[90px]">
               <Save className="h-3.5 w-3.5" /> حفظ
             </Button>
@@ -1205,6 +1234,7 @@ export function CompanyTab() {
                 previousYearZakat: "",
                 nisabBasis: "gold",
                 valuationBasis: "market",
+                auditEntries: includeAuditReport ? auditEntries : undefined,
               }, `zakat-company-${companyName || "report"}-${new Date().toISOString().slice(0,10)}.pdf`)}
             >
               <FileText className="h-3.5 w-3.5" /> تحميل التقرير
@@ -1227,6 +1257,7 @@ export function CompanyTab() {
                 accountantOpinion: calc.reachesNisab ? "بلغ الوعاء النصاب." : "لم يبلغ النصاب.",
                 opinionType: calc.reachesNisab ? "clean" : "adverse",
                 previousYearZakat: "", nisabBasis: "gold", valuationBasis: "market",
+                auditEntries: includeAuditReport ? auditEntries : undefined,
               }, `zakat-company-${companyName || "report"}-${new Date().toISOString().slice(0,10)}.xlsx`)}
             >
               <FileSpreadsheet className="h-3.5 w-3.5" /> Excel

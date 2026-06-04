@@ -40,6 +40,7 @@ import { RikazSection } from "./RikazSection";
 import { ShariaStandardsCard } from "./ShariaStandardsCard";
 import { DigitalAssetsSection } from "./DigitalAssetsSection";
 import { CryptoFatwasCard } from "./CryptoFatwasCard";
+import { useAuditEntries } from "@/hooks/useAuditEntries";
 
 import { supabase } from "@/integrations/supabase/client";
 
@@ -108,6 +109,9 @@ export function IndividualTab() {
   const [accountantOpinion, setAccountantOpinion] = useState("");
   const [opinionType, setOpinionType] = useState<"clean" | "qualified" | "adverse">("clean");
   const [previousYearZakat, setPreviousYearZakat] = useState("");
+  // إدراج سجل المراجعة والتدقيق الشرعي ضمن التقرير
+  const [includeAuditReport, setIncludeAuditReport] = useState(false);
+  const { entries: auditEntries, loading: auditLoading } = useAuditEntries(includeAuditReport);
   // الزكاة المعجَّلة المدفوعة مقدماً (تُخصم من الواجب)
   const [prepaidZakat, setPrepaidZakat] = useState("");
   const [prepaidYears, setPrepaidYears] = useState("1");
@@ -465,6 +469,7 @@ export function IndividualTab() {
           accountantName, accountantLicense, accountantPreamble,
           accountantOpinion, opinionType,
           previousYearZakat,
+          auditEntries: includeAuditReport ? auditEntries : undefined,
         }}
       />
 
@@ -509,6 +514,7 @@ export function IndividualTab() {
           accountantName, accountantLicense, accountantPreamble,
           accountantOpinion, opinionType,
           previousYearZakat,
+          auditEntries: includeAuditReport ? auditEntries : undefined,
         }}
       />
 
@@ -1671,6 +1677,7 @@ export function IndividualTab() {
               goldPricePerGram: num(goldPrice), silverPricePerGram: num(silverPrice),
               accountantName, accountantLicense, accountantPreamble,
               accountantOpinion, opinionType, previousYearZakat,
+              auditEntries: includeAuditReport ? auditEntries : undefined,
             }, `zakat-${name || "report"}-${new Date().toISOString().slice(0,10)}.pdf`)}>
               <FileText className="h-4 w-4 ml-2" />
               تحميل التقرير PDF
@@ -1694,6 +1701,7 @@ export function IndividualTab() {
               goldPricePerGram: num(goldPrice), silverPricePerGram: num(silverPrice),
               accountantName, accountantLicense, accountantPreamble,
               accountantOpinion, opinionType, previousYearZakat,
+              auditEntries: includeAuditReport ? auditEntries : undefined,
             }, `zakat-${name || "report"}-${new Date().toISOString().slice(0,10)}.xlsx`)}>
               <FileSpreadsheet className="h-4 w-4 ml-2" />
               تحميل التقرير Excel
@@ -1803,6 +1811,40 @@ export function IndividualTab() {
                   </p>
                 </CardContent>
               </Card>
+
+              {/* خيار دمج سجل المراجعة والتدقيق ضمن التقرير */}
+              <Card className="shadow-soft border-primary/30">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <FileText className="h-4 w-4 text-primary" /> دمج سجل المراجعة والتدقيق ضمن التقرير
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-start justify-between gap-3 rounded-md border p-3 bg-muted/30">
+                    <div className="space-y-1 flex-1">
+                      <Label className="text-sm font-bold">إدراج ملحق المراجعة والتدقيق</Label>
+                      <p className="text-[11px] text-muted-foreground leading-relaxed">
+                        عند التفعيل، يُضاف ملحق في نهاية تقرير الزكاة يتضمن سجل العمليات السابقة (الحفظ والحساب)
+                        ببصمة فريدة (SHA‑256) والمراجع الشرعية المستخدمة. يتطلب تسجيل الدخول.
+                      </p>
+                    </div>
+                    <Switch checked={includeAuditReport} onCheckedChange={setIncludeAuditReport} />
+                  </div>
+                  {includeAuditReport && (
+                    <Alert className="border-primary/30 bg-primary/5">
+                      <ShieldCheck className="h-4 w-4" />
+                      <AlertDescription className="text-xs">
+                        {auditLoading
+                          ? "جاري تحميل سجلات المراجعة…"
+                          : auditEntries.length > 0
+                            ? `سيُضاف ملحق يحتوي ${auditEntries.length} عملية مُسجَّلة في تقرير الزكاة.`
+                            : "لا توجد سجلات بعد. سجّل دخولك واحفظ أول حساب زكاة لتظهر السجلات هنا."}
+                      </AlertDescription>
+                    </Alert>
+                  )}
+                </CardContent>
+              </Card>
+
 
               <Card className="shadow-soft">
                 <CardHeader className="pb-3">
