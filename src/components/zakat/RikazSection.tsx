@@ -342,6 +342,7 @@ export function RikazSection({ mode = "all" }: { mode?: RikazMode } = {}) {
               )}
             </AccordionContent>
           </AccordionItem>
+          )}
         </Accordion>
       </div>
 
