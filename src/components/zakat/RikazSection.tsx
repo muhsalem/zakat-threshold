@@ -67,14 +67,22 @@ function NumField({ label, value, onChange, unit, hint }: NumFieldProps) {
 
 export type RikazMode = "all" | "rikaz-metals" | "agri-extras";
 
-export function RikazSection({ mode = "all" }: { mode?: RikazMode } = {}) {
+interface RikazProps {
+  mode?: RikazMode;
+  hideCountry?: boolean;
+  currency?: string;
+  onTradeBaseChange?: (amount: number) => void;
+}
+
+export function RikazSection({ mode = "all", hideCountry = false, currency: currencyProp, onTradeBaseChange }: RikazProps = {}) {
   const showRikaz = mode === "all" || mode === "rikaz-metals";
   const showMinerals = mode === "all" || mode === "rikaz-metals";
   const showHoney = mode === "all" || mode === "agri-extras";
   const showFish = mode === "all" || mode === "agri-extras";
   const showPoultry = mode === "all" || mode === "agri-extras";
   const [countryCode, setCountryCode] = useState("EG");
-  const country = COUNTRY_PRICES.find((c) => c.code === countryCode) ?? COUNTRY_PRICES[0];
+  const countryData = COUNTRY_PRICES.find((c) => c.code === countryCode) ?? COUNTRY_PRICES[0];
+  const country = { ...countryData, currency: currencyProp ?? countryData.currency };
 
   // ① الركاز (كنوز الجاهلية المدفونة)
   const [rikazValue, setRikazValue] = useState("");
