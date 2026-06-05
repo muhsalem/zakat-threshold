@@ -376,7 +376,7 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
             <Image src={logoUrl} style={styles.logo} />
           </View>
 
-          <Text style={styles.bism}>بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</Text>
+          <Text style={styles.bism}>بِسْمِ {"\uFDF2"}ِ الرَّحْمَٰنِ الرَّحِيمِ</Text>
           <Text style={styles.brand}>{PLATFORM_NAME_AR}</Text>
           <Text style={styles.tagline}>{PLATFORM_TAGLINE}</Text>
 
