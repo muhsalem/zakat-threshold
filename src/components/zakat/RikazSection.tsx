@@ -355,10 +355,20 @@ export function RikazSection({ mode = "all" }: { mode?: RikazMode } = {}) {
           </CardHeader>
           <CardContent>
             <div className="text-4xl font-black tracking-tight">
-              {fmt(calc.total)}
+              {fmt(
+                (showRikaz ? calc.rikazZakat : 0) +
+                (showMinerals ? calc.mineralsZakat : 0) +
+                (showHoney ? calc.honeyZakat : 0) +
+                (showFish ? calc.fishZakat : 0) +
+                (showPoultry ? calc.poultryZakat : 0)
+              )}
               <span className="text-lg font-medium opacity-80 mr-2">{country.currency}</span>
             </div>
-            <p className="text-xs opacity-80 mt-2">مجموع زكاة الركاز والمعادن والثروات المستحدثة</p>
+            <p className="text-xs opacity-80 mt-2">
+              {mode === "rikaz-metals" ? "مجموع زكاة الركاز والمعادن"
+                : mode === "agri-extras" ? "مجموع زكاة العسل والثروة السمكية ومزارع الدواجن"
+                : "مجموع زكاة الركاز والمعادن والثروات المستحدثة"}
+            </p>
           </CardContent>
         </Card>
 
