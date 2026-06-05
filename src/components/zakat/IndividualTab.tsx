@@ -1388,9 +1388,28 @@ export function IndividualTab() {
               {ownsLivestock && (
                 <>
                   <div className="flex items-center justify-between rounded-lg border bg-gold/5 border-gold/30 p-3">
-                    <div>
-                      <Label className="text-sm font-semibold">هل هذه الأنعام مُعدّة للتجارة (للبيع)؟</Label>
-                      <p className="text-xs text-muted-foreground mt-1">إن نعم، تُعامل معاملة <b>عروض التجارة</b> (2.5% من القيمة السوقية) وتُضمّ تلقائياً لقاعدة عروض التجارة.</p>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <Label className="text-sm font-semibold">هل هذه الأنعام مُعدّة للتجارة (للبيع)؟</Label>
+                        <TooltipProvider delayDuration={150}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button type="button" className="text-muted-foreground hover:text-primary transition-colors" aria-label="متى تُعدّ الأنعام للتجارة؟">
+                                <HelpCircle className="h-4 w-4" />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent side="bottom" className="max-w-xs text-right leading-relaxed bg-card text-card-foreground border shadow-lg">
+                              <div className="space-y-1.5 text-xs">
+                                <p><b>متى تُعدّ الأنعام للتجارة؟</b></p>
+                                <p>إذا اقتنيتها بنية <b>البيع والربح</b> (تربية تجارية، مزارع تسمين، تجارة مواشي) — لا للنسل واللبن والاستهلاك.</p>
+                                <p><b>كيف تُحسب؟</b> تُقوَّم القطيع كاملاً بسعر السوق يوم وجوب الزكاة، ثم 2.5% × القيمة السوقية الإجمالية، وتُضمّ النتيجة لقاعدة عروض التجارة في الإجمالي.</p>
+                                <p className="text-muted-foreground">المرجع: AAOIFI رقم 35 / قرار المجمع الفقهي رقم 28.</p>
+                              </div>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">إن نعم، تُعامل معاملة <b>عروض التجارة</b> (2.5% من القيمة السوقية) وتُضمّ تلقائياً لقاعدة عروض التجارة — ولا تُحسب عيناً منعاً للازدواج.</p>
                     </div>
                     <Switch checked={livestockForTrade} onCheckedChange={setLivestockForTrade} />
                   </div>
