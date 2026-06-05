@@ -98,10 +98,12 @@ const styles = StyleSheet.create({
   brand: {
     ...BASE_TEXT,
     textAlign: "center",
-    fontSize: 30,
+    fontSize: 28,
     color: C.primary,
     fontWeight: 700,
-    marginTop: 18,
+    marginTop: 22,
+    lineHeight: 1.5,
+    paddingHorizontal: 8,
   },
   tagline: {
     ...BASE_TEXT,
@@ -109,7 +111,8 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: C.goldDark,
     fontWeight: 700,
-    marginTop: 6,
+    marginTop: 14,
+    lineHeight: 1.5,
   },
   // الأقسام
   h1: {
@@ -241,19 +244,19 @@ const styles = StyleSheet.create({
   },
   recipientTitle: { ...BASE_TEXT, fontSize: 11, fontWeight: 700, color: C.primary, marginBottom: 2 },
   recipientDesc: { ...BASE_TEXT, fontSize: 9, color: C.text, lineHeight: 1.6 },
-  // العلامة المائية
+  // العلامة المائية — صغيرة وفي الذيل لتفادي تداخلها مع المحتوى
   watermark: {
     position: "absolute",
-    top: "45%",
-    left: "10%",
-    right: "10%",
+    bottom: 36,
+    left: 0,
+    right: 0,
     textAlign: "center",
-    fontSize: 72,
-    color: C.gold,
-    opacity: 0.08,
+    fontSize: 8,
+    color: C.goldDark,
+    opacity: 0.55,
     fontWeight: 700,
+    letterSpacing: 3,
     fontFamily: "Cairo",
-    transform: "rotate(-30deg)",
   },
   // بصمة التحقق
   hashBox: {
@@ -322,6 +325,14 @@ function nowAr(): string {
   });
 }
 
+/**
+ * يستبدل كلمة "الله" بحرف اللگاتشر U+FDF2 ﷲ لتفادي خطأ تكرار الحروف
+ * في @react-pdf/renderer مع خط Cairo (lam-lam-ha shaping bug).
+ */
+function arSafe(text: string): string {
+  return text.replace(/الله/g, "\uFDF2");
+}
+
 function makeReportId(name: string): string {
   const stamp = Date.now().toString(36).toUpperCase();
   const seed = (name || "anon").replace(/\s+/g, "").slice(0, 4).toUpperCase();
@@ -345,7 +356,7 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
   const monetaryZakat = data.totalZakat;
   const integrity = fingerprint(data);
   const hasAudit = !!(data.auditEntries && data.auditEntries.length > 0);
-  const TOTAL_PAGES = hasAudit ? 5 : 4;
+  const TOTAL_PAGES = hasAudit ? 5 : 3;
   const isSaudi = data.countryCode === "SA";
 
   return (
@@ -365,7 +376,7 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
             <Image src={logoUrl} style={styles.logo} />
           </View>
 
-          <Text style={styles.bism}>بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</Text>
+          <Text style={styles.bism}>بِسْمِ {"\uFDF2"}ِ الرَّحْمَٰنِ الرَّحِيمِ</Text>
           <Text style={styles.brand}>{PLATFORM_NAME_AR}</Text>
           <Text style={styles.tagline}>{PLATFORM_TAGLINE}</Text>
 
@@ -550,13 +561,13 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
         <Text style={[styles.text, { color: C.muted, marginBottom: 8 }]}>
           قال تعالى: «إِنَّمَا الصَّدَقَاتُ لِلْفُقَرَاءِ وَالْمَسَاكِينِ وَالْعَامِلِينَ
           عَلَيْهَا وَالْمُؤَلَّفَةِ قُلُوبُهُمْ وَفِي الرِّقَابِ وَالْغَارِمِينَ وَفِي
-          سَبِيلِ اللَّهِ وَابْنِ السَّبِيلِ» — سورة التوبة (60).
+          سَبِيلِ {"\uFDF2"}ِ وَابْنِ السَّبِيلِ» — سورة التوبة (60).
         </Text>
 
         {ZAKAT_RECIPIENTS.map((r, i) => (
           <View key={i} style={styles.recipient} wrap={false}>
-            <Text style={styles.recipientTitle}>{`${i + 1}. ${r.name}`}</Text>
-            <Text style={styles.recipientDesc}>{r.description}</Text>
+            <Text style={styles.recipientTitle}>{`${i + 1}. ${arSafe(r.name)}`}</Text>
+            <Text style={styles.recipientDesc}>{arSafe(r.description)}</Text>
           </View>
         ))}
 
@@ -569,7 +580,8 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
         <ReportFooter reportId={reportId} page={3} total={TOTAL_PAGES} />
       </Page>
 
-      {/* ========== صفحة 4 — المراجع والتدقيق الشرعي ========== */}
+      {/* ========== صفحة 4 — المراجع والتدقيق الشرعي (اختياري عند تفعيل دمج المراجعة) ========== */}
+      {hasAudit && (
       <Page size="A4" style={styles.page}>
         <Text style={styles.watermark} fixed>استرشادي · INDICATIVE</Text>
         <Text style={styles.h1}>المراجع والتدقيق الشرعي (Sharia Audit Trail)</Text>
@@ -639,6 +651,7 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
 
         <ReportFooter reportId={reportId} page={4} total={TOTAL_PAGES} />
       </Page>
+      )}
 
       {/* ========== صفحة 5 — ملحق سجل المراجعة والتدقيق ========== */}
       {hasAudit && (
