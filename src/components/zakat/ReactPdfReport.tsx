@@ -580,7 +580,8 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
         <ReportFooter reportId={reportId} page={3} total={TOTAL_PAGES} />
       </Page>
 
-      {/* ========== صفحة 4 — المراجع والتدقيق الشرعي ========== */}
+      {/* ========== صفحة 4 — المراجع والتدقيق الشرعي (اختياري عند تفعيل دمج المراجعة) ========== */}
+      {hasAudit && (
       <Page size="A4" style={styles.page}>
         <Text style={styles.watermark} fixed>استرشادي · INDICATIVE</Text>
         <Text style={styles.h1}>المراجع والتدقيق الشرعي (Sharia Audit Trail)</Text>
