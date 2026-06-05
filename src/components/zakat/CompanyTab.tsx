@@ -1511,7 +1511,7 @@ export function CompanyTab() {
           <p className="text-sm leading-relaxed">{accStatement}</p>
           <div className="grid md:grid-cols-3 gap-4 pt-3 border-t border-dashed text-sm">
             <div>
-              <div className="text-xs text-muted-foreground">المحاسب القانوني</div>
+              <div className="text-xs text-muted-foreground">محاسب الزكاة</div>
               <div className="font-bold text-primary">{accName || "—"}</div>
               {accLicense && <div className="text-xs">رقم القيد: {accLicense}</div>}
             </div>
