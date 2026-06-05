@@ -134,15 +134,22 @@ export function RikazSection({ mode = "all" }: { mode?: RikazMode } = {}) {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Gem className="h-5 w-5 text-primary" />
-              زكاة الركاز والمعادن والثروات المستحدثة
+              {mode === "rikaz-metals"
+                ? "زكاة الركاز والمعادن"
+                : mode === "agri-extras"
+                  ? "العسل والثروة السمكية ومزارع الدواجن"
+                  : "زكاة الركاز والمعادن والثروات المستحدثة"}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <Alert className="border-primary/30 bg-primary/5">
               <Info className="h-4 w-4" />
               <AlertDescription className="text-xs leading-relaxed">
-                هذا القسم يجمع أنواع الزكاة التي يقلّ السؤال عنها لكنها <b>واجبة شرعاً</b> متى تحققت شروطها:
-                الركاز (الكنوز المدفونة) والمعادن المستخرجة من الأرض، والعسل، والثروات السمكية والداجنة المعدّة للتجارة.
+                {mode === "rikaz-metals"
+                  ? <>هذا القسم يحسب <b>الركاز</b> (الكنوز المدفونة من الجاهلية — الخُمس 20%) و<b>المعادن</b> المستخرجة من باطن الأرض.</>
+                  : mode === "agri-extras"
+                    ? <>أنواع زراعية وحيوانية تُلحق بزكاة الزروع والثمار: <b>العسل</b> (10% عند بلوغ النصاب) و<b>الثروة السمكية</b> و<b>مزارع الدواجن</b> المعدّة للتجارة (2.5%).</>
+                    : <>هذا القسم يجمع أنواع الزكاة التي يقلّ السؤال عنها لكنها <b>واجبة شرعاً</b> متى تحققت شروطها.</>}
               </AlertDescription>
             </Alert>
 
@@ -160,8 +167,8 @@ export function RikazSection({ mode = "all" }: { mode?: RikazMode } = {}) {
           </CardContent>
         </Card>
 
-        <Accordion type="multiple" defaultValue={["rikaz"]} className="space-y-3">
-          {/* ① الركاز */}
+        <Accordion type="multiple" defaultValue={[showRikaz ? "rikaz" : showHoney ? "honey" : ""]} className="space-y-3">
+          {showRikaz && (
           <AccordionItem value="rikaz" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
