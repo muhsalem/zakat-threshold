@@ -426,6 +426,7 @@ export function IndividualTab() {
     securitiesTotalFromSection, bills,
     inventory, receivablesGood, realEstateTrade, realEstateRentIncome,
     tradeIsShareholder, tradeSharePct, tradeShareCompanyBase,
+    agriTradeBase, livestockForTrade, livestockTradeValue,
     incomeUsufructTotal, ownsFarmland, ownsLivestock,
     debtPersonalLoan, debtBankLoan, debtConsumerFinance, debtCarInstall, debtTradePayable, debtPurchases,
     debtDeferredPolicy, debtDeferredYearly, debtMortgage, debtMahr, debtAlimony,
