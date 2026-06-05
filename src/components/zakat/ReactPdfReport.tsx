@@ -651,6 +651,7 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
 
         <ReportFooter reportId={reportId} page={4} total={TOTAL_PAGES} />
       </Page>
+      )}
 
       {/* ========== صفحة 5 — ملحق سجل المراجعة والتدقيق ========== */}
       {hasAudit && (
