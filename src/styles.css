@@ -37,6 +37,8 @@
 
 :root {
   --radius: 0.75rem;
+  /* مقياس الخط القابل للتكبير من واجهة المستخدم — يؤثر على كامل المنصة */
+  font-size: calc(16px * var(--font-scale, 1));
   --background: oklch(0.985 0.005 95);
   --foreground: oklch(0.22 0.03 160);
   --card: oklch(1 0 0);
