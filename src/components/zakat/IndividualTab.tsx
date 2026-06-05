@@ -255,6 +255,12 @@ export function IndividualTab() {
   const [camels, setCamels] = useState("");
   const [cows, setCows] = useState("");
   const [sheep, setSheep] = useState("");
+  // الأنعام للتجارة — تُلحق بعروض التجارة (2.5% من القيمة السوقية)
+  const [livestockForTrade, setLivestockForTrade] = useState(false);
+  const [livestockTradeValue, setLivestockTradeValue] = useState("");
+
+  // قاعدة الأنشطة الزراعية الملحقة (عسل + أسماك + دواجن) — تُضمّ لعروض التجارة
+  const [agriTradeBase, setAgriTradeBase] = useState(0);
 
   // الديون والالتزامات — تصنيف شرعي مفصّل
   // ① الديون الحالة (واجبة السداد الآن)
