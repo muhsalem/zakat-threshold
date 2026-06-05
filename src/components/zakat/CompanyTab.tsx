@@ -513,7 +513,7 @@ export function CompanyTab() {
   const toggleC = (id: string) => setCompliance((p) => ({ ...p, [id]: !p[id] }));
 
   // ديباجة المحاسب (للتقرير المطبوع)
-  const [accName, setAccName] = useState("");
+  const [accName, setAccName] = useState("محمد سعيد سالم");
   const [accLicense, setAccLicense] = useState("");
   const [accFirm, setAccFirm] = useState("");
   const [accStatement, setAccStatement] = useState(
