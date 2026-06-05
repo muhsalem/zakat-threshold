@@ -365,13 +365,19 @@ export function RikazSection({ mode = "all" }: { mode?: RikazMode } = {}) {
         <Card className="shadow-soft">
           <CardHeader className="pb-3"><CardTitle className="text-base">تفصيل النتيجة</CardTitle></CardHeader>
           <CardContent className="space-y-2 text-sm">
-            <div className="flex justify-between"><span>الركاز (20%)</span><b>{cur(calc.rikazZakat)}</b></div>
-            <div className="flex justify-between"><span>المعادن</span><b>{cur(calc.mineralsZakat)}</b></div>
-            <div className="flex justify-between"><span>العسل (10%)</span><b>{cur(calc.honeyZakat)}</b></div>
-            <div className="flex justify-between"><span>الأسماك (2.5%)</span><b>{cur(calc.fishZakat)}</b></div>
-            <div className="flex justify-between"><span>الدواجن (2.5%)</span><b>{cur(calc.poultryZakat)}</b></div>
+            {showRikaz && <div className="flex justify-between"><span>الركاز (20%)</span><b>{cur(calc.rikazZakat)}</b></div>}
+            {showMinerals && <div className="flex justify-between"><span>المعادن</span><b>{cur(calc.mineralsZakat)}</b></div>}
+            {showHoney && <div className="flex justify-between"><span>العسل (10%)</span><b>{cur(calc.honeyZakat)}</b></div>}
+            {showFish && <div className="flex justify-between"><span>الأسماك (2.5%)</span><b>{cur(calc.fishZakat)}</b></div>}
+            {showPoultry && <div className="flex justify-between"><span>الدواجن (2.5%)</span><b>{cur(calc.poultryZakat)}</b></div>}
             <Separator className="my-2" />
-            <div className="flex justify-between text-primary font-bold"><span>المجموع</span><span>{cur(calc.total)}</span></div>
+            <div className="flex justify-between text-primary font-bold"><span>المجموع</span><span>{cur(
+              (showRikaz ? calc.rikazZakat : 0) +
+              (showMinerals ? calc.mineralsZakat : 0) +
+              (showHoney ? calc.honeyZakat : 0) +
+              (showFish ? calc.fishZakat : 0) +
+              (showPoultry ? calc.poultryZakat : 0)
+            )}</span></div>
           </CardContent>
         </Card>
       </div>
