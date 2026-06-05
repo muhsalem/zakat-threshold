@@ -65,7 +65,14 @@ function NumField({ label, value, onChange, unit, hint }: NumFieldProps) {
   );
 }
 
-export function RikazSection() {
+export type RikazMode = "all" | "rikaz-metals" | "agri-extras";
+
+export function RikazSection({ mode = "all" }: { mode?: RikazMode } = {}) {
+  const showRikaz = mode === "all" || mode === "rikaz-metals";
+  const showMinerals = mode === "all" || mode === "rikaz-metals";
+  const showHoney = mode === "all" || mode === "agri-extras";
+  const showFish = mode === "all" || mode === "agri-extras";
+  const showPoultry = mode === "all" || mode === "agri-extras";
   const [countryCode, setCountryCode] = useState("EG");
   const country = COUNTRY_PRICES.find((c) => c.code === countryCode) ?? COUNTRY_PRICES[0];
 
