@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -67,14 +67,22 @@ function NumField({ label, value, onChange, unit, hint }: NumFieldProps) {
 
 export type RikazMode = "all" | "rikaz-metals" | "agri-extras";
 
-export function RikazSection({ mode = "all" }: { mode?: RikazMode } = {}) {
+interface RikazProps {
+  mode?: RikazMode;
+  hideCountry?: boolean;
+  currency?: string;
+  onTradeBaseChange?: (amount: number) => void;
+}
+
+export function RikazSection({ mode = "all", hideCountry = false, currency: currencyProp, onTradeBaseChange }: RikazProps = {}) {
   const showRikaz = mode === "all" || mode === "rikaz-metals";
   const showMinerals = mode === "all" || mode === "rikaz-metals";
   const showHoney = mode === "all" || mode === "agri-extras";
   const showFish = mode === "all" || mode === "agri-extras";
   const showPoultry = mode === "all" || mode === "agri-extras";
   const [countryCode, setCountryCode] = useState("EG");
-  const country = COUNTRY_PRICES.find((c) => c.code === countryCode) ?? COUNTRY_PRICES[0];
+  const countryData = COUNTRY_PRICES.find((c) => c.code === countryCode) ?? COUNTRY_PRICES[0];
+  const country = { ...countryData, currency: currencyProp ?? countryData.currency };
 
   // ① الركاز (كنوز الجاهلية المدفونة)
   const [rikazValue, setRikazValue] = useState("");
@@ -125,6 +133,16 @@ export function RikazSection({ mode = "all" }: { mode?: RikazMode } = {}) {
     honeyKg, honeyPricePerKg, fishValue, fishCost, poultryValue, poultryCost,
   ]);
 
+  // إعلام الأب بقاعدة عروض التجارة (العسل + الأسماك + الدواجن) عند تفعيل التبويب الزراعي الملحق
+  useEffect(() => {
+    if (!onTradeBaseChange) return;
+    const base =
+      (showHoney && calc.honeyEligible ? calc.honeyValue : 0) +
+      (showFish ? calc.fishNet : 0) +
+      (showPoultry ? calc.poultryNet : 0);
+    onTradeBaseChange(base);
+  }, [onTradeBaseChange, showHoney, showFish, showPoultry, calc.honeyEligible, calc.honeyValue, calc.fishNet, calc.poultryNet]);
+
   const cur = (n: number) => currency(n, country.currency);
 
   return (
@@ -153,17 +171,29 @@ export function RikazSection({ mode = "all" }: { mode?: RikazMode } = {}) {
               </AlertDescription>
             </Alert>
 
-            <div className="space-y-1.5">
-              <Label>الدولة</Label>
-              <Select value={countryCode} onValueChange={setCountryCode}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent className="max-h-72">
-                  {COUNTRY_PRICES.map((c) => (
-                    <SelectItem key={c.code} value={c.code}>{c.name} ({c.currency})</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            {mode === "agri-extras" && (
+              <Alert className="border-gold/40 bg-gold/5">
+                <Info className="h-4 w-4" />
+                <AlertDescription className="text-xs leading-relaxed">
+                  <b>تنبيه محاسبي:</b> صافي قيمة <b>العسل</b> (إن بلغ النصاب) و<b>الثروة السمكية</b> و<b>مزارع الدواجن</b>
+                  تُضمّ تلقائياً إلى قاعدة <b>عروض التجارة</b> في الحساب الإجمالي للزكاة (نسبة 2.5%) ولا تُحسب مرتين.
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {!hideCountry && (
+              <div className="space-y-1.5">
+                <Label>الدولة</Label>
+                <Select value={countryCode} onValueChange={setCountryCode}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent className="max-h-72">
+                    {COUNTRY_PRICES.map((c) => (
+                      <SelectItem key={c.code} value={c.code}>{c.name} ({c.currency})</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </CardContent>
         </Card>
 

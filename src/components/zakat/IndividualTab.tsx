@@ -255,6 +255,12 @@ export function IndividualTab() {
   const [camels, setCamels] = useState("");
   const [cows, setCows] = useState("");
   const [sheep, setSheep] = useState("");
+  // الأنعام للتجارة — تُلحق بعروض التجارة (2.5% من القيمة السوقية)
+  const [livestockForTrade, setLivestockForTrade] = useState(false);
+  const [livestockTradeValue, setLivestockTradeValue] = useState("");
+
+  // قاعدة الأنشطة الزراعية الملحقة (عسل + أسماك + دواجن) — تُضمّ لعروض التجارة
+  const [agriTradeBase, setAgriTradeBase] = useState(0);
 
   // الديون والالتزامات — تصنيف شرعي مفصّل
   // ① الديون الحالة (واجبة السداد الآن)
@@ -353,7 +359,8 @@ export function IndividualTab() {
     const billsTotal = num(bills);
     const tradeShareholderBase = tradeIsShareholder
       ? num(tradeShareCompanyBase) * (num(tradeSharePct) / 100) : 0;
-    const tradeTotal = num(inventory) + num(receivablesGood) + tradeShareholderBase;
+    const livestockTradeBase = livestockForTrade ? num(livestockTradeValue) : 0;
+    const tradeTotal = num(inventory) + num(receivablesGood) + tradeShareholderBase + agriTradeBase + livestockTradeBase;
     const realEstateZakatable = num(realEstateTrade) + num(realEstateRentIncome);
     const incomeUsufruct = incomeUsufructTotal;
 
@@ -385,9 +392,11 @@ export function IndividualTab() {
     const cropsEligible = ownsFarmland && cropsKgN >= CROPS_NISAB_KG;
     const cropsZakat = cropsEligible ? cropsValue * cropsRate : 0;
 
-    const camelsN = ownsLivestock ? Math.floor(num(camels)) : 0;
-    const cowsN = ownsLivestock ? Math.floor(num(cows)) : 0;
-    const sheepN = ownsLivestock ? Math.floor(num(sheep)) : 0;
+    // إذا اختار المزكي معاملة الأنعام كعروض تجارة، فلا تُحسب عيناً (لتفادي الازدواج)
+    const livestockAsAyn = ownsLivestock && !livestockForTrade;
+    const camelsN = livestockAsAyn ? Math.floor(num(camels)) : 0;
+    const cowsN = livestockAsAyn ? Math.floor(num(cows)) : 0;
+    const sheepN = livestockAsAyn ? Math.floor(num(sheep)) : 0;
 
     // الزكاة المالية (تشترط الحول) — لا نحسبها إن لم يكتمل الحول وكان التاريخ مُدخلًا
     const hawlBlocks = hawl !== null && !hawl.hawlComplete;
@@ -417,6 +426,7 @@ export function IndividualTab() {
     securitiesTotalFromSection, bills,
     inventory, receivablesGood, realEstateTrade, realEstateRentIncome,
     tradeIsShareholder, tradeSharePct, tradeShareCompanyBase,
+    agriTradeBase, livestockForTrade, livestockTradeValue,
     incomeUsufructTotal, ownsFarmland, ownsLivestock,
     debtPersonalLoan, debtBankLoan, debtConsumerFinance, debtCarInstall, debtTradePayable, debtPurchases,
     debtDeferredPolicy, debtDeferredYearly, debtMortgage, debtMahr, debtAlimony,
@@ -1356,7 +1366,7 @@ export function IndividualTab() {
                 <div className="mb-3 text-sm font-semibold text-primary flex items-center gap-2">
                   <Wheat className="h-4 w-4" /> أنشطة زراعية وحيوانية ملحقة (العسل / الثروة السمكية / الدواجن)
                 </div>
-                <RikazSection mode="agri-extras" />
+                <RikazSection mode="agri-extras" hideCountry currency={currencyName} onTradeBaseChange={setAgriTradeBase} />
               </div>
             </AccordionContent>
           </AccordionItem>
@@ -1375,22 +1385,48 @@ export function IndividualTab() {
               </div>
               {ownsLivestock && (
                 <>
-                  <Alert className="border-primary/20 bg-primary/5">
-                    <Info className="h-4 w-4" />
-                    <AlertDescription className="text-xs">
-                      الأنعام تُزكَّى عيناً (لا قيمتها)، ويُشترط بلوغ النصاب وحولان الحول وسومُها (رعيها) أكثر السنة.
-                    </AlertDescription>
-                  </Alert>
-                  <div className="grid md:grid-cols-3 gap-4">
-                    <NumField label="عدد الإبل" value={camels} onChange={setCamels} hint="النصاب: 5" />
-                    <NumField label="عدد البقر/الجاموس" value={cows} onChange={setCows} hint="النصاب: 30" />
-                    <NumField label="عدد الغنم/المعز" value={sheep} onChange={setSheep} hint="النصاب: 40" />
+                  <div className="flex items-center justify-between rounded-lg border bg-gold/5 border-gold/30 p-3">
+                    <div>
+                      <Label className="text-sm font-semibold">هل هذه الأنعام مُعدّة للتجارة (للبيع)؟</Label>
+                      <p className="text-xs text-muted-foreground mt-1">إن نعم، تُعامل معاملة <b>عروض التجارة</b> (2.5% من القيمة السوقية) وتُضمّ تلقائياً لقاعدة عروض التجارة.</p>
+                    </div>
+                    <Switch checked={livestockForTrade} onCheckedChange={setLivestockForTrade} />
                   </div>
-                  <div className="space-y-2 text-sm">
-                    {calc.camelsN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>الإبل ({calc.camelsN}):</b> {camelZakat(calc.camelsN)}</div>}
-                    {calc.cowsN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>البقر ({calc.cowsN}):</b> {cowZakat(calc.cowsN)}</div>}
-                    {calc.sheepN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>الغنم ({calc.sheepN}):</b> {sheepZakat(calc.sheepN)}</div>}
-                  </div>
+
+                  {livestockForTrade ? (
+                    <>
+                      <Alert className="border-primary/20 bg-primary/5">
+                        <Info className="h-4 w-4" />
+                        <AlertDescription className="text-xs">
+                          أدخل القيمة السوقية الإجمالية للقطيع (للبيع) — تُحسب 2.5% وتُضمّ لقاعدة عروض التجارة في الإجمالي.
+                        </AlertDescription>
+                      </Alert>
+                      <NumField
+                        label="القيمة السوقية الإجمالية للأنعام (للتجارة)"
+                        value={livestockTradeValue} onChange={setLivestockTradeValue} unit={currencyName}
+                        hint="بسعر السوق يوم وجوب الزكاة"
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <Alert className="border-primary/20 bg-primary/5">
+                        <Info className="h-4 w-4" />
+                        <AlertDescription className="text-xs">
+                          الأنعام السائمة (للنسل واللبن لا للتجارة) تُزكَّى عيناً (لا قيمتها)، ويُشترط بلوغ النصاب وحولان الحول وسومُها (رعيها) أكثر السنة.
+                        </AlertDescription>
+                      </Alert>
+                      <div className="grid md:grid-cols-3 gap-4">
+                        <NumField label="عدد الإبل" value={camels} onChange={setCamels} hint="النصاب: 5" />
+                        <NumField label="عدد البقر/الجاموس" value={cows} onChange={setCows} hint="النصاب: 30" />
+                        <NumField label="عدد الغنم/المعز" value={sheep} onChange={setSheep} hint="النصاب: 40" />
+                      </div>
+                      <div className="space-y-2 text-sm">
+                        {calc.camelsN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>الإبل ({calc.camelsN}):</b> {camelZakat(calc.camelsN)}</div>}
+                        {calc.cowsN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>البقر ({calc.cowsN}):</b> {cowZakat(calc.cowsN)}</div>}
+                        {calc.sheepN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>الغنم ({calc.sheepN}):</b> {sheepZakat(calc.sheepN)}</div>}
+                      </div>
+                    </>
+                  )}
                 </>
               )}
             </AccordionContent>
