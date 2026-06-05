@@ -133,6 +133,16 @@ export function RikazSection({ mode = "all", hideCountry = false, currency: curr
     honeyKg, honeyPricePerKg, fishValue, fishCost, poultryValue, poultryCost,
   ]);
 
+  // إعلام الأب بقاعدة عروض التجارة (العسل + الأسماك + الدواجن) عند تفعيل التبويب الزراعي الملحق
+  useEffect(() => {
+    if (!onTradeBaseChange) return;
+    const base =
+      (showHoney && calc.honeyEligible ? calc.honeyValue : 0) +
+      (showFish ? calc.fishNet : 0) +
+      (showPoultry ? calc.poultryNet : 0);
+    onTradeBaseChange(base);
+  }, [onTradeBaseChange, showHoney, showFish, showPoultry, calc.honeyEligible, calc.honeyValue, calc.fishNet, calc.poultryNet]);
+
   const cur = (n: number) => currency(n, country.currency);
 
   return (
