@@ -247,8 +247,9 @@ export function RikazSection({ mode = "all" }: { mode?: RikazMode } = {}) {
               )}
             </AccordionContent>
           </AccordionItem>
+          )}
 
-          {/* ③ العسل */}
+          {showHoney && (
           <AccordionItem value="honey" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
