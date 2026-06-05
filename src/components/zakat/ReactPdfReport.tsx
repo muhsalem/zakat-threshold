@@ -561,13 +561,13 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
         <Text style={[styles.text, { color: C.muted, marginBottom: 8 }]}>
           قال تعالى: «إِنَّمَا الصَّدَقَاتُ لِلْفُقَرَاءِ وَالْمَسَاكِينِ وَالْعَامِلِينَ
           عَلَيْهَا وَالْمُؤَلَّفَةِ قُلُوبُهُمْ وَفِي الرِّقَابِ وَالْغَارِمِينَ وَفِي
-          سَبِيلِ اللَّهِ وَابْنِ السَّبِيلِ» — سورة التوبة (60).
+          سَبِيلِ {"\uFDF2"}ِ وَابْنِ السَّبِيلِ» — سورة التوبة (60).
         </Text>
 
         {ZAKAT_RECIPIENTS.map((r, i) => (
           <View key={i} style={styles.recipient} wrap={false}>
-            <Text style={styles.recipientTitle}>{`${i + 1}. ${r.name}`}</Text>
-            <Text style={styles.recipientDesc}>{r.description}</Text>
+            <Text style={styles.recipientTitle}>{`${i + 1}. ${arSafe(r.name)}`}</Text>
+            <Text style={styles.recipientDesc}>{arSafe(r.description)}</Text>
           </View>
         ))}
 
