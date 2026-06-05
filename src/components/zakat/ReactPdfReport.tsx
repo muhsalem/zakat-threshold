@@ -325,6 +325,14 @@ function nowAr(): string {
   });
 }
 
+/**
+ * يستبدل كلمة "الله" بحرف اللگاتشر U+FDF2 ﷲ لتفادي خطأ تكرار الحروف
+ * في @react-pdf/renderer مع خط Cairo (lam-lam-ha shaping bug).
+ */
+function arSafe(text: string): string {
+  return text.replace(/الله/g, "\uFDF2");
+}
+
 function makeReportId(name: string): string {
   const stamp = Date.now().toString(36).toUpperCase();
   const seed = (name || "anon").replace(/\s+/g, "").slice(0, 4).toUpperCase();
