@@ -98,10 +98,12 @@ const styles = StyleSheet.create({
   brand: {
     ...BASE_TEXT,
     textAlign: "center",
-    fontSize: 30,
+    fontSize: 28,
     color: C.primary,
     fontWeight: 700,
-    marginTop: 18,
+    marginTop: 22,
+    lineHeight: 1.5,
+    paddingHorizontal: 8,
   },
   tagline: {
     ...BASE_TEXT,
@@ -109,7 +111,8 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: C.goldDark,
     fontWeight: 700,
-    marginTop: 6,
+    marginTop: 14,
+    lineHeight: 1.5,
   },
   // الأقسام
   h1: {
