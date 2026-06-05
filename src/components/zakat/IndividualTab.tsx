@@ -1698,18 +1698,38 @@ export function IndividualTab() {
             <SectionResult format={cur} label="زكاة الذهب" value={calc.goldZakat} eligible={calc.goldEligible} />
             <SectionResult format={cur} label="زكاة الفضة" value={calc.silverZakat} eligible={calc.silverEligible} />
             <SectionResult format={cur} label="زكاة النقد والاستثمارات والتجارة والعقار (صافي)" value={calc.monetaryZakat} eligible={calc.monetaryEligible} />
+
+            {/* تفصيل قاعدة عروض التجارة (2.5%) ومصادرها */}
+            {calc.tradeTotal > 0 && (
+              <div className="rounded-md border border-primary/20 bg-primary/5 p-2 mt-1 space-y-1">
+                <div className="text-xs font-semibold text-primary flex items-center justify-between">
+                  <span>عروض التجارة (2.5%) — تفصيل المصادر</span>
+                  <span className="text-foreground">قاعدة: <b>{cur(calc.tradeTotal)}</b></span>
+                </div>
+                {num(inventory) > 0 && (
+                  <div className="text-xs flex justify-between"><span>• البضاعة بسعر السوق</span><b>{cur(num(inventory))}</b></div>
+                )}
+                {num(receivablesGood) > 0 && (
+                  <div className="text-xs flex justify-between"><span>• ديون مرجوّة</span><b>{cur(num(receivablesGood))}</b></div>
+                )}
+                {tradeIsShareholder && num(tradeShareCompanyBase) > 0 && (
+                  <div className="text-xs flex justify-between"><span>• نصيبك من وعاء الشركة</span><b>{cur(num(tradeShareCompanyBase) * (num(tradeSharePct) / 100))}</b></div>
+                )}
+                {agriTradeBase > 0 && (
+                  <div className="text-xs flex justify-between"><span>• العسل/الأسماك/الدواجن (ملحقة)</span><b>{cur(agriTradeBase)}</b></div>
+                )}
+                {livestockForTrade && num(livestockTradeValue) > 0 && (
+                  <div className="text-xs flex justify-between"><span>• الأنعام للتجارة</span><b>{cur(num(livestockTradeValue))}</b></div>
+                )}
+                <div className="text-[10px] text-muted-foreground pt-1 border-t border-primary/10">
+                  لا تُحسب هذه الأصول مرة أخرى ضمن زكاة الزروع ولا زكاة الأنعام عيناً — مُنعَ الازدواج تلقائياً.
+                </div>
+              </div>
+            )}
+
             <SectionResult format={cur} label="زكاة الزروع والثمار" value={calc.cropsZakat} eligible={calc.cropsEligible} />
             {fitrContribution > 0 && (
               <SectionResult format={cur} label="🌾 زكاة الفطر (تلقائي — رمضان)" value={fitrContribution} />
-            )}
-
-            {ownsLivestock && (calc.camelsN > 0 || calc.cowsN > 0 || calc.sheepN > 0) && (
-              <div className="rounded-md border border-primary/20 bg-primary/5 p-2 mt-1 space-y-1">
-                <div className="text-xs font-semibold text-primary">زكاة الأنعام (تُؤدّى عيناً لا قيمةً):</div>
-                {calc.camelsN > 0 && <div className="text-xs">• الإبل ({calc.camelsN}): <b>{camelZakat(calc.camelsN)}</b></div>}
-                {calc.cowsN > 0 && <div className="text-xs">• البقر ({calc.cowsN}): <b>{cowZakat(calc.cowsN)}</b></div>}
-                {calc.sheepN > 0 && <div className="text-xs">• الغنم ({calc.sheepN}): <b>{sheepZakat(calc.sheepN)}</b></div>}
-              </div>
             )}
 
             <Separator className="my-2" />
