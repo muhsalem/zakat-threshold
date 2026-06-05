@@ -1487,7 +1487,7 @@ export function CompanyTab() {
       <CardContent className="space-y-4">
         <div className="grid md:grid-cols-3 gap-3 print:hidden">
           <div className="space-y-1.5">
-            <Label className="text-xs">اسم المحاسب القانوني</Label>
+            <Label className="text-xs">اسم محاسب الزكاة</Label>
             <Input value={accName} onChange={(e) => setAccName(e.target.value)} placeholder="الاسم رباعياً" />
           </div>
           <div className="space-y-1.5">
