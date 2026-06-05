@@ -1732,6 +1732,15 @@ export function IndividualTab() {
               <SectionResult format={cur} label="🌾 زكاة الفطر (تلقائي — رمضان)" value={fitrContribution} />
             )}
 
+            {ownsLivestock && !livestockForTrade && (calc.camelsN > 0 || calc.cowsN > 0 || calc.sheepN > 0) && (
+              <div className="rounded-md border border-primary/20 bg-primary/5 p-2 mt-1 space-y-1">
+                <div className="text-xs font-semibold text-primary">زكاة الأنعام (تُؤدّى عيناً لا قيمةً):</div>
+                {calc.camelsN > 0 && <div className="text-xs">• الإبل ({calc.camelsN}): <b>{camelZakat(calc.camelsN)}</b></div>}
+                {calc.cowsN > 0 && <div className="text-xs">• البقر ({calc.cowsN}): <b>{cowZakat(calc.cowsN)}</b></div>}
+                {calc.sheepN > 0 && <div className="text-xs">• الغنم ({calc.sheepN}): <b>{sheepZakat(calc.sheepN)}</b></div>}
+              </div>
+            )}
+
             <Separator className="my-2" />
             <div className="text-xs text-muted-foreground space-y-1">
               <div>الوعاء النقدي الإجمالي: <b>{cur(calc.monetaryGross)}</b></div>
