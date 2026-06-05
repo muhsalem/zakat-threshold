@@ -1385,22 +1385,48 @@ export function IndividualTab() {
               </div>
               {ownsLivestock && (
                 <>
-                  <Alert className="border-primary/20 bg-primary/5">
-                    <Info className="h-4 w-4" />
-                    <AlertDescription className="text-xs">
-                      الأنعام تُزكَّى عيناً (لا قيمتها)، ويُشترط بلوغ النصاب وحولان الحول وسومُها (رعيها) أكثر السنة.
-                    </AlertDescription>
-                  </Alert>
-                  <div className="grid md:grid-cols-3 gap-4">
-                    <NumField label="عدد الإبل" value={camels} onChange={setCamels} hint="النصاب: 5" />
-                    <NumField label="عدد البقر/الجاموس" value={cows} onChange={setCows} hint="النصاب: 30" />
-                    <NumField label="عدد الغنم/المعز" value={sheep} onChange={setSheep} hint="النصاب: 40" />
+                  <div className="flex items-center justify-between rounded-lg border bg-gold/5 border-gold/30 p-3">
+                    <div>
+                      <Label className="text-sm font-semibold">هل هذه الأنعام مُعدّة للتجارة (للبيع)؟</Label>
+                      <p className="text-xs text-muted-foreground mt-1">إن نعم، تُعامل معاملة <b>عروض التجارة</b> (2.5% من القيمة السوقية) وتُضمّ تلقائياً لقاعدة عروض التجارة.</p>
+                    </div>
+                    <Switch checked={livestockForTrade} onCheckedChange={setLivestockForTrade} />
                   </div>
-                  <div className="space-y-2 text-sm">
-                    {calc.camelsN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>الإبل ({calc.camelsN}):</b> {camelZakat(calc.camelsN)}</div>}
-                    {calc.cowsN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>البقر ({calc.cowsN}):</b> {cowZakat(calc.cowsN)}</div>}
-                    {calc.sheepN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>الغنم ({calc.sheepN}):</b> {sheepZakat(calc.sheepN)}</div>}
-                  </div>
+
+                  {livestockForTrade ? (
+                    <>
+                      <Alert className="border-primary/20 bg-primary/5">
+                        <Info className="h-4 w-4" />
+                        <AlertDescription className="text-xs">
+                          أدخل القيمة السوقية الإجمالية للقطيع (للبيع) — تُحسب 2.5% وتُضمّ لقاعدة عروض التجارة في الإجمالي.
+                        </AlertDescription>
+                      </Alert>
+                      <NumField
+                        label="القيمة السوقية الإجمالية للأنعام (للتجارة)"
+                        value={livestockTradeValue} onChange={setLivestockTradeValue} unit={currencyName}
+                        hint="بسعر السوق يوم وجوب الزكاة"
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <Alert className="border-primary/20 bg-primary/5">
+                        <Info className="h-4 w-4" />
+                        <AlertDescription className="text-xs">
+                          الأنعام السائمة (للنسل واللبن لا للتجارة) تُزكَّى عيناً (لا قيمتها)، ويُشترط بلوغ النصاب وحولان الحول وسومُها (رعيها) أكثر السنة.
+                        </AlertDescription>
+                      </Alert>
+                      <div className="grid md:grid-cols-3 gap-4">
+                        <NumField label="عدد الإبل" value={camels} onChange={setCamels} hint="النصاب: 5" />
+                        <NumField label="عدد البقر/الجاموس" value={cows} onChange={setCows} hint="النصاب: 30" />
+                        <NumField label="عدد الغنم/المعز" value={sheep} onChange={setSheep} hint="النصاب: 40" />
+                      </div>
+                      <div className="space-y-2 text-sm">
+                        {calc.camelsN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>الإبل ({calc.camelsN}):</b> {camelZakat(calc.camelsN)}</div>}
+                        {calc.cowsN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>البقر ({calc.cowsN}):</b> {cowZakat(calc.cowsN)}</div>}
+                        {calc.sheepN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>الغنم ({calc.sheepN}):</b> {sheepZakat(calc.sheepN)}</div>}
+                      </div>
+                    </>
+                  )}
                 </>
               )}
             </AccordionContent>
