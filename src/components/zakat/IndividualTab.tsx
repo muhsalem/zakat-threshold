@@ -12,6 +12,8 @@ import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { HelpCircle } from "lucide-react";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -1386,9 +1388,28 @@ export function IndividualTab() {
               {ownsLivestock && (
                 <>
                   <div className="flex items-center justify-between rounded-lg border bg-gold/5 border-gold/30 p-3">
-                    <div>
-                      <Label className="text-sm font-semibold">هل هذه الأنعام مُعدّة للتجارة (للبيع)؟</Label>
-                      <p className="text-xs text-muted-foreground mt-1">إن نعم، تُعامل معاملة <b>عروض التجارة</b> (2.5% من القيمة السوقية) وتُضمّ تلقائياً لقاعدة عروض التجارة.</p>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <Label className="text-sm font-semibold">هل هذه الأنعام مُعدّة للتجارة (للبيع)؟</Label>
+                        <TooltipProvider delayDuration={150}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button type="button" className="text-muted-foreground hover:text-primary transition-colors" aria-label="متى تُعدّ الأنعام للتجارة؟">
+                                <HelpCircle className="h-4 w-4" />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent side="bottom" className="max-w-xs text-right leading-relaxed bg-card text-card-foreground border shadow-lg">
+                              <div className="space-y-1.5 text-xs">
+                                <p><b>متى تُعدّ الأنعام للتجارة؟</b></p>
+                                <p>إذا اقتنيتها بنية <b>البيع والربح</b> (تربية تجارية، مزارع تسمين، تجارة مواشي) — لا للنسل واللبن والاستهلاك.</p>
+                                <p><b>كيف تُحسب؟</b> تُقوَّم القطيع كاملاً بسعر السوق يوم وجوب الزكاة، ثم 2.5% × القيمة السوقية الإجمالية، وتُضمّ النتيجة لقاعدة عروض التجارة في الإجمالي.</p>
+                                <p className="text-muted-foreground">المرجع: AAOIFI رقم 35 / قرار المجمع الفقهي رقم 28.</p>
+                              </div>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">إن نعم، تُعامل معاملة <b>عروض التجارة</b> (2.5% من القيمة السوقية) وتُضمّ تلقائياً لقاعدة عروض التجارة — ولا تُحسب عيناً منعاً للازدواج.</p>
                     </div>
                     <Switch checked={livestockForTrade} onCheckedChange={setLivestockForTrade} />
                   </div>
@@ -1677,12 +1698,41 @@ export function IndividualTab() {
             <SectionResult format={cur} label="زكاة الذهب" value={calc.goldZakat} eligible={calc.goldEligible} />
             <SectionResult format={cur} label="زكاة الفضة" value={calc.silverZakat} eligible={calc.silverEligible} />
             <SectionResult format={cur} label="زكاة النقد والاستثمارات والتجارة والعقار (صافي)" value={calc.monetaryZakat} eligible={calc.monetaryEligible} />
+
+            {/* تفصيل قاعدة عروض التجارة (2.5%) ومصادرها */}
+            {calc.tradeTotal > 0 && (
+              <div className="rounded-md border border-primary/20 bg-primary/5 p-2 mt-1 space-y-1">
+                <div className="text-xs font-semibold text-primary flex items-center justify-between">
+                  <span>عروض التجارة (2.5%) — تفصيل المصادر</span>
+                  <span className="text-foreground">قاعدة: <b>{cur(calc.tradeTotal)}</b></span>
+                </div>
+                {num(inventory) > 0 && (
+                  <div className="text-xs flex justify-between"><span>• البضاعة بسعر السوق</span><b>{cur(num(inventory))}</b></div>
+                )}
+                {num(receivablesGood) > 0 && (
+                  <div className="text-xs flex justify-between"><span>• ديون مرجوّة</span><b>{cur(num(receivablesGood))}</b></div>
+                )}
+                {tradeIsShareholder && num(tradeShareCompanyBase) > 0 && (
+                  <div className="text-xs flex justify-between"><span>• نصيبك من وعاء الشركة</span><b>{cur(num(tradeShareCompanyBase) * (num(tradeSharePct) / 100))}</b></div>
+                )}
+                {agriTradeBase > 0 && (
+                  <div className="text-xs flex justify-between"><span>• العسل/الأسماك/الدواجن (ملحقة)</span><b>{cur(agriTradeBase)}</b></div>
+                )}
+                {livestockForTrade && num(livestockTradeValue) > 0 && (
+                  <div className="text-xs flex justify-between"><span>• الأنعام للتجارة</span><b>{cur(num(livestockTradeValue))}</b></div>
+                )}
+                <div className="text-[10px] text-muted-foreground pt-1 border-t border-primary/10">
+                  لا تُحسب هذه الأصول مرة أخرى ضمن زكاة الزروع ولا زكاة الأنعام عيناً — مُنعَ الازدواج تلقائياً.
+                </div>
+              </div>
+            )}
+
             <SectionResult format={cur} label="زكاة الزروع والثمار" value={calc.cropsZakat} eligible={calc.cropsEligible} />
             {fitrContribution > 0 && (
               <SectionResult format={cur} label="🌾 زكاة الفطر (تلقائي — رمضان)" value={fitrContribution} />
             )}
 
-            {ownsLivestock && (calc.camelsN > 0 || calc.cowsN > 0 || calc.sheepN > 0) && (
+            {ownsLivestock && !livestockForTrade && (calc.camelsN > 0 || calc.cowsN > 0 || calc.sheepN > 0) && (
               <div className="rounded-md border border-primary/20 bg-primary/5 p-2 mt-1 space-y-1">
                 <div className="text-xs font-semibold text-primary">زكاة الأنعام (تُؤدّى عيناً لا قيمةً):</div>
                 {calc.camelsN > 0 && <div className="text-xs">• الإبل ({calc.camelsN}): <b>{camelZakat(calc.camelsN)}</b></div>}
