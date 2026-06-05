@@ -55,6 +55,7 @@ function Index() {
           </div>
           <div className="flex items-center gap-1">
             <NotificationsBell />
+            <FontSizeToggle />
             <ThemeToggle />
             <HeaderAuth />
           </div>
