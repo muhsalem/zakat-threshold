@@ -392,9 +392,11 @@ export function IndividualTab() {
     const cropsEligible = ownsFarmland && cropsKgN >= CROPS_NISAB_KG;
     const cropsZakat = cropsEligible ? cropsValue * cropsRate : 0;
 
-    const camelsN = ownsLivestock ? Math.floor(num(camels)) : 0;
-    const cowsN = ownsLivestock ? Math.floor(num(cows)) : 0;
-    const sheepN = ownsLivestock ? Math.floor(num(sheep)) : 0;
+    // إذا اختار المزكي معاملة الأنعام كعروض تجارة، فلا تُحسب عيناً (لتفادي الازدواج)
+    const livestockAsAyn = ownsLivestock && !livestockForTrade;
+    const camelsN = livestockAsAyn ? Math.floor(num(camels)) : 0;
+    const cowsN = livestockAsAyn ? Math.floor(num(cows)) : 0;
+    const sheepN = livestockAsAyn ? Math.floor(num(sheep)) : 0;
 
     // الزكاة المالية (تشترط الحول) — لا نحسبها إن لم يكتمل الحول وكان التاريخ مُدخلًا
     const hawlBlocks = hawl !== null && !hawl.hawlComplete;
