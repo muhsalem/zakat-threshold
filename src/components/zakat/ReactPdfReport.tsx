@@ -244,19 +244,19 @@ const styles = StyleSheet.create({
   },
   recipientTitle: { ...BASE_TEXT, fontSize: 11, fontWeight: 700, color: C.primary, marginBottom: 2 },
   recipientDesc: { ...BASE_TEXT, fontSize: 9, color: C.text, lineHeight: 1.6 },
-  // العلامة المائية
+  // العلامة المائية — صغيرة وفي الذيل لتفادي تداخلها مع المحتوى
   watermark: {
     position: "absolute",
-    top: "45%",
-    left: "10%",
-    right: "10%",
+    bottom: 36,
+    left: 0,
+    right: 0,
     textAlign: "center",
-    fontSize: 72,
-    color: C.gold,
-    opacity: 0.08,
+    fontSize: 8,
+    color: C.goldDark,
+    opacity: 0.55,
     fontWeight: 700,
+    letterSpacing: 3,
     fontFamily: "Cairo",
-    transform: "rotate(-30deg)",
   },
   // بصمة التحقق
   hashBox: {
