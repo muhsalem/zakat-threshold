@@ -101,7 +101,7 @@ export function IndividualTab() {
   const [notes, setNotes] = useState("");
 
   // ديباجة محاسب الزكاة (تظهر في رأس التقرير عند الطباعة)
-  const [accountantName, setAccountantName] = useState("");
+  const [accountantName, setAccountantName] = useState("محمد سعيد سالم");
   const [accountantLicense, setAccountantLicense] = useState("");
   const [accountantPreamble, setAccountantPreamble] = useState(
     "بسم الله الرحمن الرحيم\nأشهد بصفتي محاسب الزكاة المعتمد أنّ هذا الإقرار قد أُعِدّ بناءً على البيانات المُقدَّمة من المُزكِّي وفقاً للمعايير الشرعية المعتمدة (AAOIFI رقم 35 لزكاة الشركات والأفراد) وعلى ضوء فتاوى المجامع الفقهية المعاصرة، وبعد التحقق من بلوغ النصاب وحولان الحول وفق التقويم الهجري، وخصم الديون المستحقة والنفقات الواجبة. وقد رُوعي مبدأ «الأنفع للفقراء» في تقدير النصاب، وأُجريت عمليات التطهير على العوائد غير الشرعية. والله المستعان وعليه التُّكلان."
@@ -1350,6 +1350,14 @@ export function IndividualTab() {
                   <p className="text-xs text-muted-foreground">ملاحظة: الزروع لا تشترط حولًا، وإنما تجب يوم الحصاد.</p>
                 </>
               )}
+
+              {/* تبويب فرعي: العسل + الثروة السمكية + مزارع الدواجن (تُلحق بالزروع والثمار) */}
+              <div className="pt-4 border-t border-dashed">
+                <div className="mb-3 text-sm font-semibold text-primary flex items-center gap-2">
+                  <Wheat className="h-4 w-4" /> أنشطة زراعية وحيوانية ملحقة (العسل / الثروة السمكية / الدواجن)
+                </div>
+                <RikazSection mode="agri-extras" />
+              </div>
             </AccordionContent>
           </AccordionItem>
 
@@ -1357,12 +1365,12 @@ export function IndividualTab() {
           <AccordionItem value="livestock" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
-                <Sprout className="h-5 w-5 text-primary" /> زكاة الأنعام
+                <Sprout className="h-5 w-5 text-primary" /> زكاة الأنعام (الإبل والبقر والغنم)
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
               <div className="flex items-center justify-between rounded-lg border bg-muted/30 p-3">
-                <Label className="text-sm font-semibold">هل تملك مواشي / أنعام؟</Label>
+                <Label className="text-sm font-semibold">هل تملك مواشي / أنعام سائمة؟</Label>
                 <Switch checked={ownsLivestock} onCheckedChange={setOwnsLivestock} />
               </div>
               {ownsLivestock && (
@@ -1375,8 +1383,8 @@ export function IndividualTab() {
                   </Alert>
                   <div className="grid md:grid-cols-3 gap-4">
                     <NumField label="عدد الإبل" value={camels} onChange={setCamels} hint="النصاب: 5" />
-                    <NumField label="عدد البقر" value={cows} onChange={setCows} hint="النصاب: 30" />
-                    <NumField label="عدد الغنم" value={sheep} onChange={setSheep} hint="النصاب: 40" />
+                    <NumField label="عدد البقر/الجاموس" value={cows} onChange={setCows} hint="النصاب: 30" />
+                    <NumField label="عدد الغنم/المعز" value={sheep} onChange={setSheep} hint="النصاب: 40" />
                   </div>
                   <div className="space-y-2 text-sm">
                     {calc.camelsN > 0 && <div className="rounded-md bg-muted/50 p-2"><b>الإبل ({calc.camelsN}):</b> {camelZakat(calc.camelsN)}</div>}
@@ -1385,13 +1393,21 @@ export function IndividualTab() {
                   </div>
                 </>
               )}
-
-              {/* الركاز والمعادن والعسل والثروة السمكية والدواجن — أسئلة تكميلية ضمن الأنعام */}
-              <div className="pt-2">
-                <RikazSection />
-              </div>
             </AccordionContent>
           </AccordionItem>
+
+          {/* الركاز والمعادن — تبويب مستقل */}
+          <AccordionItem value="rikaz-metals" className="border rounded-xl shadow-soft bg-card px-4">
+            <AccordionTrigger className="hover:no-underline">
+              <span className="flex items-center gap-2 text-base font-semibold">
+                <Sprout className="h-5 w-5 text-gold" /> زكاة الركاز والمعادن
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="space-y-4 pb-4">
+              <RikazSection mode="rikaz-metals" />
+            </AccordionContent>
+          </AccordionItem>
+
 
           {/* الديون */}
           <AccordionItem value="debts" className="border rounded-xl shadow-soft bg-card px-4">

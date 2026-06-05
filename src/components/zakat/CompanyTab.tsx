@@ -513,7 +513,7 @@ export function CompanyTab() {
   const toggleC = (id: string) => setCompliance((p) => ({ ...p, [id]: !p[id] }));
 
   // ديباجة المحاسب (للتقرير المطبوع)
-  const [accName, setAccName] = useState("");
+  const [accName, setAccName] = useState("محمد سعيد سالم");
   const [accLicense, setAccLicense] = useState("");
   const [accFirm, setAccFirm] = useState("");
   const [accStatement, setAccStatement] = useState(
@@ -1480,14 +1480,14 @@ export function CompanyTab() {
       <CardHeader className="bg-gradient-to-l from-primary/10 to-transparent">
         <CardTitle className="flex items-center gap-2">
           <FileText className="h-5 w-5 text-primary" />
-          بيانات المحاسب القانوني
+          بيانات محاسب الزكاة
         </CardTitle>
         <p className="text-xs text-muted-foreground">تظهر هذه البيانات في التقرير النهائي عند الطباعة.</p>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid md:grid-cols-3 gap-3 print:hidden">
           <div className="space-y-1.5">
-            <Label className="text-xs">اسم المحاسب القانوني</Label>
+            <Label className="text-xs">اسم محاسب الزكاة</Label>
             <Input value={accName} onChange={(e) => setAccName(e.target.value)} placeholder="الاسم رباعياً" />
           </div>
           <div className="space-y-1.5">
@@ -1511,7 +1511,7 @@ export function CompanyTab() {
           <p className="text-sm leading-relaxed">{accStatement}</p>
           <div className="grid md:grid-cols-3 gap-4 pt-3 border-t border-dashed text-sm">
             <div>
-              <div className="text-xs text-muted-foreground">المحاسب القانوني</div>
+              <div className="text-xs text-muted-foreground">محاسب الزكاة</div>
               <div className="font-bold text-primary">{accName || "—"}</div>
               {accLicense && <div className="text-xs">رقم القيد: {accLicense}</div>}
             </div>

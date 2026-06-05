@@ -65,7 +65,14 @@ function NumField({ label, value, onChange, unit, hint }: NumFieldProps) {
   );
 }
 
-export function RikazSection() {
+export type RikazMode = "all" | "rikaz-metals" | "agri-extras";
+
+export function RikazSection({ mode = "all" }: { mode?: RikazMode } = {}) {
+  const showRikaz = mode === "all" || mode === "rikaz-metals";
+  const showMinerals = mode === "all" || mode === "rikaz-metals";
+  const showHoney = mode === "all" || mode === "agri-extras";
+  const showFish = mode === "all" || mode === "agri-extras";
+  const showPoultry = mode === "all" || mode === "agri-extras";
   const [countryCode, setCountryCode] = useState("EG");
   const country = COUNTRY_PRICES.find((c) => c.code === countryCode) ?? COUNTRY_PRICES[0];
 
@@ -127,15 +134,22 @@ export function RikazSection() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Gem className="h-5 w-5 text-primary" />
-              زكاة الركاز والمعادن والثروات المستحدثة
+              {mode === "rikaz-metals"
+                ? "زكاة الركاز والمعادن"
+                : mode === "agri-extras"
+                  ? "العسل والثروة السمكية ومزارع الدواجن"
+                  : "زكاة الركاز والمعادن والثروات المستحدثة"}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <Alert className="border-primary/30 bg-primary/5">
               <Info className="h-4 w-4" />
               <AlertDescription className="text-xs leading-relaxed">
-                هذا القسم يجمع أنواع الزكاة التي يقلّ السؤال عنها لكنها <b>واجبة شرعاً</b> متى تحققت شروطها:
-                الركاز (الكنوز المدفونة) والمعادن المستخرجة من الأرض، والعسل، والثروات السمكية والداجنة المعدّة للتجارة.
+                {mode === "rikaz-metals"
+                  ? <>هذا القسم يحسب <b>الركاز</b> (الكنوز المدفونة من الجاهلية — الخُمس 20%) و<b>المعادن</b> المستخرجة من باطن الأرض.</>
+                  : mode === "agri-extras"
+                    ? <>أنواع زراعية وحيوانية تُلحق بزكاة الزروع والثمار: <b>العسل</b> (10% عند بلوغ النصاب) و<b>الثروة السمكية</b> و<b>مزارع الدواجن</b> المعدّة للتجارة (2.5%).</>
+                    : <>هذا القسم يجمع أنواع الزكاة التي يقلّ السؤال عنها لكنها <b>واجبة شرعاً</b> متى تحققت شروطها.</>}
               </AlertDescription>
             </Alert>
 
@@ -153,8 +167,8 @@ export function RikazSection() {
           </CardContent>
         </Card>
 
-        <Accordion type="multiple" defaultValue={["rikaz"]} className="space-y-3">
-          {/* ① الركاز */}
+        <Accordion type="multiple" defaultValue={[showRikaz ? "rikaz" : showHoney ? "honey" : ""]} className="space-y-3">
+          {showRikaz && (
           <AccordionItem value="rikaz" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
@@ -183,8 +197,9 @@ export function RikazSection() {
               )}
             </AccordionContent>
           </AccordionItem>
+          )}
 
-          {/* ② المعادن */}
+          {showMinerals && (
           <AccordionItem value="minerals" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
@@ -232,8 +247,9 @@ export function RikazSection() {
               )}
             </AccordionContent>
           </AccordionItem>
+          )}
 
-          {/* ③ العسل */}
+          {showHoney && (
           <AccordionItem value="honey" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
@@ -267,8 +283,9 @@ export function RikazSection() {
               )}
             </AccordionContent>
           </AccordionItem>
+          )}
 
-          {/* ④ الأسماك */}
+          {showFish && (
           <AccordionItem value="fish" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
@@ -296,8 +313,9 @@ export function RikazSection() {
               )}
             </AccordionContent>
           </AccordionItem>
+          )}
 
-          {/* ⑤ الدواجن */}
+          {showPoultry && (
           <AccordionItem value="poultry" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
@@ -324,6 +342,7 @@ export function RikazSection() {
               )}
             </AccordionContent>
           </AccordionItem>
+          )}
         </Accordion>
       </div>
 
@@ -336,23 +355,39 @@ export function RikazSection() {
           </CardHeader>
           <CardContent>
             <div className="text-4xl font-black tracking-tight">
-              {fmt(calc.total)}
+              {fmt(
+                (showRikaz ? calc.rikazZakat : 0) +
+                (showMinerals ? calc.mineralsZakat : 0) +
+                (showHoney ? calc.honeyZakat : 0) +
+                (showFish ? calc.fishZakat : 0) +
+                (showPoultry ? calc.poultryZakat : 0)
+              )}
               <span className="text-lg font-medium opacity-80 mr-2">{country.currency}</span>
             </div>
-            <p className="text-xs opacity-80 mt-2">مجموع زكاة الركاز والمعادن والثروات المستحدثة</p>
+            <p className="text-xs opacity-80 mt-2">
+              {mode === "rikaz-metals" ? "مجموع زكاة الركاز والمعادن"
+                : mode === "agri-extras" ? "مجموع زكاة العسل والثروة السمكية ومزارع الدواجن"
+                : "مجموع زكاة الركاز والمعادن والثروات المستحدثة"}
+            </p>
           </CardContent>
         </Card>
 
         <Card className="shadow-soft">
           <CardHeader className="pb-3"><CardTitle className="text-base">تفصيل النتيجة</CardTitle></CardHeader>
           <CardContent className="space-y-2 text-sm">
-            <div className="flex justify-between"><span>الركاز (20%)</span><b>{cur(calc.rikazZakat)}</b></div>
-            <div className="flex justify-between"><span>المعادن</span><b>{cur(calc.mineralsZakat)}</b></div>
-            <div className="flex justify-between"><span>العسل (10%)</span><b>{cur(calc.honeyZakat)}</b></div>
-            <div className="flex justify-between"><span>الأسماك (2.5%)</span><b>{cur(calc.fishZakat)}</b></div>
-            <div className="flex justify-between"><span>الدواجن (2.5%)</span><b>{cur(calc.poultryZakat)}</b></div>
+            {showRikaz && <div className="flex justify-between"><span>الركاز (20%)</span><b>{cur(calc.rikazZakat)}</b></div>}
+            {showMinerals && <div className="flex justify-between"><span>المعادن</span><b>{cur(calc.mineralsZakat)}</b></div>}
+            {showHoney && <div className="flex justify-between"><span>العسل (10%)</span><b>{cur(calc.honeyZakat)}</b></div>}
+            {showFish && <div className="flex justify-between"><span>الأسماك (2.5%)</span><b>{cur(calc.fishZakat)}</b></div>}
+            {showPoultry && <div className="flex justify-between"><span>الدواجن (2.5%)</span><b>{cur(calc.poultryZakat)}</b></div>}
             <Separator className="my-2" />
-            <div className="flex justify-between text-primary font-bold"><span>المجموع</span><span>{cur(calc.total)}</span></div>
+            <div className="flex justify-between text-primary font-bold"><span>المجموع</span><span>{cur(
+              (showRikaz ? calc.rikazZakat : 0) +
+              (showMinerals ? calc.mineralsZakat : 0) +
+              (showHoney ? calc.honeyZakat : 0) +
+              (showFish ? calc.fishZakat : 0) +
+              (showPoultry ? calc.poultryZakat : 0)
+            )}</span></div>
           </CardContent>
         </Card>
       </div>
