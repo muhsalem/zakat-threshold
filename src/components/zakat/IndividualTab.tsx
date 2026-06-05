@@ -1366,7 +1366,7 @@ export function IndividualTab() {
                 <div className="mb-3 text-sm font-semibold text-primary flex items-center gap-2">
                   <Wheat className="h-4 w-4" /> أنشطة زراعية وحيوانية ملحقة (العسل / الثروة السمكية / الدواجن)
                 </div>
-                <RikazSection mode="agri-extras" />
+                <RikazSection mode="agri-extras" hideCountry currency={currencyName} onTradeBaseChange={setAgriTradeBase} />
               </div>
             </AccordionContent>
           </AccordionItem>
