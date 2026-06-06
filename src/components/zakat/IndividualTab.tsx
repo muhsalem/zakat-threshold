@@ -1255,7 +1255,7 @@ export function IndividualTab() {
           <AccordionItem id="section-income-trade-usufruct" value="income-trade-usufruct" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
-                <Package className="h-5 w-5 text-primary" /> زكاة دخل وعروض التجارة والمستغلات والإيرادات
+                <Package className="h-5 w-5 text-primary" /> زكاة الدخل وعروض التجارة والمستغلات والإيرادات
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
