@@ -1345,6 +1345,54 @@ export function IndividualTab() {
                 </div>
               </div>
 
+              {/* المتجر الإلكتروني والمنتجات والخدمات الرقمية */}
+              <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-primary">
+                    <Store className="h-4 w-4" /> المتجر الإلكتروني والمنتجات والخدمات الرقمية
+                  </div>
+                  <Switch checked={ecommerceEnabled} onCheckedChange={setEcommerceEnabled} />
+                </div>
+                {ecommerceEnabled && (
+                  <>
+                    <Alert className="border-primary/20 bg-primary/5">
+                      <Info className="h-4 w-4" />
+                      <AlertDescription className="text-xs leading-relaxed text-right">
+                        <b>المتجر الإلكتروني:</b> يُزكَّى بقيمة البضاعة المعروضة للبيع + المنتجات الرقمية + الخدمات الرقمية المُدّخَرة + المستحقات المرجوّة. لا زكاة في الأصول الرقمية المُعدّة للبيع إذا كانت ضمن «العملات الرقمية» (تُحسب هناك). والعبرة بالقيمة السوقية يوم الوجوب.
+                      </AlertDescription>
+                    </Alert>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <NumField
+                        label="قيمة بضاعة المتجر (منتجات مادية)"
+                        value={ecommerceInventory} onChange={setEcommerceInventory} unit={currencyName}
+                        hint="تُقوَّم بسعر البيع يوم وجوب الزكاة"
+                      />
+                      <NumField
+                        label="المنتجات الرقمية (قوالب · كتب إلكترونية · دورات · برامج)"
+                        value={ecommerceDigitalProducts} onChange={setEcommerceDigitalProducts} unit={currencyName}
+                        hint="قيمة المخزون الرقمي المُدّخر للتجارة"
+                      />
+                      <NumField
+                        label="الخدمات الرقمية المُدّخَرة (اشتراكات · استضافة · تراخيص)"
+                        value={ecommerceServices} onChange={setEcommerceServices} unit={currencyName}
+                        hint="صافي الإيراد المُدّخر من الخدمات الرقمية"
+                      />
+                      <NumField
+                        label="مستحقات المتجر (ديون مرجوّة على العملاء)"
+                        value={ecommerceReceivables} onChange={setEcommerceReceivables} unit={currencyName}
+                        hint="طلبات لم تُسدَّد بعد على منصات البيع أو التحويل"
+                      />
+                    </div>
+                    <div className="rounded-md border bg-background p-3 flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground">إجمالي قاعدة المتجر الإلكتروني والرقمي</span>
+                      <span className="text-lg font-bold text-primary">
+                        {cur(num(ecommerceInventory) + num(ecommerceDigitalProducts) + num(ecommerceServices) + num(ecommerceReceivables))}
+                      </span>
+                    </div>
+                  </>
+                )}
+              </div>
+
               {/* ثانياً: العقار */}
               <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-3">
                 <div className="flex items-center gap-2 text-sm font-semibold text-primary">
