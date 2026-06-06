@@ -2009,6 +2009,21 @@ export function IndividualTab() {
               );
             })()}
 
+            {ownsLivestock && !livestockForTrade && (calc.camelsN > 0 || calc.cowsN > 0 || calc.sheepN > 0) && (
+              <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 space-y-1">
+                <div className="text-xs font-bold text-primary">زكاة الأنعام (تُؤدّى عيناً لا قيمةً):</div>
+                {calc.camelsN > 0 && <div className="text-xs">• الإبل ({calc.camelsN}): <b>{camelZakat(calc.camelsN)}</b></div>}
+                {calc.cowsN > 0 && <div className="text-xs">• البقر ({calc.cowsN}): <b>{cowZakat(calc.cowsN)}</b></div>}
+                {calc.sheepN > 0 && <div className="text-xs">• الغنم ({calc.sheepN}): <b>{sheepZakat(calc.sheepN)}</b></div>}
+              </div>
+            )}
+
+            {fitrContribution > 0 && (
+              <div className="rounded-lg border border-primary/20 bg-primary/5 p-3">
+                <SectionResult format={cur} label="🌾 زكاة الفطر (تلقائي — رمضان)" value={fitrContribution} />
+              </div>
+            )}
+
             {calc.hawlBlocks && (
               <Alert className="border-destructive/40 bg-destructive/5 mt-2">
                 <AlertDescription className="text-xs">
