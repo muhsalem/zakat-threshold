@@ -11,7 +11,34 @@ import { fmt } from "@/lib/zakat";
 import { HawlReminderCard } from "@/components/zakat/HawlReminderCard";
 import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, BarChart, Bar, Legend,
+  PieChart, Pie, Cell, ReferenceLine,
 } from "recharts";
+
+const PIE_COLORS = [
+  "hsl(var(--primary))",
+  "hsl(45 95% 55%)",
+  "hsl(160 70% 45%)",
+  "hsl(200 80% 55%)",
+  "hsl(280 60% 60%)",
+  "hsl(15 85% 60%)",
+  "hsl(330 70% 60%)",
+  "hsl(100 60% 50%)",
+];
+
+const POT_LABELS: Record<string, string> = {
+  cash: "النقد والحسابات",
+  gold: "الذهب",
+  silver: "الفضة",
+  securities: "الأوراق المالية",
+  trade: "عروض التجارة",
+  income: "الدخل والمستغلات",
+  digital: "الأصول الرقمية",
+  livestock: "الأنعام",
+  rikaz: "الركاز والمعادن",
+  realestate: "العقار",
+  commercial: "الأوراق التجارية",
+  takaful: "وثائق التأمين",
+};
 
 interface ZakatRecord {
   id: string;
