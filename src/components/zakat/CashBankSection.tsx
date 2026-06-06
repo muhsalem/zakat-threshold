@@ -442,7 +442,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
           </div>
           <div className="space-y-1.5 md:col-span-2">
             <BankPicker
-              type={currType}
+              type={currType} setType={setCurrType}
               islamicBank={currIslamicBank} setIslamicBank={setCurrIslamicBank}
               tradBank={currTradBank} setTradBank={setCurrTradBank}
               useWindow={currUseWindow} setUseWindow={setCurrUseWindow}
@@ -509,7 +509,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
           </div>
           <div className="space-y-1.5 md:col-span-2">
             <BankPicker
-              type={savType}
+              type={savType} setType={setSavType}
               islamicBank={savIslamicBank} setIslamicBank={setSavIslamicBank}
               tradBank={savTradBank} setTradBank={setSavTradBank}
               useWindow={savUseWindow} setUseWindow={setSavUseWindow}
@@ -544,7 +544,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
           </div>
           <div className="md:col-span-2">
             <BankPicker
-              type={depType}
+              type={depType} setType={setDepType}
               islamicBank={depIslamicBank} setIslamicBank={setDepIslamicBank}
               tradBank={depTradBank} setTradBank={setDepTradBank}
               useWindow={false} setUseWindow={() => {}}
@@ -585,7 +585,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
           </div>
           <div className="md:col-span-2">
             <BankPicker
-              type={certType}
+              type={certType} setType={setCertType}
               islamicBank={certIslamicBank} setIslamicBank={setCertIslamicBank}
               tradBank={certTradBank} setTradBank={setCertTradBank}
               useWindow={false} setUseWindow={() => {}}
@@ -675,7 +675,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
             </div>
             <div className="md:col-span-2">
               <BankPicker
-                type={ccType}
+                type={ccType} setType={setCcType}
                 islamicBank={ccIslamicBank} setIslamicBank={setCcIslamicBank}
                 tradBank={ccTradBank} setTradBank={setCcTradBank}
                 useWindow={ccUseWindow} setUseWindow={setCcUseWindow}
