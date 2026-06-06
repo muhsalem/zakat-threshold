@@ -649,7 +649,8 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
           { v: "stc", l: "STC Pay" },
           { v: "other", l: "محفظة اتصالات أخرى" },
         ]}
-        note="محافظ شركات الاتصالات تُزكَّى كنقد. إن كانت مربوطة بحساب بنكي فقد احتُسبت ضمنه — اختَر «مربوطة» لاستثنائها."
+        note="محافظ شركات الاتصالات تُزكَّى كنقد دائماً — لا يوجد ربط بحساب بنكي."
+        hideLink
       />
 
       {/* ز) المحافظ البنكية */}
@@ -659,8 +660,6 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
         ops={bankOps}
         currencyName={currencyName}
         providers={[
-          { v: "meeza", l: "بطاقة ميزة الرقمية" },
-          { v: "instapay", l: "إنستاباي (InstaPay)" },
           { v: "applepay", l: "Apple Pay" },
           { v: "googlepay", l: "Google Pay" },
           { v: "samsungpay", l: "Samsung Pay" },
@@ -670,6 +669,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
         ]}
         note="المحافظ البنكية غالبًا ما تكون مربوطة بحساب جاري — حدِّد «مربوطة» لمنع التكرار المحاسبي."
       />
+
 
       {/* ح) محافظ العملات المشفّرة — مُنقولة إلى تبويب «زكاة العملات الرقمية والمحافظ الاستثمارية» */}
       <div className="rounded-lg border border-dashed border-primary/30 bg-primary/5 p-3 text-xs text-muted-foreground">
