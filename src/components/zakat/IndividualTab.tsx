@@ -41,6 +41,7 @@ import { IncomeUsufructSection } from "./IncomeUsufructSection";
 import { PrintReport } from "./PrintReport";
 import { RikazSection } from "./RikazSection";
 import { ShariaStandardsCard } from "./ShariaStandardsCard";
+import { ShariaAuditTrail } from "./ShariaAuditTrail";
 import { DigitalAssetsSection } from "./DigitalAssetsSection";
 import { CryptoFatwasCard } from "./CryptoFatwasCard";
 import { useAuditEntries } from "@/hooks/useAuditEntries";
