@@ -730,7 +730,7 @@ interface WalletOps {
   update: (id: number, patch: Partial<WalletRowT>) => void;
 }
 function WalletGroup({
-  title, rows, ops, currencyName, providers, note, forceStandalone,
+  title, rows, ops, currencyName, providers, note, forceStandalone, hideLink,
 }: {
   title: string;
   rows: WalletRowT[];
@@ -739,6 +739,7 @@ function WalletGroup({
   providers: { v: string; l: string }[];
   note: string;
   forceStandalone?: boolean;
+  hideLink?: boolean;
 }) {
   void forceStandalone;
   return (
