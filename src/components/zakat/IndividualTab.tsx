@@ -250,9 +250,26 @@ export function IndividualTab() {
   const [tradeSharePct, setTradeSharePct] = useState("");
   const [tradeShareCompanyBase, setTradeShareCompanyBase] = useState("");
 
-  // العقار
-  const [realEstateTrade, setRealEstateTrade] = useState(""); // عقار للتجارة (بقيمته السوقية)
-  const [realEstateRentIncome, setRealEstateRentIncome] = useState(""); // صافي إيراد الإيجار المُدّخر
+  // العقار — تركيب العقار: أرض فقط / مبنى فقط / الأرض والمبنى معاً
+  type RealEstateComp = "land" | "building" | "both";
+  // عقار للتجارة (يُزكَّى بالقيمة السوقية يوم الوجوب)
+  const [reTradeComp, setReTradeComp] = useState<RealEstateComp>("both");
+  const [reTradeLand, setReTradeLand] = useState("");      // قيمة الأرض السوقية
+  const [reTradeBuilding, setReTradeBuilding] = useState(""); // قيمة المبنى السوقية
+  // عقار الإيجار/الاستغلال (يُزكَّى صافي الإيراد المُدّخر)
+  const [reRentComp, setReRentComp] = useState<RealEstateComp>("both");
+  const [reRentLandIncome, setReRentLandIncome] = useState("");      // صافي إيراد الأرض
+  const [reRentBuildingIncome, setReRentBuildingIncome] = useState(""); // صافي إيراد المبنى
+  // قيم مشتقة للحفاظ على التكامل مع باقي الحسابات
+  const realEstateTrade =
+    reTradeComp === "land" ? reTradeLand
+    : reTradeComp === "building" ? reTradeBuilding
+    : String(num(reTradeLand) + num(reTradeBuilding));
+  const realEstateRentIncome =
+    reRentComp === "land" ? reRentLandIncome
+    : reRentComp === "building" ? reRentBuildingIncome
+    : String(num(reRentLandIncome) + num(reRentBuildingIncome));
+
 
   // المستغلات والدخل (المجموع يُحسب داخل المكوّن)
   const [incomeUsufructTotal, setIncomeUsufructTotal] = useState(0);
@@ -1334,10 +1351,80 @@ export function IndividualTab() {
                     <b>عقار الإيجار/الاستغلال:</b> لا زكاة في رقبته، وإنما في صافي إيراده المُدّخر بعد النفقات إذا بلغ النصاب وحال عليه الحول.
                   </AlertDescription>
                 </Alert>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <NumField label="عقار للتجارة (القيمة السوقية)" value={realEstateTrade} onChange={setRealEstateTrade} unit={currencyName} />
-                  <NumField label="صافي إيراد الإيجار المُدّخر" value={realEstateRentIncome} onChange={setRealEstateRentIncome} unit={currencyName} hint="بعد خصم المصاريف والنفقات الضرورية" />
+                {/* عقار التجارة */}
+                <div className="rounded-md border border-primary/15 bg-background p-3 space-y-3">
+                  <div className="text-sm font-semibold">أ) عقار للتجارة (يُزكَّى بالقيمة السوقية)</div>
+                  <div className="space-y-2">
+                    <Label className="text-xs">تركيب العقار</Label>
+                    <RadioGroup
+                      value={reTradeComp}
+                      onValueChange={(v) => setReTradeComp(v as RealEstateComp)}
+                      className="flex flex-wrap gap-3"
+                    >
+                      <label className="flex items-center gap-2 text-xs cursor-pointer">
+                        <RadioGroupItem value="land" id="re-trade-land" /> أرض فقط
+                      </label>
+                      <label className="flex items-center gap-2 text-xs cursor-pointer">
+                        <RadioGroupItem value="building" id="re-trade-building" /> مبنى فقط
+                      </label>
+                      <label className="flex items-center gap-2 text-xs cursor-pointer">
+                        <RadioGroupItem value="both" id="re-trade-both" /> أرض ومبنى معاً
+                      </label>
+                    </RadioGroup>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-3">
+                    {(reTradeComp === "land" || reTradeComp === "both") && (
+                      <NumField label="قيمة الأرض السوقية" value={reTradeLand} onChange={setReTradeLand} unit={currencyName} />
+                    )}
+                    {(reTradeComp === "building" || reTradeComp === "both") && (
+                      <NumField label="قيمة المبنى السوقية" value={reTradeBuilding} onChange={setReTradeBuilding} unit={currencyName} />
+                    )}
+                  </div>
+                  {reTradeComp === "both" && (num(reTradeLand) > 0 || num(reTradeBuilding) > 0) && (
+                    <div className="text-xs text-muted-foreground">
+                      الإجمالي الخاضع للزكاة: <b>{fmt(num(reTradeLand) + num(reTradeBuilding))} {currencyName}</b>
+                      {" "}(أرض {fmt(num(reTradeLand))} + مبنى {fmt(num(reTradeBuilding))})
+                    </div>
+                  )}
                 </div>
+
+                {/* عقار الإيجار/الاستغلال */}
+                <div className="rounded-md border border-primary/15 bg-background p-3 space-y-3">
+                  <div className="text-sm font-semibold">ب) عقار للإيجار/الاستغلال (يُزكَّى صافي الإيراد المُدّخر)</div>
+                  <div className="space-y-2">
+                    <Label className="text-xs">تركيب العقار</Label>
+                    <RadioGroup
+                      value={reRentComp}
+                      onValueChange={(v) => setReRentComp(v as RealEstateComp)}
+                      className="flex flex-wrap gap-3"
+                    >
+                      <label className="flex items-center gap-2 text-xs cursor-pointer">
+                        <RadioGroupItem value="land" id="re-rent-land" /> أرض فقط
+                      </label>
+                      <label className="flex items-center gap-2 text-xs cursor-pointer">
+                        <RadioGroupItem value="building" id="re-rent-building" /> مبنى فقط
+                      </label>
+                      <label className="flex items-center gap-2 text-xs cursor-pointer">
+                        <RadioGroupItem value="both" id="re-rent-both" /> أرض ومبنى معاً
+                      </label>
+                    </RadioGroup>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-3">
+                    {(reRentComp === "land" || reRentComp === "both") && (
+                      <NumField label="صافي إيراد الأرض المُدّخر" value={reRentLandIncome} onChange={setReRentLandIncome} unit={currencyName} hint="بعد المصاريف والنفقات الضرورية" />
+                    )}
+                    {(reRentComp === "building" || reRentComp === "both") && (
+                      <NumField label="صافي إيراد المبنى المُدّخر" value={reRentBuildingIncome} onChange={setReRentBuildingIncome} unit={currencyName} hint="بعد المصاريف والنفقات الضرورية" />
+                    )}
+                  </div>
+                  {reRentComp === "both" && (num(reRentLandIncome) > 0 || num(reRentBuildingIncome) > 0) && (
+                    <div className="text-xs text-muted-foreground">
+                      إجمالي الإيراد الخاضع للزكاة: <b>{fmt(num(reRentLandIncome) + num(reRentBuildingIncome))} {currencyName}</b>
+                      {" "}(أرض {fmt(num(reRentLandIncome))} + مبنى {fmt(num(reRentBuildingIncome))})
+                    </div>
+                  )}
+                </div>
+
               </div>
 
               {/* ثالثاً: المستغلات والدخل والإيرادات */}
