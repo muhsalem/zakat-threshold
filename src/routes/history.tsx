@@ -11,7 +11,34 @@ import { fmt } from "@/lib/zakat";
 import { HawlReminderCard } from "@/components/zakat/HawlReminderCard";
 import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, BarChart, Bar, Legend,
+  PieChart, Pie, Cell, ReferenceLine,
 } from "recharts";
+
+const PIE_COLORS = [
+  "hsl(var(--primary))",
+  "hsl(45 95% 55%)",
+  "hsl(160 70% 45%)",
+  "hsl(200 80% 55%)",
+  "hsl(280 60% 60%)",
+  "hsl(15 85% 60%)",
+  "hsl(330 70% 60%)",
+  "hsl(100 60% 50%)",
+];
+
+const POT_LABELS: Record<string, string> = {
+  cash: "النقد والحسابات",
+  gold: "الذهب",
+  silver: "الفضة",
+  securities: "الأوراق المالية",
+  trade: "عروض التجارة",
+  income: "الدخل والمستغلات",
+  digital: "الأصول الرقمية",
+  livestock: "الأنعام",
+  rikaz: "الركاز والمعادن",
+  realestate: "العقار",
+  commercial: "الأوراق التجارية",
+  takaful: "وثائق التأمين",
+};
 
 interface ZakatRecord {
   id: string;
@@ -26,6 +53,7 @@ interface ZakatRecord {
   prepaid_zakat: number;
   net_due: number;
   notes: string | null;
+  snapshot: Record<string, unknown> | null;
   created_at: string;
 }
 
@@ -85,7 +113,19 @@ function HistoryPage() {
   }));
 
   const totalLifetime = records.reduce((s, r) => s + Number(r.net_due), 0);
-  const lastCurrency = records[records.length - 1]?.currency || "SAR";
+  const lastRecord = records[records.length - 1];
+  const lastCurrency = lastRecord?.currency || "SAR";
+
+  // Nisab reference: gold price * 85g — read from last snapshot if available
+  const lastSnap = (lastRecord?.snapshot ?? {}) as Record<string, any>;
+  const lastGoldPrice = Number(lastSnap.goldPrice ?? lastSnap.gold_price ?? 0);
+  const nisabRef = lastGoldPrice > 0 ? lastGoldPrice * 85 : 0;
+
+  // Asset distribution from last snapshot pots
+  const potsObj: Record<string, number> = (lastSnap.pots ?? lastSnap.buckets ?? {}) as Record<string, number>;
+  const distribution = Object.entries(potsObj)
+    .map(([k, v]) => ({ name: POT_LABELS[k] ?? k, value: Number(v) || 0 }))
+    .filter((x) => x.value > 0);
 
   return (
     <div className="min-h-screen">
@@ -153,6 +193,9 @@ function HistoryPage() {
                       <Legend />
                       <Line type="monotone" dataKey="assets" name="إجمالي الأصول" stroke="hsl(var(--primary))" strokeWidth={2} />
                       <Line type="monotone" dataKey="base" name="وعاء الزكاة" stroke="hsl(var(--gold, 45 95% 50%))" strokeWidth={2} />
+                      {nisabRef > 0 && (
+                        <ReferenceLine y={nisabRef} stroke="hsl(0 70% 55%)" strokeDasharray="6 4" label={{ value: `النصاب ≈ ${fmt(nisabRef)}`, position: "insideTopRight", fill: "hsl(0 70% 55%)", fontSize: 11 }} />
+                      )}
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
@@ -175,6 +218,25 @@ function HistoryPage() {
                 </div>
               </CardContent>
             </Card>
+
+            {distribution.length > 0 && (
+              <Card className="shadow-soft">
+                <CardHeader><CardTitle className="text-base">توزيع الأصول في آخر سجل</CardTitle></CardHeader>
+                <CardContent>
+                  <div className="h-72 w-full" dir="ltr">
+                    <ResponsiveContainer>
+                      <PieChart>
+                        <Tooltip formatter={(v: number) => `${fmt(Number(v))} ${lastCurrency}`} />
+                        <Legend />
+                        <Pie data={distribution} dataKey="value" nameKey="name" outerRadius={100} label={(e: any) => `${e.name}: ${Math.round((e.percent || 0) * 100)}%`}>
+                          {distribution.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
+                        </Pie>
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             <Card className="shadow-soft">
               <CardHeader><CardTitle className="text-base">تفاصيل السجلات</CardTitle></CardHeader>
