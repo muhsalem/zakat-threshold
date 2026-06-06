@@ -280,6 +280,8 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   const [ccTradBank, setCcTradBank] = useState("");
   const [ccUseWindow, setCcUseWindow] = useState(false);
   const [ccBranch, setCcBranch] = useState("");
+  // فوائد ربوية مدفوعة على البطاقة — تطهير فقط (لا تُحسب من الزكاة)
+  const [ccInterestPaid, setCcInterestPaid] = useState("");
 
   // و) المحافظ الرقمية — محافظ شركات الاتصالات (تُزكَّى كنقد دائماً — لا ربط بنكي)
   type WalletRow = { id: number; provider: string; amount: string; linked: "linked" | "standalone"; linkedBank?: string };
@@ -709,6 +711,36 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
                 بطاقة ائتمانية من فرع/نافذة إسلامية: المبلغ المستحق يُخصم من الوعاء كدين. تحقق من أن النافذة معتمدة شرعياً.
               </AlertDescription>
             </Alert>
+          )}
+
+          {/* تطهير فوائد البطاقات الائتمانية */}
+          {ccType === "traditional" && !ccUseWindow && (
+            <div className="rounded-md border border-amber-500/40 bg-amber-50 dark:bg-amber-950/20 p-3 space-y-2">
+              <div className="flex items-center gap-2 text-xs font-semibold text-amber-700 dark:text-amber-400">
+                💧 تطهير الفوائد الربوية (مستقل عن الزكاة)
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs">إجمالي الفوائد الربوية المدفوعة على البطاقة خلال السنة</Label>
+                <div className="relative">
+                  <Input type="number" min="0" step="0.01" value={ccInterestPaid}
+                    onChange={(e) => setCcInterestPaid(e.target.value)}
+                    dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
+                </div>
+              </div>
+              {num(ccInterestPaid) > 0 && (
+                <div className="rounded bg-amber-100 dark:bg-amber-900/30 px-3 py-2 text-xs space-y-1">
+                  <div className="flex justify-between">
+                    <span>المبلغ الواجب تطهيره (صرفه في وجوه الخير):</span>
+                    <b className="text-amber-700 dark:text-amber-400">{cur(num(ccInterestPaid))}</b>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground leading-relaxed">
+                    <b>تنبيه شرعي:</b> هذا المبلغ لا يُحتسب من الزكاة. يُصرف في وجوه الخير العامة (إصلاحات/فقراء بنية صدقة لا زكاة)
+                    لأنه عوض عن مال خبيث لا تبرأ به الذمة من الزكاة. — AAOIFI · المعيار 21.
+                  </p>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>

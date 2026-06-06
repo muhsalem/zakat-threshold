@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { IndividualTab } from "@/components/zakat/IndividualTab";
@@ -8,10 +9,15 @@ import { BeginnerWizard } from "@/components/zakat/BeginnerWizard";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { FontSizeToggle } from "@/components/FontSizeToggle";
 import { NotificationsBell } from "@/components/NotificationsBell";
-import { Users, Building2, Scroll, Moon, ShieldCheck, FileText, Wheat, History, LogIn, LogOut, Sparkles, Lock } from "lucide-react";
+import { Users, Building2, Scroll, Moon, ShieldCheck, FileText, Wheat, History, LogIn, LogOut, Sparkles, Lock, Unlock, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
+import { useProMode } from "@/hooks/useProMode";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 
 export const Route = createFileRoute("/")({
@@ -40,6 +46,20 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const { pro, unlock, lock } = useProMode();
+  const [unlockOpen, setUnlockOpen] = useState(false);
+  const [code, setCode] = useState("");
+
+  const handleUnlock = () => {
+    if (unlock(code)) {
+      toast.success("تم فتح وضع المحاسب المحترف");
+      setUnlockOpen(false);
+      setCode("");
+    } else {
+      toast.error("كلمة المرور غير صحيحة");
+    }
+  };
+
   return (
     <div className="min-h-screen">
       <header className="border-b border-border/60 bg-card/60 backdrop-blur-sm sticky top-0 z-30">
@@ -50,18 +70,56 @@ function Index() {
             </div>
             <div>
               <h1 className="text-xl font-bold leading-tight">حاسبة الزكاة</h1>
-              <p className="text-xs text-muted-foreground">للأفراد والشركات — وفق الضوابط الشرعية</p>
+              <p className="text-xs text-muted-foreground">
+                {pro ? "وضع المحاسب المحترف — كامل الأوعية" : "وضع المبتدئ — مجاني وسهل"}
+              </p>
             </div>
+            {pro && (
+              <Badge variant="default" className="gap-1 hidden sm:inline-flex">
+                <Briefcase className="h-3 w-3" /> Pro
+              </Badge>
+            )}
           </div>
           <div className="flex items-center gap-1">
+            {pro ? (
+              <Button variant="ghost" size="sm" onClick={() => { lock(); toast.info("عدت إلى وضع المبتدئ"); }} className="gap-1.5 text-xs">
+                <Lock className="h-3.5 w-3.5" /> <span className="hidden sm:inline">قفل المحترف</span>
+              </Button>
+            ) : (
+              <Button variant="outline" size="sm" onClick={() => setUnlockOpen(true)} className="gap-1.5 text-xs border-primary/40">
+                <Unlock className="h-3.5 w-3.5" /> <span className="hidden sm:inline">وضع المحاسب</span>
+              </Button>
+            )}
             <NotificationsBell />
             <FontSizeToggle />
             <ThemeToggle />
             <HeaderAuth />
           </div>
         </div>
-
       </header>
+
+      <Dialog open={unlockOpen} onOpenChange={setUnlockOpen}>
+        <DialogContent className="max-w-sm" dir="rtl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><Unlock className="h-4 w-4 text-primary" /> فتح وضع المحاسب المحترف</DialogTitle>
+            <DialogDescription className="text-xs leading-relaxed">
+              النموذج الاحترافي مخصّص للمحاسبين والمدقّقين الشرعيين، ويشمل: الأوراق المالية والصكوك، الأوراق التجارية، العقار التفصيلي، الأنعام، الركاز والمعادن، مطابقة الوعاء الضريبي، والتقارير المهنية.
+              <br /><b className="text-foreground">النموذج المجاني للمبتدئ كافٍ لمعظم الأفراد.</b>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            <Input type="password" placeholder="كلمة مرور المحاسب" value={code}
+              onChange={(e) => setCode(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleUnlock()}
+              dir="ltr" style={{ textAlign: "right" }} />
+            <p className="text-[11px] text-muted-foreground">للحصول على كلمة المرور تواصل مع مالك المنصة.</p>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setUnlockOpen(false)}>إلغاء</Button>
+            <Button onClick={handleUnlock} className="gap-1.5"><Unlock className="h-4 w-4" /> فتح</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <main className="container mx-auto px-4 py-8">
 
@@ -79,22 +137,16 @@ function Index() {
             احسب زكاتك بدقة وفق المنهج الشرعي
           </h2>
           <p className="text-muted-foreground leading-relaxed">
-            نموذج شامل لزكاة الذهب والفضة والنقود والأسهم والأوراق التجارية وعروض التجارة والزروع والأنعام،
-            مع زكاة الفطر، والركاز والمعادن والثروات المستحدثة، ونموذج مخصص للشركات.
+            {pro
+              ? "نموذج شامل لكل الأوعية: نقد وأوراق مالية وتجارية ورقمية وعقار وزروع وأنعام وركاز، مع مطابقة الوعاء الضريبي."
+              : "ابدأ بنموذج المبتدئ المبسّط: نقد + ذهب + ديون فقط. كافٍ لمعظم الأفراد."}
           </p>
         </section>
 
-        <Tabs defaultValue="individual" className="space-y-6" dir="rtl">
-          <TabsList dir="rtl" className="grid grid-cols-3 md:grid-cols-5 w-full max-w-4xl mx-auto h-auto gap-1">
-
+        <Tabs defaultValue="wizard" className="space-y-6" dir="rtl">
+          <TabsList dir="rtl" className={`grid w-full max-w-4xl mx-auto h-auto gap-1 ${pro ? "grid-cols-3 md:grid-cols-5" : "grid-cols-3"}`}>
             <TabsTrigger value="wizard" className="gap-1.5 text-xs md:text-sm py-2.5">
               <Sparkles className="h-3.5 w-3.5 md:h-4 md:w-4" /> المبتدئ
-            </TabsTrigger>
-            <TabsTrigger value="individual" className="gap-1.5 text-xs md:text-sm py-2.5">
-              <Users className="h-3.5 w-3.5 md:h-4 md:w-4" /> الأفراد
-            </TabsTrigger>
-            <TabsTrigger id="tab-company" value="company" className="gap-1.5 text-xs md:text-sm py-2.5">
-              <Building2 className="h-3.5 w-3.5 md:h-4 md:w-4" /> الشركات
             </TabsTrigger>
             <TabsTrigger value="fitr" className="gap-1.5 text-xs md:text-sm py-2.5">
               <Wheat className="h-3.5 w-3.5 md:h-4 md:w-4" /> زكاة الفطر
@@ -102,14 +154,39 @@ function Index() {
             <TabsTrigger value="history" className="gap-1.5 text-xs md:text-sm py-2.5">
               <Scroll className="h-3.5 w-3.5 md:h-4 md:w-4" /> الأنصبة
             </TabsTrigger>
+            {pro && (
+              <>
+                <TabsTrigger value="individual" className="gap-1.5 text-xs md:text-sm py-2.5">
+                  <Users className="h-3.5 w-3.5 md:h-4 md:w-4" /> الأفراد (Pro)
+                </TabsTrigger>
+                <TabsTrigger id="tab-company" value="company" className="gap-1.5 text-xs md:text-sm py-2.5">
+                  <Building2 className="h-3.5 w-3.5 md:h-4 md:w-4" /> الشركات (Pro)
+                </TabsTrigger>
+              </>
+            )}
           </TabsList>
 
           <TabsContent value="wizard"><BeginnerWizard /></TabsContent>
-          <TabsContent value="individual"><IndividualTab /></TabsContent>
-          <TabsContent value="company"><CompanyTab /></TabsContent>
           <TabsContent value="fitr" className="max-w-6xl mx-auto"><FitrCalculator /></TabsContent>
           <TabsContent value="history" className="max-w-4xl mx-auto"><NisabHistory /></TabsContent>
+          {pro && <TabsContent value="individual"><IndividualTab /></TabsContent>}
+          {pro && <TabsContent value="company"><CompanyTab /></TabsContent>}
         </Tabs>
+
+        {!pro && (
+          <div className="max-w-4xl mx-auto mt-8 rounded-lg border border-primary/30 bg-gradient-to-l from-primary/5 to-transparent p-4 flex items-start gap-3">
+            <Briefcase className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+            <div className="flex-1">
+              <div className="font-bold text-sm mb-1">هل أنت محاسب أو مدقّق شرعي؟</div>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                فعّل <b>وضع المحاسب المحترف</b> للوصول إلى نموذج الأفراد التفصيلي ونموذج الشركات (مطابقة ضريبية، أوراق مالية، عقار، أنعام، ركاز، تقارير PDF احترافية).
+              </p>
+            </div>
+            <Button size="sm" variant="default" className="gap-1.5" onClick={() => setUnlockOpen(true)}>
+              <Unlock className="h-3.5 w-3.5" /> فتح Pro
+            </Button>
+          </div>
+        )}
       </main>
 
 
