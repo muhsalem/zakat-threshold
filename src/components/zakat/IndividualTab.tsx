@@ -397,7 +397,10 @@ export function IndividualTab() {
     const tradeShareholderBase = tradeIsShareholder
       ? num(tradeShareCompanyBase) * (num(tradeSharePct) / 100) : 0;
     const livestockTradeBase = livestockForTrade ? num(livestockTradeValue) : 0;
-    const tradeTotal = num(inventory) + num(receivablesGood) + tradeShareholderBase + agriTradeBase + livestockTradeBase;
+    const ecommerceTotal = ecommerceEnabled
+      ? num(ecommerceInventory) + num(ecommerceDigitalProducts) + num(ecommerceServices) + num(ecommerceReceivables)
+      : 0;
+    const tradeTotal = num(inventory) + num(receivablesGood) + tradeShareholderBase + agriTradeBase + livestockTradeBase + ecommerceTotal;
     const realEstateZakatable = num(realEstateTrade) + num(realEstateRentIncome);
     const incomeUsufruct = incomeUsufructTotal;
 
