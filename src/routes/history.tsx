@@ -193,6 +193,9 @@ function HistoryPage() {
                       <Legend />
                       <Line type="monotone" dataKey="assets" name="إجمالي الأصول" stroke="hsl(var(--primary))" strokeWidth={2} />
                       <Line type="monotone" dataKey="base" name="وعاء الزكاة" stroke="hsl(var(--gold, 45 95% 50%))" strokeWidth={2} />
+                      {nisabRef > 0 && (
+                        <ReferenceLine y={nisabRef} stroke="hsl(0 70% 55%)" strokeDasharray="6 4" label={{ value: `النصاب ≈ ${fmt(nisabRef)}`, position: "insideTopRight", fill: "hsl(0 70% 55%)", fontSize: 11 }} />
+                      )}
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
