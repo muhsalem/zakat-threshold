@@ -1285,9 +1285,22 @@ export function IndividualTab() {
                         <NumField label="نسبة حصتك %" value={tradeSharePct} onChange={setTradeSharePct} unit="%" />
                         <NumField label="وعاء الشركة الزكوي" value={tradeShareCompanyBase} onChange={setTradeShareCompanyBase} unit={currencyName} />
                       </div>
-                      <p className="text-[11px] text-muted-foreground">
-                        نصيبك المُحتسب: <b className="text-primary">{cur(num(tradeShareCompanyBase) * (num(tradeSharePct) / 100))}</b>
-                      </p>
+                      <div className="flex items-center justify-between gap-2 pt-1">
+                        <p className="text-[11px] text-muted-foreground">
+                          نصيبك المُحتسب: <b className="text-primary">{cur(num(tradeShareCompanyBase) * (num(tradeSharePct) / 100))}</b>
+                        </p>
+                        <Button
+                          type="button" variant="outline" size="sm"
+                          onClick={() => {
+                            const el = document.getElementById("tab-company") as HTMLElement | null;
+                            el?.click();
+                            window.scrollTo({ top: 0, behavior: "smooth" });
+                          }}
+                        >
+                          <Landmark className="h-3.5 w-3.5 ml-1" />
+                          فتح تبويب «زكاة الشركات» لحساب الوعاء
+                        </Button>
+                      </div>
                     </>
                   )}
                 </div>
