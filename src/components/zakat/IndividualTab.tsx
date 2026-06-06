@@ -1191,7 +1191,7 @@ export function IndividualTab() {
           <AccordionItem id="section-cash" value="cash" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
-                <Landmark className="h-5 w-5 text-primary" /> زكاة الأوراق النقدية والحسابات البنكية
+                <Landmark className="h-5 w-5 text-primary" /> زكاة الأوراق النقدية والحسابات والبطاقات والمحافظ البنكية
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
@@ -1255,7 +1255,7 @@ export function IndividualTab() {
           <AccordionItem id="section-income-trade-usufruct" value="income-trade-usufruct" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
-                <Package className="h-5 w-5 text-primary" /> زكاة دخل وعروض التجارة والمستغلات والإيرادات
+                <Package className="h-5 w-5 text-primary" /> زكاة الدخل وعروض التجارة والمستغلات والإيرادات
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
@@ -1325,9 +1325,11 @@ export function IndividualTab() {
                 <Alert className="border-primary/20 bg-background">
                   <Info className="h-4 w-4" />
                   <AlertDescription className="text-xs leading-relaxed text-right">
+                    <b>نطاق العقار:</b> يشمل الأرض الفضاء، أو المبنى، أو الأرض والمبنى معاً.
+                    <br />
                     <b>عقار السكن الخاص:</b> لا زكاة فيه إجماعًا.
                     <br />
-                    <b>عقار التجارة</b> (مُعدّ للبيع): يُزكَّى بكامل قيمته السوقية يوم وجوب الزكاة.
+                    <b>عقار التجارة</b> (مُعدّ للبيع — أرضاً كان أو مبنىً أو كليهما): يُزكَّى بكامل قيمته السوقية يوم وجوب الزكاة.
                     <br />
                     <b>عقار الإيجار/الاستغلال:</b> لا زكاة في رقبته، وإنما في صافي إيراده المُدّخر بعد النفقات إذا بلغ النصاب وحال عليه الحول.
                   </AlertDescription>
@@ -1972,16 +1974,40 @@ export function IndividualTab() {
             </div>
 
             {/* ⑤ الزكاة المستحقة على كل وعاء */}
-            <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 space-y-1">
-              <div className="text-xs font-bold text-primary mb-1">④ الزكاة المستحقة على كل وعاء</div>
-              <SectionResult format={cur} label="زكاة الذهب" value={calc.goldZakat} eligible={calc.goldEligible} />
-              <SectionResult format={cur} label="زكاة الفضة" value={calc.silverZakat} eligible={calc.silverEligible} />
-              <SectionResult format={cur} label="زكاة النقد والاستثمارات والتجارة والعقار (صافي)" value={calc.monetaryZakat} eligible={calc.monetaryEligible} />
-              <SectionResult format={cur} label="زكاة الزروع والثمار" value={calc.cropsZakat} eligible={calc.cropsEligible} />
-              {fitrContribution > 0 && (
-                <SectionResult format={cur} label="🌾 زكاة الفطر (تلقائي — رمضان)" value={fitrContribution} />
-              )}
-            </div>
+            {(() => {
+              const incomeTradeGross = calc.tradeTotal + calc.realEstateZakatable + incomeUsufructTotal;
+              // معامل توزيع خصم الديون على الأوعية النقدية/المالية بنسبة كل وعاء من الإجمالي
+              const distRate = calc.monetaryEligible && calc.monetaryGross > 0
+                ? (calc.monetaryZakat / calc.monetaryGross)
+                : 0;
+              const z = (g: number) => g * distRate;
+              return (
+                <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 space-y-1">
+                  <div className="text-xs font-bold text-primary mb-1">④ الزكاة المستحقة على كل وعاء</div>
+                  <SectionResult format={cur} label="زكاة الذهب" value={calc.goldZakat} eligible={calc.goldEligible} />
+                  <SectionResult format={cur} label="زكاة الفضة" value={calc.silverZakat} eligible={calc.silverEligible} />
+                  <SectionResult format={cur} label="زكاة الأوراق النقدية والحسابات والبطاقات والمحافظ البنكية" value={z(calc.cashTotal)} eligible={calc.monetaryEligible} />
+                  <SectionResult format={cur} label="زكاة الأوراق المالية (الأسهم والسندات والصكوك) ووثائق التأمين" value={z(calc.securitiesTotal)} eligible={calc.monetaryEligible} />
+                  <SectionResult format={cur} label="زكاة الأوراق التجارية" value={z(calc.billsTotal)} eligible={calc.monetaryEligible} />
+                  <SectionResult format={cur} label="زكاة الأصول الرقمية والمحافظ الاستثمارية" value={z(digitalAssetsTotal)} eligible={calc.monetaryEligible} />
+                  <SectionResult format={cur} label="زكاة الدخل وعروض التجارة والمستغلات والإيرادات" value={z(incomeTradeGross)} eligible={calc.monetaryEligible} />
+                  <SectionResult format={cur} label="زكاة الزروع والثمار" value={calc.cropsZakat} eligible={calc.cropsEligible} />
+                  {ownsLivestock && !livestockForTrade && (calc.camelsN > 0 || calc.cowsN > 0 || calc.sheepN > 0) && (
+                    <div className="text-xs text-muted-foreground pt-1 border-t border-primary/10">
+                      <b className="text-primary">زكاة الأنعام:</b> تُؤدَّى عيناً (تفاصيلها أدناه)
+                    </div>
+                  )}
+                  <div className="text-xs text-muted-foreground pt-1 border-t border-primary/10">
+                    <b className="text-primary">زكاة الركاز والمعادن:</b> تُحسب داخل قسم «زكاة الركاز والمعادن» (الركاز 20% — المعادن 2.5%)
+                  </div>
+                  {calc.debts > 0 && (
+                    <div className="text-[10px] text-muted-foreground pt-1">
+                      * تم توزيع خصم الديون ({cur(calc.debts)}) على الأوعية النقدية/المالية بنسبة كل وعاء.
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
             {ownsLivestock && !livestockForTrade && (calc.camelsN > 0 || calc.cowsN > 0 || calc.sheepN > 0) && (
               <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 space-y-1">
@@ -1989,6 +2015,12 @@ export function IndividualTab() {
                 {calc.camelsN > 0 && <div className="text-xs">• الإبل ({calc.camelsN}): <b>{camelZakat(calc.camelsN)}</b></div>}
                 {calc.cowsN > 0 && <div className="text-xs">• البقر ({calc.cowsN}): <b>{cowZakat(calc.cowsN)}</b></div>}
                 {calc.sheepN > 0 && <div className="text-xs">• الغنم ({calc.sheepN}): <b>{sheepZakat(calc.sheepN)}</b></div>}
+              </div>
+            )}
+
+            {fitrContribution > 0 && (
+              <div className="rounded-lg border border-primary/20 bg-primary/5 p-3">
+                <SectionResult format={cur} label="🌾 زكاة الفطر (تلقائي — رمضان)" value={fitrContribution} />
               </div>
             )}
 
