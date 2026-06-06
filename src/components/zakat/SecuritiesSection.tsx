@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import { TrendingUp, Info, ShieldCheck, AlertTriangle } from "lucide-react";
 import { currency as fmtCurrency, num } from "@/lib/zakat";
+import { MarketQuoteButton } from "@/components/zakat/MarketQuoteButton";
 
 type SecurityKind =
   | "stock_trade"     // أسهم متاجرة
@@ -196,7 +197,18 @@ export function SecuritiesSection({
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs">سعر الوحدة الحالي ({currencyName})</Label>
-                  <Input type="number" min="0" step="any" value={r.price} onChange={(e) => update(r.id, { price: e.target.value })} dir="ltr" style={{ textAlign: "right" }} placeholder="0" />
+                  <div className="flex gap-2">
+                    <Input type="number" min="0" step="any" value={r.price} onChange={(e) => update(r.id, { price: e.target.value })} dir="ltr" style={{ textAlign: "right" }} placeholder="0" className="flex-1" />
+                    <MarketQuoteButton
+                      symbol={r.ticker}
+                      defaultDate={r.purchaseDate}
+                      compact
+                      onApply={(price, meta) => update(r.id, {
+                        price: String(price.toFixed(4)),
+                        notes: (r.notes ? r.notes + " | " : "") + `${meta.name} @ ${new Date(meta.asOf).toLocaleDateString("ar")} (${meta.currency})`,
+                      })}
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-1.5">
