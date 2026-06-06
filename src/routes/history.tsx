@@ -219,6 +219,25 @@ function HistoryPage() {
               </CardContent>
             </Card>
 
+            {distribution.length > 0 && (
+              <Card className="shadow-soft">
+                <CardHeader><CardTitle className="text-base">توزيع الأصول في آخر سجل</CardTitle></CardHeader>
+                <CardContent>
+                  <div className="h-72 w-full" dir="ltr">
+                    <ResponsiveContainer>
+                      <PieChart>
+                        <Tooltip formatter={(v: number) => `${fmt(Number(v))} ${lastCurrency}`} />
+                        <Legend />
+                        <Pie data={distribution} dataKey="value" nameKey="name" outerRadius={100} label={(e: any) => `${e.name}: ${Math.round((e.percent || 0) * 100)}%`}>
+                          {distribution.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
+                        </Pie>
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             <Card className="shadow-soft">
               <CardHeader><CardTitle className="text-base">تفاصيل السجلات</CardTitle></CardHeader>
               <CardContent className="space-y-2">
