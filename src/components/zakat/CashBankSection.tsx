@@ -245,6 +245,8 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
     if (!isInTrad(depTradBank)) setDepTradBank(tb);
     if (!isInIslamic(certIslamicBank)) setCertIslamicBank(ib);
     if (!isInTrad(certTradBank)) setCertTradBank(tb);
+    if (!isInIslamic(ccIslamicBank)) setCcIslamicBank(ib);
+    if (!isInTrad(ccTradBank)) setCcTradBank(tb);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [countryBanks]);
 
@@ -254,7 +256,13 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
 
   // هـ) البطاقات البنكية
   const [cardPrepaid, setCardPrepaid] = useState("");
-  const [creditCardDue, setCreditCardDue] = useState("");
+  // هـ-أ) بطاقات ائتمانية
+  const [ccType, setCcType] = useState<BankType>("traditional");
+  const [ccDue, setCcDue] = useState("");
+  const [ccIslamicBank, setCcIslamicBank] = useState("");
+  const [ccTradBank, setCcTradBank] = useState("");
+  const [ccUseWindow, setCcUseWindow] = useState(false);
+  const [ccBranch, setCcBranch] = useState("");
 
   // و) المحافظ الرقمية — محافظ شركات الاتصالات (تُزكَّى كنقد دائماً — لا ربط بنكي)
   type WalletRow = { id: number; provider: string; amount: string; linked: "linked" | "standalone"; linkedBank?: string };
@@ -304,7 +312,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
     const tCert = num(certPrincipal);
     const tPost = num(postPrincipal) || num(postSavings);
     const tCards = num(cardPrepaid);
-    const tCreditDue = num(creditCardDue);
+    const tCreditDue = num(ccDue);
     // محافظ شركات الاتصالات: لا يوجد ربط بنكي — تُحتسب دائماً.
     const tTelco = telcoWallets.reduce((s, w) => s + num(w.amount), 0);
     // المحافظ البنكية: إن كانت مربوطة بحساب لُغيت لمنع الازدواج.
@@ -318,7 +326,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   }, [
     cashHome, fxRows, currBalance, savBalance, savPurifyPct, savType,
     depPrincipal, certPrincipal, postPrincipal, postSavings,
-    cardPrepaid, creditCardDue, telcoWallets, bankWallets,
+    cardPrepaid, ccDue, telcoWallets, bankWallets,
   ]);
 
   useEffect(() => { onTotalChange(totals.zakatable); }, [totals.zakatable, onTotalChange]);
@@ -607,32 +615,85 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
 
 
       {/* هـ) البطاقات البنكية */}
-      <div className="rounded-lg border bg-card p-4 space-y-3">
+      <div className="rounded-lg border bg-card p-4 space-y-4">
         <div className="flex items-center gap-2 text-sm font-semibold text-primary">
           <CreditCard className="h-4 w-4" /> هـ · البطاقات البنكية
         </div>
-        <div className="grid md:grid-cols-[1fr_auto] gap-4 items-start">
-          <div className="grid grid-cols-1 gap-3">
+
+        {/* هـ-أ) Prepaid */}
+        <div className="space-y-2 rounded-md border p-3">
+          <div className="text-xs font-semibold text-muted-foreground">هـ-أ · بطاقات Prepaid (الرصيد المتاح — وعاء زكوي)</div>
+          <div className="space-y-1.5">
+            <Label className="text-xs">رصيد Prepaid المتاح</Label>
+            <div className="relative">
+              <Input type="number" min="0" step="0.01" value={cardPrepaid} onChange={(e) => setCardPrepaid(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* هـ-ب) بطاقات ائتمانية */}
+        <div className="space-y-3 rounded-md border border-destructive/20 p-3 bg-destructive/5">
+          <div className="flex items-center gap-2">
+            <div className="text-xs font-semibold text-destructive">هـ-ب · بطاقات ائتمانية (ديون — تُخصم من الوعاء)</div>
+            <Badge variant={ccType === "islamic" ? "default" : "secondary"} className="text-[10px]">
+              {ccType === "islamic" ? "بنك إسلامي" : ccUseWindow ? "فرع/نافذة إسلامية" : "بنك تقليدي"}
+            </Badge>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-xs">بطاقات Prepaid (الرصيد المتاح)</Label>
+              <Label className="text-xs">نوع البنك المصدر</Label>
+              <RadioGroup value={ccType} onValueChange={(v) => setCcType(v as BankType)} className="flex gap-3 pt-2">
+                <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer"><RadioGroupItem value="islamic" id="cc-i" /><Label htmlFor="cc-i" className="text-xs cursor-pointer">بنك إسلامي</Label></div>
+                <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer"><RadioGroupItem value="traditional" id="cc-t" /><Label htmlFor="cc-t" className="text-xs cursor-pointer">بنك تقليدي</Label></div>
+              </RadioGroup>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">المبلغ المستحق على البطاقة (الدين)</Label>
               <div className="relative">
-                <Input type="number" min="0" step="0.01" value={cardPrepaid} onChange={(e) => setCardPrepaid(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
+                <Input type="number" min="0" step="0.01" value={ccDue} onChange={(e) => setCcDue(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
               </div>
             </div>
+            <div className="md:col-span-2">
+              <BankPicker
+                type={ccType}
+                islamicBank={ccIslamicBank} setIslamicBank={setCcIslamicBank}
+                tradBank={ccTradBank} setTradBank={setCcTradBank}
+                useWindow={ccUseWindow} setUseWindow={setCcUseWindow}
+                branch={ccBranch} setBranch={setCcBranch}
+                idPrefix="cc"
+                islamicBanks={countryBanks.islamic} traditionalBanks={countryBanks.traditional} countryName={country.name}
+              />
+            </div>
           </div>
-          <img
-            src={bankCardsImg}
-            alt="البطاقات البنكية"
-            width={180}
-            height={120}
-            loading="lazy"
-            className="rounded-md hidden md:block"
-          />
+
+          {ccType === "islamic" && (
+            <Alert className="border-primary/30 bg-primary/5">
+              <Info className="h-4 w-4" />
+              <AlertDescription className="text-xs">
+                بطاقة ائتمانية من بنك إسلامي: المبلغ المستحق يُخصم من الوعاء الزكوي كدين مستحق.
+              </AlertDescription>
+            </Alert>
+          )}
+          {ccType === "traditional" && !ccUseWindow && (
+            <Alert className="border-info/30 bg-info/5">
+              <Info className="h-4 w-4" />
+              <AlertDescription className="text-xs">
+                بطاقة ائتمانية من بنك تقليدي: يُخصم الدين من الوعاء. تأكد من عدم احتساب أي فوائد ربوية ضمن المبلغ المستحق.
+              </AlertDescription>
+            </Alert>
+          )}
+          {ccType === "traditional" && ccUseWindow && (
+            <Alert className="border-primary/30 bg-primary/5">
+              <Info className="h-4 w-4" />
+              <AlertDescription className="text-xs">
+                بطاقة ائتمانية من فرع/نافذة إسلامية: المبلغ المستحق يُخصم من الوعاء كدين. تحقق من أن النافذة معتمدة شرعياً.
+              </AlertDescription>
+            </Alert>
+          )}
         </div>
-        <p className="text-xs text-muted-foreground">
-          أسعار الصرف المُدخَلة تقريبية — يُرجى تحديثها من السعر الرسمي يوم إخراج الزكاة.
-        </p>
       </div>
 
       {/* و) محافظ شركات الاتصالات */}
@@ -710,7 +771,11 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
         </div>
         {totals.tCreditDue > 0 && (
           <div className="flex items-center justify-between text-xs text-destructive">
-            <span>− دين بطاقة الائتمان</span><b>−{cur(totals.tCreditDue)}</b>
+            <span>
+              − دين بطاقات ائتمانية
+              {ccType === "islamic" ? " (بنك إسلامي)" : ccUseWindow ? " (فرع/نافذة إسلامية)" : " (بنك تقليدي)"}
+            </span>
+            <b>−{cur(totals.tCreditDue)}</b>
           </div>
         )}
         <Separator className="my-2" />
