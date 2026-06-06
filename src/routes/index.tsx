@@ -93,7 +93,7 @@ function Index() {
             <TabsTrigger value="individual" className="gap-1.5 text-xs md:text-sm py-2.5">
               <Users className="h-3.5 w-3.5 md:h-4 md:w-4" /> الأفراد
             </TabsTrigger>
-            <TabsTrigger value="company" className="gap-1.5 text-xs md:text-sm py-2.5">
+            <TabsTrigger id="tab-company" value="company" className="gap-1.5 text-xs md:text-sm py-2.5">
               <Building2 className="h-3.5 w-3.5 md:h-4 md:w-4" /> الشركات
             </TabsTrigger>
             <TabsTrigger value="fitr" className="gap-1.5 text-xs md:text-sm py-2.5">
