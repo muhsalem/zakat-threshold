@@ -467,6 +467,7 @@ export function IndividualTab() {
     inventory, receivablesGood, realEstateTrade, realEstateRentIncome,
     tradeIsShareholder, tradeSharePct, tradeShareCompanyBase,
     agriTradeBase, livestockForTrade, livestockTradeValue,
+    ecommerceEnabled, ecommerceInventory, ecommerceDigitalProducts, ecommerceServices, ecommerceReceivables,
     incomeUsufructTotal, ownsFarmland, ownsLivestock,
     debtPersonalLoan, debtBankLoan, debtConsumerFinance, debtCarInstall, debtTradePayable, debtPurchases,
     debtDeferredPolicy, debtDeferredYearly, debtMortgage, debtMahr, debtAlimony,
