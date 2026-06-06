@@ -250,6 +250,12 @@ export function IndividualTab() {
   const [tradeShareCompany, setTradeShareCompany] = useState("");
   const [tradeSharePct, setTradeSharePct] = useState("");
   const [tradeShareCompanyBase, setTradeShareCompanyBase] = useState("");
+  // المتجر الإلكتروني والمنتجات والخدمات الرقمية
+  const [ecommerceEnabled, setEcommerceEnabled] = useState(false);
+  const [ecommerceInventory, setEcommerceInventory] = useState("");      // بضاعة المتجر
+  const [ecommerceDigitalProducts, setEcommerceDigitalProducts] = useState(""); // منتجات رقمية
+  const [ecommerceServices, setEcommerceServices] = useState("");      // خدمات رقمية
+  const [ecommerceReceivables, setEcommerceReceivables] = useState(""); // مستحقات متجر
 
   // العقار — تركيب العقار: أرض فقط / مبنى فقط / الأرض والمبنى معاً
   type RealEstateComp = "land" | "building" | "both";
