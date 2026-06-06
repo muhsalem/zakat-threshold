@@ -305,9 +305,10 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
     const tPost = num(postPrincipal) || num(postSavings);
     const tCards = num(cardPrepaid);
     const tCreditDue = num(creditCardDue);
-    const sumWallets = (rows: WalletRow[]) => rows.reduce((s, w) => s + (w.linked === "linked" ? 0 : num(w.amount)), 0);
-    const tTelco = sumWallets(telcoWallets);
-    const tBankWal = sumWallets(bankWallets);
+    // محافظ شركات الاتصالات: لا يوجد ربط بنكي — تُحتسب دائماً.
+    const tTelco = telcoWallets.reduce((s, w) => s + num(w.amount), 0);
+    // المحافظ البنكية: إن كانت مربوطة بحساب لُغيت لمنع الازدواج.
+    const tBankWal = bankWallets.reduce((s, w) => s + (w.linked === "linked" ? 0 : num(w.amount)), 0);
     const tWallets = tTelco + tBankWal;
 
     const gross = tCash + tFx + tCurr + tSav + tDep + tCert + tPost + tCards + tWallets;
