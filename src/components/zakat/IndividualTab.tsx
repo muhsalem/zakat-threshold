@@ -250,9 +250,26 @@ export function IndividualTab() {
   const [tradeSharePct, setTradeSharePct] = useState("");
   const [tradeShareCompanyBase, setTradeShareCompanyBase] = useState("");
 
-  // العقار
-  const [realEstateTrade, setRealEstateTrade] = useState(""); // عقار للتجارة (بقيمته السوقية)
-  const [realEstateRentIncome, setRealEstateRentIncome] = useState(""); // صافي إيراد الإيجار المُدّخر
+  // العقار — تركيب العقار: أرض فقط / مبنى فقط / الأرض والمبنى معاً
+  type RealEstateComp = "land" | "building" | "both";
+  // عقار للتجارة (يُزكَّى بالقيمة السوقية يوم الوجوب)
+  const [reTradeComp, setReTradeComp] = useState<RealEstateComp>("both");
+  const [reTradeLand, setReTradeLand] = useState("");      // قيمة الأرض السوقية
+  const [reTradeBuilding, setReTradeBuilding] = useState(""); // قيمة المبنى السوقية
+  // عقار الإيجار/الاستغلال (يُزكَّى صافي الإيراد المُدّخر)
+  const [reRentComp, setReRentComp] = useState<RealEstateComp>("both");
+  const [reRentLandIncome, setReRentLandIncome] = useState("");      // صافي إيراد الأرض
+  const [reRentBuildingIncome, setReRentBuildingIncome] = useState(""); // صافي إيراد المبنى
+  // قيم مشتقة للحفاظ على التكامل مع باقي الحسابات
+  const realEstateTrade =
+    reTradeComp === "land" ? reTradeLand
+    : reTradeComp === "building" ? reTradeBuilding
+    : String(num(reTradeLand) + num(reTradeBuilding));
+  const realEstateRentIncome =
+    reRentComp === "land" ? reRentLandIncome
+    : reRentComp === "building" ? reRentBuildingIncome
+    : String(num(reRentLandIncome) + num(reRentBuildingIncome));
+
 
   // المستغلات والدخل (المجموع يُحسب داخل المكوّن)
   const [incomeUsufructTotal, setIncomeUsufructTotal] = useState(0);
