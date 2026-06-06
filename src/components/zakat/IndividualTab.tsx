@@ -2121,6 +2121,10 @@ export function IndividualTab() {
           </CardContent>
         </Card>
 
+        <ShariaAuditTrail />
+
+
+
 
         <Card className="border-primary/20 shadow-soft print:hidden">
           <CardContent className="pt-6 space-y-2">
