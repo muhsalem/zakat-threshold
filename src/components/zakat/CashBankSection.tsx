@@ -308,17 +308,16 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
     const sumWallets = (rows: WalletRow[]) => rows.reduce((s, w) => s + (w.linked === "linked" ? 0 : num(w.amount)), 0);
     const tTelco = sumWallets(telcoWallets);
     const tBankWal = sumWallets(bankWallets);
-    const tCrypto = cryptoWallets.reduce((s, w) => s + num(w.amount), 0); // العملات المشفرة تُزكَّى دائماً كنقد
-    const tWallets = tTelco + tBankWal + tCrypto;
+    const tWallets = tTelco + tBankWal;
 
     const gross = tCash + tFx + tCurr + tSav + tDep + tCert + tPost + tCards + tWallets;
     const debts = tCreditDue;
     const zakatable = Math.max(0, gross - debts);
-    return { tCash, tFx, tCurr, tSav, tDep, tCert, tPost, tCards, tCreditDue, tTelco, tBankWal, tCrypto, tWallets, gross, zakatable };
+    return { tCash, tFx, tCurr, tSav, tDep, tCert, tPost, tCards, tCreditDue, tTelco, tBankWal, tWallets, gross, zakatable };
   }, [
     cashHome, fxRows, currBalance, savBalance, savPurifyPct, savType,
     depPrincipal, certPrincipal, postPrincipal, postSavings,
-    cardPrepaid, creditCardDue, telcoWallets, bankWallets, cryptoWallets,
+    cardPrepaid, creditCardDue, telcoWallets, bankWallets,
   ]);
 
   useEffect(() => { onTotalChange(totals.zakatable); }, [totals.zakatable, onTotalChange]);
