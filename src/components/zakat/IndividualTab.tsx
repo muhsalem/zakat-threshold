@@ -21,8 +21,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   User, Coins, Landmark, TrendingUp, FileText, Package, Wheat, Home,
   MinusCircle, Calculator, Info, CheckCircle2, Sprout, CalendarClock, HandHeart,
-  ShieldCheck, ClipboardCheck,
+  ShieldCheck, ClipboardCheck, Copy, AlertTriangle,
 } from "lucide-react";
+import { toast } from "sonner";
 import {
   ZAKAT_RATE, ZAKAT_RATE_GREGORIAN, GOLD_NISAB_GRAMS, SILVER_NISAB_GRAMS,
   CROPS_NISAB_KG, HAWL_DAYS_HIJRI,
