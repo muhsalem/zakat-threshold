@@ -254,7 +254,13 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
 
   // هـ) البطاقات البنكية
   const [cardPrepaid, setCardPrepaid] = useState("");
-  const [creditCardDue, setCreditCardDue] = useState("");
+  // هـ-أ) بطاقات ائتمانية
+  const [ccType, setCcType] = useState<BankType>("traditional");
+  const [ccDue, setCcDue] = useState("");
+  const [ccIslamicBank, setCcIslamicBank] = useState("");
+  const [ccTradBank, setCcTradBank] = useState("");
+  const [ccUseWindow, setCcUseWindow] = useState(false);
+  const [ccBranch, setCcBranch] = useState("");
 
   // و) المحافظ الرقمية — محافظ شركات الاتصالات (تُزكَّى كنقد دائماً — لا ربط بنكي)
   type WalletRow = { id: number; provider: string; amount: string; linked: "linked" | "standalone"; linkedBank?: string };
