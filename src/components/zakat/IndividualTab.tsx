@@ -1705,120 +1705,168 @@ export function IndividualTab() {
 
 
 
-        <Card className="shadow-soft">
-          <CardHeader className="pb-3"><CardTitle className="text-base">تفصيل النتيجة</CardTitle></CardHeader>
-          <CardContent className="space-y-2">
-            <SectionResult format={cur} label="زكاة الذهب" value={calc.goldZakat} eligible={calc.goldEligible} />
-            <SectionResult format={cur} label="زكاة الفضة" value={calc.silverZakat} eligible={calc.silverEligible} />
-            <SectionResult format={cur} label="زكاة النقد والاستثمارات والتجارة والعقار (صافي)" value={calc.monetaryZakat} eligible={calc.monetaryEligible} />
+        <Card className="shadow-soft border-primary/30">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base flex items-center justify-between">
+              <span>تفصيل النتيجة — مدمج من جميع التبويبات</span>
+              <Badge variant="outline" className="text-[10px]">AAOIFI 35</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {/* ① مكوّنات الوعاء الزكوي (إجمالي قبل الخصم) */}
+            {(() => {
+              const items = [
+                { k: "الذهب (قيمة)", v: calc.totalGoldValue, rate: "2.5%" },
+                { k: "الفضة (قيمة)", v: calc.silverValue, rate: "2.5%" },
+                { k: "النقد والبنوك والمحافظ", v: calc.cashTotal, rate: "2.5%" },
+                { k: "الأوراق المالية ووثائق التأمين", v: calc.securitiesTotal, rate: "2.5%" },
+                { k: "العملات الرقمية والمحافظ الاستثمارية", v: digitalAssetsTotal, rate: "2.5%" },
+                { k: "الأوراق التجارية (الكمبيالات)", v: calc.billsTotal, rate: "2.5%" },
+                { k: "عروض التجارة", v: calc.tradeTotal, rate: "2.5%" },
+                { k: "العقار (تجارة + إيجار مُدّخر)", v: calc.realEstateZakatable, rate: "2.5%" },
+                { k: "المستغلات والدخل والإيرادات", v: incomeUsufructTotal, rate: "2.5%" },
+                { k: "الزروع والثمار", v: calc.cropsValue, rate: calc.cropsRate === 0.1 ? "10%" : "5%" },
+              ].filter((x) => x.v > 0);
+              const grossMonetary = calc.monetaryGross + calc.totalGoldValue + calc.silverValue;
+              const grossAll = grossMonetary + calc.cropsValue;
+              return (
+                <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 space-y-1">
+                  <div className="text-xs font-bold text-primary mb-2">① مكوّنات الوعاء الزكوي (قبل الخصم)</div>
+                  {items.length === 0 && (
+                    <div className="text-xs text-muted-foreground text-center py-2">لا توجد مكوّنات للوعاء حاليّاً</div>
+                  )}
+                  {items.map((it) => (
+                    <div key={it.k} className="text-xs flex justify-between gap-2">
+                      <span>• {it.k} <span className="text-[10px] text-muted-foreground">({it.rate})</span></span>
+                      <b className="tabular-nums">{cur(it.v)}</b>
+                    </div>
+                  ))}
+                  <Separator className="my-2" />
+                  <div className="text-xs flex justify-between">
+                    <span>إجمالي الوعاء النقدي والمالي قبل الخصم</span>
+                    <b className="text-primary tabular-nums">{cur(grossMonetary)}</b>
+                  </div>
+                  {calc.cropsValue > 0 && (
+                    <div className="text-xs flex justify-between">
+                      <span>إجمالي وعاء الزروع والثمار (مستقل)</span>
+                      <b className="tabular-nums">{cur(calc.cropsValue)}</b>
+                    </div>
+                  )}
+                  <div className="text-sm flex justify-between pt-1 border-t border-primary/20">
+                    <span className="font-bold">الإجمالي الكلي للأوعية قبل الخصم</span>
+                    <b className="text-primary text-base tabular-nums">{cur(grossAll)}</b>
+                  </div>
+                </div>
+              );
+            })()}
 
-            {/* تفصيل مكوّنات الوعاء النقدي حسب التبويبات */}
-            <div className="rounded-md border border-primary/20 bg-primary/5 p-2 mt-1 space-y-1">
-              <div className="text-xs font-semibold text-primary mb-1">مكوّنات الوعاء النقدي (مدمج من جميع التبويبات):</div>
-              {calc.cashTotal > 0 && (
-                <div className="text-xs flex justify-between"><span>• النقد والبنوك والمحافظ</span><b>{cur(calc.cashTotal)}</b></div>
+            {/* ② تفصيل قاعدة عروض التجارة */}
+            {calc.tradeTotal > 0 && (
+              <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 space-y-1">
+                <div className="text-xs font-bold text-primary flex items-center justify-between">
+                  <span>تفصيل قاعدة عروض التجارة (2.5%)</span>
+                  <span className="text-foreground">قاعدة: <b className="tabular-nums">{cur(calc.tradeTotal)}</b></span>
+                </div>
+                {num(inventory) > 0 && (
+                  <div className="text-xs flex justify-between"><span>• البضاعة بسعر السوق</span><b className="tabular-nums">{cur(num(inventory))}</b></div>
+                )}
+                {num(receivablesGood) > 0 && (
+                  <div className="text-xs flex justify-between"><span>• ديون مرجوّة</span><b className="tabular-nums">{cur(num(receivablesGood))}</b></div>
+                )}
+                {tradeIsShareholder && num(tradeShareCompanyBase) > 0 && (
+                  <div className="text-xs flex justify-between"><span>• نصيبك من وعاء الشركة</span><b className="tabular-nums">{cur(num(tradeShareCompanyBase) * (num(tradeSharePct) / 100))}</b></div>
+                )}
+                {agriTradeBase > 0 && (
+                  <div className="text-xs flex justify-between"><span>• العسل/الأسماك/الدواجن (ملحقة)</span><b className="tabular-nums">{cur(agriTradeBase)}</b></div>
+                )}
+                {livestockForTrade && num(livestockTradeValue) > 0 && (
+                  <div className="text-xs flex justify-between"><span>• الأنعام للتجارة</span><b className="tabular-nums">{cur(num(livestockTradeValue))}</b></div>
+                )}
+                <div className="text-[10px] text-muted-foreground pt-1 border-t border-primary/10">
+                  مُنعَ الازدواج تلقائياً مع زكاة الزروع وزكاة الأنعام عيناً.
+                </div>
+              </div>
+            )}
+
+            {/* ③ الخصومات والديون */}
+            {calc.debts > 0 ? (
+              <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 space-y-1">
+                <div className="text-xs font-bold text-destructive flex items-center justify-between">
+                  <span><MinusCircle className="inline h-3.5 w-3.5 ml-1" />② الخصومات والديون والالتزامات</span>
+                  <span>الإجمالي: <b className="tabular-nums">−{cur(calc.debts)}</b></span>
+                </div>
+                {(num(debtPersonalLoan) + num(debtBankLoan) + num(debtConsumerFinance) + num(debtCarInstall) + num(debtTradePayable) + num(debtPurchases)) > 0 && (
+                  <div className="text-xs flex justify-between">
+                    <span>• ديون حالّة (قروض/أقساط/مستحقات تجارية)</span>
+                    <b className="tabular-nums">−{cur(num(debtPersonalLoan) + num(debtBankLoan) + num(debtConsumerFinance) + num(debtCarInstall) + num(debtTradePayable) + num(debtPurchases))}</b>
+                  </div>
+                )}
+                {(debtDeferredPolicy !== "none" && (num(debtDeferredYearly) + (debtDeferredPolicy === "full" ? (num(debtMortgage) + num(debtMahr)) : 0)) > 0) && (
+                  <div className="text-xs flex justify-between">
+                    <span>• ديون مؤجلة (حسب السياسة: {debtDeferredPolicy === "full" ? "كامل" : "قسط السنة"})</span>
+                    <b className="tabular-nums">−{cur(debtDeferredPolicy === "yearly" ? num(debtDeferredYearly) : (num(debtMortgage) + num(debtMahr) || num(debtDeferredYearly)))}</b>
+                  </div>
+                )}
+                {num(debtAlimony) > 0 && (
+                  <div className="text-xs flex justify-between"><span>• نفقة واجبة (ديناً)</span><b className="tabular-nums">−{cur(num(debtAlimony))}</b></div>
+                )}
+                {num(expenses) > 0 && (
+                  <div className="text-xs flex justify-between"><span>• نفقات ضرورية مستحقة</span><b className="tabular-nums">−{cur(num(expenses))}</b></div>
+                )}
+                <div className="text-[10px] text-muted-foreground pt-1 border-t border-destructive/20">
+                  تُخصم الديون من الوعاء النقدي/المالي فقط — لا تُخصم من زكاة الزروع ولا الأنعام عيناً.
+                </div>
+              </div>
+            ) : (
+              <div className="rounded-lg border border-muted bg-muted/30 p-3 text-xs text-muted-foreground text-center">
+                ② لا توجد خصومات أو ديون مُسجَّلة
+              </div>
+            )}
+
+            {/* ④ صافي الوعاء بعد الخصم */}
+            <div className="rounded-lg border border-primary/30 bg-card p-3 space-y-1">
+              <div className="text-xs font-bold text-primary mb-1">③ صافي الأوعية بعد الخصم</div>
+              <div className="text-xs flex justify-between">
+                <span>الوعاء النقدي/المالي (بعد خصم {cur(calc.debts)})</span>
+                <b className="tabular-nums">{cur(calc.monetaryBase)}</b>
+              </div>
+              <div className="text-xs flex justify-between">
+                <span>وعاء الذهب والفضة</span>
+                <b className="tabular-nums">{cur(calc.totalGoldValue + calc.silverValue)}</b>
+              </div>
+              {calc.cropsValue > 0 && (
+                <div className="text-xs flex justify-between">
+                  <span>وعاء الزروع والثمار</span>
+                  <b className="tabular-nums">{cur(calc.cropsValue)}</b>
+                </div>
               )}
-              {calc.securitiesTotal > 0 && (
-                <div className="text-xs flex justify-between"><span>• الأوراق المالية ووثائق التأمين</span><b>{cur(calc.securitiesTotal)}</b></div>
-              )}
-              {digitalAssetsTotal > 0 && (
-                <div className="text-xs flex justify-between"><span>• العملات الرقمية والمحافظ الاستثمارية</span><b>{cur(digitalAssetsTotal)}</b></div>
-              )}
-              {calc.billsTotal > 0 && (
-                <div className="text-xs flex justify-between"><span>• الأوراق التجارية (الكمبيالات)</span><b>{cur(calc.billsTotal)}</b></div>
-              )}
-              {calc.tradeTotal > 0 && (
-                <div className="text-xs flex justify-between"><span>• عروض التجارة</span><b>{cur(calc.tradeTotal)}</b></div>
-              )}
-              {calc.realEstateZakatable > 0 && (
-                <div className="text-xs flex justify-between"><span>• العقار (تجارة + إيجار مُدّخر)</span><b>{cur(calc.realEstateZakatable)}</b></div>
-              )}
-              {incomeUsufructTotal > 0 && (
-                <div className="text-xs flex justify-between"><span>• المستغلات والدخل والإيرادات</span><b>{cur(incomeUsufructTotal)}</b></div>
-              )}
-              <div className="text-xs flex justify-between border-t border-primary/10 pt-1 mt-1">
-                <span className="font-semibold">إجمالي الوعاء قبل الخصومات</span>
-                <b className="text-primary">{cur(calc.monetaryGross)}</b>
+              <Separator className="my-1" />
+              <div className="text-xs text-muted-foreground">
+                نصاب المال (الأنفع للفقراء): <b>{cur(calc.moneyNisab)}</b>
               </div>
             </div>
 
-            {/* تفصيل قاعدة عروض التجارة (2.5%) ومصادرها */}
-            {calc.tradeTotal > 0 && (
-              <div className="rounded-md border border-primary/20 bg-primary/5 p-2 mt-1 space-y-1">
-                <div className="text-xs font-semibold text-primary flex items-center justify-between">
-                  <span>عروض التجارة (2.5%) — تفصيل المصادر</span>
-                  <span className="text-foreground">قاعدة: <b>{cur(calc.tradeTotal)}</b></span>
-                </div>
-                {num(inventory) > 0 && (
-                  <div className="text-xs flex justify-between"><span>• البضاعة بسعر السوق</span><b>{cur(num(inventory))}</b></div>
-                )}
-                {num(receivablesGood) > 0 && (
-                  <div className="text-xs flex justify-between"><span>• ديون مرجوّة</span><b>{cur(num(receivablesGood))}</b></div>
-                )}
-                {tradeIsShareholder && num(tradeShareCompanyBase) > 0 && (
-                  <div className="text-xs flex justify-between"><span>• نصيبك من وعاء الشركة</span><b>{cur(num(tradeShareCompanyBase) * (num(tradeSharePct) / 100))}</b></div>
-                )}
-                {agriTradeBase > 0 && (
-                  <div className="text-xs flex justify-between"><span>• العسل/الأسماك/الدواجن (ملحقة)</span><b>{cur(agriTradeBase)}</b></div>
-                )}
-                {livestockForTrade && num(livestockTradeValue) > 0 && (
-                  <div className="text-xs flex justify-between"><span>• الأنعام للتجارة</span><b>{cur(num(livestockTradeValue))}</b></div>
-                )}
-                <div className="text-[10px] text-muted-foreground pt-1 border-t border-primary/10">
-                  لا تُحسب هذه الأصول مرة أخرى ضمن زكاة الزروع ولا زكاة الأنعام عيناً — مُنعَ الازدواج تلقائياً.
-                </div>
-              </div>
-            )}
-
-            <SectionResult format={cur} label="زكاة الزروع والثمار" value={calc.cropsZakat} eligible={calc.cropsEligible} />
-            {fitrContribution > 0 && (
-              <SectionResult format={cur} label="🌾 زكاة الفطر (تلقائي — رمضان)" value={fitrContribution} />
-            )}
+            {/* ⑤ الزكاة المستحقة على كل وعاء */}
+            <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 space-y-1">
+              <div className="text-xs font-bold text-primary mb-1">④ الزكاة المستحقة على كل وعاء</div>
+              <SectionResult format={cur} label="زكاة الذهب" value={calc.goldZakat} eligible={calc.goldEligible} />
+              <SectionResult format={cur} label="زكاة الفضة" value={calc.silverZakat} eligible={calc.silverEligible} />
+              <SectionResult format={cur} label="زكاة النقد والاستثمارات والتجارة والعقار (صافي)" value={calc.monetaryZakat} eligible={calc.monetaryEligible} />
+              <SectionResult format={cur} label="زكاة الزروع والثمار" value={calc.cropsZakat} eligible={calc.cropsEligible} />
+              {fitrContribution > 0 && (
+                <SectionResult format={cur} label="🌾 زكاة الفطر (تلقائي — رمضان)" value={fitrContribution} />
+              )}
+            </div>
 
             {ownsLivestock && !livestockForTrade && (calc.camelsN > 0 || calc.cowsN > 0 || calc.sheepN > 0) && (
-              <div className="rounded-md border border-primary/20 bg-primary/5 p-2 mt-1 space-y-1">
-                <div className="text-xs font-semibold text-primary">زكاة الأنعام (تُؤدّى عيناً لا قيمةً):</div>
+              <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 space-y-1">
+                <div className="text-xs font-bold text-primary">زكاة الأنعام (تُؤدّى عيناً لا قيمةً):</div>
                 {calc.camelsN > 0 && <div className="text-xs">• الإبل ({calc.camelsN}): <b>{camelZakat(calc.camelsN)}</b></div>}
                 {calc.cowsN > 0 && <div className="text-xs">• البقر ({calc.cowsN}): <b>{cowZakat(calc.cowsN)}</b></div>}
                 {calc.sheepN > 0 && <div className="text-xs">• الغنم ({calc.sheepN}): <b>{sheepZakat(calc.sheepN)}</b></div>}
               </div>
             )}
 
-            {/* تفصيل الخصومات والديون */}
-            {calc.debts > 0 && (
-              <div className="rounded-md border border-destructive/30 bg-destructive/5 p-2 mt-1 space-y-1">
-                <div className="text-xs font-semibold text-destructive flex items-center justify-between">
-                  <span><MinusCircle className="inline h-3.5 w-3.5 ml-1" />الخصومات والديون المُستقطعة</span>
-                  <span>إجمالي: <b>−{cur(calc.debts)}</b></span>
-                </div>
-                {(num(debtPersonalLoan) + num(debtBankLoan) + num(debtConsumerFinance) + num(debtCarInstall) + num(debtTradePayable) + num(debtPurchases)) > 0 && (
-                  <div className="text-xs flex justify-between">
-                    <span>• ديون حالّة (قروض/أقساط/مستحقات)</span>
-                    <b>−{cur(num(debtPersonalLoan) + num(debtBankLoan) + num(debtConsumerFinance) + num(debtCarInstall) + num(debtTradePayable) + num(debtPurchases))}</b>
-                  </div>
-                )}
-                {(debtDeferredPolicy !== "none" && (num(debtDeferredYearly) + (debtDeferredPolicy === "full" ? (num(debtMortgage) + num(debtMahr)) : 0)) > 0) && (
-                  <div className="text-xs flex justify-between">
-                    <span>• ديون مؤجلة (حسب سياسة الخصم)</span>
-                    <b>−{cur(debtDeferredPolicy === "yearly" ? num(debtDeferredYearly) : (num(debtMortgage) + num(debtMahr) || num(debtDeferredYearly)))}</b>
-                  </div>
-                )}
-                {num(debtAlimony) > 0 && (
-                  <div className="text-xs flex justify-between"><span>• نفقة واجبة (ديناً)</span><b>−{cur(num(debtAlimony))}</b></div>
-                )}
-                {num(expenses) > 0 && (
-                  <div className="text-xs flex justify-between"><span>• نفقات ضرورية مستحقة</span><b>−{cur(num(expenses))}</b></div>
-                )}
-              </div>
-            )}
-
-            <Separator className="my-2" />
-            <div className="text-xs text-muted-foreground space-y-1">
-              <div>الوعاء النقدي الإجمالي: <b>{cur(calc.monetaryGross)}</b></div>
-              <div>الوعاء النقدي الصافي بعد الخصومات: <b>{cur(calc.monetaryBase)}</b></div>
-              <div>نصاب المال (الأنفع للفقراء): <b>{cur(calc.moneyNisab)}</b></div>
-              <div>إجمالي الديون المخصومة: <b className="text-destructive">−{cur(calc.debts)}</b></div>
-            </div>
             {calc.hawlBlocks && (
               <Alert className="border-destructive/40 bg-destructive/5 mt-2">
                 <AlertDescription className="text-xs">
