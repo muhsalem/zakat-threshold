@@ -902,6 +902,21 @@ function BankPicker({
   countryName: string;
 }) {
   const selectedTrad = traditionalBanks.find((b) => b.v === tradBank);
+  const hasWindow = (b: TradBank) => !!b.window && b.window !== "—";
+  const windowBanks = traditionalBanks.filter(hasWindow);
+  const pureBanks = traditionalBanks.filter((b) => !hasWindow(b));
+  // تبويب فرعي داخل "بنك تقليدي": كل البنوك / تقليدي بالكامل / نوافذ ومنتجات إسلامية
+  const [tradFilter, setTradFilter] = useState<"all" | "pure" | "window">("all");
+  const filteredTrad =
+    tradFilter === "pure" ? pureBanks : tradFilter === "window" ? windowBanks : traditionalBanks;
+  // إذا خرج البنك المختار من الفلتر الحالي بدّله لأول عنصر متاح
+  useEffect(() => {
+    if (type !== "traditional") return;
+    if (!filteredTrad.some((b) => b.v === tradBank)) {
+      setTradBank(filteredTrad[0]?.v ?? "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tradFilter]);
   return (
     <div className="grid md:grid-cols-2 gap-3">
       {type === "islamic" ? (
@@ -916,24 +931,66 @@ function BankPicker({
         </div>
       ) : (
         <>
+          <div className="space-y-1.5 md:col-span-2">
+            <Label className="text-xs">تصنيف البنك التقليدي</Label>
+            <RadioGroup
+              dir="rtl"
+              value={tradFilter}
+              onValueChange={(v) => setTradFilter(v as "all" | "pure" | "window")}
+              className="flex flex-wrap gap-2"
+            >
+              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer">
+                <RadioGroupItem value="all" id={`${idPrefix}-f-all`} />
+                <Label htmlFor={`${idPrefix}-f-all`} className="text-xs cursor-pointer">
+                  الكل ({traditionalBanks.length})
+                </Label>
+              </div>
+              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer">
+                <RadioGroupItem value="window" id={`${idPrefix}-f-win`} />
+                <Label htmlFor={`${idPrefix}-f-win`} className="text-xs cursor-pointer">
+                  بنوفذ/منتجات إسلامية ({windowBanks.length})
+                </Label>
+              </div>
+              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer">
+                <RadioGroupItem value="pure" id={`${idPrefix}-f-pure`} />
+                <Label htmlFor={`${idPrefix}-f-pure`} className="text-xs cursor-pointer">
+                  تقليدي بالكامل ({pureBanks.length})
+                </Label>
+              </div>
+            </RadioGroup>
+          </div>
           <div className="space-y-1.5">
             <Label className="text-xs">اسم البنك التقليدي — {countryName}</Label>
             <Select value={tradBank} onValueChange={setTradBank}>
               <SelectTrigger id={`${idPrefix}-tb`}><SelectValue placeholder="اختر بنكاً" /></SelectTrigger>
               <SelectContent className="max-h-72">
-                {traditionalBanks.map((b) => (
+                {filteredTrad.map((b) => (
                   <SelectItem key={b.v} value={b.v}>
-                    {b.l}{b.window && b.window !== "—" ? ` — (${b.window})` : ""}
+                    {b.l}{hasWindow(b) ? ` — (${b.window})` : ""}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+            {selectedTrad && (
+              <div className="pt-1">
+                {hasWindow(selectedTrad) ? (
+                  <Badge variant="secondary" className="text-[10px]">
+                    بنك بنوافذ/منتجات إسلامية
+                  </Badge>
+                ) : (
+                  <Badge variant="outline" className="text-[10px]">
+                    بنك تقليدي بالكامل
+                  </Badge>
+                )}
+              </div>
+            )}
             <div className="flex items-center gap-2 pt-1">
               <input
                 type="checkbox"
                 id={`${idPrefix}-isvc`}
                 checked={useWindow}
                 onChange={(e) => setUseWindow(e.target.checked)}
+                disabled={!hasWindow(selectedTrad ?? ({} as TradBank))}
               />
               <Label htmlFor={`${idPrefix}-isvc`} className="text-xs cursor-pointer text-muted-foreground">
                 المنتج أو الخدمة إسلامية (متوافقة مع الشريعة)
@@ -949,10 +1006,10 @@ function BankPicker({
                   id={`${idPrefix}-win`}
                   checked={useWindow}
                   onChange={(e) => setUseWindow(e.target.checked)}
-                  disabled={!selectedTrad?.window || selectedTrad.window === "—"}
+                  disabled={!hasWindow(selectedTrad ?? ({} as TradBank))}
                 />
                 <Label htmlFor={`${idPrefix}-win`} className="text-xs cursor-pointer">
-                  {selectedTrad?.window && selectedTrad.window !== "—"
+                  {selectedTrad && hasWindow(selectedTrad)
                     ? `أستخدم: ${selectedTrad.window}`
                     : "لا توجد نافذة إسلامية معتمدة لهذا البنك"}
                 </Label>
