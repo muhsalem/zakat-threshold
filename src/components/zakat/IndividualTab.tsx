@@ -21,7 +21,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   User, Coins, Landmark, TrendingUp, FileText, Package, Wheat, Home,
   MinusCircle, Calculator, Info, CheckCircle2, Sprout, CalendarClock, HandHeart,
-  ShieldCheck, ClipboardCheck, Copy, AlertTriangle,
+  ShieldCheck, ClipboardCheck, Copy, AlertTriangle, Store, MonitorSmartphone, Globe,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -250,6 +250,12 @@ export function IndividualTab() {
   const [tradeShareCompany, setTradeShareCompany] = useState("");
   const [tradeSharePct, setTradeSharePct] = useState("");
   const [tradeShareCompanyBase, setTradeShareCompanyBase] = useState("");
+  // المتجر الإلكتروني والمنتجات والخدمات الرقمية
+  const [ecommerceEnabled, setEcommerceEnabled] = useState(false);
+  const [ecommerceInventory, setEcommerceInventory] = useState("");      // بضاعة المتجر
+  const [ecommerceDigitalProducts, setEcommerceDigitalProducts] = useState(""); // منتجات رقمية
+  const [ecommerceServices, setEcommerceServices] = useState("");      // خدمات رقمية
+  const [ecommerceReceivables, setEcommerceReceivables] = useState(""); // مستحقات متجر
 
   // العقار — تركيب العقار: أرض فقط / مبنى فقط / الأرض والمبنى معاً
   type RealEstateComp = "land" | "building" | "both";
@@ -391,7 +397,10 @@ export function IndividualTab() {
     const tradeShareholderBase = tradeIsShareholder
       ? num(tradeShareCompanyBase) * (num(tradeSharePct) / 100) : 0;
     const livestockTradeBase = livestockForTrade ? num(livestockTradeValue) : 0;
-    const tradeTotal = num(inventory) + num(receivablesGood) + tradeShareholderBase + agriTradeBase + livestockTradeBase;
+    const ecommerceTotal = ecommerceEnabled
+      ? num(ecommerceInventory) + num(ecommerceDigitalProducts) + num(ecommerceServices) + num(ecommerceReceivables)
+      : 0;
+    const tradeTotal = num(inventory) + num(receivablesGood) + tradeShareholderBase + agriTradeBase + livestockTradeBase + ecommerceTotal;
     const realEstateZakatable = num(realEstateTrade) + num(realEstateRentIncome);
     const incomeUsufruct = incomeUsufructTotal;
 
@@ -458,6 +467,7 @@ export function IndividualTab() {
     inventory, receivablesGood, realEstateTrade, realEstateRentIncome,
     tradeIsShareholder, tradeSharePct, tradeShareCompanyBase,
     agriTradeBase, livestockForTrade, livestockTradeValue,
+    ecommerceEnabled, ecommerceInventory, ecommerceDigitalProducts, ecommerceServices, ecommerceReceivables,
     incomeUsufructTotal, ownsFarmland, ownsLivestock,
     debtPersonalLoan, debtBankLoan, debtConsumerFinance, debtCarInstall, debtTradePayable, debtPurchases,
     debtDeferredPolicy, debtDeferredYearly, debtMortgage, debtMahr, debtAlimony,
@@ -1335,6 +1345,54 @@ export function IndividualTab() {
                 </div>
               </div>
 
+              {/* المتجر الإلكتروني والمنتجات والخدمات الرقمية */}
+              <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-primary">
+                    <Store className="h-4 w-4" /> المتجر الإلكتروني والمنتجات والخدمات الرقمية
+                  </div>
+                  <Switch checked={ecommerceEnabled} onCheckedChange={setEcommerceEnabled} />
+                </div>
+                {ecommerceEnabled && (
+                  <>
+                    <Alert className="border-primary/20 bg-primary/5">
+                      <Info className="h-4 w-4" />
+                      <AlertDescription className="text-xs leading-relaxed text-right">
+                        <b>المتجر الإلكتروني:</b> يُزكَّى بقيمة البضاعة المعروضة للبيع + المنتجات الرقمية + الخدمات الرقمية المُدّخَرة + المستحقات المرجوّة. لا زكاة في الأصول الرقمية المُعدّة للبيع إذا كانت ضمن «العملات الرقمية» (تُحسب هناك). والعبرة بالقيمة السوقية يوم الوجوب.
+                      </AlertDescription>
+                    </Alert>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <NumField
+                        label="قيمة بضاعة المتجر (منتجات مادية)"
+                        value={ecommerceInventory} onChange={setEcommerceInventory} unit={currencyName}
+                        hint="تُقوَّم بسعر البيع يوم وجوب الزكاة"
+                      />
+                      <NumField
+                        label="المنتجات الرقمية (قوالب · كتب إلكترونية · دورات · برامج)"
+                        value={ecommerceDigitalProducts} onChange={setEcommerceDigitalProducts} unit={currencyName}
+                        hint="قيمة المخزون الرقمي المُدّخر للتجارة"
+                      />
+                      <NumField
+                        label="الخدمات الرقمية المُدّخَرة (اشتراكات · استضافة · تراخيص)"
+                        value={ecommerceServices} onChange={setEcommerceServices} unit={currencyName}
+                        hint="صافي الإيراد المُدّخر من الخدمات الرقمية"
+                      />
+                      <NumField
+                        label="مستحقات المتجر (ديون مرجوّة على العملاء)"
+                        value={ecommerceReceivables} onChange={setEcommerceReceivables} unit={currencyName}
+                        hint="طلبات لم تُسدَّد بعد على منصات البيع أو التحويل"
+                      />
+                    </div>
+                    <div className="rounded-md border bg-background p-3 flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground">إجمالي قاعدة المتجر الإلكتروني والرقمي</span>
+                      <span className="text-lg font-bold text-primary">
+                        {cur(num(ecommerceInventory) + num(ecommerceDigitalProducts) + num(ecommerceServices) + num(ecommerceReceivables))}
+                      </span>
+                    </div>
+                  </>
+                )}
+              </div>
+
               {/* ثانياً: العقار */}
               <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-3">
                 <div className="flex items-center gap-2 text-sm font-semibold text-primary">
@@ -1959,6 +2017,34 @@ export function IndividualTab() {
                     <button type="button" onClick={() => jumpToSection("livestock")} className="hover:text-primary hover:underline underline-offset-2 text-start">• الأنعام للتجارة</button>
                     <b className="tabular-nums">{cur(num(livestockTradeValue))}</b>
                   </div>
+                )}
+                {ecommerceEnabled && (num(ecommerceInventory) + num(ecommerceDigitalProducts) + num(ecommerceServices) + num(ecommerceReceivables)) > 0 && (
+                  <>
+                    {num(ecommerceInventory) > 0 && (
+                      <div className="text-xs flex justify-between">
+                        <button type="button" onClick={() => jumpToSection("income-trade-usufruct")} className="hover:text-primary hover:underline underline-offset-2 text-start">• بضاعة المتجر الإلكتروني</button>
+                        <b className="tabular-nums">{cur(num(ecommerceInventory))}</b>
+                      </div>
+                    )}
+                    {num(ecommerceDigitalProducts) > 0 && (
+                      <div className="text-xs flex justify-between">
+                        <button type="button" onClick={() => jumpToSection("income-trade-usufruct")} className="hover:text-primary hover:underline underline-offset-2 text-start">• منتجات رقمية</button>
+                        <b className="tabular-nums">{cur(num(ecommerceDigitalProducts))}</b>
+                      </div>
+                    )}
+                    {num(ecommerceServices) > 0 && (
+                      <div className="text-xs flex justify-between">
+                        <button type="button" onClick={() => jumpToSection("income-trade-usufruct")} className="hover:text-primary hover:underline underline-offset-2 text-start">• خدمات رقمية مُدّخَرة</button>
+                        <b className="tabular-nums">{cur(num(ecommerceServices))}</b>
+                      </div>
+                    )}
+                    {num(ecommerceReceivables) > 0 && (
+                      <div className="text-xs flex justify-between">
+                        <button type="button" onClick={() => jumpToSection("income-trade-usufruct")} className="hover:text-primary hover:underline underline-offset-2 text-start">• مستحقات المتجر</button>
+                        <b className="tabular-nums">{cur(num(ecommerceReceivables))}</b>
+                      </div>
+                    )}
+                  </>
                 )}
                 <div className="text-[10px] text-muted-foreground pt-1 border-t border-primary/10">
                   مُنعَ الازدواج تلقائياً مع زكاة الزروع وزكاة الأنعام عيناً.
