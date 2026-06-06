@@ -113,7 +113,19 @@ function HistoryPage() {
   }));
 
   const totalLifetime = records.reduce((s, r) => s + Number(r.net_due), 0);
-  const lastCurrency = records[records.length - 1]?.currency || "SAR";
+  const lastRecord = records[records.length - 1];
+  const lastCurrency = lastRecord?.currency || "SAR";
+
+  // Nisab reference: gold price * 85g — read from last snapshot if available
+  const lastSnap = (lastRecord?.snapshot ?? {}) as Record<string, any>;
+  const lastGoldPrice = Number(lastSnap.goldPrice ?? lastSnap.gold_price ?? 0);
+  const nisabRef = lastGoldPrice > 0 ? lastGoldPrice * 85 : 0;
+
+  // Asset distribution from last snapshot pots
+  const potsObj: Record<string, number> = (lastSnap.pots ?? lastSnap.buckets ?? {}) as Record<string, number>;
+  const distribution = Object.entries(potsObj)
+    .map(([k, v]) => ({ name: POT_LABELS[k] ?? k, value: Number(v) || 0 }))
+    .filter((x) => x.value > 0);
 
   return (
     <div className="min-h-screen">
