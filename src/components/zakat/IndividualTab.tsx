@@ -21,7 +21,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   User, Coins, Landmark, TrendingUp, FileText, Package, Wheat, Home,
   MinusCircle, Calculator, Info, CheckCircle2, Sprout, CalendarClock, HandHeart,
-  ShieldCheck, ClipboardCheck, Copy, AlertTriangle,
+  ShieldCheck, ClipboardCheck, Copy, AlertTriangle, Store, MonitorSmartphone, Globe,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
