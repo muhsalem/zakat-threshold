@@ -280,6 +280,8 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   const [ccTradBank, setCcTradBank] = useState("");
   const [ccUseWindow, setCcUseWindow] = useState(false);
   const [ccBranch, setCcBranch] = useState("");
+  // فوائد ربوية مدفوعة على البطاقة — تطهير فقط (لا تُحسب من الزكاة)
+  const [ccInterestPaid, setCcInterestPaid] = useState("");
 
   // و) المحافظ الرقمية — محافظ شركات الاتصالات (تُزكَّى كنقد دائماً — لا ربط بنكي)
   type WalletRow = { id: number; provider: string; amount: string; linked: "linked" | "standalone"; linkedBank?: string };
