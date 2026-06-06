@@ -683,7 +683,7 @@ export function IndividualTab() {
         {/* الأبواب */}
         <Accordion type="multiple" defaultValue={["gold", "cash"]} className="space-y-3">
           {/* زكاة الذهب */}
-          <AccordionItem value="gold" className="border rounded-xl shadow-soft bg-card px-4">
+          <AccordionItem id="section-gold" value="gold" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
                 <Coins className="h-5 w-5 text-gold" /> زكاة الذهب
@@ -962,7 +962,7 @@ export function IndividualTab() {
           </AccordionItem>
 
           {/* زكاة الفضة */}
-          <AccordionItem value="silver" className="border rounded-xl shadow-soft bg-card px-4">
+          <AccordionItem id="section-silver" value="silver" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
                 <Coins className="h-5 w-5 text-muted-foreground" /> زكاة الفضة
@@ -1188,7 +1188,7 @@ export function IndividualTab() {
           </AccordionItem>
 
           {/* النقد */}
-          <AccordionItem value="cash" className="border rounded-xl shadow-soft bg-card px-4">
+          <AccordionItem id="section-cash" value="cash" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
                 <Landmark className="h-5 w-5 text-primary" /> زكاة الأوراق النقدية والحسابات البنكية
@@ -1204,7 +1204,7 @@ export function IndividualTab() {
           </AccordionItem>
 
           {/* الأوراق المالية */}
-          <AccordionItem value="securities" className="border rounded-xl shadow-soft bg-card px-4">
+          <AccordionItem id="section-securities" value="securities" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
                 <TrendingUp className="h-5 w-5 text-primary" /> زكاة الأوراق المالية ووثائق التأمين
@@ -1219,7 +1219,7 @@ export function IndividualTab() {
           </AccordionItem>
 
           {/* الأوراق التجارية */}
-          <AccordionItem value="bills" className="border rounded-xl shadow-soft bg-card px-4">
+          <AccordionItem id="section-bills" value="bills" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
                 <FileText className="h-5 w-5 text-primary" /> زكاة الأوراق التجارية
@@ -1235,7 +1235,7 @@ export function IndividualTab() {
           </AccordionItem>
 
           {/* العملات الرقمية والمحافظ الاستثمارية — AAOIFI 35 */}
-          <AccordionItem value="digital-assets" className="border rounded-xl shadow-soft bg-card px-4">
+          <AccordionItem id="section-digital-assets" value="digital-assets" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
                 <TrendingUp className="h-5 w-5 text-gold" /> زكاة العملات الرقمية والمحافظ الاستثمارية
@@ -1252,7 +1252,7 @@ export function IndividualTab() {
           </AccordionItem>
 
           {/* زكاة دخل وعروض التجارة والمستغلات والإيرادات (مدمجة) */}
-          <AccordionItem value="income-trade-usufruct" className="border rounded-xl shadow-soft bg-card px-4">
+          <AccordionItem id="section-income-trade-usufruct" value="income-trade-usufruct" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
                 <Package className="h-5 w-5 text-primary" /> زكاة دخل وعروض التجارة والمستغلات والإيرادات
@@ -1354,7 +1354,7 @@ export function IndividualTab() {
 
 
           {/* الزروع */}
-          <AccordionItem value="crops" className="border rounded-xl shadow-soft bg-card px-4">
+          <AccordionItem id="section-crops" value="crops" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
                 <Wheat className="h-5 w-5 text-gold" /> زكاة الزروع والثمار
@@ -1398,7 +1398,7 @@ export function IndividualTab() {
           </AccordionItem>
 
           {/* الأنعام */}
-          <AccordionItem value="livestock" className="border rounded-xl shadow-soft bg-card px-4">
+          <AccordionItem id="section-livestock" value="livestock" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
                 <Sprout className="h-5 w-5 text-primary" /> زكاة الأنعام (الإبل والبقر والغنم)
@@ -1478,7 +1478,7 @@ export function IndividualTab() {
           </AccordionItem>
 
           {/* الركاز والمعادن — تبويب مستقل */}
-          <AccordionItem value="rikaz-metals" className="border rounded-xl shadow-soft bg-card px-4">
+          <AccordionItem id="section-rikaz-metals" value="rikaz-metals" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
                 <Sprout className="h-5 w-5 text-gold" /> زكاة الركاز والمعادن
@@ -1491,7 +1491,7 @@ export function IndividualTab() {
 
 
           {/* الديون */}
-          <AccordionItem value="debts" className="border rounded-xl shadow-soft bg-card px-4">
+          <AccordionItem id="section-debts" value="debts" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
                 <MinusCircle className="h-5 w-5 text-destructive" /> الديون والالتزامات (تُخصم)
