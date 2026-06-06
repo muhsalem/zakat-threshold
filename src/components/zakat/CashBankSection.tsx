@@ -290,7 +290,6 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   });
   const telcoOps = makeWalletOps(setTelcoWallets, "vodafone");
   const bankOps = makeWalletOps(setBankWallets, "meeza");
-  const cryptoOps = makeWalletOps(setCryptoWallets, "btc");
 
   // ========= الحسابات =========
   const totals = useMemo(() => {
