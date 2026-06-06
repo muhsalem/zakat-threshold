@@ -103,6 +103,16 @@ export function IndividualTab() {
   const [pinDate, setPinDate] = useState<"yes" | "no">("no");
   const [notes, setNotes] = useState("");
 
+  // الأبواب المفتوحة في الأكورديون (للتنقل من بطاقة تفصيل النتيجة)
+  const [openSections, setOpenSections] = useState<string[]>(["gold", "cash"]);
+  const jumpToSection = (value: string) => {
+    setOpenSections((prev) => (prev.includes(value) ? prev : [...prev, value]));
+    setTimeout(() => {
+      const el = document.getElementById(`section-${value}`);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
+  };
+
   // ديباجة محاسب الزكاة (تظهر في رأس التقرير عند الطباعة)
   const [accountantName, setAccountantName] = useState("محمد سعيد سالم");
   const [accountantLicense, setAccountantLicense] = useState("");
