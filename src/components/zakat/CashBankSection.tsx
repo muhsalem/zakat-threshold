@@ -256,14 +256,14 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   const [cardPrepaid, setCardPrepaid] = useState("");
   const [creditCardDue, setCreditCardDue] = useState("");
 
-  // و) المحافظ الرقمية — محافظ شركات الاتصالات
+  // و) المحافظ الرقمية — محافظ شركات الاتصالات (تُزكَّى كنقد دائماً — لا ربط بنكي)
   type WalletRow = { id: number; provider: string; amount: string; linked: "linked" | "standalone"; linkedBank?: string };
   const [telcoWallets, setTelcoWallets] = useState<WalletRow[]>([
     { id: 1, provider: "vodafone", amount: "", linked: "standalone" },
   ]);
   // ز) المحافظ البنكية
   const [bankWallets, setBankWallets] = useState<WalletRow[]>([
-    { id: 1, provider: "meeza", amount: "", linked: "linked" },
+    { id: 1, provider: "bankapp", amount: "", linked: "linked" },
   ]);
   // ملحوظة: محافظ العملات المشفّرة نُقلت إلى تبويب «زكاة العملات الرقمية والمحافظ الاستثمارية»
   // لتجميع كل ما يخصّ Crypto والأسهم والصكوك في مكان واحد وفق معيار AAOIFI 35.
@@ -289,7 +289,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
       setter((rows) => rows.map((r) => (r.id === id ? { ...r, ...patch } : r))),
   });
   const telcoOps = makeWalletOps(setTelcoWallets, "vodafone");
-  const bankOps = makeWalletOps(setBankWallets, "meeza");
+  const bankOps = makeWalletOps(setBankWallets, "bankapp");
 
   // ========= الحسابات =========
   const totals = useMemo(() => {
@@ -305,9 +305,10 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
     const tPost = num(postPrincipal) || num(postSavings);
     const tCards = num(cardPrepaid);
     const tCreditDue = num(creditCardDue);
-    const sumWallets = (rows: WalletRow[]) => rows.reduce((s, w) => s + (w.linked === "linked" ? 0 : num(w.amount)), 0);
-    const tTelco = sumWallets(telcoWallets);
-    const tBankWal = sumWallets(bankWallets);
+    // محافظ شركات الاتصالات: لا يوجد ربط بنكي — تُحتسب دائماً.
+    const tTelco = telcoWallets.reduce((s, w) => s + num(w.amount), 0);
+    // المحافظ البنكية: إن كانت مربوطة بحساب لُغيت لمنع الازدواج.
+    const tBankWal = bankWallets.reduce((s, w) => s + (w.linked === "linked" ? 0 : num(w.amount)), 0);
     const tWallets = tTelco + tBankWal;
 
     const gross = tCash + tFx + tCurr + tSav + tDep + tCert + tPost + tCards + tWallets;
@@ -648,7 +649,8 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
           { v: "stc", l: "STC Pay" },
           { v: "other", l: "محفظة اتصالات أخرى" },
         ]}
-        note="محافظ شركات الاتصالات تُزكَّى كنقد. إن كانت مربوطة بحساب بنكي فقد احتُسبت ضمنه — اختَر «مربوطة» لاستثنائها."
+        note="محافظ شركات الاتصالات تُزكَّى كنقد دائماً — لا يوجد ربط بحساب بنكي."
+        hideLink
       />
 
       {/* ز) المحافظ البنكية */}
@@ -658,8 +660,6 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
         ops={bankOps}
         currencyName={currencyName}
         providers={[
-          { v: "meeza", l: "بطاقة ميزة الرقمية" },
-          { v: "instapay", l: "إنستاباي (InstaPay)" },
           { v: "applepay", l: "Apple Pay" },
           { v: "googlepay", l: "Google Pay" },
           { v: "samsungpay", l: "Samsung Pay" },
@@ -669,6 +669,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
         ]}
         note="المحافظ البنكية غالبًا ما تكون مربوطة بحساب جاري — حدِّد «مربوطة» لمنع التكرار المحاسبي."
       />
+
 
       {/* ح) محافظ العملات المشفّرة — مُنقولة إلى تبويب «زكاة العملات الرقمية والمحافظ الاستثمارية» */}
       <div className="rounded-lg border border-dashed border-primary/30 bg-primary/5 p-3 text-xs text-muted-foreground">
@@ -729,7 +730,7 @@ interface WalletOps {
   update: (id: number, patch: Partial<WalletRowT>) => void;
 }
 function WalletGroup({
-  title, rows, ops, currencyName, providers, note, forceStandalone,
+  title, rows, ops, currencyName, providers, note, forceStandalone, hideLink,
 }: {
   title: string;
   rows: WalletRowT[];
@@ -738,6 +739,7 @@ function WalletGroup({
   providers: { v: string; l: string }[];
   note: string;
   forceStandalone?: boolean;
+  hideLink?: boolean;
 }) {
   void forceStandalone;
   return (
@@ -749,7 +751,7 @@ function WalletGroup({
       <div className="space-y-2">
         {rows.map((w) => (
           <div key={w.id} className="grid grid-cols-12 gap-2 items-end">
-            <div className="col-span-4">
+            <div className={hideLink ? "col-span-6" : "col-span-4"}>
               <Label className="text-xs">النوع</Label>
               <Select value={w.provider} onValueChange={(v) => ops.update(w.id, { provider: v })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
@@ -758,27 +760,29 @@ function WalletGroup({
                 </SelectContent>
               </Select>
             </div>
-            <div className="col-span-3">
+            <div className={hideLink ? "col-span-4" : "col-span-3"}>
               <Label className="text-xs">الرصيد</Label>
               <div className="relative">
                 <Input type="number" min="0" step="0.01" value={w.amount} onChange={(e) => ops.update(w.id, { amount: e.target.value })} dir="ltr" style={{ textAlign: "right" }} className="pl-12" placeholder="0" />
                 <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">{currencyName}</span>
               </div>
             </div>
-            <div className="col-span-3">
-              <Label className="text-xs">الربط بحساب بنكي</Label>
-              <Select value={w.linked} onValueChange={(v) => ops.update(w.id, { linked: v as "linked" | "standalone" })}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="standalone">مستقلة — تُزكَّى</SelectItem>
-                  <SelectItem value="linked">مربوطة — تُستثنى</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            {!hideLink && (
+              <div className="col-span-3">
+                <Label className="text-xs">الربط بحساب بنكي</Label>
+                <Select value={w.linked} onValueChange={(v) => ops.update(w.id, { linked: v as "linked" | "standalone" })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="standalone">مستقلة — تُزكَّى</SelectItem>
+                    <SelectItem value="linked">مربوطة — تُستثنى</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
             <div className="col-span-2 flex gap-1">
               <Button type="button" size="sm" variant="ghost" onClick={() => ops.remove(w.id)} disabled={rows.length <= 1}>حذف</Button>
             </div>
-            {w.linked === "linked" && (
+            {!hideLink && w.linked === "linked" && (
               <div className="col-span-12">
                 <Input value={w.linkedBank ?? ""} onChange={(e) => ops.update(w.id, { linkedBank: e.target.value })} placeholder="اسم البنك المرتبط (للتوثيق)" className="text-xs" />
                 <div className="text-[11px] text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 rounded px-2 py-1 mt-1">

@@ -21,8 +21,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   User, Coins, Landmark, TrendingUp, FileText, Package, Wheat, Home,
   MinusCircle, Calculator, Info, CheckCircle2, Sprout, CalendarClock, HandHeart,
-  ShieldCheck, ClipboardCheck,
+  ShieldCheck, ClipboardCheck, Copy, AlertTriangle,
 } from "lucide-react";
+import { toast } from "sonner";
 import {
   ZAKAT_RATE, ZAKAT_RATE_GREGORIAN, GOLD_NISAB_GRAMS, SILVER_NISAB_GRAMS,
   CROPS_NISAB_KG, HAWL_DAYS_HIJRI,
@@ -101,6 +102,16 @@ export function IndividualTab() {
   const [calculatedBefore, setCalculatedBefore] = useState<"yes" | "no">("no");
   const [pinDate, setPinDate] = useState<"yes" | "no">("no");
   const [notes, setNotes] = useState("");
+
+  // الأبواب المفتوحة في الأكورديون (للتنقل من بطاقة تفصيل النتيجة)
+  const [openSections, setOpenSections] = useState<string[]>(["gold", "cash"]);
+  const jumpToSection = (value: string) => {
+    setOpenSections((prev) => (prev.includes(value) ? prev : [...prev, value]));
+    setTimeout(() => {
+      const el = document.getElementById(`section-${value}`);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
+  };
 
   // ديباجة محاسب الزكاة (تظهر في رأس التقرير عند الطباعة)
   const [accountantName, setAccountantName] = useState("محمد سعيد سالم");
@@ -670,9 +681,9 @@ export function IndividualTab() {
 
 
         {/* الأبواب */}
-        <Accordion type="multiple" defaultValue={["gold", "cash"]} className="space-y-3">
+        <Accordion type="multiple" value={openSections} onValueChange={setOpenSections} className="space-y-3">
           {/* زكاة الذهب */}
-          <AccordionItem value="gold" className="border rounded-xl shadow-soft bg-card px-4">
+          <AccordionItem id="section-gold" value="gold" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
                 <Coins className="h-5 w-5 text-gold" /> زكاة الذهب
@@ -951,7 +962,7 @@ export function IndividualTab() {
           </AccordionItem>
 
           {/* زكاة الفضة */}
-          <AccordionItem value="silver" className="border rounded-xl shadow-soft bg-card px-4">
+          <AccordionItem id="section-silver" value="silver" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
                 <Coins className="h-5 w-5 text-muted-foreground" /> زكاة الفضة
@@ -1177,7 +1188,7 @@ export function IndividualTab() {
           </AccordionItem>
 
           {/* النقد */}
-          <AccordionItem value="cash" className="border rounded-xl shadow-soft bg-card px-4">
+          <AccordionItem id="section-cash" value="cash" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
                 <Landmark className="h-5 w-5 text-primary" /> زكاة الأوراق النقدية والحسابات البنكية
@@ -1193,7 +1204,7 @@ export function IndividualTab() {
           </AccordionItem>
 
           {/* الأوراق المالية */}
-          <AccordionItem value="securities" className="border rounded-xl shadow-soft bg-card px-4">
+          <AccordionItem id="section-securities" value="securities" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
                 <TrendingUp className="h-5 w-5 text-primary" /> زكاة الأوراق المالية ووثائق التأمين
@@ -1208,7 +1219,7 @@ export function IndividualTab() {
           </AccordionItem>
 
           {/* الأوراق التجارية */}
-          <AccordionItem value="bills" className="border rounded-xl shadow-soft bg-card px-4">
+          <AccordionItem id="section-bills" value="bills" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
                 <FileText className="h-5 w-5 text-primary" /> زكاة الأوراق التجارية
@@ -1224,7 +1235,7 @@ export function IndividualTab() {
           </AccordionItem>
 
           {/* العملات الرقمية والمحافظ الاستثمارية — AAOIFI 35 */}
-          <AccordionItem value="digital-assets" className="border rounded-xl shadow-soft bg-card px-4">
+          <AccordionItem id="section-digital-assets" value="digital-assets" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
                 <TrendingUp className="h-5 w-5 text-gold" /> زكاة العملات الرقمية والمحافظ الاستثمارية
@@ -1241,7 +1252,7 @@ export function IndividualTab() {
           </AccordionItem>
 
           {/* زكاة دخل وعروض التجارة والمستغلات والإيرادات (مدمجة) */}
-          <AccordionItem value="income-trade-usufruct" className="border rounded-xl shadow-soft bg-card px-4">
+          <AccordionItem id="section-income-trade-usufruct" value="income-trade-usufruct" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
                 <Package className="h-5 w-5 text-primary" /> زكاة دخل وعروض التجارة والمستغلات والإيرادات
@@ -1343,7 +1354,7 @@ export function IndividualTab() {
 
 
           {/* الزروع */}
-          <AccordionItem value="crops" className="border rounded-xl shadow-soft bg-card px-4">
+          <AccordionItem id="section-crops" value="crops" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
                 <Wheat className="h-5 w-5 text-gold" /> زكاة الزروع والثمار
@@ -1387,7 +1398,7 @@ export function IndividualTab() {
           </AccordionItem>
 
           {/* الأنعام */}
-          <AccordionItem value="livestock" className="border rounded-xl shadow-soft bg-card px-4">
+          <AccordionItem id="section-livestock" value="livestock" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
                 <Sprout className="h-5 w-5 text-primary" /> زكاة الأنعام (الإبل والبقر والغنم)
@@ -1467,7 +1478,7 @@ export function IndividualTab() {
           </AccordionItem>
 
           {/* الركاز والمعادن — تبويب مستقل */}
-          <AccordionItem value="rikaz-metals" className="border rounded-xl shadow-soft bg-card px-4">
+          <AccordionItem id="section-rikaz-metals" value="rikaz-metals" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
                 <Sprout className="h-5 w-5 text-gold" /> زكاة الركاز والمعادن
@@ -1480,7 +1491,7 @@ export function IndividualTab() {
 
 
           {/* الديون */}
-          <AccordionItem value="debts" className="border rounded-xl shadow-soft bg-card px-4">
+          <AccordionItem id="section-debts" value="debts" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
                 <MinusCircle className="h-5 w-5 text-destructive" /> الديون والالتزامات (تُخصم)
@@ -1707,25 +1718,80 @@ export function IndividualTab() {
 
         <Card className="shadow-soft border-primary/30">
           <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center justify-between">
+            <CardTitle className="text-base flex items-center justify-between gap-2 flex-wrap">
               <span>تفصيل النتيجة — مدمج من جميع التبويبات</span>
-              <Badge variant="outline" className="text-[10px]">AAOIFI 35</Badge>
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="text-[10px]">AAOIFI 35</Badge>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="h-7 gap-1 text-[11px] print:hidden"
+                  onClick={() => {
+                    const f = (n: number) => cur(n);
+                    const lines: string[] = [];
+                    lines.push("تفصيل النتيجة — حساب الزكاة");
+                    lines.push(`المُزكِّي: ${name || "—"}  |  العملة: ${currencyName}`);
+                    lines.push(`التاريخ: ${new Date().toLocaleDateString("ar-EG")}`);
+                    lines.push("");
+                    lines.push("① مكوّنات الوعاء (قبل الخصم):");
+                    const items = [
+                      ["الذهب (قيمة)", calc.totalGoldValue, "2.5%"],
+                      ["الفضة (قيمة)", calc.silverValue, "2.5%"],
+                      ["النقد والبنوك والمحافظ", calc.cashTotal, "2.5%"],
+                      ["الأوراق المالية ووثائق التأمين", calc.securitiesTotal, "2.5%"],
+                      ["العملات الرقمية والمحافظ الاستثمارية", digitalAssetsTotal, "2.5%"],
+                      ["الأوراق التجارية (الكمبيالات)", calc.billsTotal, "2.5%"],
+                      ["عروض التجارة", calc.tradeTotal, "2.5%"],
+                      ["العقار (تجارة + إيجار مُدّخر)", calc.realEstateZakatable, "2.5%"],
+                      ["المستغلات والدخل والإيرادات", incomeUsufructTotal, "2.5%"],
+                      ["الزروع والثمار", calc.cropsValue, calc.cropsRate === 0.1 ? "10%" : "5%"],
+                    ] as Array<[string, number, string]>;
+                    items.filter((x) => (x[1] as number) > 0).forEach((it) => {
+                      lines.push(`  • ${it[0]} (${it[2]}): ${f(it[1] as number)}`);
+                    });
+                    const grossMonetary = calc.monetaryGross + calc.totalGoldValue + calc.silverValue;
+                    const grossAll = grossMonetary + calc.cropsValue;
+                    lines.push(`  إجمالي قبل الخصم: ${f(grossAll)}`);
+                    lines.push("");
+                    lines.push(`② الخصومات والديون: −${f(calc.debts)}`);
+                    lines.push("");
+                    lines.push("③ صافي الأوعية بعد الخصم:");
+                    lines.push(`  الوعاء النقدي/المالي: ${f(calc.monetaryBase)}`);
+                    lines.push(`  وعاء الذهب والفضة: ${f(calc.totalGoldValue + calc.silverValue)}`);
+                    if (calc.cropsValue > 0) lines.push(`  وعاء الزروع والثمار: ${f(calc.cropsValue)}`);
+                    lines.push("");
+                    lines.push("④ الزكاة المستحقة:");
+                    lines.push(`  زكاة الذهب: ${f(calc.goldZakat)}`);
+                    lines.push(`  زكاة الفضة: ${f(calc.silverZakat)}`);
+                    lines.push(`  زكاة النقد والاستثمارات (صافي): ${f(calc.monetaryZakat)}`);
+                    lines.push(`  زكاة الزروع والثمار: ${f(calc.cropsZakat)}`);
+                    lines.push(`  الإجمالي: ${f(calc.goldZakat + calc.silverZakat + calc.monetaryZakat + calc.cropsZakat)}`);
+                    navigator.clipboard.writeText(lines.join("\n")).then(
+                      () => toast.success("تم نسخ تفصيل النتيجة"),
+                      () => toast.error("تعذّر النسخ — انسخ يدوياً"),
+                    );
+                  }}
+                >
+                  <Copy className="h-3.5 w-3.5" /> نسخ
+                </Button>
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {/* ① مكوّنات الوعاء الزكوي (إجمالي قبل الخصم) */}
+            {/* ① مكوّنات الوعاء الزكوي (إجمالي قبل الخصم) — مع روابط تنقل */}
             {(() => {
               const items = [
-                { k: "الذهب (قيمة)", v: calc.totalGoldValue, rate: "2.5%" },
-                { k: "الفضة (قيمة)", v: calc.silverValue, rate: "2.5%" },
-                { k: "النقد والبنوك والمحافظ", v: calc.cashTotal, rate: "2.5%" },
-                { k: "الأوراق المالية ووثائق التأمين", v: calc.securitiesTotal, rate: "2.5%" },
-                { k: "العملات الرقمية والمحافظ الاستثمارية", v: digitalAssetsTotal, rate: "2.5%" },
-                { k: "الأوراق التجارية (الكمبيالات)", v: calc.billsTotal, rate: "2.5%" },
-                { k: "عروض التجارة", v: calc.tradeTotal, rate: "2.5%" },
-                { k: "العقار (تجارة + إيجار مُدّخر)", v: calc.realEstateZakatable, rate: "2.5%" },
-                { k: "المستغلات والدخل والإيرادات", v: incomeUsufructTotal, rate: "2.5%" },
-                { k: "الزروع والثمار", v: calc.cropsValue, rate: calc.cropsRate === 0.1 ? "10%" : "5%" },
+                { k: "الذهب (قيمة)", v: calc.totalGoldValue, rate: "2.5%", section: "gold" },
+                { k: "الفضة (قيمة)", v: calc.silverValue, rate: "2.5%", section: "silver" },
+                { k: "النقد والبنوك والمحافظ", v: calc.cashTotal, rate: "2.5%", section: "cash" },
+                { k: "الأوراق المالية ووثائق التأمين", v: calc.securitiesTotal, rate: "2.5%", section: "securities" },
+                { k: "العملات الرقمية والمحافظ الاستثمارية", v: digitalAssetsTotal, rate: "2.5%", section: "digital-assets" },
+                { k: "الأوراق التجارية (الكمبيالات)", v: calc.billsTotal, rate: "2.5%", section: "bills" },
+                { k: "عروض التجارة", v: calc.tradeTotal, rate: "2.5%", section: "income-trade-usufruct" },
+                { k: "العقار (تجارة + إيجار مُدّخر)", v: calc.realEstateZakatable, rate: "2.5%", section: "income-trade-usufruct" },
+                { k: "المستغلات والدخل والإيرادات", v: incomeUsufructTotal, rate: "2.5%", section: "income-trade-usufruct" },
+                { k: "الزروع والثمار", v: calc.cropsValue, rate: calc.cropsRate === 0.1 ? "10%" : "5%", section: "crops" },
               ].filter((x) => x.v > 0);
               const grossMonetary = calc.monetaryGross + calc.totalGoldValue + calc.silverValue;
               const grossAll = grossMonetary + calc.cropsValue;
@@ -1736,8 +1802,15 @@ export function IndividualTab() {
                     <div className="text-xs text-muted-foreground text-center py-2">لا توجد مكوّنات للوعاء حاليّاً</div>
                   )}
                   {items.map((it) => (
-                    <div key={it.k} className="text-xs flex justify-between gap-2">
-                      <span>• {it.k} <span className="text-[10px] text-muted-foreground">({it.rate})</span></span>
+                    <div key={it.k} className="text-xs flex justify-between items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => jumpToSection(it.section)}
+                        className="text-start hover:text-primary hover:underline underline-offset-2 cursor-pointer"
+                        title="فتح التبويب المصدر"
+                      >
+                        • {it.k} <span className="text-[10px] text-muted-foreground">({it.rate})</span>
+                      </button>
                       <b className="tabular-nums">{cur(it.v)}</b>
                     </div>
                   ))}
@@ -1760,7 +1833,7 @@ export function IndividualTab() {
               );
             })()}
 
-            {/* ② تفصيل قاعدة عروض التجارة */}
+            {/* ② تفصيل قاعدة عروض التجارة — مع روابط */}
             {calc.tradeTotal > 0 && (
               <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 space-y-1">
                 <div className="text-xs font-bold text-primary flex items-center justify-between">
@@ -1768,19 +1841,34 @@ export function IndividualTab() {
                   <span className="text-foreground">قاعدة: <b className="tabular-nums">{cur(calc.tradeTotal)}</b></span>
                 </div>
                 {num(inventory) > 0 && (
-                  <div className="text-xs flex justify-between"><span>• البضاعة بسعر السوق</span><b className="tabular-nums">{cur(num(inventory))}</b></div>
+                  <div className="text-xs flex justify-between">
+                    <button type="button" onClick={() => jumpToSection("income-trade-usufruct")} className="hover:text-primary hover:underline underline-offset-2 text-start">• البضاعة بسعر السوق</button>
+                    <b className="tabular-nums">{cur(num(inventory))}</b>
+                  </div>
                 )}
                 {num(receivablesGood) > 0 && (
-                  <div className="text-xs flex justify-between"><span>• ديون مرجوّة</span><b className="tabular-nums">{cur(num(receivablesGood))}</b></div>
+                  <div className="text-xs flex justify-between">
+                    <button type="button" onClick={() => jumpToSection("income-trade-usufruct")} className="hover:text-primary hover:underline underline-offset-2 text-start">• ديون مرجوّة</button>
+                    <b className="tabular-nums">{cur(num(receivablesGood))}</b>
+                  </div>
                 )}
                 {tradeIsShareholder && num(tradeShareCompanyBase) > 0 && (
-                  <div className="text-xs flex justify-between"><span>• نصيبك من وعاء الشركة</span><b className="tabular-nums">{cur(num(tradeShareCompanyBase) * (num(tradeSharePct) / 100))}</b></div>
+                  <div className="text-xs flex justify-between">
+                    <button type="button" onClick={() => jumpToSection("income-trade-usufruct")} className="hover:text-primary hover:underline underline-offset-2 text-start">• نصيبك من وعاء الشركة</button>
+                    <b className="tabular-nums">{cur(num(tradeShareCompanyBase) * (num(tradeSharePct) / 100))}</b>
+                  </div>
                 )}
                 {agriTradeBase > 0 && (
-                  <div className="text-xs flex justify-between"><span>• العسل/الأسماك/الدواجن (ملحقة)</span><b className="tabular-nums">{cur(agriTradeBase)}</b></div>
+                  <div className="text-xs flex justify-between">
+                    <button type="button" onClick={() => jumpToSection("crops")} className="hover:text-primary hover:underline underline-offset-2 text-start">• العسل/الأسماك/الدواجن (ملحقة)</button>
+                    <b className="tabular-nums">{cur(agriTradeBase)}</b>
+                  </div>
                 )}
                 {livestockForTrade && num(livestockTradeValue) > 0 && (
-                  <div className="text-xs flex justify-between"><span>• الأنعام للتجارة</span><b className="tabular-nums">{cur(num(livestockTradeValue))}</b></div>
+                  <div className="text-xs flex justify-between">
+                    <button type="button" onClick={() => jumpToSection("livestock")} className="hover:text-primary hover:underline underline-offset-2 text-start">• الأنعام للتجارة</button>
+                    <b className="tabular-nums">{cur(num(livestockTradeValue))}</b>
+                  </div>
                 )}
                 <div className="text-[10px] text-muted-foreground pt-1 border-t border-primary/10">
                   مُنعَ الازدواج تلقائياً مع زكاة الزروع وزكاة الأنعام عيناً.
@@ -1788,30 +1876,38 @@ export function IndividualTab() {
               </div>
             )}
 
-            {/* ③ الخصومات والديون */}
+            {/* ③ الخصومات والديون — مع روابط لتبويب الديون */}
             {calc.debts > 0 ? (
               <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 space-y-1">
                 <div className="text-xs font-bold text-destructive flex items-center justify-between">
-                  <span><MinusCircle className="inline h-3.5 w-3.5 ml-1" />② الخصومات والديون والالتزامات</span>
+                  <button type="button" onClick={() => jumpToSection("debts")} className="text-start hover:underline">
+                    <MinusCircle className="inline h-3.5 w-3.5 ml-1" />② الخصومات والديون والالتزامات
+                  </button>
                   <span>الإجمالي: <b className="tabular-nums">−{cur(calc.debts)}</b></span>
                 </div>
                 {(num(debtPersonalLoan) + num(debtBankLoan) + num(debtConsumerFinance) + num(debtCarInstall) + num(debtTradePayable) + num(debtPurchases)) > 0 && (
                   <div className="text-xs flex justify-between">
-                    <span>• ديون حالّة (قروض/أقساط/مستحقات تجارية)</span>
+                    <button type="button" onClick={() => jumpToSection("debts")} className="hover:text-destructive hover:underline underline-offset-2 text-start">• ديون حالّة (قروض/أقساط/مستحقات تجارية)</button>
                     <b className="tabular-nums">−{cur(num(debtPersonalLoan) + num(debtBankLoan) + num(debtConsumerFinance) + num(debtCarInstall) + num(debtTradePayable) + num(debtPurchases))}</b>
                   </div>
                 )}
                 {(debtDeferredPolicy !== "none" && (num(debtDeferredYearly) + (debtDeferredPolicy === "full" ? (num(debtMortgage) + num(debtMahr)) : 0)) > 0) && (
                   <div className="text-xs flex justify-between">
-                    <span>• ديون مؤجلة (حسب السياسة: {debtDeferredPolicy === "full" ? "كامل" : "قسط السنة"})</span>
+                    <button type="button" onClick={() => jumpToSection("debts")} className="hover:text-destructive hover:underline underline-offset-2 text-start">• ديون مؤجلة (حسب السياسة: {debtDeferredPolicy === "full" ? "كامل" : "قسط السنة"})</button>
                     <b className="tabular-nums">−{cur(debtDeferredPolicy === "yearly" ? num(debtDeferredYearly) : (num(debtMortgage) + num(debtMahr) || num(debtDeferredYearly)))}</b>
                   </div>
                 )}
                 {num(debtAlimony) > 0 && (
-                  <div className="text-xs flex justify-between"><span>• نفقة واجبة (ديناً)</span><b className="tabular-nums">−{cur(num(debtAlimony))}</b></div>
+                  <div className="text-xs flex justify-between">
+                    <button type="button" onClick={() => jumpToSection("debts")} className="hover:text-destructive hover:underline underline-offset-2 text-start">• نفقة واجبة (ديناً)</button>
+                    <b className="tabular-nums">−{cur(num(debtAlimony))}</b>
+                  </div>
                 )}
                 {num(expenses) > 0 && (
-                  <div className="text-xs flex justify-between"><span>• نفقات ضرورية مستحقة</span><b className="tabular-nums">−{cur(num(expenses))}</b></div>
+                  <div className="text-xs flex justify-between">
+                    <button type="button" onClick={() => jumpToSection("debts")} className="hover:text-destructive hover:underline underline-offset-2 text-start">• نفقات ضرورية مستحقة</button>
+                    <b className="tabular-nums">−{cur(num(expenses))}</b>
+                  </div>
                 )}
                 <div className="text-[10px] text-muted-foreground pt-1 border-t border-destructive/20">
                   تُخصم الديون من الوعاء النقدي/المالي فقط — لا تُخصم من زكاة الزروع ولا الأنعام عيناً.
@@ -1822,6 +1918,35 @@ export function IndividualTab() {
                 ② لا توجد خصومات أو ديون مُسجَّلة
               </div>
             )}
+
+            {/* تحقق تلقائي: مطابقة الوعاء + خصم الديون مرة واحدة */}
+            {(() => {
+              const sumMonetary =
+                calc.cashTotal + calc.securitiesTotal + digitalAssetsTotal +
+                calc.billsTotal + calc.tradeTotal + calc.realEstateZakatable +
+                incomeUsufructTotal;
+              const diff = Math.abs(sumMonetary - calc.monetaryGross);
+              const matches = diff < 0.5;
+              const netExpected = Math.max(0, sumMonetary - calc.debts);
+              const netDiff = Math.abs(netExpected - calc.monetaryBase);
+              const debtOnce = netDiff < 0.5;
+              const ok = matches && debtOnce;
+              return (
+                <div className={`rounded-lg border p-3 text-xs ${ok ? "border-emerald-500/40 bg-emerald-500/5" : "border-amber-500/40 bg-amber-500/5"}`}>
+                  <div className="font-bold flex items-center gap-1.5 mb-1">
+                    {ok ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <AlertTriangle className="h-4 w-4 text-amber-600" />}
+                    التحقق التلقائي للوعاء والخصومات
+                  </div>
+                  <div className="flex justify-between"><span>مجموع التبويبات النقدية/المالية</span><b className="tabular-nums">{cur(sumMonetary)}</b></div>
+                  <div className="flex justify-between"><span>الإجمالي المُحتسَب (monetaryGross)</span><b className="tabular-nums">{cur(calc.monetaryGross)}</b></div>
+                  <div className="flex justify-between"><span>الفرق</span><b className={`tabular-nums ${matches ? "text-emerald-600" : "text-amber-700"}`}>{matches ? "مُطابق ✓" : cur(diff)}</b></div>
+                  <Separator className="my-1.5" />
+                  <div className="flex justify-between"><span>الصافي المتوقّع بعد خصم الديون مرة واحدة</span><b className="tabular-nums">{cur(netExpected)}</b></div>
+                  <div className="flex justify-between"><span>الصافي الفعلي (monetaryBase)</span><b className="tabular-nums">{cur(calc.monetaryBase)}</b></div>
+                  <div className="flex justify-between"><span>الفرق</span><b className={`tabular-nums ${debtOnce ? "text-emerald-600" : "text-amber-700"}`}>{debtOnce ? "خُصمت مرة واحدة ✓" : cur(netDiff)}</b></div>
+                </div>
+              );
+            })()}
 
             {/* ④ صافي الوعاء بعد الخصم */}
             <div className="rounded-lg border border-primary/30 bg-card p-3 space-y-1">
@@ -1876,6 +2001,7 @@ export function IndividualTab() {
             )}
           </CardContent>
         </Card>
+
 
         <Card className="border-primary/20 shadow-soft print:hidden">
           <CardContent className="pt-6 space-y-2">
