@@ -310,7 +310,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
     const tCert = num(certPrincipal);
     const tPost = num(postPrincipal) || num(postSavings);
     const tCards = num(cardPrepaid);
-    const tCreditDue = num(creditCardDue);
+    const tCreditDue = num(ccDue);
     // محافظ شركات الاتصالات: لا يوجد ربط بنكي — تُحتسب دائماً.
     const tTelco = telcoWallets.reduce((s, w) => s + num(w.amount), 0);
     // المحافظ البنكية: إن كانت مربوطة بحساب لُغيت لمنع الازدواج.
@@ -324,7 +324,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   }, [
     cashHome, fxRows, currBalance, savBalance, savPurifyPct, savType,
     depPrincipal, certPrincipal, postPrincipal, postSavings,
-    cardPrepaid, creditCardDue, telcoWallets, bankWallets,
+    cardPrepaid, ccDue, telcoWallets, bankWallets,
   ]);
 
   useEffect(() => { onTotalChange(totals.zakatable); }, [totals.zakatable, onTotalChange]);
