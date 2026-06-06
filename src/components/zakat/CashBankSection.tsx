@@ -670,26 +670,12 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
         note="المحافظ البنكية غالبًا ما تكون مربوطة بحساب جاري — حدِّد «مربوطة» لمنع التكرار المحاسبي."
       />
 
-      {/* ح) محافظ العملات المشفّرة */}
-      <WalletGroup
-        title="ح · محافظ العملات المشفّرة (Crypto)"
-        rows={cryptoWallets}
-        ops={cryptoOps}
-        currencyName={currencyName}
-        providers={[
-          { v: "btc", l: "Bitcoin (BTC)" },
-          { v: "eth", l: "Ethereum (ETH)" },
-          { v: "usdt", l: "Tether (USDT)" },
-          { v: "usdc", l: "USD Coin (USDC)" },
-          { v: "bnb", l: "Binance Coin (BNB)" },
-          { v: "sol", l: "Solana (SOL)" },
-          { v: "xrp", l: "XRP" },
-          { v: "ada", l: "Cardano (ADA)" },
-          { v: "other", l: "عملة مشفّرة أخرى" },
-        ]}
-        note="العملات المشفّرة تُزكَّى بقيمتها السوقية يوم وجوب الزكاة كنقد. أدخل القيمة المُقوَّمة بعملتك المحلية."
-        forceStandalone
-      />
+      {/* ح) محافظ العملات المشفّرة — مُنقولة إلى تبويب «زكاة العملات الرقمية والمحافظ الاستثمارية» */}
+      <div className="rounded-lg border border-dashed border-primary/30 bg-primary/5 p-3 text-xs text-muted-foreground">
+        <b className="text-primary">ملاحظة:</b> أُدخل محافظ العملات المشفّرة (BTC / ETH / USDT …) في تبويب
+        <b> «زكاة العملات الرقمية والمحافظ الاستثمارية»</b> ضمن قسم «العملات الرقمية (Crypto)»، تجنّباً لازدواج الاحتساب.
+      </div>
+
 
 
       {/* الملخّص */}
