@@ -2018,6 +2018,34 @@ export function IndividualTab() {
                     <b className="tabular-nums">{cur(num(livestockTradeValue))}</b>
                   </div>
                 )}
+                {ecommerceEnabled && (num(ecommerceInventory) + num(ecommerceDigitalProducts) + num(ecommerceServices) + num(ecommerceReceivables)) > 0 && (
+                  <>
+                    {num(ecommerceInventory) > 0 && (
+                      <div className="text-xs flex justify-between">
+                        <button type="button" onClick={() => jumpToSection("income-trade-usufruct")} className="hover:text-primary hover:underline underline-offset-2 text-start">• بضاعة المتجر الإلكتروني</button>
+                        <b className="tabular-nums">{cur(num(ecommerceInventory))}</b>
+                      </div>
+                    )}
+                    {num(ecommerceDigitalProducts) > 0 && (
+                      <div className="text-xs flex justify-between">
+                        <button type="button" onClick={() => jumpToSection("income-trade-usufruct")} className="hover:text-primary hover:underline underline-offset-2 text-start">• منتجات رقمية</button>
+                        <b className="tabular-nums">{cur(num(ecommerceDigitalProducts))}</b>
+                      </div>
+                    )}
+                    {num(ecommerceServices) > 0 && (
+                      <div className="text-xs flex justify-between">
+                        <button type="button" onClick={() => jumpToSection("income-trade-usufruct")} className="hover:text-primary hover:underline underline-offset-2 text-start">• خدمات رقمية مُدّخَرة</button>
+                        <b className="tabular-nums">{cur(num(ecommerceServices))}</b>
+                      </div>
+                    )}
+                    {num(ecommerceReceivables) > 0 && (
+                      <div className="text-xs flex justify-between">
+                        <button type="button" onClick={() => jumpToSection("income-trade-usufruct")} className="hover:text-primary hover:underline underline-offset-2 text-start">• مستحقات المتجر</button>
+                        <b className="tabular-nums">{cur(num(ecommerceReceivables))}</b>
+                      </div>
+                    )}
+                  </>
+                )}
                 <div className="text-[10px] text-muted-foreground pt-1 border-t border-primary/10">
                   مُنعَ الازدواج تلقائياً مع زكاة الزروع وزكاة الأنعام عيناً.
                 </div>
