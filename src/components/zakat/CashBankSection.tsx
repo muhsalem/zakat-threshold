@@ -771,7 +771,11 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
         </div>
         {totals.tCreditDue > 0 && (
           <div className="flex items-center justify-between text-xs text-destructive">
-            <span>− دين بطاقة الائتمان</span><b>−{cur(totals.tCreditDue)}</b>
+            <span>
+              − دين بطاقات ائتمانية
+              {ccType === "islamic" ? " (بنك إسلامي)" : ccUseWindow ? " (فرع/نافذة إسلامية)" : " (بنك تقليدي)"}
+            </span>
+            <b>−{cur(totals.tCreditDue)}</b>
           </div>
         )}
         <Separator className="my-2" />
