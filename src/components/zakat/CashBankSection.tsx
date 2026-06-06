@@ -245,6 +245,8 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
     if (!isInTrad(depTradBank)) setDepTradBank(tb);
     if (!isInIslamic(certIslamicBank)) setCertIslamicBank(ib);
     if (!isInTrad(certTradBank)) setCertTradBank(tb);
+    if (!isInIslamic(ccIslamicBank)) setCcIslamicBank(ib);
+    if (!isInTrad(ccTradBank)) setCcTradBank(tb);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [countryBanks]);
 
