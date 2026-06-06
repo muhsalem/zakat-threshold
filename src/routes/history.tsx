@@ -53,6 +53,7 @@ interface ZakatRecord {
   prepaid_zakat: number;
   net_due: number;
   notes: string | null;
+  snapshot: Record<string, unknown> | null;
   created_at: string;
 }
 
