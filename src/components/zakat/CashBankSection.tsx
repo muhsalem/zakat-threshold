@@ -256,14 +256,14 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   const [cardPrepaid, setCardPrepaid] = useState("");
   const [creditCardDue, setCreditCardDue] = useState("");
 
-  // و) المحافظ الرقمية — محافظ شركات الاتصالات
+  // و) المحافظ الرقمية — محافظ شركات الاتصالات (تُزكَّى كنقد دائماً — لا ربط بنكي)
   type WalletRow = { id: number; provider: string; amount: string; linked: "linked" | "standalone"; linkedBank?: string };
   const [telcoWallets, setTelcoWallets] = useState<WalletRow[]>([
     { id: 1, provider: "vodafone", amount: "", linked: "standalone" },
   ]);
   // ز) المحافظ البنكية
   const [bankWallets, setBankWallets] = useState<WalletRow[]>([
-    { id: 1, provider: "meeza", amount: "", linked: "linked" },
+    { id: 1, provider: "bankapp", amount: "", linked: "linked" },
   ]);
   // ملحوظة: محافظ العملات المشفّرة نُقلت إلى تبويب «زكاة العملات الرقمية والمحافظ الاستثمارية»
   // لتجميع كل ما يخصّ Crypto والأسهم والصكوك في مكان واحد وفق معيار AAOIFI 35.
@@ -289,7 +289,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
       setter((rows) => rows.map((r) => (r.id === id ? { ...r, ...patch } : r))),
   });
   const telcoOps = makeWalletOps(setTelcoWallets, "vodafone");
-  const bankOps = makeWalletOps(setBankWallets, "meeza");
+  const bankOps = makeWalletOps(setBankWallets, "bankapp");
 
   // ========= الحسابات =========
   const totals = useMemo(() => {
