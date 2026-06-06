@@ -265,10 +265,8 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   const [bankWallets, setBankWallets] = useState<WalletRow[]>([
     { id: 1, provider: "meeza", amount: "", linked: "linked" },
   ]);
-  // ح) محافظ العملات المشفّرة (Crypto)
-  const [cryptoWallets, setCryptoWallets] = useState<WalletRow[]>([
-    { id: 1, provider: "btc", amount: "", linked: "standalone" },
-  ]);
+  // ملحوظة: محافظ العملات المشفّرة نُقلت إلى تبويب «زكاة العملات الرقمية والمحافظ الاستثمارية»
+  // لتجميع كل ما يخصّ Crypto والأسهم والصكوك في مكان واحد وفق معيار AAOIFI 35.
 
   const addFx = () =>
     setFxRows((r) => [...r, { id: Date.now(), code: "US", amount: "", rate: "" }]);
