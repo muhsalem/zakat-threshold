@@ -881,12 +881,24 @@ function WalletGroup({
 
 }
 
+type BankCategory = "islamic_full" | "window" | "pure";
+type UnifiedBank = {
+  key: string;
+  label: string;
+  category: BankCategory;
+  tradV?: string;
+  window?: string;
+};
+type BankFilter = "all" | BankCategory;
+
 function BankPicker({
-  type, islamicBank, setIslamicBank, tradBank, setTradBank,
+  type, setType,
+  islamicBank, setIslamicBank, tradBank, setTradBank,
   useWindow, setUseWindow, branch, setBranch, idPrefix, hideWindow,
   islamicBanks, traditionalBanks, countryName,
 }: {
   type: BankType;
+  setType?: (t: BankType) => void;
   islamicBank: string;
   setIslamicBank: (v: string) => void;
   tradBank: string;
@@ -901,126 +913,168 @@ function BankPicker({
   traditionalBanks: TradBank[];
   countryName: string;
 }) {
-  const selectedTrad = traditionalBanks.find((b) => b.v === tradBank);
   const hasWindow = (b: TradBank) => !!b.window && b.window !== "—";
-  const windowBanks = traditionalBanks.filter(hasWindow);
-  const pureBanks = traditionalBanks.filter((b) => !hasWindow(b));
-  // تبويب فرعي داخل "بنك تقليدي": كل البنوك / تقليدي بالكامل / نوافذ ومنتجات إسلامية
-  const [tradFilter, setTradFilter] = useState<"all" | "pure" | "window">("all");
-  const filteredTrad =
-    tradFilter === "pure" ? pureBanks : tradFilter === "window" ? windowBanks : traditionalBanks;
-  // إذا خرج البنك المختار من الفلتر الحالي بدّله لأول عنصر متاح
-  useEffect(() => {
-    if (type !== "traditional") return;
-    if (!filteredTrad.some((b) => b.v === tradBank)) {
-      setTradBank(filteredTrad[0]?.v ?? "");
+
+  // قائمة موحّدة تجمع البنوك الإسلامية الكاملة + التقليدية بنوافذ + التقليدية بالكامل
+  const unified = useMemo<UnifiedBank[]>(() => {
+    const items: UnifiedBank[] = [];
+    islamicBanks.forEach((b) => items.push({ key: `i:${b}`, label: b, category: "islamic_full" }));
+    traditionalBanks.forEach((b) =>
+      items.push({
+        key: `t:${b.v}`,
+        label: b.l,
+        category: hasWindow(b) ? "window" : "pure",
+        tradV: b.v,
+        window: b.window,
+      })
+    );
+    return items;
+  }, [islamicBanks, traditionalBanks]);
+
+  const counts = useMemo(
+    () => ({
+      all: unified.length,
+      islamic_full: unified.filter((u) => u.category === "islamic_full").length,
+      window: unified.filter((u) => u.category === "window").length,
+      pure: unified.filter((u) => u.category === "pure").length,
+    }),
+    [unified]
+  );
+
+  const [filter, setFilter] = useState<BankFilter>("all");
+  const [query, setQuery] = useState("");
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return unified.filter(
+      (u) =>
+        (filter === "all" || u.category === filter) &&
+        (q === "" || u.label.toLowerCase().includes(q) || (u.window ?? "").toLowerCase().includes(q))
+    );
+  }, [unified, filter, query]);
+
+  // المفتاح المختار حالياً (مبني على type + الاختيار)
+  const selectedKey =
+    type === "islamic"
+      ? islamicBank ? `i:${islamicBank}` : ""
+      : tradBank ? `t:${tradBank}` : "";
+
+  const selectedItem = unified.find((u) => u.key === selectedKey);
+
+  const handleSelect = (key: string) => {
+    const item = unified.find((u) => u.key === key);
+    if (!item) return;
+    if (item.category === "islamic_full") {
+      setType?.("islamic");
+      setIslamicBank(item.label);
+      setUseWindow(false);
+    } else {
+      setType?.("traditional");
+      if (item.tradV) setTradBank(item.tradV);
+      // إن كان البنك بنافذة إسلامية فعّل تلقائياً، وإلا أوقف
+      setUseWindow(item.category === "window");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tradFilter]);
+  };
+
+  const CategoryBadge = ({ c }: { c: BankCategory }) => {
+    if (c === "islamic_full")
+      return <Badge variant="default" className="text-[10px]">كامل إسلامي</Badge>;
+    if (c === "window")
+      return <Badge variant="secondary" className="text-[10px]">نوافذ/منتجات إسلامية</Badge>;
+    return <Badge variant="outline" className="text-[10px]">تقليدي بالكامل</Badge>;
+  };
+
+  const filterChip = (val: BankFilter, label: string, count: number) => (
+    <button
+      type="button"
+      onClick={() => setFilter(val)}
+      className={`text-[11px] border rounded-md px-2.5 py-1 transition-colors ${
+        filter === val
+          ? "bg-primary text-primary-foreground border-primary"
+          : "bg-background hover:bg-accent"
+      }`}
+    >
+      {label} <span className="opacity-75">({count})</span>
+    </button>
+  );
+
   return (
-    <div className="grid md:grid-cols-2 gap-3">
-      {type === "islamic" ? (
+    <div className="space-y-3">
+      {/* تبويب الفلترة الموحّد */}
+      <div className="flex flex-wrap items-center gap-1.5">
+        {filterChip("all", "الكل", counts.all)}
+        {filterChip("islamic_full", "كامل إسلامي", counts.islamic_full)}
+        {filterChip("window", "نوافذ/منتجات إسلامية", counts.window)}
+        {filterChip("pure", "تقليدي بالكامل", counts.pure)}
+      </div>
+
+      {/* بحث نصّي */}
+      <div className="space-y-1.5">
+        <Label className="text-xs">ابحث عن بنك — {countryName}</Label>
+        <Input
+          id={`${idPrefix}-q`}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="اكتب اسم البنك أو النافذة..."
+        />
+      </div>
+
+      {/* اختيار البنك من القائمة المُفلترة */}
+      <div className="grid md:grid-cols-2 gap-3">
         <div className="space-y-1.5">
-          <Label className="text-xs">اسم البنك الإسلامي — {countryName}</Label>
-          <Select value={islamicBank} onValueChange={setIslamicBank}>
-            <SelectTrigger id={`${idPrefix}-ib`}><SelectValue placeholder="اختر بنكاً" /></SelectTrigger>
+          <Label className="text-xs">اسم البنك</Label>
+          <Select value={selectedKey || undefined} onValueChange={handleSelect}>
+            <SelectTrigger id={`${idPrefix}-bank`}>
+              <SelectValue placeholder={filtered.length ? "اختر بنكاً" : "لا توجد نتائج"} />
+            </SelectTrigger>
             <SelectContent className="max-h-72">
-              {islamicBanks.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+              {filtered.map((u) => (
+                <SelectItem key={u.key} value={u.key}>
+                  {u.label}
+                  {u.category === "window" && u.window ? ` — (${u.window})` : ""}
+                </SelectItem>
+              ))}
+              {filtered.length === 0 && (
+                <div className="px-3 py-2 text-xs text-muted-foreground">
+                  لا توجد بنوك مطابقة للفلتر/البحث الحالي
+                </div>
+              )}
             </SelectContent>
           </Select>
+          {selectedItem && (
+            <div className="pt-1 flex items-center gap-2">
+              <CategoryBadge c={selectedItem.category} />
+              {type === "traditional" && selectedItem.category === "window" && useWindow && (
+                <span className="text-[10px] text-muted-foreground">
+                  مفعّلة: {selectedItem.window}
+                </span>
+              )}
+            </div>
+          )}
         </div>
-      ) : (
-        <>
-          <div className="space-y-1.5 md:col-span-2">
-            <Label className="text-xs">تصنيف البنك التقليدي</Label>
-            <RadioGroup
-              dir="rtl"
-              value={tradFilter}
-              onValueChange={(v) => setTradFilter(v as "all" | "pure" | "window")}
-              className="flex flex-wrap gap-2"
-            >
-              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer">
-                <RadioGroupItem value="all" id={`${idPrefix}-f-all`} />
-                <Label htmlFor={`${idPrefix}-f-all`} className="text-xs cursor-pointer">
-                  الكل ({traditionalBanks.length})
-                </Label>
-              </div>
-              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer">
-                <RadioGroupItem value="window" id={`${idPrefix}-f-win`} />
-                <Label htmlFor={`${idPrefix}-f-win`} className="text-xs cursor-pointer">
-                  بنوفذ/منتجات إسلامية ({windowBanks.length})
-                </Label>
-              </div>
-              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer">
-                <RadioGroupItem value="pure" id={`${idPrefix}-f-pure`} />
-                <Label htmlFor={`${idPrefix}-f-pure`} className="text-xs cursor-pointer">
-                  تقليدي بالكامل ({pureBanks.length})
-                </Label>
-              </div>
-            </RadioGroup>
-          </div>
+
+        {/* خيار النافذة الإسلامية — فقط للبنوك التقليدية بنافذة */}
+        {!hideWindow && type === "traditional" && selectedItem?.category === "window" && (
           <div className="space-y-1.5">
-            <Label className="text-xs">اسم البنك التقليدي — {countryName}</Label>
-            <Select value={tradBank} onValueChange={setTradBank}>
-              <SelectTrigger id={`${idPrefix}-tb`}><SelectValue placeholder="اختر بنكاً" /></SelectTrigger>
-              <SelectContent className="max-h-72">
-                {filteredTrad.map((b) => (
-                  <SelectItem key={b.v} value={b.v}>
-                    {b.l}{hasWindow(b) ? ` — (${b.window})` : ""}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {selectedTrad && (
-              <div className="pt-1">
-                {hasWindow(selectedTrad) ? (
-                  <Badge variant="secondary" className="text-[10px]">
-                    بنك بنوافذ/منتجات إسلامية
-                  </Badge>
-                ) : (
-                  <Badge variant="outline" className="text-[10px]">
-                    بنك تقليدي بالكامل
-                  </Badge>
-                )}
-              </div>
-            )}
-            <div className="flex items-center gap-2 pt-1">
+            <Label className="text-xs">الفرع / النافذة الإسلامية</Label>
+            <div className="flex items-center gap-2 border rounded-md px-3 py-2">
               <input
                 type="checkbox"
-                id={`${idPrefix}-isvc`}
+                id={`${idPrefix}-win`}
                 checked={useWindow}
                 onChange={(e) => setUseWindow(e.target.checked)}
-                disabled={!hasWindow(selectedTrad ?? ({} as TradBank))}
               />
-              <Label htmlFor={`${idPrefix}-isvc`} className="text-xs cursor-pointer text-muted-foreground">
-                المنتج أو الخدمة إسلامية (متوافقة مع الشريعة)
+              <Label htmlFor={`${idPrefix}-win`} className="text-xs cursor-pointer">
+                أستخدم: {selectedItem.window}
               </Label>
             </div>
           </div>
-          {!hideWindow && (
-            <div className="space-y-1.5">
-              <Label className="text-xs">الفرع / النافذة الإسلامية</Label>
-              <div className="flex items-center gap-2 border rounded-md px-3 py-2">
-                <input
-                  type="checkbox"
-                  id={`${idPrefix}-win`}
-                  checked={useWindow}
-                  onChange={(e) => setUseWindow(e.target.checked)}
-                  disabled={!hasWindow(selectedTrad ?? ({} as TradBank))}
-                />
-                <Label htmlFor={`${idPrefix}-win`} className="text-xs cursor-pointer">
-                  {selectedTrad && hasWindow(selectedTrad)
-                    ? `أستخدم: ${selectedTrad.window}`
-                    : "لا توجد نافذة إسلامية معتمدة لهذا البنك"}
-                </Label>
-              </div>
-            </div>
-          )}
-        </>
-      )}
-      <div className="space-y-1.5 md:col-span-2">
-        <Label className="text-xs">الفرع</Label>
-        <Input value={branch} onChange={(e) => setBranch(e.target.value)} placeholder="اسم الفرع" />
+        )}
+
+        <div className="space-y-1.5 md:col-span-2">
+          <Label className="text-xs">الفرع</Label>
+          <Input value={branch} onChange={(e) => setBranch(e.target.value)} placeholder="اسم الفرع" />
+        </div>
       </div>
     </div>
   );
