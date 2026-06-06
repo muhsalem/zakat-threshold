@@ -681,7 +681,7 @@ export function IndividualTab() {
 
 
         {/* الأبواب */}
-        <Accordion type="multiple" defaultValue={["gold", "cash"]} className="space-y-3">
+        <Accordion type="multiple" value={openSections} onValueChange={setOpenSections} className="space-y-3">
           {/* زكاة الذهب */}
           <AccordionItem id="section-gold" value="gold" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
