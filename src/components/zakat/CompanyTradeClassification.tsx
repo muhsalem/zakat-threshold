@@ -187,18 +187,14 @@ export default function CompanyTradeClassification({
           <TableHeader>
             <TableRow>
               <TableHead className="text-right">النشاط</TableHead>
-              <TableHead className="text-right">كود {standard === "CAPMAS" ? "مصر" : standard}</TableHead>
-              <TableHead className="text-right">ISIC</TableHead>
-              <TableHead className="text-right">NACE</TableHead>
-              <TableHead className="text-right">NAICS</TableHead>
-              <TableHead className="text-right">UK SIC</TableHead>
+              <TableHead className="text-right">كود {standard === "CAPMAS" ? "مصر (CAPMAS)" : standard}</TableHead>
               <TableHead className="text-right">إجراء</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {rows.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-xs text-muted-foreground py-6">
+                <TableCell colSpan={3} className="text-center text-xs text-muted-foreground py-6">
                   لا توجد نتائج مطابقة — جرّب إلغاء قصر القطاع
                 </TableCell>
               </TableRow>
@@ -213,10 +209,6 @@ export default function CompanyTradeClassification({
                       <div className="text-[10px] text-muted-foreground">{TRADE_GROUP_LABELS[r.group]}</div>
                     </TableCell>
                     <TableCell className="text-xs tabular-nums font-bold text-primary">{code}</TableCell>
-                    <TableCell className="text-xs tabular-nums">{r.isic}</TableCell>
-                    <TableCell className="text-xs tabular-nums">{r.nace}</TableCell>
-                    <TableCell className="text-xs tabular-nums">{r.naics}</TableCell>
-                    <TableCell className="text-xs tabular-nums">{r.ukSic}</TableCell>
                     <TableCell>
                       <Button
                         size="sm"
