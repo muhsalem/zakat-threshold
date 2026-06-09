@@ -191,6 +191,7 @@ export function IndividualTab() {
   const [coinFullyOwned, setCoinFullyOwned] = useState(true);
   const [coinAcquireDate, setCoinAcquireDate] = useState("");
   const [coinPurpose, setCoinPurpose] = useState<"storage" | "wear">("storage");
+  const [jwAcquireDate, setJwAcquireDate] = useState("");
   // ج) المجوهرات
   const [jw9, setJw9] = useState(""); const [jw12, setJw12] = useState("");
   const [jw14, setJw14] = useState(""); const [jw18, setJw18] = useState("");
@@ -212,6 +213,8 @@ export function IndividualTab() {
   const [brkStoneGrams, setBrkStoneGrams] = useState("");
   const [storageKarat, setStorageKarat] = useState("21");
   const [storageWeight, setStorageWeight] = useState("");
+  const [brkAcquireDate, setBrkAcquireDate] = useState("");
+
   // الفضة
   // ========= الفضة: 3 أقسام =========
   // أ) السبائك والأونصات الفضية (المفتاح = العيار/الألفي)
@@ -233,6 +236,9 @@ export function IndividualTab() {
   const [svToolsKarat, setSvToolsKarat] = useState("800");
   const [silverPurpose, setSilverPurpose] = useState<"storage" | "wear">("wear");
   const [silverOpinion, setSilverOpinion] = useState<"majority" | "hanafi">("majority");
+  const [svAcquireDate, setSvAcquireDate] = useState("");
+  const [svCoinAcquireDate, setSvCoinAcquireDate] = useState("");
+  const [svJewelryAcquireDate, setSvJewelryAcquireDate] = useState("");
 
   // النقدية والبنوك (المجموع يُحسب داخل المكوّن المتخصّص ويُمرَّر هنا)
   const [cashTotalFromSection, setCashTotalFromSection] = useState(0);
@@ -855,13 +861,17 @@ export function IndividualTab() {
                     <b className="text-primary">المصنعية مستبعَدة تلقائياً</b> — لأن الحساب يتم بوزن الذهب الصافي × سعر الجرام، فلا تدخل أجرة الصياغة في الوعاء.
                   </div>
                 </div>
-                <div className="grid md:grid-cols-2 gap-3 pt-2">
+                <div className="grid md:grid-cols-3 gap-3 pt-2">
                   <div className="space-y-1.5">
                     <Label className="text-sm">غرض الاقتناء</Label>
                     <RadioGroup value={jewelryPurpose} onValueChange={(v) => setJewelryPurpose(v as "storage" | "wear")} className="flex gap-4">
                       <div className="flex items-center gap-2"><RadioGroupItem value="wear" id="jp-w" /><Label htmlFor="jp-w" className="text-sm">حلي وزينة</Label></div>
                       <div className="flex items-center gap-2"><RadioGroupItem value="storage" id="jp-s" /><Label htmlFor="jp-s" className="text-sm">ادخار وحفظ قيمة</Label></div>
                     </RadioGroup>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">تاريخ الاقتناء</Label>
+                    <Input type="date" value={jwAcquireDate} onChange={(e) => setJwAcquireDate(e.target.value)} />
                   </div>
                   {jewelryPurpose === "wear" && (
                     <div className="flex items-center justify-between rounded-md border px-3 py-2">
@@ -957,6 +967,12 @@ export function IndividualTab() {
                     </div>
                   </div>
                 </div>
+                <div className="grid md:grid-cols-3 gap-3 pt-2 border-t">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">تاريخ الاقتناء</Label>
+                    <Input type="date" value={brkAcquireDate} onChange={(e) => setBrkAcquireDate(e.target.value)} />
+                  </div>
+                </div>
               </div>
 
               {/* الإجمالي وربط السعر */}
@@ -1034,6 +1050,10 @@ export function IndividualTab() {
                   <span className="text-xs text-muted-foreground">إجمالي وزن الفضة المكافئ بعيار 999 (جميع الأعيرة + الأونصات)</span>
                   <span className="text-lg font-bold text-gold">{fmt(calc.svSabaikG999)} جم عيار 999</span>
                 </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">تاريخ الاقتناء</Label>
+                  <Input type="date" value={svAcquireDate} onChange={(e) => setSvAcquireDate(e.target.value)} />
+                </div>
               </div>
 
               {/* ب) الجنيهات والعملات الفضية */}
@@ -1061,9 +1081,13 @@ export function IndividualTab() {
                     <div className="rounded-md border bg-background p-3 flex flex-col justify-center">
                       <span className="text-xs text-muted-foreground">إجمالي العملات بعيار 999</span>
                       <span className="text-lg font-bold text-gold">{fmt(calc.svCoinsG999)} جم</span>
-                    </div>
                   </div>
                 </div>
+                <div className="space-y-1.5 pt-2 border-t">
+                  <Label className="text-xs">تاريخ الاقتناء</Label>
+                  <Input type="date" value={svCoinAcquireDate} onChange={(e) => setSvCoinAcquireDate(e.target.value)} />
+                </div>
+              </div>
               </div>
 
               {/* ج) المجوهرات والمشغولات */}
@@ -1127,13 +1151,17 @@ export function IndividualTab() {
                   </div>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-3 pt-2">
+                <div className="grid md:grid-cols-3 gap-3 pt-2">
                   <div className="space-y-1.5">
                     <Label className="text-sm">غرض الاقتناء</Label>
                     <RadioGroup value={silverPurpose} onValueChange={(v) => setSilverPurpose(v as "storage" | "wear")} className="flex gap-4">
                       <div className="flex items-center gap-2"><RadioGroupItem value="wear" id="sp-w" /><Label htmlFor="sp-w" className="text-sm">حلي وزينة</Label></div>
                       <div className="flex items-center gap-2"><RadioGroupItem value="storage" id="sp-s" /><Label htmlFor="sp-s" className="text-sm">ادخار وحفظ قيمة</Label></div>
                     </RadioGroup>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">تاريخ الاقتناء</Label>
+                    <Input type="date" value={svJewelryAcquireDate} onChange={(e) => setSvJewelryAcquireDate(e.target.value)} />
                   </div>
                   {silverPurpose === "wear" && (
                     <div className="flex items-center justify-between rounded-md border px-3 py-2">
