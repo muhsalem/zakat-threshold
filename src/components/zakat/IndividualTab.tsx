@@ -46,6 +46,10 @@ import { DigitalAssetsSection } from "./DigitalAssetsSection";
 import { CryptoFatwasCard } from "./CryptoFatwasCard";
 import { useAuditEntries } from "@/hooks/useAuditEntries";
 import { EcommerceItemsTable, computeEcommerceTotals, type EcommerceItem } from "./EcommerceItemsTable";
+import TradeActivityClassification, {
+  emptyTradeActivitySelection,
+  type TradeActivitySelection,
+} from "./TradeActivityClassification";
 
 import { supabase } from "@/integrations/supabase/client";
 
