@@ -256,6 +256,8 @@ export function IndividualTab() {
   const [ecommerceDigitalProducts, setEcommerceDigitalProducts] = useState(""); // منتجات رقمية
   const [ecommerceServices, setEcommerceServices] = useState("");      // خدمات رقمية
   const [ecommerceReceivables, setEcommerceReceivables] = useState(""); // مستحقات متجر
+  // سجل بنود المتجر (منتجات/خدمات) — يُغذّي الحقول الأربعة تلقائياً عند استخدامه
+  const [ecommerceItems, setEcommerceItems] = useState<EcommerceItem[]>([]);
 
   // العقار — تركيب العقار: أرض فقط / مبنى فقط / الأرض والمبنى معاً
   type RealEstateComp = "land" | "building" | "both";
