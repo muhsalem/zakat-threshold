@@ -1151,13 +1151,17 @@ export function IndividualTab() {
                   </div>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-3 pt-2">
+                <div className="grid md:grid-cols-3 gap-3 pt-2">
                   <div className="space-y-1.5">
                     <Label className="text-sm">غرض الاقتناء</Label>
                     <RadioGroup value={silverPurpose} onValueChange={(v) => setSilverPurpose(v as "storage" | "wear")} className="flex gap-4">
                       <div className="flex items-center gap-2"><RadioGroupItem value="wear" id="sp-w" /><Label htmlFor="sp-w" className="text-sm">حلي وزينة</Label></div>
                       <div className="flex items-center gap-2"><RadioGroupItem value="storage" id="sp-s" /><Label htmlFor="sp-s" className="text-sm">ادخار وحفظ قيمة</Label></div>
                     </RadioGroup>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">تاريخ الاقتناء</Label>
+                    <Input type="date" value={svJewelryAcquireDate} onChange={(e) => setSvJewelryAcquireDate(e.target.value)} />
                   </div>
                   {silverPurpose === "wear" && (
                     <div className="flex items-center justify-between rounded-md border px-3 py-2">
