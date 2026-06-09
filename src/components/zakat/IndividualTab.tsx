@@ -861,13 +861,17 @@ export function IndividualTab() {
                     <b className="text-primary">المصنعية مستبعَدة تلقائياً</b> — لأن الحساب يتم بوزن الذهب الصافي × سعر الجرام، فلا تدخل أجرة الصياغة في الوعاء.
                   </div>
                 </div>
-                <div className="grid md:grid-cols-2 gap-3 pt-2">
+                <div className="grid md:grid-cols-3 gap-3 pt-2">
                   <div className="space-y-1.5">
                     <Label className="text-sm">غرض الاقتناء</Label>
                     <RadioGroup value={jewelryPurpose} onValueChange={(v) => setJewelryPurpose(v as "storage" | "wear")} className="flex gap-4">
                       <div className="flex items-center gap-2"><RadioGroupItem value="wear" id="jp-w" /><Label htmlFor="jp-w" className="text-sm">حلي وزينة</Label></div>
                       <div className="flex items-center gap-2"><RadioGroupItem value="storage" id="jp-s" /><Label htmlFor="jp-s" className="text-sm">ادخار وحفظ قيمة</Label></div>
                     </RadioGroup>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">تاريخ الاقتناء</Label>
+                    <Input type="date" value={jwAcquireDate} onChange={(e) => setJwAcquireDate(e.target.value)} />
                   </div>
                   {jewelryPurpose === "wear" && (
                     <div className="flex items-center justify-between rounded-md border px-3 py-2">
