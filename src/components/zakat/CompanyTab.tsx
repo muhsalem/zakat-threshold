@@ -23,6 +23,10 @@ import { RikazSection } from "./RikazSection";
 import { TakafulSection } from "./TakafulSection";
 import { TaxZakatReconciliation } from "./TaxZakatReconciliation";
 import { LivePricesCard } from "./LivePricesCard";
+import CompanyTradeClassification, {
+  emptyCompanyTradeClassification,
+  type CompanyTradeClassificationValue,
+} from "./CompanyTradeClassification";
 
 import { Button } from "@/components/ui/button";
 import { downloadZakatPdf } from "./ReactPdfReport";
@@ -440,6 +444,11 @@ export function CompanyTab() {
   // طبيعة المؤسسة والقطاع
   const [orgKind, setOrgKind] = useState<"profit" | "nonprofit">("profit");
   const [sectorId, setSectorId] = useState<string>("trade_w");
+  // تصنيف نشاط الشركة وفق معيار الدولة (ISIC/NACE/NAICS/UK SIC/CAPMAS)
+  const [tradeClassification, setTradeClassification] =
+    useState<CompanyTradeClassificationValue>(emptyCompanyTradeClassification());
+  // تاريخ تشغيل النشاط التجاري (يومه = بداية الحول التجاري إن لم يُحدد)
+  const [activityStartDate, setActivityStartDate] = useState<string>("");
   const activeSectorList = orgKind === "nonprofit" ? NONPROFIT_SECTORS : SECTORS;
   const sector = useMemo(
     () => activeSectorList.find((s) => s.id === sectorId) ?? activeSectorList[0],
@@ -924,6 +933,31 @@ export function CompanyTab() {
                     سيتم فتح النموذج القطاعي المناسب تلقائياً أدناه: <b>{sector.label}</b>
                   </p>
                 </div>
+
+                {/* تاريخ تشغيل النشاط التجاري */}
+                <div>
+                  <Label className="mb-2 block">تاريخ تشغيل النشاط التجاري</Label>
+                  <Input
+                    type="date"
+                    value={activityStartDate}
+                    onChange={(e) => setActivityStartDate(e.target.value)}
+                    className="max-w-xs"
+                  />
+                  <p className="text-[11px] text-muted-foreground mt-1.5">
+                    <Info className="h-3 w-3 inline ml-1" />
+                    يُستخدم كأساس لبدء الحول التجاري وللتوثيق في سجل التدقيق الشرعي.
+                  </p>
+                </div>
+
+                {/* تصنيف النشاط التجاري حسب الدولة والقطاع */}
+                <CompanyTradeClassification
+                  countryCode={countryCode}
+                  countryName={country.name}
+                  sectorId={sectorId}
+                  sectorLabel={sector.label}
+                  value={tradeClassification}
+                  onChange={setTradeClassification}
+                />
               </div>
 
               <Separator />
