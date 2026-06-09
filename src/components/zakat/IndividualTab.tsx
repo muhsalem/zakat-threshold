@@ -1363,6 +1363,24 @@ export function IndividualTab() {
                 </div>
               </div>
 
+              {/* تصنيف النشاط التجاري + تاريخ التشغيل + ربط الشركة */}
+              <TradeActivityClassification
+                value={tradeActivity}
+                onChange={(next) => {
+                  setTradeActivity(next);
+                  // مزامنة تلقائية: لو فعّل «شركة» ولديه اسم — يفعّل بند المساهم/الشركة
+                  if (next.isCompany && !tradeIsShareholder) setTradeIsShareholder(true);
+                  if (next.isCompany && next.companyName && !tradeShareCompany) {
+                    setTradeShareCompany(next.companyName);
+                  }
+                }}
+                onOpenCompanyTab={() => {
+                  const el = document.getElementById("tab-company") as HTMLElement | null;
+                  el?.click();
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+              />
+
               {/* المتجر الإلكتروني والمنتجات والخدمات الرقمية */}
               <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-3">
                 <div className="flex items-center justify-between">
