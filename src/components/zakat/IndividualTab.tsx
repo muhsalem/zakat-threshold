@@ -45,6 +45,7 @@ import { ShariaAuditTrail } from "./ShariaAuditTrail";
 import { DigitalAssetsSection } from "./DigitalAssetsSection";
 import { CryptoFatwasCard } from "./CryptoFatwasCard";
 import { useAuditEntries } from "@/hooks/useAuditEntries";
+import { EcommerceItemsTable, computeEcommerceTotals, type EcommerceItem } from "./EcommerceItemsTable";
 
 import { supabase } from "@/integrations/supabase/client";
 
@@ -256,6 +257,17 @@ export function IndividualTab() {
   const [ecommerceDigitalProducts, setEcommerceDigitalProducts] = useState(""); // منتجات رقمية
   const [ecommerceServices, setEcommerceServices] = useState("");      // خدمات رقمية
   const [ecommerceReceivables, setEcommerceReceivables] = useState(""); // مستحقات متجر
+  // سجل بنود المتجر (منتجات/خدمات) — يُغذّي الحقول الأربعة تلقائياً عند استخدامه
+  const [ecommerceItems, setEcommerceItems] = useState<EcommerceItem[]>([]);
+  // مزامنة إجمالي البنود إلى الحقول الأربعة (عند وجود بنود فقط)
+  useEffect(() => {
+    if (!ecommerceItems.length) return;
+    const t = computeEcommerceTotals(ecommerceItems);
+    setEcommerceInventory(t.physical ? String(t.physical) : "");
+    setEcommerceDigitalProducts(t.digital ? String(t.digital) : "");
+    setEcommerceServices(t.service ? String(t.service) : "");
+    setEcommerceReceivables(t.receivable ? String(t.receivable) : "");
+  }, [ecommerceItems]);
 
   // العقار — تركيب العقار: أرض فقط / مبنى فقط / الأرض والمبنى معاً
   type RealEstateComp = "land" | "building" | "both";
@@ -1361,6 +1373,19 @@ export function IndividualTab() {
                         <b>المتجر الإلكتروني:</b> يُزكَّى بقيمة البضاعة المعروضة للبيع + المنتجات الرقمية + الخدمات الرقمية المُدّخَرة + المستحقات المرجوّة. لا زكاة في الأصول الرقمية المُعدّة للبيع إذا كانت ضمن «العملات الرقمية» (تُحسب هناك). والعبرة بالقيمة السوقية يوم الوجوب.
                       </AlertDescription>
                     </Alert>
+
+                    <EcommerceItemsTable
+                      items={ecommerceItems}
+                      onItemsChange={setEcommerceItems}
+                      currencyName={currencyName}
+                    />
+
+                    {ecommerceItems.length > 0 && (
+                      <div className="text-[11px] text-muted-foreground text-right">
+                        الحقول أدناه مُغذّاة تلقائيًا من سجل البنود. يمكنك تعديلها يدويًا
+                        بعد تفريغ السجل.
+                      </div>
+                    )}
                     <div className="grid md:grid-cols-2 gap-4">
                       <NumField
                         label="قيمة بضاعة المتجر (منتجات مادية)"
