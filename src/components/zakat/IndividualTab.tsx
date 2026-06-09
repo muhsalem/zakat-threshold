@@ -1373,6 +1373,19 @@ export function IndividualTab() {
                         <b>المتجر الإلكتروني:</b> يُزكَّى بقيمة البضاعة المعروضة للبيع + المنتجات الرقمية + الخدمات الرقمية المُدّخَرة + المستحقات المرجوّة. لا زكاة في الأصول الرقمية المُعدّة للبيع إذا كانت ضمن «العملات الرقمية» (تُحسب هناك). والعبرة بالقيمة السوقية يوم الوجوب.
                       </AlertDescription>
                     </Alert>
+
+                    <EcommerceItemsTable
+                      items={ecommerceItems}
+                      onItemsChange={setEcommerceItems}
+                      currencyName={currencyName}
+                    />
+
+                    {ecommerceItems.length > 0 && (
+                      <div className="text-[11px] text-muted-foreground text-right">
+                        الحقول أدناه مُغذّاة تلقائيًا من سجل البنود. يمكنك تعديلها يدويًا
+                        بعد تفريغ السجل.
+                      </div>
+                    )}
                     <div className="grid md:grid-cols-2 gap-4">
                       <NumField
                         label="قيمة بضاعة المتجر (منتجات مادية)"
