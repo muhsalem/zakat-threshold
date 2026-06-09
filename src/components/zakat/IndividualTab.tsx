@@ -46,6 +46,10 @@ import { DigitalAssetsSection } from "./DigitalAssetsSection";
 import { CryptoFatwasCard } from "./CryptoFatwasCard";
 import { useAuditEntries } from "@/hooks/useAuditEntries";
 import { EcommerceItemsTable, computeEcommerceTotals, type EcommerceItem } from "./EcommerceItemsTable";
+import TradeActivityClassification, {
+  emptyTradeActivitySelection,
+  type TradeActivitySelection,
+} from "./TradeActivityClassification";
 
 import { supabase } from "@/integrations/supabase/client";
 
@@ -251,6 +255,8 @@ export function IndividualTab() {
   const [tradeShareCompany, setTradeShareCompany] = useState("");
   const [tradeSharePct, setTradeSharePct] = useState("");
   const [tradeShareCompanyBase, setTradeShareCompanyBase] = useState("");
+  // تصنيف النشاط التجاري (مصر + المقابلات الدولية) + تاريخ التشغيل
+  const [tradeActivity, setTradeActivity] = useState<TradeActivitySelection>(emptyTradeActivitySelection());
   // المتجر الإلكتروني والمنتجات والخدمات الرقمية
   const [ecommerceEnabled, setEcommerceEnabled] = useState(false);
   const [ecommerceInventory, setEcommerceInventory] = useState("");      // بضاعة المتجر
@@ -1356,6 +1362,24 @@ export function IndividualTab() {
                   )}
                 </div>
               </div>
+
+              {/* تصنيف النشاط التجاري + تاريخ التشغيل + ربط الشركة */}
+              <TradeActivityClassification
+                value={tradeActivity}
+                onChange={(next) => {
+                  setTradeActivity(next);
+                  // مزامنة تلقائية: لو فعّل «شركة» ولديه اسم — يفعّل بند المساهم/الشركة
+                  if (next.isCompany && !tradeIsShareholder) setTradeIsShareholder(true);
+                  if (next.isCompany && next.companyName && !tradeShareCompany) {
+                    setTradeShareCompany(next.companyName);
+                  }
+                }}
+                onOpenCompanyTab={() => {
+                  const el = document.getElementById("tab-company") as HTMLElement | null;
+                  el?.click();
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+              />
 
               {/* المتجر الإلكتروني والمنتجات والخدمات الرقمية */}
               <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-3">
