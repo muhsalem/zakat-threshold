@@ -255,6 +255,8 @@ export function IndividualTab() {
   const [tradeShareCompany, setTradeShareCompany] = useState("");
   const [tradeSharePct, setTradeSharePct] = useState("");
   const [tradeShareCompanyBase, setTradeShareCompanyBase] = useState("");
+  // تصنيف النشاط التجاري (مصر + المقابلات الدولية) + تاريخ التشغيل
+  const [tradeActivity, setTradeActivity] = useState<TradeActivitySelection>(emptyTradeActivitySelection());
   // المتجر الإلكتروني والمنتجات والخدمات الرقمية
   const [ecommerceEnabled, setEcommerceEnabled] = useState(false);
   const [ecommerceInventory, setEcommerceInventory] = useState("");      // بضاعة المتجر
