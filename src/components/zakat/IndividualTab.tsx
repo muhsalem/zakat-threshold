@@ -967,6 +967,12 @@ export function IndividualTab() {
                     </div>
                   </div>
                 </div>
+                <div className="grid md:grid-cols-3 gap-3 pt-2 border-t">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">تاريخ الاقتناء</Label>
+                    <Input type="date" value={brkAcquireDate} onChange={(e) => setBrkAcquireDate(e.target.value)} />
+                  </div>
+                </div>
               </div>
 
               {/* الإجمالي وربط السعر */}
