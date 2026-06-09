@@ -18,7 +18,9 @@ import { CalendarIcon, BookOpen, Search, ExternalLink, Building2, ClipboardCheck
 import { cn } from "@/lib/utils";
 import {
   TRADE_ACTIVITIES, TRADE_GROUP_LABELS, CLASSIFICATION_REFS,
+  EGY_SHOP_LICENSES, SHOP_CATEGORY_LABELS, SHOP_HAZARD_LABELS,
   type TradeActivityGroup, type TradeActivityRow,
+  type ShopLicenseCategory,
 } from "@/lib/tradeClassifications";
 
 export interface TradeActivitySelection {
