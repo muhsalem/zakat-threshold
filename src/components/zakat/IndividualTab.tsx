@@ -45,6 +45,7 @@ import { ShariaAuditTrail } from "./ShariaAuditTrail";
 import { DigitalAssetsSection } from "./DigitalAssetsSection";
 import { CryptoFatwasCard } from "./CryptoFatwasCard";
 import { useAuditEntries } from "@/hooks/useAuditEntries";
+import { EcommerceItemsTable, computeEcommerceTotals, type EcommerceItem } from "./EcommerceItemsTable";
 
 import { supabase } from "@/integrations/supabase/client";
 
