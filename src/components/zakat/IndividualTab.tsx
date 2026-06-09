@@ -1081,9 +1081,13 @@ export function IndividualTab() {
                     <div className="rounded-md border bg-background p-3 flex flex-col justify-center">
                       <span className="text-xs text-muted-foreground">إجمالي العملات بعيار 999</span>
                       <span className="text-lg font-bold text-gold">{fmt(calc.svCoinsG999)} جم</span>
-                    </div>
                   </div>
                 </div>
+                <div className="space-y-1.5 pt-2 border-t">
+                  <Label className="text-xs">تاريخ الاقتناء</Label>
+                  <Input type="date" value={svCoinAcquireDate} onChange={(e) => setSvCoinAcquireDate(e.target.value)} />
+                </div>
+              </div>
               </div>
 
               {/* ج) المجوهرات والمشغولات */}
