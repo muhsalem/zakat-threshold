@@ -18,7 +18,9 @@ import { CalendarIcon, BookOpen, Search, ExternalLink, Building2, ClipboardCheck
 import { cn } from "@/lib/utils";
 import {
   TRADE_ACTIVITIES, TRADE_GROUP_LABELS, CLASSIFICATION_REFS,
+  EGY_SHOP_LICENSES, SHOP_CATEGORY_LABELS, SHOP_HAZARD_LABELS,
   type TradeActivityGroup, type TradeActivityRow,
+  type ShopLicenseCategory,
 } from "@/lib/tradeClassifications";
 
 export interface TradeActivitySelection {
@@ -268,6 +270,16 @@ export default function TradeActivityClassification({ value, onChange, onOpenCom
         </div>
       </div>
 
+      {/* تصنيف المحال العامة المصري — قانون 154 لسنة 2019 */}
+      <ShopLicensingTable
+        onPick={(row) =>
+          onChange({
+            ...value,
+            name: value.name || row.nameAr,
+          })
+        }
+      />
+
       {/* مراجع التصنيفات الرسمية */}
       <details className="rounded-md border bg-background p-3 text-xs">
         <summary className="cursor-pointer font-semibold">المراجع الرسمية للتصنيفات الدولية</summary>
@@ -287,6 +299,132 @@ export default function TradeActivityClassification({ value, onChange, onOpenCom
           ))}
         </ul>
       </details>
+    </div>
+  );
+}
+
+/** ====== جدول تصنيف المحال العامة المصرية (قانون 154/2019) ====== */
+function ShopLicensingTable({
+  onPick,
+}: {
+  onPick: (row: (typeof EGY_SHOP_LICENSES)[number]) => void;
+}) {
+  const [cat, setCat] = useState<ShopLicenseCategory | "all">("all");
+  const [q, setQ] = useState("");
+
+  const rows = useMemo(() => {
+    const term = q.trim().toLowerCase();
+    return EGY_SHOP_LICENSES.filter((r) => {
+      if (cat !== "all" && r.category !== cat) return false;
+      if (!term) return true;
+      return (
+        r.nameAr.toLowerCase().includes(term) ||
+        r.authority.toLowerCase().includes(term) ||
+        (r.notes || "").toLowerCase().includes(term)
+      );
+    });
+  }, [cat, q]);
+
+  const hazardBadge = (h: "low" | "medium" | "high") => {
+    const map = {
+      low: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
+      medium: "bg-amber-500/15 text-amber-700 dark:text-amber-300",
+      high: "bg-red-500/15 text-red-700 dark:text-red-300",
+    };
+    return (
+      <span className={cn("text-[10px] rounded px-1.5 py-0.5", map[h])}>
+        {SHOP_HAZARD_LABELS[h]}
+      </span>
+    );
+  };
+
+  return (
+    <div className="rounded-lg border border-primary/15 bg-background p-4 space-y-3">
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <div className="flex items-center gap-2 text-sm font-semibold">
+          <Building2 className="h-4 w-4 text-primary" />
+          تصنيف المحال العامة المصرية — قانون 154 لسنة 2019
+        </div>
+        <Badge variant="outline" className="text-[10px]">
+          إجمالي: {EGY_SHOP_LICENSES.length} نوع محل
+        </Badge>
+      </div>
+
+      <Alert className="border-primary/10 bg-muted/30">
+        <AlertDescription className="text-xs leading-relaxed text-right">
+          هذا تصنيف <b>ترخيصي</b> (وزارة التنمية المحلية والمحليات) — مختلف عن
+          التصنيف الإحصائي ISIC أعلاه. يفيد في تحديد الجهة المُختصة بالترخيص
+          والاشتراطات الصحية/البيئية، ويُربط بالزكاة لاستبعاد المحال
+          المحرّمة شرعًا (كحوليات/قمار) وتقدير طبيعة الأصول.
+        </AlertDescription>
+      </Alert>
+
+      <div className="grid md:grid-cols-3 gap-3">
+        <div className="md:col-span-2 relative">
+          <Search className="h-4 w-4 absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="ابحث باسم المحل أو الجهة المختصة…"
+            className="pr-9"
+          />
+        </div>
+        <Select value={cat} onValueChange={(v) => setCat(v as ShopLicenseCategory | "all")}>
+          <SelectTrigger>
+            <SelectValue placeholder="كل الفئات" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">كل الفئات</SelectItem>
+            {Object.entries(SHOP_CATEGORY_LABELS).map(([k, label]) => (
+              <SelectItem key={k} value={k}>
+                {label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="rounded-md border bg-background max-h-72 overflow-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-right">المحل / النشاط</TableHead>
+              <TableHead className="text-right">الفئة</TableHead>
+              <TableHead className="text-right">الخطورة</TableHead>
+              <TableHead className="text-right">الجهة المختصة</TableHead>
+              <TableHead className="text-right">إجراء</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {rows.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center text-xs text-muted-foreground py-6">
+                  لا توجد نتائج
+                </TableCell>
+              </TableRow>
+            ) : (
+              rows.map((r) => (
+                <TableRow key={r.nameAr}>
+                  <TableCell className="text-xs">
+                    <div className="font-medium">{r.nameAr}</div>
+                    {r.notes && (
+                      <div className="text-[10px] text-muted-foreground">{r.notes}</div>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-xs">{SHOP_CATEGORY_LABELS[r.category]}</TableCell>
+                  <TableCell>{hazardBadge(r.hazard)}</TableCell>
+                  <TableCell className="text-xs text-muted-foreground">{r.authority}</TableCell>
+                  <TableCell>
+                    <Button size="sm" variant="outline" onClick={() => onPick(r)}>
+                      استخدم الاسم
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }

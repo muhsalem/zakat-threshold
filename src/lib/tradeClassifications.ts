@@ -101,8 +101,319 @@ export const TRADE_ACTIVITIES: TradeActivityRow[] = [
   // زراعة وثروة
   { egyCode: "0111", nameAr: "زراعة المحاصيل الحقلية", group: "agriculture", isic: "0111", nace: "A01.11", naics: "1111", ukSic: "01.11", zakatNote: "إن كانت للتجارة — تُلحق بعروض التجارة لا العشر" },
   { egyCode: "0141", nameAr: "تربية الأبقار والجاموس", group: "agriculture", isic: "0141", nace: "A01.41", naics: "1121", ukSic: "01.41" },
-  { egyCode: "0321", nameAr: "تربية الأحياء المائية (مزارع سمكية)", group: "agriculture", isic: "0322", nace: "A03.22", naics: "1125", ukSic: "03.22" },
+  { egyCode: "0322", nameAr: "تربية الأحياء المائية (مزارع سمكية)", group: "agriculture", isic: "0322", nace: "A03.22", naics: "1125", ukSic: "03.22" },
+
+  // ===== توسعة جداول التصنيف المصري الموحد (CAPMAS / ISIC Rev.4) =====
+
+  // زراعة وثروة — إضافات
+  { egyCode: "0112", nameAr: "زراعة الأرز", group: "agriculture", isic: "0112", nace: "A01.12", naics: "11116", ukSic: "01.12" },
+  { egyCode: "0113", nameAr: "زراعة الخضروات والبطيخ والمحاصيل البصلية", group: "agriculture", isic: "0113", nace: "A01.13", naics: "1112", ukSic: "01.13" },
+  { egyCode: "0114", nameAr: "زراعة قصب السكر والبنجر", group: "agriculture", isic: "0114", nace: "A01.14", naics: "11193", ukSic: "01.14" },
+  { egyCode: "0121", nameAr: "زراعة العنب", group: "agriculture", isic: "0121", nace: "A01.21", naics: "111332", ukSic: "01.21" },
+  { egyCode: "0122", nameAr: "زراعة الفاكهة الاستوائية (موز/مانجو)", group: "agriculture", isic: "0122", nace: "A01.22", naics: "111339", ukSic: "01.22" },
+  { egyCode: "0123", nameAr: "زراعة الموالح (برتقال/يوسفي)", group: "agriculture", isic: "0123", nace: "A01.23", naics: "11131", ukSic: "01.23" },
+  { egyCode: "0126", nameAr: "زراعة الزيتون", group: "agriculture", isic: "0126", nace: "A01.26", naics: "111339", ukSic: "01.26" },
+  { egyCode: "0128", nameAr: "زراعة التوابل والنباتات العطرية والطبية", group: "agriculture", isic: "0128", nace: "A01.28", naics: "111998", ukSic: "01.28" },
+  { egyCode: "0145", nameAr: "تربية الأغنام والماعز", group: "agriculture", isic: "0145", nace: "A01.45", naics: "1124", ukSic: "01.45" },
+  { egyCode: "0146", nameAr: "تربية الخنازير (غير شائع — للتصدير فقط)", group: "agriculture", isic: "0146", nace: "A01.46", naics: "1122", ukSic: "01.46" },
+  { egyCode: "0147", nameAr: "تربية الدواجن (دجاج/بط/أوز)", group: "agriculture", isic: "0147", nace: "A01.47", naics: "1123", ukSic: "01.47" },
+  { egyCode: "0149", nameAr: "تربية النحل وإنتاج العسل", group: "agriculture", isic: "0149", nace: "A01.49", naics: "11291", ukSic: "01.49" },
+  { egyCode: "0150", nameAr: "زراعة مختلطة (محاصيل + حيوان)", group: "agriculture", isic: "0150", nace: "A01.50", naics: "1119", ukSic: "01.50" },
+  { egyCode: "0210", nameAr: "زراعة وقطع الأشجار الحرجية", group: "agriculture", isic: "0210", nace: "A02.10", naics: "1132", ukSic: "02.10" },
+  { egyCode: "0311", nameAr: "صيد الأسماك البحرية", group: "agriculture", isic: "0311", nace: "A03.11", naics: "11411", ukSic: "03.11" },
+  { egyCode: "0312", nameAr: "صيد الأسماك في المياه العذبة (النيل/البحيرات)", group: "agriculture", isic: "0312", nace: "A03.12", naics: "11411", ukSic: "03.12" },
+
+  // التعدين والاستخراج
+  { egyCode: "0610", nameAr: "استخراج النفط الخام", group: "industry", isic: "0610", nace: "B06.10", naics: "21111", ukSic: "06.10" },
+  { egyCode: "0620", nameAr: "استخراج الغاز الطبيعي", group: "industry", isic: "0620", nace: "B06.20", naics: "211130", ukSic: "06.20" },
+  { egyCode: "0710", nameAr: "تعدين خامات الحديد", group: "industry", isic: "0710", nace: "B07.10", naics: "21221", ukSic: "07.10" },
+  { egyCode: "0810", nameAr: "استخراج الأحجار والرمال والطين", group: "industry", isic: "0810", nace: "B08.11", naics: "21231", ukSic: "08.11" },
+  { egyCode: "0891", nameAr: "تعدين المواد الكيميائية والأسمدة (فوسفات)", group: "industry", isic: "0891", nace: "B08.91", naics: "212391", ukSic: "08.91" },
+
+  // الصناعة التحويلية — إضافات شاملة
+  { egyCode: "1010", nameAr: "إنتاج اللحوم وحفظها (مجازر)", group: "industry", isic: "1010", nace: "C10.11", naics: "3116", ukSic: "10.11" },
+  { egyCode: "1020", nameAr: "تصنيع الأسماك والقشريات", group: "industry", isic: "1020", nace: "C10.20", naics: "3117", ukSic: "10.20" },
+  { egyCode: "1030", nameAr: "تصنيع وحفظ الفاكهة والخضروات", group: "industry", isic: "1030", nace: "C10.39", naics: "31142", ukSic: "10.39" },
+  { egyCode: "1040", nameAr: "صناعة الزيوت والدهون النباتية والحيوانية", group: "industry", isic: "1040", nace: "C10.41", naics: "31122", ukSic: "10.41" },
+  { egyCode: "1050", nameAr: "صناعة منتجات الألبان والأجبان", group: "industry", isic: "1050", nace: "C10.51", naics: "3115", ukSic: "10.51" },
+  { egyCode: "1061", nameAr: "صناعة منتجات المطاحن (دقيق/أرز/سميد)", group: "industry", isic: "1061", nace: "C10.61", naics: "31121", ukSic: "10.61" },
+  { egyCode: "1072", nameAr: "صناعة السكر", group: "industry", isic: "1072", nace: "C10.81", naics: "31131", ukSic: "10.81" },
+  { egyCode: "1073", nameAr: "صناعة الكاكاو والشيكولاتة والحلويات", group: "industry", isic: "1073", nace: "C10.82", naics: "31135", ukSic: "10.82" },
+  { egyCode: "1074", nameAr: "صناعة المكرونة والشعرية", group: "industry", isic: "1074", nace: "C10.73", naics: "311824", ukSic: "10.73" },
+  { egyCode: "1079", nameAr: "صناعة الأغذية الأخرى (تتبيلات/توابل/أغذية أطفال)", group: "industry", isic: "1079", nace: "C10.89", naics: "31194", ukSic: "10.89" },
+  { egyCode: "1080", nameAr: "صناعة الأعلاف الجاهزة للحيوانات", group: "industry", isic: "1080", nace: "C10.91", naics: "31111", ukSic: "10.91" },
+  { egyCode: "1101", nameAr: "تقطير المشروبات الكحولية (غير مرخّص شرعًا)", group: "industry", isic: "1101", nace: "C11.01", naics: "31214", ukSic: "11.01", zakatNote: "نشاط محرّم — لا تصح زكاته إلا بعد التوبة وتصفية الكسب" },
+  { egyCode: "1104", nameAr: "صناعة المشروبات الغازية والمياه المعبأة والعصائر", group: "industry", isic: "1104", nace: "C11.07", naics: "31211", ukSic: "11.07" },
+  { egyCode: "1200", nameAr: "صناعة منتجات التبغ والسجائر", group: "industry", isic: "1200", nace: "C12", naics: "3122", ukSic: "12" },
+  { egyCode: "1311", nameAr: "تحضير وغزل ألياف النسيج", group: "industry", isic: "1311", nace: "C13.10", naics: "31311", ukSic: "13.10" },
+  { egyCode: "1312", nameAr: "نسج المنسوجات (أقمشة)", group: "industry", isic: "1312", nace: "C13.20", naics: "31321", ukSic: "13.20" },
+  { egyCode: "1392", nameAr: "صناعة المفروشات والأقمشة الجاهزة", group: "industry", isic: "1392", nace: "C13.92", naics: "31412", ukSic: "13.92" },
+  { egyCode: "1511", nameAr: "دباغة وتجهيز الجلود", group: "industry", isic: "1511", nace: "C15.11", naics: "3161", ukSic: "15.11" },
+  { egyCode: "1610", nameAr: "نشر وصقل الأخشاب", group: "industry", isic: "1610", nace: "C16.10", naics: "3211", ukSic: "16.10" },
+  { egyCode: "1701", nameAr: "صناعة عجائن الورق والورق والكرتون", group: "industry", isic: "1701", nace: "C17.11", naics: "32212", ukSic: "17.11" },
+  { egyCode: "1811", nameAr: "طباعة الصحف والمطبوعات", group: "industry", isic: "1811", nace: "C18.11", naics: "323111", ukSic: "18.11" },
+  { egyCode: "1920", nameAr: "صناعة منتجات تكرير النفط", group: "industry", isic: "1920", nace: "C19.20", naics: "32411", ukSic: "19.20" },
+  { egyCode: "2011", nameAr: "صناعة المواد الكيميائية الأساسية", group: "industry", isic: "2011", nace: "C20.11", naics: "32511", ukSic: "20.11" },
+  { egyCode: "2012", nameAr: "صناعة الأسمدة والمركبات النيتروجينية", group: "industry", isic: "2012", nace: "C20.15", naics: "32531", ukSic: "20.15" },
+  { egyCode: "2023", nameAr: "صناعة الصابون والمنظفات ومستحضرات التنظيف والتجميل", group: "industry", isic: "2023", nace: "C20.41", naics: "32561", ukSic: "20.41" },
+  { egyCode: "2100", nameAr: "صناعة الأدوية والمستحضرات الصيدلانية", group: "industry", isic: "2100", nace: "C21", naics: "3254", ukSic: "21" },
+  { egyCode: "2211", nameAr: "صناعة إطارات وأنابيب المطاط", group: "industry", isic: "2211", nace: "C22.11", naics: "32621", ukSic: "22.11" },
+  { egyCode: "2220", nameAr: "صناعة منتجات البلاستيك (عبوات/أنابيب)", group: "industry", isic: "2220", nace: "C22.2", naics: "3261", ukSic: "22.2" },
+  { egyCode: "2310", nameAr: "صناعة الزجاج ومنتجاته", group: "industry", isic: "2310", nace: "C23.1", naics: "32721", ukSic: "23.1" },
+  { egyCode: "2392", nameAr: "صناعة مواد البناء الطينية (طوب/بلاط/سيراميك)", group: "industry", isic: "2392", nace: "C23.31", naics: "32712", ukSic: "23.31" },
+  { egyCode: "2394", nameAr: "صناعة الأسمنت والجير والجبس", group: "industry", isic: "2394", nace: "C23.51", naics: "32731", ukSic: "23.51" },
+  { egyCode: "2410", nameAr: "الصناعات المعدنية الأساسية للحديد والصلب", group: "industry", isic: "2410", nace: "C24.10", naics: "3311", ukSic: "24.10" },
+  { egyCode: "2511", nameAr: "صناعة الهياكل والمنشآت المعدنية", group: "industry", isic: "2511", nace: "C25.11", naics: "33231", ukSic: "25.11" },
+  { egyCode: "2599", nameAr: "صناعة منتجات معدنية أخرى مشغولة", group: "industry", isic: "2599", nace: "C25.99", naics: "3329", ukSic: "25.99" },
+  { egyCode: "2620", nameAr: "صناعة الحواسيب والمعدات الطرفية", group: "industry", isic: "2620", nace: "C26.20", naics: "3341", ukSic: "26.20" },
+  { egyCode: "2630", nameAr: "صناعة معدات الاتصالات", group: "industry", isic: "2630", nace: "C26.30", naics: "3342", ukSic: "26.30" },
+  { egyCode: "2710", nameAr: "صناعة المحركات والمولدات الكهربائية", group: "industry", isic: "2710", nace: "C27.11", naics: "33531", ukSic: "27.11" },
+  { egyCode: "2750", nameAr: "صناعة الأجهزة المنزلية (ثلاجات/غسالات)", group: "industry", isic: "2750", nace: "C27.51", naics: "3352", ukSic: "27.51" },
+  { egyCode: "2811", nameAr: "صناعة المحركات والتوربينات", group: "industry", isic: "2811", nace: "C28.11", naics: "33361", ukSic: "28.11" },
+  { egyCode: "2910", nameAr: "صناعة المركبات ذات المحركات (سيارات)", group: "industry", isic: "2910", nace: "C29.10", naics: "3361", ukSic: "29.10" },
+  { egyCode: "3011", nameAr: "بناء السفن والقوارب", group: "industry", isic: "3011", nace: "C30.11", naics: "33661", ukSic: "30.11" },
+  { egyCode: "3250", nameAr: "صناعة الأدوات والمستلزمات الطبية وطب الأسنان", group: "industry", isic: "3250", nace: "C32.50", naics: "33911", ukSic: "32.50" },
+  { egyCode: "3211", nameAr: "صياغة الذهب والمجوهرات والحلي", group: "industry", isic: "3211", nace: "C32.12", naics: "33991", ukSic: "32.12", zakatNote: "ذهب وفضة — تُزكَّى بالوزن لا بالقيمة فقط (راجع قسم الذهب)" },
+
+  // المرافق
+  { egyCode: "3510", nameAr: "توليد ونقل وتوزيع الكهرباء", group: "industry", isic: "3510", nace: "D35.1", naics: "22111", ukSic: "35.1" },
+  { egyCode: "3520", nameAr: "صناعة الغاز وتوزيعه بالأنابيب", group: "industry", isic: "3520", nace: "D35.2", naics: "22121", ukSic: "35.2" },
+  { egyCode: "3600", nameAr: "تجميع المياه ومعالجتها وتوزيعها", group: "industry", isic: "3600", nace: "E36.00", naics: "22131", ukSic: "36.00" },
+  { egyCode: "3811", nameAr: "جمع النفايات غير الخطرة", group: "industry", isic: "3811", nace: "E38.11", naics: "5621", ukSic: "38.11" },
+  { egyCode: "3830", nameAr: "استرداد وإعادة تدوير المواد", group: "industry", isic: "3830", nace: "E38.32", naics: "56292", ukSic: "38.32" },
+
+  // البناء والتشييد — إضافات
+  { egyCode: "4220", nameAr: "تشييد مشاريع المرافق (مياه/كهرباء/اتصالات)", group: "construction", isic: "4220", nace: "F42.2", naics: "2371", ukSic: "42.2" },
+  { egyCode: "4311", nameAr: "هدم وتسوية مواقع البناء", group: "construction", isic: "4311", nace: "F43.11", naics: "23811", ukSic: "43.11" },
+  { egyCode: "4321", nameAr: "تركيب التمديدات الكهربائية", group: "construction", isic: "4321", nace: "F43.21", naics: "23821", ukSic: "43.21" },
+  { egyCode: "4322", nameAr: "أعمال السباكة والصرف والتكييف", group: "construction", isic: "4322", nace: "F43.22", naics: "23822", ukSic: "43.22" },
+  { egyCode: "4330", nameAr: "أعمال التشطيب (دهانات/أرضيات/زجاج)", group: "construction", isic: "4330", nace: "F43.3", naics: "2383", ukSic: "43.3" },
+
+  // تجارة السيارات والقطع
+  { egyCode: "4510", nameAr: "بيع السيارات والمركبات الخفيفة", group: "wholesale", isic: "4510", nace: "G45.11", naics: "44111", ukSic: "45.11" },
+  { egyCode: "4520", nameAr: "صيانة وإصلاح المركبات (ورش)", group: "services", isic: "4520", nace: "G45.20", naics: "8111", ukSic: "45.20" },
+  { egyCode: "4530", nameAr: "بيع قطع غيار السيارات وملحقاتها", group: "wholesale", isic: "4530", nace: "G45.31", naics: "44131", ukSic: "45.31" },
+  { egyCode: "4540", nameAr: "بيع وصيانة الدراجات النارية والتوك توك", group: "wholesale", isic: "4540", nace: "G45.40", naics: "441228", ukSic: "45.40" },
+
+  // تجارة الجملة — إضافات
+  { egyCode: "4610", nameAr: "وكلاء البيع بالعمولة (سمسرة تجارية)", group: "wholesale", isic: "4610", nace: "G46.1", naics: "4251", ukSic: "46.1" },
+  { egyCode: "4620", nameAr: "تجارة الجملة للمواد الزراعية الخام والحيوانات الحية", group: "wholesale", isic: "4620", nace: "G46.2", naics: "4245", ukSic: "46.2" },
+  { egyCode: "4649", nameAr: "تجارة الجملة لمستلزمات المنزل (أثاث/أدوات منزلية)", group: "wholesale", isic: "4649", nace: "G46.49", naics: "4232", ukSic: "46.49" },
+  { egyCode: "4652", nameAr: "تجارة الجملة لقطع الإلكترونيات والاتصالات", group: "wholesale", isic: "4652", nace: "G46.52", naics: "4236", ukSic: "46.52" },
+  { egyCode: "4653", nameAr: "تجارة الجملة للآلات والمعدات الزراعية", group: "wholesale", isic: "4653", nace: "G46.61", naics: "423820", ukSic: "46.61" },
+  { egyCode: "4663", nameAr: "تجارة الجملة لمواد البناء والأدوات الصحية", group: "wholesale", isic: "4663", nace: "G46.73", naics: "4233", ukSic: "46.73" },
+  { egyCode: "4669", nameAr: "تجارة الجملة للمنتجات الكيميائية الصناعية", group: "wholesale", isic: "4669", nace: "G46.75", naics: "4246", ukSic: "46.75" },
+
+  // تجارة التجزئة — إضافات
+  { egyCode: "4719", nameAr: "تجارة التجزئة في المتاجر الكبرى متعددة الأقسام (هايبر/مول)", group: "retail", isic: "4719", nace: "G47.19", naics: "452210", ukSic: "47.19" },
+  { egyCode: "4722", nameAr: "تجارة التجزئة للحوم والأسماك (جزارة/سمك)", group: "retail", isic: "4722", nace: "G47.22", naics: "44521", ukSic: "47.22" },
+  { egyCode: "4723", nameAr: "تجارة التجزئة للمخبوزات والحلويات", group: "retail", isic: "4723", nace: "G47.24", naics: "445291", ukSic: "47.24" },
+  { egyCode: "4730", nameAr: "محطات الوقود والبنزين", group: "retail", isic: "4730", nace: "G47.30", naics: "457", ukSic: "47.30" },
+  { egyCode: "4741", nameAr: "تجارة التجزئة للحواسيب والبرمجيات", group: "retail", isic: "4741", nace: "G47.41", naics: "443142", ukSic: "47.41" },
+  { egyCode: "4742", nameAr: "تجارة التجزئة لمعدات الاتصالات (موبايلات)", group: "retail", isic: "4742", nace: "G47.42", naics: "443142", ukSic: "47.42" },
+  { egyCode: "4752", nameAr: "تجارة التجزئة لمواد البناء والأدوات الصحية والصبغات", group: "retail", isic: "4752", nace: "G47.52", naics: "4441", ukSic: "47.52" },
+  { egyCode: "4753", nameAr: "تجارة التجزئة للسجاد والموكيت والمفروشات", group: "retail", isic: "4753", nace: "G47.53", naics: "44913", ukSic: "47.53" },
+  { egyCode: "4759", nameAr: "تجارة التجزئة للأثاث والأجهزة المنزلية", group: "retail", isic: "4759", nace: "G47.59", naics: "4493", ukSic: "47.59" },
+  { egyCode: "4771", nameAr: "تجارة التجزئة للملابس الجاهزة والأحذية", group: "retail", isic: "4771", nace: "G47.71", naics: "4581", ukSic: "47.71" },
+  { egyCode: "4774", nameAr: "تجارة التجزئة للسلع الطبية والتقويمية والنظارات", group: "retail", isic: "4774", nace: "G47.74", naics: "456199", ukSic: "47.74" },
+  { egyCode: "4775", nameAr: "تجارة التجزئة لمستحضرات التجميل والعطور", group: "retail", isic: "4775", nace: "G47.75", naics: "456120", ukSic: "47.75" },
+  { egyCode: "4776", nameAr: "تجارة التجزئة للزهور والنباتات والحيوانات الأليفة", group: "retail", isic: "4776", nace: "G47.76", naics: "459110", ukSic: "47.76" },
+  { egyCode: "4777", nameAr: "تجارة التجزئة للذهب والمجوهرات والساعات", group: "retail", isic: "4777", nace: "G47.77", naics: "458310", ukSic: "47.77", zakatNote: "ذهب/فضة — تُزكَّى بالوزن لا فقط بقيمة السوق" },
+  { egyCode: "4781", nameAr: "تجارة التجزئة في الأكشاك والأسواق العامة (الغذائية)", group: "retail", isic: "4781", nace: "G47.81", naics: "454390", ukSic: "47.81" },
+  { egyCode: "4789", nameAr: "تجارة التجزئة المتجولة (سرحاً) لسلع غير غذائية", group: "retail", isic: "4789", nace: "G47.89", naics: "454390", ukSic: "47.89" },
+
+  // نقل وتخزين — إضافات
+  { egyCode: "4911", nameAr: "نقل ركاب السكك الحديدية (هيئة السكة الحديد)", group: "transport", isic: "4911", nace: "H49.10", naics: "4821", ukSic: "49.10" },
+  { egyCode: "4922", nameAr: "نقل ركاب بري (تاكسي/ميكروباص/أوبر)", group: "transport", isic: "4922", nace: "H49.32", naics: "4853", ukSic: "49.32" },
+  { egyCode: "5011", nameAr: "النقل البحري للركاب", group: "transport", isic: "5011", nace: "H50.10", naics: "4831", ukSic: "50.10" },
+  { egyCode: "5022", nameAr: "النقل النهري للبضائع (نهر النيل)", group: "transport", isic: "5022", nace: "H50.40", naics: "4832", ukSic: "50.40" },
+  { egyCode: "5110", nameAr: "النقل الجوي للركاب", group: "transport", isic: "5110", nace: "H51.10", naics: "4811", ukSic: "51.10" },
+  { egyCode: "5221", nameAr: "خدمات داعمة لنقل البري (مواقف/جراجات/قنوات)", group: "transport", isic: "5221", nace: "H52.21", naics: "48849", ukSic: "52.21" },
+  { egyCode: "5224", nameAr: "مناولة البضائع (تفريغ/شحن في الموانئ)", group: "transport", isic: "5224", nace: "H52.24", naics: "4883", ukSic: "52.24" },
+  { egyCode: "5310", nameAr: "أنشطة البريد ذات الالتزام بالخدمة الشاملة (البريد المصري)", group: "transport", isic: "5310", nace: "H53.10", naics: "4911", ukSic: "53.10" },
+  { egyCode: "5320", nameAr: "أنشطة البريد السريع والتوصيل (Bosta/Aramex)", group: "transport", isic: "5320", nace: "H53.20", naics: "4922", ukSic: "53.20" },
+
+  // مطاعم وضيافة — إضافات
+  { egyCode: "5520", nameAr: "أماكن إقامة في المخيمات والقرى السياحية", group: "tourism", isic: "5520", nace: "I55.20", naics: "7212", ukSic: "55.20" },
+  { egyCode: "5621", nameAr: "خدمات تموين الفعاليات والمناسبات (كاترينج)", group: "food", isic: "5621", nace: "I56.21", naics: "72232", ukSic: "56.21" },
+  { egyCode: "5629", nameAr: "خدمات تقديم الوجبات الأخرى (مقاصف/كانتين)", group: "food", isic: "5629", nace: "I56.29", naics: "72231", ukSic: "56.29" },
+
+  // معلومات واتصالات — إضافات
+  { egyCode: "5811", nameAr: "نشر الكتب والمراجع", group: "tech", isic: "5811", nace: "J58.11", naics: "513130", ukSic: "58.11" },
+  { egyCode: "5813", nameAr: "نشر الصحف والمجلات", group: "tech", isic: "5813", nace: "J58.13", naics: "513110", ukSic: "58.13" },
+  { egyCode: "5820", nameAr: "نشر البرمجيات (Software Publishers)", group: "tech", isic: "5820", nace: "J58.2", naics: "513210", ukSic: "58.2" },
+  { egyCode: "5911", nameAr: "إنتاج الأفلام والفيديو والبرامج التلفزيونية", group: "tech", isic: "5911", nace: "J59.11", naics: "512110", ukSic: "59.11" },
+  { egyCode: "6010", nameAr: "البث الإذاعي", group: "tech", isic: "6010", nace: "J60.10", naics: "516110", ukSic: "60.10" },
+  { egyCode: "6020", nameAr: "البث التلفزيوني وقنوات الفضائية", group: "tech", isic: "6020", nace: "J60.20", naics: "516120", ukSic: "60.20" },
+  { egyCode: "6110", nameAr: "أنشطة الاتصالات السلكية (تليكوم ثابت)", group: "tech", isic: "6110", nace: "J61.10", naics: "517111", ukSic: "61.10" },
+  { egyCode: "6120", nameAr: "أنشطة الاتصالات اللاسلكية (موبايل)", group: "tech", isic: "6120", nace: "J61.20", naics: "517112", ukSic: "61.20" },
+  { egyCode: "6202", nameAr: "استشارات الحاسب وإدارة المرافق الحاسوبية", group: "tech", isic: "6202", nace: "J62.02", naics: "541512", ukSic: "62.02" },
+  { egyCode: "6312", nameAr: "بوابات وبوابات بحث ووسائل تواصل اجتماعي", group: "tech", isic: "6312", nace: "J63.12", naics: "519130", ukSic: "63.12" },
+
+  // أنشطة مالية وتأمين
+  { egyCode: "6411", nameAr: "أنشطة البنك المركزي", group: "services", isic: "6411", nace: "K64.11", naics: "521", ukSic: "64.11" },
+  { egyCode: "6419", nameAr: "أنشطة البنوك التجارية والإسلامية", group: "services", isic: "6419", nace: "K64.19", naics: "52211", ukSic: "64.19", zakatNote: "بنوك تقليدية: قد تشمل دخل ربا — يجب تطهير الإيراد قبل الزكاة" },
+  { egyCode: "6491", nameAr: "التأجير التمويلي", group: "services", isic: "6491", nace: "K64.91", naics: "522220", ukSic: "64.91" },
+  { egyCode: "6492", nameAr: "أنشطة الإقراض والتمويل الاستهلاكي", group: "services", isic: "6492", nace: "K64.92", naics: "52229", ukSic: "64.92", zakatNote: "تمويل ربوي: استبعد دخل الفائدة وقدّر زكاة رأس المال فقط" },
+  { egyCode: "6499", nameAr: "أنشطة شركات التمويل متناهي الصغر", group: "services", isic: "6499", nace: "K64.99", naics: "52239", ukSic: "64.99" },
+  { egyCode: "6511", nameAr: "أنشطة التأمين على الحياة", group: "services", isic: "6511", nace: "K65.11", naics: "52411", ukSic: "65.11", zakatNote: "تأمين تقليدي: غير جائز — أما التكافل فمعاملته معاملة الاستثمار" },
+  { egyCode: "6512", nameAr: "أنشطة التأمين العام (غير الحياة)", group: "services", isic: "6512", nace: "K65.12", naics: "524126", ukSic: "65.12" },
+  { egyCode: "6611", nameAr: "إدارة الأسواق المالية (البورصة)", group: "services", isic: "6611", nace: "K66.11", naics: "523210", ukSic: "66.11" },
+  { egyCode: "6612", nameAr: "السمسرة في عقود السلع والأوراق المالية", group: "services", isic: "6612", nace: "K66.12", naics: "52312", ukSic: "66.12" },
+
+  // عقارات وخدمات أعمال
+  { egyCode: "6820", nameAr: "تأجير وإدارة العقارات المملوكة أو المستأجرة", group: "services", isic: "6820", nace: "L68.20", naics: "5311", ukSic: "68.20", zakatNote: "إيراد الإيجار — يُزكَّى الصافي المُدّخر فقط (راجع قسم العقار)" },
+  { egyCode: "6910", nameAr: "أنشطة المحاماة والاستشارات القانونية", group: "services", isic: "6910", nace: "M69.10", naics: "5411", ukSic: "69.10" },
+  { egyCode: "7010", nameAr: "أنشطة المكاتب الرئيسية وإدارة الشركات القابضة", group: "services", isic: "7010", nace: "M70.1", naics: "551114", ukSic: "70.1" },
+  { egyCode: "7020", nameAr: "أنشطة الاستشارات الإدارية (Management Consulting)", group: "services", isic: "7020", nace: "M70.22", naics: "541611", ukSic: "70.22" },
+  { egyCode: "7110", nameAr: "أنشطة الهندسة المعمارية والاستشارات الهندسية", group: "services", isic: "7110", nace: "M71.1", naics: "5413", ukSic: "71.1" },
+  { egyCode: "7120", nameAr: "الاختبارات والتحاليل الفنية (معامل)", group: "services", isic: "7120", nace: "M71.2", naics: "54138", ukSic: "71.2" },
+  { egyCode: "7210", nameAr: "البحث والتطوير في العلوم الطبيعية والهندسية", group: "services", isic: "7210", nace: "M72.1", naics: "5417", ukSic: "72.1" },
+  { egyCode: "7310", nameAr: "أنشطة الإعلان (وكالات إعلان)", group: "services", isic: "7310", nace: "M73.1", naics: "5418", ukSic: "73.1" },
+  { egyCode: "7320", nameAr: "أبحاث السوق واستطلاعات الرأي", group: "services", isic: "7320", nace: "M73.20", naics: "541910", ukSic: "73.20" },
+  { egyCode: "7410", nameAr: "أنشطة التصميم المتخصصة (جرافيك/داخلي/أزياء)", group: "services", isic: "7410", nace: "M74.10", naics: "541430", ukSic: "74.10" },
+  { egyCode: "7420", nameAr: "أنشطة التصوير الفوتوغرافي والاستوديوهات", group: "services", isic: "7420", nace: "M74.20", naics: "54192", ukSic: "74.20" },
+  { egyCode: "7500", nameAr: "أنشطة الطب البيطري والعيادات البيطرية", group: "services", isic: "7500", nace: "M75", naics: "541940", ukSic: "75" },
+  { egyCode: "7710", nameAr: "تأجير السيارات والمركبات الخفيفة", group: "services", isic: "7710", nace: "N77.1", naics: "53211", ukSic: "77.1" },
+  { egyCode: "7740", nameAr: "تأجير الملكية الفكرية والامتيازات (فرنشايز)", group: "services", isic: "7740", nace: "N77.40", naics: "533110", ukSic: "77.40" },
+  { egyCode: "7810", nameAr: "أنشطة وكالات التوظيف", group: "services", isic: "7810", nace: "N78.1", naics: "5613", ukSic: "78.1" },
+  { egyCode: "7820", nameAr: "أنشطة وكالات العمالة المؤقتة والاستقدام", group: "services", isic: "7820", nace: "N78.20", naics: "56132", ukSic: "78.20" },
+  { egyCode: "8010", nameAr: "أنشطة الأمن والحراسة الخاصة", group: "services", isic: "8010", nace: "N80.10", naics: "561612", ukSic: "80.10" },
+  { egyCode: "8121", nameAr: "تنظيف المباني العام (شركات نظافة)", group: "services", isic: "8121", nace: "N81.21", naics: "561720", ukSic: "81.21" },
+  { egyCode: "8130", nameAr: "خدمات تنسيق الحدائق والمناظر الطبيعية", group: "services", isic: "8130", nace: "N81.30", naics: "561730", ukSic: "81.30" },
+
+  // الإدارة العامة والتعليم والصحة
+  { egyCode: "8411", nameAr: "أنشطة الإدارة العامة (وزارات/هيئات)", group: "services", isic: "8411", nace: "O84.11", naics: "92111", ukSic: "84.11" },
+  { egyCode: "8510", nameAr: "التعليم قبل الابتدائي والحضانات", group: "services", isic: "8510", nace: "P85.10", naics: "624410", ukSic: "85.10" },
+  { egyCode: "8521", nameAr: "التعليم الابتدائي (مدارس ابتدائية)", group: "services", isic: "8521", nace: "P85.20", naics: "611110", ukSic: "85.20" },
+  { egyCode: "8530", nameAr: "التعليم الثانوي (مدارس ثانوية ولغات)", group: "services", isic: "8530", nace: "P85.31", naics: "61111", ukSic: "85.31" },
+  { egyCode: "8541", nameAr: "التعليم بعد الثانوي غير الجامعي (معاهد فنية)", group: "services", isic: "8541", nace: "P85.41", naics: "611513", ukSic: "85.41" },
+  { egyCode: "8542", nameAr: "التعليم العالي (جامعات وكليات)", group: "services", isic: "8542", nace: "P85.42", naics: "61131", ukSic: "85.42" },
+  { egyCode: "8550", nameAr: "أنشطة دعم التعليم (سناتر/مدرسون خصوصيون)", group: "services", isic: "8550", nace: "P85.60", naics: "611710", ukSic: "85.60" },
+  { egyCode: "8610", nameAr: "أنشطة المستشفيات", group: "services", isic: "8610", nace: "Q86.10", naics: "622", ukSic: "86.10" },
+  { egyCode: "8620", nameAr: "أنشطة الممارسة الطبية وطب الأسنان (عيادات)", group: "services", isic: "8620", nace: "Q86.2", naics: "6211", ukSic: "86.2" },
+  { egyCode: "8690", nameAr: "أنشطة الرعاية الصحية الأخرى (تمريض/علاج طبيعي/معامل)", group: "services", isic: "8690", nace: "Q86.9", naics: "62149", ukSic: "86.9" },
+  { egyCode: "8710", nameAr: "أنشطة الرعاية التمريضية مع الإقامة (دور رعاية)", group: "services", isic: "8710", nace: "Q87.1", naics: "62311", ukSic: "87.1" },
+  { egyCode: "8810", nameAr: "أنشطة الخدمة الاجتماعية للمسنين والمعوقين", group: "services", isic: "8810", nace: "Q88.10", naics: "6241", ukSic: "88.10" },
+
+  // فنون وترفيه ورياضة
+  { egyCode: "9001", nameAr: "أنشطة العروض الفنية (مسرح/موسيقى/سينما حية)", group: "services", isic: "9001", nace: "R90.01", naics: "71113", ukSic: "90.01" },
+  { egyCode: "9101", nameAr: "أنشطة المكتبات ودور المحفوظات", group: "services", isic: "9101", nace: "R91.01", naics: "519120", ukSic: "91.01" },
+  { egyCode: "9102", nameAr: "أنشطة المتاحف والمواقع والمباني التاريخية", group: "services", isic: "9102", nace: "R91.02", naics: "71211", ukSic: "91.02" },
+  { egyCode: "9200", nameAr: "أنشطة القمار والمراهنات (محرّمة شرعًا)", group: "services", isic: "9200", nace: "R92.00", naics: "7132", ukSic: "92.00", zakatNote: "نشاط محرّم — لا تصح زكاة كسبه؛ يجب التخلص من المال" },
+  { egyCode: "9311", nameAr: "تشغيل المرافق الرياضية (ملاعب/جيم/أكاديميات)", group: "services", isic: "9311", nace: "R93.11", naics: "713940", ukSic: "93.11" },
+  { egyCode: "9329", nameAr: "أنشطة ترفيه أخرى (ملاهي/أماكن لعب الأطفال)", group: "services", isic: "9329", nace: "R93.29", naics: "71399", ukSic: "93.29" },
+
+  // أنشطة أخرى
+  { egyCode: "9412", nameAr: "أنشطة المنظمات المهنية (نقابات)", group: "services", isic: "9412", nace: "S94.12", naics: "813920", ukSic: "94.12" },
+  { egyCode: "9420", nameAr: "أنشطة نقابات العمال", group: "services", isic: "9420", nace: "S94.20", naics: "813930", ukSic: "94.20" },
+  { egyCode: "9491", nameAr: "أنشطة المنظمات الدينية (مساجد/كنائس/جمعيات شرعية)", group: "services", isic: "9491", nace: "S94.91", naics: "813110", ukSic: "94.91", zakatNote: "غير ربحي — يُزكَّى ما لديها من نقد فاضل تجاري إن وجد" },
+  { egyCode: "9511", nameAr: "إصلاح أجهزة الحاسب والمعدات الطرفية", group: "services", isic: "9511", nace: "S95.11", naics: "811211", ukSic: "95.11" },
+  { egyCode: "9521", nameAr: "إصلاح الأجهزة الإلكترونية الاستهلاكية (تليفزيون/راديو)", group: "services", isic: "9521", nace: "S95.21", naics: "811211", ukSic: "95.21" },
+  { egyCode: "9522", nameAr: "إصلاح الأجهزة المنزلية ومعدات المنزل والحدائق", group: "services", isic: "9522", nace: "S95.22", naics: "811412", ukSic: "95.22" },
+  { egyCode: "9609", nameAr: "أنشطة خدمات شخصية أخرى (سبا/تدليك/خدمات عامة)", group: "services", isic: "9609", nace: "S96.09", naics: "812990", ukSic: "96.09" },
+  { egyCode: "9700", nameAr: "أنشطة الأسر المعيشية كصاحب عمل للعمالة المنزلية", group: "services", isic: "9700", nace: "T97.00", naics: "814110", ukSic: "97.00" },
 ];
+
+/**
+ * تصنيف المحال العامة وفق القانون المصري رقم 154 لسنة 2019
+ * (لائحة تنظيم المحال العامة والصناعية والتجارية).
+ * هذا تصنيف ترخيصي (وزارة التنمية المحلية / المحليات) — مختلف عن التصنيف الإحصائي.
+ * يُربط في الزكاة بنوع النشاط لاستبعاد المحرّمات وتحديد طريقة التقويم.
+ */
+export type ShopLicenseHazard = "low" | "medium" | "high";
+export type ShopLicenseCategory =
+  | "food" | "entertainment" | "trade" | "service" | "craft" | "industrial" | "other";
+
+export const SHOP_HAZARD_LABELS: Record<ShopLicenseHazard, string> = {
+  low: "محل بسيط (غير خطر)",
+  medium: "محل متوسط الخطورة",
+  high: "محل عالي الخطورة",
+};
+export const SHOP_CATEGORY_LABELS: Record<ShopLicenseCategory, string> = {
+  food: "محال غذائية ومطاعم",
+  entertainment: "محال ترفيهية وسياحية",
+  trade: "محال تجارية",
+  service: "محال خدمية",
+  craft: "ورش حرفية",
+  industrial: "محال صناعية",
+  other: "أخرى",
+};
+
+export interface ShopLicenseRow {
+  /** اسم المحل/النشاط الترخيصي */
+  nameAr: string;
+  /** تصنيف نوع المحل */
+  category: ShopLicenseCategory;
+  /** درجة الخطورة (بسيط/متوسط/خطر) */
+  hazard: ShopLicenseHazard;
+  /** الجهة المختصة بالترخيص */
+  authority: string;
+  /** ملاحظات الترخيص أو الاشتراطات */
+  notes?: string;
+}
+
+/** قائمة محال عامة شائعة وفق اللائحة التنفيذية للقانون 154/2019 */
+export const EGY_SHOP_LICENSES: ShopLicenseRow[] = [
+  // محال غذائية
+  { nameAr: "محل بقالة / سوبر ماركت", category: "food", hazard: "low", authority: "الإدارة المحلية + الصحة" },
+  { nameAr: "مخبز سياحي / فينو / حلواني", category: "food", hazard: "medium", authority: "الإدارة المحلية + التموين" },
+  { nameAr: "محل جزارة / دواجن / أسماك", category: "food", hazard: "high", authority: "الإدارة المحلية + الطب البيطري", notes: "اشتراطات صحية وبيطرية مشددة" },
+  { nameAr: "مطعم / كافيتيريا / كوفي شوب", category: "food", hazard: "medium", authority: "الإدارة المحلية + السياحة (للسياحي)" },
+  { nameAr: "حلواني ومحل آيس كريم", category: "food", hazard: "medium", authority: "الإدارة المحلية + الصحة" },
+  { nameAr: "محل عصائر ومشروبات", category: "food", hazard: "low", authority: "الإدارة المحلية + الصحة" },
+  { nameAr: "محل عطارة وأعشاب", category: "food", hazard: "low", authority: "الإدارة المحلية + الصحة" },
+  { nameAr: "مصنع/معبأ مياه أو مرطبات", category: "industrial", hazard: "high", authority: "الإدارة المحلية + التنمية الصناعية" },
+
+  // محال ترفيهية
+  { nameAr: "ملاهي وألعاب أطفال", category: "entertainment", hazard: "medium", authority: "الإدارة المحلية + الحماية المدنية" },
+  { nameAr: "سينما / مسرح", category: "entertainment", hazard: "medium", authority: "الإدارة المحلية + الرقابة" },
+  { nameAr: "صالة ألعاب رياضية (جيم) / كروس فيت", category: "entertainment", hazard: "medium", authority: "الإدارة المحلية + الشباب والرياضة" },
+  { nameAr: "بلياردو / بلاي ستيشن / إنترنت كافيه", category: "entertainment", hazard: "low", authority: "الإدارة المحلية" },
+  { nameAr: "فندق / قرية سياحية / فندق عائم", category: "entertainment", hazard: "high", authority: "وزارة السياحة + الحماية المدنية" },
+
+  // محال تجارية
+  { nameAr: "محل ملابس جاهزة / أحذية", category: "trade", hazard: "low", authority: "الإدارة المحلية + السجل التجاري" },
+  { nameAr: "محل أقمشة ومنسوجات", category: "trade", hazard: "low", authority: "الإدارة المحلية" },
+  { nameAr: "محل أدوات منزلية / هدايا", category: "trade", hazard: "low", authority: "الإدارة المحلية" },
+  { nameAr: "محل أجهزة كهربائية وإلكترونيات", category: "trade", hazard: "low", authority: "الإدارة المحلية" },
+  { nameAr: "محل موبايلات واكسسوارات", category: "trade", hazard: "low", authority: "الإدارة المحلية + الاتصالات" },
+  { nameAr: "صيدلية", category: "trade", hazard: "medium", authority: "نقابة الصيادلة + الصحة", notes: "تتطلب صيدلي مسؤول" },
+  { nameAr: "محل ذهب ومجوهرات", category: "trade", hazard: "medium", authority: "مصلحة الدمغة والموازين + الإدارة المحلية" },
+  { nameAr: "مكتبة وقرطاسية", category: "trade", hazard: "low", authority: "الإدارة المحلية" },
+  { nameAr: "محل عطور ومستحضرات تجميل", category: "trade", hazard: "low", authority: "الإدارة المحلية + الصحة" },
+  { nameAr: "محل أدوات سباكة وكهرباء وأدوات بناء", category: "trade", hazard: "low", authority: "الإدارة المحلية" },
+  { nameAr: "معرض سيارات / دراجات نارية", category: "trade", hazard: "medium", authority: "الإدارة المحلية + المرور" },
+  { nameAr: "محل قطع غيار سيارات", category: "trade", hazard: "low", authority: "الإدارة المحلية" },
+
+  // محال خدمية
+  { nameAr: "صالون حلاقة رجالي / كوافير حريمي", category: "service", hazard: "low", authority: "الإدارة المحلية + الصحة" },
+  { nameAr: "مغسلة ملابس وكي / دراي كلين", category: "service", hazard: "medium", authority: "الإدارة المحلية + البيئة" },
+  { nameAr: "مركز تجميل وعناية بالبشرة", category: "service", hazard: "medium", authority: "الإدارة المحلية + الصحة" },
+  { nameAr: "مكتب سياحة وسفر", category: "service", hazard: "low", authority: "وزارة السياحة" },
+  { nameAr: "مكتب محاماة / محاسبة / استشارات", category: "service", hazard: "low", authority: "النقابة المختصة" },
+  { nameAr: "مركز تدريب وسنتر تعليمي", category: "service", hazard: "low", authority: "الإدارة المحلية + التعليم" },
+  { nameAr: "حضانة أطفال", category: "service", hazard: "medium", authority: "وزارة التضامن + الإدارة المحلية" },
+  { nameAr: "عيادة طبية / معمل تحاليل / أشعة", category: "service", hazard: "medium", authority: "الصحة + النقابة" },
+  { nameAr: "عيادة بيطرية", category: "service", hazard: "low", authority: "نقابة البيطريين + الإدارة المحلية" },
+
+  // ورش حرفية
+  { nameAr: "ورشة نجارة وأثاث", category: "craft", hazard: "medium", authority: "الإدارة المحلية + الحماية المدنية", notes: "احتياطات حريق" },
+  { nameAr: "ورشة حدادة وألوميتال", category: "craft", hazard: "high", authority: "الإدارة المحلية + الحماية المدنية" },
+  { nameAr: "ورشة سمكرة ودوكو ورش سيارات", category: "craft", hazard: "high", authority: "الإدارة المحلية + البيئة", notes: "اشتراطات بيئية للصرف والأبخرة" },
+  { nameAr: "ورشة كهرباء / لحام / سباكة", category: "craft", hazard: "medium", authority: "الإدارة المحلية" },
+  { nameAr: "ورشة خياطة / تطريز", category: "craft", hazard: "low", authority: "الإدارة المحلية" },
+  { nameAr: "ورشة طباعة وتغليف", category: "craft", hazard: "medium", authority: "الإدارة المحلية" },
+  { nameAr: "ورشة رخام وجرانيت", category: "craft", hazard: "high", authority: "الإدارة المحلية + البيئة" },
+
+  // محال صناعية
+  { nameAr: "مصنع صغير للأغذية / مرطبات", category: "industrial", hazard: "high", authority: "هيئة التنمية الصناعية + الصحة" },
+  { nameAr: "مصنع ملابس / منسوجات", category: "industrial", hazard: "medium", authority: "هيئة التنمية الصناعية" },
+  { nameAr: "مطبعة كبيرة / دار طباعة", category: "industrial", hazard: "medium", authority: "هيئة التنمية الصناعية" },
+  { nameAr: "مصنع بلاستيك / تعبئة وتغليف", category: "industrial", hazard: "high", authority: "هيئة التنمية الصناعية + البيئة" },
+  { nameAr: "محطة وقود ومحروقات", category: "industrial", hazard: "high", authority: "وزارة البترول + الحماية المدنية" },
+];
+
 
 /** المراجع الدولية للتصنيف (روابط رسمية) */
 export const CLASSIFICATION_REFS: Array<{ name: string; country: string; url: string }> = [
