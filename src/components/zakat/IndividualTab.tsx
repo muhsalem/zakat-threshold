@@ -213,6 +213,8 @@ export function IndividualTab() {
   const [brkStoneGrams, setBrkStoneGrams] = useState("");
   const [storageKarat, setStorageKarat] = useState("21");
   const [storageWeight, setStorageWeight] = useState("");
+  const [brkAcquireDate, setBrkAcquireDate] = useState("");
+
   // الفضة
   // ========= الفضة: 3 أقسام =========
   // أ) السبائك والأونصات الفضية (المفتاح = العيار/الألفي)
@@ -234,6 +236,9 @@ export function IndividualTab() {
   const [svToolsKarat, setSvToolsKarat] = useState("800");
   const [silverPurpose, setSilverPurpose] = useState<"storage" | "wear">("wear");
   const [silverOpinion, setSilverOpinion] = useState<"majority" | "hanafi">("majority");
+  const [svAcquireDate, setSvAcquireDate] = useState("");
+  const [svCoinAcquireDate, setSvCoinAcquireDate] = useState("");
+  const [svJewelryAcquireDate, setSvJewelryAcquireDate] = useState("");
 
   // النقدية والبنوك (المجموع يُحسب داخل المكوّن المتخصّص ويُمرَّر هنا)
   const [cashTotalFromSection, setCashTotalFromSection] = useState(0);
