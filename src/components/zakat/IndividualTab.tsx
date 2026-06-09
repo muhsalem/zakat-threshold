@@ -259,6 +259,15 @@ export function IndividualTab() {
   const [ecommerceReceivables, setEcommerceReceivables] = useState(""); // مستحقات متجر
   // سجل بنود المتجر (منتجات/خدمات) — يُغذّي الحقول الأربعة تلقائياً عند استخدامه
   const [ecommerceItems, setEcommerceItems] = useState<EcommerceItem[]>([]);
+  // مزامنة إجمالي البنود إلى الحقول الأربعة (عند وجود بنود فقط)
+  useEffect(() => {
+    if (!ecommerceItems.length) return;
+    const t = computeEcommerceTotals(ecommerceItems);
+    setEcommerceInventory(t.physical ? String(t.physical) : "");
+    setEcommerceDigitalProducts(t.digital ? String(t.digital) : "");
+    setEcommerceServices(t.service ? String(t.service) : "");
+    setEcommerceReceivables(t.receivable ? String(t.receivable) : "");
+  }, [ecommerceItems]);
 
   // العقار — تركيب العقار: أرض فقط / مبنى فقط / الأرض والمبنى معاً
   type RealEstateComp = "land" | "building" | "both";
