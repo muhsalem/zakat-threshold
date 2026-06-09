@@ -191,6 +191,7 @@ export function IndividualTab() {
   const [coinFullyOwned, setCoinFullyOwned] = useState(true);
   const [coinAcquireDate, setCoinAcquireDate] = useState("");
   const [coinPurpose, setCoinPurpose] = useState<"storage" | "wear">("storage");
+  const [jwAcquireDate, setJwAcquireDate] = useState("");
   // ج) المجوهرات
   const [jw9, setJw9] = useState(""); const [jw12, setJw12] = useState("");
   const [jw14, setJw14] = useState(""); const [jw18, setJw18] = useState("");
