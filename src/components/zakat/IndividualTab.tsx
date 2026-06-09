@@ -1050,6 +1050,10 @@ export function IndividualTab() {
                   <span className="text-xs text-muted-foreground">إجمالي وزن الفضة المكافئ بعيار 999 (جميع الأعيرة + الأونصات)</span>
                   <span className="text-lg font-bold text-gold">{fmt(calc.svSabaikG999)} جم عيار 999</span>
                 </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">تاريخ الاقتناء</Label>
+                  <Input type="date" value={svAcquireDate} onChange={(e) => setSvAcquireDate(e.target.value)} />
+                </div>
               </div>
 
               {/* ب) الجنيهات والعملات الفضية */}
