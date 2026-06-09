@@ -14,22 +14,20 @@ import {
   Popover, PopoverContent, PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, BookOpen, Search, ExternalLink, Building2, ClipboardCheck } from "lucide-react";
+import { CalendarIcon, Search, Building2, Store, ScrollText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
-  TRADE_ACTIVITIES, TRADE_GROUP_LABELS, CLASSIFICATION_REFS,
-  EGY_SHOP_LICENSES, SHOP_CATEGORY_LABELS, SHOP_HAZARD_LABELS,
-  type TradeActivityGroup, type TradeActivityRow,
+  EGY_SHOP_LICENSES, SHOP_CATEGORY_LABELS,
   type ShopLicenseCategory,
 } from "@/lib/tradeClassifications";
 
 export interface TradeActivitySelection {
-  /** كود التصنيف المختار */
+  /** كود التصنيف (يُملأ من تبويب زكاة الشركات إن وُجد) */
   code: string;
   /** اسم النشاط */
   name: string;
-  /** المجموعة */
-  group: TradeActivityGroup | "";
+  /** مجموعة النشاط */
+  group: string;
   /** هل النشاط لشركة (لا فردي)؟ */
   isCompany: boolean;
   /** اسم الشركة (اختياري) */
@@ -45,151 +43,27 @@ export function emptyTradeActivitySelection(): TradeActivitySelection {
 interface Props {
   value: TradeActivitySelection;
   onChange: (next: TradeActivitySelection) => void;
-  /** يُستدعى عند الضغط على «افتح زكاة الشركات» — لتمرير الانتقال للأعلى */
+  /** يُستدعى عند الضغط على «افتح زكاة الشركات» */
   onOpenCompanyTab?: () => void;
 }
 
 export default function TradeActivityClassification({ value, onChange, onOpenCompanyTab }: Props) {
-  const [filter, setFilter] = useState<TradeActivityGroup | "all">("all");
-  const [q, setQ] = useState("");
-
-  const rows = useMemo<TradeActivityRow[]>(() => {
-    const term = q.trim().toLowerCase();
-    return TRADE_ACTIVITIES.filter((r) => {
-      if (filter !== "all" && r.group !== filter) return false;
-      if (!term) return true;
-      return (
-        r.nameAr.toLowerCase().includes(term) ||
-        r.egyCode.includes(term) ||
-        r.isic.includes(term) ||
-        r.nace.toLowerCase().includes(term) ||
-        r.naics.includes(term) ||
-        r.ukSic.includes(term)
-      );
-    });
-  }, [filter, q]);
-
-  const selectedRow = useMemo(
-    () => TRADE_ACTIVITIES.find((r) => r.egyCode === value.code) || null,
-    [value.code],
-  );
-
   const startDateObj = value.startDate ? new Date(value.startDate) : undefined;
 
   return (
     <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-4">
-      <div className="flex items-center justify-between flex-wrap gap-2">
-        <div className="flex items-center gap-2 text-sm font-semibold text-primary">
-          <BookOpen className="h-4 w-4" />
-          تصنيف النشاط التجاري (مصر — التصنيف الموحد ISIC Rev.4 وما يعادله دوليًا)
-        </div>
-        {value.code && (
-          <Badge variant="secondary" className="text-[11px]">
-            مختار: {value.code} — {value.name}
-          </Badge>
-        )}
+      <div className="flex items-center gap-2 text-sm font-semibold text-primary">
+        <ScrollText className="h-4 w-4" />
+        بيانات النشاط التجاري للفرد
       </div>
 
       <Alert className="border-primary/15 bg-background">
-        <ClipboardCheck className="h-4 w-4" />
         <AlertDescription className="text-xs leading-relaxed text-right">
-          اختر النشاط ليُحفظ ضمن سجل التدقيق الشرعي ويُربط بحساب الشركة عند الحاجة.
-          الأكواد المصرية مطابقة لـ ISIC Rev.4 (تعتمده السعودية ودول الخليج والأردن).
-          المقابلات: <b>NACE</b> (الاتحاد الأوروبي) — <b>NAICS</b> (الولايات المتحدة وكندا والمكسيك) — <b>UK SIC</b> (المملكة المتحدة).
+          سجّل <b>تاريخ تشغيل النشاط</b> لاحتساب بدء الحول التجاري بدقة. إن كان نشاطك يخص
+          <b> شركة قائمة</b> فعّل الخيار وانتقل إلى تبويب <b>«زكاة الشركات»</b> حيث يظهر
+          تصنيف النشاط التلقائي حسب <b>دولة الشركة</b> والقطاع المختار.
         </AlertDescription>
       </Alert>
-
-      {/* بحث وفلتر */}
-      <div className="grid md:grid-cols-3 gap-3">
-        <div className="md:col-span-2 relative">
-          <Search className="h-4 w-4 absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="ابحث باسم النشاط أو الكود (مصر/ISIC/NACE/NAICS/UK SIC)…"
-            className="pr-9"
-          />
-        </div>
-        <Select value={filter} onValueChange={(v) => setFilter(v as TradeActivityGroup | "all")}>
-          <SelectTrigger>
-            <SelectValue placeholder="كل المجموعات" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">كل المجموعات</SelectItem>
-            {Object.entries(TRADE_GROUP_LABELS).map(([k, label]) => (
-              <SelectItem key={k} value={k}>{label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* جدول التصنيفات */}
-      <div className="rounded-md border bg-background max-h-72 overflow-auto">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="text-right">النشاط</TableHead>
-              <TableHead className="text-right">مصر</TableHead>
-              <TableHead className="text-right">ISIC</TableHead>
-              <TableHead className="text-right">NACE</TableHead>
-              <TableHead className="text-right">NAICS</TableHead>
-              <TableHead className="text-right">UK SIC</TableHead>
-              <TableHead className="text-right">إجراء</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {rows.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={7} className="text-center text-xs text-muted-foreground py-6">
-                  لا توجد نتائج مطابقة
-                </TableCell>
-              </TableRow>
-            ) : (
-              rows.map((r) => {
-                const isSelected = value.code === r.egyCode;
-                return (
-                  <TableRow key={r.egyCode} className={cn(isSelected && "bg-primary/10")}>
-                    <TableCell className="text-xs">
-                      <div className="font-medium">{r.nameAr}</div>
-                      <div className="text-[10px] text-muted-foreground">{TRADE_GROUP_LABELS[r.group]}</div>
-                    </TableCell>
-                    <TableCell className="text-xs tabular-nums">{r.egyCode}</TableCell>
-                    <TableCell className="text-xs tabular-nums">{r.isic}</TableCell>
-                    <TableCell className="text-xs tabular-nums">{r.nace}</TableCell>
-                    <TableCell className="text-xs tabular-nums">{r.naics}</TableCell>
-                    <TableCell className="text-xs tabular-nums">{r.ukSic}</TableCell>
-                    <TableCell>
-                      <Button
-                        size="sm"
-                        variant={isSelected ? "default" : "outline"}
-                        onClick={() =>
-                          onChange({
-                            ...value,
-                            code: r.egyCode,
-                            name: r.nameAr,
-                            group: r.group,
-                          })
-                        }
-                      >
-                        {isSelected ? "مختار" : "اختر"}
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            )}
-          </TableBody>
-        </Table>
-      </div>
-
-      {/* ملاحظة زكوية مخصصة بناءً على النشاط */}
-      {selectedRow?.zakatNote && (
-        <Alert className="border-primary/20 bg-background">
-          <AlertDescription className="text-xs leading-relaxed text-right">
-            <b>ملاحظة زكوية:</b> {selectedRow.zakatNote}
-          </AlertDescription>
-        </Alert>
-      )}
 
       {/* تاريخ تشغيل النشاط + ربط الشركة */}
       <div className="grid md:grid-cols-2 gap-4">
@@ -264,7 +138,7 @@ export default function TradeActivityClassification({ value, onChange, onOpenCom
                 }
               }}
             >
-              فتح تبويب «زكاة الشركات» للمراجعة والتدقيق والامتثال
+              فتح تبويب «زكاة الشركات» لاختيار التصنيف حسب الدولة والقطاع
             </Button>
           )}
         </div>
@@ -279,26 +153,6 @@ export default function TradeActivityClassification({ value, onChange, onOpenCom
           })
         }
       />
-
-      {/* مراجع التصنيفات الرسمية */}
-      <details className="rounded-md border bg-background p-3 text-xs">
-        <summary className="cursor-pointer font-semibold">المراجع الرسمية للتصنيفات الدولية</summary>
-        <ul className="mt-2 space-y-1">
-          {CLASSIFICATION_REFS.map((ref) => (
-            <li key={ref.url} className="flex items-center justify-between gap-2">
-              <span className="text-muted-foreground">{ref.country}</span>
-              <a
-                href={ref.url}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="text-primary hover:underline inline-flex items-center gap-1"
-              >
-                {ref.name} <ExternalLink className="h-3 w-3" />
-              </a>
-            </li>
-          ))}
-        </ul>
-      </details>
     </div>
   );
 }
@@ -319,43 +173,29 @@ function ShopLicensingTable({
       if (!term) return true;
       return (
         r.nameAr.toLowerCase().includes(term) ||
-        r.authority.toLowerCase().includes(term) ||
         (r.notes || "").toLowerCase().includes(term)
       );
     });
   }, [cat, q]);
 
-  const hazardBadge = (h: "low" | "medium" | "high") => {
-    const map = {
-      low: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
-      medium: "bg-amber-500/15 text-amber-700 dark:text-amber-300",
-      high: "bg-red-500/15 text-red-700 dark:text-red-300",
-    };
-    return (
-      <span className={cn("text-[10px] rounded px-1.5 py-0.5", map[h])}>
-        {SHOP_HAZARD_LABELS[h]}
-      </span>
-    );
-  };
-
   return (
     <div className="rounded-lg border border-primary/15 bg-background p-4 space-y-3">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-2 text-sm font-semibold">
-          <Building2 className="h-4 w-4 text-primary" />
-          تصنيف المحال العامة المصرية — قانون 154 لسنة 2019
+          <Store className="h-4 w-4 text-primary" />
+          دليل أنواع المحال العامة المصرية
         </div>
         <Badge variant="outline" className="text-[10px]">
-          إجمالي: {EGY_SHOP_LICENSES.length} نوع محل
+          {EGY_SHOP_LICENSES.length} نوع محل
         </Badge>
       </div>
 
       <Alert className="border-primary/10 bg-muted/30">
         <AlertDescription className="text-xs leading-relaxed text-right">
-          هذا تصنيف <b>ترخيصي</b> (وزارة التنمية المحلية والمحليات) — مختلف عن
-          التصنيف الإحصائي ISIC أعلاه. يفيد في تحديد الجهة المُختصة بالترخيص
-          والاشتراطات الصحية/البيئية، ويُربط بالزكاة لاستبعاد المحال
-          المحرّمة شرعًا (كحوليات/قمار) وتقدير طبيعة الأصول.
+          قائمة مرجعية لأنواع المحال التجارية والخدمية الشائعة في السوق المصري —
+          تساعدك على <b>التعرف على طبيعة نشاطك</b> واختيار الاسم المناسب،
+          ولتنبيهك على المحال <b>المحرّمة شرعًا</b> (كحوليات/قمار) كي تُستبعد من
+          وعاء الزكاة ويُتخلَّص من كسبها.
         </AlertDescription>
       </Alert>
 
@@ -365,7 +205,7 @@ function ShopLicensingTable({
           <Input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="ابحث باسم المحل أو الجهة المختصة…"
+            placeholder="ابحث باسم المحل أو النشاط…"
             className="pr-9"
           />
         </div>
@@ -390,15 +230,13 @@ function ShopLicensingTable({
             <TableRow>
               <TableHead className="text-right">المحل / النشاط</TableHead>
               <TableHead className="text-right">الفئة</TableHead>
-              <TableHead className="text-right">الخطورة</TableHead>
-              <TableHead className="text-right">الجهة المختصة</TableHead>
               <TableHead className="text-right">إجراء</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {rows.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-xs text-muted-foreground py-6">
+                <TableCell colSpan={3} className="text-center text-xs text-muted-foreground py-6">
                   لا توجد نتائج
                 </TableCell>
               </TableRow>
@@ -412,8 +250,6 @@ function ShopLicensingTable({
                     )}
                   </TableCell>
                   <TableCell className="text-xs">{SHOP_CATEGORY_LABELS[r.category]}</TableCell>
-                  <TableCell>{hazardBadge(r.hazard)}</TableCell>
-                  <TableCell className="text-xs text-muted-foreground">{r.authority}</TableCell>
                   <TableCell>
                     <Button size="sm" variant="outline" onClick={() => onPick(r)}>
                       استخدم الاسم
