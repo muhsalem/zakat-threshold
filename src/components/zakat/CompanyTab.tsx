@@ -22,6 +22,8 @@ import { PurificationCalculator } from "./PurificationCalculator";
 import { RikazSection } from "./RikazSection";
 import { TakafulSection } from "./TakafulSection";
 import { TaxZakatReconciliation } from "./TaxZakatReconciliation";
+import { RealEstateZakatSection } from "./RealEstateZakatSection";
+import { TrialBalanceImport } from "./TrialBalanceImport";
 import { LivePricesCard } from "./LivePricesCard";
 import CompanyTradeClassification, {
   emptyCompanyTradeClassification,
@@ -1201,6 +1203,12 @@ export function CompanyTab() {
           {(sector.id === "insurance" || sector.id === "takaful" || sector.label?.includes("تكافل") || sector.label?.includes("تأمين")) && (
             <TakafulSection currencyName={currencyName} />
           )}
+
+          {/* ====== استيراد ميزان المراجعة (CSV) ====== */}
+          <TrialBalanceImport />
+
+          {/* ====== زكاة المستغلات (عقارات/مصانع/فنادق) ====== */}
+          <RealEstateZakatSection currencyName={currencyName} />
 
           {/* ====== مطابقة الوعاء الزكوي مع الضريبي ====== */}
           <TaxZakatReconciliation currencyName={currencyName} />
