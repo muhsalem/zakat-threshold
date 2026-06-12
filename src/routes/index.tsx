@@ -81,10 +81,13 @@ function Index() {
           </p>
         </section>
 
-        <Tabs defaultValue="wizard" className="space-y-6" dir="rtl">
-          <TabsList dir="rtl" className="grid w-full max-w-4xl mx-auto h-auto gap-1 grid-cols-3 md:grid-cols-5">
-            <TabsTrigger value="wizard" className="gap-1.5 text-xs md:text-sm py-2.5">
-              <Sparkles className="h-3.5 w-3.5 md:h-4 md:w-4" /> المبتدئ
+        <Tabs defaultValue="individual" className="space-y-6" dir="rtl">
+          <TabsList dir="rtl" className="grid w-full max-w-4xl mx-auto h-auto gap-1 grid-cols-2 md:grid-cols-4">
+            <TabsTrigger value="individual" className="gap-1.5 text-xs md:text-sm py-2.5">
+              <Users className="h-3.5 w-3.5 md:h-4 md:w-4" /> الأفراد
+            </TabsTrigger>
+            <TabsTrigger id="tab-company" value="company" className="gap-1.5 text-xs md:text-sm py-2.5">
+              <Building2 className="h-3.5 w-3.5 md:h-4 md:w-4" /> الشركات
             </TabsTrigger>
             <TabsTrigger value="fitr" className="gap-1.5 text-xs md:text-sm py-2.5">
               <Wheat className="h-3.5 w-3.5 md:h-4 md:w-4" /> زكاة الفطر
@@ -92,19 +95,13 @@ function Index() {
             <TabsTrigger value="history" className="gap-1.5 text-xs md:text-sm py-2.5">
               <Scroll className="h-3.5 w-3.5 md:h-4 md:w-4" /> الأنصبة
             </TabsTrigger>
-            <TabsTrigger value="individual" className="gap-1.5 text-xs md:text-sm py-2.5">
-              <Users className="h-3.5 w-3.5 md:h-4 md:w-4" /> الأفراد
-            </TabsTrigger>
-            <TabsTrigger id="tab-company" value="company" className="gap-1.5 text-xs md:text-sm py-2.5">
-              <Building2 className="h-3.5 w-3.5 md:h-4 md:w-4" /> الشركات
-            </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="wizard"><BeginnerWizard /></TabsContent>
-          <TabsContent value="fitr" className="max-w-6xl mx-auto"><FitrCalculator /></TabsContent>
-          <TabsContent value="history" className="max-w-4xl mx-auto"><NisabHistory /></TabsContent>
+          {/* تبويب "المبتدئ" مؤجل حتى مرحلة نشر الحاسبة — سيُتاح مجانًا لاحقًا */}
           <TabsContent value="individual"><IndividualTab /></TabsContent>
           <TabsContent value="company"><CompanyTab /></TabsContent>
+          <TabsContent value="fitr" className="max-w-6xl mx-auto"><FitrCalculator /></TabsContent>
+          <TabsContent value="history" className="max-w-4xl mx-auto"><NisabHistory /></TabsContent>
         </Tabs>
       </main>
 
