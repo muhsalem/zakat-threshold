@@ -25,6 +25,7 @@ import { TaxZakatReconciliation } from "./TaxZakatReconciliation";
 import { RealEstateZakatSection } from "./RealEstateZakatSection";
 import { TrialBalanceImport } from "./TrialBalanceImport";
 import { LivePricesCard } from "./LivePricesCard";
+import { EightChannelsDistribution } from "./EightChannelsDistribution";
 import CompanyTradeClassification, {
   emptyCompanyTradeClassification,
   type CompanyTradeClassificationValue,
