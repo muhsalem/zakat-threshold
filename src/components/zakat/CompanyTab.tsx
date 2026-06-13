@@ -23,6 +23,7 @@ import { RikazSection } from "./RikazSection";
 import { TakafulSection } from "./TakafulSection";
 import { TaxZakatReconciliation } from "./TaxZakatReconciliation";
 import { RealEstateZakatSection } from "./RealEstateZakatSection";
+import { BankInsuranceZakatSection } from "./BankInsuranceZakatSection";
 import { TrialBalanceImport } from "./TrialBalanceImport";
 import { LivePricesCard } from "./LivePricesCard";
 import { EightChannelsDistribution } from "./EightChannelsDistribution";
