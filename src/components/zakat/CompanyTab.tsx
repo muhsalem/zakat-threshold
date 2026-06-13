@@ -1332,6 +1332,11 @@ export function CompanyTab() {
             </CardContent>
           </Card>
 
+          {/* خطة توزيع الزكاة على المصارف الثمانية */}
+          <EightChannelsDistribution netDue={calc.zakat} currencyName={currencyName} />
+
+
+
           <Card className="shadow-soft">
             <CardHeader className="pb-3"><CardTitle className="flex items-center gap-2 text-base"><CheckSquare className="h-4 w-4" />ملخص الوعاء</CardTitle></CardHeader>
             <CardContent className="space-y-2 text-sm">
