@@ -34,6 +34,7 @@ import { SaveToHistoryCard } from "./SaveToHistoryCard";
 import { CashBankSection } from "./CashBankSection";
 import { SecuritiesSection } from "./SecuritiesSection";
 import { LivePricesCard } from "./LivePricesCard";
+import { EightChannelsDistribution } from "./EightChannelsDistribution";
 import { downloadZakatPdf } from "./ReactPdfReport";
 import { downloadReportExcel } from "@/lib/exportExcel";
 import { FileSpreadsheet } from "lucide-react";
