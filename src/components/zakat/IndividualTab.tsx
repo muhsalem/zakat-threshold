@@ -34,6 +34,7 @@ import { SaveToHistoryCard } from "./SaveToHistoryCard";
 import { CashBankSection } from "./CashBankSection";
 import { SecuritiesSection } from "./SecuritiesSection";
 import { LivePricesCard } from "./LivePricesCard";
+import { EightChannelsDistribution } from "./EightChannelsDistribution";
 import { downloadZakatPdf } from "./ReactPdfReport";
 import { downloadReportExcel } from "@/lib/exportExcel";
 import { FileSpreadsheet } from "lucide-react";
@@ -1830,6 +1831,12 @@ export function IndividualTab() {
             })()}
           </CardContent>
         </Card>
+
+        {/* خطة توزيع الزكاة على المصارف الثمانية */}
+        <EightChannelsDistribution
+          netDue={Math.max(0, calc.total - num(prepaidZakat)) + fitrContribution}
+          currencyName={currencyName}
+        />
 
         {/* تعجيل الزكاة */}
         <Card className="shadow-soft print:hidden">

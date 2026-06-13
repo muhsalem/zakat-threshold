@@ -25,6 +25,7 @@ import { TaxZakatReconciliation } from "./TaxZakatReconciliation";
 import { RealEstateZakatSection } from "./RealEstateZakatSection";
 import { TrialBalanceImport } from "./TrialBalanceImport";
 import { LivePricesCard } from "./LivePricesCard";
+import { EightChannelsDistribution } from "./EightChannelsDistribution";
 import CompanyTradeClassification, {
   emptyCompanyTradeClassification,
   type CompanyTradeClassificationValue,
@@ -1331,6 +1332,11 @@ export function CompanyTab() {
               <p className="text-[10px] opacity-60 mt-2">المعيار: {accountingStd}{consolidated ? " — موحّدة" : ""}</p>
             </CardContent>
           </Card>
+
+          {/* خطة توزيع الزكاة على المصارف الثمانية */}
+          <EightChannelsDistribution netDue={calc.zakat} currencyName={currencyName} />
+
+
 
           <Card className="shadow-soft">
             <CardHeader className="pb-3"><CardTitle className="flex items-center gap-2 text-base"><CheckSquare className="h-4 w-4" />ملخص الوعاء</CardTitle></CardHeader>
