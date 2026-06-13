@@ -23,6 +23,7 @@ import { RikazSection } from "./RikazSection";
 import { TakafulSection } from "./TakafulSection";
 import { TaxZakatReconciliation } from "./TaxZakatReconciliation";
 import { RealEstateZakatSection } from "./RealEstateZakatSection";
+import { BankInsuranceZakatSection } from "./BankInsuranceZakatSection";
 import { TrialBalanceImport } from "./TrialBalanceImport";
 import { LivePricesCard } from "./LivePricesCard";
 import { EightChannelsDistribution } from "./EightChannelsDistribution";
@@ -1210,6 +1211,12 @@ export function CompanyTab() {
 
           {/* ====== زكاة المستغلات (عقارات/مصانع/فنادق) ====== */}
           <RealEstateZakatSection currencyName={currencyName} />
+
+          {/* ====== زكاة البنوك وشركات التأمين ====== */}
+          {(sector.id === "bank" || sector.id === "insurance" || sector.id === "takaful" ||
+            sector.label?.includes("بنك") || sector.label?.includes("تأمين") || sector.label?.includes("تكافل")) && (
+            <BankInsuranceZakatSection currencyName={currencyName} />
+          )}
 
           {/* ====== مطابقة الوعاء الزكوي مع الضريبي ====== */}
           <TaxZakatReconciliation currencyName={currencyName} />
