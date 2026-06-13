@@ -1831,6 +1831,12 @@ export function IndividualTab() {
           </CardContent>
         </Card>
 
+        {/* خطة توزيع الزكاة على المصارف الثمانية */}
+        <EightChannelsDistribution
+          netDue={Math.max(0, calc.total - num(prepaidZakat)) + fitrContribution}
+          currencyName={currencyName}
+        />
+
         {/* تعجيل الزكاة */}
         <Card className="shadow-soft print:hidden">
           <CardHeader className="pb-3">
