@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs as _T } from "@/components/ui/tabs";
+
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { num, fmt, ZAKAT_RATE } from "@/lib/zakat";
 import { Wallet, Info } from "lucide-react";
@@ -58,10 +58,6 @@ export default function SalaryZakatCalculator({ currencyName = "ج.م", nisabVal
             <TabsTrigger value="monthly" className="text-xs">شهري فوري</TabsTrigger>
           </TabsList>
         </Tabs>
-
-        <RadioGroup value={method} onValueChange={(v) => setMethod(v as Method)} className="hidden">
-          <RadioGroupItem value={method} />
-        </RadioGroup>
 
         {method === "monthly" && (
           <div className="grid sm:grid-cols-2 gap-3">
