@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Tabs as _T } from "@/components/ui/tabs";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { num, fmt, ZAKAT_RATE } from "@/lib/zakat";
 import { Wallet, Info } from "lucide-react";
