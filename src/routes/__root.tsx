@@ -11,6 +11,7 @@ import {
 
 import appCss from "../styles.css?url";
 import { initSentry } from "@/lib/sentry";
+import { LanguageProvider } from "@/lib/i18n";
 
 function NotFoundComponent() {
   return (
