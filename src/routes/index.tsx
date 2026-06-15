@@ -9,6 +9,8 @@ import { Users, Building2, Scroll, Moon, ShieldCheck, FileText, Wheat, History, 
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import LanguageToggle from "@/components/LanguageToggle";
+import { useI18n } from "@/lib/i18n";
 
 // Code-splitting للتبويبات الثقيلة لتقليل حجم الـ bundle الأولي
 const IndividualTab = lazy(() => import("@/components/zakat/IndividualTab").then((m) => ({ default: m.IndividualTab })));
