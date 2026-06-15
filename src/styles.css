@@ -205,3 +205,13 @@
   background-image: none !important;
 }
 
+
+/* Mobile-first: make any data table horizontally scrollable on small screens */
+@media (max-width: 768px) {
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+}

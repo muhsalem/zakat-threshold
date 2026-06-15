@@ -9,6 +9,8 @@ import { Users, Building2, Scroll, Moon, ShieldCheck, FileText, Wheat, History, 
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import LanguageToggle from "@/components/LanguageToggle";
+import { useI18n } from "@/lib/i18n";
 
 // Code-splitting للتبويبات الثقيلة لتقليل حجم الـ bundle الأولي
 const IndividualTab = lazy(() => import("@/components/zakat/IndividualTab").then((m) => ({ default: m.IndividualTab })));
@@ -51,6 +53,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const { t, lang } = useI18n();
   return (
     <div className="min-h-screen">
       <header className="border-b border-border/60 bg-card/60 backdrop-blur-sm sticky top-0 z-30">
@@ -60,11 +63,12 @@ function Index() {
               <Moon className="h-5 w-5 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-xl font-bold leading-tight">حاسبة الزكاة</h1>
-              <p className="text-xs text-muted-foreground">نموذج شامل لكل الأوعية وفق المعايير الشرعية</p>
+              <h1 className="text-xl font-bold leading-tight">{t("app.title")}</h1>
+              <p className="text-xs text-muted-foreground">{t("app.subtitle")}</p>
             </div>
           </div>
           <div className="flex items-center gap-1">
+            <LanguageToggle />
             <NotificationsBell />
             <FontSizeToggle />
             <ThemeToggle />
@@ -78,40 +82,38 @@ function Index() {
         <div role="note" className="mb-6 max-w-4xl mx-auto rounded-lg border border-primary/30 bg-primary/5 px-4 py-3 text-sm text-foreground/90 flex items-start gap-2">
           <ShieldCheck className="h-4 w-4 text-primary mt-0.5 shrink-0" />
           <p>
-            <b>إخلاء مسؤولية شرعي:</b> هذه الحاسبة <b>استرشادية</b> ومبنية على المعايير الفقهية المعتمدة (AAOIFI، المجامع الفقهية، بيت الزكاة الكويتي).
-            للحالات الخاصة والفتاوى الملزمة، يُرجى مراجعة <b>دار الإفتاء</b> أو <b>عالم/مفتٍ معتمد</b> في بلدك.
+            <b>{t("disclaimer.title")}</b> {t("disclaimer.body")}
           </p>
         </div>
 
         <section className="mb-8 text-center max-w-3xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-l from-primary via-primary to-gold bg-clip-text text-transparent">
-            احسب زكاتك بدقة وفق المنهج الشرعي
+            {t("hero.title")}
           </h2>
           <p className="text-muted-foreground leading-relaxed">
-            نموذج شامل لكل الأوعية: نقد وأوراق مالية وتجارية ورقمية وعقار وزروع وأنعام وركاز، مع مطابقة الوعاء الضريبي.
+            {t("hero.body")}
           </p>
         </section>
 
-        <Tabs defaultValue="individual" className="space-y-6" dir="rtl">
-          <TabsList dir="rtl" className="grid w-full max-w-5xl mx-auto h-auto gap-1 grid-cols-2 md:grid-cols-5">
+        <Tabs defaultValue="individual" className="space-y-6" dir={lang === "ar" ? "rtl" : "ltr"}>
+          <TabsList dir={lang === "ar" ? "rtl" : "ltr"} className="grid w-full max-w-5xl mx-auto h-auto gap-1 grid-cols-2 md:grid-cols-5">
             <TabsTrigger value="individual" className="gap-1.5 text-xs md:text-sm py-2.5">
-              <Users className="h-3.5 w-3.5 md:h-4 md:w-4" /> الأفراد
+              <Users className="h-3.5 w-3.5 md:h-4 md:w-4" /> {t("tabs.individual")}
             </TabsTrigger>
             <TabsTrigger id="tab-company" value="company" className="gap-1.5 text-xs md:text-sm py-2.5">
-              <Building2 className="h-3.5 w-3.5 md:h-4 md:w-4" /> الشركات
+              <Building2 className="h-3.5 w-3.5 md:h-4 md:w-4" /> {t("tabs.company")}
             </TabsTrigger>
             <TabsTrigger value="fitr" className="gap-1.5 text-xs md:text-sm py-2.5">
-              <Wheat className="h-3.5 w-3.5 md:h-4 md:w-4" /> زكاة الفطر
+              <Wheat className="h-3.5 w-3.5 md:h-4 md:w-4" /> {t("tabs.fitr")}
             </TabsTrigger>
             <TabsTrigger value="history" className="gap-1.5 text-xs md:text-sm py-2.5">
-              <Scroll className="h-3.5 w-3.5 md:h-4 md:w-4" /> الأنصبة
+              <Scroll className="h-3.5 w-3.5 md:h-4 md:w-4" /> {t("tabs.history")}
             </TabsTrigger>
             <TabsTrigger value="advanced" className="gap-1.5 text-xs md:text-sm py-2.5">
-              <Sparkles className="h-3.5 w-3.5 md:h-4 md:w-4" /> أدوات متقدمة
+              <Sparkles className="h-3.5 w-3.5 md:h-4 md:w-4" /> {t("tabs.advanced")}
             </TabsTrigger>
           </TabsList>
 
-          {/* تبويب "المبتدئ" مؤجل حتى مرحلة نشر الحاسبة — سيُتاح مجانًا لاحقًا */}
           <TabsContent value="individual"><Suspense fallback={<TabFallback />}><IndividualTab /></Suspense></TabsContent>
           <TabsContent value="company"><Suspense fallback={<TabFallback />}><CompanyTab /></Suspense></TabsContent>
           <TabsContent value="fitr" className="max-w-6xl mx-auto"><Suspense fallback={<TabFallback />}><FitrCalculator /></Suspense></TabsContent>
@@ -124,30 +126,24 @@ function Index() {
         <div className="container mx-auto px-4 py-8 grid md:grid-cols-3 gap-6 text-xs text-muted-foreground">
           <div>
             <div className="flex items-center gap-2 font-bold text-foreground mb-2">
-              <Moon className="h-4 w-4 text-primary" /> حاسبة الزكاة الشاملة
+              <Moon className="h-4 w-4 text-primary" /> {t("footer.brand")}
             </div>
-            <p className="leading-relaxed">
-              أداة استرشادية فقهية‑محاسبية وفق المعايير الشرعية الدولية (AAOIFI رقم 35)
-              وفتاوى المجامع الفقهية وبيت الزكاة الكويتي.
-            </p>
+            <p className="leading-relaxed">{t("footer.about")}</p>
           </div>
           <div>
-            <div className="font-bold text-foreground mb-2">روابط قانونية</div>
+            <div className="font-bold text-foreground mb-2">{t("footer.legal")}</div>
             <ul className="space-y-1.5">
-              <li><Link to="/legal/privacy" className="hover:text-primary inline-flex items-center gap-1"><ShieldCheck className="h-3 w-3" /> سياسة الخصوصية</Link></li>
-              <li><Link to="/legal/terms" className="hover:text-primary inline-flex items-center gap-1"><FileText className="h-3 w-3" /> شروط الاستخدام وإخلاء المسؤولية</Link></li>
+              <li><Link to="/legal/privacy" className="hover:text-primary inline-flex items-center gap-1"><ShieldCheck className="h-3 w-3" /> {t("footer.privacy")}</Link></li>
+              <li><Link to="/legal/terms" className="hover:text-primary inline-flex items-center gap-1"><FileText className="h-3 w-3" /> {t("footer.terms")}</Link></li>
             </ul>
           </div>
           <div>
-            <div className="font-bold text-foreground mb-2">إخلاء مسؤولية</div>
-            <p className="leading-relaxed">
-              نتائج هذه الحاسبة <b>استرشادية</b> وليست فتوى ملزمة ولا تقريراً حكومياً معتمداً.
-              للحالات الخاصة يُرجى مراجعة عالم/مفتٍ معتمد أو هيئة الفتوى المحلية.
-            </p>
+            <div className="font-bold text-foreground mb-2">{t("footer.disclaimer")}</div>
+            <p className="leading-relaxed">{t("footer.disclaimerBody")}</p>
           </div>
         </div>
         <div className="border-t border-border/40 py-4 text-center text-xs text-muted-foreground">
-          © {new Date().getFullYear()} منصة حاسبة الزكاة الشاملة — جميع الحقوق محفوظة.
+          © {new Date().getFullYear()} {t("footer.brand")}
         </div>
       </footer>
     </div>
