@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import * as XLSX from "xlsx";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -70,8 +71,18 @@ export function TrialBalanceImport({ onMapped }: Props) {
   const handleFile = async (f: File) => {
     setError(null); setUnmapped([]);
     try {
-      const text = await f.text();
-      const rows = parseCSV(text);
+      const isExcel = /\.(xlsx|xls)$/i.test(f.name);
+      let rows: string[][];
+      if (isExcel) {
+        const buf = await f.arrayBuffer();
+        const wb = XLSX.read(buf, { type: "array" });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const aoa = XLSX.utils.sheet_to_json<unknown[]>(ws, { header: 1, defval: "" });
+        rows = aoa.map((r) => r.map((c) => String(c ?? "")));
+      } else {
+        const text = await f.text();
+        rows = parseCSV(text);
+      }
       if (rows.length < 2) throw new Error("الملف فارغ أو لا يحتوي صفوف بيانات");
 
       // اكتشف أعمدة الاسم/المدين/الدائن من رأس الجدول
@@ -144,7 +155,7 @@ export function TrialBalanceImport({ onMapped }: Props) {
       <CardContent className="space-y-3">
         <Alert className="border-primary/20 bg-primary/5">
           <AlertDescription className="text-xs leading-relaxed">
-            ارفع ميزان مراجعة بصيغة CSV بالأعمدة: <b>اسم الحساب · مدين · دائن</b>.
+            ارفع ميزان مراجعة بصيغة <b>CSV</b> أو <b>Excel (.xlsx/.xls)</b> بالأعمدة: <b>اسم الحساب · مدين · دائن</b>.
             ستُصنَّف الحسابات تلقائيًا (نقد، ذمم، مخزون، أصول ثابتة، ديون) بناءً على الكلمات المفتاحية.
             راجع الحسابات غير المصنّفة وأضفها يدويًا.
           </AlertDescription>
@@ -152,13 +163,15 @@ export function TrialBalanceImport({ onMapped }: Props) {
 
         <div className="flex flex-wrap gap-2">
           <Button onClick={() => fileRef.current?.click()} size="sm" className="gap-1.5">
-            <Upload className="h-4 w-4" /> رفع ملف CSV
+            <Upload className="h-4 w-4" /> رفع ملف (CSV / Excel)
           </Button>
           <Button onClick={downloadSample} size="sm" variant="outline" className="gap-1.5">
             <Download className="h-4 w-4" /> تحميل قالب نموذجي
           </Button>
           <input
-            ref={fileRef} type="file" accept=".csv,text/csv" className="hidden"
+            ref={fileRef} type="file"
+            accept=".csv,text/csv,.xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+            className="hidden"
             onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
           />
         </div>

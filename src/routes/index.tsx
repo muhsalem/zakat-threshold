@@ -1,17 +1,28 @@
+import { lazy, Suspense } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { IndividualTab } from "@/components/zakat/IndividualTab";
-import { CompanyTab } from "@/components/zakat/CompanyTab";
 import { NisabHistory } from "@/components/zakat/NisabHistory";
-import { FitrCalculator } from "@/components/zakat/FitrCalculator";
-import AdvancedToolsHub from "@/components/zakat/AdvancedToolsHub";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { FontSizeToggle } from "@/components/FontSizeToggle";
 import { NotificationsBell } from "@/components/NotificationsBell";
-import { Users, Building2, Scroll, Moon, ShieldCheck, FileText, Wheat, History, LogIn, LogOut, Lock, Sparkles } from "lucide-react";
+import { Users, Building2, Scroll, Moon, ShieldCheck, FileText, Wheat, History, LogIn, LogOut, Lock, Sparkles, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+
+// Code-splitting للتبويبات الثقيلة لتقليل حجم الـ bundle الأولي
+const IndividualTab = lazy(() => import("@/components/zakat/IndividualTab").then((m) => ({ default: m.IndividualTab })));
+const CompanyTab = lazy(() => import("@/components/zakat/CompanyTab").then((m) => ({ default: m.CompanyTab })));
+const FitrCalculator = lazy(() => import("@/components/zakat/FitrCalculator").then((m) => ({ default: m.FitrCalculator })));
+const AdvancedToolsHub = lazy(() => import("@/components/zakat/AdvancedToolsHub"));
+
+function TabFallback() {
+  return (
+    <div className="flex items-center justify-center py-16 text-muted-foreground">
+      <Loader2 className="h-5 w-5 animate-spin ml-2" /> جارٍ التحميل...
+    </div>
+  );
+}
 
 
 export const Route = createFileRoute("/")({
@@ -101,11 +112,11 @@ function Index() {
           </TabsList>
 
           {/* تبويب "المبتدئ" مؤجل حتى مرحلة نشر الحاسبة — سيُتاح مجانًا لاحقًا */}
-          <TabsContent value="individual"><IndividualTab /></TabsContent>
-          <TabsContent value="company"><CompanyTab /></TabsContent>
-          <TabsContent value="fitr" className="max-w-6xl mx-auto"><FitrCalculator /></TabsContent>
+          <TabsContent value="individual"><Suspense fallback={<TabFallback />}><IndividualTab /></Suspense></TabsContent>
+          <TabsContent value="company"><Suspense fallback={<TabFallback />}><CompanyTab /></Suspense></TabsContent>
+          <TabsContent value="fitr" className="max-w-6xl mx-auto"><Suspense fallback={<TabFallback />}><FitrCalculator /></Suspense></TabsContent>
           <TabsContent value="history" className="max-w-4xl mx-auto"><NisabHistory /></TabsContent>
-          <TabsContent value="advanced" className="max-w-5xl mx-auto"><AdvancedToolsHub /></TabsContent>
+          <TabsContent value="advanced" className="max-w-5xl mx-auto"><Suspense fallback={<TabFallback />}><AdvancedToolsHub /></Suspense></TabsContent>
         </Tabs>
       </main>
 
