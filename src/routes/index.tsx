@@ -112,11 +112,11 @@ function Index() {
           </TabsList>
 
           {/* تبويب "المبتدئ" مؤجل حتى مرحلة نشر الحاسبة — سيُتاح مجانًا لاحقًا */}
-          <TabsContent value="individual"><IndividualTab /></TabsContent>
-          <TabsContent value="company"><CompanyTab /></TabsContent>
-          <TabsContent value="fitr" className="max-w-6xl mx-auto"><FitrCalculator /></TabsContent>
+          <TabsContent value="individual"><Suspense fallback={<TabFallback />}><IndividualTab /></Suspense></TabsContent>
+          <TabsContent value="company"><Suspense fallback={<TabFallback />}><CompanyTab /></Suspense></TabsContent>
+          <TabsContent value="fitr" className="max-w-6xl mx-auto"><Suspense fallback={<TabFallback />}><FitrCalculator /></Suspense></TabsContent>
           <TabsContent value="history" className="max-w-4xl mx-auto"><NisabHistory /></TabsContent>
-          <TabsContent value="advanced" className="max-w-5xl mx-auto"><AdvancedToolsHub /></TabsContent>
+          <TabsContent value="advanced" className="max-w-5xl mx-auto"><Suspense fallback={<TabFallback />}><AdvancedToolsHub /></Suspense></TabsContent>
         </Tabs>
       </main>
 
