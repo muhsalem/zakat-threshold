@@ -71,8 +71,18 @@ export function TrialBalanceImport({ onMapped }: Props) {
   const handleFile = async (f: File) => {
     setError(null); setUnmapped([]);
     try {
-      const text = await f.text();
-      const rows = parseCSV(text);
+      const isExcel = /\.(xlsx|xls)$/i.test(f.name);
+      let rows: string[][];
+      if (isExcel) {
+        const buf = await f.arrayBuffer();
+        const wb = XLSX.read(buf, { type: "array" });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const aoa = XLSX.utils.sheet_to_json<unknown[]>(ws, { header: 1, defval: "" });
+        rows = aoa.map((r) => r.map((c) => String(c ?? "")));
+      } else {
+        const text = await f.text();
+        rows = parseCSV(text);
+      }
       if (rows.length < 2) throw new Error("الملف فارغ أو لا يحتوي صفوف بيانات");
 
       // اكتشف أعمدة الاسم/المدين/الدائن من رأس الجدول
