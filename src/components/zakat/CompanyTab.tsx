@@ -1198,8 +1198,69 @@ export function CompanyTab() {
                     <div className="flex justify-between text-primary"><span>الوعاء الزكوي (رأس المال العامل):</span><b>{cFmt(calc.workingCapital, currencyName)}</b></div>
                   </div>
                 </TabsContent>
+                </TabsContent>
+
+                <TabsContent value="net_income" className="space-y-4 pt-4">
+                  <Alert className="border-primary/20 bg-primary/5">
+                    <Info className="h-4 w-4" />
+                    <AlertDescription className="text-xs">
+                      <b>المعادلة الأولى — صافي الدخل:</b> (الإيرادات الزكوية − المصروفات التشغيلية − الإيرادات غير الزكوية) × 2.5%. يستخدمها بعض الفقهاء المعاصرين (الشيخ القرضاوي) لزكاة الأنشطة الخدمية والمهنية والصناعية ذات رأس المال الثابت الكبير.
+                    </AlertDescription>
+                  </Alert>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <NumField label="إجمالي الإيرادات" value={revenues} onChange={setRevenues} unit={currencyName} />
+                    <NumField label="المصروفات التشغيلية" value={opExpenses} onChange={setOpExpenses} unit={currencyName} />
+                    <NumField label="إيرادات غير زكوية (تُستبعد)" value={nonZakatableIncome} onChange={setNonZakatableIncome} unit={currencyName} hint="فوائد ربوية / غرامات" />
+                  </div>
+                  <div className="rounded-lg bg-muted/50 p-4 text-sm">
+                    <div className="flex justify-between text-primary"><span>الوعاء الزكوي (صافي الدخل):</span><b>{cFmt(calc.netIncome, currencyName)}</b></div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="net_equity" className="space-y-4 pt-4">
+                  <Alert className="border-primary/20 bg-primary/5">
+                    <Info className="h-4 w-4" />
+                    <AlertDescription className="text-xs">
+                      <b>المعادلة الثالثة — صافي حقوق الملكية:</b> (رأس المال المدفوع + الاحتياطيات + الأرباح المحتجزة) − (الأصول الثابتة + غير الملموسة + الخسائر المتراكمة) × 2.5%. تُستعمل عندما تكون حقوق الملكية هي المصدر الرئيس لتمويل الموجودات الزكوية.
+                    </AlertDescription>
+                  </Alert>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <NumField label="رأس المال المدفوع" value={paidCapital} onChange={setPaidCapital} unit={currencyName} />
+                    <NumField label="الاحتياطيات" value={reserves} onChange={setReserves} unit={currencyName} />
+                    <NumField label="الأرباح المحتجزة" value={retainedEarnings} onChange={setRetainedEarnings} unit={currencyName} />
+                    <NumField label="الأصول الثابتة (تُخصم)" value={fixedAssets} onChange={setFixedAssets} unit={currencyName} />
+                    <NumField label="الأصول غير الملموسة (تُخصم)" value={intangibles} onChange={setIntangibles} unit={currencyName} />
+                    <NumField label="الخسائر المتراكمة (تُخصم)" value={losses} onChange={setLosses} unit={currencyName} />
+                  </div>
+                  <div className="rounded-lg bg-muted/50 p-4 text-sm">
+                    <div className="flex justify-between text-primary"><span>الوعاء الزكوي (صافي حقوق الملكية):</span><b>{cFmt(calc.netEquity, currencyName)}</b></div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="invested_funds" className="space-y-4 pt-4">
+                  <Alert className="border-primary/20 bg-primary/5">
+                    <Info className="h-4 w-4" />
+                    <AlertDescription className="text-xs">
+                      <b>المعادلة الرابعة — الطريقة الفنية (صافي الأموال المستثمرة):</b> (حقوق الملكية + المطلوبات طويلة الأجل + المخصصات) − (الأصول الثابتة + غير الملموسة + الاستثمارات طويلة الأجل + الخسائر) × 2.5%. تعتمدها هيئة المحاسبة والمراجعة للمؤسسات المالية الإسلامية (AAOIFI) كطريقة معكوسة لصافي الموجودات لتفادي تقويم كل بند متداول على حدة.
+                    </AlertDescription>
+                  </Alert>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <NumField label="حقوق الملكية" value={equity} onChange={setEquity} unit={currencyName} />
+                    <NumField label="المطلوبات طويلة الأجل" value={ltLiabilities} onChange={setLtLiabilities} unit={currencyName} />
+                    <NumField label="المخصصات (تكافل/زكاة سابقة)" value={provisions} onChange={setProvisions} unit={currencyName} />
+                    <NumField label="الأصول الثابتة (تُخصم)" value={fixedAssets} onChange={setFixedAssets} unit={currencyName} />
+                    <NumField label="الأصول غير الملموسة (تُخصم)" value={intangibles} onChange={setIntangibles} unit={currencyName} />
+                    <NumField label="استثمارات طويلة الأجل (تُخصم)" value={ltInvestments} onChange={setLtInvestments} unit={currencyName} hint="عقارات/شركات شقيقة غير زكوية" />
+                    <NumField label="الخسائر المتراكمة (تُخصم)" value={losses} onChange={setLosses} unit={currencyName} />
+                  </div>
+                  <div className="rounded-lg bg-muted/50 p-4 text-sm">
+                    <div className="flex justify-between text-primary"><span>الوعاء الزكوي (الطريقة الفنية):</span><b>{cFmt(calc.investedFunds, currencyName)}</b></div>
+                  </div>
+                </TabsContent>
               </Tabs>
               </div>
+
+
 
               <Separator />
 
