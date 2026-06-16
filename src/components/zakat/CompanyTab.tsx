@@ -626,7 +626,20 @@ export function CompanyTab() {
     const curLiabs = num(stPayables) + num(accruals) + num(taxDue) + num(loanPrincipal);
     const netAssets = curAssets - curLiabs;
     const workingCapital = num(equity) + num(ltLiabilities) - num(fixedAssets) - num(intangibles) - num(losses);
-    const baseGross = method === "net_assets" ? netAssets : workingCapital;
+    // صافي الدخل = الإيرادات − المصروفات التشغيلية − الإيرادات غير الزكوية
+    const netIncome = num(revenues) - num(opExpenses) - num(nonZakatableIncome);
+    // صافي حقوق الملكية = (رأس المال + الاحتياطيات + الأرباح المحتجزة) − (الأصول الثابتة + غير الملموسة + الخسائر)
+    const netEquity = num(paidCapital) + num(reserves) + num(retainedEarnings)
+      - num(fixedAssets) - num(intangibles) - num(losses);
+    // الطريقة الفنية = (حقوق الملكية + المطلوبات طويلة الأجل + المخصصات) − (الأصول الثابتة + غير الملموسة + الاستثمارات طويلة الأجل + الخسائر)
+    const investedFunds = num(equity) + num(ltLiabilities) + num(provisions)
+      - num(fixedAssets) - num(intangibles) - num(ltInvestments) - num(losses);
+    const baseGross =
+      method === "net_assets" ? netAssets :
+      method === "working_capital" ? workingCapital :
+      method === "net_income" ? netIncome :
+      method === "net_equity" ? netEquity :
+      investedFunds;
 
     // استبعاد الحصص المعفاة من الوعاء
     const exemptPct = (num(shForeign) + num(shGovt) + num(shWaqf) + num(shNonMuslim)) / 100;
