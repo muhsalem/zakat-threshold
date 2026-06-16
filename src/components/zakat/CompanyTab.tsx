@@ -1353,12 +1353,42 @@ export function CompanyTab() {
                 </TabsContent>
 
                 <TabsContent value="net_equity" className="space-y-4 pt-4">
-                  <Alert className="border-primary/20 bg-primary/5">
-                    <Info className="h-4 w-4" />
-                    <AlertDescription className="text-xs">
-                      <b>المعادلة الثالثة — صافي حقوق الملكية:</b> (رأس المال المدفوع + الاحتياطيات + الأرباح المحتجزة) − (الأصول الثابتة + غير الملموسة + الخسائر المتراكمة) × 2.5%. تُستعمل عندما تكون حقوق الملكية هي المصدر الرئيس لتمويل الموجودات الزكوية.
-                    </AlertDescription>
-                  </Alert>
+                  <div className="flex items-start justify-between gap-2 flex-wrap">
+                    <Alert className="border-primary/20 bg-primary/5 flex-1">
+                      <Info className="h-4 w-4" />
+                      <AlertDescription className="text-xs">
+                        <b>المعادلة الثالثة — صافي حقوق الملكية:</b> (رأس المال المدفوع + الاحتياطيات + الأرباح المحتجزة) − (الأصول الثابتة + غير الملموسة + الخسائر المتراكمة) × 2.5%.
+                      </AlertDescription>
+                    </Alert>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" size="sm" className="gap-1.5 h-8 text-xs shrink-0">
+                          <HelpCircle className="h-3.5 w-3.5" /> ما هو "صافي حقوق الملكية"؟
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[min(400px,90vw)] text-xs space-y-2" dir="rtl">
+                        <p><b className="text-primary">التعريف:</b> هو ما تبقى للمساهمين من تمويل ذاتي بعد خصم الأصول طويلة الأجل غير الزكوية. يمثّل الجزء من حقوق الملكية المستثمر في أصول متداولة قابلة للنماء.</p>
+                        <p><b className="text-primary">مكوّناته:</b></p>
+                        <ul className="list-disc pr-4 space-y-0.5 text-muted-foreground">
+                          <li><b>رأس المال المدفوع:</b> القيمة الاسمية للأسهم المسدّدة.</li>
+                          <li><b>الاحتياطيات:</b> نظامي + اختياري + إعادة تقييم.</li>
+                          <li><b>الأرباح المحتجزة:</b> الأرباح غير الموزّعة من سنوات سابقة.</li>
+                        </ul>
+                        <p><b className="text-primary">يُخصم منها:</b></p>
+                        <ul className="list-disc pr-4 space-y-0.5 text-muted-foreground">
+                          <li>الأصول الثابتة (مبانٍ، آلات، سيارات للاستخدام).</li>
+                          <li>الأصول غير الملموسة (شهرة، براءات، برامج).</li>
+                          <li>الخسائر المتراكمة.</li>
+                        </ul>
+                        <div className="rounded bg-muted/60 p-2 mt-2">
+                          <b>مثال رقمي:</b><br/>
+                          رأس مال 500,000 + احتياطيات 200,000 + أرباح محتجزة 100,000 = 800,000<br/>
+                          − أصول ثابتة 400,000 − غير ملموسة 30,000 − خسائر 20,000 = 450,000<br/>
+                          <b className="text-primary">الزكاة = 450,000 × 2.5% = 11,250</b>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
                   <div className="grid md:grid-cols-2 gap-4">
                     <NumField label="رأس المال المدفوع" value={paidCapital} onChange={setPaidCapital} unit={currencyName} />
                     <NumField label="الاحتياطيات" value={reserves} onChange={setReserves} unit={currencyName} />
