@@ -476,10 +476,32 @@ export function CompanyTab() {
   const [shWaqf, setShWaqf] = useState("");       // وقفي → معفى
   const [shNonMuslim, setShNonMuslim] = useState(""); // غير مسلم → معفى من الزكاة
 
-  // طريقة الحساب
-  const [method, setMethod] = useState<"net_assets" | "working_capital">("net_assets");
+  // طريقة الحساب (4 معادلات)
+  type CalcMethod = "net_assets" | "working_capital" | "net_income" | "net_equity" | "invested_funds";
+  const [method, setMethod] = useState<CalcMethod>("net_assets");
   const [cash, setCash] = useState("");
   const [banks, setBanks] = useState("");
+
+  // ===== مدخلات الطرق الإضافية =====
+  // طريقة صافي الدخل
+  const [revenues, setRevenues] = useState("");
+  const [opExpenses, setOpExpenses] = useState("");
+  const [nonZakatableIncome, setNonZakatableIncome] = useState(""); // إيرادات غير زكوية تُستبعد
+  // طريقة صافي حقوق الملكية (مكمّلات لـ equity/fixed/losses الموجودة)
+  const [paidCapital, setPaidCapital] = useState("");
+  const [reserves, setReserves] = useState("");
+  const [retainedEarnings, setRetainedEarnings] = useState("");
+  // الطريقة الفنية / صافي الأموال المستثمرة
+  const [ltInvestments, setLtInvestments] = useState("");
+  const [provisions, setProvisions] = useState("");
+
+  const METHOD_LABELS: Record<CalcMethod, string> = {
+    net_assets: "صافي الموجودات",
+    working_capital: "رأس المال العامل",
+    net_income: "صافي الدخل",
+    net_equity: "صافي حقوق الملكية",
+    invested_funds: "الطريقة الفنية (صافي الأموال المستثمرة)",
+  };
 
   // ===== الذمم المدينة — تصنيف رباعي =====
   const [recGood, setRecGood] = useState("");        // ① جيدة → تُزكى كاملة
@@ -604,7 +626,20 @@ export function CompanyTab() {
     const curLiabs = num(stPayables) + num(accruals) + num(taxDue) + num(loanPrincipal);
     const netAssets = curAssets - curLiabs;
     const workingCapital = num(equity) + num(ltLiabilities) - num(fixedAssets) - num(intangibles) - num(losses);
-    const baseGross = method === "net_assets" ? netAssets : workingCapital;
+    // صافي الدخل = الإيرادات − المصروفات التشغيلية − الإيرادات غير الزكوية
+    const netIncome = num(revenues) - num(opExpenses) - num(nonZakatableIncome);
+    // صافي حقوق الملكية = (رأس المال + الاحتياطيات + الأرباح المحتجزة) − (الأصول الثابتة + غير الملموسة + الخسائر)
+    const netEquity = num(paidCapital) + num(reserves) + num(retainedEarnings)
+      - num(fixedAssets) - num(intangibles) - num(losses);
+    // الطريقة الفنية = (حقوق الملكية + المطلوبات طويلة الأجل + المخصصات) − (الأصول الثابتة + غير الملموسة + الاستثمارات طويلة الأجل + الخسائر)
+    const investedFunds = num(equity) + num(ltLiabilities) + num(provisions)
+      - num(fixedAssets) - num(intangibles) - num(ltInvestments) - num(losses);
+    const baseGross =
+      method === "net_assets" ? netAssets :
+      method === "working_capital" ? workingCapital :
+      method === "net_income" ? netIncome :
+      method === "net_equity" ? netEquity :
+      investedFunds;
 
     // استبعاد الحصص المعفاة من الوعاء
     const exemptPct = (num(shForeign) + num(shGovt) + num(shWaqf) + num(shNonMuslim)) / 100;
@@ -630,7 +665,9 @@ export function CompanyTab() {
     const sharesBalanced = Math.abs(totalShares - 100) < 0.01;
 
     return {
-      grossAssets, curAssets, curLiabs, netAssets, workingCapital, baseGross, base,
+      grossAssets, curAssets, curLiabs, netAssets, workingCapital,
+      netIncome, netEquity, investedFunds,
+      baseGross, base,
       rate, zakatOneYear, zakat, years, completed, complianceScore, totalCount, activeSections,
       nisabValue, reachesNisab, exemptPct, zakatableRatio, totalShares, sharesBalanced,
       recZakatable, inventoryMarket, stocksZakatable,
@@ -641,6 +678,9 @@ export function CompanyTab() {
     subsidiaryInv, otherCurrent,
     stPayables, accruals, taxDue, loanPrincipal, loanInterest,
     equity, ltLiabilities, fixedAssets, intangibles, losses,
+    revenues, opExpenses, nonZakatableIncome,
+    paidCapital, reserves, retainedEarnings,
+    ltInvestments, provisions,
     method, solarYear, compliance, orgKind, goldGramPrice,
     shGcc, shForeign, shGovt, shWaqf, shNonMuslim, accelerateYears, sector.group,
   ]);
@@ -1027,10 +1067,13 @@ export function CompanyTab() {
               <div>
                 <h4 className="font-semibold text-sm mb-2 text-primary">طريقة احتساب الوعاء الزكوي</h4>
 
-              <Tabs value={method} onValueChange={(v) => setMethod(v as "net_assets" | "working_capital")} dir="rtl">
-                <TabsList dir="rtl" className="grid grid-cols-2 w-full">
-                  <TabsTrigger value="net_assets">صافي الموجودات الزكوية</TabsTrigger>
-                  <TabsTrigger value="working_capital">رأس المال العامل</TabsTrigger>
+              <Tabs value={method} onValueChange={(v) => setMethod(v as CalcMethod)} dir="rtl">
+                <TabsList dir="rtl" className="grid grid-cols-2 md:grid-cols-5 w-full h-auto">
+                  <TabsTrigger value="net_assets" className="text-xs">صافي الموجودات</TabsTrigger>
+                  <TabsTrigger value="working_capital" className="text-xs">رأس المال العامل</TabsTrigger>
+                  <TabsTrigger value="net_income" className="text-xs">صافي الدخل</TabsTrigger>
+                  <TabsTrigger value="net_equity" className="text-xs">صافي حقوق الملكية</TabsTrigger>
+                  <TabsTrigger value="invested_funds" className="text-xs">الطريقة الفنية</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="net_assets" className="space-y-4 pt-4">
@@ -1155,8 +1198,70 @@ export function CompanyTab() {
                     <div className="flex justify-between text-primary"><span>الوعاء الزكوي (رأس المال العامل):</span><b>{cFmt(calc.workingCapital, currencyName)}</b></div>
                   </div>
                 </TabsContent>
+
+
+
+                <TabsContent value="net_income" className="space-y-4 pt-4">
+                  <Alert className="border-primary/20 bg-primary/5">
+                    <Info className="h-4 w-4" />
+                    <AlertDescription className="text-xs">
+                      <b>المعادلة الأولى — صافي الدخل:</b> (الإيرادات الزكوية − المصروفات التشغيلية − الإيرادات غير الزكوية) × 2.5%. يستخدمها بعض الفقهاء المعاصرين (الشيخ القرضاوي) لزكاة الأنشطة الخدمية والمهنية والصناعية ذات رأس المال الثابت الكبير.
+                    </AlertDescription>
+                  </Alert>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <NumField label="إجمالي الإيرادات" value={revenues} onChange={setRevenues} unit={currencyName} />
+                    <NumField label="المصروفات التشغيلية" value={opExpenses} onChange={setOpExpenses} unit={currencyName} />
+                    <NumField label="إيرادات غير زكوية (تُستبعد)" value={nonZakatableIncome} onChange={setNonZakatableIncome} unit={currencyName} hint="فوائد ربوية / غرامات" />
+                  </div>
+                  <div className="rounded-lg bg-muted/50 p-4 text-sm">
+                    <div className="flex justify-between text-primary"><span>الوعاء الزكوي (صافي الدخل):</span><b>{cFmt(calc.netIncome, currencyName)}</b></div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="net_equity" className="space-y-4 pt-4">
+                  <Alert className="border-primary/20 bg-primary/5">
+                    <Info className="h-4 w-4" />
+                    <AlertDescription className="text-xs">
+                      <b>المعادلة الثالثة — صافي حقوق الملكية:</b> (رأس المال المدفوع + الاحتياطيات + الأرباح المحتجزة) − (الأصول الثابتة + غير الملموسة + الخسائر المتراكمة) × 2.5%. تُستعمل عندما تكون حقوق الملكية هي المصدر الرئيس لتمويل الموجودات الزكوية.
+                    </AlertDescription>
+                  </Alert>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <NumField label="رأس المال المدفوع" value={paidCapital} onChange={setPaidCapital} unit={currencyName} />
+                    <NumField label="الاحتياطيات" value={reserves} onChange={setReserves} unit={currencyName} />
+                    <NumField label="الأرباح المحتجزة" value={retainedEarnings} onChange={setRetainedEarnings} unit={currencyName} />
+                    <NumField label="الأصول الثابتة (تُخصم)" value={fixedAssets} onChange={setFixedAssets} unit={currencyName} />
+                    <NumField label="الأصول غير الملموسة (تُخصم)" value={intangibles} onChange={setIntangibles} unit={currencyName} />
+                    <NumField label="الخسائر المتراكمة (تُخصم)" value={losses} onChange={setLosses} unit={currencyName} />
+                  </div>
+                  <div className="rounded-lg bg-muted/50 p-4 text-sm">
+                    <div className="flex justify-between text-primary"><span>الوعاء الزكوي (صافي حقوق الملكية):</span><b>{cFmt(calc.netEquity, currencyName)}</b></div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="invested_funds" className="space-y-4 pt-4">
+                  <Alert className="border-primary/20 bg-primary/5">
+                    <Info className="h-4 w-4" />
+                    <AlertDescription className="text-xs">
+                      <b>المعادلة الرابعة — الطريقة الفنية (صافي الأموال المستثمرة):</b> (حقوق الملكية + المطلوبات طويلة الأجل + المخصصات) − (الأصول الثابتة + غير الملموسة + الاستثمارات طويلة الأجل + الخسائر) × 2.5%. تعتمدها هيئة المحاسبة والمراجعة للمؤسسات المالية الإسلامية (AAOIFI) كطريقة معكوسة لصافي الموجودات لتفادي تقويم كل بند متداول على حدة.
+                    </AlertDescription>
+                  </Alert>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <NumField label="حقوق الملكية" value={equity} onChange={setEquity} unit={currencyName} />
+                    <NumField label="المطلوبات طويلة الأجل" value={ltLiabilities} onChange={setLtLiabilities} unit={currencyName} />
+                    <NumField label="المخصصات (تكافل/زكاة سابقة)" value={provisions} onChange={setProvisions} unit={currencyName} />
+                    <NumField label="الأصول الثابتة (تُخصم)" value={fixedAssets} onChange={setFixedAssets} unit={currencyName} />
+                    <NumField label="الأصول غير الملموسة (تُخصم)" value={intangibles} onChange={setIntangibles} unit={currencyName} />
+                    <NumField label="استثمارات طويلة الأجل (تُخصم)" value={ltInvestments} onChange={setLtInvestments} unit={currencyName} hint="عقارات/شركات شقيقة غير زكوية" />
+                    <NumField label="الخسائر المتراكمة (تُخصم)" value={losses} onChange={setLosses} unit={currencyName} />
+                  </div>
+                  <div className="rounded-lg bg-muted/50 p-4 text-sm">
+                    <div className="flex justify-between text-primary"><span>الوعاء الزكوي (الطريقة الفنية):</span><b>{cFmt(calc.investedFunds, currencyName)}</b></div>
+                  </div>
+                </TabsContent>
               </Tabs>
               </div>
+
+
 
               <Separator />
 
@@ -1264,7 +1369,7 @@ export function CompanyTab() {
                 calendarBasis: solarYear === "hijri" ? "hijri" : "gregorian",
                 effectiveRate: calc.rate,
                 rows: [
-                  { label: `الوعاء الزكوي (${method === "net_assets" ? "صافي الموجودات" : "رأس المال العامل"})`, gross: calc.baseGross, nisab: calc.nisabValue, eligible: calc.reachesNisab, zakat: calc.zakat },
+                  { label: `الوعاء الزكوي (${METHOD_LABELS[method]})`, gross: calc.baseGross, nisab: calc.nisabValue, eligible: calc.reachesNisab, zakat: calc.zakat },
                 ],
                 livestock: { camels: 0, cows: 0, sheep: 0, show: false },
                 monetaryGross: calc.baseGross,
@@ -1297,7 +1402,7 @@ export function CompanyTab() {
                 countryCode, currencyName,
                 calendarBasis: solarYear === "hijri" ? "hijri" : "gregorian",
                 effectiveRate: calc.rate,
-                rows: [{ label: `الوعاء الزكوي (${method === "net_assets" ? "صافي الموجودات" : "رأس المال العامل"})`, gross: calc.baseGross, nisab: calc.nisabValue, eligible: calc.reachesNisab, zakat: calc.zakat }],
+                rows: [{ label: `الوعاء الزكوي (${METHOD_LABELS[method]})`, gross: calc.baseGross, nisab: calc.nisabValue, eligible: calc.reachesNisab, zakat: calc.zakat }],
                 livestock: { camels: 0, cows: 0, sheep: 0, show: false },
                 monetaryGross: calc.baseGross, debts: calc.curLiabs, monetaryBase: calc.base,
                 moneyNisab: calc.nisabValue, totalZakat: calc.zakat, hawlComplete: null,
@@ -1332,7 +1437,7 @@ export function CompanyTab() {
                 <p className="text-xs mt-2 bg-destructive/30 rounded px-2 py-1">⚠️ الوعاء لم يبلغ النصاب ({cFmt(calc.nisabValue, currencyName)})</p>
               )}
               <p className="text-xs opacity-80 mt-3">النسبة: <b>{(calc.rate * 100).toFixed(4)}%</b> ({solarYear === "hijri" ? "قمري" : "شمسي"})</p>
-              <p className="text-xs opacity-80">الطريقة: <b>{method === "net_assets" ? "صافي الموجودات" : "رأس المال العامل"}</b></p>
+              <p className="text-xs opacity-80">الطريقة: <b>{METHOD_LABELS[method]}</b></p>
               <p className="text-xs opacity-80 mt-1">{country.flag} {country.name} — {companyType}</p>
               <p className="text-xs opacity-80">{GROUP_LABELS[sector.group]} — {sector.label}</p>
               {companyName && <p className="text-xs opacity-80 mt-1 font-bold">{companyName}</p>}
