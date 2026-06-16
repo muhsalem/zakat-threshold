@@ -12,9 +12,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { useAuditEntries } from "@/hooks/useAuditEntries";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Building2, Calculator, Shield, Gavel, CheckSquare, AlertTriangle, Info, Scale,
-  FileSpreadsheet, Upload, FileText, X, Printer, Save, Coins, Users, HandHeart,
+  FileSpreadsheet, Upload, FileText, X, Printer, Save, Coins, Users, HandHeart, HelpCircle,
 } from "lucide-react";
 import { ZAKAT_RATE, GOLD_NISAB_GRAMS, num, fmt, currency as cFmt, ZAKAT_RECIPIENTS } from "@/lib/zakat";
 import { SectoralModels } from "./SectoralModels";
@@ -476,18 +477,21 @@ export function CompanyTab() {
   const [shWaqf, setShWaqf] = useState("");       // وقفي → معفى
   const [shNonMuslim, setShNonMuslim] = useState(""); // غير مسلم → معفى من الزكاة
 
-  // طريقة الحساب (4 معادلات)
-  type CalcMethod = "net_assets" | "working_capital" | "net_income" | "net_equity" | "invested_funds";
+  // طريقة الحساب (6 معادلات)
+  type CalcMethod = "net_assets" | "net_working_capital" | "working_capital" | "net_income" | "net_equity" | "invested_funds";
   const [method, setMethod] = useState<CalcMethod>("net_assets");
   const [cash, setCash] = useState("");
   const [banks, setBanks] = useState("");
 
   // ===== مدخلات الطرق الإضافية =====
+  // طريقة صافي رأس المال العامل المبسّط (إجمالي متداول − إجمالي خصوم متداولة)
+  const [totalCurrentAssets, setTotalCurrentAssets] = useState("");
+  const [totalCurrentLiabilities, setTotalCurrentLiabilities] = useState("");
   // طريقة صافي الدخل
   const [revenues, setRevenues] = useState("");
   const [opExpenses, setOpExpenses] = useState("");
-  const [nonZakatableIncome, setNonZakatableIncome] = useState(""); // إيرادات غير زكوية تُستبعد
-  // طريقة صافي حقوق الملكية (مكمّلات لـ equity/fixed/losses الموجودة)
+  const [nonZakatableIncome, setNonZakatableIncome] = useState("");
+  // طريقة صافي حقوق الملكية
   const [paidCapital, setPaidCapital] = useState("");
   const [reserves, setReserves] = useState("");
   const [retainedEarnings, setRetainedEarnings] = useState("");
@@ -496,12 +500,24 @@ export function CompanyTab() {
   const [provisions, setProvisions] = useState("");
 
   const METHOD_LABELS: Record<CalcMethod, string> = {
-    net_assets: "صافي الموجودات",
-    working_capital: "رأس المال العامل",
+    net_assets: "صافي الموجودات الزكوية",
+    net_working_capital: "صافي رأس المال العامل",
+    working_capital: "رأس المال العامل (الموجب)",
     net_income: "صافي الدخل",
     net_equity: "صافي حقوق الملكية",
     invested_funds: "الطريقة الفنية (صافي الأموال المستثمرة)",
   };
+
+  const METHOD_LABELS_EN: Record<CalcMethod, string> = {
+    net_assets: "Net Zakatable Assets",
+    net_working_capital: "Net Working Capital",
+    working_capital: "Working Capital (Positive)",
+    net_income: "Net Income",
+    net_equity: "Net Equity",
+    invested_funds: "Technical Method (Net Invested Funds)",
+  };
+
+
 
   // ===== الذمم المدينة — تصنيف رباعي =====
   const [recGood, setRecGood] = useState("");        // ① جيدة → تُزكى كاملة
@@ -626,6 +642,8 @@ export function CompanyTab() {
     const curLiabs = num(stPayables) + num(accruals) + num(taxDue) + num(loanPrincipal);
     const netAssets = curAssets - curLiabs;
     const workingCapital = num(equity) + num(ltLiabilities) - num(fixedAssets) - num(intangibles) - num(losses);
+    // صافي رأس المال العامل المبسّط = إجمالي الأصول المتداولة − إجمالي الخصوم المتداولة
+    const netWorkingCapital = num(totalCurrentAssets) - num(totalCurrentLiabilities);
     // صافي الدخل = الإيرادات − المصروفات التشغيلية − الإيرادات غير الزكوية
     const netIncome = num(revenues) - num(opExpenses) - num(nonZakatableIncome);
     // صافي حقوق الملكية = (رأس المال + الاحتياطيات + الأرباح المحتجزة) − (الأصول الثابتة + غير الملموسة + الخسائر)
@@ -636,10 +654,55 @@ export function CompanyTab() {
       - num(fixedAssets) - num(intangibles) - num(ltInvestments) - num(losses);
     const baseGross =
       method === "net_assets" ? netAssets :
+      method === "net_working_capital" ? netWorkingCapital :
       method === "working_capital" ? workingCapital :
       method === "net_income" ? netIncome :
       method === "net_equity" ? netEquity :
       investedFunds;
+
+    // ===== تحقق المدخلات (عربي/إنجليزي) =====
+    const warnings: { ar: string; en: string }[] = [];
+    const checkNeg = (v: string, ar: string, en: string) => { if (num(v) < 0) warnings.push({ ar: `قيمة سالبة غير مقبولة: ${ar}`, en: `Negative not allowed: ${en}` }); };
+    // غير سلبية لكل المدخلات الرقمية
+    [
+      [cash, "النقدية", "Cash"], [banks, "البنوك", "Banks"],
+      [recGood, "ذمم جيدة", "Good receivables"],
+      [invBook, "المخزون الدفتري", "Book inventory"],
+      [stkTrading, "أسهم متاجرة", "Trading stocks"],
+      [stkLongTerm, "أسهم استثمار", "Long-term stocks"],
+      [stPayables, "موردون", "Payables"], [accruals, "مستحقات", "Accruals"],
+      [taxDue, "ضرائب", "Tax due"], [loanPrincipal, "أصل القرض", "Loan principal"],
+      [equity, "حقوق الملكية", "Equity"], [ltLiabilities, "خصوم طويلة", "LT liabilities"],
+      [fixedAssets, "أصول ثابتة", "Fixed assets"], [intangibles, "غير ملموسة", "Intangibles"],
+      [losses, "الخسائر", "Losses"],
+      [revenues, "الإيرادات", "Revenues"], [opExpenses, "المصروفات", "Op. expenses"],
+      [paidCapital, "رأس المال", "Paid capital"], [reserves, "الاحتياطيات", "Reserves"],
+      [retainedEarnings, "أرباح محتجزة", "Retained earnings"],
+      [totalCurrentAssets, "إجمالي المتداول", "Total current assets"],
+      [totalCurrentLiabilities, "إجمالي الخصوم المتداولة", "Total current liabilities"],
+      [ltInvestments, "استثمارات طويلة", "LT investments"],
+      [provisions, "المخصصات", "Provisions"],
+    ].forEach(([v, ar, en]) => checkNeg(v as string, ar as string, en as string));
+
+    // تناسق المساهمين
+    const _totalShares = num(shGcc) + num(shForeign) + num(shGovt) + num(shWaqf) + num(shNonMuslim);
+    if (_totalShares > 0 && Math.abs(_totalShares - 100) > 0.01) {
+      warnings.push({ ar: `مجموع نسب المساهمين = ${_totalShares.toFixed(2)}% ويجب أن يساوي 100%`, en: `Shareholders ratios sum = ${_totalShares.toFixed(2)}%, must equal 100%` });
+    }
+    // تناسق الطريقة المختارة
+    if (method === "net_working_capital" && num(totalCurrentLiabilities) > num(totalCurrentAssets) && num(totalCurrentAssets) > 0) {
+      warnings.push({ ar: "الخصوم المتداولة أكبر من الأصول المتداولة (وعاء سالب).", en: "Current liabilities exceed current assets (negative base)." });
+    }
+    if (method === "net_income" && num(opExpenses) > num(revenues) && num(revenues) > 0) {
+      warnings.push({ ar: "المصروفات أكبر من الإيرادات (صافي دخل سالب).", en: "Expenses exceed revenues (negative net income)." });
+    }
+    if ((method === "net_equity" || method === "working_capital" || method === "invested_funds") && baseGross < 0) {
+      warnings.push({ ar: "الوعاء الزكوي للطريقة المختارة سالب — راجع البنود المخصومة.", en: "Selected method base is negative — review deducted items." });
+    }
+    if (num(goldGramPrice) <= 0) {
+      warnings.push({ ar: "سعر جرام الذهب يجب أن يكون أكبر من صفر لحساب النصاب.", en: "Gold gram price must be > 0 to compute Nisab." });
+    }
+
 
     // استبعاد الحصص المعفاة من الوعاء
     const exemptPct = (num(shForeign) + num(shGovt) + num(shWaqf) + num(shNonMuslim)) / 100;
@@ -666,11 +729,11 @@ export function CompanyTab() {
 
     return {
       grossAssets, curAssets, curLiabs, netAssets, workingCapital,
-      netIncome, netEquity, investedFunds,
+      netWorkingCapital, netIncome, netEquity, investedFunds,
       baseGross, base,
       rate, zakatOneYear, zakat, years, completed, complianceScore, totalCount, activeSections,
       nisabValue, reachesNisab, exemptPct, zakatableRatio, totalShares, sharesBalanced,
-      recZakatable, inventoryMarket, stocksZakatable,
+      recZakatable, inventoryMarket, stocksZakatable, warnings,
     };
   }, [
     cash, banks, recGood, recDoubtful, recInsolvent, recBad, recPolicy,
@@ -680,6 +743,7 @@ export function CompanyTab() {
     equity, ltLiabilities, fixedAssets, intangibles, losses,
     revenues, opExpenses, nonZakatableIncome,
     paidCapital, reserves, retainedEarnings,
+    totalCurrentAssets, totalCurrentLiabilities,
     ltInvestments, provisions,
     method, solarYear, compliance, orgKind, goldGramPrice,
     shGcc, shForeign, shGovt, shWaqf, shNonMuslim, accelerateYears, sector.group,
@@ -1065,16 +1129,67 @@ export function CompanyTab() {
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
-                <h4 className="font-semibold text-sm mb-2 text-primary">طريقة احتساب الوعاء الزكوي</h4>
+                <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
+                  <h4 className="font-semibold text-sm text-primary">طريقة احتساب الوعاء الزكوي</h4>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" size="sm" className="gap-1.5 h-7 text-xs">
+                        <HelpCircle className="h-3.5 w-3.5" /> دليل المعادلات الستّ
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[min(420px,90vw)] text-xs space-y-2.5 max-h-[60vh] overflow-y-auto" dir="rtl">
+                      <div>
+                        <b className="text-primary">1) صافي الموجودات الزكوية (AAOIFI):</b>
+                        <p className="text-muted-foreground mt-1">الموجودات المتداولة الزكوية − المطلوبات المتداولة. <i>مثال:</i> (نقد 100 + بضاعة 200 + ذمم 50) − (موردون 80) = <b>270</b> × 2.5%.</p>
+                      </div>
+                      <div>
+                        <b className="text-primary">2) صافي رأس المال العامل:</b>
+                        <p className="text-muted-foreground mt-1">إجمالي الأصول المتداولة − إجمالي الخصوم المتداولة (طريقة مبسّطة بأرقام مجمّعة من الميزانية). <i>مثال:</i> 500 − 150 = <b>350</b> × 2.5%.</p>
+                      </div>
+                      <div>
+                        <b className="text-primary">3) رأس المال العامل (الموجب) — هيئة الزكاة السعودية:</b>
+                        <p className="text-muted-foreground mt-1">(حقوق الملكية + الخصوم طويلة الأجل) − (الأصول الثابتة + غير الملموسة + الخسائر). <i>مثال:</i> (1000 + 300) − (700 + 50 + 50) = <b>500</b> × 2.5%.</p>
+                      </div>
+                      <div>
+                        <b className="text-primary">4) صافي الدخل (القرضاوي):</b>
+                        <p className="text-muted-foreground mt-1">الإيرادات − المصروفات التشغيلية − الإيرادات غير الزكوية. مناسبة للأنشطة الخدمية ذات الأصول الثابتة الكبيرة. <i>مثال:</i> 2000 − 1500 − 50 = <b>450</b> × 2.5%.</p>
+                      </div>
+                      <div>
+                        <b className="text-primary">5) صافي حقوق الملكية:</b>
+                        <p className="text-muted-foreground mt-1">(رأس المال المدفوع + الاحتياطيات + الأرباح المحتجزة) − (الأصول الثابتة + غير الملموسة + الخسائر المتراكمة). <i>مثال:</i> (500+200+100) − (400+30+20) = <b>350</b> × 2.5%.</p>
+                      </div>
+                      <div>
+                        <b className="text-primary">6) الطريقة الفنية (صافي الأموال المستثمرة):</b>
+                        <p className="text-muted-foreground mt-1">(حقوق الملكية + الخصوم طويلة الأجل + المخصصات) − (الأصول الثابتة + غير الملموسة + الاستثمارات طويلة الأجل + الخسائر). طريقة معكوسة لصافي الموجودات تعتمدها AAOIFI لتفادي تقويم كل بند متداول على حدة. <i>مثال:</i> (1000+300+50) − (700+50+100+50) = <b>450</b> × 2.5%.</p>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+
+              {calc.warnings.length > 0 && (
+                <Alert className="border-amber-500/40 bg-amber-500/5 mb-3">
+                  <AlertTriangle className="h-4 w-4 text-amber-600" />
+                  <AlertDescription className="text-xs space-y-1">
+                    <div className="font-semibold">تنبيهات تحقق المدخلات / Input validation warnings:</div>
+                    <ul className="list-disc pr-4 space-y-0.5">
+                      {calc.warnings.map((w, i) => (
+                        <li key={i}><span dir="rtl">{w.ar}</span> <span className="text-muted-foreground" dir="ltr">— {w.en}</span></li>
+                      ))}
+                    </ul>
+                  </AlertDescription>
+                </Alert>
+              )}
 
               <Tabs value={method} onValueChange={(v) => setMethod(v as CalcMethod)} dir="rtl">
-                <TabsList dir="rtl" className="grid grid-cols-2 md:grid-cols-5 w-full h-auto">
+                <TabsList dir="rtl" className="grid grid-cols-2 md:grid-cols-6 w-full h-auto">
                   <TabsTrigger value="net_assets" className="text-xs">صافي الموجودات</TabsTrigger>
+                  <TabsTrigger value="net_working_capital" className="text-xs">صافي رأس المال العامل</TabsTrigger>
                   <TabsTrigger value="working_capital" className="text-xs">رأس المال العامل</TabsTrigger>
                   <TabsTrigger value="net_income" className="text-xs">صافي الدخل</TabsTrigger>
                   <TabsTrigger value="net_equity" className="text-xs">صافي حقوق الملكية</TabsTrigger>
                   <TabsTrigger value="invested_funds" className="text-xs">الطريقة الفنية</TabsTrigger>
                 </TabsList>
+
 
                 <TabsContent value="net_assets" className="space-y-4 pt-4">
                   <Alert className="border-primary/20 bg-primary/5">
@@ -1180,6 +1295,25 @@ export function CompanyTab() {
                   </div>
                 </TabsContent>
 
+                <TabsContent value="net_working_capital" className="space-y-4 pt-4">
+                  <Alert className="border-primary/20 bg-primary/5">
+                    <Info className="h-4 w-4" />
+                    <AlertDescription className="text-xs">
+                      <b>صافي رأس المال العامل (مبسّط):</b> إجمالي الأصول المتداولة − إجمالي الخصوم المتداولة ثم × 2.5%. يصلح عندما تكون عندك أرقام مجمّعة جاهزة من قائمة المركز المالي دون تفاصيل البنود.
+                    </AlertDescription>
+                  </Alert>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <NumField label="إجمالي الأصول المتداولة" value={totalCurrentAssets} onChange={setTotalCurrentAssets} unit={currencyName} hint="نقد + بنوك + ذمم + مخزون + استثمارات قصيرة" />
+                    <NumField label="إجمالي الخصوم المتداولة" value={totalCurrentLiabilities} onChange={setTotalCurrentLiabilities} unit={currencyName} hint="موردون + مستحقات + ضرائب + أصل قروض قصيرة" />
+                  </div>
+                  <div className="rounded-lg bg-muted/50 p-4 text-sm space-y-1">
+                    <div className="flex justify-between"><span>إجمالي الأصول المتداولة:</span><b>{cFmt(num(totalCurrentAssets), currencyName)}</b></div>
+                    <div className="flex justify-between"><span>إجمالي الخصوم المتداولة:</span><b>{cFmt(num(totalCurrentLiabilities), currencyName)}</b></div>
+                    <Separator className="my-2" />
+                    <div className="flex justify-between text-primary"><span>صافي رأس المال العامل:</span><b>{cFmt(calc.netWorkingCapital, currencyName)}</b></div>
+                  </div>
+                </TabsContent>
+
                 <TabsContent value="working_capital" className="space-y-4 pt-4">
                   <Alert className="border-primary/20 bg-primary/5">
                     <Info className="h-4 w-4" />
@@ -1219,12 +1353,42 @@ export function CompanyTab() {
                 </TabsContent>
 
                 <TabsContent value="net_equity" className="space-y-4 pt-4">
-                  <Alert className="border-primary/20 bg-primary/5">
-                    <Info className="h-4 w-4" />
-                    <AlertDescription className="text-xs">
-                      <b>المعادلة الثالثة — صافي حقوق الملكية:</b> (رأس المال المدفوع + الاحتياطيات + الأرباح المحتجزة) − (الأصول الثابتة + غير الملموسة + الخسائر المتراكمة) × 2.5%. تُستعمل عندما تكون حقوق الملكية هي المصدر الرئيس لتمويل الموجودات الزكوية.
-                    </AlertDescription>
-                  </Alert>
+                  <div className="flex items-start justify-between gap-2 flex-wrap">
+                    <Alert className="border-primary/20 bg-primary/5 flex-1">
+                      <Info className="h-4 w-4" />
+                      <AlertDescription className="text-xs">
+                        <b>المعادلة الثالثة — صافي حقوق الملكية:</b> (رأس المال المدفوع + الاحتياطيات + الأرباح المحتجزة) − (الأصول الثابتة + غير الملموسة + الخسائر المتراكمة) × 2.5%.
+                      </AlertDescription>
+                    </Alert>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" size="sm" className="gap-1.5 h-8 text-xs shrink-0">
+                          <HelpCircle className="h-3.5 w-3.5" /> ما هو "صافي حقوق الملكية"؟
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[min(400px,90vw)] text-xs space-y-2" dir="rtl">
+                        <p><b className="text-primary">التعريف:</b> هو ما تبقى للمساهمين من تمويل ذاتي بعد خصم الأصول طويلة الأجل غير الزكوية. يمثّل الجزء من حقوق الملكية المستثمر في أصول متداولة قابلة للنماء.</p>
+                        <p><b className="text-primary">مكوّناته:</b></p>
+                        <ul className="list-disc pr-4 space-y-0.5 text-muted-foreground">
+                          <li><b>رأس المال المدفوع:</b> القيمة الاسمية للأسهم المسدّدة.</li>
+                          <li><b>الاحتياطيات:</b> نظامي + اختياري + إعادة تقييم.</li>
+                          <li><b>الأرباح المحتجزة:</b> الأرباح غير الموزّعة من سنوات سابقة.</li>
+                        </ul>
+                        <p><b className="text-primary">يُخصم منها:</b></p>
+                        <ul className="list-disc pr-4 space-y-0.5 text-muted-foreground">
+                          <li>الأصول الثابتة (مبانٍ، آلات، سيارات للاستخدام).</li>
+                          <li>الأصول غير الملموسة (شهرة، براءات، برامج).</li>
+                          <li>الخسائر المتراكمة.</li>
+                        </ul>
+                        <div className="rounded bg-muted/60 p-2 mt-2">
+                          <b>مثال رقمي:</b><br/>
+                          رأس مال 500,000 + احتياطيات 200,000 + أرباح محتجزة 100,000 = 800,000<br/>
+                          − أصول ثابتة 400,000 − غير ملموسة 30,000 − خسائر 20,000 = 450,000<br/>
+                          <b className="text-primary">الزكاة = 450,000 × 2.5% = 11,250</b>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
                   <div className="grid md:grid-cols-2 gap-4">
                     <NumField label="رأس المال المدفوع" value={paidCapital} onChange={setPaidCapital} unit={currencyName} />
                     <NumField label="الاحتياطيات" value={reserves} onChange={setReserves} unit={currencyName} />
