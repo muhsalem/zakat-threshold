@@ -12,9 +12,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { useAuditEntries } from "@/hooks/useAuditEntries";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Building2, Calculator, Shield, Gavel, CheckSquare, AlertTriangle, Info, Scale,
-  FileSpreadsheet, Upload, FileText, X, Printer, Save, Coins, Users, HandHeart,
+  FileSpreadsheet, Upload, FileText, X, Printer, Save, Coins, Users, HandHeart, HelpCircle,
 } from "lucide-react";
 import { ZAKAT_RATE, GOLD_NISAB_GRAMS, num, fmt, currency as cFmt, ZAKAT_RECIPIENTS } from "@/lib/zakat";
 import { SectoralModels } from "./SectoralModels";
