@@ -641,6 +641,8 @@ export function CompanyTab() {
     const curLiabs = num(stPayables) + num(accruals) + num(taxDue) + num(loanPrincipal);
     const netAssets = curAssets - curLiabs;
     const workingCapital = num(equity) + num(ltLiabilities) - num(fixedAssets) - num(intangibles) - num(losses);
+    // صافي رأس المال العامل المبسّط = إجمالي الأصول المتداولة − إجمالي الخصوم المتداولة
+    const netWorkingCapital = num(totalCurrentAssets) - num(totalCurrentLiabilities);
     // صافي الدخل = الإيرادات − المصروفات التشغيلية − الإيرادات غير الزكوية
     const netIncome = num(revenues) - num(opExpenses) - num(nonZakatableIncome);
     // صافي حقوق الملكية = (رأس المال + الاحتياطيات + الأرباح المحتجزة) − (الأصول الثابتة + غير الملموسة + الخسائر)
@@ -651,10 +653,55 @@ export function CompanyTab() {
       - num(fixedAssets) - num(intangibles) - num(ltInvestments) - num(losses);
     const baseGross =
       method === "net_assets" ? netAssets :
+      method === "net_working_capital" ? netWorkingCapital :
       method === "working_capital" ? workingCapital :
       method === "net_income" ? netIncome :
       method === "net_equity" ? netEquity :
       investedFunds;
+
+    // ===== تحقق المدخلات (عربي/إنجليزي) =====
+    const warnings: { ar: string; en: string }[] = [];
+    const checkNeg = (v: string, ar: string, en: string) => { if (num(v) < 0) warnings.push({ ar: `قيمة سالبة غير مقبولة: ${ar}`, en: `Negative not allowed: ${en}` }); };
+    // غير سلبية لكل المدخلات الرقمية
+    [
+      [cash, "النقدية", "Cash"], [banks, "البنوك", "Banks"],
+      [recGood, "ذمم جيدة", "Good receivables"],
+      [invBook, "المخزون الدفتري", "Book inventory"],
+      [stkTrading, "أسهم متاجرة", "Trading stocks"],
+      [stkLongTerm, "أسهم استثمار", "Long-term stocks"],
+      [stPayables, "موردون", "Payables"], [accruals, "مستحقات", "Accruals"],
+      [taxDue, "ضرائب", "Tax due"], [loanPrincipal, "أصل القرض", "Loan principal"],
+      [equity, "حقوق الملكية", "Equity"], [ltLiabilities, "خصوم طويلة", "LT liabilities"],
+      [fixedAssets, "أصول ثابتة", "Fixed assets"], [intangibles, "غير ملموسة", "Intangibles"],
+      [losses, "الخسائر", "Losses"],
+      [revenues, "الإيرادات", "Revenues"], [opExpenses, "المصروفات", "Op. expenses"],
+      [paidCapital, "رأس المال", "Paid capital"], [reserves, "الاحتياطيات", "Reserves"],
+      [retainedEarnings, "أرباح محتجزة", "Retained earnings"],
+      [totalCurrentAssets, "إجمالي المتداول", "Total current assets"],
+      [totalCurrentLiabilities, "إجمالي الخصوم المتداولة", "Total current liabilities"],
+      [ltInvestments, "استثمارات طويلة", "LT investments"],
+      [provisions, "المخصصات", "Provisions"],
+    ].forEach(([v, ar, en]) => checkNeg(v as string, ar as string, en as string));
+
+    // تناسق المساهمين
+    const _totalShares = num(shGcc) + num(shForeign) + num(shGovt) + num(shWaqf) + num(shNonMuslim);
+    if (_totalShares > 0 && Math.abs(_totalShares - 100) > 0.01) {
+      warnings.push({ ar: `مجموع نسب المساهمين = ${_totalShares.toFixed(2)}% ويجب أن يساوي 100%`, en: `Shareholders ratios sum = ${_totalShares.toFixed(2)}%, must equal 100%` });
+    }
+    // تناسق الطريقة المختارة
+    if (method === "net_working_capital" && num(totalCurrentLiabilities) > num(totalCurrentAssets) && num(totalCurrentAssets) > 0) {
+      warnings.push({ ar: "الخصوم المتداولة أكبر من الأصول المتداولة (وعاء سالب).", en: "Current liabilities exceed current assets (negative base)." });
+    }
+    if (method === "net_income" && num(opExpenses) > num(revenues) && num(revenues) > 0) {
+      warnings.push({ ar: "المصروفات أكبر من الإيرادات (صافي دخل سالب).", en: "Expenses exceed revenues (negative net income)." });
+    }
+    if ((method === "net_equity" || method === "working_capital" || method === "invested_funds") && baseGross < 0) {
+      warnings.push({ ar: "الوعاء الزكوي للطريقة المختارة سالب — راجع البنود المخصومة.", en: "Selected method base is negative — review deducted items." });
+    }
+    if (num(goldGramPrice) <= 0) {
+      warnings.push({ ar: "سعر جرام الذهب يجب أن يكون أكبر من صفر لحساب النصاب.", en: "Gold gram price must be > 0 to compute Nisab." });
+    }
+
 
     // استبعاد الحصص المعفاة من الوعاء
     const exemptPct = (num(shForeign) + num(shGovt) + num(shWaqf) + num(shNonMuslim)) / 100;
