@@ -728,11 +728,11 @@ export function CompanyTab() {
 
     return {
       grossAssets, curAssets, curLiabs, netAssets, workingCapital,
-      netIncome, netEquity, investedFunds,
+      netWorkingCapital, netIncome, netEquity, investedFunds,
       baseGross, base,
       rate, zakatOneYear, zakat, years, completed, complianceScore, totalCount, activeSections,
       nisabValue, reachesNisab, exemptPct, zakatableRatio, totalShares, sharesBalanced,
-      recZakatable, inventoryMarket, stocksZakatable,
+      recZakatable, inventoryMarket, stocksZakatable, warnings,
     };
   }, [
     cash, banks, recGood, recDoubtful, recInsolvent, recBad, recPolicy,
@@ -742,6 +742,7 @@ export function CompanyTab() {
     equity, ltLiabilities, fixedAssets, intangibles, losses,
     revenues, opExpenses, nonZakatableIncome,
     paidCapital, reserves, retainedEarnings,
+    totalCurrentAssets, totalCurrentLiabilities,
     ltInvestments, provisions,
     method, solarYear, compliance, orgKind, goldGramPrice,
     shGcc, shForeign, shGovt, shWaqf, shNonMuslim, accelerateYears, sector.group,
