@@ -1129,16 +1129,67 @@ export function CompanyTab() {
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
-                <h4 className="font-semibold text-sm mb-2 text-primary">طريقة احتساب الوعاء الزكوي</h4>
+                <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
+                  <h4 className="font-semibold text-sm text-primary">طريقة احتساب الوعاء الزكوي</h4>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" size="sm" className="gap-1.5 h-7 text-xs">
+                        <HelpCircle className="h-3.5 w-3.5" /> دليل المعادلات الستّ
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[min(420px,90vw)] text-xs space-y-2.5 max-h-[60vh] overflow-y-auto" dir="rtl">
+                      <div>
+                        <b className="text-primary">1) صافي الموجودات الزكوية (AAOIFI):</b>
+                        <p className="text-muted-foreground mt-1">الموجودات المتداولة الزكوية − المطلوبات المتداولة. <i>مثال:</i> (نقد 100 + بضاعة 200 + ذمم 50) − (موردون 80) = <b>270</b> × 2.5%.</p>
+                      </div>
+                      <div>
+                        <b className="text-primary">2) صافي رأس المال العامل:</b>
+                        <p className="text-muted-foreground mt-1">إجمالي الأصول المتداولة − إجمالي الخصوم المتداولة (طريقة مبسّطة بأرقام مجمّعة من الميزانية). <i>مثال:</i> 500 − 150 = <b>350</b> × 2.5%.</p>
+                      </div>
+                      <div>
+                        <b className="text-primary">3) رأس المال العامل (الموجب) — هيئة الزكاة السعودية:</b>
+                        <p className="text-muted-foreground mt-1">(حقوق الملكية + الخصوم طويلة الأجل) − (الأصول الثابتة + غير الملموسة + الخسائر). <i>مثال:</i> (1000 + 300) − (700 + 50 + 50) = <b>500</b> × 2.5%.</p>
+                      </div>
+                      <div>
+                        <b className="text-primary">4) صافي الدخل (القرضاوي):</b>
+                        <p className="text-muted-foreground mt-1">الإيرادات − المصروفات التشغيلية − الإيرادات غير الزكوية. مناسبة للأنشطة الخدمية ذات الأصول الثابتة الكبيرة. <i>مثال:</i> 2000 − 1500 − 50 = <b>450</b> × 2.5%.</p>
+                      </div>
+                      <div>
+                        <b className="text-primary">5) صافي حقوق الملكية:</b>
+                        <p className="text-muted-foreground mt-1">(رأس المال المدفوع + الاحتياطيات + الأرباح المحتجزة) − (الأصول الثابتة + غير الملموسة + الخسائر المتراكمة). <i>مثال:</i> (500+200+100) − (400+30+20) = <b>350</b> × 2.5%.</p>
+                      </div>
+                      <div>
+                        <b className="text-primary">6) الطريقة الفنية (صافي الأموال المستثمرة):</b>
+                        <p className="text-muted-foreground mt-1">(حقوق الملكية + الخصوم طويلة الأجل + المخصصات) − (الأصول الثابتة + غير الملموسة + الاستثمارات طويلة الأجل + الخسائر). طريقة معكوسة لصافي الموجودات تعتمدها AAOIFI لتفادي تقويم كل بند متداول على حدة. <i>مثال:</i> (1000+300+50) − (700+50+100+50) = <b>450</b> × 2.5%.</p>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+
+              {calc.warnings.length > 0 && (
+                <Alert className="border-amber-500/40 bg-amber-500/5 mb-3">
+                  <AlertTriangle className="h-4 w-4 text-amber-600" />
+                  <AlertDescription className="text-xs space-y-1">
+                    <div className="font-semibold">تنبيهات تحقق المدخلات / Input validation warnings:</div>
+                    <ul className="list-disc pr-4 space-y-0.5">
+                      {calc.warnings.map((w, i) => (
+                        <li key={i}><span dir="rtl">{w.ar}</span> <span className="text-muted-foreground" dir="ltr">— {w.en}</span></li>
+                      ))}
+                    </ul>
+                  </AlertDescription>
+                </Alert>
+              )}
 
               <Tabs value={method} onValueChange={(v) => setMethod(v as CalcMethod)} dir="rtl">
-                <TabsList dir="rtl" className="grid grid-cols-2 md:grid-cols-5 w-full h-auto">
+                <TabsList dir="rtl" className="grid grid-cols-2 md:grid-cols-6 w-full h-auto">
                   <TabsTrigger value="net_assets" className="text-xs">صافي الموجودات</TabsTrigger>
+                  <TabsTrigger value="net_working_capital" className="text-xs">صافي رأس المال العامل</TabsTrigger>
                   <TabsTrigger value="working_capital" className="text-xs">رأس المال العامل</TabsTrigger>
                   <TabsTrigger value="net_income" className="text-xs">صافي الدخل</TabsTrigger>
                   <TabsTrigger value="net_equity" className="text-xs">صافي حقوق الملكية</TabsTrigger>
                   <TabsTrigger value="invested_funds" className="text-xs">الطريقة الفنية</TabsTrigger>
                 </TabsList>
+
 
                 <TabsContent value="net_assets" className="space-y-4 pt-4">
                   <Alert className="border-primary/20 bg-primary/5">
