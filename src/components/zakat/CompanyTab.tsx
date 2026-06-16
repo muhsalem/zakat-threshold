@@ -1437,7 +1437,7 @@ export function CompanyTab() {
                 <p className="text-xs mt-2 bg-destructive/30 rounded px-2 py-1">⚠️ الوعاء لم يبلغ النصاب ({cFmt(calc.nisabValue, currencyName)})</p>
               )}
               <p className="text-xs opacity-80 mt-3">النسبة: <b>{(calc.rate * 100).toFixed(4)}%</b> ({solarYear === "hijri" ? "قمري" : "شمسي"})</p>
-              <p className="text-xs opacity-80">الطريقة: <b>{method === "net_assets" ? "صافي الموجودات" : "رأس المال العامل"}</b></p>
+              <p className="text-xs opacity-80">الطريقة: <b>{METHOD_LABELS[method]}</b></p>
               <p className="text-xs opacity-80 mt-1">{country.flag} {country.name} — {companyType}</p>
               <p className="text-xs opacity-80">{GROUP_LABELS[sector.group]} — {sector.label}</p>
               {companyName && <p className="text-xs opacity-80 mt-1 font-bold">{companyName}</p>}
