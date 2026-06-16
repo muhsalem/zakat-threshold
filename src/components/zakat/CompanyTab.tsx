@@ -1295,6 +1295,25 @@ export function CompanyTab() {
                   </div>
                 </TabsContent>
 
+                <TabsContent value="net_working_capital" className="space-y-4 pt-4">
+                  <Alert className="border-primary/20 bg-primary/5">
+                    <Info className="h-4 w-4" />
+                    <AlertDescription className="text-xs">
+                      <b>صافي رأس المال العامل (مبسّط):</b> إجمالي الأصول المتداولة − إجمالي الخصوم المتداولة ثم × 2.5%. يصلح عندما تكون عندك أرقام مجمّعة جاهزة من قائمة المركز المالي دون تفاصيل البنود.
+                    </AlertDescription>
+                  </Alert>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <NumField label="إجمالي الأصول المتداولة" value={totalCurrentAssets} onChange={setTotalCurrentAssets} unit={currencyName} hint="نقد + بنوك + ذمم + مخزون + استثمارات قصيرة" />
+                    <NumField label="إجمالي الخصوم المتداولة" value={totalCurrentLiabilities} onChange={setTotalCurrentLiabilities} unit={currencyName} hint="موردون + مستحقات + ضرائب + أصل قروض قصيرة" />
+                  </div>
+                  <div className="rounded-lg bg-muted/50 p-4 text-sm space-y-1">
+                    <div className="flex justify-between"><span>إجمالي الأصول المتداولة:</span><b>{cFmt(num(totalCurrentAssets), currencyName)}</b></div>
+                    <div className="flex justify-between"><span>إجمالي الخصوم المتداولة:</span><b>{cFmt(num(totalCurrentLiabilities), currencyName)}</b></div>
+                    <Separator className="my-2" />
+                    <div className="flex justify-between text-primary"><span>صافي رأس المال العامل:</span><b>{cFmt(calc.netWorkingCapital, currencyName)}</b></div>
+                  </div>
+                </TabsContent>
+
                 <TabsContent value="working_capital" className="space-y-4 pt-4">
                   <Alert className="border-primary/20 bg-primary/5">
                     <Info className="h-4 w-4" />
