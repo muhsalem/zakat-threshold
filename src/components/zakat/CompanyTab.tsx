@@ -1198,7 +1198,8 @@ export function CompanyTab() {
                     <div className="flex justify-between text-primary"><span>الوعاء الزكوي (رأس المال العامل):</span><b>{cFmt(calc.workingCapital, currencyName)}</b></div>
                   </div>
                 </TabsContent>
-                </TabsContent>
+
+
 
                 <TabsContent value="net_income" className="space-y-4 pt-4">
                   <Alert className="border-primary/20 bg-primary/5">
