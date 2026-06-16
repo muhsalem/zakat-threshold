@@ -1369,7 +1369,7 @@ export function CompanyTab() {
                 calendarBasis: solarYear === "hijri" ? "hijri" : "gregorian",
                 effectiveRate: calc.rate,
                 rows: [
-                  { label: `الوعاء الزكوي (${method === "net_assets" ? "صافي الموجودات" : "رأس المال العامل"})`, gross: calc.baseGross, nisab: calc.nisabValue, eligible: calc.reachesNisab, zakat: calc.zakat },
+                  { label: `الوعاء الزكوي (${METHOD_LABELS[method]})`, gross: calc.baseGross, nisab: calc.nisabValue, eligible: calc.reachesNisab, zakat: calc.zakat },
                 ],
                 livestock: { camels: 0, cows: 0, sheep: 0, show: false },
                 monetaryGross: calc.baseGross,
