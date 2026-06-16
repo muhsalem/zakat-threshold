@@ -476,18 +476,21 @@ export function CompanyTab() {
   const [shWaqf, setShWaqf] = useState("");       // وقفي → معفى
   const [shNonMuslim, setShNonMuslim] = useState(""); // غير مسلم → معفى من الزكاة
 
-  // طريقة الحساب (4 معادلات)
-  type CalcMethod = "net_assets" | "working_capital" | "net_income" | "net_equity" | "invested_funds";
+  // طريقة الحساب (6 معادلات)
+  type CalcMethod = "net_assets" | "net_working_capital" | "working_capital" | "net_income" | "net_equity" | "invested_funds";
   const [method, setMethod] = useState<CalcMethod>("net_assets");
   const [cash, setCash] = useState("");
   const [banks, setBanks] = useState("");
 
   // ===== مدخلات الطرق الإضافية =====
+  // طريقة صافي رأس المال العامل المبسّط (إجمالي متداول − إجمالي خصوم متداولة)
+  const [totalCurrentAssets, setTotalCurrentAssets] = useState("");
+  const [totalCurrentLiabilities, setTotalCurrentLiabilities] = useState("");
   // طريقة صافي الدخل
   const [revenues, setRevenues] = useState("");
   const [opExpenses, setOpExpenses] = useState("");
-  const [nonZakatableIncome, setNonZakatableIncome] = useState(""); // إيرادات غير زكوية تُستبعد
-  // طريقة صافي حقوق الملكية (مكمّلات لـ equity/fixed/losses الموجودة)
+  const [nonZakatableIncome, setNonZakatableIncome] = useState("");
+  // طريقة صافي حقوق الملكية
   const [paidCapital, setPaidCapital] = useState("");
   const [reserves, setReserves] = useState("");
   const [retainedEarnings, setRetainedEarnings] = useState("");
@@ -496,12 +499,24 @@ export function CompanyTab() {
   const [provisions, setProvisions] = useState("");
 
   const METHOD_LABELS: Record<CalcMethod, string> = {
-    net_assets: "صافي الموجودات",
-    working_capital: "رأس المال العامل",
+    net_assets: "صافي الموجودات الزكوية",
+    net_working_capital: "صافي رأس المال العامل",
+    working_capital: "رأس المال العامل (الموجب)",
     net_income: "صافي الدخل",
     net_equity: "صافي حقوق الملكية",
     invested_funds: "الطريقة الفنية (صافي الأموال المستثمرة)",
   };
+
+  const METHOD_LABELS_EN: Record<CalcMethod, string> = {
+    net_assets: "Net Zakatable Assets",
+    net_working_capital: "Net Working Capital",
+    working_capital: "Working Capital (Positive)",
+    net_income: "Net Income",
+    net_equity: "Net Equity",
+    invested_funds: "Technical Method (Net Invested Funds)",
+  };
+
+
 
   // ===== الذمم المدينة — تصنيف رباعي =====
   const [recGood, setRecGood] = useState("");        // ① جيدة → تُزكى كاملة
