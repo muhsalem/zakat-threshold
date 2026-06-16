@@ -665,7 +665,9 @@ export function CompanyTab() {
     const sharesBalanced = Math.abs(totalShares - 100) < 0.01;
 
     return {
-      grossAssets, curAssets, curLiabs, netAssets, workingCapital, baseGross, base,
+      grossAssets, curAssets, curLiabs, netAssets, workingCapital,
+      netIncome, netEquity, investedFunds,
+      baseGross, base,
       rate, zakatOneYear, zakat, years, completed, complianceScore, totalCount, activeSections,
       nisabValue, reachesNisab, exemptPct, zakatableRatio, totalShares, sharesBalanced,
       recZakatable, inventoryMarket, stocksZakatable,
@@ -676,6 +678,9 @@ export function CompanyTab() {
     subsidiaryInv, otherCurrent,
     stPayables, accruals, taxDue, loanPrincipal, loanInterest,
     equity, ltLiabilities, fixedAssets, intangibles, losses,
+    revenues, opExpenses, nonZakatableIncome,
+    paidCapital, reserves, retainedEarnings,
+    ltInvestments, provisions,
     method, solarYear, compliance, orgKind, goldGramPrice,
     shGcc, shForeign, shGovt, shWaqf, shNonMuslim, accelerateYears, sector.group,
   ]);
