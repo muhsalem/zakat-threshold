@@ -1067,10 +1067,13 @@ export function CompanyTab() {
               <div>
                 <h4 className="font-semibold text-sm mb-2 text-primary">طريقة احتساب الوعاء الزكوي</h4>
 
-              <Tabs value={method} onValueChange={(v) => setMethod(v as "net_assets" | "working_capital")} dir="rtl">
-                <TabsList dir="rtl" className="grid grid-cols-2 w-full">
-                  <TabsTrigger value="net_assets">صافي الموجودات الزكوية</TabsTrigger>
-                  <TabsTrigger value="working_capital">رأس المال العامل</TabsTrigger>
+              <Tabs value={method} onValueChange={(v) => setMethod(v as CalcMethod)} dir="rtl">
+                <TabsList dir="rtl" className="grid grid-cols-2 md:grid-cols-5 w-full h-auto">
+                  <TabsTrigger value="net_assets" className="text-xs">صافي الموجودات</TabsTrigger>
+                  <TabsTrigger value="working_capital" className="text-xs">رأس المال العامل</TabsTrigger>
+                  <TabsTrigger value="net_income" className="text-xs">صافي الدخل</TabsTrigger>
+                  <TabsTrigger value="net_equity" className="text-xs">صافي حقوق الملكية</TabsTrigger>
+                  <TabsTrigger value="invested_funds" className="text-xs">الطريقة الفنية</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="net_assets" className="space-y-4 pt-4">
