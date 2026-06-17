@@ -7,6 +7,7 @@ import AdvanceMultiYearZakat from "./AdvanceMultiYearZakat";
 import RibaPurificationCalc from "./RibaPurificationCalc";
 import InflationAdjusterCard from "./InflationAdjusterCard";
 import ZakatStatsDashboard from "./ZakatStatsDashboard";
+import SensitivityProjection from "./SensitivityProjection";
 
 interface Props { currencyName?: string; nisabValue?: number; annualZakat?: number }
 
@@ -25,6 +26,7 @@ export default function AdvancedToolsHub({ currencyName = "ج.م", nisabValue = 
             <TabsTrigger value="salary" className="text-xs">زكاة الراتب</TabsTrigger>
             <TabsTrigger value="stocks" className="text-xs">أسهم/REIT/ETF</TabsTrigger>
             <TabsTrigger value="advance" className="text-xs">تعجيل الزكاة</TabsTrigger>
+            <TabsTrigger value="sensitivity" className="text-xs">الحساسية والتوقعات</TabsTrigger>
             <TabsTrigger value="purify" className="text-xs">تطهير الفوائد</TabsTrigger>
             <TabsTrigger value="inflation" className="text-xs">التضخم</TabsTrigger>
             <TabsTrigger value="stats" className="text-xs">إحصاءات السنوات</TabsTrigger>
@@ -32,6 +34,7 @@ export default function AdvancedToolsHub({ currencyName = "ج.م", nisabValue = 
           <TabsContent value="salary"><SalaryZakatCalculator currencyName={currencyName} nisabValue={nisabValue} /></TabsContent>
           <TabsContent value="stocks"><StockClassificationAdvanced currencyName={currencyName} /></TabsContent>
           <TabsContent value="advance"><AdvanceMultiYearZakat annualZakat={annualZakat} currencyName={currencyName} /></TabsContent>
+          <TabsContent value="sensitivity"><SensitivityProjection annualZakat={annualZakat} currencyName={currencyName} /></TabsContent>
           <TabsContent value="purify"><RibaPurificationCalc currencyName={currencyName} /></TabsContent>
           <TabsContent value="inflation"><InflationAdjusterCard currencyName={currencyName} /></TabsContent>
           <TabsContent value="stats"><ZakatStatsDashboard /></TabsContent>
