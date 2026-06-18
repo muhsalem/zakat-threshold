@@ -5,7 +5,7 @@ import { NisabHistory } from "@/components/zakat/NisabHistory";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { FontSizeToggle } from "@/components/FontSizeToggle";
 import { NotificationsBell } from "@/components/NotificationsBell";
-import { Users, Building2, Scroll, Moon, ShieldCheck, FileText, Wheat, History, LogIn, LogOut, Lock, Sparkles, Loader2 } from "lucide-react";
+import { Users, Building2, Scroll, Moon, ShieldCheck, FileText, Wheat, History, LogIn, LogOut, Lock, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,7 +16,7 @@ import { useI18n } from "@/lib/i18n";
 const IndividualTab = lazy(() => import("@/components/zakat/IndividualTab").then((m) => ({ default: m.IndividualTab })));
 const CompanyTab = lazy(() => import("@/components/zakat/CompanyTab").then((m) => ({ default: m.CompanyTab })));
 const FitrCalculator = lazy(() => import("@/components/zakat/FitrCalculator").then((m) => ({ default: m.FitrCalculator })));
-const AdvancedToolsHub = lazy(() => import("@/components/zakat/AdvancedToolsHub"));
+
 
 function TabFallback() {
   return (
@@ -96,7 +96,7 @@ function Index() {
         </section>
 
         <Tabs defaultValue="individual" className="space-y-6" dir={lang === "ar" ? "rtl" : "ltr"}>
-          <TabsList dir={lang === "ar" ? "rtl" : "ltr"} className="grid w-full max-w-5xl mx-auto h-auto gap-1 grid-cols-2 md:grid-cols-5">
+          <TabsList dir={lang === "ar" ? "rtl" : "ltr"} className="grid w-full max-w-5xl mx-auto h-auto gap-1 grid-cols-2 md:grid-cols-4">
             <TabsTrigger value="individual" className="gap-1.5 text-xs md:text-sm py-2.5">
               <Users className="h-3.5 w-3.5 md:h-4 md:w-4" /> {t("tabs.individual")}
             </TabsTrigger>
@@ -109,16 +109,12 @@ function Index() {
             <TabsTrigger value="history" className="gap-1.5 text-xs md:text-sm py-2.5">
               <Scroll className="h-3.5 w-3.5 md:h-4 md:w-4" /> {t("tabs.history")}
             </TabsTrigger>
-            <TabsTrigger value="advanced" className="gap-1.5 text-xs md:text-sm py-2.5">
-              <Sparkles className="h-3.5 w-3.5 md:h-4 md:w-4" /> {t("tabs.advanced")}
-            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="individual"><Suspense fallback={<TabFallback />}><IndividualTab /></Suspense></TabsContent>
           <TabsContent value="company"><Suspense fallback={<TabFallback />}><CompanyTab /></Suspense></TabsContent>
           <TabsContent value="fitr" className="max-w-6xl mx-auto"><Suspense fallback={<TabFallback />}><FitrCalculator /></Suspense></TabsContent>
           <TabsContent value="history" className="max-w-4xl mx-auto"><NisabHistory /></TabsContent>
-          <TabsContent value="advanced" className="max-w-5xl mx-auto"><Suspense fallback={<TabFallback />}><AdvancedToolsHub /></Suspense></TabsContent>
         </Tabs>
       </main>
 
