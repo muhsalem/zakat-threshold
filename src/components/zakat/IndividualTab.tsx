@@ -31,6 +31,7 @@ import {
   COUNTRY_PRICES, checkHawl, formatHijri, gregorianToHijri, ZAKAT_RECIPIENTS,
 } from "@/lib/zakat";
 import { SaveToHistoryCard } from "./SaveToHistoryCard";
+import AdvancedToolsHub from "./AdvancedToolsHub";
 import { CashBankSection } from "./CashBankSection";
 import { SecuritiesSection } from "./SecuritiesSection";
 import { LivePricesCard } from "./LivePricesCard";
