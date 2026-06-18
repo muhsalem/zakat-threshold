@@ -36,6 +36,7 @@ import CompanyTradeClassification, {
 import { Button } from "@/components/ui/button";
 import { downloadZakatPdf } from "./ReactPdfReport";
 import { downloadReportExcel } from "@/lib/exportExcel";
+import AdvancedToolsHub from "./AdvancedToolsHub";
 
 function NumField({ label, value, onChange, unit, hint }: {
   label: string; value: string; onChange: (v: string) => void; unit?: string; hint?: string;
