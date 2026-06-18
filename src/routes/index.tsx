@@ -16,7 +16,7 @@ import { useI18n } from "@/lib/i18n";
 const IndividualTab = lazy(() => import("@/components/zakat/IndividualTab").then((m) => ({ default: m.IndividualTab })));
 const CompanyTab = lazy(() => import("@/components/zakat/CompanyTab").then((m) => ({ default: m.CompanyTab })));
 const FitrCalculator = lazy(() => import("@/components/zakat/FitrCalculator").then((m) => ({ default: m.FitrCalculator })));
-const AdvancedToolsHub = lazy(() => import("@/components/zakat/AdvancedToolsHub"));
+
 
 function TabFallback() {
   return (
