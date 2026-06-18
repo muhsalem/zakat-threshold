@@ -34,11 +34,21 @@ const PLATFORM = "نِصاب — الحاسبة الشرعية المعتمدة 
 
 function VerifyPage() {
   const s = useSearch({ from: "/verify" });
+  const navigate = useNavigate({ from: "/verify" });
+  const [code, setCode] = useState(s.id ?? "");
   const id = s.id ?? "";
   const issued = s.issued ? new Date(s.issued) : null;
   const validUntil = issued ? new Date(issued.getTime() + 354 * 86400000) : null;
   const expired = validUntil ? Date.now() > validUntil.getTime() : false;
   const isValid = !!id && !expired;
+  const hasQuery = !!id;
+
+  const onLookup = (e: React.FormEvent) => {
+    e.preventDefault();
+    const v = code.trim();
+    if (!v) return;
+    navigate({ to: "/verify", search: { id: v } });
+  };
 
   return (
     <div dir="rtl" className="min-h-screen bg-muted/30 py-10 px-4 text-right">
@@ -46,6 +56,33 @@ function VerifyPage() {
         <Link to="/" className="text-sm text-primary inline-flex items-center gap-1">
           <ArrowRight className="h-4 w-4 rotate-180" /> العودة إلى الحاسبة
         </Link>
+
+        <Card className="border-2 shadow-md">
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Search className="h-5 w-5 text-primary" /> التحقق من تقرير برقم/كود التقرير
+            </CardTitle>
+            <p className="text-xs text-muted-foreground">
+              أدخل رقم التقرير (يظهر أعلى ملف PDF أو في رابط QR) للتحقق من صحته وصلاحيته.
+            </p>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={onLookup} className="flex flex-col sm:flex-row gap-2">
+              <Input
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                placeholder="مثال: NSB-2026-000123"
+                className="font-mono text-sm"
+                dir="ltr"
+              />
+              <Button type="submit" className="gap-2 shrink-0">
+                <Search className="h-4 w-4" /> تحقق الآن
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        {hasQuery && (
 
         <Card className="border-2 shadow-lg overflow-hidden">
           <div className={`h-2 ${isValid ? "bg-primary" : "bg-destructive"}`} />
