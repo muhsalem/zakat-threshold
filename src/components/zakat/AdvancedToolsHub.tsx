@@ -9,35 +9,75 @@ import InflationAdjusterCard from "./InflationAdjusterCard";
 import ZakatStatsDashboard from "./ZakatStatsDashboard";
 import SensitivityProjection from "./SensitivityProjection";
 
-interface Props { currencyName?: string; nisabValue?: number; annualZakat?: number }
+type Mode = "individual" | "company" | "all";
 
-export default function AdvancedToolsHub({ currencyName = "ج.م", nisabValue = 0, annualZakat = 0 }: Props) {
+interface Props {
+  currencyName?: string;
+  nisabValue?: number;
+  annualZakat?: number;
+  mode?: Mode;
+  title?: string;
+}
+
+// Tools relevant per audience (محاسبياً وفقهياً)
+const TOOLS: Record<Mode, string[]> = {
+  individual: ["salary", "advance", "sensitivity", "purify", "inflation", "stats"],
+  company:    ["stocks", "sensitivity", "advance", "purify", "inflation", "stats"],
+  all:        ["salary", "stocks", "advance", "sensitivity", "purify", "inflation", "stats"],
+};
+
+const LABELS: Record<string, string> = {
+  salary: "زكاة الراتب",
+  stocks: "أسهم/REIT/ETF",
+  advance: "تعجيل الزكاة",
+  sensitivity: "الحساسية والتوقعات",
+  purify: "تطهير الفوائد",
+  inflation: "التضخم",
+  stats: "إحصاءات السنوات",
+};
+
+export default function AdvancedToolsHub({
+  currencyName = "ج.م",
+  nisabValue = 0,
+  annualZakat = 0,
+  mode = "all",
+  title,
+}: Props) {
+  const tools = TOOLS[mode];
+  const headerTitle = title ?? (mode === "individual"
+    ? "أدوات الأفراد المتقدمة (مالية وفقهية)"
+    : mode === "company"
+      ? "أدوات الشركات المتقدمة (محاسبية وفقهية)"
+      : "أدوات متقدمة (مالية ومحاسبية وفقهية)");
+
+  const panels: Record<string, JSX.Element> = {
+    salary: <SalaryZakatCalculator currencyName={currencyName} nisabValue={nisabValue} />,
+    stocks: <StockClassificationAdvanced currencyName={currencyName} />,
+    advance: <AdvanceMultiYearZakat annualZakat={annualZakat} currencyName={currencyName} />,
+    sensitivity: <SensitivityProjection annualZakat={annualZakat} currencyName={currencyName} />,
+    purify: <RibaPurificationCalc currencyName={currencyName} />,
+    inflation: <InflationAdjusterCard currencyName={currencyName} />,
+    stats: <ZakatStatsDashboard />,
+  };
+
   return (
     <Card className="mt-6 border-primary/30">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Sparkles className="h-5 w-5 text-primary" />
-          أدوات متقدمة (مالية ومحاسبية وفقهية)
+          {headerTitle}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="salary">
+        <Tabs defaultValue={tools[0]}>
           <TabsList className="flex flex-wrap h-auto justify-start gap-1">
-            <TabsTrigger value="salary" className="text-xs">زكاة الراتب</TabsTrigger>
-            <TabsTrigger value="stocks" className="text-xs">أسهم/REIT/ETF</TabsTrigger>
-            <TabsTrigger value="advance" className="text-xs">تعجيل الزكاة</TabsTrigger>
-            <TabsTrigger value="sensitivity" className="text-xs">الحساسية والتوقعات</TabsTrigger>
-            <TabsTrigger value="purify" className="text-xs">تطهير الفوائد</TabsTrigger>
-            <TabsTrigger value="inflation" className="text-xs">التضخم</TabsTrigger>
-            <TabsTrigger value="stats" className="text-xs">إحصاءات السنوات</TabsTrigger>
+            {tools.map((t) => (
+              <TabsTrigger key={t} value={t} className="text-xs">{LABELS[t]}</TabsTrigger>
+            ))}
           </TabsList>
-          <TabsContent value="salary"><SalaryZakatCalculator currencyName={currencyName} nisabValue={nisabValue} /></TabsContent>
-          <TabsContent value="stocks"><StockClassificationAdvanced currencyName={currencyName} /></TabsContent>
-          <TabsContent value="advance"><AdvanceMultiYearZakat annualZakat={annualZakat} currencyName={currencyName} /></TabsContent>
-          <TabsContent value="sensitivity"><SensitivityProjection annualZakat={annualZakat} currencyName={currencyName} /></TabsContent>
-          <TabsContent value="purify"><RibaPurificationCalc currencyName={currencyName} /></TabsContent>
-          <TabsContent value="inflation"><InflationAdjusterCard currencyName={currencyName} /></TabsContent>
-          <TabsContent value="stats"><ZakatStatsDashboard /></TabsContent>
+          {tools.map((t) => (
+            <TabsContent key={t} value={t}>{panels[t]}</TabsContent>
+          ))}
         </Tabs>
       </CardContent>
     </Card>
