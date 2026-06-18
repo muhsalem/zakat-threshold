@@ -1,9 +1,11 @@
-import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
+import { useState } from "react";
+import { createFileRoute, Link, useSearch, useNavigate } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { ShieldCheck, Clock, Hash, FileText, AlertTriangle, ArrowRight, Printer } from "lucide-react";
+import { ShieldCheck, Clock, Hash, FileText, AlertTriangle, ArrowRight, Printer, Search } from "lucide-react";
 
 interface VerifySearch {
   id?: string;
