@@ -1852,6 +1852,8 @@ export function CompanyTab() {
         </div>
       </CardContent>
     </Card>
+
+    <AdvancedToolsHub mode="company" currencyName={currencyName} nisabValue={calc.nisabValue} annualZakat={calc.zakat} />
     </div>
   );
 }
