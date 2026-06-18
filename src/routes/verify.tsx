@@ -141,6 +141,7 @@ function VerifyPage() {
             </p>
           </CardContent>
         </Card>
+        )}
       </div>
     </div>
   );
