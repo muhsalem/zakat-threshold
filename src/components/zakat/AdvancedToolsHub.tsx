@@ -51,7 +51,7 @@ export default function AdvancedToolsHub({
       ? "أدوات الشركات المتقدمة (محاسبية وفقهية)"
       : "أدوات متقدمة (مالية ومحاسبية وفقهية)");
 
-  const panels: Record<string, JSX.Element> = {
+  const panels: Record<string, ReactElement> = {
     salary: <SalaryZakatCalculator currencyName={currencyName} nisabValue={nisabValue} />,
     stocks: <StockClassificationAdvanced currencyName={currencyName} />,
     advance: <AdvanceMultiYearZakat annualZakat={annualZakat} currencyName={currencyName} />,
