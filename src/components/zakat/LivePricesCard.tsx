@@ -47,10 +47,20 @@ export function LivePricesCard({ currency, onApply }: Props) {
     }
   }
 
-  function apply() {
+  function applyGlobal() {
     if (!data) return;
     const rate = Number(usdRate) || 1;
     onApply(data.goldUsd * rate, data.silverUsd * rate);
+  }
+  function applyLocal() {
+    const g = Number(localGold) || 0;
+    const s = Number(localSilver) || 0;
+    if (g <= 0 && s <= 0) return;
+    // Fallback: if one side missing, keep the global-converted value for that metal
+    const rate = Number(usdRate) || 1;
+    const fallbackG = data ? data.goldUsd * rate : 0;
+    const fallbackS = data ? data.silverUsd * rate : 0;
+    onApply(g > 0 ? g : fallbackG, s > 0 ? s : fallbackS);
   }
 
   const globalGoldLocal = data ? data.goldUsd * (Number(usdRate) || 1) : 0;
