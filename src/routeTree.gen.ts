@@ -15,9 +15,11 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuditRouteImport } from './routes/audit'
+import { Route as AdvisorRouteImport } from './routes/advisor'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LegalTermsRouteImport } from './routes/legal.terms'
 import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as ApiPublicHooksHawlRemindersRouteImport } from './routes/api/public/hooks/hawl-reminders'
 
 const VerifyRoute = VerifyRouteImport.update({
@@ -50,6 +52,11 @@ const AuditRoute = AuditRouteImport.update({
   path: '/audit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdvisorRoute = AdvisorRouteImport.update({
+  id: '/advisor',
+  path: '/advisor',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -65,6 +72,11 @@ const LegalPrivacyRoute = LegalPrivacyRouteImport.update({
   path: '/legal/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicHooksHawlRemindersRoute =
   ApiPublicHooksHawlRemindersRouteImport.update({
     id: '/api/public/hooks/hawl-reminders',
@@ -74,24 +86,28 @@ const ApiPublicHooksHawlRemindersRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/advisor': typeof AdvisorRoute
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/history': typeof HistoryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/verify': typeof VerifyRoute
+  '/api/chat': typeof ApiChatRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/advisor': typeof AdvisorRoute
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/history': typeof HistoryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/verify': typeof VerifyRoute
+  '/api/chat': typeof ApiChatRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
@@ -99,12 +115,14 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/advisor': typeof AdvisorRoute
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/history': typeof HistoryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/verify': typeof VerifyRoute
+  '/api/chat': typeof ApiChatRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
@@ -113,36 +131,42 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/advisor'
     | '/audit'
     | '/auth'
     | '/history'
     | '/reset-password'
     | '/security'
     | '/verify'
+    | '/api/chat'
     | '/legal/privacy'
     | '/legal/terms'
     | '/api/public/hooks/hawl-reminders'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/advisor'
     | '/audit'
     | '/auth'
     | '/history'
     | '/reset-password'
     | '/security'
     | '/verify'
+    | '/api/chat'
     | '/legal/privacy'
     | '/legal/terms'
     | '/api/public/hooks/hawl-reminders'
   id:
     | '__root__'
     | '/'
+    | '/advisor'
     | '/audit'
     | '/auth'
     | '/history'
     | '/reset-password'
     | '/security'
     | '/verify'
+    | '/api/chat'
     | '/legal/privacy'
     | '/legal/terms'
     | '/api/public/hooks/hawl-reminders'
@@ -150,12 +174,14 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdvisorRoute: typeof AdvisorRoute
   AuditRoute: typeof AuditRoute
   AuthRoute: typeof AuthRoute
   HistoryRoute: typeof HistoryRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SecurityRoute: typeof SecurityRoute
   VerifyRoute: typeof VerifyRoute
+  ApiChatRoute: typeof ApiChatRoute
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   LegalTermsRoute: typeof LegalTermsRoute
   ApiPublicHooksHawlRemindersRoute: typeof ApiPublicHooksHawlRemindersRoute
@@ -205,6 +231,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuditRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/advisor': {
+      id: '/advisor'
+      path: '/advisor'
+      fullPath: '/advisor'
+      preLoaderRoute: typeof AdvisorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -226,6 +259,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LegalPrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/hawl-reminders': {
       id: '/api/public/hooks/hawl-reminders'
       path: '/api/public/hooks/hawl-reminders'
@@ -238,12 +278,14 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdvisorRoute: AdvisorRoute,
   AuditRoute: AuditRoute,
   AuthRoute: AuthRoute,
   HistoryRoute: HistoryRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SecurityRoute: SecurityRoute,
   VerifyRoute: VerifyRoute,
+  ApiChatRoute: ApiChatRoute,
   LegalPrivacyRoute: LegalPrivacyRoute,
   LegalTermsRoute: LegalTermsRoute,
   ApiPublicHooksHawlRemindersRoute: ApiPublicHooksHawlRemindersRoute,
@@ -251,13 +293,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
