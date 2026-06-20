@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link, useSearch, useNavigate } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { ShieldCheck, Clock, Hash, FileText, AlertTriangle, ArrowRight, Printer, Search } from "lucide-react";
+import { ShieldCheck, Clock, Hash, FileText, AlertTriangle, ArrowRight, Printer, Search, BadgeCheck, ShieldAlert } from "lucide-react";
+import { verifyReport } from "@/lib/signature.functions";
 
 interface VerifySearch {
   id?: string;
@@ -15,6 +16,7 @@ interface VerifySearch {
   issuer?: string;
   v?: string;
   issued?: string;
+  sig?: string;
 }
 
 export const Route = createFileRoute("/verify")({
@@ -26,6 +28,7 @@ export const Route = createFileRoute("/verify")({
     issuer: typeof s.issuer === "string" ? s.issuer : undefined,
     v: typeof s.v === "string" ? s.v : undefined,
     issued: typeof s.issued === "string" ? s.issued : undefined,
+    sig: typeof s.sig === "string" ? s.sig : undefined,
   }),
   component: VerifyPage,
 });
@@ -36,12 +39,24 @@ function VerifyPage() {
   const s = useSearch({ from: "/verify" });
   const navigate = useNavigate({ from: "/verify" });
   const [code, setCode] = useState(s.id ?? "");
+  const [sigState, setSigState] = useState<"unsigned" | "checking" | "valid" | "invalid">("unsigned");
+
   const id = s.id ?? "";
   const issued = s.issued ? new Date(s.issued) : null;
   const validUntil = issued ? new Date(issued.getTime() + 354 * 86400000) : null;
   const expired = validUntil ? Date.now() > validUntil.getTime() : false;
-  const isValid = !!id && !expired;
+  const sigVerified = sigState === "valid";
+  const sigBroken = sigState === "invalid";
+  const isValid = !!id && !expired && !sigBroken;
   const hasQuery = !!id;
+
+  useEffect(() => {
+    if (!s.sig || !s.id || !s.hash || !s.issued) { setSigState("unsigned"); return; }
+    setSigState("checking");
+    verifyReport({ data: { id: s.id, hash: s.hash, issued: s.issued, sig: s.sig } })
+      .then((r) => setSigState(r.valid ? "valid" : "invalid"))
+      .catch(() => setSigState("invalid"));
+  }, [s.sig, s.id, s.hash, s.issued]);
 
   const onLookup = (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,9 +107,24 @@ function VerifyPage() {
                 <ShieldCheck className={`h-6 w-6 ${isValid ? "text-primary" : "text-destructive"}`} />
                 صفحة التحقق من تقرير الزكاة
               </CardTitle>
-              <Badge variant={isValid ? "default" : "destructive"} className="text-sm px-3 py-1">
-                {isValid ? "صالح · Valid" : expired ? "منتهي الصلاحية · Expired" : "غير معروف"}
-              </Badge>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant={isValid ? "default" : "destructive"} className="text-sm px-3 py-1">
+                  {isValid ? "صالح · Valid" : expired ? "منتهي الصلاحية · Expired" : sigBroken ? "توقيع غير مطابق" : "غير معروف"}
+                </Badge>
+                {sigVerified && (
+                  <Badge className="bg-emerald-600 hover:bg-emerald-600 text-white gap-1">
+                    <BadgeCheck className="h-3.5 w-3.5" /> توقيع رقمي صحيح
+                  </Badge>
+                )}
+                {sigBroken && (
+                  <Badge variant="destructive" className="gap-1">
+                    <ShieldAlert className="h-3.5 w-3.5" /> توقيع غير صالح / مُحرَّف
+                  </Badge>
+                )}
+                {sigState === "unsigned" && (
+                  <Badge variant="outline" className="gap-1 text-xs">بدون توقيع رقمي</Badge>
+                )}
+              </div>
             </div>
             <p className="text-xs text-muted-foreground">{PLATFORM}</p>
           </CardHeader>
@@ -109,6 +139,7 @@ function VerifyPage() {
               <Field label="طريقة الحساب" value={s.method || "وفق معيار AAOIFI 35 ومدخلات المستخدم"} />
               <Field label="النصاب المعتمد" value={basisLabel(s.basis)} />
               <Field label="جهة الإصدار" value={s.issuer || PLATFORM} />
+              <Field icon={<ShieldCheck className="h-4 w-4" />} label="التوقيع الرقمي (HMAC‑SHA256)" value={s.sig || "—"} mono />
             </div>
 
             <Separator />
@@ -117,8 +148,8 @@ function VerifyPage() {
               <AlertTriangle className={`h-5 w-5 shrink-0 ${isValid ? "text-primary" : "text-destructive"}`} />
               <div className="leading-relaxed">
                 <b>إخلاء مسؤولية:</b> هذه الصفحة تتحقّق من بيانات التقرير المُمرَّرة في الرابط فقط،
-                وهي أداة مساعدة للتحقق من سلامة الوثيقة وليست فتوى شرعية ملزمة. النتائج
-                استرشادية وتعتمد على البيانات المُدخَلة من المُزكِّي. للحالات الخاصة يُرجى
+                وهي أداة مساعدة للتحقق من سلامة الوثيقة وليست فتوى شرعية ملزمة. التوقيع الرقمي يضمن
+                أن التقرير صادر فعلاً من منصة نِصاب ولم يُعدَّل بعد الإصدار. للحالات الخاصة يُرجى
                 مراجعة عالم/مفتٍ معتمد.
               </div>
             </div>

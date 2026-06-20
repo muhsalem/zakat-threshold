@@ -186,14 +186,22 @@ export function PrintReport({ data }: { data: PrintReportData }) {
       data.monetaryBase.toFixed(2), data.moneyNisab.toFixed(2),
       now.toISOString(),
     ].join("|");
-    computeHash(payload).then((h) => {
+    computeHash(payload).then(async (h) => {
       setDocHash(h);
       const basis = data.nisabBasis ?? "beneficial";
+      const issued = now.toISOString();
+      let sig = "";
+      try {
+        const { signReport } = await import("@/lib/signature.functions");
+        const r = await signReport({ data: { id, hash: h, issued } });
+        sig = r.sig;
+      } catch { /* signing optional — falls back to unsigned verify */ }
       const params = new URLSearchParams({
         id, hash: h, basis, v: "Nisab v1.0",
         method: "AAOIFI-35",
         issuer: "Nisab Platform",
-        issued: now.toISOString(),
+        issued,
+        ...(sig ? { sig } : {}),
       });
       setVerifyUrl(`${origin}/verify?${params.toString()}`);
     });
