@@ -105,24 +105,36 @@ export function NisabHistory() {
       .then(({ data }) => { if (data) setDbRows(data as NisabRow[]); });
   }, []);
 
+  // الصفوف المرشَّحة حسب الدولة: المحلية أولًا، وإلا الصف العالمي (GLOBAL)
+  const rowsForCountry = useMemo(() => {
+    const local = dbRows.filter((r) => r.country_code === dbCountryCode);
+    const localYears = new Set(local.map((r) => `${r.year}-${r.month ?? 0}`));
+    const globalFallback = dbRows.filter(
+      (r) => (r.country_code === "GLOBAL" || !r.country_code) &&
+             !localYears.has(`${r.year}-${r.month ?? 0}`)
+    );
+    return [...local, ...globalFallback];
+  }, [dbRows, dbCountryCode]);
+
   const dbYears = useMemo(() => {
-    const set = new Set<number>(dbRows.map((r) => r.year));
+    const set = new Set<number>(rowsForCountry.map((r) => r.year));
     return [...set].sort((a, b) => b - a);
-  }, [dbRows]);
+  }, [rowsForCountry]);
 
   const monthsForYear = useMemo(
-    () => dbRows.filter((r) => r.year === selectedYear && r.month !== null)
+    () => rowsForCountry.filter((r) => r.year === selectedYear && r.month !== null)
       .map((r) => r.month as number)
       .sort((a, b) => a - b),
-    [dbRows, selectedYear]
+    [rowsForCountry, selectedYear]
   );
 
   const selectedRow = useMemo(() => {
     if (monthsForYear.length > 0) {
-      return dbRows.find((r) => r.year === selectedYear && r.month === selectedMonth) ?? null;
+      return rowsForCountry.find((r) => r.year === selectedYear && r.month === selectedMonth) ?? null;
     }
-    return dbRows.find((r) => r.year === selectedYear && r.month === null) ?? null;
-  }, [dbRows, selectedYear, selectedMonth, monthsForYear]);
+    return rowsForCountry.find((r) => r.year === selectedYear && r.month === null) ?? null;
+  }, [rowsForCountry, selectedYear, selectedMonth, monthsForYear]);
+
 
   // === توقّع بقيّة العام بسيناريوهات (Scenario-Based) ===
   const forecastScenarios = useMemo(() => {
