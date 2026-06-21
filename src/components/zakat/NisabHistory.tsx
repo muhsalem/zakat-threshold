@@ -442,8 +442,10 @@ export function NisabHistory() {
             const rowDate = new Date(selectedRow.year, (selectedRow.month ?? 1) - 1, 1);
             const isForecast = rowDate > new Date(today.getFullYear(), today.getMonth(), 1);
             const countryLabel = COUNTRY_LABEL_AR[selectedRow.country_code || "GLOBAL"] || (selectedRow.country_code || "GLOBAL");
-            const goldLocal = selectedRow.gold_price * dbFx;
-            const silverLocal = selectedRow.silver_price * dbFx;
+            const sameCurrency = selectedRow.currency === dbCountry.currency;
+            const goldLocal = sameCurrency ? selectedRow.gold_price : selectedRow.gold_price * dbFx;
+            const silverLocal = sameCurrency ? selectedRow.silver_price : selectedRow.silver_price * dbFx;
+
             return (
               <div className="space-y-3">
                 <div className="flex flex-wrap items-center gap-2 text-xs">
