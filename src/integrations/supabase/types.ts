@@ -131,6 +131,77 @@ export type Database = {
         }
         Relationships: []
       }
+      organization_members: {
+        Row: {
+          created_at: string
+          id: string
+          organization_id: string
+          role: Database["public"]["Enums"]["org_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          organization_id: string
+          role?: Database["public"]["Enums"]["org_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          organization_id?: string
+          role?: Database["public"]["Enums"]["org_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_members_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organizations: {
+        Row: {
+          country: string | null
+          created_at: string
+          created_by: string
+          currency: string
+          id: string
+          legal_name: string | null
+          name: string
+          registration_no: string | null
+          sector: string | null
+          updated_at: string
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string
+          created_by: string
+          currency?: string
+          id?: string
+          legal_name?: string | null
+          name: string
+          registration_no?: string | null
+          sector?: string | null
+          updated_at?: string
+        }
+        Update: {
+          country?: string | null
+          created_at?: string
+          created_by?: string
+          currency?: string
+          id?: string
+          legal_name?: string | null
+          name?: string
+          registration_no?: string | null
+          sector?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -202,6 +273,72 @@ export type Database = {
           },
         ]
       }
+      zakat_approvals: {
+        Row: {
+          checker_id: string | null
+          checker_note: string | null
+          created_at: string
+          decided_at: string | null
+          fingerprint: string | null
+          id: string
+          maker_id: string
+          organization_id: string
+          snapshot: Json
+          status: Database["public"]["Enums"]["approval_status"]
+          submitted_at: string
+          title: string
+          updated_at: string
+          zakat_record_id: string | null
+        }
+        Insert: {
+          checker_id?: string | null
+          checker_note?: string | null
+          created_at?: string
+          decided_at?: string | null
+          fingerprint?: string | null
+          id?: string
+          maker_id: string
+          organization_id: string
+          snapshot: Json
+          status?: Database["public"]["Enums"]["approval_status"]
+          submitted_at?: string
+          title: string
+          updated_at?: string
+          zakat_record_id?: string | null
+        }
+        Update: {
+          checker_id?: string | null
+          checker_note?: string | null
+          created_at?: string
+          decided_at?: string | null
+          fingerprint?: string | null
+          id?: string
+          maker_id?: string
+          organization_id?: string
+          snapshot?: Json
+          status?: Database["public"]["Enums"]["approval_status"]
+          submitted_at?: string
+          title?: string
+          updated_at?: string
+          zakat_record_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "zakat_approvals_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "zakat_approvals_zakat_record_id_fkey"
+            columns: ["zakat_record_id"]
+            isOneToOne: false
+            referencedRelation: "zakat_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       zakat_records: {
         Row: {
           created_at: string
@@ -211,6 +348,7 @@ export type Database = {
           id: string
           net_due: number
           notes: string | null
+          organization_id: string | null
           prepaid_zakat: number
           record_type: string
           snapshot: Json | null
@@ -229,6 +367,7 @@ export type Database = {
           id?: string
           net_due?: number
           notes?: string | null
+          organization_id?: string | null
           prepaid_zakat?: number
           record_type?: string
           snapshot?: Json | null
@@ -247,6 +386,7 @@ export type Database = {
           id?: string
           net_due?: number
           notes?: string | null
+          organization_id?: string | null
           prepaid_zakat?: number
           record_type?: string
           snapshot?: Json | null
@@ -257,7 +397,15 @@ export type Database = {
           zakat_base?: number
           zakat_due?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "zakat_records_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
@@ -265,9 +413,19 @@ export type Database = {
     }
     Functions: {
       generate_hawl_reminders: { Args: never; Returns: number }
+      has_org_role: {
+        Args: {
+          _org: string
+          _roles: Database["public"]["Enums"]["org_role"][]
+          _user: string
+        }
+        Returns: boolean
+      }
+      is_org_member: { Args: { _org: string; _user: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      approval_status: "pending" | "approved" | "rejected"
+      org_role: "owner" | "admin" | "maker" | "checker" | "auditor" | "viewer"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -394,6 +552,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      approval_status: ["pending", "approved", "rejected"],
+      org_role: ["owner", "admin", "maker", "checker", "auditor", "viewer"],
+    },
   },
 } as const
