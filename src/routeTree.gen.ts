@@ -13,7 +13,9 @@ import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as OrganizationsRouteImport } from './routes/organizations'
+import { Route as ImpactRouteImport } from './routes/impact'
 import { Route as HistoryRouteImport } from './routes/history'
+import { Route as DevelopersRouteImport } from './routes/developers'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuditRouteImport } from './routes/audit'
 import { Route as AdvisorRouteImport } from './routes/advisor'
@@ -21,6 +23,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as LegalTermsRouteImport } from './routes/legal.terms'
 import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as ApiPublicNisabRouteImport } from './routes/api/public/nisab'
+import { Route as ApiPublicCalcRouteImport } from './routes/api/public/calc'
 import { Route as ApiPublicHooksHawlRemindersRouteImport } from './routes/api/public/hooks/hawl-reminders'
 
 const VerifyRoute = VerifyRouteImport.update({
@@ -43,9 +47,19 @@ const OrganizationsRoute = OrganizationsRouteImport.update({
   path: '/organizations',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImpactRoute = ImpactRouteImport.update({
+  id: '/impact',
+  path: '/impact',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HistoryRoute = HistoryRouteImport.update({
   id: '/history',
   path: '/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevelopersRoute = DevelopersRouteImport.update({
+  id: '/developers',
+  path: '/developers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -83,6 +97,16 @@ const ApiChatRoute = ApiChatRouteImport.update({
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicNisabRoute = ApiPublicNisabRouteImport.update({
+  id: '/api/public/nisab',
+  path: '/api/public/nisab',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicCalcRoute = ApiPublicCalcRouteImport.update({
+  id: '/api/public/calc',
+  path: '/api/public/calc',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicHooksHawlRemindersRoute =
   ApiPublicHooksHawlRemindersRouteImport.update({
     id: '/api/public/hooks/hawl-reminders',
@@ -95,7 +119,9 @@ export interface FileRoutesByFullPath {
   '/advisor': typeof AdvisorRoute
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
+  '/developers': typeof DevelopersRoute
   '/history': typeof HistoryRoute
+  '/impact': typeof ImpactRoute
   '/organizations': typeof OrganizationsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
@@ -103,6 +129,8 @@ export interface FileRoutesByFullPath {
   '/api/chat': typeof ApiChatRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
+  '/api/public/calc': typeof ApiPublicCalcRoute
+  '/api/public/nisab': typeof ApiPublicNisabRoute
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
 }
 export interface FileRoutesByTo {
@@ -110,7 +138,9 @@ export interface FileRoutesByTo {
   '/advisor': typeof AdvisorRoute
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
+  '/developers': typeof DevelopersRoute
   '/history': typeof HistoryRoute
+  '/impact': typeof ImpactRoute
   '/organizations': typeof OrganizationsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
@@ -118,6 +148,8 @@ export interface FileRoutesByTo {
   '/api/chat': typeof ApiChatRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
+  '/api/public/calc': typeof ApiPublicCalcRoute
+  '/api/public/nisab': typeof ApiPublicNisabRoute
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
 }
 export interface FileRoutesById {
@@ -126,7 +158,9 @@ export interface FileRoutesById {
   '/advisor': typeof AdvisorRoute
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
+  '/developers': typeof DevelopersRoute
   '/history': typeof HistoryRoute
+  '/impact': typeof ImpactRoute
   '/organizations': typeof OrganizationsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
@@ -134,6 +168,8 @@ export interface FileRoutesById {
   '/api/chat': typeof ApiChatRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
+  '/api/public/calc': typeof ApiPublicCalcRoute
+  '/api/public/nisab': typeof ApiPublicNisabRoute
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
 }
 export interface FileRouteTypes {
@@ -143,7 +179,9 @@ export interface FileRouteTypes {
     | '/advisor'
     | '/audit'
     | '/auth'
+    | '/developers'
     | '/history'
+    | '/impact'
     | '/organizations'
     | '/reset-password'
     | '/security'
@@ -151,6 +189,8 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/legal/privacy'
     | '/legal/terms'
+    | '/api/public/calc'
+    | '/api/public/nisab'
     | '/api/public/hooks/hawl-reminders'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -158,7 +198,9 @@ export interface FileRouteTypes {
     | '/advisor'
     | '/audit'
     | '/auth'
+    | '/developers'
     | '/history'
+    | '/impact'
     | '/organizations'
     | '/reset-password'
     | '/security'
@@ -166,6 +208,8 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/legal/privacy'
     | '/legal/terms'
+    | '/api/public/calc'
+    | '/api/public/nisab'
     | '/api/public/hooks/hawl-reminders'
   id:
     | '__root__'
@@ -173,7 +217,9 @@ export interface FileRouteTypes {
     | '/advisor'
     | '/audit'
     | '/auth'
+    | '/developers'
     | '/history'
+    | '/impact'
     | '/organizations'
     | '/reset-password'
     | '/security'
@@ -181,6 +227,8 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/legal/privacy'
     | '/legal/terms'
+    | '/api/public/calc'
+    | '/api/public/nisab'
     | '/api/public/hooks/hawl-reminders'
   fileRoutesById: FileRoutesById
 }
@@ -189,7 +237,9 @@ export interface RootRouteChildren {
   AdvisorRoute: typeof AdvisorRoute
   AuditRoute: typeof AuditRoute
   AuthRoute: typeof AuthRoute
+  DevelopersRoute: typeof DevelopersRoute
   HistoryRoute: typeof HistoryRoute
+  ImpactRoute: typeof ImpactRoute
   OrganizationsRoute: typeof OrganizationsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SecurityRoute: typeof SecurityRoute
@@ -197,6 +247,8 @@ export interface RootRouteChildren {
   ApiChatRoute: typeof ApiChatRoute
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   LegalTermsRoute: typeof LegalTermsRoute
+  ApiPublicCalcRoute: typeof ApiPublicCalcRoute
+  ApiPublicNisabRoute: typeof ApiPublicNisabRoute
   ApiPublicHooksHawlRemindersRoute: typeof ApiPublicHooksHawlRemindersRoute
 }
 
@@ -230,11 +282,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrganizationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/impact': {
+      id: '/impact'
+      path: '/impact'
+      fullPath: '/impact'
+      preLoaderRoute: typeof ImpactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/history': {
       id: '/history'
       path: '/history'
       fullPath: '/history'
       preLoaderRoute: typeof HistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/developers': {
+      id: '/developers'
+      path: '/developers'
+      fullPath: '/developers'
+      preLoaderRoute: typeof DevelopersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -286,6 +352,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/nisab': {
+      id: '/api/public/nisab'
+      path: '/api/public/nisab'
+      fullPath: '/api/public/nisab'
+      preLoaderRoute: typeof ApiPublicNisabRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/calc': {
+      id: '/api/public/calc'
+      path: '/api/public/calc'
+      fullPath: '/api/public/calc'
+      preLoaderRoute: typeof ApiPublicCalcRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/hawl-reminders': {
       id: '/api/public/hooks/hawl-reminders'
       path: '/api/public/hooks/hawl-reminders'
@@ -301,7 +381,9 @@ const rootRouteChildren: RootRouteChildren = {
   AdvisorRoute: AdvisorRoute,
   AuditRoute: AuditRoute,
   AuthRoute: AuthRoute,
+  DevelopersRoute: DevelopersRoute,
   HistoryRoute: HistoryRoute,
+  ImpactRoute: ImpactRoute,
   OrganizationsRoute: OrganizationsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SecurityRoute: SecurityRoute,
@@ -309,6 +391,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiChatRoute: ApiChatRoute,
   LegalPrivacyRoute: LegalPrivacyRoute,
   LegalTermsRoute: LegalTermsRoute,
+  ApiPublicCalcRoute: ApiPublicCalcRoute,
+  ApiPublicNisabRoute: ApiPublicNisabRoute,
   ApiPublicHooksHawlRemindersRoute: ApiPublicHooksHawlRemindersRoute,
 }
 export const routeTree = rootRouteImport

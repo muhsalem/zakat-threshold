@@ -131,6 +131,12 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:right-2 focus:z-50 focus:rounded focus:bg-primary focus:text-primary-foreground focus:px-3 focus:py-1.5 focus:text-sm"
+        >
+          تخطَّ إلى المحتوى الرئيسي
+        </a>
         <Outlet />
         <Link
           to="/verify"
