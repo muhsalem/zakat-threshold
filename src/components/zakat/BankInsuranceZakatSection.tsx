@@ -134,6 +134,10 @@ export function BankInsuranceZakatSection({ currencyName = "ج.م" }: { currency
             <Num label="أوراق مالية للمتاجرة" value={securities} onChange={setSecurities} />
             <Num label="ذهب/فضة بحوزة البنك" value={gold} onChange={setGold} />
             <Num label="(−) ودائع/التزامات قصيرة مُستحقة" value={deductLiabilities} onChange={setDeductLiabilities} />
+            {kind === "commercial-bank" && (
+              <Num label="إيرادات ربوية للتطهير" value={haramRevenue} onChange={setHaramRevenue}
+                hint="فوائد ربوية تُصرف في وجوه البر دون نية القربة — قبل احتساب الزكاة على الأصل" />
+            )}
           </div>
         )}
 
@@ -145,8 +149,13 @@ export function BankInsuranceZakatSection({ currencyName = "ج.م" }: { currency
             <Num label="(−) الأصول الثابتة والمعنوية" value={fixedAssets} onChange={setFixedAssets} />
             <Num label="(−) استثمارات في تابعة تُزكِّي نفسها" value={subsidiaries} onChange={setSubsidiaries} />
             <Num label="(−) خسائر متراكمة" value={losses} onChange={setLosses} />
+            {kind === "commercial-bank" && (
+              <Num label="إيرادات ربوية للتطهير" value={haramRevenue} onChange={setHaramRevenue}
+                hint="تُحسب وتُخرج قبل الزكاة على رأس المال" />
+            )}
           </div>
         )}
+
 
         {isInsurance && (
           <div className="grid md:grid-cols-3 gap-3">
