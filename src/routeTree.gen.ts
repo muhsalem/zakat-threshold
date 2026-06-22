@@ -17,6 +17,7 @@ import { Route as NisabAuditRouteImport } from './routes/nisab-audit'
 import { Route as ImpactRouteImport } from './routes/impact'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as DevelopersRouteImport } from './routes/developers'
+import { Route as CropsRouteImport } from './routes/crops'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuditRouteImport } from './routes/audit'
 import { Route as AdvisorRouteImport } from './routes/advisor'
@@ -66,6 +67,11 @@ const HistoryRoute = HistoryRouteImport.update({
 const DevelopersRoute = DevelopersRouteImport.update({
   id: '/developers',
   path: '/developers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CropsRoute = CropsRouteImport.update({
+  id: '/crops',
+  path: '/crops',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -125,6 +131,7 @@ export interface FileRoutesByFullPath {
   '/advisor': typeof AdvisorRoute
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
+  '/crops': typeof CropsRoute
   '/developers': typeof DevelopersRoute
   '/history': typeof HistoryRoute
   '/impact': typeof ImpactRoute
@@ -145,6 +152,7 @@ export interface FileRoutesByTo {
   '/advisor': typeof AdvisorRoute
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
+  '/crops': typeof CropsRoute
   '/developers': typeof DevelopersRoute
   '/history': typeof HistoryRoute
   '/impact': typeof ImpactRoute
@@ -166,6 +174,7 @@ export interface FileRoutesById {
   '/advisor': typeof AdvisorRoute
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
+  '/crops': typeof CropsRoute
   '/developers': typeof DevelopersRoute
   '/history': typeof HistoryRoute
   '/impact': typeof ImpactRoute
@@ -188,6 +197,7 @@ export interface FileRouteTypes {
     | '/advisor'
     | '/audit'
     | '/auth'
+    | '/crops'
     | '/developers'
     | '/history'
     | '/impact'
@@ -208,6 +218,7 @@ export interface FileRouteTypes {
     | '/advisor'
     | '/audit'
     | '/auth'
+    | '/crops'
     | '/developers'
     | '/history'
     | '/impact'
@@ -228,6 +239,7 @@ export interface FileRouteTypes {
     | '/advisor'
     | '/audit'
     | '/auth'
+    | '/crops'
     | '/developers'
     | '/history'
     | '/impact'
@@ -249,6 +261,7 @@ export interface RootRouteChildren {
   AdvisorRoute: typeof AdvisorRoute
   AuditRoute: typeof AuditRoute
   AuthRoute: typeof AuthRoute
+  CropsRoute: typeof CropsRoute
   DevelopersRoute: typeof DevelopersRoute
   HistoryRoute: typeof HistoryRoute
   ImpactRoute: typeof ImpactRoute
@@ -321,6 +334,13 @@ declare module '@tanstack/react-router' {
       path: '/developers'
       fullPath: '/developers'
       preLoaderRoute: typeof DevelopersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/crops': {
+      id: '/crops'
+      path: '/crops'
+      fullPath: '/crops'
+      preLoaderRoute: typeof CropsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -401,6 +421,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdvisorRoute: AdvisorRoute,
   AuditRoute: AuditRoute,
   AuthRoute: AuthRoute,
+  CropsRoute: CropsRoute,
   DevelopersRoute: DevelopersRoute,
   HistoryRoute: HistoryRoute,
   ImpactRoute: ImpactRoute,
