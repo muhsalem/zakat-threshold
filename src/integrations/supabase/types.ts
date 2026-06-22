@@ -285,6 +285,27 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       zakat_approvals: {
         Row: {
           checker_id: string | null
@@ -433,9 +454,17 @@ export type Database = {
         }
         Returns: boolean
       }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       is_org_member: { Args: { _org: string; _user: string }; Returns: boolean }
     }
     Enums: {
+      app_role: "admin" | "moderator" | "user"
       approval_status: "pending" | "approved" | "rejected"
       org_role: "owner" | "admin" | "maker" | "checker" | "auditor" | "viewer"
     }
@@ -565,6 +594,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "moderator", "user"],
       approval_status: ["pending", "approved", "rejected"],
       org_role: ["owner", "admin", "maker", "checker", "auditor", "viewer"],
     },
