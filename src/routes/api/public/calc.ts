@@ -22,7 +22,10 @@ export const Route = createFileRoute("/api/public/calc")({
         const assets = Number(b.assets ?? 0);
         const liabilities = Number(b.liabilities ?? 0);
         const nisab = Number(b.nisab ?? 0);
-        const rate = Number(b.rate ?? 0.025);
+        const calendar = String(b.calendar ?? "hijri").toLowerCase() === "gregorian" ? "gregorian" : "hijri";
+        // الندوة السابعة لقضايا الزكاة: يُزاد المعدّل عند احتساب الحول ميلادياً
+        const defaultRate = calendar === "gregorian" ? 0.02577 : 0.025;
+        const rate = Number.isFinite(Number(b.rate)) && Number(b.rate) > 0 ? Number(b.rate) : defaultRate;
 
         if (!Number.isFinite(assets) || !Number.isFinite(liabilities) || !Number.isFinite(nisab)) {
           return new Response(JSON.stringify({ ok: false, error: "invalid_numbers" }), { status: 400, headers: CORS });
@@ -34,15 +37,19 @@ export const Route = createFileRoute("/api/public/calc")({
         return new Response(
           JSON.stringify({
             ok: true,
-            input: { assets, liabilities, nisab, rate },
+            input: { assets, liabilities, nisab, rate, calendar },
             net_assets: +net.toFixed(2),
             eligible,
             zakat_due: zakat,
             standard: "AAOIFI 35",
+            note: calendar === "gregorian"
+              ? "تم تطبيق معدّل 2.577% لاحتساب الحول بالتقويم الميلادي وفق توصية الندوة السابعة لقضايا الزكاة."
+              : "تم تطبيق معدّل 2.5% للحول الهجري القمري (354 يوم).",
             generated_at: new Date().toISOString(),
           }),
           { headers: CORS }
         );
+
       },
     },
   },
