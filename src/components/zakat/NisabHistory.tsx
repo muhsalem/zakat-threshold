@@ -658,9 +658,8 @@ export function NisabHistory() {
                 </Select>
               </div>
             </div>
-
-            </div>
           </div>
+
         </CardHeader>
         <CardContent className="pt-4 space-y-4">
           <div className="h-80 w-full">
