@@ -20,10 +20,14 @@ export type Database = {
           created_at: string
           currency: string
           event: string | null
+          gold_nisab_value: number | null
           gold_price: number
           hijri_year: number | null
           id: string
           month: number | null
+          reliability: string
+          reliability_score: number
+          silver_nisab_value: number | null
           silver_price: number
           source: string | null
           updated_at: string
@@ -34,10 +38,14 @@ export type Database = {
           created_at?: string
           currency?: string
           event?: string | null
+          gold_nisab_value?: number | null
           gold_price: number
           hijri_year?: number | null
           id?: string
           month?: number | null
+          reliability?: string
+          reliability_score?: number
+          silver_nisab_value?: number | null
           silver_price: number
           source?: string | null
           updated_at?: string
@@ -48,10 +56,14 @@ export type Database = {
           created_at?: string
           currency?: string
           event?: string | null
+          gold_nisab_value?: number | null
           gold_price?: number
           hijri_year?: number | null
           id?: string
           month?: number | null
+          reliability?: string
+          reliability_score?: number
+          silver_nisab_value?: number | null
           silver_price?: number
           source?: string | null
           updated_at?: string
