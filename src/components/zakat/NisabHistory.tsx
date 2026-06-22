@@ -657,20 +657,8 @@ export function NisabHistory() {
                   </SelectContent>
                 </Select>
               </div>
-              <Button
-                size="sm"
-                variant={chartMode === "USD" ? "default" : "outline"}
-                onClick={() => setChartMode("USD")}
-              >
-                بالدولار
-              </Button>
-              <Button
-                size="sm"
-                variant={chartMode === "LOCAL" ? "default" : "outline"}
-                onClick={() => setChartMode("LOCAL")}
-              >
-                بعملة {chartCountry.name}
-              </Button>
+            </div>
+
             </div>
           </div>
         </CardHeader>
