@@ -238,18 +238,16 @@ export function NisabHistory() {
     silverNisabValue || Infinity,
   );
 
-  // --- Historical chart data (USD baseline) ---
-  const [chartMode, setChartMode] = useState<"USD" | "LOCAL">("USD");
+  // --- Historical chart data (local currency only) ---
   // محدِّد دولة مستقل لمخطط 100 عام
   const [chartCountryCode, setChartCountryCode] = useState<string>("EG");
   const chartCountry = COUNTRY_PRICES.find((c) => c.code === chartCountryCode) ?? COUNTRY_PRICES[0];
   const liveFxRate = useMemo(() => {
-    if (chartMode === "USD") return 1;
     const c = COUNTRY_PRICES.find((x) => x.code === chartCountryCode);
     const usd = COUNTRY_PRICES.find((x) => x.code === "US");
     if (!c || !usd) return 1;
     return c.gold24 / usd.gold24;
-  }, [chartMode, chartCountryCode]);
+  }, [chartCountryCode]);
 
   const chartData = useMemo(
     () =>
@@ -267,7 +265,8 @@ export function NisabHistory() {
     [liveFxRate],
   );
 
-  const currencyLabel = chartMode === "USD" ? "$" : chartCountry.currency;
+  const currencyLabel = chartCountry.currency;
+
 
 
 
