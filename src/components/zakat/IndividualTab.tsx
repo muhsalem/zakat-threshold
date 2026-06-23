@@ -31,7 +31,12 @@ import {
   COUNTRY_PRICES, checkHawl, formatHijri, gregorianToHijri, ZAKAT_RECIPIENTS,
 } from "@/lib/zakat";
 import { SaveToHistoryCard } from "./SaveToHistoryCard";
-import AdvancedToolsHub from "./AdvancedToolsHub";
+import SalaryZakatCalculator from "./SalaryZakatCalculator";
+import AdvanceMultiYearZakat from "./AdvanceMultiYearZakat";
+import RibaPurificationCalc from "./RibaPurificationCalc";
+import InflationAdjusterCard from "./InflationAdjusterCard";
+import ZakatStatsDashboard from "./ZakatStatsDashboard";
+import SensitivityProjection from "./SensitivityProjection";
 import { CashBankSection } from "./CashBankSection";
 import { SecuritiesSection } from "./SecuritiesSection";
 import { LivePricesCard } from "./LivePricesCard";
@@ -1276,6 +1281,10 @@ export function IndividualTab() {
                 currencyName={currencyName}
                 onTotalChange={setCashTotalFromSection}
               />
+              <div className="pt-3 border-t border-dashed">
+                <div className="mb-2 text-sm font-semibold text-primary">حاسبة تطهير الفوائد الربوية (تُلحق بالنقد والبنوك)</div>
+                <RibaPurificationCalc currencyName={currencyName} />
+              </div>
             </AccordionContent>
           </AccordionItem>
 
@@ -1574,6 +1583,14 @@ export function IndividualTab() {
                   currencyName={currencyName}
                   onTotalChange={setIncomeUsufructTotal}
                 />
+              </div>
+
+              {/* رابعاً: حاسبة زكاة الراتب — أداة متقدمة مُدمجة ضمن قسم الدخل */}
+              <div className="rounded-lg border border-gold/30 bg-gold/5 p-4 space-y-3">
+                <div className="flex items-center gap-2 text-sm font-semibold text-gold">
+                  <Calculator className="h-4 w-4" /> رابعاً: حاسبة زكاة الراتب (أداة متقدمة)
+                </div>
+                <SalaryZakatCalculator currencyName={currencyName} nisabValue={calc.moneyNisab} />
               </div>
             </AccordionContent>
           </AccordionItem>
@@ -2293,7 +2310,7 @@ export function IndividualTab() {
           </CardContent>
         </Card>
 
-        <ShariaAuditTrail />
+
 
 
 
@@ -2371,6 +2388,25 @@ export function IndividualTab() {
                   مساعدة للحساب وفق مدخلات المستخدم وليست فتوى شرعية ملزمة.
                 </AlertDescription>
               </Alert>
+
+              {/* سجل التدقيق الشرعي للأوعية الزكوية (مَنقول من تبويب الحساب) */}
+              <ShariaAuditTrail />
+
+              {/* أدوات متقدمة للمراجعة والامتثال */}
+              <Card className="shadow-soft border-primary/20">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <ClipboardCheck className="h-4 w-4 text-primary" /> أدوات المراجعة والتخطيط المتقدمة
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <AdvanceMultiYearZakat annualZakat={calc.total} currencyName={currencyName} />
+                  <SensitivityProjection annualZakat={calc.total} currencyName={currencyName} />
+                  <InflationAdjusterCard currencyName={currencyName} />
+                  <ZakatStatsDashboard />
+                </CardContent>
+              </Card>
+
 
               <Card className="shadow-soft">
                 <CardHeader className="pb-3">
@@ -2541,7 +2577,7 @@ export function IndividualTab() {
         </TabsContent>
       </Tabs>
 
-      <AdvancedToolsHub mode="individual" currencyName={currencyName} nisabValue={calc.moneyNisab} annualZakat={calc.total} />
+      
 
     </div>
   );

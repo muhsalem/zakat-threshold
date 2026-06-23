@@ -760,7 +760,7 @@ export function CompanyTab() {
           <Calculator className="h-4 w-4" /> حساب زكاة الشركة
         </TabsTrigger>
         <TabsTrigger value="audit" className="gap-2 text-sm py-2.5">
-          <Gavel className="h-4 w-4" /> التدقيق والامتثال والحوكمة الشرعية
+          <Gavel className="h-4 w-4" /> المراجعة والتدقيق والامتثال والحوكمة الشرعية
         </TabsTrigger>
       </TabsList>
 
@@ -1457,19 +1457,20 @@ export function CompanyTab() {
           {/* حاسبة التطهير الشرعي */}
           <PurificationCalculator currencyName={currencyName} />
 
-          {/* ====== الركاز والمعادن — مدمجة ضمن نماذج النشاط الأولى ====== */}
-          {sector.group === "primary" && (
-            <Card className="shadow-soft border-primary/20">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base">
-                  ضمن النشاط الأولى — زكاة الركاز والمعادن والعسل والثروة السمكية والدواجن
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <RikazSection />
-              </CardContent>
-            </Card>
-          )}
+          {/* ====== الركاز والمعادن والعسل والثروة السمكية والدواجن (مُتاحة دوماً مثل الزروع والثمار) ====== */}
+          <Card className="shadow-soft border-primary/20">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">
+                زكاة الركاز والمعادن والعسل والثروة السمكية والدواجن
+              </CardTitle>
+              <p className="text-[11px] text-muted-foreground mt-1">
+                تُحسب داخل قسم «زكاة الركاز والمعادن» (الركاز 20% – المعادن 2.5%) — تُعرض دائماً بصرف النظر عن القطاع، أسوة بزكاة الزروع والثمار.
+              </p>
+            </CardHeader>
+            <CardContent>
+              <RikazSection />
+            </CardContent>
+          </Card>
 
           {/* ====== شركات التأمين التكافلي ====== */}
           {(sector.id === "insurance" || sector.id === "takaful" || sector.label?.includes("تكافل") || sector.label?.includes("تأمين")) && (
