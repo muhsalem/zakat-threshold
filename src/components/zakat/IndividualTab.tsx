@@ -1281,6 +1281,10 @@ export function IndividualTab() {
                 currencyName={currencyName}
                 onTotalChange={setCashTotalFromSection}
               />
+              <div className="pt-3 border-t border-dashed">
+                <div className="mb-2 text-sm font-semibold text-primary">حاسبة تطهير الفوائد الربوية (تُلحق بالنقد والبنوك)</div>
+                <RibaPurificationCalc currencyName={currencyName} />
+              </div>
             </AccordionContent>
           </AccordionItem>
 
