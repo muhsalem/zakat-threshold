@@ -2546,7 +2546,7 @@ export function IndividualTab() {
         </TabsContent>
       </Tabs>
 
-      <AdvancedToolsHub mode="individual" currencyName={currencyName} nisabValue={calc.moneyNisab} annualZakat={calc.total} />
+      
 
     </div>
   );
