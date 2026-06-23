@@ -2389,6 +2389,25 @@ export function IndividualTab() {
                 </AlertDescription>
               </Alert>
 
+              {/* سجل التدقيق الشرعي للأوعية الزكوية (مَنقول من تبويب الحساب) */}
+              <ShariaAuditTrail />
+
+              {/* أدوات متقدمة للمراجعة والامتثال */}
+              <Card className="shadow-soft border-primary/20">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <ClipboardCheck className="h-4 w-4 text-primary" /> أدوات المراجعة والتخطيط المتقدمة
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <AdvanceMultiYearZakat annualZakat={calc.total} currencyName={currencyName} />
+                  <SensitivityProjection annualZakat={calc.total} currencyName={currencyName} />
+                  <InflationAdjusterCard currencyName={currencyName} />
+                  <ZakatStatsDashboard />
+                </CardContent>
+              </Card>
+
+
               <Card className="shadow-soft">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center gap-2">
