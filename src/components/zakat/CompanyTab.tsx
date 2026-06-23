@@ -760,7 +760,7 @@ export function CompanyTab() {
           <Calculator className="h-4 w-4" /> حساب زكاة الشركة
         </TabsTrigger>
         <TabsTrigger value="audit" className="gap-2 text-sm py-2.5">
-          <Gavel className="h-4 w-4" /> التدقيق والامتثال والحوكمة الشرعية
+          <Gavel className="h-4 w-4" /> المراجعة والتدقيق والامتثال والحوكمة الشرعية
         </TabsTrigger>
       </TabsList>
 
