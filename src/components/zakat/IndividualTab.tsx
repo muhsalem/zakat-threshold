@@ -2298,7 +2298,7 @@ export function IndividualTab() {
           </CardContent>
         </Card>
 
-        <ShariaAuditTrail />
+
 
 
 
