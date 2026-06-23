@@ -1584,6 +1584,14 @@ export function IndividualTab() {
                   onTotalChange={setIncomeUsufructTotal}
                 />
               </div>
+
+              {/* رابعاً: حاسبة زكاة الراتب — أداة متقدمة مُدمجة ضمن قسم الدخل */}
+              <div className="rounded-lg border border-gold/30 bg-gold/5 p-4 space-y-3">
+                <div className="flex items-center gap-2 text-sm font-semibold text-gold">
+                  <Calculator className="h-4 w-4" /> رابعاً: حاسبة زكاة الراتب (أداة متقدمة)
+                </div>
+                <SalaryZakatCalculator currencyName={currencyName} nisabValue={calc.moneyNisab} />
+              </div>
             </AccordionContent>
           </AccordionItem>
 
