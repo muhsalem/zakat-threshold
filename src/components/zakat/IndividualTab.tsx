@@ -31,7 +31,12 @@ import {
   COUNTRY_PRICES, checkHawl, formatHijri, gregorianToHijri, ZAKAT_RECIPIENTS,
 } from "@/lib/zakat";
 import { SaveToHistoryCard } from "./SaveToHistoryCard";
-import AdvancedToolsHub from "./AdvancedToolsHub";
+import SalaryZakatCalculator from "./SalaryZakatCalculator";
+import AdvanceMultiYearZakat from "./AdvanceMultiYearZakat";
+import RibaPurificationCalc from "./RibaPurificationCalc";
+import InflationAdjusterCard from "./InflationAdjusterCard";
+import ZakatStatsDashboard from "./ZakatStatsDashboard";
+import SensitivityProjection from "./SensitivityProjection";
 import { CashBankSection } from "./CashBankSection";
 import { SecuritiesSection } from "./SecuritiesSection";
 import { LivePricesCard } from "./LivePricesCard";
