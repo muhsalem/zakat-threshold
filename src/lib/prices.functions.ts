@@ -52,15 +52,14 @@ async function fetchDbFallback(currency: string): Promise<{ goldPerGram: number;
     );
     const { data } = await sb
       .from("nisab_prices")
-      .select("gold_price_per_gram, silver_price_per_gram")
-      .eq("currency", currency)
+      .select("gold_price, silver_price")
       .order("recorded_at", { ascending: false })
       .limit(1)
       .maybeSingle();
     if (!data) return null;
     return {
-      goldPerGram: Number(data.gold_price_per_gram),
-      silverPerGram: Number(data.silver_price_per_gram),
+      goldPerGram: Number(data.gold_price),
+      silverPerGram: Number(data.silver_price),
     };
   } catch { return null; }
 }
