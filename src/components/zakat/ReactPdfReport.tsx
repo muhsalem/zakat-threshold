@@ -11,7 +11,7 @@ import {
 import cairoRegular from "@/assets/fonts/Cairo-Regular.ttf";
 import cairoBold from "@/assets/fonts/Cairo-Bold.ttf";
 import logoUrl from "@/assets/zakat-logo.png";
-import { currency as fmtCurrency, ZAKAT_RECIPIENTS, GOLD_NISAB_GRAMS, SILVER_NISAB_GRAMS } from "@/lib/zakat";
+import { currency as fmtCurrency, ZAKAT_RECIPIENTS, GOLD_NISAB_GRAMS, SILVER_NISAB_GRAMS, camelZakat, cowZakat, sheepZakat } from "@/lib/zakat";
 import { SHARIA_REFERENCES, RULING_LEVEL_LABELS } from "@/lib/shariaReferences";
 import type { PrintReportData } from "./PrintReport";
 
