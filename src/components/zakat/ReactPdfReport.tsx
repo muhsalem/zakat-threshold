@@ -551,8 +551,58 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
           </>
         )}
 
+        {data.livestock?.show &&
+          (data.livestock.camels > 0 || data.livestock.cows > 0 || data.livestock.sheep > 0) && (
+            <>
+              <Text style={styles.h2}>زكاة بهيمة الأنعام (تُؤدَّى عيناً لا قيمةً)</Text>
+              <View style={styles.card}>
+                <Text style={[styles.small, { marginBottom: 6 }]}>
+                  التصنيف: سائمة (راعية أكثر الحول في الكلأ المباح) — لا تُخصم منها مصاريف العلف عند الجمهور.
+                  النصاب: الإبل ≥ ٥، البقر ≥ ٣٠، الغنم ≥ ٤٠. المرجع: السنّة المتواترة وAAOIFI 35/ملحق 4.
+                </Text>
+                <View style={styles.table}>
+                  <View style={styles.tr}>
+                    <Text style={[styles.th, { flex: 1 }]}>النوع</Text>
+                    <Text style={[styles.th, { flex: 1 }]}>العدد</Text>
+                    <Text style={[styles.th, { flex: 1 }]}>النصاب</Text>
+                    <Text style={[styles.th, { flex: 2 }]}>الواجب شرعاً</Text>
+                  </View>
+                  {data.livestock.camels > 0 && (
+                    <View style={styles.tr} wrap={false}>
+                      <Text style={[styles.td, { flex: 1 }]}>الإبل</Text>
+                      <Text style={[styles.tdNum, { flex: 1 }]}>{data.livestock.camels}</Text>
+                      <Text style={[styles.td, { flex: 1 }]}>≥ ٥</Text>
+                      <Text style={[styles.td, { flex: 2 }]}>{camelZakat(data.livestock.camels)}</Text>
+                    </View>
+                  )}
+                  {data.livestock.cows > 0 && (
+                    <View style={[styles.tr, styles.trAlt]} wrap={false}>
+                      <Text style={[styles.td, { flex: 1 }]}>البقر/الجاموس</Text>
+                      <Text style={[styles.tdNum, { flex: 1 }]}>{data.livestock.cows}</Text>
+                      <Text style={[styles.td, { flex: 1 }]}>≥ ٣٠</Text>
+                      <Text style={[styles.td, { flex: 2 }]}>{cowZakat(data.livestock.cows)}</Text>
+                    </View>
+                  )}
+                  {data.livestock.sheep > 0 && (
+                    <View style={styles.tr} wrap={false}>
+                      <Text style={[styles.td, { flex: 1 }]}>الغنم/المعز</Text>
+                      <Text style={[styles.tdNum, { flex: 1 }]}>{data.livestock.sheep}</Text>
+                      <Text style={[styles.td, { flex: 1 }]}>≥ ٤٠</Text>
+                      <Text style={[styles.td, { flex: 2 }]}>{sheepZakat(data.livestock.sheep)}</Text>
+                    </View>
+                  )}
+                </View>
+                <Text style={[styles.small, { marginTop: 6 }]}>
+                  ملاحظة: إن كانت الأنعام معروضة للتجارة فتُقوَّم بقيمتها السوقية وتُضمّ لوعاء عروض التجارة بنسبة ٢٫٥٪،
+                  وقد أُدرجت في هذه الحالة ضمن الوعاء التجاري أعلاه ولا تُحسب هنا عيناً.
+                </Text>
+              </View>
+            </>
+          )}
+
         <ReportFooter reportId={reportId} page={2} total={TOTAL_PAGES} />
       </Page>
+
 
       {/* ========== صفحة 3 — مصارف الزكاة ========== */}
       <Page size="A4" style={styles.page}>
