@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
+import { rateLimit, rateLimitResponse } from "@/lib/rate-limit.server";
 import type { Database } from "@/integrations/supabase/types";
 
 const CORS = {
@@ -15,8 +16,11 @@ export const Route = createFileRoute("/api/public/nisab")({
     handlers: {
       OPTIONS: async () => new Response(null, { status: 204, headers: CORS }),
       GET: async ({ request }) => {
+        const rl = rateLimit(request, { key: "nisab", limit: 60, windowMs: 60_000 });
+        if (!rl.ok) return rateLimitResponse(rl.retryAfter, CORS);
         const url = new URL(request.url);
         const currency = (url.searchParams.get("currency") || "USD").toUpperCase().slice(0, 6);
+
 
         const supabase = createClient<Database>(
           process.env.SUPABASE_URL!,
