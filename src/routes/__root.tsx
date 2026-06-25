@@ -155,6 +155,13 @@ function RootComponent() {
           المؤسسات
         </Link>
         <Link
+          to="/faq"
+          aria-label="الأسئلة الشائعة عن الزكاة"
+          className="print:hidden fixed bottom-28 left-4 z-40 inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-card/95 backdrop-blur px-3.5 py-2 text-xs font-semibold text-primary shadow-lg hover:bg-primary hover:text-primary-foreground transition-colors"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+          الأسئلة الشائعة
+        <Link
           to="/advisor"
           aria-label="مستشار الزكاة الذكي"
           className="print:hidden fixed bottom-4 right-4 z-40 inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-3.5 py-2 text-xs font-semibold shadow-lg hover:opacity-90 transition-opacity"
