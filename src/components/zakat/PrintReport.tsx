@@ -30,7 +30,7 @@ export interface PrintReportData {
   calendarBasis: "hijri" | "gregorian";
   effectiveRate: number;
   rows: PrintReportRow[];
-  livestock: { camels: number; cows: number; sheep: number; show: boolean };
+  livestock: { camels: number; cows: number; sheep: number; show: boolean; mode?: "grazing" | "trade"; tradeValue?: number };
   monetaryGross: number;
   debts: number;
   monetaryBase: number;

@@ -1,5 +1,6 @@
 import * as XLSX from "xlsx";
 import type { PrintReportData } from "@/components/zakat/PrintReport";
+import { camelZakat, cowZakat, sheepZakat, ZAKAT_RATE } from "@/lib/zakat";
 
 /** تصدير تقرير الزكاة إلى ملف Excel (.xlsx) متعدد الأوراق */
 export function downloadReportExcel(data: PrintReportData, filename = "zakat-report.xlsx") {
@@ -47,17 +48,45 @@ export function downloadReportExcel(data: PrintReportData, filename = "zakat-rep
   ws2["!cols"] = [{ wch: 50 }, { wch: 18 }, { wch: 18 }, { wch: 14 }, { wch: 18 }];
   XLSX.utils.book_append_sheet(wb, ws2, "تفاصيل البنود");
 
-  // ورقة 3: الأنعام (إن وُجدت)
+  // ورقة 3: زكاة بهيمة الأنعام (إن وُجدت)
   if (data.livestock?.show) {
-    const ls = [
-      ["النوع", "العدد"],
-      ["الإبل", data.livestock.camels],
-      ["البقر/الجاموس", data.livestock.cows],
-      ["الغنم/المعز", data.livestock.sheep],
+    const mode = data.livestock.mode ?? (data.livestock.tradeValue && data.livestock.tradeValue > 0 ? "trade" : "grazing");
+    const ls: (string | number)[][] = [
+      ["زكاة بهيمة الأنعام"],
+      [],
+      ["نمط التزكية", mode === "trade" ? "للتجارة (عروض تجارة بنسبة 2.5%)" : "سائمة (راعية في الكلأ المباح طوال الحول)"],
+      ["معدّل الزكاة", mode === "trade" ? `${(ZAKAT_RATE * 100).toFixed(2)}% من القيمة السوقية` : "وفق الجداول النبوية الواردة في صحيح البخاري ومصنّفات الفقهاء"],
+      [],
     ];
+
+    if (mode === "trade") {
+      const val = Number(data.livestock.tradeValue || 0);
+      const zak = +(val * ZAKAT_RATE).toFixed(2);
+      ls.push(
+        ["النوع", "العدد", "القيمة السوقية", "الزكاة المستحقة"],
+        ["الإبل", data.livestock.camels, "—", "—"],
+        ["البقر/الجاموس", data.livestock.cows, "—", "—"],
+        ["الغنم/المعز", data.livestock.sheep, "—", "—"],
+        ["الإجمالي (مدمج في وعاء عروض التجارة)", "", val, zak],
+        [],
+        ["ملاحظة", "تُضمّ قيمة الأنعام المعدّة للتجارة إلى وعاء عروض التجارة وتُزكّى بنسبة 2.5% بعد بلوغ النصاب وحَول الحول، دون تطبيق جداول السائمة."],
+      );
+    } else {
+      ls.push(
+        ["النوع", "العدد", "النصاب الأدنى", "بلغ النصاب؟", "مقدار الزكاة الواجبة"],
+        ["الإبل", data.livestock.camels, "5 من الإبل", data.livestock.camels >= 5 ? "نعم" : "لا", camelZakat(data.livestock.camels)],
+        ["البقر/الجاموس", data.livestock.cows, "30 من البقر", data.livestock.cows >= 30 ? "نعم" : "لا", cowZakat(data.livestock.cows)],
+        ["الغنم/المعز", data.livestock.sheep, "40 من الغنم", data.livestock.sheep >= 40 ? "نعم" : "لا", sheepZakat(data.livestock.sheep)],
+        [],
+        ["شروط السائمة", "أن تكون راعيةً في الكلأ المباح أكثر العام، وأن يحول عليها الحول، وأن تبلغ النصاب، وألّا تكون عاملةً للحرث أو السقي."],
+        ["الخصومات", "لا تُحسم ديون مالك الأنعام من العدد؛ والزكاة تتعلّق بالعين لا بالقيمة، وتؤدّى من جنس المال غالبًا أو قيمته عند الحاجة."],
+        ["المرجع", "صحيح البخاري — كتاب الزكاة (كتاب أبي بكر الصدّيق رضي الله عنه)، ومعيار AAOIFI رقم (35) للزكاة."],
+      );
+    }
+
     const ws3 = XLSX.utils.aoa_to_sheet(ls);
-    ws3["!cols"] = [{ wch: 25 }, { wch: 15 }];
-    XLSX.utils.book_append_sheet(wb, ws3, "الأنعام");
+    ws3["!cols"] = [{ wch: 38 }, { wch: 12 }, { wch: 22 }, { wch: 14 }, { wch: 40 }];
+    XLSX.utils.book_append_sheet(wb, ws3, "زكاة الأنعام");
   }
 
   // ورقة 4: المراجعة الشرعية / المحاسبية
