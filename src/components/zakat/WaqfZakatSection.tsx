@@ -18,7 +18,7 @@ export type WaqfReportData = {
 
 type Props = { currencyName?: string; onChange?: (d: WaqfReportData) => void };
 
-export function WaqfZakatSection({ currencyName = "" }: Props) {
+export function WaqfZakatSection({ currencyName = "", onChange }: Props) {
   const [tradeAssets, setTradeAssets] = useState("");
   const [rentIncome, setRentIncome] = useState("");
   const [exemptCore, setExemptCore] = useState("");
@@ -33,6 +33,18 @@ export function WaqfZakatSection({ currencyName = "" }: Props) {
     [tradeAssets, rentIncome, exemptCore]
   );
   const zakat = zakatable * ZAKAT_RATE;
+
+  useEffect(() => {
+    onChange?.({
+      show: zakatable > 0,
+      tradeAssets: num(tradeAssets),
+      rentIncome: num(rentIncome),
+      exemptCore: num(exemptCore),
+      base: zakatable,
+      zakat,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tradeAssets, rentIncome, exemptCore]);
 
   return (
     <Card className="shadow-soft border-primary/20">
