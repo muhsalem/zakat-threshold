@@ -39,6 +39,7 @@ import ZakatStatsDashboard from "./ZakatStatsDashboard";
 import SensitivityProjection from "./SensitivityProjection";
 import { CashBankSection } from "./CashBankSection";
 import { SecuritiesSection } from "./SecuritiesSection";
+import { EsopZakatSection } from "./EsopZakatSection";
 import { LivePricesCard } from "./LivePricesCard";
 import { EightChannelsDistribution } from "./EightChannelsDistribution";
 import { downloadZakatPdf } from "./ReactPdfReport";
@@ -1300,6 +1301,7 @@ export function IndividualTab() {
                 currencyName={currencyName}
                 onTotalChange={setSecuritiesTotalFromSection}
               />
+              <EsopZakatSection currencyName={currencyName} />
             </AccordionContent>
           </AccordionItem>
 
