@@ -2,8 +2,8 @@ import * as XLSX from "xlsx";
 import type { PrintReportData } from "@/components/zakat/PrintReport";
 import { camelZakat, cowZakat, sheepZakat, ZAKAT_RATE } from "@/lib/zakat";
 
-/** تصدير تقرير الزكاة إلى ملف Excel (.xlsx) متعدد الأوراق */
-export function downloadReportExcel(data: PrintReportData, filename = "zakat-report.xlsx") {
+/** يبني مصنّف الإكسل من بيانات التقرير (قابل للاختبار). */
+export function buildReportWorkbook(data: PrintReportData): XLSX.WorkBook {
   const wb = XLSX.utils.book_new();
 
   // ورقة 1: ملخص المُزكِّي
@@ -152,5 +152,11 @@ export function downloadReportExcel(data: PrintReportData, filename = "zakat-rep
   ws4["!cols"] = [{ wch: 25 }, { wch: 80 }];
   XLSX.utils.book_append_sheet(wb, ws4, "الرأي والمراجعة");
 
+  return wb;
+}
+
+/** تصدير تقرير الزكاة إلى ملف Excel (.xlsx) متعدد الأوراق */
+export function downloadReportExcel(data: PrintReportData, filename = "zakat-report.xlsx") {
+  const wb = buildReportWorkbook(data);
   XLSX.writeFile(wb, filename);
 }

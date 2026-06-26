@@ -1,14 +1,13 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import * as XLSX from "xlsx";
-import { downloadReportExcel } from "@/lib/exportExcel";
+import { buildReportWorkbook } from "@/lib/exportExcel";
 import type { PrintReportData } from "@/components/zakat/PrintReport";
 import { ZAKAT_RATE } from "@/lib/zakat";
 
-// Capture the workbook handed to writeFile instead of touching the FS
-let captured: XLSX.WorkBook | null = null;
-vi.spyOn(XLSX, "writeFile").mockImplementation((wb: XLSX.WorkBook) => {
-  captured = wb;
-});
+function build(data: PrintReportData) {
+  return buildReportWorkbook(data);
+}
+
 
 function baseData(overrides: Partial<PrintReportData> = {}): PrintReportData {
   return {
