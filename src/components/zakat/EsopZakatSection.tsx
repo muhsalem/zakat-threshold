@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -8,9 +8,21 @@ import { Badge } from "@/components/ui/badge";
 import { Briefcase, Info } from "lucide-react";
 import { ZAKAT_RATE } from "@/lib/zakat";
 
-type Props = { currencyName?: string };
+export type EsopReportData = {
+  show: boolean;
+  vestedShares: number;
+  price: number;
+  strike: number;
+  intrinsic: number;
+  rsuValue: number;
+  base: number;
+  intentTrade: boolean;
+  zakat: number;
+};
 
-export function EsopZakatSection({ currencyName = "" }: Props) {
+type Props = { currencyName?: string; onChange?: (d: EsopReportData) => void };
+
+export function EsopZakatSection({ currencyName = "", onChange }: Props) {
   const [vestedShares, setVestedShares] = useState("");
   const [price, setPrice] = useState("");
   const [strike, setStrike] = useState("");
@@ -28,6 +40,21 @@ export function EsopZakatSection({ currencyName = "" }: Props) {
   );
   const base = optionsIntrinsic + n(rsuValue);
   const zakat = intentTrade ? base * ZAKAT_RATE : 0;
+
+  useEffect(() => {
+    onChange?.({
+      show: base > 0,
+      vestedShares: n(vestedShares),
+      price: n(price),
+      strike: n(strike),
+      intrinsic: optionsIntrinsic,
+      rsuValue: n(rsuValue),
+      base,
+      intentTrade,
+      zakat,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vestedShares, price, strike, rsuValue, intentTrade]);
 
   return (
     <Card className="shadow-soft border-primary/20">

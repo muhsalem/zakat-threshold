@@ -2,8 +2,8 @@ import * as XLSX from "xlsx";
 import type { PrintReportData } from "@/components/zakat/PrintReport";
 import { camelZakat, cowZakat, sheepZakat, ZAKAT_RATE } from "@/lib/zakat";
 
-/** تصدير تقرير الزكاة إلى ملف Excel (.xlsx) متعدد الأوراق */
-export function downloadReportExcel(data: PrintReportData, filename = "zakat-report.xlsx") {
+/** يبني مصنّف الإكسل من بيانات التقرير (قابل للاختبار). */
+export function buildReportWorkbook(data: PrintReportData): XLSX.WorkBook {
   const wb = XLSX.utils.book_new();
 
   // ورقة 1: ملخص المُزكِّي
@@ -89,6 +89,57 @@ export function downloadReportExcel(data: PrintReportData, filename = "zakat-rep
     XLSX.utils.book_append_sheet(wb, ws3, "زكاة الأنعام");
   }
 
+  // ورقة: زكاة خيارات/منح أسهم الموظفين (ESOP/RSU)
+  if (data.esop?.show) {
+    const e = data.esop;
+    const esopRows: (string | number)[][] = [
+      ["زكاة خيارات/منح أسهم الموظفين (ESOP / RSU)"],
+      [],
+      ["البيان", "القيمة"],
+      ["عدد الخيارات المستحقّة (Vested)", e.vestedShares],
+      ["سعر السهم الحالي", e.price],
+      ["سعر التنفيذ (Strike)", e.strike],
+      ["القيمة الجوهرية للخيارات (max(0, السعر − التنفيذ) × العدد)", +e.intrinsic.toFixed(2)],
+      ["قيمة RSUs المستحقّة بسعر السوق", e.rsuValue],
+      ["إجمالي قاعدة الزكاة", +e.base.toFixed(2)],
+      ["نية المزكّي", e.intentTrade ? "المتاجرة (تُزكّى 2.5%)" : "الاحتفاظ (تُزكّى موجودات الشركة الزكوية بحسب النسبة)"],
+      ["النصاب المعتمد", `النصاب النقدي (الأنفع للفقراء) = ${data.moneyNisab} ${data.currencyName}`],
+      ["بلغ النصاب؟", e.base >= data.moneyNisab ? "نعم" : "لا"],
+      ["الخصومات المطبّقة", "الخيارات غير المستحقّة (Unvested) لا تُحسب لعدم تمام الملك"],
+      ["الزكاة المستحقة", +e.zakat.toFixed(2)],
+      [],
+      ["المرجع", "AAOIFI — معيار الزكاة رقم (35) + قرارات الندوات الفقهية المعاصرة بشأن منح الأسهم للموظفين"],
+    ];
+    const wsE = XLSX.utils.aoa_to_sheet(esopRows);
+    wsE["!cols"] = [{ wch: 55 }, { wch: 50 }];
+    XLSX.utils.book_append_sheet(wb, wsE, "زكاة ESOP-RSU");
+  }
+
+  // ورقة: زكاة الأوقاف والمؤسسات الوقفية
+  if (data.waqf?.show) {
+    const w = data.waqf;
+    const waqfRows: (string | number)[][] = [
+      ["زكاة الأوقاف والمؤسسات الوقفية"],
+      [],
+      ["البيان", "القيمة"],
+      ["عروض تجارة مملوكة للوقف للاسترباح", w.tradeAssets],
+      ["غلّة موزّعة على موقوف عليهم معيّنين (بلغت النصاب وحال الحول)", w.rentIncome],
+      ["خصم: أصول وقفية خيرية محبّسة (معفاة من الزكاة)", w.exemptCore],
+      ["قاعدة الزكاة الصافية", +w.base.toFixed(2)],
+      ["النصاب المعتمد", `النصاب النقدي = ${data.moneyNisab} ${data.currencyName}`],
+      ["بلغ النصاب؟", w.base >= data.moneyNisab ? "نعم" : "لا"],
+      ["معدّل الزكاة", "2.5% (ربع العشر)"],
+      ["الزكاة المستحقة", +w.zakat.toFixed(2)],
+      [],
+      ["القاعدة الفقهية", "أصل الوقف لا تجب فيه الزكاة لخروجه عن الملك."],
+      ["الاستثناءات", "1) عروض التجارة المملوكة للوقف للاسترباح. 2) غلّة الوقف المخصّصة للموقوف عليهم المعيّنين إذا بلغت النصاب وكانوا أغنياء."],
+      ["المرجع", "قرار مجمع الفقه الإسلامي الدولي رقم 140 (15/4) + معيار AAOIFI رقم (35)"],
+    ];
+    const wsW = XLSX.utils.aoa_to_sheet(waqfRows);
+    wsW["!cols"] = [{ wch: 55 }, { wch: 50 }];
+    XLSX.utils.book_append_sheet(wb, wsW, "زكاة الأوقاف");
+  }
+
   // ورقة 4: المراجعة الشرعية / المحاسبية
   const review = [
     ["المراجع", data.accountantName || "—"],
@@ -101,5 +152,11 @@ export function downloadReportExcel(data: PrintReportData, filename = "zakat-rep
   ws4["!cols"] = [{ wch: 25 }, { wch: 80 }];
   XLSX.utils.book_append_sheet(wb, ws4, "الرأي والمراجعة");
 
+  return wb;
+}
+
+/** تصدير تقرير الزكاة إلى ملف Excel (.xlsx) متعدد الأوراق */
+export function downloadReportExcel(data: PrintReportData, filename = "zakat-report.xlsx") {
+  const wb = buildReportWorkbook(data);
   XLSX.writeFile(wb, filename);
 }

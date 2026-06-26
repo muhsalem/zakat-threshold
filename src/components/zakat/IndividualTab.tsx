@@ -328,6 +328,9 @@ export function IndividualTab() {
   const [livestockForTrade, setLivestockForTrade] = useState(false);
   const [livestockTradeValue, setLivestockTradeValue] = useState("");
 
+  // بيانات زكاة ESOP/RSU (تُرسل عبر EsopZakatSection.onChange)
+  const [esopData, setEsopData] = useState<import("./EsopZakatSection").EsopReportData | undefined>();
+
   // قاعدة الأنشطة الزراعية الملحقة (عسل + أسماك + دواجن) — تُضمّ لعروض التجارة
   const [agriTradeBase, setAgriTradeBase] = useState(0);
 
@@ -540,6 +543,7 @@ export function IndividualTab() {
             { label: "زكاة الزروع والثمار", gross: calc.cropsValue, eligible: calc.cropsEligible, zakat: calc.cropsZakat },
           ],
           livestock: { camels: calc.camelsN, cows: calc.cowsN, sheep: calc.sheepN, show: ownsLivestock, mode: livestockForTrade ? "trade" : "grazing", tradeValue: livestockForTrade ? num(livestockTradeValue) : 0 },
+          esop: esopData,
           monetaryGross: calc.monetaryGross,
           debts: calc.debts,
           monetaryBase: calc.monetaryBase,
@@ -585,6 +589,7 @@ export function IndividualTab() {
             { label: "زكاة الزروع والثمار", gross: calc.cropsValue, eligible: calc.cropsEligible, zakat: calc.cropsZakat },
           ],
           livestock: { camels: calc.camelsN, cows: calc.cowsN, sheep: calc.sheepN, show: ownsLivestock, mode: livestockForTrade ? "trade" : "grazing", tradeValue: livestockForTrade ? num(livestockTradeValue) : 0 },
+          esop: esopData,
           monetaryGross: calc.monetaryGross,
           debts: calc.debts,
           monetaryBase: calc.monetaryBase,
@@ -1301,7 +1306,7 @@ export function IndividualTab() {
                 currencyName={currencyName}
                 onTotalChange={setSecuritiesTotalFromSection}
               />
-              <EsopZakatSection currencyName={currencyName} />
+              <EsopZakatSection currencyName={currencyName} onChange={setEsopData} />
             </AccordionContent>
           </AccordionItem>
 
@@ -2332,6 +2337,7 @@ export function IndividualTab() {
                 { label: "زكاة الزروع والثمار", gross: calc.cropsValue, eligible: calc.cropsEligible, zakat: calc.cropsZakat },
               ],
               livestock: { camels: calc.camelsN, cows: calc.cowsN, sheep: calc.sheepN, show: ownsLivestock, mode: livestockForTrade ? "trade" : "grazing", tradeValue: livestockForTrade ? num(livestockTradeValue) : 0 },
+          esop: esopData,
               monetaryGross: calc.monetaryGross, debts: calc.debts, monetaryBase: calc.monetaryBase,
               moneyNisab: calc.moneyNisab, totalZakat: calc.total,
               hawlComplete: hawl ? hawl.hawlComplete : null, hawlDate: nisabStartDate,
@@ -2356,6 +2362,7 @@ export function IndividualTab() {
                 { label: "زكاة الزروع والثمار", gross: calc.cropsValue, eligible: calc.cropsEligible, zakat: calc.cropsZakat },
               ],
               livestock: { camels: calc.camelsN, cows: calc.cowsN, sheep: calc.sheepN, show: ownsLivestock, mode: livestockForTrade ? "trade" : "grazing", tradeValue: livestockForTrade ? num(livestockTradeValue) : 0 },
+          esop: esopData,
               monetaryGross: calc.monetaryGross, debts: calc.debts, monetaryBase: calc.monetaryBase,
               moneyNisab: calc.moneyNisab, totalZakat: calc.total,
               hawlComplete: hawl ? hawl.hawlComplete : null, hawlDate: nisabStartDate,

@@ -66,6 +66,27 @@ export interface PrintReportData {
     sharia_refs: string[] | null;
     created_at: string;
   }>;
+  /** اختياري — زكاة خيارات/منح أسهم الموظفين (ESOP/RSU) */
+  esop?: {
+    show: boolean;
+    vestedShares: number;
+    price: number;
+    strike: number;
+    intrinsic: number;
+    rsuValue: number;
+    base: number;
+    intentTrade: boolean;
+    zakat: number;
+  };
+  /** اختياري — زكاة الأوقاف والمؤسسات الوقفية */
+  waqf?: {
+    show: boolean;
+    tradeAssets: number;
+    rentIncome: number;
+    exemptCore: number;
+    base: number;
+    zakat: number;
+  };
 }
 
 const COUNTRY_FULL: Record<string, string> = {

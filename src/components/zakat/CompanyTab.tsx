@@ -411,6 +411,7 @@ export function CompanyTab() {
   const [countryCode, setCountryCode] = useState<string>("SA");
   // إدراج سجل المراجعة والتدقيق الشرعي ضمن تقرير الشركة
   const [includeAuditReport, setIncludeAuditReport] = useState(false);
+  const [waqfData, setWaqfData] = useState<import("./WaqfZakatSection").WaqfReportData | undefined>();
   const { entries: auditEntries, loading: auditLoading } = useAuditEntries(includeAuditReport);
   const country = useMemo(() => COUNTRIES.find((c) => c.code === countryCode)!, [countryCode]);
   const [autoCurrency, setAutoCurrency] = useState(true);
@@ -1486,7 +1487,7 @@ export function CompanyTab() {
           <RealEstateZakatSection currencyName={currencyName} />
 
           {/* ====== زكاة الأوقاف والمؤسسات الوقفية ====== */}
-          <WaqfZakatSection currencyName={currencyName} />
+          <WaqfZakatSection currencyName={currencyName} onChange={setWaqfData} />
 
           {/* ====== المرجعية الشرعية والحوكمة ====== */}
           <ShariaBoardCard />
@@ -1546,6 +1547,7 @@ export function CompanyTab() {
                   { label: `الوعاء الزكوي (${METHOD_LABELS[method]})`, gross: calc.baseGross, nisab: calc.nisabValue, eligible: calc.reachesNisab, zakat: calc.zakat },
                 ],
                 livestock: { camels: 0, cows: 0, sheep: 0, show: false },
+                waqf: waqfData,
                 monetaryGross: calc.baseGross,
                 debts: calc.curLiabs,
                 monetaryBase: calc.base,
@@ -1578,6 +1580,7 @@ export function CompanyTab() {
                 effectiveRate: calc.rate,
                 rows: [{ label: `الوعاء الزكوي (${METHOD_LABELS[method]})`, gross: calc.baseGross, nisab: calc.nisabValue, eligible: calc.reachesNisab, zakat: calc.zakat }],
                 livestock: { camels: 0, cows: 0, sheep: 0, show: false },
+                waqf: waqfData,
                 monetaryGross: calc.baseGross, debts: calc.curLiabs, monetaryBase: calc.base,
                 moneyNisab: calc.nisabValue, totalZakat: calc.zakat, hawlComplete: null,
                 goldPricePerGram: num(goldGramPrice),
