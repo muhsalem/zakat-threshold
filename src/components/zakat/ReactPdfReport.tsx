@@ -607,21 +607,21 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
               <Text style={[styles.small, { marginBottom: 6 }]}>
                 المرجع: AAOIFI 35 + قرارات الندوات الفقهية المعاصرة. الخيارات غير المستحقّة (Unvested) لا تُحسب لعدم تمام الملك.
               </Text>
-              <View style={styles.kv}><Text style={styles.kvKey}>عدد الخيارات المستحقّة (Vested)</Text>
+              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>عدد الخيارات المستحقّة (Vested)</Text>
                 <Text style={styles.kvValue}>{data.esop.vestedShares}</Text></View>
-              <View style={styles.kv}><Text style={styles.kvKey}>القيمة الجوهرية للخيارات</Text>
+              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>القيمة الجوهرية للخيارات</Text>
                 <Text style={styles.kvValue}>{fmtCurrency(data.esop.intrinsic, cur)}</Text></View>
-              <View style={styles.kv}><Text style={styles.kvKey}>قيمة RSUs المستحقّة بسعر السوق</Text>
+              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>قيمة RSUs المستحقّة بسعر السوق</Text>
                 <Text style={styles.kvValue}>{fmtCurrency(data.esop.rsuValue, cur)}</Text></View>
-              <View style={styles.kv}><Text style={styles.kvKey}>إجمالي قاعدة الزكاة</Text>
+              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>إجمالي قاعدة الزكاة</Text>
                 <Text style={styles.kvValue}>{fmtCurrency(data.esop.base, cur)}</Text></View>
-              <View style={styles.kv}><Text style={styles.kvKey}>النصاب المعتمد</Text>
+              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>النصاب المعتمد</Text>
                 <Text style={styles.kvValue}>{fmtCurrency(data.moneyNisab, cur)}</Text></View>
-              <View style={styles.kv}><Text style={styles.kvKey}>بلغ النصاب؟</Text>
+              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>بلغ النصاب؟</Text>
                 <Text style={styles.kvValue}>{data.esop.base >= data.moneyNisab ? "نعم" : "لا"}</Text></View>
-              <View style={styles.kv}><Text style={styles.kvKey}>نية المزكّي</Text>
+              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>نية المزكّي</Text>
                 <Text style={styles.kvValue}>{data.esop.intentTrade ? "المتاجرة (٢٫٥٪)" : "الاحتفاظ (موجودات الشركة)"}</Text></View>
-              <View style={styles.kv}><Text style={styles.kvKey}>الزكاة المستحقة</Text>
+              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>الزكاة المستحقة</Text>
                 <Text style={[styles.kvValue, { fontWeight: 700 }]}>{fmtCurrency(data.esop.zakat, cur)}</Text></View>
             </View>
           </>
@@ -635,19 +635,19 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
                 القاعدة: أصل الوقف لا تجب فيه الزكاة لخروجه عن الملك (قرار مجمع الفقه ١٤٠/١٥/٤ + AAOIFI 35).
                 الاستثناءات: عروض التجارة المملوكة للوقف، وغلّة الموقوف عليهم المعيّنين عند بلوغ النصاب.
               </Text>
-              <View style={styles.kv}><Text style={styles.kvKey}>عروض تجارة مملوكة للوقف</Text>
+              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>عروض تجارة مملوكة للوقف</Text>
                 <Text style={styles.kvValue}>{fmtCurrency(data.waqf.tradeAssets, cur)}</Text></View>
-              <View style={styles.kv}><Text style={styles.kvKey}>غلّة موزّعة على موقوف عليهم معيّنين</Text>
+              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>غلّة موزّعة على موقوف عليهم معيّنين</Text>
                 <Text style={styles.kvValue}>{fmtCurrency(data.waqf.rentIncome, cur)}</Text></View>
-              <View style={styles.kv}><Text style={styles.kvKey}>خصم: أصول وقفية خيرية محبّسة (معفاة)</Text>
+              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>خصم: أصول وقفية خيرية محبّسة (معفاة)</Text>
                 <Text style={styles.kvValue}>{fmtCurrency(data.waqf.exemptCore, cur)}</Text></View>
-              <View style={styles.kv}><Text style={styles.kvKey}>قاعدة الزكاة الصافية</Text>
+              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>قاعدة الزكاة الصافية</Text>
                 <Text style={styles.kvValue}>{fmtCurrency(data.waqf.base, cur)}</Text></View>
-              <View style={styles.kv}><Text style={styles.kvKey}>النصاب المعتمد</Text>
+              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>النصاب المعتمد</Text>
                 <Text style={styles.kvValue}>{fmtCurrency(data.moneyNisab, cur)}</Text></View>
-              <View style={styles.kv}><Text style={styles.kvKey}>بلغ النصاب؟</Text>
+              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>بلغ النصاب؟</Text>
                 <Text style={styles.kvValue}>{data.waqf.base >= data.moneyNisab ? "نعم" : "لا"}</Text></View>
-              <View style={styles.kv}><Text style={styles.kvKey}>الزكاة المستحقة (٢٫٥٪)</Text>
+              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>الزكاة المستحقة (٢٫٥٪)</Text>
                 <Text style={[styles.kvValue, { fontWeight: 700 }]}>{fmtCurrency(data.waqf.zakat, cur)}</Text></View>
             </View>
           </>
