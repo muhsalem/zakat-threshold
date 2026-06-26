@@ -56,10 +56,7 @@ describe("Excel export — ESOP and Waqf integration", () => {
         zakat: +(esopBase * ZAKAT_RATE).toFixed(2),
       },
     });
-    captured = null;
-    downloadReportExcel(data, "esop.xlsx");
-    expect(captured).not.toBeNull();
-    const rows = readSheet(captured!, "زكاة ESOP-RSU");
+    const wb = build(data); const rows = readSheet(wb, "زكاة ESOP-RSU");
     const flat = rows.flat().join("|");
     expect(flat).toMatch(/زكاة خيارات/);
     // intrinsic + RSU values present
@@ -92,9 +89,7 @@ describe("Excel export — ESOP and Waqf integration", () => {
         zakat: +(base * ZAKAT_RATE).toFixed(2),
       },
     });
-    captured = null;
-    downloadReportExcel(data, "waqf.xlsx");
-    const rows = readSheet(captured!, "زكاة الأوقاف");
+    const wb = build(data); const rows = readSheet(wb, "زكاة الأوقاف");
     const flat = rows.flat().join("|");
     expect(flat).toMatch(/زكاة الأوقاف/);
     expect(rows.some((r) => r.includes(tradeAssets))).toBe(true);
@@ -110,10 +105,8 @@ describe("Excel export — ESOP and Waqf integration", () => {
   });
 
   it("skips ESOP and Waqf sheets when data is absent", () => {
-    captured = null;
-    downloadReportExcel(baseData(), "plain.xlsx");
-    expect(captured!.SheetNames).not.toContain("زكاة ESOP-RSU");
-    expect(captured!.SheetNames).not.toContain("زكاة الأوقاف");
+    const wb = build(baseData()); expect(wb.SheetNames).not.toContain("زكاة ESOP-RSU");
+    expect(wb.SheetNames).not.toContain("زكاة الأوقاف");
   });
 
   it("ESOP intent=hold yields zero zakat but section still appears with disclosure", () => {
@@ -130,9 +123,7 @@ describe("Excel export — ESOP and Waqf integration", () => {
         zakat: 0,
       },
     });
-    captured = null;
-    downloadReportExcel(data, "esop-hold.xlsx");
-    const rows = readSheet(captured!, "زكاة ESOP-RSU");
+    const wb = build(data); const rows = readSheet(wb, "زكاة ESOP-RSU");
     const flat = rows.flat().join("|");
     expect(flat).toMatch(/الاحتفاظ/);
     expect(rows.some((r) => r.includes(0))).toBe(true);
