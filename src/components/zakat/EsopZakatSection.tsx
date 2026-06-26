@@ -41,6 +41,21 @@ export function EsopZakatSection({ currencyName = "", onChange }: Props) {
   const base = optionsIntrinsic + n(rsuValue);
   const zakat = intentTrade ? base * ZAKAT_RATE : 0;
 
+  useEffect(() => {
+    onChange?.({
+      show: base > 0,
+      vestedShares: n(vestedShares),
+      price: n(price),
+      strike: n(strike),
+      intrinsic: optionsIntrinsic,
+      rsuValue: n(rsuValue),
+      base,
+      intentTrade,
+      zakat,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vestedShares, price, strike, rsuValue, intentTrade]);
+
   return (
     <Card className="shadow-soft border-primary/20">
       <CardHeader className="pb-3">

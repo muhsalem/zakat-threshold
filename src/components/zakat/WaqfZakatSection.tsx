@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -7,7 +7,16 @@ import { Badge } from "@/components/ui/badge";
 import { Landmark, Info } from "lucide-react";
 import { ZAKAT_RATE } from "@/lib/zakat";
 
-type Props = { currencyName?: string };
+export type WaqfReportData = {
+  show: boolean;
+  tradeAssets: number;
+  rentIncome: number;
+  exemptCore: number;
+  base: number;
+  zakat: number;
+};
+
+type Props = { currencyName?: string; onChange?: (d: WaqfReportData) => void };
 
 export function WaqfZakatSection({ currencyName = "" }: Props) {
   const [tradeAssets, setTradeAssets] = useState("");
