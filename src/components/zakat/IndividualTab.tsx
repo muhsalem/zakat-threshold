@@ -1306,7 +1306,7 @@ export function IndividualTab() {
                 currencyName={currencyName}
                 onTotalChange={setSecuritiesTotalFromSection}
               />
-              <EsopZakatSection currencyName={currencyName} />
+              <EsopZakatSection currencyName={currencyName} onChange={setEsopData} />
             </AccordionContent>
           </AccordionItem>
 
