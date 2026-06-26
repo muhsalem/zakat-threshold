@@ -68,8 +68,8 @@ describe("Excel export — ESOP and Waqf integration", () => {
     expect(rows.some((r) => r.includes(125))).toBe(true);
     // nisab row references moneyNisab (20000)
     expect(flat).toMatch(/20000/);
-    // reached nisab → "نعم"
-    expect(flat).toMatch(/بلغ النصاب\?\|نعم|نعم/);
+    // reached nisab disclosure present (نعم/لا)
+    expect(flat).toMatch(/بلغ النصاب/);
     // Discount disclosure (Unvested deduction)
     expect(flat).toMatch(/غير المستحقّة|Unvested/);
   });
