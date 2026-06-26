@@ -38,7 +38,7 @@ function baseData(overrides: Partial<PrintReportData> = {}): PrintReportData {
 
 function readSheet(wb: XLSX.WorkBook, name: string) {
   expect(wb.SheetNames).toContain(name);
-  return XLSX.utils.sheet_to_json<string[]>(wb.Sheets[name], { header: 1, defval: "" });
+  return XLSX.utils.sheet_to_json<unknown[]>(wb.Sheets[name], { header: 1, defval: "" });
 }
 
 describe("Excel export — ESOP and Waqf integration", () => {
