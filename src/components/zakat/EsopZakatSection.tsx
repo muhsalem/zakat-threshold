@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -8,9 +8,21 @@ import { Badge } from "@/components/ui/badge";
 import { Briefcase, Info } from "lucide-react";
 import { ZAKAT_RATE } from "@/lib/zakat";
 
-type Props = { currencyName?: string };
+export type EsopReportData = {
+  show: boolean;
+  vestedShares: number;
+  price: number;
+  strike: number;
+  intrinsic: number;
+  rsuValue: number;
+  base: number;
+  intentTrade: boolean;
+  zakat: number;
+};
 
-export function EsopZakatSection({ currencyName = "" }: Props) {
+type Props = { currencyName?: string; onChange?: (d: EsopReportData) => void };
+
+export function EsopZakatSection({ currencyName = "", onChange }: Props) {
   const [vestedShares, setVestedShares] = useState("");
   const [price, setPrice] = useState("");
   const [strike, setStrike] = useState("");
