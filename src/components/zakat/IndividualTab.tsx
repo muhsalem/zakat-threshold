@@ -2323,8 +2323,13 @@ export function IndividualTab() {
         </Card>
 
 
-
-
+        <div className="print:hidden">
+          <CurrencyConverterCard
+            reportCurrency={currencyName}
+            value={fxRates}
+            onChange={setFxRates}
+          />
+        </div>
 
 
         <Card className="border-primary/20 shadow-soft print:hidden">
