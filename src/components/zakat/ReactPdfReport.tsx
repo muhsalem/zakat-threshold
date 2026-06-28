@@ -349,7 +349,7 @@ function ReportFooter({ reportId, page, total }: { reportId: string; page: numbe
 }
 
 export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
-  const reportId = makeReportId(data.name);
+  const reportId = data.reportId || makeReportId(data.name);
   const issued = nowAr();
   const cur = data.currencyName || "";
   const eligibleRows = data.rows.filter((r) => r.gross > 0 || r.zakat > 0);
