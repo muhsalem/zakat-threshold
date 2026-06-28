@@ -333,6 +333,8 @@ export function IndividualTab() {
 
   // بيانات زكاة ESOP/RSU (تُرسل عبر EsopZakatSection.onChange)
   const [esopData, setEsopData] = useState<import("./EsopZakatSection").EsopReportData | undefined>();
+  const [fxRates, setFxRates] = useState<FxRate[]>([]);
+
 
   // قاعدة الأنشطة الزراعية الملحقة (عسل + أسماك + دواجن) — تُضمّ لعروض التجارة
   const [agriTradeBase, setAgriTradeBase] = useState(0);
