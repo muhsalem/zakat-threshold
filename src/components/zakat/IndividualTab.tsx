@@ -2401,9 +2401,8 @@ export function IndividualTab() {
 
         <Card className="border-primary/20 shadow-soft print:hidden">
           <CardContent className="pt-6 space-y-2">
-            {(() => null)()}
-            {/* بناء بيان الخصومات (الفحص البصري لكل خصم/استبعاد) */}
-            {(() => null)()}
+            {/* تصدير التقرير مع بيان الخصومات وأسعار الصرف وبادج QR */}
+
             <Button className="w-full" size="lg" onClick={() => {
               const deductions = buildDeductionsList();
               const fxInfo = buildFxPayload();
