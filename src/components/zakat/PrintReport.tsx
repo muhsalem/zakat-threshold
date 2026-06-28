@@ -87,7 +87,38 @@ export interface PrintReportData {
     base: number;
     zakat: number;
   };
+  /**
+   * اختياري — بيان تفصيلي لكل خصم/استبعاد مع المبرّر الشرعي.
+   * يظهر في PDF و Excel لإثبات سبب الاحتساب أو الاستبعاد.
+   */
+  deductions?: Array<{
+    label: string;
+    amount: number;
+    included: boolean;
+    reason: string;
+    ref?: string;
+  }>;
+  /** اختياري — أسعار صرف العملات المستخدمة قبل التصدير. */
+  fx?: {
+    reportCurrency: string;
+    rates: Array<{ from: string; to: string; rate: number }>;
+    entries: Array<{
+      label: string;
+      originalAmount: number;
+      originalCurrency: string;
+      rate: number;
+      convertedAmount: number;
+    }>;
+    source?: string;
+  };
+  /** اختياري — رقم تقرير ثابت يُولَّد قبل بناء المستند ليُستخدم في QR. */
+  reportId?: string;
+  /** اختياري — Data URL لرمز QR للتحقق (يربط برقم التقرير/الملخّص). */
+  verificationQrDataUrl?: string;
+  /** اختياري — مجموع زكاة الركاز والمعادن (لعرضها في صف ملخص كزكاة الزروع). */
+  rikazTotal?: number;
 }
+
 
 const COUNTRY_FULL: Record<string, string> = {
   EG: "جمهورية مصر العربية", SA: "المملكة العربية السعودية", AE: "الإمارات العربية المتحدة",
