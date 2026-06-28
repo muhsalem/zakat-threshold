@@ -2350,9 +2350,11 @@ export function IndividualTab() {
                       <b className="text-primary">زكاة الأنعام:</b> تُؤدَّى عيناً (تفاصيلها أدناه)
                     </div>
                   )}
-                  <div className="text-xs text-muted-foreground pt-1 border-t border-primary/10">
+                  <SectionResult format={cur} label="زكاة الركاز والمعادن" value={0} eligible={true} />
+                  <div className="text-[11px] text-muted-foreground -mt-1 leading-relaxed">
                     <b className="text-primary">زكاة الركاز والمعادن:</b> تُحسب داخل قسم «زكاة الركاز والمعادن» (الركاز 20% — المعادن 2.5%)
                   </div>
+
                   {calc.debts > 0 && (
                     <div className="text-[10px] text-muted-foreground pt-1">
                       * تم توزيع خصم الديون ({cur(calc.debts)}) على الأوعية النقدية/المالية بنسبة كل وعاء.
