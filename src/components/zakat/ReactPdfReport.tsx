@@ -902,9 +902,27 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
  * يدعم العربية بشكل كامل عبر تسجيل خط Cairo و direction:rtl.
  */
 export async function downloadZakatPdf(data: PrintReportData, filename = "zakat-report.pdf") {
-  // توليد رمز QR ZATCA للسعودية تلقائيًا
-  let enriched = data;
-  if (data.countryCode === "SA" && !data.zatcaQrDataUrl) {
+  let enriched: PrintReportData = data;
+
+  // 1) رقم تقرير ثابت يُستخدم في QR التحقق ورأس التقرير
+  const stableReportId = data.reportId || makeReportId(data.name);
+  enriched = { ...enriched, reportId: stableReportId };
+
+  // 2) بادج QR للتحقق — يربط برقم التقرير وملخّص النتيجة
+  if (!enriched.verificationQrDataUrl) {
+    try {
+      const QRCode = (await import("qrcode")).default;
+      const origin = typeof window !== "undefined" ? window.location.origin : "https://nisab.app";
+      const payload = `${origin}/verify?rid=${encodeURIComponent(stableReportId)}` +
+        `&total=${encodeURIComponent(String(data.totalZakat))}` +
+        `&cur=${encodeURIComponent(data.currencyName || "")}`;
+      const qrDataUrl = await QRCode.toDataURL(payload, { margin: 1, width: 240, errorCorrectionLevel: "M" });
+      enriched = { ...enriched, verificationQrDataUrl: qrDataUrl };
+    } catch (e) { console.warn("Verification QR generation failed", e); }
+  }
+
+  // 3) رمز QR ZATCA للسعودية تلقائيًا
+  if (data.countryCode === "SA" && !enriched.zatcaQrDataUrl) {
     try {
       const { buildZatcaTlvQr } = await import("@/lib/zatcaTlv");
       const QRCode = (await import("qrcode")).default;
@@ -916,13 +934,15 @@ export async function downloadZakatPdf(data: PrintReportData, filename = "zakat-
         vatTotal: 0,
       });
       const qrDataUrl = await QRCode.toDataURL(tlv, { margin: 1, width: 240 });
-      enriched = { ...data, zatcaQrDataUrl: qrDataUrl };
+      enriched = { ...enriched, zatcaQrDataUrl: qrDataUrl };
     } catch (e) { console.warn("ZATCA QR generation failed", e); }
   }
+
   const blob = await pdf(<ZakatPdfDocument data={enriched} />).toBlob();
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
+
   a.download = filename;
   document.body.appendChild(a);
   a.click();
