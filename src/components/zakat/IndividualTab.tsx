@@ -530,8 +530,48 @@ export function IndividualTab() {
   const fitrContribution = fitrEnabled && fitrAuto.active ? fitrAuto.total : 0;
 
 
+  /** بناء بيان الخصومات والمبرّرات الشرعية لإثبات سبب الاحتساب أو الاستبعاد. */
+  const buildDeductionsList = () => {
+    const items: Array<{ label: string; amount: number; included: boolean; reason: string; ref?: string }> = [];
+    const add = (label: string, raw: string, included: boolean, reason: string, ref?: string) => {
+      const amount = num(raw);
+      if (amount > 0) items.push({ label, amount, included, reason, ref });
+    };
+    // الديون الحالّة — تُخصم بإجماع الفقهاء
+    add("قروض شخصية حالّة", debtPersonalLoan, true, "دين حالّ مستحق السداد الآن — يُخصم من الوعاء الزكوي", "AAOIFI 35 / إجماع الفقهاء");
+    add("ديون مصرفية حالّة", debtBankLoan, true, "أصل الدين دون الفوائد الربوية — يُخصم", "AAOIFI 35");
+    add("تمويل استهلاكي حالّ", debtConsumerFinance, true, "تمويل إسلامي مستحق — يُخصم", "مجمع الفقه الإسلامي");
+    add("أقساط سيارات/سلع حالّة", debtCarInstall, true, "قسط مستحق خلال الحول — يُخصم", "AAOIFI 35");
+    add("ديون تجارية مستحقة", debtTradePayable, true, "دين للموردين مستحق الآن — يُخصم", "AAOIFI 35");
+    add("أثمان مشتريات لم تُسدد", debtPurchases, true, "دين تجاري حالّ — يُخصم", "AAOIFI 35");
+    add("نفقة واجبة مستحقة", debtAlimony, true, "نفقة بحكم قضاء/اتفاق — تُخصم باعتبارها ديناً حالاً", "قول الجمهور");
+    // الديون المؤجلة — السياسة تحدد القبول
+    const longTermLabel = debtDeferredPolicy === "yearly" ? "قسط السنة فقط (سياسة الأنفع للفقراء)"
+      : debtDeferredPolicy === "full" ? "كامل الدين المؤجل (الأحوط للمزكّي)"
+      : "بدون خصم (الأنفع للفقراء التام)";
+    if (debtDeferredPolicy !== "none") {
+      add("قسط السنة من الديون المؤجلة", debtDeferredYearly, true, `يُخصم وفق سياسة: ${longTermLabel}`, "AAOIFI 35 / فتاوى معاصرة");
+    } else {
+      add("قسط السنة من الديون المؤجلة", debtDeferredYearly, false, "مستبعد — السياسة المختارة لا تخصم الديون المؤجلة (الأنفع للفقراء)", "ابن باز / ابن عثيمين");
+    }
+    add("تمويل عقاري (إجمالي متبقي)", debtMortgage, debtDeferredPolicy === "full", debtDeferredPolicy === "full" ? "السياسة الأحوط: خصم كامل الدين المؤجل" : "مستبعد — التمويل العقاري المؤجل لا يُخصم بالكامل عند جمهور المعاصرين", "ندوات البركة");
+    add("مهر مؤجل", debtMahr, false, "مستبعد — المهر المؤجل لا يُعتبر ديناً حالّاً ما لم يُطلب", "قول الجمهور");
+    return items;
+  };
+
+  /** بناء بيانات FX لإدراجها في PDF/Excel. */
+  const buildFxPayload = () => {
+    if (fxRates.length === 0) return undefined;
+    return {
+      reportCurrency: currencyName,
+      rates: fxRates.map((r) => ({ from: r.from, to: currencyName, rate: r.rate })),
+      entries: [] as Array<{ label: string; originalAmount: number; originalCurrency: string; rate: number; convertedAmount: number }>,
+      source: "أسعار صرف يدوية أدخلها المُزكِّي",
+    };
+  };
 
   return (
+
     <div dir="rtl" className="text-right">
       {/* تقرير الطباعة الاحترافي — يظهر فقط عند الطباعة */}
       <PrintReport
