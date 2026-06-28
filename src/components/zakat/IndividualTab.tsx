@@ -44,6 +44,9 @@ import { LivePricesCard } from "./LivePricesCard";
 import { EightChannelsDistribution } from "./EightChannelsDistribution";
 import { downloadZakatPdf } from "./ReactPdfReport";
 import { downloadReportExcel } from "@/lib/exportExcel";
+import { CurrencyConverterCard } from "./CurrencyConverterCard";
+import type { FxRate } from "@/lib/fx";
+
 import { FileSpreadsheet } from "lucide-react";
 import { IncomeUsufructSection } from "./IncomeUsufructSection";
 import { PrintReport } from "./PrintReport";
