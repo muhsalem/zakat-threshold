@@ -425,10 +425,19 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
                 <Text style={styles.kvLabel}>بصمة التحقق (Integrity)</Text>
                 <Text style={[styles.kvValue, { color: C.goldDark, fontSize: 9, fontFamily: "Courier" }]}>
                   {integrity}
-                </Text>
               </View>
             </View>
           </View>
+
+          {data.verificationQrDataUrl && (
+            <View style={{ marginTop: 14, alignItems: "center" }}>
+              <Image src={data.verificationQrDataUrl} style={{ width: 96, height: 96 }} />
+              <Text style={[styles.small, { textAlign: "center", marginTop: 4, color: C.goldDark, fontWeight: 700 }]}>
+                بادج التحقق — امسح للتحقق من رقم التقرير والملخّص
+              </Text>
+            </View>
+          )}
+
 
           <Text style={styles.disclaimer}>
             هذا التقرير أداة استرشاديّة لحساب الزكاة وفق المعايير الشرعية المعروفة (AAOIFI رقم 35
