@@ -425,7 +425,9 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
                 <Text style={styles.kvLabel}>بصمة التحقق (Integrity)</Text>
                 <Text style={[styles.kvValue, { color: C.goldDark, fontSize: 9, fontFamily: "Courier" }]}>
                   {integrity}
+                </Text>
               </View>
+
             </View>
           </View>
 
