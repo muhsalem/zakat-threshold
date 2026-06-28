@@ -140,7 +140,60 @@ export function buildReportWorkbook(data: PrintReportData): XLSX.WorkBook {
     XLSX.utils.book_append_sheet(wb, wsW, "زكاة الأوقاف");
   }
 
+  // ورقة: بيان الخصومات والمبرّرات (الفحص البصري لكل خصم)
+  if (data.deductions && data.deductions.length > 0) {
+    const dedHeader = [["البند", "القيمة المُدخلة", `العملة (${data.currencyName})`, "تم احتسابه؟", "السبب الشرعي/المحاسبي", "المرجع"]];
+    const dedRows = data.deductions.map((d) => [
+      d.label,
+      d.amount,
+      data.currencyName,
+      d.included ? "نعم — مُحتسب" : "لا — مُستبعد",
+      d.reason,
+      d.ref || "—",
+    ]);
+    const includedTotal = data.deductions.filter((d) => d.included).reduce((s, d) => s + (d.amount || 0), 0);
+    const excludedTotal = data.deductions.filter((d) => !d.included).reduce((s, d) => s + (d.amount || 0), 0);
+    dedRows.push(["—", "", "", "", "", ""]);
+    dedRows.push(["إجمالي الخصومات المُحتسبة", includedTotal, data.currencyName, "—", "تدخل في حساب الوعاء الزكوي الصافي", "—"]);
+    dedRows.push(["إجمالي البنود المستبعدة", excludedTotal, data.currencyName, "—", "لا تُخصم لعدم استيفاء شروط الخصم الشرعية", "—"]);
+    const wsD = XLSX.utils.aoa_to_sheet([
+      ["بيان الخصومات والمبرّرات الشرعية"],
+      ["كل سطر يوضّح القيمة المُدخلة، ما إذا تم احتسابها أو استبعادها، والسبب والمرجع الشرعي."],
+      [],
+      ...dedHeader,
+      ...dedRows,
+    ]);
+    wsD["!cols"] = [{ wch: 38 }, { wch: 16 }, { wch: 14 }, { wch: 18 }, { wch: 60 }, { wch: 30 }];
+    XLSX.utils.book_append_sheet(wb, wsD, "بيان الخصومات");
+  }
+
+  // ورقة: أسعار الصرف المستخدمة في التحويل التلقائي
+  if (data.fx && (data.fx.rates.length > 0 || data.fx.entries.length > 0)) {
+    const fxAoA: (string | number)[][] = [
+      ["أسعار الصرف المعتمدة في التقرير"],
+      [`عملة التقرير: ${data.fx.reportCurrency}`],
+      data.fx.source ? [`المصدر: ${data.fx.source}`] : [""],
+      [],
+      ["العملة الأصلية", `السعر مقابل ${data.fx.reportCurrency}`],
+      ...data.fx.rates.map((r) => [r.from, r.rate]),
+      [],
+      ["تفاصيل البنود المحوَّلة"],
+      ["البند", "القيمة الأصلية", "العملة الأصلية", "السعر المستخدم", `القيمة بعد التحويل (${data.fx.reportCurrency})`],
+      ...data.fx.entries.map((e) => [
+        e.label,
+        e.originalAmount,
+        e.originalCurrency,
+        e.rate,
+        +e.convertedAmount.toFixed(2),
+      ]),
+    ];
+    const wsFx = XLSX.utils.aoa_to_sheet(fxAoA);
+    wsFx["!cols"] = [{ wch: 38 }, { wch: 18 }, { wch: 16 }, { wch: 18 }, { wch: 22 }];
+    XLSX.utils.book_append_sheet(wb, wsFx, "أسعار الصرف");
+  }
+
   // ورقة 4: المراجعة الشرعية / المحاسبية
+
   const review = [
     ["المراجع", data.accountantName || "—"],
     ["رقم الترخيص", data.accountantLicense || "—"],

@@ -349,7 +349,7 @@ function ReportFooter({ reportId, page, total }: { reportId: string; page: numbe
 }
 
 export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
-  const reportId = makeReportId(data.name);
+  const reportId = data.reportId || makeReportId(data.name);
   const issued = nowAr();
   const cur = data.currencyName || "";
   const eligibleRows = data.rows.filter((r) => r.gross > 0 || r.zakat > 0);
@@ -427,8 +427,19 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
                   {integrity}
                 </Text>
               </View>
+
             </View>
           </View>
+
+          {data.verificationQrDataUrl && (
+            <View style={{ marginTop: 14, alignItems: "center" }}>
+              <Image src={data.verificationQrDataUrl} style={{ width: 96, height: 96 }} />
+              <Text style={[styles.small, { textAlign: "center", marginTop: 4, color: C.goldDark, fontWeight: 700 }]}>
+                بادج التحقق — امسح للتحقق من رقم التقرير والملخّص
+              </Text>
+            </View>
+          )}
+
 
           <Text style={styles.disclaimer}>
             هذا التقرير أداة استرشاديّة لحساب الزكاة وفق المعايير الشرعية المعروفة (AAOIFI رقم 35
@@ -520,6 +531,85 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
             </View>
           </View>
         </View>
+
+        {data.deductions && data.deductions.length > 0 && (
+          <>
+            <Text style={styles.h2}>بيان الخصومات والمبرّرات الشرعية</Text>
+            <View style={styles.table}>
+              <View style={styles.tr}>
+                <Text style={[styles.th, { flex: 1.8 }]}>البند</Text>
+                <Text style={[styles.th, { flex: 1 }]}>القيمة</Text>
+                <Text style={[styles.th, { flex: 0.9 }]}>الحالة</Text>
+                <Text style={[styles.th, { flex: 2.4 }]}>السبب / المرجع</Text>
+              </View>
+              {data.deductions.map((d, i) => (
+                <View key={i} style={[styles.tr, ...(i % 2 === 1 ? [styles.trAlt] : [])]} wrap={false}>
+                  <Text style={[styles.td, { flex: 1.8 }]}>{d.label}</Text>
+                  <Text style={[styles.tdNum, { flex: 1 }]}>{fmtCurrency(d.amount, cur)}</Text>
+                  <Text style={[styles.td, { flex: 0.9, color: d.included ? C.primary : C.muted, fontWeight: 700 }]}>
+                    {d.included ? "مُحتسب" : "مُستبعد"}
+                  </Text>
+                  <Text style={[styles.td, { flex: 2.4, fontSize: 8 }]}>
+                    {d.reason}{d.ref ? ` — ${d.ref}` : ""}
+                  </Text>
+                </View>
+              ))}
+            </View>
+            <Text style={[styles.small, { marginTop: 4 }]}>
+              يُظهر هذا الجدول لكل بند سبب احتسابه أو استبعاده مع المرجع الشرعي/المحاسبي،
+              لتمكين المراجع من تتبّع منطق الخصم.
+            </Text>
+          </>
+        )}
+
+        {data.fx && (data.fx.rates.length > 0 || data.fx.entries.length > 0) && (
+          <>
+            <Text style={styles.h2}>تحويل العملات (FX)</Text>
+            <View style={styles.card}>
+              <Text style={[styles.small, { marginBottom: 4 }]}>
+                {`عملة التقرير: ${data.fx.reportCurrency}`}
+                {data.fx.source ? ` · المصدر: ${data.fx.source}` : ""}
+              </Text>
+              {data.fx.rates.length > 0 && (
+                <View style={styles.table}>
+                  <View style={styles.tr}>
+                    <Text style={[styles.th, { flex: 1 }]}>العملة الأصلية</Text>
+                    <Text style={[styles.th, { flex: 2 }]}>السعر مقابل {data.fx.reportCurrency}</Text>
+                  </View>
+                  {data.fx.rates.map((r, i) => (
+                    <View key={i} style={[styles.tr, ...(i % 2 === 1 ? [styles.trAlt] : [])]} wrap={false}>
+                      <Text style={[styles.td, { flex: 1, fontWeight: 700 }]}>{r.from}</Text>
+                      <Text style={[styles.td, { flex: 2 }]}>{`1 ${r.from} = ${r.rate} ${r.to}`}</Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+              {data.fx.entries.length > 0 && (
+                <>
+                  <Text style={[styles.kvLabel, { marginTop: 6 }]}>البنود المحوَّلة</Text>
+                  <View style={styles.table}>
+                    <View style={styles.tr}>
+                      <Text style={[styles.th, { flex: 2 }]}>البند</Text>
+                      <Text style={[styles.th, { flex: 1.2 }]}>الأصل</Text>
+                      <Text style={[styles.th, { flex: 0.8 }]}>السعر</Text>
+                      <Text style={[styles.th, { flex: 1.3 }]}>بعد التحويل</Text>
+                    </View>
+                    {data.fx.entries.map((e, i) => (
+                      <View key={i} style={[styles.tr, ...(i % 2 === 1 ? [styles.trAlt] : [])]} wrap={false}>
+                        <Text style={[styles.td, { flex: 2 }]}>{e.label}</Text>
+                        <Text style={[styles.tdNum, { flex: 1.2 }]}>{`${e.originalAmount} ${e.originalCurrency}`}</Text>
+                        <Text style={[styles.tdNum, { flex: 0.8 }]}>{e.rate.toFixed(4)}</Text>
+                        <Text style={[styles.tdNum, { flex: 1.3 }]}>{fmtCurrency(e.convertedAmount, cur)}</Text>
+                      </View>
+                    ))}
+                  </View>
+                </>
+              )}
+            </View>
+          </>
+        )}
+
+
 
         {data.hawlComplete != null && (
           <View style={styles.card}>
@@ -812,9 +902,27 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
  * يدعم العربية بشكل كامل عبر تسجيل خط Cairo و direction:rtl.
  */
 export async function downloadZakatPdf(data: PrintReportData, filename = "zakat-report.pdf") {
-  // توليد رمز QR ZATCA للسعودية تلقائيًا
-  let enriched = data;
-  if (data.countryCode === "SA" && !data.zatcaQrDataUrl) {
+  let enriched: PrintReportData = data;
+
+  // 1) رقم تقرير ثابت يُستخدم في QR التحقق ورأس التقرير
+  const stableReportId = data.reportId || makeReportId(data.name);
+  enriched = { ...enriched, reportId: stableReportId };
+
+  // 2) بادج QR للتحقق — يربط برقم التقرير وملخّص النتيجة
+  if (!enriched.verificationQrDataUrl) {
+    try {
+      const QRCode = (await import("qrcode")).default;
+      const origin = typeof window !== "undefined" ? window.location.origin : "https://nisab.app";
+      const payload = `${origin}/verify?rid=${encodeURIComponent(stableReportId)}` +
+        `&total=${encodeURIComponent(String(data.totalZakat))}` +
+        `&cur=${encodeURIComponent(data.currencyName || "")}`;
+      const qrDataUrl = await QRCode.toDataURL(payload, { margin: 1, width: 240, errorCorrectionLevel: "M" });
+      enriched = { ...enriched, verificationQrDataUrl: qrDataUrl };
+    } catch (e) { console.warn("Verification QR generation failed", e); }
+  }
+
+  // 3) رمز QR ZATCA للسعودية تلقائيًا
+  if (data.countryCode === "SA" && !enriched.zatcaQrDataUrl) {
     try {
       const { buildZatcaTlvQr } = await import("@/lib/zatcaTlv");
       const QRCode = (await import("qrcode")).default;
@@ -826,13 +934,15 @@ export async function downloadZakatPdf(data: PrintReportData, filename = "zakat-
         vatTotal: 0,
       });
       const qrDataUrl = await QRCode.toDataURL(tlv, { margin: 1, width: 240 });
-      enriched = { ...data, zatcaQrDataUrl: qrDataUrl };
+      enriched = { ...enriched, zatcaQrDataUrl: qrDataUrl };
     } catch (e) { console.warn("ZATCA QR generation failed", e); }
   }
+
   const blob = await pdf(<ZakatPdfDocument data={enriched} />).toBlob();
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
+
   a.download = filename;
   document.body.appendChild(a);
   a.click();

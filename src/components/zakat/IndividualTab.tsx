@@ -44,6 +44,9 @@ import { LivePricesCard } from "./LivePricesCard";
 import { EightChannelsDistribution } from "./EightChannelsDistribution";
 import { downloadZakatPdf } from "./ReactPdfReport";
 import { downloadReportExcel } from "@/lib/exportExcel";
+import { CurrencyConverterCard } from "./CurrencyConverterCard";
+import type { FxRate } from "@/lib/fx";
+
 import { FileSpreadsheet } from "lucide-react";
 import { IncomeUsufructSection } from "./IncomeUsufructSection";
 import { PrintReport } from "./PrintReport";
@@ -330,6 +333,8 @@ export function IndividualTab() {
 
   // بيانات زكاة ESOP/RSU (تُرسل عبر EsopZakatSection.onChange)
   const [esopData, setEsopData] = useState<import("./EsopZakatSection").EsopReportData | undefined>();
+  const [fxRates, setFxRates] = useState<FxRate[]>([]);
+
 
   // قاعدة الأنشطة الزراعية الملحقة (عسل + أسماك + دواجن) — تُضمّ لعروض التجارة
   const [agriTradeBase, setAgriTradeBase] = useState(0);
@@ -525,8 +530,73 @@ export function IndividualTab() {
   const fitrContribution = fitrEnabled && fitrAuto.active ? fitrAuto.total : 0;
 
 
+  /** بناء بيان الخصومات والمبرّرات الشرعية لإثبات سبب الاحتساب أو الاستبعاد. */
+  const buildDeductionsList = () => {
+    const items: Array<{ label: string; amount: number; included: boolean; reason: string; ref?: string }> = [];
+    const add = (label: string, raw: string, included: boolean, reason: string, ref?: string) => {
+      const amount = num(raw);
+      if (amount > 0) items.push({ label, amount, included, reason, ref });
+    };
+    // الديون الحالّة — تُخصم بإجماع الفقهاء
+    add("قروض شخصية حالّة", debtPersonalLoan, true, "دين حالّ مستحق السداد الآن — يُخصم من الوعاء الزكوي", "AAOIFI 35 / إجماع الفقهاء");
+    add("ديون مصرفية حالّة", debtBankLoan, true, "أصل الدين دون الفوائد الربوية — يُخصم", "AAOIFI 35");
+    add("تمويل استهلاكي حالّ", debtConsumerFinance, true, "تمويل إسلامي مستحق — يُخصم", "مجمع الفقه الإسلامي");
+    add("أقساط سيارات/سلع حالّة", debtCarInstall, true, "قسط مستحق خلال الحول — يُخصم", "AAOIFI 35");
+    add("ديون تجارية مستحقة", debtTradePayable, true, "دين للموردين مستحق الآن — يُخصم", "AAOIFI 35");
+    add("أثمان مشتريات لم تُسدد", debtPurchases, true, "دين تجاري حالّ — يُخصم", "AAOIFI 35");
+    add("نفقة واجبة مستحقة", debtAlimony, true, "نفقة بحكم قضاء/اتفاق — تُخصم باعتبارها ديناً حالاً", "قول الجمهور");
+    // الديون المؤجلة — السياسة تحدد القبول
+    const longTermLabel = debtDeferredPolicy === "yearly" ? "قسط السنة فقط (سياسة الأنفع للفقراء)"
+      : debtDeferredPolicy === "full" ? "كامل الدين المؤجل (الأحوط للمزكّي)"
+      : "بدون خصم (الأنفع للفقراء التام)";
+    if (debtDeferredPolicy !== "none") {
+      add("قسط السنة من الديون المؤجلة", debtDeferredYearly, true, `يُخصم وفق سياسة: ${longTermLabel}`, "AAOIFI 35 / فتاوى معاصرة");
+    } else {
+      add("قسط السنة من الديون المؤجلة", debtDeferredYearly, false, "مستبعد — السياسة المختارة لا تخصم الديون المؤجلة (الأنفع للفقراء)", "ابن باز / ابن عثيمين");
+    }
+    add("تمويل عقاري (إجمالي متبقي)", debtMortgage, debtDeferredPolicy === "full", debtDeferredPolicy === "full" ? "السياسة الأحوط: خصم كامل الدين المؤجل" : "مستبعد — التمويل العقاري المؤجل لا يُخصم بالكامل عند جمهور المعاصرين", "ندوات البركة");
+    add("مهر مؤجل", debtMahr, false, "مستبعد — المهر المؤجل لا يُعتبر ديناً حالّاً ما لم يُطلب", "قول الجمهور");
+    return items;
+  };
+
+  /** بناء بيانات FX لإدراجها في PDF/Excel. */
+  const buildFxPayload = () => {
+    if (fxRates.length === 0) return undefined;
+    return {
+      reportCurrency: currencyName,
+      rates: fxRates.map((r) => ({ from: r.from, to: currencyName, rate: r.rate })),
+      entries: [] as Array<{ label: string; originalAmount: number; originalCurrency: string; rate: number; convertedAmount: number }>,
+      source: "أسعار صرف يدوية أدخلها المُزكِّي",
+    };
+  };
+
+  /** بيانات التقرير الأساسية المشتركة بين تصدير PDF و Excel. */
+  const buildBaseReportData = () => ({
+    name, profession, countryCode, currencyName,
+    calendarBasis, effectiveRate,
+    rows: [
+      { label: "زكاة الذهب", gross: calc.totalGoldValue, nisab: calc.goldNisabValue, eligible: calc.goldEligible, zakat: calc.goldZakat },
+      { label: "زكاة الفضة", gross: calc.silverValue, nisab: calc.silverNisabValue, eligible: calc.silverEligible, zakat: calc.silverZakat },
+      { label: "زكاة الأوراق النقدية والحسابات البنكية والمحافظ الرقمية", gross: calc.cashTotal, eligible: true, zakat: 0 },
+      { label: "زكاة الأوراق المالية ووثائق التأمين", gross: calc.securitiesTotal, eligible: true, zakat: 0 },
+      { label: "زكاة الأوراق التجارية (الكمبيالات وأوراق القبض)", gross: calc.billsTotal, eligible: true, zakat: 0 },
+      { label: "زكاة الدخل وعروض التجارة والمستغلات", gross: calc.tradeTotal + calc.realEstateZakatable + incomeUsufructTotal, eligible: true, zakat: 0 },
+      { label: "زكاة الزروع والثمار", gross: calc.cropsValue, eligible: calc.cropsEligible, zakat: calc.cropsZakat },
+    ],
+    livestock: { camels: calc.camelsN, cows: calc.cowsN, sheep: calc.sheepN, show: ownsLivestock, mode: livestockForTrade ? "trade" as const : "grazing" as const, tradeValue: livestockForTrade ? num(livestockTradeValue) : 0 },
+    esop: esopData,
+    monetaryGross: calc.monetaryGross, debts: calc.debts, monetaryBase: calc.monetaryBase,
+    moneyNisab: calc.moneyNisab, totalZakat: calc.total,
+    hawlComplete: hawl ? hawl.hawlComplete : null, hawlDate: nisabStartDate,
+    goldPricePerGram: num(goldPrice), silverPricePerGram: num(silverPrice),
+    accountantName, accountantLicense, accountantPreamble,
+    accountantOpinion, opinionType, previousYearZakat,
+    auditEntries: includeAuditReport ? auditEntries : undefined,
+  });
 
   return (
+
+
     <div dir="rtl" className="text-right">
       {/* تقرير الطباعة الاحترافي — يظهر فقط عند الطباعة */}
       <PrintReport
@@ -2280,9 +2350,11 @@ export function IndividualTab() {
                       <b className="text-primary">زكاة الأنعام:</b> تُؤدَّى عيناً (تفاصيلها أدناه)
                     </div>
                   )}
-                  <div className="text-xs text-muted-foreground pt-1 border-t border-primary/10">
+                  <SectionResult format={cur} label="زكاة الركاز والمعادن" value={0} eligible={true} />
+                  <div className="text-[11px] text-muted-foreground -mt-1 leading-relaxed">
                     <b className="text-primary">زكاة الركاز والمعادن:</b> تُحسب داخل قسم «زكاة الركاز والمعادن» (الركاز 20% — المعادن 2.5%)
                   </div>
+
                   {calc.debts > 0 && (
                     <div className="text-[10px] text-muted-foreground pt-1">
                       * تم توزيع خصم الديون ({cur(calc.debts)}) على الأوعية النقدية/المالية بنسبة كل وعاء.
@@ -2318,62 +2390,44 @@ export function IndividualTab() {
         </Card>
 
 
-
-
+        <div className="print:hidden">
+          <CurrencyConverterCard
+            reportCurrency={currencyName}
+            value={fxRates}
+            onChange={setFxRates}
+          />
+        </div>
 
 
         <Card className="border-primary/20 shadow-soft print:hidden">
           <CardContent className="pt-6 space-y-2">
-            <Button className="w-full" size="lg" onClick={() => downloadZakatPdf({
-              name, profession, countryCode, currencyName,
-              calendarBasis, effectiveRate,
-              rows: [
-                { label: "زكاة الذهب", gross: calc.totalGoldValue, nisab: calc.goldNisabValue, eligible: calc.goldEligible, zakat: calc.goldZakat },
-                { label: "زكاة الفضة", gross: calc.silverValue, nisab: calc.silverNisabValue, eligible: calc.silverEligible, zakat: calc.silverZakat },
-                { label: "زكاة الأوراق النقدية والحسابات البنكية والمحافظ الرقمية", gross: calc.cashTotal, eligible: true, zakat: 0 },
-                { label: "زكاة الأوراق المالية ووثائق التأمين", gross: calc.securitiesTotal, eligible: true, zakat: 0 },
-                { label: "زكاة الأوراق التجارية (الكمبيالات وأوراق القبض)", gross: calc.billsTotal, eligible: true, zakat: 0 },
-                { label: "زكاة الدخل وعروض التجارة والمستغلات", gross: calc.tradeTotal + calc.realEstateZakatable + incomeUsufructTotal, eligible: true, zakat: 0 },
-                { label: "زكاة الزروع والثمار", gross: calc.cropsValue, eligible: calc.cropsEligible, zakat: calc.cropsZakat },
-              ],
-              livestock: { camels: calc.camelsN, cows: calc.cowsN, sheep: calc.sheepN, show: ownsLivestock, mode: livestockForTrade ? "trade" : "grazing", tradeValue: livestockForTrade ? num(livestockTradeValue) : 0 },
-          esop: esopData,
-              monetaryGross: calc.monetaryGross, debts: calc.debts, monetaryBase: calc.monetaryBase,
-              moneyNisab: calc.moneyNisab, totalZakat: calc.total,
-              hawlComplete: hawl ? hawl.hawlComplete : null, hawlDate: nisabStartDate,
-              goldPricePerGram: num(goldPrice), silverPricePerGram: num(silverPrice),
-              accountantName, accountantLicense, accountantPreamble,
-              accountantOpinion, opinionType, previousYearZakat,
-              auditEntries: includeAuditReport ? auditEntries : undefined,
-            }, `zakat-${name || "report"}-${new Date().toISOString().slice(0,10)}.pdf`)}>
+            {/* تصدير التقرير مع بيان الخصومات وأسعار الصرف وبادج QR */}
+
+            <Button className="w-full" size="lg" onClick={() => {
+              const deductions = buildDeductionsList();
+              const fxInfo = buildFxPayload();
+              downloadZakatPdf({
+                ...buildBaseReportData(),
+                deductions,
+                fx: fxInfo,
+              }, `zakat-${name || "report"}-${new Date().toISOString().slice(0,10)}.pdf`);
+            }}>
               <FileText className="h-4 w-4 ml-2" />
               تحميل التقرير PDF
             </Button>
-            <Button variant="secondary" className="w-full" onClick={() => downloadReportExcel({
-              name, profession, countryCode, currencyName,
-              calendarBasis, effectiveRate,
-              rows: [
-                { label: "زكاة الذهب", gross: calc.totalGoldValue, nisab: calc.goldNisabValue, eligible: calc.goldEligible, zakat: calc.goldZakat },
-                { label: "زكاة الفضة", gross: calc.silverValue, nisab: calc.silverNisabValue, eligible: calc.silverEligible, zakat: calc.silverZakat },
-                { label: "زكاة الأوراق النقدية والحسابات البنكية والمحافظ الرقمية", gross: calc.cashTotal, eligible: true, zakat: 0 },
-                { label: "زكاة الأوراق المالية ووثائق التأمين", gross: calc.securitiesTotal, eligible: true, zakat: 0 },
-                { label: "زكاة الأوراق التجارية (الكمبيالات وأوراق القبض)", gross: calc.billsTotal, eligible: true, zakat: 0 },
-                { label: "زكاة الدخل وعروض التجارة والمستغلات", gross: calc.tradeTotal + calc.realEstateZakatable + incomeUsufructTotal, eligible: true, zakat: 0 },
-                { label: "زكاة الزروع والثمار", gross: calc.cropsValue, eligible: calc.cropsEligible, zakat: calc.cropsZakat },
-              ],
-              livestock: { camels: calc.camelsN, cows: calc.cowsN, sheep: calc.sheepN, show: ownsLivestock, mode: livestockForTrade ? "trade" : "grazing", tradeValue: livestockForTrade ? num(livestockTradeValue) : 0 },
-          esop: esopData,
-              monetaryGross: calc.monetaryGross, debts: calc.debts, monetaryBase: calc.monetaryBase,
-              moneyNisab: calc.moneyNisab, totalZakat: calc.total,
-              hawlComplete: hawl ? hawl.hawlComplete : null, hawlDate: nisabStartDate,
-              goldPricePerGram: num(goldPrice), silverPricePerGram: num(silverPrice),
-              accountantName, accountantLicense, accountantPreamble,
-              accountantOpinion, opinionType, previousYearZakat,
-              auditEntries: includeAuditReport ? auditEntries : undefined,
-            }, `zakat-${name || "report"}-${new Date().toISOString().slice(0,10)}.xlsx`)}>
+            <Button variant="secondary" className="w-full" onClick={() => {
+              const deductions = buildDeductionsList();
+              const fxInfo = buildFxPayload();
+              downloadReportExcel({
+                ...buildBaseReportData(),
+                deductions,
+                fx: fxInfo,
+              }, `zakat-${name || "report"}-${new Date().toISOString().slice(0,10)}.xlsx`);
+            }}>
               <FileSpreadsheet className="h-4 w-4 ml-2" />
               تحميل التقرير Excel
             </Button>
+
             <Button variant="outline" className="w-full" onClick={() => window.print()}>
               <CheckCircle2 className="h-4 w-4 ml-2" />
               طباعة التقرير

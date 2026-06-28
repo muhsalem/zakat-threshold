@@ -130,7 +130,45 @@ describe("Excel export — ESOP and Waqf integration", () => {
   });
 });
 
+describe("Excel export — deductions and FX sheets", () => {
+  it("emits a deductions sheet with included/excluded rows and reasons", () => {
+    const data = baseData({
+      deductions: [
+        { label: "قرض شخصي", amount: 12000, included: true, reason: "دين حالّ", ref: "AAOIFI 35" },
+        { label: "مهر مؤجل", amount: 50000, included: false, reason: "غير حالّ ولم يُطلب", ref: "قول الجمهور" },
+      ],
+    });
+    const wb = build(data); const rows = readSheet(wb, "بيان الخصومات");
+    const flat = rows.flat().join("|");
+    expect(flat).toMatch(/قرض شخصي/);
+    expect(flat).toMatch(/مهر مؤجل/);
+    expect(flat).toMatch(/نعم — مُحتسب/);
+    expect(flat).toMatch(/لا — مُستبعد/);
+    expect(flat).toMatch(/AAOIFI 35/);
+    expect(rows.some((r) => r.includes(12000))).toBe(true);
+    expect(rows.some((r) => r.includes(50000))).toBe(true);
+  });
+
+  it("emits an FX sheet with rates and converted entries", () => {
+    const data = baseData({
+      fx: {
+        reportCurrency: "ريال",
+        rates: [{ from: "USD", to: "ريال", rate: 3.75 }],
+        entries: [{ label: "حساب USD", originalAmount: 1000, originalCurrency: "USD", rate: 3.75, convertedAmount: 3750 }],
+        source: "البنك المركزي",
+      },
+    });
+    const wb = build(data); const rows = readSheet(wb, "أسعار الصرف");
+    const flat = rows.flat().join("|");
+    expect(flat).toMatch(/USD/);
+    expect(flat).toMatch(/3\.75/);
+    expect(flat).toMatch(/البنك المركزي/);
+    expect(rows.some((r) => r.includes(3750))).toBe(true);
+  });
+});
+
 describe("PDF report data — ESOP and Waqf payload shape", () => {
+
   it("PrintReportData accepts esop and waqf and they flow through unchanged", () => {
     const data = baseData({
       esop: {
