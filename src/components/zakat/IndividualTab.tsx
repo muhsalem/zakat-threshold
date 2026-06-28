@@ -570,7 +570,32 @@ export function IndividualTab() {
     };
   };
 
+  /** بيانات التقرير الأساسية المشتركة بين تصدير PDF و Excel. */
+  const buildBaseReportData = () => ({
+    name, profession, countryCode, currencyName,
+    calendarBasis, effectiveRate,
+    rows: [
+      { label: "زكاة الذهب", gross: calc.totalGoldValue, nisab: calc.goldNisabValue, eligible: calc.goldEligible, zakat: calc.goldZakat },
+      { label: "زكاة الفضة", gross: calc.silverValue, nisab: calc.silverNisabValue, eligible: calc.silverEligible, zakat: calc.silverZakat },
+      { label: "زكاة الأوراق النقدية والحسابات البنكية والمحافظ الرقمية", gross: calc.cashTotal, eligible: true, zakat: 0 },
+      { label: "زكاة الأوراق المالية ووثائق التأمين", gross: calc.securitiesTotal, eligible: true, zakat: 0 },
+      { label: "زكاة الأوراق التجارية (الكمبيالات وأوراق القبض)", gross: calc.billsTotal, eligible: true, zakat: 0 },
+      { label: "زكاة الدخل وعروض التجارة والمستغلات", gross: calc.tradeTotal + calc.realEstateZakatable + incomeUsufructTotal, eligible: true, zakat: 0 },
+      { label: "زكاة الزروع والثمار", gross: calc.cropsValue, eligible: calc.cropsEligible, zakat: calc.cropsZakat },
+    ],
+    livestock: { camels: calc.camelsN, cows: calc.cowsN, sheep: calc.sheepN, show: ownsLivestock, mode: livestockForTrade ? "trade" as const : "grazing" as const, tradeValue: livestockForTrade ? num(livestockTradeValue) : 0 },
+    esop: esopData,
+    monetaryGross: calc.monetaryGross, debts: calc.debts, monetaryBase: calc.monetaryBase,
+    moneyNisab: calc.moneyNisab, totalZakat: calc.total,
+    hawlComplete: hawl ? hawl.hawlComplete : null, hawlDate: nisabStartDate,
+    goldPricePerGram: num(goldPrice), silverPricePerGram: num(silverPrice),
+    accountantName, accountantLicense, accountantPreamble,
+    accountantOpinion, opinionType, previousYearZakat,
+    auditEntries: includeAuditReport ? auditEntries : undefined,
+  });
+
   return (
+
 
     <div dir="rtl" className="text-right">
       {/* تقرير الطباعة الاحترافي — يظهر فقط عند الطباعة */}
