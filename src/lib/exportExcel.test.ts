@@ -165,9 +165,10 @@ describe("Excel export — deductions and FX sheets", () => {
     expect(flat).toMatch(/البنك المركزي/);
     expect(rows.some((r) => r.includes(3750))).toBe(true);
   });
-
+});
 
 describe("PDF report data — ESOP and Waqf payload shape", () => {
+
   it("PrintReportData accepts esop and waqf and they flow through unchanged", () => {
     const data = baseData({
       esop: {
