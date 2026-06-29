@@ -1083,30 +1083,13 @@ export function CompanyTab() {
                   </p>
                 </div>
 
-                {/* تاريخ تشغيل النشاط التجاري — ميلادي + هجري */}
-                <div className="rounded-lg border border-primary/15 bg-primary/5 p-3 space-y-2">
-                  <Label className="block">تاريخ تشغيل النشاط التجاري</Label>
-                  <div className="grid md:grid-cols-2 gap-3">
-                    <div>
-                      <Label className="text-[11px] text-muted-foreground">ميلادي</Label>
-                      <Input
-                        type="date"
-                        value={activityStartDate}
-                        onChange={(e) => setActivityStartDate(e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-[11px] text-muted-foreground">ما يقابله بالهجري (أم القرى)</Label>
-                      <div className="h-9 flex items-center rounded-md border bg-background px-3 text-sm font-semibold text-primary">
-                        {gregorianDateToHijri(activityStartDate) || "—"}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-[11px] text-muted-foreground">
-                    <Info className="h-3 w-3 inline ml-1" />
-                    يُعتمد كأساس لبدء الحول التجاري وللتوثيق في سجل التدقيق الشرعي. العبرة شرعاً بالحول الهجري.
-                  </p>
-                </div>
+                {/* تاريخ تشغيل النشاط التجاري — ميلادي + هجري مع تأكيد التحويل */}
+                <HijriDateField
+                  label="تاريخ تشغيل النشاط التجاري"
+                  value={activityStartDate}
+                  onChange={setActivityStartDate}
+                  hint="يُعتمد كأساس لبدء الحول التجاري وللتوثيق في سجل التدقيق الشرعي"
+                />
 
                 {/* فروع الشركة */}
                 <div className="rounded-lg border border-gold/30 bg-gold/5 p-3 space-y-3">
