@@ -1551,7 +1551,7 @@ export function CompanyTab() {
                 </p>
               </CardHeader>
               <CardContent>
-                <RikazSection mode="rikaz-metals" hideCountry currency={currencyName} />
+                <RikazSection mode="rikaz-metals" currency={currencyName} />
               </CardContent>
             </Card>
           )}
@@ -1566,7 +1566,7 @@ export function CompanyTab() {
                 </p>
               </CardHeader>
               <CardContent>
-                <RikazSection mode="agri-extras" hideCountry currency={currencyName} />
+                <RikazSection mode="agri-extras" currency={currencyName} />
               </CardContent>
             </Card>
           )}
