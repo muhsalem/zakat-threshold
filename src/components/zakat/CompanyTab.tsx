@@ -1083,19 +1083,71 @@ export function CompanyTab() {
                   </p>
                 </div>
 
-                {/* تاريخ تشغيل النشاط التجاري */}
-                <div>
-                  <Label className="mb-2 block">تاريخ تشغيل النشاط التجاري</Label>
-                  <Input
-                    type="date"
-                    value={activityStartDate}
-                    onChange={(e) => setActivityStartDate(e.target.value)}
-                    className="max-w-xs"
-                  />
-                  <p className="text-[11px] text-muted-foreground mt-1.5">
+                {/* تاريخ تشغيل النشاط التجاري — ميلادي + هجري */}
+                <div className="rounded-lg border border-primary/15 bg-primary/5 p-3 space-y-2">
+                  <Label className="block">تاريخ تشغيل النشاط التجاري</Label>
+                  <div className="grid md:grid-cols-2 gap-3">
+                    <div>
+                      <Label className="text-[11px] text-muted-foreground">ميلادي</Label>
+                      <Input
+                        type="date"
+                        value={activityStartDate}
+                        onChange={(e) => setActivityStartDate(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-[11px] text-muted-foreground">ما يقابله بالهجري (أم القرى)</Label>
+                      <div className="h-9 flex items-center rounded-md border bg-background px-3 text-sm font-semibold text-primary">
+                        {gregorianDateToHijri(activityStartDate) || "—"}
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">
                     <Info className="h-3 w-3 inline ml-1" />
-                    يُستخدم كأساس لبدء الحول التجاري وللتوثيق في سجل التدقيق الشرعي.
+                    يُعتمد كأساس لبدء الحول التجاري وللتوثيق في سجل التدقيق الشرعي. العبرة شرعاً بالحول الهجري.
                   </p>
+                </div>
+
+                {/* فروع الشركة */}
+                <div className="rounded-lg border border-gold/30 bg-gold/5 p-3 space-y-3">
+                  <div>
+                    <Label className="text-sm font-semibold text-primary flex items-center gap-2">
+                      <Building2 className="h-4 w-4" /> هل للشركة فروع؟
+                    </Label>
+                    <RadioGroup value={hasBranches} onValueChange={(v) => setHasBranches(v as "yes" | "no")} className="flex gap-3 mt-2">
+                      <label className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs cursor-pointer ${hasBranches === "yes" ? "border-primary bg-primary/10" : ""}`}>
+                        <RadioGroupItem value="yes" id="br-y" /> نعم
+                      </label>
+                      <label className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs cursor-pointer ${hasBranches === "no" ? "border-primary bg-primary/10" : ""}`}>
+                        <RadioGroupItem value="no" id="br-n" /> لا
+                      </label>
+                    </RadioGroup>
+                  </div>
+                  {hasBranches === "yes" && (
+                    <div className="grid md:grid-cols-3 gap-3">
+                      <div className="space-y-1.5">
+                        <Label className="text-xs">عدد الفروع</Label>
+                        <Input
+                          type="number" min="0" step="1"
+                          value={branchesCount}
+                          onChange={(e) => setBranchesCount(e.target.value)}
+                          placeholder="0" dir="ltr" style={{ textAlign: "right" }}
+                        />
+                      </div>
+                      <div className="md:col-span-2 space-y-1.5">
+                        <Label className="text-xs">مواقع الفروع / ملاحظات</Label>
+                        <Input
+                          value={branchesNotes}
+                          onChange={(e) => setBranchesNotes(e.target.value)}
+                          placeholder="مثال: الرياض، جدة، الدمام"
+                        />
+                      </div>
+                      <p className="md:col-span-3 text-[11px] text-muted-foreground">
+                        <Info className="h-3 w-3 inline ml-1" />
+                        تُدمج بيانات الفروع في الوعاء الزكوي الموحّد للشركة الأم ما لم تكن مستقلة قانونياً.
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* تصنيف النشاط التجاري حسب الدولة والقطاع */}
