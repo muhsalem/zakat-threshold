@@ -22,10 +22,13 @@ import { Route as CropsRouteImport } from './routes/crops'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuditRouteImport } from './routes/audit'
 import { Route as AdvisorRouteImport } from './routes/advisor'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LegalTermsRouteImport } from './routes/legal.terms'
 import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as AuthenticatedAuditReviewRouteImport } from './routes/_authenticated/audit-review'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ApiPublicNisabRouteImport } from './routes/api/public/nisab'
 import { Route as ApiPublicCalcRouteImport } from './routes/api/public/calc'
 import { Route as ApiPublicHooksHawlRemindersRouteImport } from './routes/api/public/hooks/hawl-reminders'
@@ -95,6 +98,10 @@ const AdvisorRoute = AdvisorRouteImport.update({
   path: '/advisor',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -114,6 +121,17 @@ const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAuditReviewRoute =
+  AuthenticatedAuditReviewRouteImport.update({
+    id: '/audit-review',
+    path: '/audit-review',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const ApiPublicNisabRoute = ApiPublicNisabRouteImport.update({
   id: '/api/public/nisab',
@@ -147,6 +165,8 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/verify': typeof VerifyRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/audit-review': typeof AuthenticatedAuditReviewRoute
   '/api/chat': typeof ApiChatRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
@@ -169,6 +189,8 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/verify': typeof VerifyRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/audit-review': typeof AuthenticatedAuditReviewRoute
   '/api/chat': typeof ApiChatRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
@@ -179,6 +201,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/advisor': typeof AdvisorRoute
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
@@ -192,6 +215,8 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/verify': typeof VerifyRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/audit-review': typeof AuthenticatedAuditReviewRoute
   '/api/chat': typeof ApiChatRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
@@ -216,6 +241,8 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/security'
     | '/verify'
+    | '/admin'
+    | '/audit-review'
     | '/api/chat'
     | '/legal/privacy'
     | '/legal/terms'
@@ -238,6 +265,8 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/security'
     | '/verify'
+    | '/admin'
+    | '/audit-review'
     | '/api/chat'
     | '/legal/privacy'
     | '/legal/terms'
@@ -247,6 +276,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/advisor'
     | '/audit'
     | '/auth'
@@ -260,6 +290,8 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/security'
     | '/verify'
+    | '/_authenticated/admin'
+    | '/_authenticated/audit-review'
     | '/api/chat'
     | '/legal/privacy'
     | '/legal/terms'
@@ -270,6 +302,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AdvisorRoute: typeof AdvisorRoute
   AuditRoute: typeof AuditRoute
   AuthRoute: typeof AuthRoute
@@ -384,6 +417,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdvisorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -412,6 +452,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/audit-review': {
+      id: '/_authenticated/audit-review'
+      path: '/audit-review'
+      fullPath: '/audit-review'
+      preLoaderRoute: typeof AuthenticatedAuditReviewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/public/nisab': {
       id: '/api/public/nisab'
       path: '/api/public/nisab'
@@ -436,8 +490,22 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedAuditReviewRoute: typeof AuthenticatedAuditReviewRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedAuditReviewRoute: AuthenticatedAuditReviewRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AdvisorRoute: AdvisorRoute,
   AuditRoute: AuditRoute,
   AuthRoute: AuthRoute,
