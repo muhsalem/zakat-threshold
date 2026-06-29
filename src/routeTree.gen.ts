@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
@@ -34,6 +35,11 @@ import { Route as ApiPublicNisabRouteImport } from './routes/api/public/nisab'
 import { Route as ApiPublicCalcRouteImport } from './routes/api/public/calc'
 import { Route as ApiPublicHooksHawlRemindersRouteImport } from './routes/api/public/hooks/hawl-reminders'
 
+const WelcomeRoute = WelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VerifyRoute = VerifyRouteImport.update({
   id: '/verify',
   path: '/verify',
@@ -172,6 +178,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/verify': typeof VerifyRoute
+  '/welcome': typeof WelcomeRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/attestations': typeof AuthenticatedAttestationsRoute
   '/audit-review': typeof AuthenticatedAuditReviewRoute
@@ -197,6 +204,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/verify': typeof VerifyRoute
+  '/welcome': typeof WelcomeRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/attestations': typeof AuthenticatedAttestationsRoute
   '/audit-review': typeof AuthenticatedAuditReviewRoute
@@ -224,6 +232,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/verify': typeof VerifyRoute
+  '/welcome': typeof WelcomeRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/attestations': typeof AuthenticatedAttestationsRoute
   '/_authenticated/audit-review': typeof AuthenticatedAuditReviewRoute
@@ -251,6 +260,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/security'
     | '/verify'
+    | '/welcome'
     | '/admin'
     | '/attestations'
     | '/audit-review'
@@ -276,6 +286,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/security'
     | '/verify'
+    | '/welcome'
     | '/admin'
     | '/attestations'
     | '/audit-review'
@@ -302,6 +313,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/security'
     | '/verify'
+    | '/welcome'
     | '/_authenticated/admin'
     | '/_authenticated/attestations'
     | '/_authenticated/audit-review'
@@ -329,6 +341,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   SecurityRoute: typeof SecurityRoute
   VerifyRoute: typeof VerifyRoute
+  WelcomeRoute: typeof WelcomeRoute
   ApiChatRoute: typeof ApiChatRoute
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   LegalTermsRoute: typeof LegalTermsRoute
@@ -339,6 +352,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/welcome': {
+      id: '/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof WelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/verify': {
       id: '/verify'
       path: '/verify'
@@ -541,6 +561,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   SecurityRoute: SecurityRoute,
   VerifyRoute: VerifyRoute,
+  WelcomeRoute: WelcomeRoute,
   ApiChatRoute: ApiChatRoute,
   LegalPrivacyRoute: LegalPrivacyRoute,
   LegalTermsRoute: LegalTermsRoute,
