@@ -140,9 +140,10 @@ export default function CompanyTradeClassification({
       <Alert className="border-primary/15 bg-background">
         <Globe2 className="h-4 w-4" />
         <AlertDescription className="text-xs leading-relaxed text-right">
-          المعيار المعتمد لدولة <b>{countryName ?? countryCode}</b> هو: <b>{STANDARD_LABELS[standard]}</b>.
-          يتم تصفية الأنشطة تلقائيًا وفق <b>قطاع النشاط</b> المختار أعلاه{sectorLabel ? ` (${sectorLabel})` : ""}
-          لتسريع الوصول، مع إمكانية البحث في كل الأنشطة.
+          المعيار المعتمد لدولة <b>{countryName ?? countryCode}</b> هو: <b>{STANDARD_LABELS[standard]}</b> —
+          يُطبَّق <b>تلقائياً</b> عند تغيير دولة الشركة، وتُصفَّى الأنشطة وفق <b>قطاع النشاط</b>
+          المختار{sectorLabel ? ` (${sectorLabel})` : ""}، ثم تُربط نتيجة التصنيف بنموذج الزكاة المناسب
+          (تجارة / صناعة / مستغلات / خدمات) في تبويب «النموذج القطاعي» أدناه.
         </AlertDescription>
       </Alert>
 
