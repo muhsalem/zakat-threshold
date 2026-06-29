@@ -238,6 +238,56 @@ export type Database = {
         }
         Relationships: []
       }
+      sharia_attestations: {
+        Row: {
+          attestor_license: string | null
+          attestor_name: string
+          content_hash: string
+          created_at: string
+          id: string
+          issued_at: string
+          opinion: string
+          sharia_refs: string[]
+          title: string
+          user_id: string
+          zakat_record_id: string | null
+        }
+        Insert: {
+          attestor_license?: string | null
+          attestor_name: string
+          content_hash: string
+          created_at?: string
+          id?: string
+          issued_at?: string
+          opinion: string
+          sharia_refs?: string[]
+          title: string
+          user_id: string
+          zakat_record_id?: string | null
+        }
+        Update: {
+          attestor_license?: string | null
+          attestor_name?: string
+          content_hash?: string
+          created_at?: string
+          id?: string
+          issued_at?: string
+          opinion?: string
+          sharia_refs?: string[]
+          title?: string
+          user_id?: string
+          zakat_record_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sharia_attestations_zakat_record_id_fkey"
+            columns: ["zakat_record_id"]
+            isOneToOne: false
+            referencedRelation: "zakat_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sharia_audit_log: {
         Row: {
           action: string
