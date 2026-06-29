@@ -1933,6 +1933,9 @@ export function CompanyTab() {
               {hijriEq > 0 && <div>السنة المالية ≈ {hijriEq}هـ</div>}
             </CardContent>
           </Card>
+
+          {/* ====== المرجعية الشرعية والاعتماد ====== */}
+          <ShariaBoardCard />
         </div>
       </TabsContent>
     </Tabs>
