@@ -1844,12 +1844,41 @@ export function CompanyTab() {
           {/* قائمة التدقيق الشرعي */}
           <Card className="border-primary/30 shadow-soft">
             <CardHeader className="bg-gradient-to-l from-primary/10 to-transparent">
-              <CardTitle className="flex items-center gap-2">
-                <Gavel className="h-5 w-5 text-primary" />
-                قائمة التدقيق والامتثال الشرعي الشاملة
+              <CardTitle className="flex items-center justify-between gap-2 flex-wrap">
+                <span className="flex items-center gap-2">
+                  <Gavel className="h-5 w-5 text-primary" />
+                  المراجعة والتدقيق والامتثال والحوكمة الشرعية
+                </span>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    const lines: string[] = [];
+                    lines.push("القسم,البند,محقق,المرجعية");
+                    calc.activeSections.forEach((section) => {
+                      section.items.forEach((item) => {
+                        const done = compliance[item.id] ? "نعم" : "لا";
+                        lines.push(
+                          `"${section.title}","${item.label.replace(/"/g, '""')}","${done}","AAOIFI / Fiqh Academy"`
+                        );
+                      });
+                    });
+                    const csv = "\uFEFF" + lines.join("\n");
+                    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `sharia-audit-${companyName || "company"}-${new Date().toISOString().slice(0,10)}.csv`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                  }}
+                >
+                  <FileSpreadsheet className="h-4 w-4 ml-1" /> تصدير قائمة التدقيق (CSV)
+                </Button>
               </CardTitle>
               <p className="text-sm text-muted-foreground">
                 قائمة مهنية مرجعية وفق معايير AAOIFI والمعايير الفقهية، مُخصَّصة تلقائياً وفق قطاع <b>{GROUP_LABELS[sector.group]}</b>.
+                البنود قابلة للتصدير لاعتمادها من <b>هيئة الرقابة الشرعية</b> ومراقب الحسابات.
               </p>
             </CardHeader>
             <CardContent className="pt-6 space-y-6">
