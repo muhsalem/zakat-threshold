@@ -1874,6 +1874,15 @@ export function CompanyTab() {
 
 
 
+        {/* ====== أدوات الشركات المتقدمة — مدمجة داخل النموذج الشامل ====== */}
+        <AdvancedToolsHub
+          mode="company"
+          currencyName={currencyName}
+          nisabValue={calc.nisabValue}
+          annualZakat={calc.zakat}
+          title="أدوات تكميلية داخل النموذج الشامل (أسهم/REIT، تعجيل، حساسية، تطهير، تضخم، إحصاءات)"
+        />
+
         {/* بلوك التوقيع */}
         <div className="rounded-lg border border-primary/30 bg-background p-4 space-y-3">
           <p className="text-sm leading-relaxed">{accStatement}</p>
@@ -1896,9 +1905,8 @@ export function CompanyTab() {
         </div>
       </CardContent>
     </Card>
-
-    <AdvancedToolsHub mode="company" currencyName={currencyName} nisabValue={calc.nisabValue} annualZakat={calc.zakat} />
     </div>
   );
 }
+
 
