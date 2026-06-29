@@ -414,6 +414,7 @@ export function CompanyTab() {
   // إدراج سجل المراجعة والتدقيق الشرعي ضمن تقرير الشركة
   const [includeAuditReport, setIncludeAuditReport] = useState(false);
   const [waqfData, setWaqfData] = useState<import("./WaqfZakatSection").WaqfReportData | undefined>();
+  const [fxRates, setFxRates] = useState<FxRate[]>([]);
   const { entries: auditEntries, loading: auditLoading } = useAuditEntries(includeAuditReport);
   const country = useMemo(() => COUNTRIES.find((c) => c.code === countryCode)!, [countryCode]);
   const [autoCurrency, setAutoCurrency] = useState(true);
