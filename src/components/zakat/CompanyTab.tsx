@@ -1174,6 +1174,14 @@ export function CompanyTab() {
                     تطبيق نظام {country.flag} {country.name}: حصص المسلمين الخليجيين/المواطنين خاضعة للزكاة،
                     وحصص الأجانب تخضع لضريبة الدخل، وحصص الجهات الحكومية والوقفية وغير المسلمين معفاة من الزكاة.
                   </p>
+                  <Alert className="mt-2 border-primary/20 bg-primary/5">
+                    <Info className="h-4 w-4" />
+                    <AlertDescription className="text-xs">
+                      <b>هيكل المساهمين المقترح وفق نوع الشركة ({companyType}):</b>
+                      <br />
+                      <span className="text-muted-foreground">{shareholderProfileHint(companyType)}</span>
+                    </AlertDescription>
+                  </Alert>
                 </div>
                 <div className="grid md:grid-cols-3 gap-3">
                   <NumField label="حصة المواطنين/الخليجيين المسلمين" value={shGcc} onChange={setShGcc} unit="%" hint="خاضعة للزكاة" />
