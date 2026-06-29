@@ -2,6 +2,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
   <url><loc>/auth</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>/faq</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>/advisor</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>/organizations</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>/nisab-audit</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>/crops</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>/impact</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>/developers</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>/security</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
   <url><loc>/legal/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>/legal/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
 </urlset>
