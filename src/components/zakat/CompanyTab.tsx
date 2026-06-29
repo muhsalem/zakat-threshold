@@ -39,6 +39,7 @@ import { Button } from "@/components/ui/button";
 import { downloadZakatPdf } from "./ReactPdfReport";
 import { downloadReportExcel } from "@/lib/exportExcel";
 import AdvancedToolsHub from "./AdvancedToolsHub";
+import HijriDateField from "./HijriDateField";
 import { CurrencyConverterCard } from "./CurrencyConverterCard";
 import type { FxRate, FxInfo } from "@/lib/fx";
 
@@ -1083,30 +1084,13 @@ export function CompanyTab() {
                   </p>
                 </div>
 
-                {/* تاريخ تشغيل النشاط التجاري — ميلادي + هجري */}
-                <div className="rounded-lg border border-primary/15 bg-primary/5 p-3 space-y-2">
-                  <Label className="block">تاريخ تشغيل النشاط التجاري</Label>
-                  <div className="grid md:grid-cols-2 gap-3">
-                    <div>
-                      <Label className="text-[11px] text-muted-foreground">ميلادي</Label>
-                      <Input
-                        type="date"
-                        value={activityStartDate}
-                        onChange={(e) => setActivityStartDate(e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-[11px] text-muted-foreground">ما يقابله بالهجري (أم القرى)</Label>
-                      <div className="h-9 flex items-center rounded-md border bg-background px-3 text-sm font-semibold text-primary">
-                        {gregorianDateToHijri(activityStartDate) || "—"}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-[11px] text-muted-foreground">
-                    <Info className="h-3 w-3 inline ml-1" />
-                    يُعتمد كأساس لبدء الحول التجاري وللتوثيق في سجل التدقيق الشرعي. العبرة شرعاً بالحول الهجري.
-                  </p>
-                </div>
+                {/* تاريخ تشغيل النشاط التجاري — ميلادي + هجري مع تأكيد التحويل */}
+                <HijriDateField
+                  label="تاريخ تشغيل النشاط التجاري"
+                  value={activityStartDate}
+                  onChange={setActivityStartDate}
+                  hint="يُعتمد كأساس لبدء الحول التجاري وللتوثيق في سجل التدقيق الشرعي"
+                />
 
                 {/* فروع الشركة */}
                 <div className="rounded-lg border border-gold/30 bg-gold/5 p-3 space-y-3">
@@ -1860,12 +1844,41 @@ export function CompanyTab() {
           {/* قائمة التدقيق الشرعي */}
           <Card className="border-primary/30 shadow-soft">
             <CardHeader className="bg-gradient-to-l from-primary/10 to-transparent">
-              <CardTitle className="flex items-center gap-2">
-                <Gavel className="h-5 w-5 text-primary" />
-                قائمة التدقيق والامتثال الشرعي الشاملة
+              <CardTitle className="flex items-center justify-between gap-2 flex-wrap">
+                <span className="flex items-center gap-2">
+                  <Gavel className="h-5 w-5 text-primary" />
+                  المراجعة والتدقيق والامتثال والحوكمة الشرعية
+                </span>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    const lines: string[] = [];
+                    lines.push("القسم,البند,محقق,المرجعية");
+                    calc.activeSections.forEach((section) => {
+                      section.items.forEach((item) => {
+                        const done = compliance[item.id] ? "نعم" : "لا";
+                        lines.push(
+                          `"${section.title}","${item.label.replace(/"/g, '""')}","${done}","AAOIFI / Fiqh Academy"`
+                        );
+                      });
+                    });
+                    const csv = "\uFEFF" + lines.join("\n");
+                    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `sharia-audit-${companyName || "company"}-${new Date().toISOString().slice(0,10)}.csv`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                  }}
+                >
+                  <FileSpreadsheet className="h-4 w-4 ml-1" /> تصدير قائمة التدقيق (CSV)
+                </Button>
               </CardTitle>
               <p className="text-sm text-muted-foreground">
                 قائمة مهنية مرجعية وفق معايير AAOIFI والمعايير الفقهية، مُخصَّصة تلقائياً وفق قطاع <b>{GROUP_LABELS[sector.group]}</b>.
+                البنود قابلة للتصدير لاعتمادها من <b>هيئة الرقابة الشرعية</b> ومراقب الحسابات.
               </p>
             </CardHeader>
             <CardContent className="pt-6 space-y-6">

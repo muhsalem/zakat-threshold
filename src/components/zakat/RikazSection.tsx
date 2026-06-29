@@ -242,20 +242,31 @@ export function RikazSection({ mode = "all", hideCountry = false, currency: curr
               <Alert>
                 <Info className="h-4 w-4" />
                 <AlertDescription className="text-xs leading-relaxed">
-                  <b>الركاز:</b> هو ما وُجد مدفوناً من كنوز الجاهلية (قبل الإسلام). فيه <b>الخُمس (20%) فوراً</b>
-                  بلا اشتراط نصاب ولا حول لقوله ﷺ: «وفي الركاز الخُمس» (متفق عليه).
-                  أما إن كان عليه علامات الإسلام فهو لُقطة تُعامل معاملتها.
+                  <b>الركاز:</b> ما وُجد مدفوناً من كنوز الجاهلية (قبل الإسلام). فيه <b>الخُمس (20%) فوراً</b>
+                  بلا اشتراط نصاب ولا حول، لقوله ﷺ: «وفي الركاز الخُمس» (متفق عليه).
+                  وإن كانت عليه علامات الإسلام فهو لُقطة تُعامل معاملتها.
                 </AlertDescription>
               </Alert>
+
+              <div className="rounded-lg border bg-muted/30 p-3 space-y-2 text-xs leading-relaxed">
+                <div className="font-semibold text-primary">أسئلة استرشادية قبل الإقرار:</div>
+                <ol className="list-decimal pr-5 space-y-1">
+                  <li>هل وجدتَ الكنز في <b>أرض مملوكة لك</b> أم في أرضٍ <b>موات</b> (لا مالك لها)؟ — الركاز في الأرض المملوكة للغير يُرجع لمالكها.</li>
+                  <li>هل عليه <b>علامات إسلامية</b> (نقوش/كتابة عربية/شهادتان)؟ إن نعم فهو <b>لُقطة</b> لا ركاز.</li>
+                  <li>هل وثَّقتَ تاريخ ووصف وموقع الاكتشاف لدى الجهة المختصة؟</li>
+                  <li>هل قُومت قيمتُه بالقيمة السوقية <b>يوم اكتشافه</b> بشهادة خبير مُثمِّن؟</li>
+                </ol>
+              </div>
+
               <NumField
-                label="قيمة الركاز المُكتشف"
+                label="إجمالي القيمة السوقية للركاز يوم اكتشافه"
                 value={rikazValue} onChange={setRikazValue}
                 unit={country.currency}
-                hint="إجمالي القيمة السوقية للكنز يوم اكتشافه"
+                hint="القيمة المُثمَّنة بشهادة خبير، لا قيمة الذهب الخام فقط"
               />
               {num(rikazValue) > 0 && (
                 <div className="rounded-lg bg-primary/10 border border-primary/30 p-3 text-sm">
-                  الزكاة المستحقة: <b className="text-primary">{cur(calc.rikazZakat)}</b> (20%)
+                  الزكاة المستحقة: <b className="text-primary">{cur(calc.rikazZakat)}</b> (20% — تُخرج فور الاكتشاف بلا حول ولا نصاب)
                 </div>
               )}
             </AccordionContent>
@@ -273,12 +284,24 @@ export function RikazSection({ mode = "all", hideCountry = false, currency: curr
               <Alert>
                 <Info className="h-4 w-4" />
                 <AlertDescription className="text-xs leading-relaxed">
-                  المعادن النفيسة (ذهب، فضة، نحاس، حديد، بترول، فوسفات...) المستخرجة من باطن الأرض.
+                  المعادن النفيسة (ذهب، فضة، نحاس، حديد، بترول، فوسفات…) المستخرجة من باطن الأرض.
                   <b> الجمهور:</b> فيها 2.5% على صافي القيمة بعد خصم التكاليف.
                   <b> أبو حنيفة:</b> فيها 20% قياساً على الركاز.
                   المختار محاسبياً (AAOIFI): قول الجمهور لأنه أرفق وأقرب لطبيعة النشاط الاستثماري.
                 </AlertDescription>
               </Alert>
+
+              <div className="rounded-lg border bg-muted/30 p-3 space-y-2 text-xs leading-relaxed">
+                <div className="font-semibold text-primary">أسئلة استرشادية للفرد المُستخرِج:</div>
+                <ol className="list-decimal pr-5 space-y-1">
+                  <li>هل استخراجك <b>فردي عرضي</b> (مثلاً غسل ذهب من نهر) أم <b>مشروع تجاري قائم</b>؟ النشاط التجاري يدخل في تبويب الشركات.</li>
+                  <li>هل بلغت قيمة المعدن الصافية <b>نصاب الذهب (85 جم)</b>؟ النصاب شرط عند الجمهور للزكاة (2.5%).</li>
+                  <li>هل احتسبتَ <b>تكاليف الاستخراج المباشرة</b> (معدات/أجور/نقل) وخصمتَها قبل الزكاة؟</li>
+                  <li>هل المعدن <b>مُسيَّل/مُنقَّى</b> أم خامٌ يحتاج معالجة؟ تُقوَّم قيمتُه السوقية بعد التنقية.</li>
+                  <li>هل سدَّدتَ <b>رسوم التراخيص الحكومية</b>؟ هذه ليست بديلاً عن الزكاة شرعاً.</li>
+                </ol>
+              </div>
+
               <div>
                 <Label className="mb-2 block text-xs">القول المختار</Label>
                 <div className="flex flex-wrap gap-3">
@@ -287,24 +310,24 @@ export function RikazSection({ mode = "all", hideCountry = false, currency: curr
                     className="cursor-pointer px-3 py-1.5"
                     onClick={() => setMineralsOpinion("jumhur")}
                   >
-                    الجمهور — 2.5%
+                    الجمهور — 2.5% (مع اشتراط النصاب)
                   </Badge>
                   <Badge
                     variant={mineralsOpinion === "hanafi" ? "default" : "outline"}
                     className="cursor-pointer px-3 py-1.5"
                     onClick={() => setMineralsOpinion("hanafi")}
                   >
-                    الحنفية — 20%
+                    الحنفية — 20% (بلا اشتراط نصاب)
                   </Badge>
                 </div>
               </div>
               <div className="grid md:grid-cols-2 gap-4">
-                <NumField label="إجمالي قيمة المعدن المستخرج" value={mineralsValue} onChange={setMineralsValue} unit={country.currency} />
-                <NumField label="تكاليف الاستخراج والتنقية" value={mineralsCost} onChange={setMineralsCost} unit={country.currency} hint="معدات، أجور عمالة، مصاريف مباشرة" />
+                <NumField label="إجمالي قيمة المعدن المستخرج (بعد التنقية)" value={mineralsValue} onChange={setMineralsValue} unit={country.currency} hint="بالقيمة السوقية يوم الإخراج" />
+                <NumField label="تكاليف الاستخراج والتنقية المباشرة" value={mineralsCost} onChange={setMineralsCost} unit={country.currency} hint="معدات، أجور عمالة، نقل، طاقة، تنقية" />
               </div>
               {calc.mineralsNet > 0 && (
                 <div className="rounded-lg bg-primary/10 border border-primary/30 p-3 text-sm space-y-1">
-                  <div>الصافي الزكوي: <b>{cur(calc.mineralsNet)}</b></div>
+                  <div>الصافي الزكوي بعد خصم التكاليف: <b>{cur(calc.mineralsNet)}</b></div>
                   <div>الزكاة المستحقة: <b className="text-primary">{cur(calc.mineralsZakat)}</b> ({(calc.mineralsRate * 100).toFixed(1)}%)</div>
                 </div>
               )}

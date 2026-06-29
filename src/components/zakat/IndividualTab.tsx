@@ -1,3 +1,4 @@
+import HijriDateField from "./HijriDateField";
 import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -824,10 +825,7 @@ export function IndividualTab() {
                     <Label className="text-xs">مملوكة ملكاً تاماً</Label>
                     <Switch checked={sbFullyOwned} onCheckedChange={setSbFullyOwned} />
                   </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs">تاريخ الاقتناء</Label>
-                    <Input type="date" value={sbAcquireDate} onChange={(e) => setSbAcquireDate(e.target.value)} />
-                  </div>
+                  <HijriDateField compact label="تاريخ الاقتناء" value={sbAcquireDate} onChange={setSbAcquireDate} />
                 </div>
               </div>
 
@@ -873,10 +871,7 @@ export function IndividualTab() {
                     <Label className="text-xs">مملوكة ملكاً تاماً</Label>
                     <Switch checked={coinFullyOwned} onCheckedChange={setCoinFullyOwned} />
                   </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs">تاريخ الاقتناء</Label>
-                    <Input type="date" value={coinAcquireDate} onChange={(e) => setCoinAcquireDate(e.target.value)} />
-                  </div>
+                  <HijriDateField compact label="تاريخ الاقتناء" value={coinAcquireDate} onChange={setCoinAcquireDate} />
                   <div className="space-y-1.5">
                     <Label className="text-xs">غرض الاقتناء</Label>
                     <RadioGroup value={coinPurpose} onValueChange={(v) => setCoinPurpose(v as "storage" | "wear")} className="flex gap-4 pt-1">
@@ -925,10 +920,7 @@ export function IndividualTab() {
                       <div className="flex items-center gap-2"><RadioGroupItem value="storage" id="jp-s" /><Label htmlFor="jp-s" className="text-sm">ادخار وحفظ قيمة</Label></div>
                     </RadioGroup>
                   </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs">تاريخ الاقتناء</Label>
-                    <Input type="date" value={jwAcquireDate} onChange={(e) => setJwAcquireDate(e.target.value)} />
-                  </div>
+                  <HijriDateField compact label="تاريخ الاقتناء" value={jwAcquireDate} onChange={setJwAcquireDate} />
                   {jewelryPurpose === "wear" && (
                     <div className="flex items-center justify-between rounded-md border px-3 py-2">
                       <div className="space-y-0.5">
@@ -1024,10 +1016,7 @@ export function IndividualTab() {
                   </div>
                 </div>
                 <div className="grid md:grid-cols-3 gap-3 pt-2 border-t">
-                  <div className="space-y-1.5">
-                    <Label className="text-xs">تاريخ الاقتناء</Label>
-                    <Input type="date" value={brkAcquireDate} onChange={(e) => setBrkAcquireDate(e.target.value)} />
-                  </div>
+                  <HijriDateField compact label="تاريخ الاقتناء" value={brkAcquireDate} onChange={setBrkAcquireDate} />
                 </div>
               </div>
 
@@ -1106,10 +1095,7 @@ export function IndividualTab() {
                   <span className="text-xs text-muted-foreground">إجمالي وزن الفضة المكافئ بعيار 999 (جميع الأعيرة + الأونصات)</span>
                   <span className="text-lg font-bold text-gold">{fmt(calc.svSabaikG999)} جم عيار 999</span>
                 </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs">تاريخ الاقتناء</Label>
-                  <Input type="date" value={svAcquireDate} onChange={(e) => setSvAcquireDate(e.target.value)} />
-                </div>
+                <HijriDateField compact label="تاريخ الاقتناء" value={svAcquireDate} onChange={setSvAcquireDate} />
               </div>
 
               {/* ب) الجنيهات والعملات الفضية */}
@@ -1139,10 +1125,7 @@ export function IndividualTab() {
                       <span className="text-lg font-bold text-gold">{fmt(calc.svCoinsG999)} جم</span>
                   </div>
                 </div>
-                <div className="space-y-1.5 pt-2 border-t">
-                  <Label className="text-xs">تاريخ الاقتناء</Label>
-                  <Input type="date" value={svCoinAcquireDate} onChange={(e) => setSvCoinAcquireDate(e.target.value)} />
-                </div>
+                <HijriDateField compact label="تاريخ الاقتناء" value={svCoinAcquireDate} onChange={setSvCoinAcquireDate} />
               </div>
               </div>
 
@@ -1215,10 +1198,7 @@ export function IndividualTab() {
                       <div className="flex items-center gap-2"><RadioGroupItem value="storage" id="sp-s" /><Label htmlFor="sp-s" className="text-sm">ادخار وحفظ قيمة</Label></div>
                     </RadioGroup>
                   </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs">تاريخ الاقتناء</Label>
-                    <Input type="date" value={svJewelryAcquireDate} onChange={(e) => setSvJewelryAcquireDate(e.target.value)} />
-                  </div>
+                  <HijriDateField compact label="تاريخ الاقتناء" value={svJewelryAcquireDate} onChange={setSvJewelryAcquireDate} />
                   {silverPurpose === "wear" && (
                     <div className="flex items-center justify-between rounded-md border px-3 py-2">
                       <div className="space-y-0.5">
