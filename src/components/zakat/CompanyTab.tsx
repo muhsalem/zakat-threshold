@@ -229,9 +229,39 @@ function getAllowedSectoralTabs(sectorId: string, group: Sector["group"]): strin
 }
 
 
-// تقريب التحويل الميلادي/الهجري
+// تقريب التحويل الميلادي/الهجري (سنة)
 function gregorianToHijri(gYear: number) {
   return Math.round((gYear - 622) * 33 / 32);
+}
+
+// تحويل تاريخ ميلادي كامل إلى نص هجري عبر Intl (تقويم أم القرى)
+function gregorianDateToHijri(iso: string): string {
+  if (!iso) return "";
+  try {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return "";
+    return new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura", {
+      year: "numeric", month: "long", day: "numeric",
+    }).format(d);
+  } catch { return ""; }
+}
+
+// اقتراح هيكل المساهمين بحسب نوع الشركة
+function shareholderProfileHint(type: string): string {
+  const t = type || "";
+  if (t.includes("فردية") || t.includes("الشخص الواحد") || t.includes("منشأة فردية") || t.includes("Sole"))
+    return "مساهم واحد (المالك) — تُقترح 100% للمواطن/المسلم";
+  if (t.includes("تضامن") || t.includes("توصية") || t.includes("Partnership") || t.includes("LLP"))
+    return "شركاء متضامنون/موصون — وزّع النسب بين الشركاء حسب عقد التأسيس";
+  if (t.includes("مساهمة عامة") || t.includes("مدرجة") || t.includes("PJSC") || t.includes("Berhad") || t.includes("S.A.O.G") || t.includes("Q.P.S.C") || t.includes("تداول"))
+    return "مساهمون عامون — استند إلى سجل المساهمين وحصة الحكومة والصناديق السيادية والأجانب إن وجدت";
+  if (t.includes("مساهمة مقفلة") || t.includes("مساهمة خاصة") || t.includes("PrJSC") || t.includes("S.A.O.C"))
+    return "مساهمون محدودون — راجع عقد التأسيس وحصة كل مساهم";
+  if (t.includes("مسؤولية محدودة") || t.includes("LLC") || t.includes("ذ.م.م") || t.includes("SARL") || t.includes("Sdn Bhd") || t.includes("W.L.L") || t.includes("Ltd"))
+    return "شركاء بحصص — وزّع النسب حسب عقد التأسيس";
+  if (t.includes("مهنية"))
+    return "شركاء مهنيون — وزّع الحصص بين الشركاء العاملين";
+  return "وزّع نسب المساهمين حسب عقد التأسيس وسجل المساهمين";
 }
 
 // ============ قائمة التدقيق الشرعي ============
