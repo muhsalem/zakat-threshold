@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Download, Play, ArrowRight, Sparkles, ShieldCheck, FileText, Award } from "lucide-react";
-import videoAsset from "../../public/zakat-marketing.mp4.asset.json";
-import pptxAsset from "../../public/zakat-jury-presentation.pptx.asset.json";
+import videoAsset from "@/assets/media/zakat-marketing.mp4.asset.json";
+import pptxAsset from "@/assets/media/zakat-jury-presentation.pptx.asset.json";
 
 export const Route = createFileRoute("/showcase")({
   head: () => ({
