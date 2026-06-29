@@ -12,6 +12,7 @@ import {
 import { Info, RefreshCw, Wallet, Smartphone, CreditCard, Building2, PiggyBank, Banknote, Bitcoin, Award } from "lucide-react";
 import { COUNTRY_PRICES, currency as fmtCurrency, num } from "@/lib/zakat";
 import bankCardsImg from "@/assets/bank-cards.png";
+import HijriDateField from "./HijriDateField";
 
 // ===== قوائم البنوك حسب الدولة (إسلامية مستقلة + تقليدية وفروعها / نوافذها الإسلامية) =====
 type TradBank = { v: string; l: string; window: string };
@@ -439,10 +440,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
             </div>
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs">تاريخ فتح الحساب</Label>
-            <Input type="date" value={currOpenedAt} onChange={(e) => setCurrOpenedAt(e.target.value)} />
-          </div>
-          <div className="space-y-1.5 md:col-span-2">
+          <HijriDateField compact label="تاريخ فتح الحساب" value={currOpenedAt} onChange={setCurrOpenedAt} />
             <BankPicker
               type={currType} setType={setCurrType}
               islamicBank={currIslamicBank} setIslamicBank={setCurrIslamicBank}
