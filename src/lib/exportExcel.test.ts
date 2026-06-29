@@ -167,6 +167,25 @@ describe("Excel export — deductions and FX sheets", () => {
   });
 });
 
+describe("Excel export — Rikaz integration", () => {
+  it("emits a rikaz row in the details sheet and reflects it in the total", () => {
+    const rikazTotal = 5000;
+    const data = baseData({
+      rikazTotal,
+      totalZakat: 2500 + rikazTotal,
+      rows: [
+        { label: "نقد", gross: 100000, eligible: true, zakat: 2500 },
+        { label: "زكاة الركاز والمعادن", gross: rikazTotal, eligible: true, zakat: rikazTotal },
+      ],
+    });
+    const wb = build(data);
+    const rows = readSheet(wb, "تفاصيل البنود");
+    const flat = rows.flat().join("|");
+    expect(flat).toMatch(/الركاز والمعادن/);
+    expect(rows.some((r) => r.includes(5000))).toBe(true);
+  });
+});
+
 describe("PDF report data — ESOP and Waqf payload shape", () => {
 
   it("PrintReportData accepts esop and waqf and they flow through unchanged", () => {
