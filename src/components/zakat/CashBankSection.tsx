@@ -503,10 +503,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
               </div>
             </div>
           )}
-          <div className="space-y-1.5">
-            <Label className="text-xs">تاريخ فتح الحساب</Label>
-            <Input type="date" value={savOpenedAt} onChange={(e) => setSavOpenedAt(e.target.value)} />
-          </div>
+          <HijriDateField compact label="تاريخ فتح الحساب" value={savOpenedAt} onChange={setSavOpenedAt} />
           <div className="space-y-1.5 md:col-span-2">
             <BankPicker
               type={savType} setType={setSavType}
@@ -538,10 +535,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
               <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer"><RadioGroupItem value="traditional" id="dep-t" /><Label htmlFor="dep-t" className="text-xs cursor-pointer">بنك تقليدي</Label></div>
             </RadioGroup>
           </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">تاريخ فتح الوديعة</Label>
-            <Input type="date" value={depOpenedAt} onChange={(e) => setDepOpenedAt(e.target.value)} />
-          </div>
+          <HijriDateField compact label="تاريخ فتح الوديعة" value={depOpenedAt} onChange={setDepOpenedAt} />
           <div className="md:col-span-2">
             <BankPicker
               type={depType} setType={setDepType}
