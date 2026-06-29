@@ -1595,14 +1595,14 @@ export function CompanyTab() {
           {/* ====== استيراد ميزان المراجعة (CSV) ====== */}
           <TrialBalanceImport />
 
-          {/* ====== زكاة المستغلات (عقارات/مصانع/فنادق) ====== */}
-          <RealEstateZakatSection currencyName={currencyName} />
+          {/* زكاة المستغلات (عقارات/مصانع/فنادق) أصبحت مدمجة داخل النموذج القطاعي التفصيلي (تبويب المستغلات) */}
 
-          {/* ====== زكاة الأوقاف والمؤسسات الوقفية ====== */}
-          <WaqfZakatSection currencyName={currencyName} onChange={setWaqfData} />
+          {/* ====== زكاة الأوقاف — تظهر فقط للمؤسسات غير الربحية ====== */}
+          {orgKind === "nonprofit" && (
+            <WaqfZakatSection currencyName={currencyName} onChange={setWaqfData} />
+          )}
 
-          {/* ====== المرجعية الشرعية والحوكمة ====== */}
-          <ShariaBoardCard />
+          {/* المرجعية الشرعية والاعتماد نُقلت إلى تبويب المراجعة والتدقيق الشرعي */}
 
           {/* ====== زكاة البنوك وشركات التأمين ====== */}
           {(sector.id === "bank" || sector.id === "insurance" || sector.id === "takaful" ||
