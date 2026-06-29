@@ -23,7 +23,7 @@ import { PurificationCalculator } from "./PurificationCalculator";
 import { RikazSection } from "./RikazSection";
 import { TakafulSection } from "./TakafulSection";
 import { TaxZakatReconciliation } from "./TaxZakatReconciliation";
-import { RealEstateZakatSection } from "./RealEstateZakatSection";
+// RealEstateZakatSection: مدمج داخل النموذج القطاعي (SectoralModels → tab="mustaghal")
 import { WaqfZakatSection } from "./WaqfZakatSection";
 import { ShariaBoardCard } from "./ShariaBoardCard";
 import { BankInsuranceZakatSection } from "./BankInsuranceZakatSection";
@@ -229,9 +229,39 @@ function getAllowedSectoralTabs(sectorId: string, group: Sector["group"]): strin
 }
 
 
-// تقريب التحويل الميلادي/الهجري
+// تقريب التحويل الميلادي/الهجري (سنة)
 function gregorianToHijri(gYear: number) {
   return Math.round((gYear - 622) * 33 / 32);
+}
+
+// تحويل تاريخ ميلادي كامل إلى نص هجري عبر Intl (تقويم أم القرى)
+function gregorianDateToHijri(iso: string): string {
+  if (!iso) return "";
+  try {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return "";
+    return new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura", {
+      year: "numeric", month: "long", day: "numeric",
+    }).format(d);
+  } catch { return ""; }
+}
+
+// اقتراح هيكل المساهمين بحسب نوع الشركة
+function shareholderProfileHint(type: string): string {
+  const t = type || "";
+  if (t.includes("فردية") || t.includes("الشخص الواحد") || t.includes("منشأة فردية") || t.includes("Sole"))
+    return "مساهم واحد (المالك) — تُقترح 100% للمواطن/المسلم";
+  if (t.includes("تضامن") || t.includes("توصية") || t.includes("Partnership") || t.includes("LLP"))
+    return "شركاء متضامنون/موصون — وزّع النسب بين الشركاء حسب عقد التأسيس";
+  if (t.includes("مساهمة عامة") || t.includes("مدرجة") || t.includes("PJSC") || t.includes("Berhad") || t.includes("S.A.O.G") || t.includes("Q.P.S.C") || t.includes("تداول"))
+    return "مساهمون عامون — استند إلى سجل المساهمين وحصة الحكومة والصناديق السيادية والأجانب إن وجدت";
+  if (t.includes("مساهمة مقفلة") || t.includes("مساهمة خاصة") || t.includes("PrJSC") || t.includes("S.A.O.C"))
+    return "مساهمون محدودون — راجع عقد التأسيس وحصة كل مساهم";
+  if (t.includes("مسؤولية محدودة") || t.includes("LLC") || t.includes("ذ.م.م") || t.includes("SARL") || t.includes("Sdn Bhd") || t.includes("W.L.L") || t.includes("Ltd"))
+    return "شركاء بحصص — وزّع النسب حسب عقد التأسيس";
+  if (t.includes("مهنية"))
+    return "شركاء مهنيون — وزّع الحصص بين الشركاء العاملين";
+  return "وزّع نسب المساهمين حسب عقد التأسيس وسجل المساهمين";
 }
 
 // ============ قائمة التدقيق الشرعي ============
@@ -461,6 +491,10 @@ export function CompanyTab() {
     useState<CompanyTradeClassificationValue>(emptyCompanyTradeClassification());
   // تاريخ تشغيل النشاط التجاري (يومه = بداية الحول التجاري إن لم يُحدد)
   const [activityStartDate, setActivityStartDate] = useState<string>("");
+  // فروع الشركة
+  const [hasBranches, setHasBranches] = useState<"yes" | "no">("no");
+  const [branchesCount, setBranchesCount] = useState<string>("");
+  const [branchesNotes, setBranchesNotes] = useState<string>("");
   const activeSectorList = orgKind === "nonprofit" ? NONPROFIT_SECTORS : SECTORS;
   const sector = useMemo(
     () => activeSectorList.find((s) => s.id === sectorId) ?? activeSectorList[0],
@@ -1049,19 +1083,71 @@ export function CompanyTab() {
                   </p>
                 </div>
 
-                {/* تاريخ تشغيل النشاط التجاري */}
-                <div>
-                  <Label className="mb-2 block">تاريخ تشغيل النشاط التجاري</Label>
-                  <Input
-                    type="date"
-                    value={activityStartDate}
-                    onChange={(e) => setActivityStartDate(e.target.value)}
-                    className="max-w-xs"
-                  />
-                  <p className="text-[11px] text-muted-foreground mt-1.5">
+                {/* تاريخ تشغيل النشاط التجاري — ميلادي + هجري */}
+                <div className="rounded-lg border border-primary/15 bg-primary/5 p-3 space-y-2">
+                  <Label className="block">تاريخ تشغيل النشاط التجاري</Label>
+                  <div className="grid md:grid-cols-2 gap-3">
+                    <div>
+                      <Label className="text-[11px] text-muted-foreground">ميلادي</Label>
+                      <Input
+                        type="date"
+                        value={activityStartDate}
+                        onChange={(e) => setActivityStartDate(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-[11px] text-muted-foreground">ما يقابله بالهجري (أم القرى)</Label>
+                      <div className="h-9 flex items-center rounded-md border bg-background px-3 text-sm font-semibold text-primary">
+                        {gregorianDateToHijri(activityStartDate) || "—"}
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">
                     <Info className="h-3 w-3 inline ml-1" />
-                    يُستخدم كأساس لبدء الحول التجاري وللتوثيق في سجل التدقيق الشرعي.
+                    يُعتمد كأساس لبدء الحول التجاري وللتوثيق في سجل التدقيق الشرعي. العبرة شرعاً بالحول الهجري.
                   </p>
+                </div>
+
+                {/* فروع الشركة */}
+                <div className="rounded-lg border border-gold/30 bg-gold/5 p-3 space-y-3">
+                  <div>
+                    <Label className="text-sm font-semibold text-primary flex items-center gap-2">
+                      <Building2 className="h-4 w-4" /> هل للشركة فروع؟
+                    </Label>
+                    <RadioGroup value={hasBranches} onValueChange={(v) => setHasBranches(v as "yes" | "no")} className="flex gap-3 mt-2">
+                      <label className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs cursor-pointer ${hasBranches === "yes" ? "border-primary bg-primary/10" : ""}`}>
+                        <RadioGroupItem value="yes" id="br-y" /> نعم
+                      </label>
+                      <label className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs cursor-pointer ${hasBranches === "no" ? "border-primary bg-primary/10" : ""}`}>
+                        <RadioGroupItem value="no" id="br-n" /> لا
+                      </label>
+                    </RadioGroup>
+                  </div>
+                  {hasBranches === "yes" && (
+                    <div className="grid md:grid-cols-3 gap-3">
+                      <div className="space-y-1.5">
+                        <Label className="text-xs">عدد الفروع</Label>
+                        <Input
+                          type="number" min="0" step="1"
+                          value={branchesCount}
+                          onChange={(e) => setBranchesCount(e.target.value)}
+                          placeholder="0" dir="ltr" style={{ textAlign: "right" }}
+                        />
+                      </div>
+                      <div className="md:col-span-2 space-y-1.5">
+                        <Label className="text-xs">مواقع الفروع / ملاحظات</Label>
+                        <Input
+                          value={branchesNotes}
+                          onChange={(e) => setBranchesNotes(e.target.value)}
+                          placeholder="مثال: الرياض، جدة، الدمام"
+                        />
+                      </div>
+                      <p className="md:col-span-3 text-[11px] text-muted-foreground">
+                        <Info className="h-3 w-3 inline ml-1" />
+                        تُدمج بيانات الفروع في الوعاء الزكوي الموحّد للشركة الأم ما لم تكن مستقلة قانونياً.
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* تصنيف النشاط التجاري حسب الدولة والقطاع */}
@@ -1088,6 +1174,14 @@ export function CompanyTab() {
                     تطبيق نظام {country.flag} {country.name}: حصص المسلمين الخليجيين/المواطنين خاضعة للزكاة،
                     وحصص الأجانب تخضع لضريبة الدخل، وحصص الجهات الحكومية والوقفية وغير المسلمين معفاة من الزكاة.
                   </p>
+                  <Alert className="mt-2 border-primary/20 bg-primary/5">
+                    <Info className="h-4 w-4" />
+                    <AlertDescription className="text-xs">
+                      <b>هيكل المساهمين المقترح وفق نوع الشركة ({companyType}):</b>
+                      <br />
+                      <span className="text-muted-foreground">{shareholderProfileHint(companyType)}</span>
+                    </AlertDescription>
+                  </Alert>
                 </div>
                 <div className="grid md:grid-cols-3 gap-3">
                   <NumField label="حصة المواطنين/الخليجيين المسلمين" value={shGcc} onChange={setShGcc} unit="%" hint="خاضعة للزكاة" />
@@ -1501,14 +1595,14 @@ export function CompanyTab() {
           {/* ====== استيراد ميزان المراجعة (CSV) ====== */}
           <TrialBalanceImport />
 
-          {/* ====== زكاة المستغلات (عقارات/مصانع/فنادق) ====== */}
-          <RealEstateZakatSection currencyName={currencyName} />
+          {/* زكاة المستغلات (عقارات/مصانع/فنادق) أصبحت مدمجة داخل النموذج القطاعي التفصيلي (تبويب المستغلات) */}
 
-          {/* ====== زكاة الأوقاف والمؤسسات الوقفية ====== */}
-          <WaqfZakatSection currencyName={currencyName} onChange={setWaqfData} />
+          {/* ====== زكاة الأوقاف — تظهر فقط للمؤسسات غير الربحية ====== */}
+          {orgKind === "nonprofit" && (
+            <WaqfZakatSection currencyName={currencyName} onChange={setWaqfData} />
+          )}
 
-          {/* ====== المرجعية الشرعية والحوكمة ====== */}
-          <ShariaBoardCard />
+          {/* المرجعية الشرعية والاعتماد نُقلت إلى تبويب المراجعة والتدقيق الشرعي */}
 
           {/* ====== زكاة البنوك وشركات التأمين ====== */}
           {(sector.id === "bank" || sector.id === "insurance" || sector.id === "takaful" ||
@@ -1839,6 +1933,9 @@ export function CompanyTab() {
               {hijriEq > 0 && <div>السنة المالية ≈ {hijriEq}هـ</div>}
             </CardContent>
           </Card>
+
+          {/* ====== المرجعية الشرعية والاعتماد ====== */}
+          <ShariaBoardCard />
         </div>
       </TabsContent>
     </Tabs>
