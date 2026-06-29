@@ -104,7 +104,7 @@ export function SukukSection({ currency = "USD", onTotalChange }: { currency?: s
   const zakat = total * ZAKAT_RATE;
 
   // إعلام الأب بالقاعدة الزكوية الكليّة لدمجها في الإجمالي
-  useMemo(() => { onTotalChange?.(total); }, [total, onTotalChange]);
+  useEffect(() => { onTotalChange?.(total); }, [total, onTotalChange]);
 
   const update = (id: string, patch: Partial<SukukRow>) =>
     setRows((rs) => rs.map((r) => (r.id === id ? { ...r, ...patch } : r)));
