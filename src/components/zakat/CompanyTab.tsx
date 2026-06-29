@@ -39,6 +39,8 @@ import { Button } from "@/components/ui/button";
 import { downloadZakatPdf } from "./ReactPdfReport";
 import { downloadReportExcel } from "@/lib/exportExcel";
 import AdvancedToolsHub from "./AdvancedToolsHub";
+import { CurrencyConverterCard } from "./CurrencyConverterCard";
+import type { FxRate, FxInfo } from "@/lib/fx";
 
 function NumField({ label, value, onChange, unit, hint }: {
   label: string; value: string; onChange: (v: string) => void; unit?: string; hint?: string;
@@ -412,6 +414,7 @@ export function CompanyTab() {
   // إدراج سجل المراجعة والتدقيق الشرعي ضمن تقرير الشركة
   const [includeAuditReport, setIncludeAuditReport] = useState(false);
   const [waqfData, setWaqfData] = useState<import("./WaqfZakatSection").WaqfReportData | undefined>();
+  const [fxRates, setFxRates] = useState<FxRate[]>([]);
   const { entries: auditEntries, loading: auditLoading } = useAuditEntries(includeAuditReport);
   const country = useMemo(() => COUNTRIES.find((c) => c.code === countryCode)!, [countryCode]);
   const [autoCurrency, setAutoCurrency] = useState(true);
@@ -1528,20 +1531,38 @@ export function CompanyTab() {
               )}
             </CardContent>
           </Card>
+          <div className="print:hidden">
+            <CurrencyConverterCard
+              reportCurrency={currencyName}
+              value={fxRates}
+              onChange={setFxRates}
+            />
+          </div>
           <div className="flex flex-wrap gap-2 print:hidden">
 
             <Button onClick={saveLocal} variant="outline" size="sm" className="flex-1 gap-1.5 min-w-[90px]">
               <Save className="h-3.5 w-3.5" /> حفظ
             </Button>
-            <Button
-              size="sm"
-              className="flex-1 gap-1.5 min-w-[140px]"
-              onClick={() => downloadZakatPdf({
+            {(() => {
+              const deductions = calc.curLiabs > 0 ? [{
+                label: "الخصوم المتداولة (التزامات حالّة)",
+                amount: calc.curLiabs,
+                included: true,
+                reason: "ديون قصيرة الأجل مستحقّة خلال السنة المالية تُخصم من الوعاء الزكوي وفق رأي جمهور الفقهاء.",
+                ref: "AAOIFI — معيار الزكاة رقم (35) §6/1/3",
+              }] : [];
+              const fxInfo: FxInfo | undefined = fxRates.length > 0 ? {
+                reportCurrency: currencyName,
+                rates: fxRates,
+                entries: [],
+                source: "إدخال يدوي — مسؤولية المُزكّي",
+              } : undefined;
+              const baseData = {
                 name: companyName || country.name,
                 profession: `${companyType} — ${sector.label}`,
                 countryCode,
                 currencyName,
-                calendarBasis: solarYear === "hijri" ? "hijri" : "gregorian",
+                calendarBasis: solarYear === "hijri" ? "hijri" as const : "gregorian" as const,
                 effectiveRate: calc.rate,
                 rows: [
                   { label: `الوعاء الزكوي (${METHOD_LABELS[method]})`, gross: calc.baseGross, nisab: calc.nisabValue, eligible: calc.reachesNisab, zakat: calc.zakat },
@@ -1561,43 +1582,38 @@ export function CompanyTab() {
                 accountantOpinion: calc.reachesNisab
                   ? "بلغ الوعاء الزكوي النصاب الشرعي وتم احتساب الزكاة وفق الطريقة المختارة."
                   : "الوعاء الزكوي لم يبلغ النصاب الشرعي، ولا تجب الزكاة في هذا الحول.",
-                opinionType: calc.reachesNisab ? "clean" : "adverse",
+                opinionType: (calc.reachesNisab ? "clean" : "adverse") as "clean" | "adverse",
                 previousYearZakat: "",
-                nisabBasis: "gold",
-                valuationBasis: "market",
+                nisabBasis: "gold" as const,
+                valuationBasis: "market" as const,
                 auditEntries: includeAuditReport ? auditEntries : undefined,
-              }, `zakat-company-${companyName || "report"}-${new Date().toISOString().slice(0,10)}.pdf`)}
-            >
-              <FileText className="h-3.5 w-3.5" /> تحميل التقرير
-            </Button>
-            <Button
-              variant="secondary" size="sm" className="flex-1 gap-1.5 min-w-[140px]"
-              onClick={() => downloadReportExcel({
-                name: companyName || country.name,
-                profession: `${companyType} — ${sector.label}`,
-                countryCode, currencyName,
-                calendarBasis: solarYear === "hijri" ? "hijri" : "gregorian",
-                effectiveRate: calc.rate,
-                rows: [{ label: `الوعاء الزكوي (${METHOD_LABELS[method]})`, gross: calc.baseGross, nisab: calc.nisabValue, eligible: calc.reachesNisab, zakat: calc.zakat }],
-                livestock: { camels: 0, cows: 0, sheep: 0, show: false },
-                waqf: waqfData,
-                monetaryGross: calc.baseGross, debts: calc.curLiabs, monetaryBase: calc.base,
-                moneyNisab: calc.nisabValue, totalZakat: calc.zakat, hawlComplete: null,
-                goldPricePerGram: num(goldGramPrice),
-                accountantName: "", accountantLicense: "",
-                accountantPreamble: `إقرار زكاة شركة — ${companyName || ""}`,
-                accountantOpinion: calc.reachesNisab ? "بلغ الوعاء النصاب." : "لم يبلغ النصاب.",
-                opinionType: calc.reachesNisab ? "clean" : "adverse",
-                previousYearZakat: "", nisabBasis: "gold", valuationBasis: "market",
-                auditEntries: includeAuditReport ? auditEntries : undefined,
-              }, `zakat-company-${companyName || "report"}-${new Date().toISOString().slice(0,10)}.xlsx`)}
-            >
-              <FileSpreadsheet className="h-3.5 w-3.5" /> Excel
-            </Button>
+                deductions,
+                fx: fxInfo,
+              };
+              const stamp = new Date().toISOString().slice(0, 10);
+              return (
+                <>
+                  <Button
+                    size="sm"
+                    className="flex-1 gap-1.5 min-w-[140px]"
+                    onClick={() => downloadZakatPdf(baseData, `zakat-company-${companyName || "report"}-${stamp}.pdf`)}
+                  >
+                    <FileText className="h-3.5 w-3.5" /> تحميل التقرير
+                  </Button>
+                  <Button
+                    variant="secondary" size="sm" className="flex-1 gap-1.5 min-w-[140px]"
+                    onClick={() => downloadReportExcel(baseData, `zakat-company-${companyName || "report"}-${stamp}.xlsx`)}
+                  >
+                    <FileSpreadsheet className="h-3.5 w-3.5" /> Excel
+                  </Button>
+                </>
+              );
+            })()}
             <Button onClick={() => window.print()} variant="outline" size="sm" className="flex-1 gap-1.5 min-w-[110px]">
               <Printer className="h-3.5 w-3.5" /> طباعة التقرير
             </Button>
           </div>
+
 
           <Card className="bg-gradient-primary text-primary-foreground shadow-gold border-0">
             <CardHeader>
