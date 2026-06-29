@@ -23,7 +23,7 @@ import { PurificationCalculator } from "./PurificationCalculator";
 import { RikazSection } from "./RikazSection";
 import { TakafulSection } from "./TakafulSection";
 import { TaxZakatReconciliation } from "./TaxZakatReconciliation";
-import { RealEstateZakatSection } from "./RealEstateZakatSection";
+// RealEstateZakatSection: مدمج داخل النموذج القطاعي (SectoralModels → tab="mustaghal")
 import { WaqfZakatSection } from "./WaqfZakatSection";
 import { ShariaBoardCard } from "./ShariaBoardCard";
 import { BankInsuranceZakatSection } from "./BankInsuranceZakatSection";
