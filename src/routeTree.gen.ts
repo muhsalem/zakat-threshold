@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as VerifyRouteImport } from './routes/verify'
+import { Route as ShowcaseRouteImport } from './routes/showcase'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as OrganizationsRouteImport } from './routes/organizations'
@@ -45,6 +46,11 @@ const WelcomeRoute = WelcomeRouteImport.update({
 const VerifyRoute = VerifyRouteImport.update({
   id: '/verify',
   path: '/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShowcaseRoute = ShowcaseRouteImport.update({
+  id: '/showcase',
+  path: '/showcase',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SecurityRoute = SecurityRouteImport.update({
@@ -191,6 +197,7 @@ export interface FileRoutesByFullPath {
   '/organizations': typeof OrganizationsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
+  '/showcase': typeof ShowcaseRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -219,6 +226,7 @@ export interface FileRoutesByTo {
   '/organizations': typeof OrganizationsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
+  '/showcase': typeof ShowcaseRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -249,6 +257,7 @@ export interface FileRoutesById {
   '/organizations': typeof OrganizationsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
+  '/showcase': typeof ShowcaseRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
@@ -279,6 +288,7 @@ export interface FileRouteTypes {
     | '/organizations'
     | '/reset-password'
     | '/security'
+    | '/showcase'
     | '/verify'
     | '/welcome'
     | '/admin'
@@ -307,6 +317,7 @@ export interface FileRouteTypes {
     | '/organizations'
     | '/reset-password'
     | '/security'
+    | '/showcase'
     | '/verify'
     | '/welcome'
     | '/admin'
@@ -336,6 +347,7 @@ export interface FileRouteTypes {
     | '/organizations'
     | '/reset-password'
     | '/security'
+    | '/showcase'
     | '/verify'
     | '/welcome'
     | '/_authenticated/admin'
@@ -366,6 +378,7 @@ export interface RootRouteChildren {
   OrganizationsRoute: typeof OrganizationsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SecurityRoute: typeof SecurityRoute
+  ShowcaseRoute: typeof ShowcaseRoute
   VerifyRoute: typeof VerifyRoute
   WelcomeRoute: typeof WelcomeRoute
   ApiChatRoute: typeof ApiChatRoute
@@ -391,6 +404,13 @@ declare module '@tanstack/react-router' {
       path: '/verify'
       fullPath: '/verify'
       preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/showcase': {
+      id: '/showcase'
+      path: '/showcase'
+      fullPath: '/showcase'
+      preLoaderRoute: typeof ShowcaseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/security': {
@@ -602,6 +622,7 @@ const rootRouteChildren: RootRouteChildren = {
   OrganizationsRoute: OrganizationsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SecurityRoute: SecurityRoute,
+  ShowcaseRoute: ShowcaseRoute,
   VerifyRoute: VerifyRoute,
   WelcomeRoute: WelcomeRoute,
   ApiChatRoute: ApiChatRoute,
