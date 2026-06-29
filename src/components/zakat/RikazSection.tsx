@@ -144,7 +144,8 @@ export function RikazSection({ mode = "all", currency: currencyProp, onTradeBase
     onTotalChange(calc.total);
   }, [onTotalChange, calc.total, mode]);
 
-  const cur = (n: number) => currency(n, country.currency);
+  const activeCurrency = currencyProp ?? "SAR";
+  const cur = (n: number) => currency(n, activeCurrency);
 
   return (
     <div dir="rtl" className="grid lg:grid-cols-3 gap-6 text-right">
@@ -180,20 +181,6 @@ export function RikazSection({ mode = "all", currency: currencyProp, onTradeBase
                   تُضمّ تلقائياً إلى قاعدة <b>عروض التجارة</b> في الحساب الإجمالي للزكاة (نسبة 2.5%) ولا تُحسب مرتين.
                 </AlertDescription>
               </Alert>
-            )}
-
-            {!hideCountry && (
-              <div className="space-y-1.5">
-                <Label>الدولة</Label>
-                <Select value={countryCode} onValueChange={setCountryCode}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent className="max-h-72">
-                    {COUNTRY_PRICES.map((c) => (
-                      <SelectItem key={c.code} value={c.code}>{c.name} ({c.currency})</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
             )}
           </CardContent>
         </Card>
