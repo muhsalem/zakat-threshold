@@ -1463,20 +1463,35 @@ export function CompanyTab() {
           {/* حاسبة التطهير الشرعي */}
           <PurificationCalculator currencyName={currencyName} />
 
-          {/* ====== الركاز والمعادن والعسل والثروة السمكية والدواجن (مُتاحة دوماً مثل الزروع والثمار) ====== */}
-          <Card className="shadow-soft border-primary/20">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base">
-                زكاة الركاز والمعادن والعسل والثروة السمكية والدواجن
-              </CardTitle>
-              <p className="text-[11px] text-muted-foreground mt-1">
-                تُحسب داخل قسم «زكاة الركاز والمعادن» (الركاز 20% – المعادن 2.5%) — تُعرض دائماً بصرف النظر عن القطاع، أسوة بزكاة الزروع والثمار.
-              </p>
-            </CardHeader>
-            <CardContent>
-              <RikazSection />
-            </CardContent>
-          </Card>
+          {/* ====== الركاز والمعادن — تُعرض فقط للأنشطة الاستخراجية ====== */}
+          {(sector.id === "minerals" || sector.id === "oilgas" || sector.id === "quarries" || sector.model === "minerals") && (
+            <Card className="shadow-soft border-primary/20">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">زكاة الركاز والمعادن المستخرجة</CardTitle>
+                <p className="text-[11px] text-muted-foreground mt-1">
+                  مرتبطة بنشاط الشركة الاستخراجي (التعدين / البترول / المحاجر) — الركاز 20%، المعادن 2.5% على الصافي بعد التكاليف.
+                </p>
+              </CardHeader>
+              <CardContent>
+                <RikazSection mode="rikaz-metals" hideCountry currency={currencyName} />
+              </CardContent>
+            </Card>
+          )}
+
+          {/* ====== العسل والثروة السمكية ومزارع الدواجن — تُعرض فقط للأنشطة الزراعية/الحيوانية/السمكية ====== */}
+          {(sector.id === "agri" || sector.id === "livestock" || sector.id === "fishing" || sector.id === "food") && (
+            <Card className="shadow-soft border-primary/20">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">الملحقات الزراعية والحيوانية (عسل / أسماك / دواجن)</CardTitle>
+                <p className="text-[11px] text-muted-foreground mt-1">
+                  مرتبطة بنشاط الشركة: العسل 10% عند بلوغ النصاب، والثروة السمكية ومزارع الدواجن 2.5% كعروض تجارة.
+                </p>
+              </CardHeader>
+              <CardContent>
+                <RikazSection mode="agri-extras" hideCountry currency={currencyName} />
+              </CardContent>
+            </Card>
+          )}
 
           {/* ====== شركات التأمين التكافلي ====== */}
           {(sector.id === "insurance" || sector.id === "takaful" || sector.label?.includes("تكافل") || sector.label?.includes("تأمين")) && (
@@ -1859,6 +1874,15 @@ export function CompanyTab() {
 
 
 
+        {/* ====== أدوات الشركات المتقدمة — مدمجة داخل النموذج الشامل ====== */}
+        <AdvancedToolsHub
+          mode="company"
+          currencyName={currencyName}
+          nisabValue={calc.nisabValue}
+          annualZakat={calc.zakat}
+          title="أدوات تكميلية داخل النموذج الشامل (أسهم/REIT، تعجيل، حساسية، تطهير، تضخم، إحصاءات)"
+        />
+
         {/* بلوك التوقيع */}
         <div className="rounded-lg border border-primary/30 bg-background p-4 space-y-3">
           <p className="text-sm leading-relaxed">{accStatement}</p>
@@ -1881,9 +1905,8 @@ export function CompanyTab() {
         </div>
       </CardContent>
     </Card>
-
-    <AdvancedToolsHub mode="company" currencyName={currencyName} nisabValue={calc.nisabValue} annualZakat={calc.zakat} />
     </div>
   );
 }
+
 
