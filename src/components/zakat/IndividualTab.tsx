@@ -1,4 +1,4 @@
-import HijriDateField from "./HijriDateField";
+import HijriDateField, { toHijri } from "./HijriDateField";
 import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -712,12 +712,22 @@ export function IndividualTab() {
                 <CalendarClock className="h-4 w-4 text-primary" />
                 سجل بلوغ النصاب الموحَّد (يطبَّق على جميع أنواع الأصول)
               </Label>
-              <div className="grid md:grid-cols-[1fr_auto_auto] gap-2 items-end">
-                <Input type="date" value={nisabStartDate} onChange={(e) => setNisabStartDate(e.target.value)} />
+              <div className="grid md:grid-cols-[1fr_1fr_auto_auto] gap-2 items-end">
+                <div className="space-y-1">
+                  <Label className="text-[11px] text-muted-foreground">ميلادي</Label>
+                  <Input type="date" value={nisabStartDate} onChange={(e) => setNisabStartDate(e.target.value)} />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-[11px] text-muted-foreground">ما يقابله بالهجري (أم القرى)</Label>
+                  <div className="h-9 flex items-center justify-between rounded-md border bg-background px-3 text-sm font-semibold text-primary">
+                    <span>{toHijri(nisabStartDate) || "—"}</span>
+                    {nisabStartDate && <Badge variant="secondary" className="text-[9px]">تقويم أم القرى</Badge>}
+                  </div>
+                </div>
                 <Button type="button" variant="outline" size="sm" disabled={nisabSaving || !nisabStartDate}
                   onClick={async () => {
                     setNisabSaving(true);
-                    const hijri_label = hawl ? formatHijri(hawl.hijriStart) : null;
+                    const hijri_label = toHijri(nisabStartDate) || (hawl ? formatHijri(hawl.hijriStart) : null);
                     const payload = {
                       owner_label: name || "بدون اسم",
                       unified_nisab_date: nisabStartDate,
@@ -737,11 +747,11 @@ export function IndividualTab() {
                 </Button>
                 {nisabSaveMsg && <span className="text-xs text-primary">{nisabSaveMsg}</span>}
               </div>
-              {hawl && (
-                <p className="text-xs text-muted-foreground">
-                  الموافق هجريًا: <b>{formatHijri(hawl.hijriStart)}</b>
-                </p>
-              )}
+              <p className="text-[11px] text-muted-foreground">
+                <Info className="inline h-3 w-3 ml-1" />
+                مصدر التحويل: <b>Intl ICU CLDR — تقويم أم القرى</b>. يُؤكَّد التحويل تلقائياً عند إدخال التاريخ الميلادي
+                ويُحفظ في سجل النصاب.
+              </p>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 <Info className="inline h-3 w-3 ml-1" />
                 وفقاً للجمهور (ضم المستفاد إلى ما عنده من جنسه): تاريخ بلوغ النصاب الأول يصبح <b>المرجع الموحَّد</b> لحَوْل جميع الأصول النقدية (ذهب، فضة، نقد، عروض تجارة، أسهم). الزروع والثمار لا يشترط لها حول.
