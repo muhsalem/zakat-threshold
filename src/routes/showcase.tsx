@@ -1,8 +1,26 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { Download, Play, ArrowRight, Sparkles, ShieldCheck, FileText, Award } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Download, Play, ArrowRight, Sparkles, ShieldCheck, FileText, Award, ChevronDown } from "lucide-react";
 import videoAsset from "@/assets/media/zakat-marketing.mp4.asset.json";
+import videoAsset480p from "@/assets/media/zakat-marketing-480p.mp4.asset.json";
 import pptxAsset from "@/assets/media/zakat-jury-presentation.pptx.asset.json";
+
+function formatBytes(bytes: number, decimals = 1) {
+  if (bytes === 0) return "0 B";
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ["B", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+}
 
 export const Route = createFileRoute("/showcase")({
   head: () => ({
@@ -64,12 +82,47 @@ function ShowcasePage() {
         </div>
         <div className="max-w-5xl mx-auto mt-5 flex flex-wrap items-center justify-between gap-3 text-sm text-white/70">
           <span className="flex items-center gap-2"><Play className="h-4 w-4 text-[#C9A35A]" /> فيديو تسويقي تعريفي — جودة عالية</span>
-          <a href={videoAsset.url} download="zakat-marketing.mp4">
-            <Button size="sm" variant="outline" className="border-[#C9A35A]/40 text-[#C9A35A] hover:bg-[#C9A35A]/10 gap-2">
-              <Download className="h-4 w-4" />
-              تنزيل الفيديو
-            </Button>
-          </a>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-[#C9A35A]/40 text-[#C9A35A] hover:bg-[#C9A35A]/10 hover:text-[#C9A35A] gap-2"
+              >
+                <Download className="h-4 w-4" />
+                تنزيل الفيديو
+                <ChevronDown className="h-3 w-3" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              sideOffset={6}
+              className="bg-[#0B2A4A] border-white/10 text-white min-w-[13rem]"
+            >
+              <DropdownMenuLabel className="text-white/90">اختر جودة التنزيل</DropdownMenuLabel>
+              <DropdownMenuSeparator className="bg-white/10" />
+              <DropdownMenuItem asChild className="cursor-pointer focus:bg-[#C9A35A]/15 focus:text-white">
+                <a
+                  href={videoAsset.url}
+                  download="zakat-marketing-1080p.mp4"
+                  className="flex items-center justify-between gap-3"
+                >
+                  <span className="font-semibold">1080p</span>
+                  <span className="text-white/60 text-xs">Full HD — {formatBytes(videoAsset.size)}</span>
+                </a>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild className="cursor-pointer focus:bg-[#C9A35A]/15 focus:text-white">
+                <a
+                  href={videoAsset480p.url}
+                  download="zakat-marketing-480p.mp4"
+                  className="flex items-center justify-between gap-3"
+                >
+                  <span className="font-semibold">480p</span>
+                  <span className="text-white/60 text-xs">HD — {formatBytes(videoAsset480p.size)}</span>
+                </a>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </section>
 
