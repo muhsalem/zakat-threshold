@@ -28,6 +28,7 @@ import { Route as LegalTermsRouteImport } from './routes/legal.terms'
 import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedAuditReviewRouteImport } from './routes/_authenticated/audit-review'
+import { Route as AuthenticatedAttestationsRouteImport } from './routes/_authenticated/attestations'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ApiPublicNisabRouteImport } from './routes/api/public/nisab'
 import { Route as ApiPublicCalcRouteImport } from './routes/api/public/calc'
@@ -128,6 +129,12 @@ const AuthenticatedAuditReviewRoute =
     path: '/audit-review',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAttestationsRoute =
+  AuthenticatedAttestationsRouteImport.update({
+    id: '/attestations',
+    path: '/attestations',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -166,6 +173,7 @@ export interface FileRoutesByFullPath {
   '/security': typeof SecurityRoute
   '/verify': typeof VerifyRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/attestations': typeof AuthenticatedAttestationsRoute
   '/audit-review': typeof AuthenticatedAuditReviewRoute
   '/api/chat': typeof ApiChatRoute
   '/legal/privacy': typeof LegalPrivacyRoute
@@ -190,6 +198,7 @@ export interface FileRoutesByTo {
   '/security': typeof SecurityRoute
   '/verify': typeof VerifyRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/attestations': typeof AuthenticatedAttestationsRoute
   '/audit-review': typeof AuthenticatedAuditReviewRoute
   '/api/chat': typeof ApiChatRoute
   '/legal/privacy': typeof LegalPrivacyRoute
@@ -216,6 +225,7 @@ export interface FileRoutesById {
   '/security': typeof SecurityRoute
   '/verify': typeof VerifyRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/attestations': typeof AuthenticatedAttestationsRoute
   '/_authenticated/audit-review': typeof AuthenticatedAuditReviewRoute
   '/api/chat': typeof ApiChatRoute
   '/legal/privacy': typeof LegalPrivacyRoute
@@ -242,6 +252,7 @@ export interface FileRouteTypes {
     | '/security'
     | '/verify'
     | '/admin'
+    | '/attestations'
     | '/audit-review'
     | '/api/chat'
     | '/legal/privacy'
@@ -266,6 +277,7 @@ export interface FileRouteTypes {
     | '/security'
     | '/verify'
     | '/admin'
+    | '/attestations'
     | '/audit-review'
     | '/api/chat'
     | '/legal/privacy'
@@ -291,6 +303,7 @@ export interface FileRouteTypes {
     | '/security'
     | '/verify'
     | '/_authenticated/admin'
+    | '/_authenticated/attestations'
     | '/_authenticated/audit-review'
     | '/api/chat'
     | '/legal/privacy'
@@ -459,6 +472,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAuditReviewRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/attestations': {
+      id: '/_authenticated/attestations'
+      path: '/attestations'
+      fullPath: '/attestations'
+      preLoaderRoute: typeof AuthenticatedAttestationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -492,11 +512,13 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedAttestationsRoute: typeof AuthenticatedAttestationsRoute
   AuthenticatedAuditReviewRoute: typeof AuthenticatedAuditReviewRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedAttestationsRoute: AuthenticatedAttestationsRoute,
   AuthenticatedAuditReviewRoute: AuthenticatedAuditReviewRoute,
 }
 
