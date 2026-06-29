@@ -770,6 +770,15 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
           مساعدة في تقدير مقدار الزكاة بناءً على البيانات المُدخَلة.
         </Text>
 
+        {data.verificationQrDataUrl && (
+          <View style={{ alignItems: "center", marginTop: 10, marginBottom: 6 }}>
+            <Image src={data.verificationQrDataUrl} style={{ width: 72, height: 72 }} />
+            <Text style={[styles.small, { textAlign: "center", marginTop: 4, color: C.goldDark, fontWeight: 700 }]}>
+              بادج التحقق — امسح للتحقق من رقم التقرير والملخّص
+            </Text>
+          </View>
+        )}
+
         <ReportFooter reportId={reportId} page={3} total={TOTAL_PAGES} />
       </Page>
 
@@ -888,6 +897,15 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
             المعتمدة (AAOIFI رقم 35، قرارات مجمع الفقه الإسلامي الدولي) لضمان الشفافية
             وإمكانية المراجعة لاحقاً. عدد العمليات المُسجَّلة: {data.auditEntries!.length}.
           </Text>
+
+          {data.verificationQrDataUrl && (
+            <View style={{ alignItems: "center", marginTop: 10, marginBottom: 6 }}>
+              <Image src={data.verificationQrDataUrl} style={{ width: 72, height: 72 }} />
+              <Text style={[styles.small, { textAlign: "center", marginTop: 4, color: C.goldDark, fontWeight: 700 }]}>
+                بادج التحقق — امسح للتحقق من رقم التقرير والملخّص
+              </Text>
+            </View>
+          )}
 
           <ReportFooter reportId={reportId} page={5} total={TOTAL_PAGES} />
         </Page>
