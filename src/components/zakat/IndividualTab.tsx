@@ -338,6 +338,8 @@ export function IndividualTab() {
 
   // قاعدة الأنشطة الزراعية الملحقة (عسل + أسماك + دواجن) — تُضمّ لعروض التجارة
   const [agriTradeBase, setAgriTradeBase] = useState(0);
+  // إجمالي زكاة الركاز والمعادن والثروات المستحدثة — تُضاف للتقرير الإجمالي
+  const [rikazTotal, setRikazTotal] = useState(0);
 
   // الديون والالتزامات — تصنيف شرعي مفصّل
   // ① الديون الحالة (واجبة السداد الآن)
@@ -481,7 +483,7 @@ export function IndividualTab() {
     // الزكاة المالية (تشترط الحول) — لا نحسبها إن لم يكتمل الحول وكان التاريخ مُدخلًا
     const hawlBlocks = hawl !== null && !hawl.hawlComplete;
     const monetaryGoldZakat = hawlBlocks ? 0 : (goldZakat + silverZakat + monetaryZakat);
-    const total = monetaryGoldZakat + cropsZakat;
+    const total = monetaryGoldZakat + cropsZakat + rikazTotal;
 
     return {
       sabaikGrams24, coinsGrams24, jewelryGrams24, jewelryGrams24Raw, otherGrams24,
@@ -513,6 +515,7 @@ export function IndividualTab() {
     debtDeferredPolicy, debtDeferredYearly, debtMortgage, debtMahr, debtAlimony,
     expenses, cropsKg, cropsValuePerKg, cropsIrrigation,
     camels, cows, sheep, effectiveRate, hawl, cashTotalFromSection, digitalAssetsTotal,
+    rikazTotal,
   ]);
 
   const cur = (n: number) => currency(n, currencyName);
@@ -582,9 +585,11 @@ export function IndividualTab() {
       { label: "زكاة الأوراق التجارية (الكمبيالات وأوراق القبض)", gross: calc.billsTotal, eligible: true, zakat: 0 },
       { label: "زكاة الدخل وعروض التجارة والمستغلات", gross: calc.tradeTotal + calc.realEstateZakatable + incomeUsufructTotal, eligible: true, zakat: 0 },
       { label: "زكاة الزروع والثمار", gross: calc.cropsValue, eligible: calc.cropsEligible, zakat: calc.cropsZakat },
+      { label: "زكاة الركاز والمعادن", gross: rikazTotal, eligible: rikazTotal > 0, zakat: rikazTotal },
     ],
     livestock: { camels: calc.camelsN, cows: calc.cowsN, sheep: calc.sheepN, show: ownsLivestock, mode: livestockForTrade ? "trade" as const : "grazing" as const, tradeValue: livestockForTrade ? num(livestockTradeValue) : 0 },
     esop: esopData,
+    rikazTotal,
     monetaryGross: calc.monetaryGross, debts: calc.debts, monetaryBase: calc.monetaryBase,
     moneyNisab: calc.moneyNisab, totalZakat: calc.total,
     hawlComplete: hawl ? hawl.hawlComplete : null, hawlDate: nisabStartDate,
@@ -611,6 +616,7 @@ export function IndividualTab() {
             { label: "زكاة الأوراق التجارية (الكمبيالات وأوراق القبض)", gross: calc.billsTotal, eligible: true, zakat: 0 },
             { label: "زكاة الدخل وعروض التجارة والمستغلات", gross: calc.tradeTotal + calc.realEstateZakatable + incomeUsufructTotal, eligible: true, zakat: 0 },
             { label: "زكاة الزروع والثمار", gross: calc.cropsValue, eligible: calc.cropsEligible, zakat: calc.cropsZakat },
+            { label: "زكاة الركاز والمعادن", gross: rikazTotal, eligible: rikazTotal > 0, zakat: rikazTotal },
           ],
           livestock: { camels: calc.camelsN, cows: calc.cowsN, sheep: calc.sheepN, show: ownsLivestock, mode: livestockForTrade ? "trade" : "grazing", tradeValue: livestockForTrade ? num(livestockTradeValue) : 0 },
           esop: esopData,
@@ -642,39 +648,6 @@ export function IndividualTab() {
 
         <TabsContent value="calc" className="mt-0">
           <div className="grid lg:grid-cols-3 gap-6">
-
-
-      {/* تقرير الطباعة الاحترافي — يظهر فقط عند الطباعة */}
-      <PrintReport
-        data={{
-          name, profession, countryCode, currencyName,
-          calendarBasis, effectiveRate,
-          rows: [
-            { label: "زكاة الذهب", gross: calc.totalGoldValue, nisab: calc.goldNisabValue, eligible: calc.goldEligible, zakat: calc.goldZakat },
-            { label: "زكاة الفضة", gross: calc.silverValue, nisab: calc.silverNisabValue, eligible: calc.silverEligible, zakat: calc.silverZakat },
-            { label: "زكاة الأوراق النقدية والحسابات البنكية والمحافظ الرقمية", gross: calc.cashTotal, eligible: true, zakat: 0 },
-            { label: "زكاة الأوراق المالية ووثائق التأمين", gross: calc.securitiesTotal, eligible: true, zakat: 0 },
-            { label: "زكاة الأوراق التجارية (الكمبيالات وأوراق القبض)", gross: calc.billsTotal, eligible: true, zakat: 0 },
-            { label: "زكاة الدخل وعروض التجارة والمستغلات", gross: calc.tradeTotal + calc.realEstateZakatable + incomeUsufructTotal, eligible: true, zakat: 0 },
-            { label: "زكاة الزروع والثمار", gross: calc.cropsValue, eligible: calc.cropsEligible, zakat: calc.cropsZakat },
-          ],
-          livestock: { camels: calc.camelsN, cows: calc.cowsN, sheep: calc.sheepN, show: ownsLivestock, mode: livestockForTrade ? "trade" : "grazing", tradeValue: livestockForTrade ? num(livestockTradeValue) : 0 },
-          esop: esopData,
-          monetaryGross: calc.monetaryGross,
-          debts: calc.debts,
-          monetaryBase: calc.monetaryBase,
-          moneyNisab: calc.moneyNisab,
-          totalZakat: calc.total,
-          hawlComplete: hawl ? hawl.hawlComplete : null,
-          hawlDate: nisabStartDate,
-          goldPricePerGram: num(goldPrice),
-          silverPricePerGram: num(silverPrice),
-          accountantName, accountantLicense, accountantPreamble,
-          accountantOpinion, opinionType,
-          previousYearZakat,
-          auditEntries: includeAuditReport ? auditEntries : undefined,
-        }}
-      />
 
 
       <div className="lg:col-span-2 space-y-6">
@@ -1806,7 +1779,7 @@ export function IndividualTab() {
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
-              <RikazSection mode="rikaz-metals" />
+              <RikazSection mode="rikaz-metals" currency={currencyName} onTotalChange={setRikazTotal} />
             </AccordionContent>
           </AccordionItem>
 
@@ -2078,7 +2051,7 @@ export function IndividualTab() {
                       lines.push(`  • ${it[0]} (${it[2]}): ${f(it[1] as number)}`);
                     });
                     const grossMonetary = calc.monetaryGross + calc.totalGoldValue + calc.silverValue;
-                    const grossAll = grossMonetary + calc.cropsValue;
+                    const grossAll = grossMonetary + calc.cropsValue + rikazTotal;
                     lines.push(`  إجمالي قبل الخصم: ${f(grossAll)}`);
                     lines.push("");
                     lines.push(`② الخصومات والديون: −${f(calc.debts)}`);
@@ -2093,7 +2066,8 @@ export function IndividualTab() {
                     lines.push(`  زكاة الفضة: ${f(calc.silverZakat)}`);
                     lines.push(`  زكاة النقد والاستثمارات (صافي): ${f(calc.monetaryZakat)}`);
                     lines.push(`  زكاة الزروع والثمار: ${f(calc.cropsZakat)}`);
-                    lines.push(`  الإجمالي: ${f(calc.goldZakat + calc.silverZakat + calc.monetaryZakat + calc.cropsZakat)}`);
+                    if (rikazTotal > 0) lines.push(`  زكاة الركاز والمعادن: ${f(rikazTotal)}`);
+                    lines.push(`  الإجمالي: ${f(calc.total)}`);
                     navigator.clipboard.writeText(lines.join("\n")).then(
                       () => toast.success("تم نسخ تفصيل النتيجة"),
                       () => toast.error("تعذّر النسخ — انسخ يدوياً"),
@@ -2119,9 +2093,10 @@ export function IndividualTab() {
                 { k: "العقار (تجارة + إيجار مُدّخر)", v: calc.realEstateZakatable, rate: "2.5%", section: "income-trade-usufruct" },
                 { k: "المستغلات والدخل والإيرادات", v: incomeUsufructTotal, rate: "2.5%", section: "income-trade-usufruct" },
                 { k: "الزروع والثمار", v: calc.cropsValue, rate: calc.cropsRate === 0.1 ? "10%" : "5%", section: "crops" },
+                { k: "الركاز والمعادن", v: rikazTotal, rate: "20% / 2.5%", section: "rikaz-metals" },
               ].filter((x) => x.v > 0);
               const grossMonetary = calc.monetaryGross + calc.totalGoldValue + calc.silverValue;
-              const grossAll = grossMonetary + calc.cropsValue;
+              const grossAll = grossMonetary + calc.cropsValue + rikazTotal;
               return (
                 <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 space-y-1">
                   <div className="text-xs font-bold text-primary mb-2">① مكوّنات الوعاء الزكوي (قبل الخصم)</div>
@@ -2350,10 +2325,12 @@ export function IndividualTab() {
                       <b className="text-primary">زكاة الأنعام:</b> تُؤدَّى عيناً (تفاصيلها أدناه)
                     </div>
                   )}
-                  <SectionResult format={cur} label="زكاة الركاز والمعادن" value={0} eligible={true} />
-                  <div className="text-[11px] text-muted-foreground -mt-1 leading-relaxed">
-                    <b className="text-primary">زكاة الركاز والمعادن:</b> تُحسب داخل قسم «زكاة الركاز والمعادن» (الركاز 20% — المعادن 2.5%)
-                  </div>
+                  <SectionResult format={cur} label="زكاة الركاز والمعادن" value={rikazTotal} eligible={rikazTotal > 0} />
+                  {rikazTotal === 0 && (
+                    <div className="text-[11px] text-muted-foreground -mt-1 leading-relaxed">
+                      <b className="text-primary">زكاة الركاز والمعادن:</b> تُحسب داخل قسم «زكاة الركاز والمعادن» (الركاز 20% — المعادن 2.5%)
+                    </div>
+                  )}
 
                   {calc.debts > 0 && (
                     <div className="text-[10px] text-muted-foreground pt-1">

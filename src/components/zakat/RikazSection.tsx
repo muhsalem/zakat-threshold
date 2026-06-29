@@ -72,9 +72,11 @@ interface RikazProps {
   hideCountry?: boolean;
   currency?: string;
   onTradeBaseChange?: (amount: number) => void;
+  /** يُرسل إجمالي زكاة الركاز والمعادن والملحقات إلى الأب عند التغيير. */
+  onTotalChange?: (amount: number) => void;
 }
 
-export function RikazSection({ mode = "all", hideCountry = false, currency: currencyProp, onTradeBaseChange }: RikazProps = {}) {
+export function RikazSection({ mode = "all", hideCountry = false, currency: currencyProp, onTradeBaseChange, onTotalChange }: RikazProps = {}) {
   const showRikaz = mode === "all" || mode === "rikaz-metals";
   const showMinerals = mode === "all" || mode === "rikaz-metals";
   const showHoney = mode === "all" || mode === "agri-extras";
@@ -143,6 +145,12 @@ export function RikazSection({ mode = "all", hideCountry = false, currency: curr
     onTradeBaseChange(base);
   }, [onTradeBaseChange, showHoney, showFish, showPoultry, calc.honeyEligible, calc.honeyValue, calc.fishNet, calc.poultryNet]);
 
+  // إعلام الأب بإجمالي زكاة هذا القسم (لإدراجها في التقرير الإجمالي) — لا يُنقل للملحقات الزراعية لتجنب الازدواج مع عروض التجارة
+  useEffect(() => {
+    if (!onTotalChange || mode === "agri-extras") return;
+    onTotalChange(calc.total);
+  }, [onTotalChange, calc.total, mode]);
+
   const cur = (n: number) => currency(n, country.currency);
 
   return (
@@ -196,6 +204,31 @@ export function RikazSection({ mode = "all", hideCountry = false, currency: curr
             )}
           </CardContent>
         </Card>
+
+        {mode !== "agri-extras" && (
+          <Card className="shadow-soft border-primary/20">
+            <CardContent className="p-4">
+              <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 grid md:grid-cols-4 gap-2 text-sm">
+                <div>
+                  <div className="text-xs text-muted-foreground">الركاز (20%)</div>
+                  <div className="font-bold text-primary">{cur(calc.rikazZakat)}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground">المعادن ({(calc.mineralsRate * 100).toFixed(1)}%)</div>
+                  <div className="font-bold text-primary">{cur(calc.mineralsZakat)}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground">الملحقات الزراعية (2.5% / 10%)</div>
+                  <div className="font-bold text-primary">{cur(calc.honeyZakat + calc.fishZakat + calc.poultryZakat)}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground">إجمالي الزكاة</div>
+                  <div className="font-bold text-primary text-lg">{cur(calc.total)}</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <Accordion type="multiple" defaultValue={[showRikaz ? "rikaz" : showHoney ? "honey" : ""]} className="space-y-3">
           {showRikaz && (
