@@ -17,6 +17,7 @@ import { Route as OrganizationsRouteImport } from './routes/organizations'
 import { Route as NisabAuditRouteImport } from './routes/nisab-audit'
 import { Route as ImpactRouteImport } from './routes/impact'
 import { Route as HistoryRouteImport } from './routes/history'
+import { Route as GroupZakatRouteImport } from './routes/group-zakat'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as DevelopersRouteImport } from './routes/developers'
 import { Route as CropsRouteImport } from './routes/crops'
@@ -74,6 +75,11 @@ const ImpactRoute = ImpactRouteImport.update({
 const HistoryRoute = HistoryRouteImport.update({
   id: '/history',
   path: '/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GroupZakatRoute = GroupZakatRouteImport.update({
+  id: '/group-zakat',
+  path: '/group-zakat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqRoute = FaqRouteImport.update({
@@ -178,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/crops': typeof CropsRoute
   '/developers': typeof DevelopersRoute
   '/faq': typeof FaqRoute
+  '/group-zakat': typeof GroupZakatRoute
   '/history': typeof HistoryRoute
   '/impact': typeof ImpactRoute
   '/nisab-audit': typeof NisabAuditRoute
@@ -205,6 +212,7 @@ export interface FileRoutesByTo {
   '/crops': typeof CropsRoute
   '/developers': typeof DevelopersRoute
   '/faq': typeof FaqRoute
+  '/group-zakat': typeof GroupZakatRoute
   '/history': typeof HistoryRoute
   '/impact': typeof ImpactRoute
   '/nisab-audit': typeof NisabAuditRoute
@@ -234,6 +242,7 @@ export interface FileRoutesById {
   '/crops': typeof CropsRoute
   '/developers': typeof DevelopersRoute
   '/faq': typeof FaqRoute
+  '/group-zakat': typeof GroupZakatRoute
   '/history': typeof HistoryRoute
   '/impact': typeof ImpactRoute
   '/nisab-audit': typeof NisabAuditRoute
@@ -263,6 +272,7 @@ export interface FileRouteTypes {
     | '/crops'
     | '/developers'
     | '/faq'
+    | '/group-zakat'
     | '/history'
     | '/impact'
     | '/nisab-audit'
@@ -290,6 +300,7 @@ export interface FileRouteTypes {
     | '/crops'
     | '/developers'
     | '/faq'
+    | '/group-zakat'
     | '/history'
     | '/impact'
     | '/nisab-audit'
@@ -318,6 +329,7 @@ export interface FileRouteTypes {
     | '/crops'
     | '/developers'
     | '/faq'
+    | '/group-zakat'
     | '/history'
     | '/impact'
     | '/nisab-audit'
@@ -347,6 +359,7 @@ export interface RootRouteChildren {
   CropsRoute: typeof CropsRoute
   DevelopersRoute: typeof DevelopersRoute
   FaqRoute: typeof FaqRoute
+  GroupZakatRoute: typeof GroupZakatRoute
   HistoryRoute: typeof HistoryRoute
   ImpactRoute: typeof ImpactRoute
   NisabAuditRoute: typeof NisabAuditRoute
@@ -420,6 +433,13 @@ declare module '@tanstack/react-router' {
       path: '/history'
       fullPath: '/history'
       preLoaderRoute: typeof HistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/group-zakat': {
+      id: '/group-zakat'
+      path: '/group-zakat'
+      fullPath: '/group-zakat'
+      preLoaderRoute: typeof GroupZakatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faq': {
@@ -575,6 +595,7 @@ const rootRouteChildren: RootRouteChildren = {
   CropsRoute: CropsRoute,
   DevelopersRoute: DevelopersRoute,
   FaqRoute: FaqRoute,
+  GroupZakatRoute: GroupZakatRoute,
   HistoryRoute: HistoryRoute,
   ImpactRoute: ImpactRoute,
   NisabAuditRoute: NisabAuditRoute,
