@@ -33,6 +33,7 @@ import { Route as AuthenticatedAttestationsRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ApiPublicNisabRouteImport } from './routes/api/public/nisab'
 import { Route as ApiPublicCalcRouteImport } from './routes/api/public/calc'
+import { Route as ApiPublicHooksSnapshotPricesRouteImport } from './routes/api/public/hooks/snapshot-prices'
 import { Route as ApiPublicHooksHawlRemindersRouteImport } from './routes/api/public/hooks/hawl-reminders'
 
 const WelcomeRoute = WelcomeRouteImport.update({
@@ -156,6 +157,12 @@ const ApiPublicCalcRoute = ApiPublicCalcRouteImport.update({
   path: '/api/public/calc',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHooksSnapshotPricesRoute =
+  ApiPublicHooksSnapshotPricesRouteImport.update({
+    id: '/api/public/hooks/snapshot-prices',
+    path: '/api/public/hooks/snapshot-prices',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksHawlRemindersRoute =
   ApiPublicHooksHawlRemindersRouteImport.update({
     id: '/api/public/hooks/hawl-reminders',
@@ -188,6 +195,7 @@ export interface FileRoutesByFullPath {
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
+  '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -214,6 +222,7 @@ export interface FileRoutesByTo {
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
+  '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -242,6 +251,7 @@ export interface FileRoutesById {
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
+  '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -270,6 +280,7 @@ export interface FileRouteTypes {
     | '/api/public/calc'
     | '/api/public/nisab'
     | '/api/public/hooks/hawl-reminders'
+    | '/api/public/hooks/snapshot-prices'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -296,6 +307,7 @@ export interface FileRouteTypes {
     | '/api/public/calc'
     | '/api/public/nisab'
     | '/api/public/hooks/hawl-reminders'
+    | '/api/public/hooks/snapshot-prices'
   id:
     | '__root__'
     | '/'
@@ -323,6 +335,7 @@ export interface FileRouteTypes {
     | '/api/public/calc'
     | '/api/public/nisab'
     | '/api/public/hooks/hawl-reminders'
+    | '/api/public/hooks/snapshot-prices'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -348,6 +361,7 @@ export interface RootRouteChildren {
   ApiPublicCalcRoute: typeof ApiPublicCalcRoute
   ApiPublicNisabRoute: typeof ApiPublicNisabRoute
   ApiPublicHooksHawlRemindersRoute: typeof ApiPublicHooksHawlRemindersRoute
+  ApiPublicHooksSnapshotPricesRoute: typeof ApiPublicHooksSnapshotPricesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -520,6 +534,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCalcRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/snapshot-prices': {
+      id: '/api/public/hooks/snapshot-prices'
+      path: '/api/public/hooks/snapshot-prices'
+      fullPath: '/api/public/hooks/snapshot-prices'
+      preLoaderRoute: typeof ApiPublicHooksSnapshotPricesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/hawl-reminders': {
       id: '/api/public/hooks/hawl-reminders'
       path: '/api/public/hooks/hawl-reminders'
@@ -568,6 +589,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCalcRoute: ApiPublicCalcRoute,
   ApiPublicNisabRoute: ApiPublicNisabRoute,
   ApiPublicHooksHawlRemindersRoute: ApiPublicHooksHawlRemindersRoute,
+  ApiPublicHooksSnapshotPricesRoute: ApiPublicHooksSnapshotPricesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
