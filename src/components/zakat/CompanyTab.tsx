@@ -491,6 +491,10 @@ export function CompanyTab() {
     useState<CompanyTradeClassificationValue>(emptyCompanyTradeClassification());
   // تاريخ تشغيل النشاط التجاري (يومه = بداية الحول التجاري إن لم يُحدد)
   const [activityStartDate, setActivityStartDate] = useState<string>("");
+  // فروع الشركة
+  const [hasBranches, setHasBranches] = useState<"yes" | "no">("no");
+  const [branchesCount, setBranchesCount] = useState<string>("");
+  const [branchesNotes, setBranchesNotes] = useState<string>("");
   const activeSectorList = orgKind === "nonprofit" ? NONPROFIT_SECTORS : SECTORS;
   const sector = useMemo(
     () => activeSectorList.find((s) => s.id === sectorId) ?? activeSectorList[0],
