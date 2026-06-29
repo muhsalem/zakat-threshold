@@ -9,12 +9,9 @@ import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from "@/components/ui/accordion";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
-import {
   Gem, Pickaxe, FlaskConical, Fish, Drumstick, Info, Calculator,
 } from "lucide-react";
-import { num, fmt, currency, COUNTRY_PRICES, ZAKAT_RATE } from "@/lib/zakat";
+import { num, fmt, currency, ZAKAT_RATE } from "@/lib/zakat";
 
 /**
  * زكاة الركاز والمعادن والعسل والثروات المستحدثة
