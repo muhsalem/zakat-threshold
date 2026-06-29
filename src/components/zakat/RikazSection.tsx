@@ -9,12 +9,9 @@ import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from "@/components/ui/accordion";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
-import {
   Gem, Pickaxe, FlaskConical, Fish, Drumstick, Info, Calculator,
 } from "lucide-react";
-import { num, fmt, currency, COUNTRY_PRICES, ZAKAT_RATE } from "@/lib/zakat";
+import { num, fmt, currency, ZAKAT_RATE } from "@/lib/zakat";
 
 /**
  * زكاة الركاز والمعادن والعسل والثروات المستحدثة
@@ -69,22 +66,18 @@ export type RikazMode = "all" | "rikaz-metals" | "agri-extras";
 
 interface RikazProps {
   mode?: RikazMode;
-  hideCountry?: boolean;
   currency?: string;
   onTradeBaseChange?: (amount: number) => void;
   /** يُرسل إجمالي زكاة الركاز والمعادن والملحقات إلى الأب عند التغيير. */
   onTotalChange?: (amount: number) => void;
 }
 
-export function RikazSection({ mode = "all", hideCountry = false, currency: currencyProp, onTradeBaseChange, onTotalChange }: RikazProps = {}) {
+export function RikazSection({ mode = "all", currency: currencyProp, onTradeBaseChange, onTotalChange }: RikazProps = {}) {
   const showRikaz = mode === "all" || mode === "rikaz-metals";
   const showMinerals = mode === "all" || mode === "rikaz-metals";
   const showHoney = mode === "all" || mode === "agri-extras";
   const showFish = mode === "all" || mode === "agri-extras";
   const showPoultry = mode === "all" || mode === "agri-extras";
-  const [countryCode, setCountryCode] = useState("EG");
-  const countryData = COUNTRY_PRICES.find((c) => c.code === countryCode) ?? COUNTRY_PRICES[0];
-  const country = { ...countryData, currency: currencyProp ?? countryData.currency };
 
   // ① الركاز (كنوز الجاهلية المدفونة)
   const [rikazValue, setRikazValue] = useState("");
@@ -151,7 +144,8 @@ export function RikazSection({ mode = "all", hideCountry = false, currency: curr
     onTotalChange(calc.total);
   }, [onTotalChange, calc.total, mode]);
 
-  const cur = (n: number) => currency(n, country.currency);
+  const activeCurrency = currencyProp ?? "SAR";
+  const cur = (n: number) => currency(n, activeCurrency);
 
   return (
     <div dir="rtl" className="grid lg:grid-cols-3 gap-6 text-right">
@@ -188,20 +182,6 @@ export function RikazSection({ mode = "all", hideCountry = false, currency: curr
                 </AlertDescription>
               </Alert>
             )}
-
-            {!hideCountry && (
-              <div className="space-y-1.5">
-                <Label>الدولة</Label>
-                <Select value={countryCode} onValueChange={setCountryCode}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent className="max-h-72">
-                    {COUNTRY_PRICES.map((c) => (
-                      <SelectItem key={c.code} value={c.code}>{c.name} ({c.currency})</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
           </CardContent>
         </Card>
 
@@ -235,7 +215,7 @@ export function RikazSection({ mode = "all", hideCountry = false, currency: curr
           <AccordionItem value="rikaz" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
-                <Pickaxe className="h-5 w-5 text-gold" /> ① هل اكتشفت ركازاً (كنزاً مدفوناً)؟ — الخُمس (20%)
+                <Pickaxe className="h-5 w-5 text-gold" /> ① هل اكتشفت ركازاً؟ — زكاة الركاز (20%)
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
@@ -261,7 +241,7 @@ export function RikazSection({ mode = "all", hideCountry = false, currency: curr
               <NumField
                 label="إجمالي القيمة السوقية للركاز يوم اكتشافه"
                 value={rikazValue} onChange={setRikazValue}
-                unit={country.currency}
+                unit={activeCurrency}
                 hint="القيمة المُثمَّنة بشهادة خبير، لا قيمة الذهب الخام فقط"
               />
               {num(rikazValue) > 0 && (
@@ -277,7 +257,7 @@ export function RikazSection({ mode = "all", hideCountry = false, currency: curr
           <AccordionItem value="minerals" className="border rounded-xl shadow-soft bg-card px-4">
             <AccordionTrigger className="hover:no-underline">
               <span className="flex items-center gap-2 text-base font-semibold">
-                <FlaskConical className="h-5 w-5 text-primary" /> ② هل تستخرج معادن من باطن الأرض؟
+                <FlaskConical className="h-5 w-5 text-primary" /> ② هل تستخرج معادن؟ — زكاة المعادن
               </span>
             </AccordionTrigger>
             <AccordionContent className="space-y-4 pb-4">
@@ -322,8 +302,8 @@ export function RikazSection({ mode = "all", hideCountry = false, currency: curr
                 </div>
               </div>
               <div className="grid md:grid-cols-2 gap-4">
-                <NumField label="إجمالي قيمة المعدن المستخرج (بعد التنقية)" value={mineralsValue} onChange={setMineralsValue} unit={country.currency} hint="بالقيمة السوقية يوم الإخراج" />
-                <NumField label="تكاليف الاستخراج والتنقية المباشرة" value={mineralsCost} onChange={setMineralsCost} unit={country.currency} hint="معدات، أجور عمالة، نقل، طاقة، تنقية" />
+                <NumField label="إجمالي قيمة المعدن المستخرج (بعد التنقية)" value={mineralsValue} onChange={setMineralsValue} unit={activeCurrency} hint="بالقيمة السوقية يوم الإخراج" />
+                <NumField label="تكاليف الاستخراج والتنقية المباشرة" value={mineralsCost} onChange={setMineralsCost} unit={activeCurrency} hint="معدات، أجور عمالة، نقل، طاقة، تنقية" />
               </div>
               {calc.mineralsNet > 0 && (
                 <div className="rounded-lg bg-primary/10 border border-primary/30 p-3 text-sm space-y-1">
@@ -353,7 +333,7 @@ export function RikazSection({ mode = "all", hideCountry = false, currency: curr
               </Alert>
               <div className="grid md:grid-cols-2 gap-4">
                 <NumField label="كمية العسل المُنتَجة" value={honeyKg} onChange={setHoneyKg} unit="كجم" hint={`النصاب: ${HONEY_NISAB_KG} كجم`} />
-                <NumField label="سعر الكيلو" value={honeyPricePerKg} onChange={setHoneyPricePerKg} unit={country.currency} />
+                <NumField label="سعر الكيلو" value={honeyPricePerKg} onChange={setHoneyPricePerKg} unit={activeCurrency} />
               </div>
               {num(honeyKg) > 0 && (
                 <div className={`rounded-lg p-3 text-sm border ${calc.honeyEligible ? "bg-primary/10 border-primary/30" : "bg-muted/40 border-border"}`}>
@@ -388,8 +368,8 @@ export function RikazSection({ mode = "all", hideCountry = false, currency: curr
                 </AlertDescription>
               </Alert>
               <div className="grid md:grid-cols-2 gap-4">
-                <NumField label="قيمة المخزون السمكي وإيرادات البيع" value={fishValue} onChange={setFishValue} unit={country.currency} />
-                <NumField label="التكاليف والمصاريف المباشرة" value={fishCost} onChange={setFishCost} unit={country.currency} hint="أعلاف، عمالة، صيانة" />
+                <NumField label="قيمة المخزون السمكي وإيرادات البيع" value={fishValue} onChange={setFishValue} unit={activeCurrency} />
+                <NumField label="التكاليف والمصاريف المباشرة" value={fishCost} onChange={setFishCost} unit={activeCurrency} hint="أعلاف، عمالة، صيانة" />
               </div>
               {calc.fishNet > 0 && (
                 <div className="rounded-lg bg-primary/10 border border-primary/30 p-3 text-sm space-y-1">
@@ -417,8 +397,8 @@ export function RikazSection({ mode = "all", hideCountry = false, currency: curr
                 </AlertDescription>
               </Alert>
               <div className="grid md:grid-cols-2 gap-4">
-                <NumField label="قيمة المخزون والإيرادات" value={poultryValue} onChange={setPoultryValue} unit={country.currency} />
-                <NumField label="التكاليف والمصاريف المباشرة" value={poultryCost} onChange={setPoultryCost} unit={country.currency} />
+                <NumField label="قيمة المخزون والإيرادات" value={poultryValue} onChange={setPoultryValue} unit={activeCurrency} />
+                <NumField label="التكاليف والمصاريف المباشرة" value={poultryCost} onChange={setPoultryCost} unit={activeCurrency} />
               </div>
               {calc.poultryNet > 0 && (
                 <div className="rounded-lg bg-primary/10 border border-primary/30 p-3 text-sm space-y-1">
@@ -448,7 +428,7 @@ export function RikazSection({ mode = "all", hideCountry = false, currency: curr
                 (showFish ? calc.fishZakat : 0) +
                 (showPoultry ? calc.poultryZakat : 0)
               )}
-              <span className="text-lg font-medium opacity-80 mr-2">{country.currency}</span>
+              <span className="text-lg font-medium opacity-80 mr-2">{activeCurrency}</span>
             </div>
             <p className="text-xs opacity-80 mt-2">
               {mode === "rikaz-metals" ? "مجموع زكاة الركاز والمعادن"
