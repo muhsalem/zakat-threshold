@@ -439,8 +439,8 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
             </div>
           </div>
-          <div className="space-y-1.5">
           <HijriDateField compact label="تاريخ فتح الحساب" value={currOpenedAt} onChange={setCurrOpenedAt} />
+          <div className="space-y-1.5 md:col-span-2">
             <BankPicker
               type={currType} setType={setCurrType}
               islamicBank={currIslamicBank} setIslamicBank={setCurrIslamicBank}
