@@ -6,8 +6,18 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   Award, ShieldCheck, Sparkles, Target, TrendingUp, FileText,
-  CheckCircle2, Lightbulb, Building2, Globe, ArrowRight, Download,
+  CheckCircle2, Lightbulb, Building2, Globe, ArrowRight, Download, Printer,
 } from "lucide-react";
+
+function handleExportPdf() {
+  const d = new Date();
+  const stamp = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  const filename = `nisab-award-submission-${stamp}`;
+  const prev = document.title;
+  document.title = filename;
+  window.print();
+  setTimeout(() => { document.title = prev; }, 1000);
+}
 
 export const Route = createFileRoute("/award-submission")({
   head: () => ({
