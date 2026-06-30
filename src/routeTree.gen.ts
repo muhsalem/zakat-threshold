@@ -20,7 +20,9 @@ import { Route as ImpactRouteImport } from './routes/impact'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as GroupZakatRouteImport } from './routes/group-zakat'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as EvaluationRouteImport } from './routes/evaluation'
 import { Route as DevelopersRouteImport } from './routes/developers'
+import { Route as DemoRouteImport } from './routes/demo'
 import { Route as CropsRouteImport } from './routes/crops'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuditRouteImport } from './routes/audit'
@@ -93,9 +95,19 @@ const FaqRoute = FaqRouteImport.update({
   path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EvaluationRoute = EvaluationRouteImport.update({
+  id: '/evaluation',
+  path: '/evaluation',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DevelopersRoute = DevelopersRouteImport.update({
   id: '/developers',
   path: '/developers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoRoute = DemoRouteImport.update({
+  id: '/demo',
+  path: '/demo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CropsRoute = CropsRouteImport.update({
@@ -188,7 +200,9 @@ export interface FileRoutesByFullPath {
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/crops': typeof CropsRoute
+  '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
+  '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
   '/group-zakat': typeof GroupZakatRoute
   '/history': typeof HistoryRoute
@@ -217,7 +231,9 @@ export interface FileRoutesByTo {
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/crops': typeof CropsRoute
+  '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
+  '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
   '/group-zakat': typeof GroupZakatRoute
   '/history': typeof HistoryRoute
@@ -248,7 +264,9 @@ export interface FileRoutesById {
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/crops': typeof CropsRoute
+  '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
+  '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
   '/group-zakat': typeof GroupZakatRoute
   '/history': typeof HistoryRoute
@@ -279,7 +297,9 @@ export interface FileRouteTypes {
     | '/audit'
     | '/auth'
     | '/crops'
+    | '/demo'
     | '/developers'
+    | '/evaluation'
     | '/faq'
     | '/group-zakat'
     | '/history'
@@ -308,7 +328,9 @@ export interface FileRouteTypes {
     | '/audit'
     | '/auth'
     | '/crops'
+    | '/demo'
     | '/developers'
+    | '/evaluation'
     | '/faq'
     | '/group-zakat'
     | '/history'
@@ -338,7 +360,9 @@ export interface FileRouteTypes {
     | '/audit'
     | '/auth'
     | '/crops'
+    | '/demo'
     | '/developers'
+    | '/evaluation'
     | '/faq'
     | '/group-zakat'
     | '/history'
@@ -369,7 +393,9 @@ export interface RootRouteChildren {
   AuditRoute: typeof AuditRoute
   AuthRoute: typeof AuthRoute
   CropsRoute: typeof CropsRoute
+  DemoRoute: typeof DemoRoute
   DevelopersRoute: typeof DevelopersRoute
+  EvaluationRoute: typeof EvaluationRoute
   FaqRoute: typeof FaqRoute
   GroupZakatRoute: typeof GroupZakatRoute
   HistoryRoute: typeof HistoryRoute
@@ -469,11 +495,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/evaluation': {
+      id: '/evaluation'
+      path: '/evaluation'
+      fullPath: '/evaluation'
+      preLoaderRoute: typeof EvaluationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/developers': {
       id: '/developers'
       path: '/developers'
       fullPath: '/developers'
       preLoaderRoute: typeof DevelopersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo': {
+      id: '/demo'
+      path: '/demo'
+      fullPath: '/demo'
+      preLoaderRoute: typeof DemoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/crops': {
@@ -613,7 +653,9 @@ const rootRouteChildren: RootRouteChildren = {
   AuditRoute: AuditRoute,
   AuthRoute: AuthRoute,
   CropsRoute: CropsRoute,
+  DemoRoute: DemoRoute,
   DevelopersRoute: DevelopersRoute,
+  EvaluationRoute: EvaluationRoute,
   FaqRoute: FaqRoute,
   GroupZakatRoute: GroupZakatRoute,
   HistoryRoute: HistoryRoute,
