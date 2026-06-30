@@ -24,6 +24,7 @@ import { Route as EvaluationRouteImport } from './routes/evaluation'
 import { Route as DevelopersRouteImport } from './routes/developers'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as CropsRouteImport } from './routes/crops'
+import { Route as AwardSubmissionRouteImport } from './routes/award-submission'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuditRouteImport } from './routes/audit'
 import { Route as AdvisorRouteImport } from './routes/advisor'
@@ -115,6 +116,11 @@ const CropsRoute = CropsRouteImport.update({
   path: '/crops',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AwardSubmissionRoute = AwardSubmissionRouteImport.update({
+  id: '/award-submission',
+  path: '/award-submission',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -199,6 +205,7 @@ export interface FileRoutesByFullPath {
   '/advisor': typeof AdvisorRoute
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
+  '/award-submission': typeof AwardSubmissionRoute
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
@@ -230,6 +237,7 @@ export interface FileRoutesByTo {
   '/advisor': typeof AdvisorRoute
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
+  '/award-submission': typeof AwardSubmissionRoute
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
@@ -263,6 +271,7 @@ export interface FileRoutesById {
   '/advisor': typeof AdvisorRoute
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
+  '/award-submission': typeof AwardSubmissionRoute
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
@@ -296,6 +305,7 @@ export interface FileRouteTypes {
     | '/advisor'
     | '/audit'
     | '/auth'
+    | '/award-submission'
     | '/crops'
     | '/demo'
     | '/developers'
@@ -327,6 +337,7 @@ export interface FileRouteTypes {
     | '/advisor'
     | '/audit'
     | '/auth'
+    | '/award-submission'
     | '/crops'
     | '/demo'
     | '/developers'
@@ -359,6 +370,7 @@ export interface FileRouteTypes {
     | '/advisor'
     | '/audit'
     | '/auth'
+    | '/award-submission'
     | '/crops'
     | '/demo'
     | '/developers'
@@ -392,6 +404,7 @@ export interface RootRouteChildren {
   AdvisorRoute: typeof AdvisorRoute
   AuditRoute: typeof AuditRoute
   AuthRoute: typeof AuthRoute
+  AwardSubmissionRoute: typeof AwardSubmissionRoute
   CropsRoute: typeof CropsRoute
   DemoRoute: typeof DemoRoute
   DevelopersRoute: typeof DevelopersRoute
@@ -523,6 +536,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CropsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/award-submission': {
+      id: '/award-submission'
+      path: '/award-submission'
+      fullPath: '/award-submission'
+      preLoaderRoute: typeof AwardSubmissionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -652,6 +672,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdvisorRoute: AdvisorRoute,
   AuditRoute: AuditRoute,
   AuthRoute: AuthRoute,
+  AwardSubmissionRoute: AwardSubmissionRoute,
   CropsRoute: CropsRoute,
   DemoRoute: DemoRoute,
   DevelopersRoute: DevelopersRoute,
@@ -678,13 +699,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
