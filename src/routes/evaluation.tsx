@@ -15,6 +15,8 @@ export const Route = createFileRoute("/evaluation")({
       { property: "og:description", content: "أبعاد التقييم الستة، SWOT، فجوات، مصفوفة مخاطر، وخارطة طريق للجنة التحكيم." },
       { property: "og:type", content: "article" },
       { property: "og:url", content: "/evaluation" },
+      { property: "og:image", content: "/og-image.jpg" },
+      { name: "twitter:image", content: "/og-image.jpg" },
     ],
     links: [{ rel: "canonical", href: "/evaluation" }],
   }),
