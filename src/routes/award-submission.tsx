@@ -6,8 +6,18 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   Award, ShieldCheck, Sparkles, Target, TrendingUp, FileText,
-  CheckCircle2, Lightbulb, Building2, Globe, ArrowRight, Download,
+  CheckCircle2, Lightbulb, Building2, Globe, ArrowRight, Download, Printer,
 } from "lucide-react";
+
+function handleExportPdf() {
+  const d = new Date();
+  const stamp = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  const filename = `nisab-award-submission-${stamp}`;
+  const prev = document.title;
+  document.title = filename;
+  window.print();
+  setTimeout(() => { document.title = prev; }, 1000);
+}
 
 export const Route = createFileRoute("/award-submission")({
   head: () => ({
@@ -51,19 +61,38 @@ function AwardSubmissionPage() {
 
   return (
     <div dir="rtl" className="min-h-screen bg-gradient-to-b from-background via-background to-primary/5">
+      <style>{`
+        @media print {
+          @page { size: A4; margin: 14mm; }
+          html, body { background: #fff !important; }
+          .no-print { display: none !important; }
+          header.sticky { display: none !important; }
+          [role="tablist"] { display: none !important; }
+          [role="tabpanel"] { display: block !important; }
+          [role="tabpanel"][hidden] { display: block !important; }
+          [role="tabpanel"] { break-before: page; page-break-before: always; }
+          [role="tabpanel"]:first-of-type { break-before: auto; page-break-before: auto; }
+          .shadow-soft, .shadow { box-shadow: none !important; }
+          * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
+      `}</style>
       {/* Header */}
-      <header className="border-b bg-card/80 backdrop-blur sticky top-0 z-20">
+      <header className="border-b bg-card/80 backdrop-blur sticky top-0 z-20 no-print">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 text-primary font-bold">
             <Sparkles className="h-5 w-5" /> منصة نِصاب
           </Link>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <Link to="/evaluation"><Button variant="ghost" size="sm">تقرير 1000 نقطة</Button></Link>
             <Link to="/demo"><Button variant="ghost" size="sm">سيناريوهات الديمو</Button></Link>
-            <Link to="/showcase"><Button variant="outline" size="sm">عرض اللجنة</Button></Link>
+            <Link to="/showcase"><Button variant="ghost" size="sm">عرض اللجنة</Button></Link>
+            <Button size="sm" onClick={handleExportPdf} className="gap-1.5">
+              <Printer className="h-4 w-4" /> تصدير PDF كامل
+            </Button>
           </div>
         </div>
       </header>
+
 
       {/* Hero */}
       <section className="container mx-auto px-4 pt-10 pb-6 text-center">
