@@ -29,7 +29,12 @@ export const Route = createFileRoute("/showcase")({
       { name: "description", content: "فيديو تسويقي وعرض تقديمي شامل لمنصة الزكاة الذكية مُقدَّم إلى لجنة تحكيم الجائزة." },
       { property: "og:title", content: "منصة الزكاة الذكية — عرض الجائزة" },
       { property: "og:description", content: "اكتشف الفيديو التسويقي وحمّل العرض التقديمي." },
+      { property: "og:type", content: "article" },
+      { property: "og:url", content: "/showcase" },
+      { property: "og:image", content: "/og-image.jpg" },
+      { name: "twitter:image", content: "/og-image.jpg" },
     ],
+    links: [{ rel: "canonical", href: "/showcase" }],
   }),
   component: ShowcasePage,
 });
