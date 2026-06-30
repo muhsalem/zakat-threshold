@@ -61,19 +61,38 @@ function AwardSubmissionPage() {
 
   return (
     <div dir="rtl" className="min-h-screen bg-gradient-to-b from-background via-background to-primary/5">
+      <style>{`
+        @media print {
+          @page { size: A4; margin: 14mm; }
+          html, body { background: #fff !important; }
+          .no-print { display: none !important; }
+          header.sticky { display: none !important; }
+          [role="tablist"] { display: none !important; }
+          [role="tabpanel"] { display: block !important; }
+          [role="tabpanel"][hidden] { display: block !important; }
+          [role="tabpanel"] { break-before: page; page-break-before: always; }
+          [role="tabpanel"]:first-of-type { break-before: auto; page-break-before: auto; }
+          .shadow-soft, .shadow { box-shadow: none !important; }
+          * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
+      `}</style>
       {/* Header */}
-      <header className="border-b bg-card/80 backdrop-blur sticky top-0 z-20">
+      <header className="border-b bg-card/80 backdrop-blur sticky top-0 z-20 no-print">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 text-primary font-bold">
             <Sparkles className="h-5 w-5" /> منصة نِصاب
           </Link>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <Link to="/evaluation"><Button variant="ghost" size="sm">تقرير 1000 نقطة</Button></Link>
             <Link to="/demo"><Button variant="ghost" size="sm">سيناريوهات الديمو</Button></Link>
-            <Link to="/showcase"><Button variant="outline" size="sm">عرض اللجنة</Button></Link>
+            <Link to="/showcase"><Button variant="ghost" size="sm">عرض اللجنة</Button></Link>
+            <Button size="sm" onClick={handleExportPdf} className="gap-1.5">
+              <Printer className="h-4 w-4" /> تصدير PDF كامل
+            </Button>
           </div>
         </div>
       </header>
+
 
       {/* Hero */}
       <section className="container mx-auto px-4 pt-10 pb-6 text-center">
