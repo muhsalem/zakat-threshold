@@ -39,6 +39,7 @@ import { Route as AuthenticatedAttestationsRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ApiPublicNisabRouteImport } from './routes/api/public/nisab'
 import { Route as ApiPublicCalcRouteImport } from './routes/api/public/calc'
+import { Route as ApiPublicPricesHistoryRouteImport } from './routes/api/public/prices/history'
 import { Route as ApiPublicHooksSnapshotPricesRouteImport } from './routes/api/public/hooks/snapshot-prices'
 import { Route as ApiPublicHooksSnapshotDailyPricesRouteImport } from './routes/api/public/hooks/snapshot-daily-prices'
 import { Route as ApiPublicHooksHawlRemindersRouteImport } from './routes/api/public/hooks/hawl-reminders'
@@ -194,6 +195,11 @@ const ApiPublicCalcRoute = ApiPublicCalcRouteImport.update({
   path: '/api/public/calc',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPricesHistoryRoute = ApiPublicPricesHistoryRouteImport.update({
+  id: '/api/public/prices/history',
+  path: '/api/public/prices/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicHooksSnapshotPricesRoute =
   ApiPublicHooksSnapshotPricesRouteImport.update({
     id: '/api/public/hooks/snapshot-prices',
@@ -246,6 +252,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
   '/api/public/hooks/snapshot-daily-prices': typeof ApiPublicHooksSnapshotDailyPricesRoute
   '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
+  '/api/public/prices/history': typeof ApiPublicPricesHistoryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -280,6 +287,7 @@ export interface FileRoutesByTo {
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
   '/api/public/hooks/snapshot-daily-prices': typeof ApiPublicHooksSnapshotDailyPricesRoute
   '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
+  '/api/public/prices/history': typeof ApiPublicPricesHistoryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -316,6 +324,7 @@ export interface FileRoutesById {
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
   '/api/public/hooks/snapshot-daily-prices': typeof ApiPublicHooksSnapshotDailyPricesRoute
   '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
+  '/api/public/prices/history': typeof ApiPublicPricesHistoryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -352,6 +361,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/hawl-reminders'
     | '/api/public/hooks/snapshot-daily-prices'
     | '/api/public/hooks/snapshot-prices'
+    | '/api/public/prices/history'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -386,6 +396,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/hawl-reminders'
     | '/api/public/hooks/snapshot-daily-prices'
     | '/api/public/hooks/snapshot-prices'
+    | '/api/public/prices/history'
   id:
     | '__root__'
     | '/'
@@ -421,6 +432,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/hawl-reminders'
     | '/api/public/hooks/snapshot-daily-prices'
     | '/api/public/hooks/snapshot-prices'
+    | '/api/public/prices/history'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -454,6 +466,7 @@ export interface RootRouteChildren {
   ApiPublicHooksHawlRemindersRoute: typeof ApiPublicHooksHawlRemindersRoute
   ApiPublicHooksSnapshotDailyPricesRoute: typeof ApiPublicHooksSnapshotDailyPricesRoute
   ApiPublicHooksSnapshotPricesRoute: typeof ApiPublicHooksSnapshotPricesRoute
+  ApiPublicPricesHistoryRoute: typeof ApiPublicPricesHistoryRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -668,6 +681,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCalcRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/prices/history': {
+      id: '/api/public/prices/history'
+      path: '/api/public/prices/history'
+      fullPath: '/api/public/prices/history'
+      preLoaderRoute: typeof ApiPublicPricesHistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/snapshot-prices': {
       id: '/api/public/hooks/snapshot-prices'
       path: '/api/public/hooks/snapshot-prices'
@@ -739,6 +759,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicHooksSnapshotDailyPricesRoute:
     ApiPublicHooksSnapshotDailyPricesRoute,
   ApiPublicHooksSnapshotPricesRoute: ApiPublicHooksSnapshotPricesRoute,
+  ApiPublicPricesHistoryRoute: ApiPublicPricesHistoryRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
