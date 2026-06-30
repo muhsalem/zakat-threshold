@@ -14,6 +14,7 @@ import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as ShowcaseRouteImport } from './routes/showcase'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as PricesHistoryRouteImport } from './routes/prices-history'
 import { Route as OrganizationsRouteImport } from './routes/organizations'
 import { Route as NisabAuditRouteImport } from './routes/nisab-audit'
 import { Route as ImpactRouteImport } from './routes/impact'
@@ -39,6 +40,7 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as ApiPublicNisabRouteImport } from './routes/api/public/nisab'
 import { Route as ApiPublicCalcRouteImport } from './routes/api/public/calc'
 import { Route as ApiPublicHooksSnapshotPricesRouteImport } from './routes/api/public/hooks/snapshot-prices'
+import { Route as ApiPublicHooksSnapshotDailyPricesRouteImport } from './routes/api/public/hooks/snapshot-daily-prices'
 import { Route as ApiPublicHooksHawlRemindersRouteImport } from './routes/api/public/hooks/hawl-reminders'
 
 const WelcomeRoute = WelcomeRouteImport.update({
@@ -64,6 +66,11 @@ const SecurityRoute = SecurityRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricesHistoryRoute = PricesHistoryRouteImport.update({
+  id: '/prices-history',
+  path: '/prices-history',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OrganizationsRoute = OrganizationsRouteImport.update({
@@ -193,6 +200,12 @@ const ApiPublicHooksSnapshotPricesRoute =
     path: '/api/public/hooks/snapshot-prices',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksSnapshotDailyPricesRoute =
+  ApiPublicHooksSnapshotDailyPricesRouteImport.update({
+    id: '/api/public/hooks/snapshot-daily-prices',
+    path: '/api/public/hooks/snapshot-daily-prices',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksHawlRemindersRoute =
   ApiPublicHooksHawlRemindersRouteImport.update({
     id: '/api/public/hooks/hawl-reminders',
@@ -216,6 +229,7 @@ export interface FileRoutesByFullPath {
   '/impact': typeof ImpactRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
+  '/prices-history': typeof PricesHistoryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/showcase': typeof ShowcaseRoute
@@ -230,6 +244,7 @@ export interface FileRoutesByFullPath {
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
+  '/api/public/hooks/snapshot-daily-prices': typeof ApiPublicHooksSnapshotDailyPricesRoute
   '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
 }
 export interface FileRoutesByTo {
@@ -248,6 +263,7 @@ export interface FileRoutesByTo {
   '/impact': typeof ImpactRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
+  '/prices-history': typeof PricesHistoryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/showcase': typeof ShowcaseRoute
@@ -262,6 +278,7 @@ export interface FileRoutesByTo {
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
+  '/api/public/hooks/snapshot-daily-prices': typeof ApiPublicHooksSnapshotDailyPricesRoute
   '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
 }
 export interface FileRoutesById {
@@ -282,6 +299,7 @@ export interface FileRoutesById {
   '/impact': typeof ImpactRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
+  '/prices-history': typeof PricesHistoryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/showcase': typeof ShowcaseRoute
@@ -296,6 +314,7 @@ export interface FileRoutesById {
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
+  '/api/public/hooks/snapshot-daily-prices': typeof ApiPublicHooksSnapshotDailyPricesRoute
   '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
 }
 export interface FileRouteTypes {
@@ -316,6 +335,7 @@ export interface FileRouteTypes {
     | '/impact'
     | '/nisab-audit'
     | '/organizations'
+    | '/prices-history'
     | '/reset-password'
     | '/security'
     | '/showcase'
@@ -330,6 +350,7 @@ export interface FileRouteTypes {
     | '/api/public/calc'
     | '/api/public/nisab'
     | '/api/public/hooks/hawl-reminders'
+    | '/api/public/hooks/snapshot-daily-prices'
     | '/api/public/hooks/snapshot-prices'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -348,6 +369,7 @@ export interface FileRouteTypes {
     | '/impact'
     | '/nisab-audit'
     | '/organizations'
+    | '/prices-history'
     | '/reset-password'
     | '/security'
     | '/showcase'
@@ -362,6 +384,7 @@ export interface FileRouteTypes {
     | '/api/public/calc'
     | '/api/public/nisab'
     | '/api/public/hooks/hawl-reminders'
+    | '/api/public/hooks/snapshot-daily-prices'
     | '/api/public/hooks/snapshot-prices'
   id:
     | '__root__'
@@ -381,6 +404,7 @@ export interface FileRouteTypes {
     | '/impact'
     | '/nisab-audit'
     | '/organizations'
+    | '/prices-history'
     | '/reset-password'
     | '/security'
     | '/showcase'
@@ -395,6 +419,7 @@ export interface FileRouteTypes {
     | '/api/public/calc'
     | '/api/public/nisab'
     | '/api/public/hooks/hawl-reminders'
+    | '/api/public/hooks/snapshot-daily-prices'
     | '/api/public/hooks/snapshot-prices'
   fileRoutesById: FileRoutesById
 }
@@ -415,6 +440,7 @@ export interface RootRouteChildren {
   ImpactRoute: typeof ImpactRoute
   NisabAuditRoute: typeof NisabAuditRoute
   OrganizationsRoute: typeof OrganizationsRoute
+  PricesHistoryRoute: typeof PricesHistoryRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SecurityRoute: typeof SecurityRoute
   ShowcaseRoute: typeof ShowcaseRoute
@@ -426,6 +452,7 @@ export interface RootRouteChildren {
   ApiPublicCalcRoute: typeof ApiPublicCalcRoute
   ApiPublicNisabRoute: typeof ApiPublicNisabRoute
   ApiPublicHooksHawlRemindersRoute: typeof ApiPublicHooksHawlRemindersRoute
+  ApiPublicHooksSnapshotDailyPricesRoute: typeof ApiPublicHooksSnapshotDailyPricesRoute
   ApiPublicHooksSnapshotPricesRoute: typeof ApiPublicHooksSnapshotPricesRoute
 }
 
@@ -464,6 +491,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prices-history': {
+      id: '/prices-history'
+      path: '/prices-history'
+      fullPath: '/prices-history'
+      preLoaderRoute: typeof PricesHistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/organizations': {
@@ -641,6 +675,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksSnapshotPricesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/snapshot-daily-prices': {
+      id: '/api/public/hooks/snapshot-daily-prices'
+      path: '/api/public/hooks/snapshot-daily-prices'
+      fullPath: '/api/public/hooks/snapshot-daily-prices'
+      preLoaderRoute: typeof ApiPublicHooksSnapshotDailyPricesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/hawl-reminders': {
       id: '/api/public/hooks/hawl-reminders'
       path: '/api/public/hooks/hawl-reminders'
@@ -683,6 +724,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImpactRoute: ImpactRoute,
   NisabAuditRoute: NisabAuditRoute,
   OrganizationsRoute: OrganizationsRoute,
+  PricesHistoryRoute: PricesHistoryRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SecurityRoute: SecurityRoute,
   ShowcaseRoute: ShowcaseRoute,
@@ -694,6 +736,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCalcRoute: ApiPublicCalcRoute,
   ApiPublicNisabRoute: ApiPublicNisabRoute,
   ApiPublicHooksHawlRemindersRoute: ApiPublicHooksHawlRemindersRoute,
+  ApiPublicHooksSnapshotDailyPricesRoute:
+    ApiPublicHooksSnapshotDailyPricesRoute,
   ApiPublicHooksSnapshotPricesRoute: ApiPublicHooksSnapshotPricesRoute,
 }
 export const routeTree = rootRouteImport

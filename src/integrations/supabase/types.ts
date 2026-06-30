@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      metal_prices_daily: {
+        Row: {
+          created_at: string
+          currency: string
+          id: string
+          metal: string
+          price_date: string
+          price_usd_per_gram: number
+          reliability: string
+          reliability_score: number
+          source: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          id?: string
+          metal: string
+          price_date: string
+          price_usd_per_gram: number
+          reliability?: string
+          reliability_score?: number
+          source?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          id?: string
+          metal?: string
+          price_date?: string
+          price_usd_per_gram?: number
+          reliability?: string
+          reliability_score?: number
+          source?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       nisab_prices: {
         Row: {
           country_code: string
