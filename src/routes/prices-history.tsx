@@ -87,6 +87,7 @@ function PricesHistoryPage() {
   const [err, setErr] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [pickedDate, setPickedDate] = useState<string>(new Date().toISOString().slice(0, 10));
+  const [relFilter, setRelFilter] = useState<"all" | "direct" | "secondary" | "derived" | "estimated">("all");
 
   useEffect(() => {
     (async () => {
