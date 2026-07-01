@@ -112,10 +112,25 @@ function PricesHistoryPage() {
   }, [rows]);
 
   const filteredDates = useMemo(() => {
-    const dates = Array.from(byDate.keys()).sort().reverse();
-    if (!query) return dates;
-    return dates.filter((d) => d.includes(query));
-  }, [byDate, query]);
+    let dates = Array.from(byDate.keys()).sort().reverse();
+    if (query) dates = dates.filter((d) => d.includes(query));
+    if (relFilter !== "all") {
+      dates = dates.filter((d) => {
+        const e = byDate.get(d)!;
+        const r = e.gold?.reliability ?? e.silver?.reliability;
+        if (!r) return false;
+        if (relFilter === "secondary") return r === "derived" || r === "estimated";
+        return r === relFilter;
+      });
+    }
+    return dates;
+  }, [byDate, query, relFilter]);
+
+  const relCounts = useMemo(() => {
+    const c = { direct: 0, derived: 0, estimated: 0 };
+    for (const r of rows ?? []) c[r.reliability]++;
+    return c;
+  }, [rows]);
 
   const pickedNearest = useMemo(() => {
     if (!rows || rows.length === 0) return null;
