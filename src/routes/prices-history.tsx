@@ -222,12 +222,35 @@ function PricesHistoryPage() {
           <Card>
             <CardHeader>
               <CardTitle>كل التواريخ ({fmt(filteredDates.length, 0)})</CardTitle>
-              <Input
-                placeholder="ابحث عن سنة أو تاريخ (مثل 2020 أو 2020-03)"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                className="max-w-sm mt-2"
-              />
+              <div className="flex flex-wrap items-end gap-3 pt-2">
+                <div className="flex-1 min-w-[220px]">
+                  <label className="text-xs text-muted-foreground block mb-1">ابحث بتاريخ أو سنة</label>
+                  <Input
+                    placeholder="مثال: 2020 أو 2020-03"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    className="max-w-sm"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-muted-foreground block mb-1">تصفية حسب مستوى الثقة</label>
+                  <Select value={relFilter} onValueChange={(v) => setRelFilter(v as typeof relFilter)}>
+                    <SelectTrigger className="w-[200px]"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">كل المستويات</SelectItem>
+                      <SelectItem value="direct">مباشر فقط (Direct)</SelectItem>
+                      <SelectItem value="secondary">المصادر الثانوية (مشتق + تقديري)</SelectItem>
+                      <SelectItem value="derived">مشتق فقط</SelectItem>
+                      <SelectItem value="estimated">تقديري فقط</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                {(query || relFilter !== "all") && (
+                  <Button variant="ghost" size="sm" onClick={() => { setQuery(""); setRelFilter("all"); }}>
+                    مسح الفلاتر
+                  </Button>
+                )}
+              </div>
             </CardHeader>
             <CardContent className="max-h-[600px] overflow-auto">
               <Table>
