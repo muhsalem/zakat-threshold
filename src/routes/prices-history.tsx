@@ -6,6 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { ShieldCheck, Sparkles, HelpCircle } from "lucide-react";
 
 export const Route = createFileRoute("/prices-history")({
   head: () => ({
@@ -40,13 +43,43 @@ function fmt(n: number, d = 2) {
   return new Intl.NumberFormat("ar-EG", { maximumFractionDigits: d }).format(n);
 }
 
-function relBadge(r: Row["reliability"]) {
-  const map = {
-    direct: { label: "مباشر", cls: "bg-emerald-500/15 text-emerald-700 border-emerald-500/30" },
-    derived: { label: "مشتق", cls: "bg-amber-500/15 text-amber-700 border-amber-500/30" },
-    estimated: { label: "تقديري", cls: "bg-rose-500/15 text-rose-700 border-rose-500/30" },
-  } as const;
-  return <Badge variant="outline" className={map[r].cls}>{map[r].label}</Badge>;
+const REL_META = {
+  direct: {
+    label: "مباشر",
+    icon: ShieldCheck,
+    cls: "bg-emerald-500/15 text-emerald-700 border-emerald-500/40",
+    dot: "bg-emerald-500",
+    desc: "مسحوب مباشرةً من مزوّد أسعار (gold-api / metalpriceapi)",
+  },
+  derived: {
+    label: "مشتق",
+    icon: Sparkles,
+    cls: "bg-amber-500/15 text-amber-700 border-amber-500/40",
+    dot: "bg-amber-500",
+    desc: "مُحتسب من مرجع آخر (متوسط سنة قريبة)",
+  },
+  estimated: {
+    label: "تقديري",
+    icon: HelpCircle,
+    cls: "bg-rose-500/15 text-rose-700 border-rose-500/40",
+    dot: "bg-rose-500",
+    desc: "متوسط سنوي تاريخي من مصادر علنية",
+  },
+} as const;
+
+function RelBadge({ r }: { r: Row["reliability"] }) {
+  const m = REL_META[r];
+  const Icon = m.icon;
+  return (
+    <Badge variant="outline" className={`gap-1 ${m.cls}`}>
+      <Icon className="h-3 w-3" />
+      {m.label}
+    </Badge>
+  );
+}
+
+function RelDot({ r }: { r: Row["reliability"] }) {
+  return <span className={`inline-block h-2.5 w-2.5 rounded-full ${REL_META[r].dot}`} title={REL_META[r].label} />;
 }
 
 function PricesHistoryPage() {
@@ -54,6 +87,7 @@ function PricesHistoryPage() {
   const [err, setErr] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [pickedDate, setPickedDate] = useState<string>(new Date().toISOString().slice(0, 10));
+  const [relFilter, setRelFilter] = useState<"all" | "direct" | "secondary" | "derived" | "estimated">("all");
 
   useEffect(() => {
     (async () => {
@@ -78,10 +112,25 @@ function PricesHistoryPage() {
   }, [rows]);
 
   const filteredDates = useMemo(() => {
-    const dates = Array.from(byDate.keys()).sort().reverse();
-    if (!query) return dates;
-    return dates.filter((d) => d.includes(query));
-  }, [byDate, query]);
+    let dates = Array.from(byDate.keys()).sort().reverse();
+    if (query) dates = dates.filter((d) => d.includes(query));
+    if (relFilter !== "all") {
+      dates = dates.filter((d) => {
+        const e = byDate.get(d)!;
+        const r = e.gold?.reliability ?? e.silver?.reliability;
+        if (!r) return false;
+        if (relFilter === "secondary") return r === "derived" || r === "estimated";
+        return r === relFilter;
+      });
+    }
+    return dates;
+  }, [byDate, query, relFilter]);
+
+  const relCounts = useMemo(() => {
+    const c = { direct: 0, derived: 0, estimated: 0 };
+    for (const r of rows ?? []) c[r.reliability]++;
+    return c;
+  }, [rows]);
 
   const pickedNearest = useMemo(() => {
     if (!rows || rows.length === 0) return null;
@@ -110,6 +159,17 @@ function PricesHistoryPage() {
           <Badge variant="outline">نصاب الفضة: 595 جم</Badge>
           <Badge variant="outline">نسبة الزكاة: 2.5%</Badge>
         </div>
+        <div className="flex flex-wrap gap-2 pt-1">
+          <Badge variant="outline" className={REL_META.direct.cls}>
+            <RelDot r="direct" /> <span className="mr-1">مباشر: {fmt(relCounts.direct, 0)}</span>
+          </Badge>
+          <Badge variant="outline" className={REL_META.derived.cls}>
+            <RelDot r="derived" /> <span className="mr-1">مشتق: {fmt(relCounts.derived, 0)}</span>
+          </Badge>
+          <Badge variant="outline" className={REL_META.estimated.cls}>
+            <RelDot r="estimated" /> <span className="mr-1">تقديري: {fmt(relCounts.estimated, 0)}</span>
+          </Badge>
+        </div>
       </header>
 
       <Card>
@@ -135,7 +195,7 @@ function PricesHistoryPage() {
                 <div className="text-sm text-primary">
                   زكاة نصاب الذهب: {fmt((pickedNearest.gold?.price_usd_per_gram ?? 0) * GOLD_NISAB * ZAKAT)} USD
                 </div>
-                {pickedNearest.gold && relBadge(pickedNearest.gold.reliability)}
+                {pickedNearest.gold && <RelBadge r={pickedNearest.gold.reliability} />}
               </div>
               <div className="rounded-md border p-3">
                 <div className="text-sm text-muted-foreground">المعدن الفضي</div>
@@ -146,7 +206,7 @@ function PricesHistoryPage() {
                 <div className="text-sm text-primary">
                   زكاة نصاب الفضة: {fmt((pickedNearest.silver?.price_usd_per_gram ?? 0) * SILVER_NISAB * ZAKAT)} USD
                 </div>
-                {pickedNearest.silver && relBadge(pickedNearest.silver.reliability)}
+                {pickedNearest.silver && <RelBadge r={pickedNearest.silver.reliability} />}
               </div>
             </div>
           )}
@@ -162,12 +222,35 @@ function PricesHistoryPage() {
           <Card>
             <CardHeader>
               <CardTitle>كل التواريخ ({fmt(filteredDates.length, 0)})</CardTitle>
-              <Input
-                placeholder="ابحث عن سنة أو تاريخ (مثل 2020 أو 2020-03)"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                className="max-w-sm mt-2"
-              />
+              <div className="flex flex-wrap items-end gap-3 pt-2">
+                <div className="flex-1 min-w-[220px]">
+                  <label className="text-xs text-muted-foreground block mb-1">ابحث بتاريخ أو سنة</label>
+                  <Input
+                    placeholder="مثال: 2020 أو 2020-03"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    className="max-w-sm"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-muted-foreground block mb-1">تصفية حسب مستوى الثقة</label>
+                  <Select value={relFilter} onValueChange={(v) => setRelFilter(v as typeof relFilter)}>
+                    <SelectTrigger className="w-[200px]"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">كل المستويات</SelectItem>
+                      <SelectItem value="direct">مباشر فقط (Direct)</SelectItem>
+                      <SelectItem value="secondary">المصادر الثانوية (مشتق + تقديري)</SelectItem>
+                      <SelectItem value="derived">مشتق فقط</SelectItem>
+                      <SelectItem value="estimated">تقديري فقط</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                {(query || relFilter !== "all") && (
+                  <Button variant="ghost" size="sm" onClick={() => { setQuery(""); setRelFilter("all"); }}>
+                    مسح الفلاتر
+                  </Button>
+                )}
+              </div>
             </CardHeader>
             <CardContent className="max-h-[600px] overflow-auto">
               <Table>
@@ -194,7 +277,7 @@ function PricesHistoryPage() {
                         <TableCell>{fmt(g * GOLD_NISAB)}</TableCell>
                         <TableCell>{fmt(s, 4)}</TableCell>
                         <TableCell>{fmt(s * SILVER_NISAB)}</TableCell>
-                        <TableCell>{relBadge(rel)}</TableCell>
+                        <TableCell><RelBadge r={rel} /></TableCell>
                       </TableRow>
                     );
                   })}

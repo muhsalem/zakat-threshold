@@ -43,6 +43,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getLivePrices } from "@/lib/prices.functions";
+import { HistoricalMetalPriceCard } from "@/components/zakat/HistoricalMetalPriceCard";
 
 // Map internal country code -> ISO 4217 currency
 const ISO_CURRENCY: Record<string, string> = {
@@ -374,6 +375,9 @@ export function NisabHistory() {
           </div>
         </CardContent>
       </Card>
+
+      {/* سجل الأسعار التاريخي — قاعدة بيانات يومية */}
+      <HistoricalMetalPriceCard />
 
       {/* قاعدة بيانات الأنصبة — اختيار السنة والشهر */}
       <Card className="border-primary/30 shadow-soft" dir="rtl">
