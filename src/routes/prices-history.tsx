@@ -43,13 +43,43 @@ function fmt(n: number, d = 2) {
   return new Intl.NumberFormat("ar-EG", { maximumFractionDigits: d }).format(n);
 }
 
-function relBadge(r: Row["reliability"]) {
-  const map = {
-    direct: { label: "مباشر", cls: "bg-emerald-500/15 text-emerald-700 border-emerald-500/30" },
-    derived: { label: "مشتق", cls: "bg-amber-500/15 text-amber-700 border-amber-500/30" },
-    estimated: { label: "تقديري", cls: "bg-rose-500/15 text-rose-700 border-rose-500/30" },
-  } as const;
-  return <Badge variant="outline" className={map[r].cls}>{map[r].label}</Badge>;
+const REL_META = {
+  direct: {
+    label: "مباشر",
+    icon: ShieldCheck,
+    cls: "bg-emerald-500/15 text-emerald-700 border-emerald-500/40",
+    dot: "bg-emerald-500",
+    desc: "مسحوب مباشرةً من مزوّد أسعار (gold-api / metalpriceapi)",
+  },
+  derived: {
+    label: "مشتق",
+    icon: Sparkles,
+    cls: "bg-amber-500/15 text-amber-700 border-amber-500/40",
+    dot: "bg-amber-500",
+    desc: "مُحتسب من مرجع آخر (متوسط سنة قريبة)",
+  },
+  estimated: {
+    label: "تقديري",
+    icon: HelpCircle,
+    cls: "bg-rose-500/15 text-rose-700 border-rose-500/40",
+    dot: "bg-rose-500",
+    desc: "متوسط سنوي تاريخي من مصادر علنية",
+  },
+} as const;
+
+function RelBadge({ r }: { r: Row["reliability"] }) {
+  const m = REL_META[r];
+  const Icon = m.icon;
+  return (
+    <Badge variant="outline" className={`gap-1 ${m.cls}`}>
+      <Icon className="h-3 w-3" />
+      {m.label}
+    </Badge>
+  );
+}
+
+function RelDot({ r }: { r: Row["reliability"] }) {
+  return <span className={`inline-block h-2.5 w-2.5 rounded-full ${REL_META[r].dot}`} title={REL_META[r].label} />;
 }
 
 function PricesHistoryPage() {
