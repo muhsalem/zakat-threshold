@@ -376,6 +376,9 @@ export function NisabHistory() {
         </CardContent>
       </Card>
 
+      {/* سجل الأسعار التاريخي — قاعدة بيانات يومية */}
+      <HistoricalMetalPriceCard />
+
       {/* قاعدة بيانات الأنصبة — اختيار السنة والشهر */}
       <Card className="border-primary/30 shadow-soft" dir="rtl">
         <CardHeader className="bg-gradient-to-l from-primary/10 to-transparent">
