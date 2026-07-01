@@ -159,6 +159,17 @@ function PricesHistoryPage() {
           <Badge variant="outline">نصاب الفضة: 595 جم</Badge>
           <Badge variant="outline">نسبة الزكاة: 2.5%</Badge>
         </div>
+        <div className="flex flex-wrap gap-2 pt-1">
+          <Badge variant="outline" className={REL_META.direct.cls}>
+            <RelDot r="direct" /> <span className="mr-1">مباشر: {fmt(relCounts.direct, 0)}</span>
+          </Badge>
+          <Badge variant="outline" className={REL_META.derived.cls}>
+            <RelDot r="derived" /> <span className="mr-1">مشتق: {fmt(relCounts.derived, 0)}</span>
+          </Badge>
+          <Badge variant="outline" className={REL_META.estimated.cls}>
+            <RelDot r="estimated" /> <span className="mr-1">تقديري: {fmt(relCounts.estimated, 0)}</span>
+          </Badge>
+        </div>
       </header>
 
       <Card>
