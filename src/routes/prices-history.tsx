@@ -184,7 +184,7 @@ function PricesHistoryPage() {
                 <div className="text-sm text-primary">
                   زكاة نصاب الذهب: {fmt((pickedNearest.gold?.price_usd_per_gram ?? 0) * GOLD_NISAB * ZAKAT)} USD
                 </div>
-                {pickedNearest.gold && relBadge(pickedNearest.gold.reliability)}
+                {pickedNearest.gold && <RelBadge r={pickedNearest.gold.reliability} />}
               </div>
               <div className="rounded-md border p-3">
                 <div className="text-sm text-muted-foreground">المعدن الفضي</div>
@@ -195,7 +195,7 @@ function PricesHistoryPage() {
                 <div className="text-sm text-primary">
                   زكاة نصاب الفضة: {fmt((pickedNearest.silver?.price_usd_per_gram ?? 0) * SILVER_NISAB * ZAKAT)} USD
                 </div>
-                {pickedNearest.silver && relBadge(pickedNearest.silver.reliability)}
+                {pickedNearest.silver && <RelBadge r={pickedNearest.silver.reliability} />}
               </div>
             </div>
           )}
@@ -243,7 +243,7 @@ function PricesHistoryPage() {
                         <TableCell>{fmt(g * GOLD_NISAB)}</TableCell>
                         <TableCell>{fmt(s, 4)}</TableCell>
                         <TableCell>{fmt(s * SILVER_NISAB)}</TableCell>
-                        <TableCell>{relBadge(rel)}</TableCell>
+                        <TableCell><RelBadge r={rel} /></TableCell>
                       </TableRow>
                     );
                   })}
