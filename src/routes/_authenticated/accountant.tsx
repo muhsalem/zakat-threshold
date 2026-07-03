@@ -342,6 +342,20 @@ function AccountantPortal() {
             </CardContent>
           </Card>
         </TabsContent>
+
+        <TabsContent value="calc" className="mt-0">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Calculator className="h-5 w-5 text-primary" /> الحاسبة السريعة داخل بوابة المحاسب
+              </CardTitle>
+              <p className="text-xs text-muted-foreground">استعملها لمراجعة تقدير سريع مع العميل قبل فتح ملفه الكامل.</p>
+            </CardHeader>
+            <CardContent>
+              <SimpleZakatCalculator />
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
     </main>
   );
