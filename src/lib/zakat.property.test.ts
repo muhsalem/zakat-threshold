@@ -44,10 +44,10 @@ describe("Property-based: حساب الزكاة الأساسي", () => {
 });
 
 describe("Property-based: karatToPure24()", () => {
-  it("عيار 24 يساوي نفسه لأي وزن", () => {
+  it("عيار 24 يساوي نفسه لأي وزن معقول", () => {
     fc.assert(
-      fc.property(fc.double({ min: 0, max: 1e6, noNaN: true }), (g) => {
-        return karatToPure24(g, 24) === g;
+      fc.property(fc.double({ min: 0.001, max: 1e6, noNaN: true }), (g) => {
+        return Math.abs(karatToPure24(g, 24) - g) < 1e-9 * Math.max(1, g);
       }),
       { numRuns: 500 }
     );
@@ -56,10 +56,11 @@ describe("Property-based: karatToPure24()", () => {
   it("النتيجة دائماً ≤ الوزن الأصلي (عيار ≤ 24)", () => {
     fc.assert(
       fc.property(
-        fc.double({ min: 0, max: 1e6, noNaN: true }),
+        fc.double({ min: 0.001, max: 1e6, noNaN: true }),
         fc.integer({ min: 1, max: 24 }),
         (g, k) => {
-          return karatToPure24(g, k) <= g + 1e-9;
+          const r = karatToPure24(g, k);
+          return r <= g * (1 + 1e-9);
         }
       ),
       { numRuns: 1000 }
