@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as VerifyRouteImport } from './routes/verify'
+import { Route as StatusRouteImport } from './routes/status'
 import { Route as SoftwareRecommendationsRouteImport } from './routes/software-recommendations'
 import { Route as ShowcaseRouteImport } from './routes/showcase'
 import { Route as SecurityRouteImport } from './routes/security'
@@ -44,6 +45,7 @@ import { Route as AuthenticatedAttestationsRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ApiPublicOpenapiRouteImport } from './routes/api/public/openapi'
 import { Route as ApiPublicNisabRouteImport } from './routes/api/public/nisab'
+import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
 import { Route as ApiPublicCalcRouteImport } from './routes/api/public/calc'
 import { Route as ApiPublicPricesHistoryRouteImport } from './routes/api/public/prices/history'
 import { Route as ApiPublicHooksSnapshotPricesRouteImport } from './routes/api/public/hooks/snapshot-prices'
@@ -60,6 +62,11 @@ const WelcomeRoute = WelcomeRouteImport.update({
 const VerifyRoute = VerifyRouteImport.update({
   id: '/verify',
   path: '/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StatusRoute = StatusRouteImport.update({
+  id: '/status',
+  path: '/status',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SoftwareRecommendationsRoute = SoftwareRecommendationsRouteImport.update({
@@ -228,6 +235,11 @@ const ApiPublicNisabRoute = ApiPublicNisabRouteImport.update({
   path: '/api/public/nisab',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
+  id: '/api/public/health',
+  path: '/api/public/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicCalcRoute = ApiPublicCalcRouteImport.update({
   id: '/api/public/calc',
   path: '/api/public/calc',
@@ -292,6 +304,7 @@ export interface FileRoutesByFullPath {
   '/security': typeof SecurityRoute
   '/showcase': typeof ShowcaseRoute
   '/software-recommendations': typeof SoftwareRecommendationsRoute
+  '/status': typeof StatusRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -301,6 +314,7 @@ export interface FileRoutesByFullPath {
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/api/public/calc': typeof ApiPublicCalcRoute
+  '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
   '/api/public/openapi': typeof ApiPublicOpenapiRoute
   '/api/public/erp/journal': typeof ApiPublicErpJournalRoute
@@ -335,6 +349,7 @@ export interface FileRoutesByTo {
   '/security': typeof SecurityRoute
   '/showcase': typeof ShowcaseRoute
   '/software-recommendations': typeof SoftwareRecommendationsRoute
+  '/status': typeof StatusRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -344,6 +359,7 @@ export interface FileRoutesByTo {
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/api/public/calc': typeof ApiPublicCalcRoute
+  '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
   '/api/public/openapi': typeof ApiPublicOpenapiRoute
   '/api/public/erp/journal': typeof ApiPublicErpJournalRoute
@@ -380,6 +396,7 @@ export interface FileRoutesById {
   '/security': typeof SecurityRoute
   '/showcase': typeof ShowcaseRoute
   '/software-recommendations': typeof SoftwareRecommendationsRoute
+  '/status': typeof StatusRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
@@ -389,6 +406,7 @@ export interface FileRoutesById {
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/api/public/calc': typeof ApiPublicCalcRoute
+  '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
   '/api/public/openapi': typeof ApiPublicOpenapiRoute
   '/api/public/erp/journal': typeof ApiPublicErpJournalRoute
@@ -425,6 +443,7 @@ export interface FileRouteTypes {
     | '/security'
     | '/showcase'
     | '/software-recommendations'
+    | '/status'
     | '/verify'
     | '/welcome'
     | '/admin'
@@ -434,6 +453,7 @@ export interface FileRouteTypes {
     | '/legal/privacy'
     | '/legal/terms'
     | '/api/public/calc'
+    | '/api/public/health'
     | '/api/public/nisab'
     | '/api/public/openapi'
     | '/api/public/erp/journal'
@@ -468,6 +488,7 @@ export interface FileRouteTypes {
     | '/security'
     | '/showcase'
     | '/software-recommendations'
+    | '/status'
     | '/verify'
     | '/welcome'
     | '/admin'
@@ -477,6 +498,7 @@ export interface FileRouteTypes {
     | '/legal/privacy'
     | '/legal/terms'
     | '/api/public/calc'
+    | '/api/public/health'
     | '/api/public/nisab'
     | '/api/public/openapi'
     | '/api/public/erp/journal'
@@ -512,6 +534,7 @@ export interface FileRouteTypes {
     | '/security'
     | '/showcase'
     | '/software-recommendations'
+    | '/status'
     | '/verify'
     | '/welcome'
     | '/_authenticated/admin'
@@ -521,6 +544,7 @@ export interface FileRouteTypes {
     | '/legal/privacy'
     | '/legal/terms'
     | '/api/public/calc'
+    | '/api/public/health'
     | '/api/public/nisab'
     | '/api/public/openapi'
     | '/api/public/erp/journal'
@@ -557,12 +581,14 @@ export interface RootRouteChildren {
   SecurityRoute: typeof SecurityRoute
   ShowcaseRoute: typeof ShowcaseRoute
   SoftwareRecommendationsRoute: typeof SoftwareRecommendationsRoute
+  StatusRoute: typeof StatusRoute
   VerifyRoute: typeof VerifyRoute
   WelcomeRoute: typeof WelcomeRoute
   ApiChatRoute: typeof ApiChatRoute
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   LegalTermsRoute: typeof LegalTermsRoute
   ApiPublicCalcRoute: typeof ApiPublicCalcRoute
+  ApiPublicHealthRoute: typeof ApiPublicHealthRoute
   ApiPublicNisabRoute: typeof ApiPublicNisabRoute
   ApiPublicOpenapiRoute: typeof ApiPublicOpenapiRoute
   ApiPublicErpJournalRoute: typeof ApiPublicErpJournalRoute
@@ -587,6 +613,13 @@ declare module '@tanstack/react-router' {
       path: '/verify'
       fullPath: '/verify'
       preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/status': {
+      id: '/status'
+      path: '/status'
+      fullPath: '/status'
+      preLoaderRoute: typeof StatusRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/software-recommendations': {
@@ -820,6 +853,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicNisabRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/health': {
+      id: '/api/public/health'
+      path: '/api/public/health'
+      fullPath: '/api/public/health'
+      preLoaderRoute: typeof ApiPublicHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/calc': {
       id: '/api/public/calc'
       path: '/api/public/calc'
@@ -913,12 +953,14 @@ const rootRouteChildren: RootRouteChildren = {
   SecurityRoute: SecurityRoute,
   ShowcaseRoute: ShowcaseRoute,
   SoftwareRecommendationsRoute: SoftwareRecommendationsRoute,
+  StatusRoute: StatusRoute,
   VerifyRoute: VerifyRoute,
   WelcomeRoute: WelcomeRoute,
   ApiChatRoute: ApiChatRoute,
   LegalPrivacyRoute: LegalPrivacyRoute,
   LegalTermsRoute: LegalTermsRoute,
   ApiPublicCalcRoute: ApiPublicCalcRoute,
+  ApiPublicHealthRoute: ApiPublicHealthRoute,
   ApiPublicNisabRoute: ApiPublicNisabRoute,
   ApiPublicOpenapiRoute: ApiPublicOpenapiRoute,
   ApiPublicErpJournalRoute: ApiPublicErpJournalRoute,
