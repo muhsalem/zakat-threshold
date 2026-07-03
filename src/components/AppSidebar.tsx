@@ -14,24 +14,46 @@ import {
 import { Input } from "@/components/ui/input";
 import { Search, Home, Calculator, BookOpen, ShieldCheck, Bell, HelpCircle, Sparkles, LayoutDashboard } from "lucide-react";
 import { searchEntries } from "@/lib/searchIndex";
+import { useAuth, type AccountType } from "@/hooks/useAuth";
 
-const NAV = [
-  { title: "الرئيسية", url: "/", icon: Home },
-  { title: "لوحتي", url: "/dashboard", icon: LayoutDashboard },
-  { title: "المستشار الذكي", url: "/advisor", icon: Sparkles },
-  { title: "السجل", url: "/history", icon: BookOpen },
-  { title: "التحقق من تقرير", url: "/verify", icon: ShieldCheck },
-  { title: "الإشعارات", url: "/analytics", icon: Bell },
-  { title: "الأسئلة الشائعة", url: "/faq", icon: HelpCircle },
+type NavItem = { title: string; url: string; icon: any; audience: Array<AccountType | "all"> };
+
+const NAV: NavItem[] = [
+  { title: "الرئيسية", url: "/", icon: Home, audience: ["all"] },
+  { title: "لوحتي", url: "/dashboard", icon: LayoutDashboard, audience: ["all"] },
+  { title: "المستشار الذكي", url: "/advisor", icon: Sparkles, audience: ["all"] },
+  { title: "السجل", url: "/history", icon: BookOpen, audience: ["all"] },
+  { title: "التحقق من تقرير", url: "/verify", icon: ShieldCheck, audience: ["all"] },
+  { title: "الإشعارات", url: "/analytics", icon: Bell, audience: ["all"] },
+  { title: "الأسئلة الشائعة", url: "/faq", icon: HelpCircle, audience: ["all"] },
 ];
+
+type CalcItem = { title: string; url: string; audience: Array<AccountType | "all"> };
+
+const CALCS: CalcItem[] = [
+  { title: "زكاة الذهب والفضة", url: "/zakat-gold", audience: ["individual"] },
+  { title: "زكاة الزروع", url: "/crops", audience: ["individual"] },
+  { title: "زكاة الشركات", url: "/zakat-company", audience: ["company"] },
+  { title: "زكاة المؤسسات", url: "/enterprise", audience: ["institution"] },
+];
+
+function isVisible(audience: Array<AccountType | "all">, type: AccountType | null) {
+  if (audience.includes("all")) return true;
+  if (!type) return false;
+  return audience.includes(type);
+}
 
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const currentPath = useRouterState({ select: (r) => r.location.pathname });
+  const { accountType } = useAuth();
   const [q, setQ] = useState("");
   const results = useMemo(() => searchEntries(q), [q]);
   const isActive = (p: string) => currentPath === p;
+
+  const navItems = NAV.filter((i) => isVisible(i.audience, accountType));
+  const calcItems = CALCS.filter((i) => isVisible(i.audience, accountType));
 
   return (
     <Sidebar collapsible="icon" side="right">
@@ -78,7 +100,7 @@ export function AppSidebar() {
           <SidebarGroupLabel>التنقّل</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {NAV.map((item) => (
+              {navItems.map((item) => (
                 <SidebarMenuItem key={item.url}>
                   <SidebarMenuButton asChild isActive={isActive(item.url)}>
                     <Link to={item.url} className="flex items-center gap-2">
@@ -92,28 +114,27 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup>
-          <SidebarGroupLabel>الحاسبات</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {[
-                { title: "زكاة الذهب", url: "/zakat-gold" },
-                { title: "زكاة الشركات", url: "/zakat-company" },
-                { title: "زكاة الزروع", url: "/crops" },
-                { title: "زكاة المؤسسات", url: "/enterprise" },
-              ].map((i) => (
-                <SidebarMenuItem key={i.url}>
-                  <SidebarMenuButton asChild isActive={isActive(i.url)}>
-                    <Link to={i.url} className="flex items-center gap-2">
-                      <Calculator className="h-4 w-4" />
-                      {!collapsed && <span>{i.title}</span>}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {calcItems.length > 0 && (
+          <SidebarGroup>
+            <SidebarGroupLabel>
+              {accountType === "company" ? "حاسبات الشركات" : accountType === "institution" ? "حاسبات المؤسسات" : "حاسبات الأفراد"}
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {calcItems.map((i) => (
+                  <SidebarMenuItem key={i.url}>
+                    <SidebarMenuButton asChild isActive={isActive(i.url)}>
+                      <Link to={i.url} className="flex items-center gap-2">
+                        <Calculator className="h-4 w-4" />
+                        {!collapsed && <span>{i.title}</span>}
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
     </Sidebar>
   );
