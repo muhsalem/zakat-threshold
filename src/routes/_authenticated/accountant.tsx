@@ -64,7 +64,7 @@ function AccountantPortal() {
     const subscribeRealtime = (uid: string) => {
       if (channel) supabase.removeChannel(channel);
       channel = supabase
-        .channel(`accountant_clients:${uid}`)
+        .channel(`accountant_clients:${uid}:${Math.random().toString(36).slice(2)}`)
         .on(
           "postgres_changes",
           { event: "*", schema: "public", table: "accountant_clients", filter: `owner_id=eq.${uid}` },
