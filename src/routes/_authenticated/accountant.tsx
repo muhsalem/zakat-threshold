@@ -101,25 +101,25 @@ function AccountantPortal() {
   const selectedClients = clients.filter((c) => selected.has(c.id));
 
   // ---- إجراءات جماعية ----
-  const bulkRecalculate = () => {
+  const bulkRecalculate = async () => {
     if (selectedClients.length === 0) return toast.error("اختر عملاء أولاً");
     let total = 0;
-    const next = clients.map((c) => {
-      if (!selected.has(c.id)) return c;
-      const amount = zakatOf(c);
-      total += amount;
-      return {
-        ...c,
-        lastCalcAt: new Date().toISOString(),
-        lastCalcAmount: amount,
-        status: "review" as ClientStatus,
-        history: [...c.history, { at: new Date().toISOString(), action: "إعادة احتساب جماعي", amount }],
-      };
-    });
-    persist(next);
-    toast.success(`تم إعادة الحساب لـ ${selectedClients.length} عميل`, {
-      description: `إجمالي الزكاة: ${fmt(total)} ر.س`,
-    });
+    try {
+      for (const c of selectedClients) {
+        const amount = zakatOf(c);
+        total += amount;
+        await updateClient(c.id, {
+          lastCalcAt: new Date().toISOString(),
+          lastCalcAmount: amount,
+          status: "review",
+        });
+        await addHistory(c.id, { action: "إعادة احتساب جماعي", amount });
+      }
+      await reload();
+      toast.success(`تم إعادة الحساب لـ ${selectedClients.length} عميل`, {
+        description: `إجمالي الزكاة: ${fmt(total)} ر.س`,
+      });
+    } catch (e) { toast.error("تعذّر التنفيذ", { description: (e as Error).message }); }
   };
 
   const bulkReports = () => {
@@ -140,23 +140,30 @@ function AccountantPortal() {
     toast.success(`تم إنشاء دفعة تقارير لـ ${selectedClients.length} عميل`);
   };
 
-  const bulkStatus = (status: ClientStatus) => {
+  const bulkStatus = async (status: ClientStatus) => {
     if (selectedClients.length === 0) return toast.error("اختر عملاء أولاً");
-    const next = clients.map((c) => selected.has(c.id) ? {
-      ...c, status,
-      history: [...c.history, { at: new Date().toISOString(), action: `تغيير الحالة إلى ${STATUS_LABELS[status]}` }],
-    } : c);
-    persist(next);
-    toast.success(`تم تحديث حالة ${selectedClients.length} عميل`);
+    try {
+      for (const c of selectedClients) {
+        await updateClient(c.id, { status });
+        await addHistory(c.id, { action: `تغيير الحالة إلى ${STATUS_LABELS[status]}` });
+      }
+      await reload();
+      toast.success(`تم تحديث حالة ${selectedClients.length} عميل`);
+    } catch (e) { toast.error("تعذّر التنفيذ", { description: (e as Error).message }); }
   };
 
-  const bulkDelete = () => {
+  const bulkDelete = async () => {
     if (selectedClients.length === 0) return;
     if (!confirm(`حذف ${selectedClients.length} عميل؟`)) return;
-    persist(clients.filter((c) => !selected.has(c.id)));
-    setSelected(new Set());
-    toast.success("تم الحذف");
+    try {
+      await deleteClients(selectedClients.map((c) => c.id));
+      setSelected(new Set());
+      await reload();
+      toast.success("تم الحذف");
+    } catch (e) { toast.error("تعذّر الحذف", { description: (e as Error).message }); }
   };
+
+
 
   const uniqueCountries = Array.from(new Set(clients.map((c) => c.country)));
   const uniqueYears = Array.from(new Set(clients.map((c) => c.fiscalYear))).sort((a, b) => b - a);
