@@ -115,7 +115,7 @@ function ClientIntakePage() {
     hawlDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "تاريخ غير صالح"),
   });
 
-  const submit = () => {
+  const submit = async () => {
     // honeypot: bots fill hidden field
     if (honeypotRef.current?.value) { toast.error("تعذّر الإرسال"); return; }
     // rate: at least 2 seconds since form open
@@ -136,18 +136,39 @@ function ClientIntakePage() {
       form.notes,
     ].filter(Boolean).join(" \n ") : form.notes;
 
-    const client = newClientFromIntake({
+    const payload = {
       name: form.name, email: form.email, kind: form.kind, country: form.country, madhab: form.madhab,
       hawlDate: form.hawlDate,
       breakdown: { cash: aggCash, gold: form.gold, investments: aggInv, inventory: aggInventory, receivables: form.receivables, debts: aggDebts },
       notes: `[${mode === "comprehensive" ? "تقرير شامل معتمد" : "حساب سريع"}] ${notesExtras}`,
-    });
-    upsertClient(client);
+      createdVia: "intake" as const,
+    };
+
+    // إذا كان المستخدم مسجّل الدخول: احفظ في Lovable Cloud مباشرة
+    const { data: userRes } = await supabase.auth.getUser();
+    if (userRes.user) {
+      try {
+        await createAccountantClient(payload);
+      } catch (e) {
+        toast.error("تعذّر الحفظ في السحابة", { description: (e as Error).message });
+        return;
+      }
+    } else {
+      // لا يوجد جلسة — احفظ الطلب محلياً كمسودة استلام حتى يستوردها المحاسب
+      try {
+        const key = "public_intake_queue_v1";
+        const raw = localStorage.getItem(key);
+        const list = raw ? JSON.parse(raw) : [];
+        list.push({ ...payload, at: new Date().toISOString() });
+        localStorage.setItem(key, JSON.stringify(list));
+      } catch {}
+    }
     try { localStorage.removeItem(DRAFT_KEY); } catch {}
     setDraftSavedAt(null);
     setSubmitted(mode);
     toast.success(mode === "comprehensive" ? "تم إرسال طلب التقرير الشامل" : "تم إرسال بياناتك للمحاسب");
   };
+
 
   if (submitted) {
     const isComp = submitted === "comprehensive";
