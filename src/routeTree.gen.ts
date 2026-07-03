@@ -17,6 +17,7 @@ import { Route as ShowcaseRouteImport } from './routes/showcase'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PricesHistoryRouteImport } from './routes/prices-history'
+import { Route as PortalSigninRouteImport } from './routes/portal-signin'
 import { Route as OrganizationsRouteImport } from './routes/organizations'
 import { Route as NisabAuditRouteImport } from './routes/nisab-audit'
 import { Route as ImpactRouteImport } from './routes/impact'
@@ -30,6 +31,7 @@ import { Route as DevelopersRouteImport } from './routes/developers'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as CropsRouteImport } from './routes/crops'
 import { Route as ComplianceRouteImport } from './routes/compliance'
+import { Route as ClientIntakeRouteImport } from './routes/client-intake'
 import { Route as AwardSubmissionRouteImport } from './routes/award-submission'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuditRouteImport } from './routes/audit'
@@ -49,6 +51,7 @@ import { Route as ApiPublicOpenapiRouteImport } from './routes/api/public/openap
 import { Route as ApiPublicNisabRouteImport } from './routes/api/public/nisab'
 import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
 import { Route as ApiPublicCalcRouteImport } from './routes/api/public/calc'
+import { Route as AuthenticatedAccountantClientIdRouteImport } from './routes/_authenticated/accountant.$clientId'
 import { Route as ApiPublicPricesHistoryRouteImport } from './routes/api/public/prices/history'
 import { Route as ApiPublicHooksSnapshotPricesRouteImport } from './routes/api/public/hooks/snapshot-prices'
 import { Route as ApiPublicHooksSnapshotDailyPricesRouteImport } from './routes/api/public/hooks/snapshot-daily-prices'
@@ -94,6 +97,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const PricesHistoryRoute = PricesHistoryRouteImport.update({
   id: '/prices-history',
   path: '/prices-history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalSigninRoute = PortalSigninRouteImport.update({
+  id: '/portal-signin',
+  path: '/portal-signin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OrganizationsRoute = OrganizationsRouteImport.update({
@@ -159,6 +167,11 @@ const CropsRoute = CropsRouteImport.update({
 const ComplianceRoute = ComplianceRouteImport.update({
   id: '/compliance',
   path: '/compliance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClientIntakeRoute = ClientIntakeRouteImport.update({
+  id: '/client-intake',
+  path: '/client-intake',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AwardSubmissionRoute = AwardSubmissionRouteImport.update({
@@ -257,6 +270,12 @@ const ApiPublicCalcRoute = ApiPublicCalcRouteImport.update({
   path: '/api/public/calc',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAccountantClientIdRoute =
+  AuthenticatedAccountantClientIdRouteImport.update({
+    id: '/$clientId',
+    path: '/$clientId',
+    getParentRoute: () => AuthenticatedAccountantRoute,
+  } as any)
 const ApiPublicPricesHistoryRoute = ApiPublicPricesHistoryRouteImport.update({
   id: '/api/public/prices/history',
   path: '/api/public/prices/history',
@@ -298,6 +317,7 @@ export interface FileRoutesByFullPath {
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/award-submission': typeof AwardSubmissionRoute
+  '/client-intake': typeof ClientIntakeRoute
   '/compliance': typeof ComplianceRoute
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
@@ -311,6 +331,7 @@ export interface FileRoutesByFullPath {
   '/impact': typeof ImpactRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
+  '/portal-signin': typeof PortalSigninRoute
   '/prices-history': typeof PricesHistoryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
@@ -319,7 +340,7 @@ export interface FileRoutesByFullPath {
   '/status': typeof StatusRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
-  '/accountant': typeof AuthenticatedAccountantRoute
+  '/accountant': typeof AuthenticatedAccountantRouteWithChildren
   '/admin': typeof AuthenticatedAdminRoute
   '/attestations': typeof AuthenticatedAttestationsRoute
   '/audit-review': typeof AuthenticatedAuditReviewRoute
@@ -327,6 +348,7 @@ export interface FileRoutesByFullPath {
   '/api/chat': typeof ApiChatRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
+  '/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
@@ -345,6 +367,7 @@ export interface FileRoutesByTo {
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/award-submission': typeof AwardSubmissionRoute
+  '/client-intake': typeof ClientIntakeRoute
   '/compliance': typeof ComplianceRoute
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
@@ -358,6 +381,7 @@ export interface FileRoutesByTo {
   '/impact': typeof ImpactRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
+  '/portal-signin': typeof PortalSigninRoute
   '/prices-history': typeof PricesHistoryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
@@ -366,7 +390,7 @@ export interface FileRoutesByTo {
   '/status': typeof StatusRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
-  '/accountant': typeof AuthenticatedAccountantRoute
+  '/accountant': typeof AuthenticatedAccountantRouteWithChildren
   '/admin': typeof AuthenticatedAdminRoute
   '/attestations': typeof AuthenticatedAttestationsRoute
   '/audit-review': typeof AuthenticatedAuditReviewRoute
@@ -374,6 +398,7 @@ export interface FileRoutesByTo {
   '/api/chat': typeof ApiChatRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
+  '/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
@@ -394,6 +419,7 @@ export interface FileRoutesById {
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/award-submission': typeof AwardSubmissionRoute
+  '/client-intake': typeof ClientIntakeRoute
   '/compliance': typeof ComplianceRoute
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
@@ -407,6 +433,7 @@ export interface FileRoutesById {
   '/impact': typeof ImpactRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
+  '/portal-signin': typeof PortalSigninRoute
   '/prices-history': typeof PricesHistoryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
@@ -415,7 +442,7 @@ export interface FileRoutesById {
   '/status': typeof StatusRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
-  '/_authenticated/accountant': typeof AuthenticatedAccountantRoute
+  '/_authenticated/accountant': typeof AuthenticatedAccountantRouteWithChildren
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/attestations': typeof AuthenticatedAttestationsRoute
   '/_authenticated/audit-review': typeof AuthenticatedAuditReviewRoute
@@ -423,6 +450,7 @@ export interface FileRoutesById {
   '/api/chat': typeof ApiChatRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
+  '/_authenticated/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
@@ -443,6 +471,7 @@ export interface FileRouteTypes {
     | '/audit'
     | '/auth'
     | '/award-submission'
+    | '/client-intake'
     | '/compliance'
     | '/crops'
     | '/demo'
@@ -456,6 +485,7 @@ export interface FileRouteTypes {
     | '/impact'
     | '/nisab-audit'
     | '/organizations'
+    | '/portal-signin'
     | '/prices-history'
     | '/reset-password'
     | '/security'
@@ -472,6 +502,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/legal/privacy'
     | '/legal/terms'
+    | '/accountant/$clientId'
     | '/api/public/calc'
     | '/api/public/health'
     | '/api/public/nisab'
@@ -490,6 +521,7 @@ export interface FileRouteTypes {
     | '/audit'
     | '/auth'
     | '/award-submission'
+    | '/client-intake'
     | '/compliance'
     | '/crops'
     | '/demo'
@@ -503,6 +535,7 @@ export interface FileRouteTypes {
     | '/impact'
     | '/nisab-audit'
     | '/organizations'
+    | '/portal-signin'
     | '/prices-history'
     | '/reset-password'
     | '/security'
@@ -519,6 +552,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/legal/privacy'
     | '/legal/terms'
+    | '/accountant/$clientId'
     | '/api/public/calc'
     | '/api/public/health'
     | '/api/public/nisab'
@@ -538,6 +572,7 @@ export interface FileRouteTypes {
     | '/audit'
     | '/auth'
     | '/award-submission'
+    | '/client-intake'
     | '/compliance'
     | '/crops'
     | '/demo'
@@ -551,6 +586,7 @@ export interface FileRouteTypes {
     | '/impact'
     | '/nisab-audit'
     | '/organizations'
+    | '/portal-signin'
     | '/prices-history'
     | '/reset-password'
     | '/security'
@@ -567,6 +603,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/legal/privacy'
     | '/legal/terms'
+    | '/_authenticated/accountant/$clientId'
     | '/api/public/calc'
     | '/api/public/health'
     | '/api/public/nisab'
@@ -587,6 +624,7 @@ export interface RootRouteChildren {
   AuditRoute: typeof AuditRoute
   AuthRoute: typeof AuthRoute
   AwardSubmissionRoute: typeof AwardSubmissionRoute
+  ClientIntakeRoute: typeof ClientIntakeRoute
   ComplianceRoute: typeof ComplianceRoute
   CropsRoute: typeof CropsRoute
   DemoRoute: typeof DemoRoute
@@ -600,6 +638,7 @@ export interface RootRouteChildren {
   ImpactRoute: typeof ImpactRoute
   NisabAuditRoute: typeof NisabAuditRoute
   OrganizationsRoute: typeof OrganizationsRoute
+  PortalSigninRoute: typeof PortalSigninRoute
   PricesHistoryRoute: typeof PricesHistoryRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SecurityRoute: typeof SecurityRoute
@@ -679,6 +718,13 @@ declare module '@tanstack/react-router' {
       path: '/prices-history'
       fullPath: '/prices-history'
       preLoaderRoute: typeof PricesHistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal-signin': {
+      id: '/portal-signin'
+      path: '/portal-signin'
+      fullPath: '/portal-signin'
+      preLoaderRoute: typeof PortalSigninRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/organizations': {
@@ -770,6 +816,13 @@ declare module '@tanstack/react-router' {
       path: '/compliance'
       fullPath: '/compliance'
       preLoaderRoute: typeof ComplianceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/client-intake': {
+      id: '/client-intake'
+      path: '/client-intake'
+      fullPath: '/client-intake'
+      preLoaderRoute: typeof ClientIntakeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/award-submission': {
@@ -905,6 +958,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCalcRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/accountant/$clientId': {
+      id: '/_authenticated/accountant/$clientId'
+      path: '/$clientId'
+      fullPath: '/accountant/$clientId'
+      preLoaderRoute: typeof AuthenticatedAccountantClientIdRouteImport
+      parentRoute: typeof AuthenticatedAccountantRoute
+    }
     '/api/public/prices/history': {
       id: '/api/public/prices/history'
       path: '/api/public/prices/history'
@@ -950,8 +1010,22 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedAccountantRouteChildren {
+  AuthenticatedAccountantClientIdRoute: typeof AuthenticatedAccountantClientIdRoute
+}
+
+const AuthenticatedAccountantRouteChildren: AuthenticatedAccountantRouteChildren =
+  {
+    AuthenticatedAccountantClientIdRoute: AuthenticatedAccountantClientIdRoute,
+  }
+
+const AuthenticatedAccountantRouteWithChildren =
+  AuthenticatedAccountantRoute._addFileChildren(
+    AuthenticatedAccountantRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedAccountantRoute: typeof AuthenticatedAccountantRoute
+  AuthenticatedAccountantRoute: typeof AuthenticatedAccountantRouteWithChildren
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedAttestationsRoute: typeof AuthenticatedAttestationsRoute
   AuthenticatedAuditReviewRoute: typeof AuthenticatedAuditReviewRoute
@@ -959,7 +1033,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedAccountantRoute: AuthenticatedAccountantRoute,
+  AuthenticatedAccountantRoute: AuthenticatedAccountantRouteWithChildren,
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedAttestationsRoute: AuthenticatedAttestationsRoute,
   AuthenticatedAuditReviewRoute: AuthenticatedAuditReviewRoute,
@@ -977,6 +1051,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuditRoute: AuditRoute,
   AuthRoute: AuthRoute,
   AwardSubmissionRoute: AwardSubmissionRoute,
+  ClientIntakeRoute: ClientIntakeRoute,
   ComplianceRoute: ComplianceRoute,
   CropsRoute: CropsRoute,
   DemoRoute: DemoRoute,
@@ -990,6 +1065,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImpactRoute: ImpactRoute,
   NisabAuditRoute: NisabAuditRoute,
   OrganizationsRoute: OrganizationsRoute,
+  PortalSigninRoute: PortalSigninRoute,
   PricesHistoryRoute: PricesHistoryRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SecurityRoute: SecurityRoute,
