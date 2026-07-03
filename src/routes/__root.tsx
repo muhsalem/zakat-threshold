@@ -188,6 +188,8 @@ function RootComponent() {
         <OnboardingWizard />
         <PWAInstallPrompt />
         <MobileBottomNav />
+        <SonnerToaster />
+
       </LanguageProvider>
     </QueryClientProvider>
   );
