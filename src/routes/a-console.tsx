@@ -10,7 +10,7 @@ import { ShieldCheck, KeyRound } from "lucide-react";
 import { grantAccountantAccess } from "@/lib/accountantGate.functions";
 import { useAuth } from "@/hooks/useAuth";
 
-export const Route = createFileRoute("/_a-console")({
+export const Route = createFileRoute("/a-console")({
   head: () => ({
     meta: [
       { title: "بوابة إدارية" },
