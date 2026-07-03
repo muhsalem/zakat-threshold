@@ -124,7 +124,7 @@ export const listPendingApprovals = createServerFn({ method: "GET" })
     const { data, error } = await ctx.supabase
       .from("zakat_approvals")
       .select("id, title, status, fingerprint, submitted_at, organization_id, maker_id, checker_note")
-      .in("status", ["pending", "submitted"] as any)
+      .eq("status", "pending")
       .order("submitted_at", { ascending: false })
       .limit(200);
     if (error) throw new Error(error.message);
