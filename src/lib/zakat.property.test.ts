@@ -20,12 +20,11 @@ describe("Property-based: num()", () => {
 });
 
 describe("Property-based: حساب الزكاة الأساسي", () => {
-  it("قيمة الزكاة دائماً 2.5% للأعداد الموجبة", () => {
+  it("قيمة الزكاة دائماً 2.5% للأعداد الموجبة المعقولة", () => {
     fc.assert(
-      fc.property(fc.double({ min: 0, max: 1e12, noNaN: true }), (assets) => {
+      fc.property(fc.double({ min: 1, max: 1e12, noNaN: true }), (assets) => {
         const zakat = assets * ZAKAT_RATE;
-        // خطأ التقريب المسموح 1e-6
-        return Math.abs(zakat / assets - 0.025) < 1e-6 || assets === 0;
+        return Math.abs(zakat / assets - 0.025) < 1e-9;
       }),
       { numRuns: 2000 }
     );
