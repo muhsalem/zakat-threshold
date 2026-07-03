@@ -179,6 +179,7 @@ function AccountantPortal() {
         <TabsList>
           <TabsTrigger value="clients" className="gap-1.5"><Users className="h-3.5 w-3.5" /> العملاء والمحفظة</TabsTrigger>
           <TabsTrigger value="prices" className="gap-1.5"><LineChart className="h-3.5 w-3.5" /> السجل التاريخي للأسعار</TabsTrigger>
+          <TabsTrigger value="calc" className="gap-1.5"><Calculator className="h-3.5 w-3.5" /> الحاسبة السريعة</TabsTrigger>
         </TabsList>
 
         <TabsContent value="clients" className="space-y-6 mt-0">
