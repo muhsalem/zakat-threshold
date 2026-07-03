@@ -99,7 +99,7 @@ export function FloatingDock() {
         onClick={() => { setOpenRight((v) => !v); setOpenLeft(false); }}
         aria-label="فتح قائمة البوابات والأدوات"
         aria-expanded={openRight}
-        className="print:hidden fixed bottom-4 right-4 z-40 inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-4 py-2.5 text-xs font-semibold shadow-lg hover:opacity-90 transition-opacity"
+        className="print:hidden hidden md:inline-flex fixed bottom-4 right-4 z-40 inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-4 py-2.5 text-xs font-semibold shadow-lg hover:opacity-90 transition-opacity"
       >
         {openRight ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
         البوابات والأدوات
@@ -110,7 +110,7 @@ export function FloatingDock() {
         onClick={() => { setOpenLeft((v) => !v); setOpenRight(false); }}
         aria-label="فتح قائمة المعلومات والتحقق"
         aria-expanded={openLeft}
-        className="print:hidden fixed bottom-4 left-4 z-40 inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-card/95 backdrop-blur px-4 py-2.5 text-xs font-semibold text-primary shadow-lg hover:bg-primary hover:text-primary-foreground transition-colors"
+        className="print:hidden hidden md:inline-flex fixed bottom-4 left-4 z-40 inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-card/95 backdrop-blur px-4 py-2.5 text-xs font-semibold text-primary shadow-lg hover:bg-primary hover:text-primary-foreground transition-colors"
       >
         {openLeft ? <X className="h-4 w-4" /> : <Info className="h-4 w-4" />}
         معلومات وتحقق
