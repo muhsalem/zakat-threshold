@@ -224,6 +224,21 @@ function AccountantPortal() {
   const uniqueCountries = Array.from(new Set(clients.map((c) => c.country)));
   const uniqueYears = Array.from(new Set(clients.map((c) => c.fiscalYear))).sort((a, b) => b - a);
 
+  if (!roleChecked) {
+    return <div className="flex items-center justify-center min-h-[50vh]"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
+  }
+  if (!hasAccess) {
+    return (
+      <main className="container mx-auto max-w-md px-4 py-16 text-center" dir="rtl">
+        <Alert variant="destructive">
+          <AlertDescription>
+            هذه البوابة مقيّدة لحسابات المحاسبين المعتمدين فقط. إن كنت تملك كلمة المرور الرئيسية فادخل عبر <Link to="/a-console" className="underline font-medium">البوابة الإدارية</Link>.
+          </AlertDescription>
+        </Alert>
+      </main>
+    );
+  }
+
   return (
     <main className="container mx-auto max-w-7xl px-4 py-8 space-y-6" dir="rtl">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-3">
