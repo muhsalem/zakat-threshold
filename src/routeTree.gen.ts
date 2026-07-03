@@ -49,6 +49,7 @@ import { Route as ApiPublicOpenapiRouteImport } from './routes/api/public/openap
 import { Route as ApiPublicNisabRouteImport } from './routes/api/public/nisab'
 import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
 import { Route as ApiPublicCalcRouteImport } from './routes/api/public/calc'
+import { Route as AuthenticatedAccountantClientIdRouteImport } from './routes/_authenticated/accountant.$clientId'
 import { Route as ApiPublicPricesHistoryRouteImport } from './routes/api/public/prices/history'
 import { Route as ApiPublicHooksSnapshotPricesRouteImport } from './routes/api/public/hooks/snapshot-prices'
 import { Route as ApiPublicHooksSnapshotDailyPricesRouteImport } from './routes/api/public/hooks/snapshot-daily-prices'
@@ -257,6 +258,12 @@ const ApiPublicCalcRoute = ApiPublicCalcRouteImport.update({
   path: '/api/public/calc',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAccountantClientIdRoute =
+  AuthenticatedAccountantClientIdRouteImport.update({
+    id: '/$clientId',
+    path: '/$clientId',
+    getParentRoute: () => AuthenticatedAccountantRoute,
+  } as any)
 const ApiPublicPricesHistoryRoute = ApiPublicPricesHistoryRouteImport.update({
   id: '/api/public/prices/history',
   path: '/api/public/prices/history',
@@ -319,7 +326,7 @@ export interface FileRoutesByFullPath {
   '/status': typeof StatusRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
-  '/accountant': typeof AuthenticatedAccountantRoute
+  '/accountant': typeof AuthenticatedAccountantRouteWithChildren
   '/admin': typeof AuthenticatedAdminRoute
   '/attestations': typeof AuthenticatedAttestationsRoute
   '/audit-review': typeof AuthenticatedAuditReviewRoute
@@ -327,6 +334,7 @@ export interface FileRoutesByFullPath {
   '/api/chat': typeof ApiChatRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
+  '/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
@@ -366,7 +374,7 @@ export interface FileRoutesByTo {
   '/status': typeof StatusRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
-  '/accountant': typeof AuthenticatedAccountantRoute
+  '/accountant': typeof AuthenticatedAccountantRouteWithChildren
   '/admin': typeof AuthenticatedAdminRoute
   '/attestations': typeof AuthenticatedAttestationsRoute
   '/audit-review': typeof AuthenticatedAuditReviewRoute
@@ -374,6 +382,7 @@ export interface FileRoutesByTo {
   '/api/chat': typeof ApiChatRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
+  '/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
@@ -415,7 +424,7 @@ export interface FileRoutesById {
   '/status': typeof StatusRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
-  '/_authenticated/accountant': typeof AuthenticatedAccountantRoute
+  '/_authenticated/accountant': typeof AuthenticatedAccountantRouteWithChildren
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/attestations': typeof AuthenticatedAttestationsRoute
   '/_authenticated/audit-review': typeof AuthenticatedAuditReviewRoute
@@ -423,6 +432,7 @@ export interface FileRoutesById {
   '/api/chat': typeof ApiChatRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
+  '/_authenticated/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
@@ -472,6 +482,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/legal/privacy'
     | '/legal/terms'
+    | '/accountant/$clientId'
     | '/api/public/calc'
     | '/api/public/health'
     | '/api/public/nisab'
@@ -519,6 +530,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/legal/privacy'
     | '/legal/terms'
+    | '/accountant/$clientId'
     | '/api/public/calc'
     | '/api/public/health'
     | '/api/public/nisab'
@@ -567,6 +579,7 @@ export interface FileRouteTypes {
     | '/api/chat'
     | '/legal/privacy'
     | '/legal/terms'
+    | '/_authenticated/accountant/$clientId'
     | '/api/public/calc'
     | '/api/public/health'
     | '/api/public/nisab'
@@ -905,6 +918,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCalcRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/accountant/$clientId': {
+      id: '/_authenticated/accountant/$clientId'
+      path: '/$clientId'
+      fullPath: '/accountant/$clientId'
+      preLoaderRoute: typeof AuthenticatedAccountantClientIdRouteImport
+      parentRoute: typeof AuthenticatedAccountantRoute
+    }
     '/api/public/prices/history': {
       id: '/api/public/prices/history'
       path: '/api/public/prices/history'
@@ -950,8 +970,22 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedAccountantRouteChildren {
+  AuthenticatedAccountantClientIdRoute: typeof AuthenticatedAccountantClientIdRoute
+}
+
+const AuthenticatedAccountantRouteChildren: AuthenticatedAccountantRouteChildren =
+  {
+    AuthenticatedAccountantClientIdRoute: AuthenticatedAccountantClientIdRoute,
+  }
+
+const AuthenticatedAccountantRouteWithChildren =
+  AuthenticatedAccountantRoute._addFileChildren(
+    AuthenticatedAccountantRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedAccountantRoute: typeof AuthenticatedAccountantRoute
+  AuthenticatedAccountantRoute: typeof AuthenticatedAccountantRouteWithChildren
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedAttestationsRoute: typeof AuthenticatedAttestationsRoute
   AuthenticatedAuditReviewRoute: typeof AuthenticatedAuditReviewRoute
@@ -959,7 +993,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedAccountantRoute: AuthenticatedAccountantRoute,
+  AuthenticatedAccountantRoute: AuthenticatedAccountantRouteWithChildren,
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedAttestationsRoute: AuthenticatedAttestationsRoute,
   AuthenticatedAuditReviewRoute: AuthenticatedAuditReviewRoute,
