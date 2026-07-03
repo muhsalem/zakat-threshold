@@ -85,10 +85,15 @@ export function SaveToHistoryCard({ payload }: { payload: Payload }) {
               rows={2}
               className="text-sm"
             />
-            <div className="flex items-center gap-2">
-              <Button onClick={handleSave} disabled={busy || saved} className="gap-1.5 flex-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <Button onClick={handleSave} disabled={busy || saved} className="gap-1.5 flex-1 min-w-[160px]">
                 {saved ? <><CheckCircle2 className="h-4 w-4" /> تم الحفظ</> : busy ? "جاري الحفظ..." : <><Save className="h-4 w-4" /> حفظ هذه السنة</>}
               </Button>
+              {savedId && (
+                <Link to="/certified-report/$recordId" params={{ recordId: savedId }}>
+                  <Button variant="default" className="bg-gold hover:bg-gold/90 text-gold-foreground">تقرير معتمد</Button>
+                </Link>
+              )}
               <Link to="/history"><Button variant="outline">السجل</Button></Link>
               <Link to="/audit"><Button variant="outline">التدقيق</Button></Link>
             </div>
