@@ -40,6 +40,7 @@ export const Route = createFileRoute("/calculator")({
 
 function CalculatorPage() {
   const { t, lang } = useI18n();
+  const [mode, setMode] = useState<"individual" | "company" | "fitr" | null>(null);
   return (
     <div className="min-h-screen">
       <header className="border-b border-border/60 bg-card/60 backdrop-blur-sm sticky top-0 z-30">
