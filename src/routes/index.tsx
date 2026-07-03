@@ -14,7 +14,7 @@ import {
   LogIn, LogOut, Award, BookOpen, Cpu, Lock, Database, LineChart,
   Landmark, HandCoins, Scale, Zap, PhoneCall, FileText,
 } from "lucide-react";
-import { SimpleZakatCalculator } from "@/components/zakat/SimpleZakatCalculator";
+// removed home-page calculator import (calculator moved into accountant dashboard)
 import nisabLogo from "@/assets/nisab-logo.png.asset.json";
 
 export const Route = createFileRoute("/")({
