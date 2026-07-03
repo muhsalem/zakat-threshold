@@ -476,6 +476,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          account_type: Database["public"]["Enums"]["account_type"]
           created_at: string
           display_name: string | null
           id: string
@@ -483,6 +484,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          account_type?: Database["public"]["Enums"]["account_type"]
           created_at?: string
           display_name?: string | null
           id?: string
@@ -490,6 +492,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          account_type?: Database["public"]["Enums"]["account_type"]
           created_at?: string
           display_name?: string | null
           id?: string
@@ -774,7 +777,8 @@ export type Database = {
       is_org_member: { Args: { _org: string; _user: string }; Returns: boolean }
     }
     Enums: {
-      app_role: "admin" | "moderator" | "user"
+      account_type: "individual" | "company" | "institution"
+      app_role: "admin" | "moderator" | "user" | "accountant"
       approval_status: "pending" | "approved" | "rejected"
       org_role: "owner" | "admin" | "maker" | "checker" | "auditor" | "viewer"
     }
@@ -904,7 +908,8 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "moderator", "user"],
+      account_type: ["individual", "company", "institution"],
+      app_role: ["admin", "moderator", "user", "accountant"],
       approval_status: ["pending", "approved", "rejected"],
       org_role: ["owner", "admin", "maker", "checker", "auditor", "viewer"],
     },
