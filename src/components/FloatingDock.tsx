@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
-  Sparkles, Users, LayoutGrid, UserPlus, ShieldCheck, Building2,
-  LineChart, HelpCircle, X, Menu, Info,
+  Sparkles, Users, LayoutGrid, UserPlus, ShieldCheck,
+  HelpCircle, X, Menu, Info,
 } from "lucide-react";
 
 type Item = {
@@ -21,8 +21,6 @@ const PORTALS: Item[] = [
 
 const INFO: Item[] = [
   { to: "/verify", label: "التحقق من تقرير", icon: ShieldCheck },
-  { to: "/organizations", label: "المؤسسات", icon: Building2 },
-  { to: "/prices-history", label: "سجل الأسعار", icon: LineChart },
   { to: "/faq", label: "الأسئلة الشائعة", icon: HelpCircle },
 ];
 
