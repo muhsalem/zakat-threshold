@@ -17,6 +17,7 @@ import { Route as ShowcaseRouteImport } from './routes/showcase'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PricesHistoryRouteImport } from './routes/prices-history'
+import { Route as PortalSigninRouteImport } from './routes/portal-signin'
 import { Route as OrganizationsRouteImport } from './routes/organizations'
 import { Route as NisabAuditRouteImport } from './routes/nisab-audit'
 import { Route as ImpactRouteImport } from './routes/impact'
@@ -96,6 +97,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const PricesHistoryRoute = PricesHistoryRouteImport.update({
   id: '/prices-history',
   path: '/prices-history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalSigninRoute = PortalSigninRouteImport.update({
+  id: '/portal-signin',
+  path: '/portal-signin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OrganizationsRoute = OrganizationsRouteImport.update({
@@ -325,6 +331,7 @@ export interface FileRoutesByFullPath {
   '/impact': typeof ImpactRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
+  '/portal-signin': typeof PortalSigninRoute
   '/prices-history': typeof PricesHistoryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
@@ -374,6 +381,7 @@ export interface FileRoutesByTo {
   '/impact': typeof ImpactRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
+  '/portal-signin': typeof PortalSigninRoute
   '/prices-history': typeof PricesHistoryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
@@ -425,6 +433,7 @@ export interface FileRoutesById {
   '/impact': typeof ImpactRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
+  '/portal-signin': typeof PortalSigninRoute
   '/prices-history': typeof PricesHistoryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
@@ -476,6 +485,7 @@ export interface FileRouteTypes {
     | '/impact'
     | '/nisab-audit'
     | '/organizations'
+    | '/portal-signin'
     | '/prices-history'
     | '/reset-password'
     | '/security'
@@ -525,6 +535,7 @@ export interface FileRouteTypes {
     | '/impact'
     | '/nisab-audit'
     | '/organizations'
+    | '/portal-signin'
     | '/prices-history'
     | '/reset-password'
     | '/security'
@@ -575,6 +586,7 @@ export interface FileRouteTypes {
     | '/impact'
     | '/nisab-audit'
     | '/organizations'
+    | '/portal-signin'
     | '/prices-history'
     | '/reset-password'
     | '/security'
@@ -626,6 +638,7 @@ export interface RootRouteChildren {
   ImpactRoute: typeof ImpactRoute
   NisabAuditRoute: typeof NisabAuditRoute
   OrganizationsRoute: typeof OrganizationsRoute
+  PortalSigninRoute: typeof PortalSigninRoute
   PricesHistoryRoute: typeof PricesHistoryRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SecurityRoute: typeof SecurityRoute
@@ -705,6 +718,13 @@ declare module '@tanstack/react-router' {
       path: '/prices-history'
       fullPath: '/prices-history'
       preLoaderRoute: typeof PricesHistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal-signin': {
+      id: '/portal-signin'
+      path: '/portal-signin'
+      fullPath: '/portal-signin'
+      preLoaderRoute: typeof PortalSigninRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/organizations': {
@@ -1045,6 +1065,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImpactRoute: ImpactRoute,
   NisabAuditRoute: NisabAuditRoute,
   OrganizationsRoute: OrganizationsRoute,
+  PortalSigninRoute: PortalSigninRoute,
   PricesHistoryRoute: PricesHistoryRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SecurityRoute: SecurityRoute,
