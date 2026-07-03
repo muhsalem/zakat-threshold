@@ -183,6 +183,30 @@ function RootComponent() {
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
           مستشار ذكي
         </Link>
+        <Link
+          to="/portal-signin"
+          aria-label="بوابات الدخول: محاسب أو فرد أو شركة"
+          className="print:hidden fixed bottom-16 right-4 z-40 inline-flex items-center gap-1.5 rounded-full bg-emerald-600 text-white px-3.5 py-2 text-xs font-semibold shadow-lg hover:bg-emerald-700 transition-colors"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          بوابات الدخول
+        </Link>
+        <Link
+          to="/accountant"
+          aria-label="لوحة المحاسب"
+          className="print:hidden fixed bottom-28 right-4 z-40 inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-card/95 backdrop-blur px-3.5 py-2 text-xs font-semibold text-primary shadow-lg hover:bg-primary hover:text-primary-foreground transition-colors"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+          لوحة المحاسب
+        </Link>
+        <Link
+          to="/client-intake"
+          aria-label="نافذة الفرد والشركة"
+          className="print:hidden fixed bottom-40 right-4 z-40 inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-card/95 backdrop-blur px-3.5 py-2 text-xs font-semibold text-primary shadow-lg hover:bg-primary hover:text-primary-foreground transition-colors"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          نافذة الفرد/الشركة
+        </Link>
         <AdminFloatingLinks />
         <CommandPalette />
         <OnboardingWizard />
