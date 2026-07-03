@@ -17,6 +17,7 @@ import { CommandPalette } from "@/components/CommandPalette";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
+import { FloatingDock } from "@/components/FloatingDock";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
