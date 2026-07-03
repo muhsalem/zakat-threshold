@@ -777,7 +777,7 @@ export type Database = {
       is_org_member: { Args: { _org: string; _user: string }; Returns: boolean }
     }
     Enums: {
-      account_type: "individual" | "company" | "institution"
+      account_type: "individual" | "company" | "institution" | "admin"
       app_role: "admin" | "moderator" | "user" | "accountant"
       approval_status: "pending" | "approved" | "rejected"
       org_role: "owner" | "admin" | "maker" | "checker" | "auditor" | "viewer"
@@ -908,7 +908,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      account_type: ["individual", "company", "institution"],
+      account_type: ["individual", "company", "institution", "admin"],
       app_role: ["admin", "moderator", "user", "accountant"],
       approval_status: ["pending", "approved", "rejected"],
       org_role: ["owner", "admin", "maker", "checker", "auditor", "viewer"],
