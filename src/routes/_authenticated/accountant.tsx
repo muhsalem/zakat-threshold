@@ -9,7 +9,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell, TableFooter } from "@/components/ui/table";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Briefcase, Users, Building2, Download, Search, Plus, TrendingUp, Wallet, Calculator, FileText, AlertTriangle, CheckCircle2, Filter, Landmark } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Briefcase, Users, Building2, Search, Plus, TrendingUp, Wallet, Calculator, FileText, AlertTriangle, CheckCircle2, Filter, Landmark, LineChart } from "lucide-react";
+import { PricesHistoryPanel } from "@/components/zakat/PricesHistoryPanel";
 import { fmt } from "@/lib/zakat";
 import {
   loadClients, saveClients, wealthOf, zakatOf, complianceCheck, complianceScore,
@@ -172,6 +174,13 @@ function AccountantPortal() {
         </div>
       </header>
 
+      <Tabs defaultValue="clients" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="clients" className="gap-1.5"><Users className="h-3.5 w-3.5" /> العملاء والمحفظة</TabsTrigger>
+          <TabsTrigger value="prices" className="gap-1.5"><LineChart className="h-3.5 w-3.5" /> السجل التاريخي للأسعار</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="clients" className="space-y-6 mt-0">
       <section className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
         <Kpi icon={<Users className="h-4 w-4" />} label="أفراد" value={String(totals.individuals)} />
         <Kpi icon={<Building2 className="h-4 w-4" />} label="شركات/مؤسسات" value={String(totals.companies)} />
@@ -316,6 +325,22 @@ function AccountantPortal() {
       <p className="text-[11px] text-muted-foreground">
         البيانات تُحفظ محلياً في متصفحك (localStorage) للتجربة السريعة — للاستخدام الإنتاجي اربط بوابة المحاسب بجداول Lovable Cloud.
       </p>
+        </TabsContent>
+
+        <TabsContent value="prices" className="mt-0">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <LineChart className="h-5 w-5 text-primary" /> السجل التاريخي لأسعار الذهب والفضة
+              </CardTitle>
+              <p className="text-xs text-muted-foreground">قاعدة بيانات يومية بالدولار/جرام من 1975 حتى اليوم — لاحتساب نصاب زكاة عملائك لأي تاريخ حول.</p>
+            </CardHeader>
+            <CardContent>
+              <PricesHistoryPanel compact />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </main>
   );
 }
