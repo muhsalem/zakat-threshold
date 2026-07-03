@@ -11,7 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowRight, Save, Trash2, Calculator, CheckCircle2, AlertTriangle, Info, History, User, Building2 } from "lucide-react";
 import { fmt, ZAKAT_RATE } from "@/lib/zakat";
 import {
-  loadClients, saveClients, wealthOf, zakatOf, complianceCheck, complianceScore,
+  fetchClient, updateClient, deleteClients, addHistory,
+  wealthOf, zakatOf, complianceCheck, complianceScore,
   COUNTRY_LABELS, MADHAB_LABELS, STATUS_LABELS, KIND_LABELS,
   type Client, type ClientStatus, type ZakatBreakdown,
 } from "@/lib/accountantStore";
