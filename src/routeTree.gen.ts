@@ -45,6 +45,7 @@ import { Route as LegalTermsRouteImport } from './routes/legal.terms'
 import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedErpSetupRouteImport } from './routes/_authenticated/erp-setup'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAuditReviewRouteImport } from './routes/_authenticated/audit-review'
 import { Route as AuthenticatedAttestationsRouteImport } from './routes/_authenticated/attestations'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -241,6 +242,11 @@ const AuthenticatedErpSetupRoute = AuthenticatedErpSetupRouteImport.update({
   path: '/erp-setup',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAuditReviewRoute =
   AuthenticatedAuditReviewRouteImport.update({
     id: '/audit-review',
@@ -365,6 +371,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/attestations': typeof AuthenticatedAttestationsRoute
   '/audit-review': typeof AuthenticatedAuditReviewRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/erp-setup': typeof AuthenticatedErpSetupRoute
   '/api/chat': typeof ApiChatRoute
   '/legal/privacy': typeof LegalPrivacyRoute
@@ -418,6 +425,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/attestations': typeof AuthenticatedAttestationsRoute
   '/audit-review': typeof AuthenticatedAuditReviewRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/erp-setup': typeof AuthenticatedErpSetupRoute
   '/api/chat': typeof ApiChatRoute
   '/legal/privacy': typeof LegalPrivacyRoute
@@ -473,6 +481,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/attestations': typeof AuthenticatedAttestationsRoute
   '/_authenticated/audit-review': typeof AuthenticatedAuditReviewRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/erp-setup': typeof AuthenticatedErpSetupRoute
   '/api/chat': typeof ApiChatRoute
   '/legal/privacy': typeof LegalPrivacyRoute
@@ -528,6 +537,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/attestations'
     | '/audit-review'
+    | '/dashboard'
     | '/erp-setup'
     | '/api/chat'
     | '/legal/privacy'
@@ -581,6 +591,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/attestations'
     | '/audit-review'
+    | '/dashboard'
     | '/erp-setup'
     | '/api/chat'
     | '/legal/privacy'
@@ -635,6 +646,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/attestations'
     | '/_authenticated/audit-review'
+    | '/_authenticated/dashboard'
     | '/_authenticated/erp-setup'
     | '/api/chat'
     | '/legal/privacy'
@@ -955,6 +967,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedErpSetupRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/audit-review': {
       id: '/_authenticated/audit-review'
       path: '/audit-review'
@@ -1089,6 +1108,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedAttestationsRoute: typeof AuthenticatedAttestationsRoute
   AuthenticatedAuditReviewRoute: typeof AuthenticatedAuditReviewRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedErpSetupRoute: typeof AuthenticatedErpSetupRoute
   AuthenticatedCertifiedReportRecordIdRoute: typeof AuthenticatedCertifiedReportRecordIdRoute
 }
@@ -1098,6 +1118,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedAttestationsRoute: AuthenticatedAttestationsRoute,
   AuthenticatedAuditReviewRoute: AuthenticatedAuditReviewRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedErpSetupRoute: AuthenticatedErpSetupRoute,
   AuthenticatedCertifiedReportRecordIdRoute:
     AuthenticatedCertifiedReportRecordIdRoute,
