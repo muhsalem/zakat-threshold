@@ -125,6 +125,8 @@ function ClientIntakePage() {
       notes: `[${mode === "comprehensive" ? "تقرير شامل معتمد" : "حساب سريع"}] ${notesExtras}`,
     });
     upsertClient(client);
+    try { localStorage.removeItem(DRAFT_KEY); } catch {}
+    setDraftSavedAt(null);
     setSubmitted(mode);
     toast.success(mode === "comprehensive" ? "تم إرسال طلب التقرير الشامل" : "تم إرسال بياناتك للمحاسب");
   };
