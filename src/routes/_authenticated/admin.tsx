@@ -7,9 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AdminOverview } from "@/components/admin/AdminOverview";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Shield, UserPlus, UserMinus } from "lucide-react";
+import { Shield, UserPlus, UserMinus, LayoutDashboard, Users } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   beforeLoad: async () => {
@@ -54,49 +56,61 @@ function AdminPage() {
 
   return (
     <div dir="rtl" className="container mx-auto max-w-6xl py-8 space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-3">
           <Shield className="h-7 w-7 text-primary" />
           <div>
-            <h1 className="text-2xl font-bold">لوحة الإدارة — إدارة الأدوار</h1>
-            <p className="text-sm text-muted-foreground">منح وسحب صلاحيات RBAC (مدير، مدقّق، مستخدم).</p>
+            <h1 className="text-2xl font-bold">لوحة الإدارة</h1>
+            <p className="text-sm text-muted-foreground">ملخص النظام، إدارة الأدوار، ووصول سريع للتقارير.</p>
           </div>
         </div>
         <Link to="/audit-review"><Button variant="outline">مراجعة الاعتمادات</Button></Link>
       </div>
 
-      <Card>
-        <CardHeader><CardTitle>المستخدمون</CardTitle></CardHeader>
-        <CardContent>
-          {isLoading ? <p className="text-sm text-muted-foreground">جارٍ التحميل…</p> :
-            !data?.length ? <p className="text-sm text-muted-foreground">لا يوجد مستخدمون.</p> :
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="text-right border-b">
-                  <tr>
-                    <th className="py-2 px-2">البريد</th>
-                    <th className="py-2 px-2">الأدوار</th>
-                    <th className="py-2 px-2">آخر دخول</th>
-                    <th className="py-2 px-2">إجراء</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.map((u) => (
-                    <UserRow key={u.id} user={u}
-                      onGrant={(role) => grantM.mutate({ userId: u.id, role })}
-                      onRevoke={(role) => revokeM.mutate({ userId: u.id, role })}
-                    />
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          }
-        </CardContent>
-      </Card>
+      <Tabs defaultValue="overview" className="w-full">
+        <TabsList>
+          <TabsTrigger value="overview" className="gap-1"><LayoutDashboard className="h-4 w-4" /> لوحة التحكم</TabsTrigger>
+          <TabsTrigger value="users" className="gap-1"><Users className="h-4 w-4" /> إدارة الأدوار</TabsTrigger>
+        </TabsList>
 
-      <p className="text-xs text-muted-foreground">
-        كل منح/سحب يُسجَّل في <code>sharia_audit_log</code> مع بصمة المستخدم والدور لأغراض التدقيق.
-      </p>
+        <TabsContent value="overview" className="mt-4">
+          <AdminOverview />
+        </TabsContent>
+
+        <TabsContent value="users" className="mt-4">
+          <Card>
+            <CardHeader><CardTitle>المستخدمون</CardTitle></CardHeader>
+            <CardContent>
+              {isLoading ? <p className="text-sm text-muted-foreground">جارٍ التحميل…</p> :
+                !data?.length ? <p className="text-sm text-muted-foreground">لا يوجد مستخدمون.</p> :
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead className="text-right border-b">
+                      <tr>
+                        <th className="py-2 px-2">البريد</th>
+                        <th className="py-2 px-2">الأدوار</th>
+                        <th className="py-2 px-2">آخر دخول</th>
+                        <th className="py-2 px-2">إجراء</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.map((u) => (
+                        <UserRow key={u.id} user={u}
+                          onGrant={(role) => grantM.mutate({ userId: u.id, role })}
+                          onRevoke={(role) => revokeM.mutate({ userId: u.id, role })}
+                        />
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              }
+            </CardContent>
+          </Card>
+          <p className="text-xs text-muted-foreground mt-3">
+            كل منح/سحب يُسجَّل في <code>sharia_audit_log</code> مع بصمة المستخدم والدور لأغراض التدقيق.
+          </p>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
