@@ -57,12 +57,22 @@ function DevPage() {
         </Card>
 
         <Card>
+          <CardHeader><CardTitle><code className="text-sm">GET /api/public/openapi</code></CardTitle></CardHeader>
+          <CardContent className="text-sm space-y-2">
+            <p>مواصفات OpenAPI 3.1 كاملة لجميع النقاط. صالحة للاستيراد مباشرةً في Postman وInsomnia وSwagger UI ومولّدات SDK.</p>
+            <pre dir="ltr" className="bg-muted rounded p-3 text-xs overflow-x-auto"><code>{`curl "https://your-domain.com/api/public/openapi"`}</code></pre>
+            <a className="text-primary underline text-xs" href="/api/public/openapi" target="_blank" rel="noreferrer">فتح المواصفات في نافذة جديدة ↗</a>
+          </CardContent>
+        </Card>
+
+        <Card>
           <CardHeader><CardTitle>Rate limits & SLA</CardTitle></CardHeader>
           <CardContent className="text-sm space-y-1">
             <p>• CORS مفتوح للجميع.</p>
-            <p>• Cache: 5 دقائق على <code>GET /nisab</code>.</p>
+            <p>• Cache: 5 دقائق على <code>GET /nisab</code>، ساعة كاملة على <code>/openapi</code>.</p>
+            <p>• Rate-limit: 30–60 req/min حسب النقطة.</p>
             <p>• بدون مصادقة لـ MVP — استخدام عادل (Fair Use).</p>
-            <p>• لتكامل مؤسسي مع SLA ومفاتيح API، تواصل عبر صفحة المؤسسات.</p>
+            <p>• لتكامل مؤسسي (SAP / Oracle / QuickBooks / Xero) مع SLA ومفاتيح API، تواصل عبر <a className="text-primary underline" href="/enterprise">صفحة المؤسسات</a>.</p>
           </CardContent>
         </Card>
       </div>
