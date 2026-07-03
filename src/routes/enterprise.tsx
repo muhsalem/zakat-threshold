@@ -1,8 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Building2, Plug, Globe2, ShieldCheck } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Building2, Plug, Globe2, ShieldCheck, Download, ExternalLink } from "lucide-react";
+import { useEffect, useState } from "react";
 import { listJurisdictions } from "@/lib/jurisdictions";
+import { SUPPORTED_ERP_FORMATS, type ErpFormat } from "@/lib/erp/journal";
 
 export const Route = createFileRoute("/enterprise")({
   head: () => ({
@@ -79,6 +83,9 @@ function EnterprisePage() {
         </CardContent>
       </Card>
 
+      <ErpFormatPreview />
+
+
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -125,5 +132,94 @@ function EnterprisePage() {
         </CardContent>
       </Card>
     </main>
+  );
+}
+
+const SAMPLE_PAYLOAD = {
+  entity_name: "Acme Halal Trading",
+  reference: `ZKT-${new Date().getFullYear()}-DEMO`,
+  currency: "SAR",
+  zakat_due: 12500.75,
+  base_amount: 500030,
+  rate: 0.025,
+  period_start: new Date(Date.now() - 354 * 86400_000).toISOString().slice(0, 10),
+  period_end: new Date().toISOString().slice(0, 10),
+  jurisdiction: "SA",
+  fatwa_authority: "ZATCA",
+};
+
+function ErpFormatPreview() {
+  const [format, setFormat] = useState<ErpFormat>("quickbooks");
+  const [body, setBody] = useState<string>("جارٍ التحميل…");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    fetch(`/api/public/erp/journal?format=${format}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(SAMPLE_PAYLOAD),
+    })
+      .then((r) => r.text())
+      .then((t) => { if (!cancelled) setBody(t); })
+      .catch((e) => { if (!cancelled) setBody(`// error: ${e.message}`); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [format]);
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Download className="h-5 w-5" />
+          معاينة تصدير قيد الزكاة بصيغ ERP
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <p className="text-sm text-muted-foreground">
+          يُبنى القيد المزدوج تلقائياً (Dr Zakat Expense / Cr Zakat Payable) وفق AAOIFI FAS 9.
+          اختر الصيغة لمعاينة الخرج الفعلي من <span className="font-mono">/api/public/erp/journal</span>.
+        </p>
+        <Tabs value={format} onValueChange={(v) => setFormat(v as ErpFormat)}>
+          <TabsList className="flex flex-wrap h-auto">
+            {SUPPORTED_ERP_FORMATS.map((f) => (
+              <TabsTrigger key={f} value={f} className="text-xs">{f}</TabsTrigger>
+            ))}
+          </TabsList>
+          {SUPPORTED_ERP_FORMATS.map((f) => (
+            <TabsContent key={f} value={f}>
+              <pre
+                dir="ltr"
+                className="text-[11px] leading-relaxed bg-muted/40 border rounded p-3 overflow-auto max-h-[420px] whitespace-pre-wrap font-mono"
+              >
+                {loading ? "…" : body}
+              </pre>
+            </TabsContent>
+          ))}
+        </Tabs>
+        <div className="flex flex-wrap gap-2">
+          <Button asChild size="sm" variant="secondary">
+            <a
+              href={`/api/public/erp/journal?format=${format}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <ExternalLink className="h-3.5 w-3.5 me-1" /> عيّنة GET
+            </a>
+          </Button>
+          <Button asChild size="sm">
+            <a href="/software-recommendations">
+              خارطة البرمجيات الكاملة
+            </a>
+          </Button>
+          <Button asChild size="sm" variant="outline">
+            <a href="/api/public/openapi" target="_blank" rel="noreferrer">
+              OpenAPI 3.1
+            </a>
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

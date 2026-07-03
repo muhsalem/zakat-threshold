@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as VerifyRouteImport } from './routes/verify'
+import { Route as SoftwareRecommendationsRouteImport } from './routes/software-recommendations'
 import { Route as ShowcaseRouteImport } from './routes/showcase'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
@@ -46,6 +47,8 @@ import { Route as ApiPublicPricesHistoryRouteImport } from './routes/api/public/
 import { Route as ApiPublicHooksSnapshotPricesRouteImport } from './routes/api/public/hooks/snapshot-prices'
 import { Route as ApiPublicHooksSnapshotDailyPricesRouteImport } from './routes/api/public/hooks/snapshot-daily-prices'
 import { Route as ApiPublicHooksHawlRemindersRouteImport } from './routes/api/public/hooks/hawl-reminders'
+import { Route as ApiPublicErpWebhookRouteImport } from './routes/api/public/erp/webhook'
+import { Route as ApiPublicErpJournalRouteImport } from './routes/api/public/erp/journal'
 
 const WelcomeRoute = WelcomeRouteImport.update({
   id: '/welcome',
@@ -55,6 +58,11 @@ const WelcomeRoute = WelcomeRouteImport.update({
 const VerifyRoute = VerifyRouteImport.update({
   id: '/verify',
   path: '/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SoftwareRecommendationsRoute = SoftwareRecommendationsRouteImport.update({
+  id: '/software-recommendations',
+  path: '/software-recommendations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ShowcaseRoute = ShowcaseRouteImport.update({
@@ -236,6 +244,16 @@ const ApiPublicHooksHawlRemindersRoute =
     path: '/api/public/hooks/hawl-reminders',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicErpWebhookRoute = ApiPublicErpWebhookRouteImport.update({
+  id: '/api/public/erp/webhook',
+  path: '/api/public/erp/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicErpJournalRoute = ApiPublicErpJournalRouteImport.update({
+  id: '/api/public/erp/journal',
+  path: '/api/public/erp/journal',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -259,6 +277,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/showcase': typeof ShowcaseRoute
+  '/software-recommendations': typeof SoftwareRecommendationsRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -270,6 +289,8 @@ export interface FileRoutesByFullPath {
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
   '/api/public/openapi': typeof ApiPublicOpenapiRoute
+  '/api/public/erp/journal': typeof ApiPublicErpJournalRoute
+  '/api/public/erp/webhook': typeof ApiPublicErpWebhookRoute
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
   '/api/public/hooks/snapshot-daily-prices': typeof ApiPublicHooksSnapshotDailyPricesRoute
   '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
@@ -297,6 +318,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/showcase': typeof ShowcaseRoute
+  '/software-recommendations': typeof SoftwareRecommendationsRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -308,6 +330,8 @@ export interface FileRoutesByTo {
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
   '/api/public/openapi': typeof ApiPublicOpenapiRoute
+  '/api/public/erp/journal': typeof ApiPublicErpJournalRoute
+  '/api/public/erp/webhook': typeof ApiPublicErpWebhookRoute
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
   '/api/public/hooks/snapshot-daily-prices': typeof ApiPublicHooksSnapshotDailyPricesRoute
   '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
@@ -337,6 +361,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/showcase': typeof ShowcaseRoute
+  '/software-recommendations': typeof SoftwareRecommendationsRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
@@ -348,6 +373,8 @@ export interface FileRoutesById {
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
   '/api/public/openapi': typeof ApiPublicOpenapiRoute
+  '/api/public/erp/journal': typeof ApiPublicErpJournalRoute
+  '/api/public/erp/webhook': typeof ApiPublicErpWebhookRoute
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
   '/api/public/hooks/snapshot-daily-prices': typeof ApiPublicHooksSnapshotDailyPricesRoute
   '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
@@ -377,6 +404,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/security'
     | '/showcase'
+    | '/software-recommendations'
     | '/verify'
     | '/welcome'
     | '/admin'
@@ -388,6 +416,8 @@ export interface FileRouteTypes {
     | '/api/public/calc'
     | '/api/public/nisab'
     | '/api/public/openapi'
+    | '/api/public/erp/journal'
+    | '/api/public/erp/webhook'
     | '/api/public/hooks/hawl-reminders'
     | '/api/public/hooks/snapshot-daily-prices'
     | '/api/public/hooks/snapshot-prices'
@@ -415,6 +445,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/security'
     | '/showcase'
+    | '/software-recommendations'
     | '/verify'
     | '/welcome'
     | '/admin'
@@ -426,6 +457,8 @@ export interface FileRouteTypes {
     | '/api/public/calc'
     | '/api/public/nisab'
     | '/api/public/openapi'
+    | '/api/public/erp/journal'
+    | '/api/public/erp/webhook'
     | '/api/public/hooks/hawl-reminders'
     | '/api/public/hooks/snapshot-daily-prices'
     | '/api/public/hooks/snapshot-prices'
@@ -454,6 +487,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/security'
     | '/showcase'
+    | '/software-recommendations'
     | '/verify'
     | '/welcome'
     | '/_authenticated/admin'
@@ -465,6 +499,8 @@ export interface FileRouteTypes {
     | '/api/public/calc'
     | '/api/public/nisab'
     | '/api/public/openapi'
+    | '/api/public/erp/journal'
+    | '/api/public/erp/webhook'
     | '/api/public/hooks/hawl-reminders'
     | '/api/public/hooks/snapshot-daily-prices'
     | '/api/public/hooks/snapshot-prices'
@@ -494,6 +530,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   SecurityRoute: typeof SecurityRoute
   ShowcaseRoute: typeof ShowcaseRoute
+  SoftwareRecommendationsRoute: typeof SoftwareRecommendationsRoute
   VerifyRoute: typeof VerifyRoute
   WelcomeRoute: typeof WelcomeRoute
   ApiChatRoute: typeof ApiChatRoute
@@ -502,6 +539,8 @@ export interface RootRouteChildren {
   ApiPublicCalcRoute: typeof ApiPublicCalcRoute
   ApiPublicNisabRoute: typeof ApiPublicNisabRoute
   ApiPublicOpenapiRoute: typeof ApiPublicOpenapiRoute
+  ApiPublicErpJournalRoute: typeof ApiPublicErpJournalRoute
+  ApiPublicErpWebhookRoute: typeof ApiPublicErpWebhookRoute
   ApiPublicHooksHawlRemindersRoute: typeof ApiPublicHooksHawlRemindersRoute
   ApiPublicHooksSnapshotDailyPricesRoute: typeof ApiPublicHooksSnapshotDailyPricesRoute
   ApiPublicHooksSnapshotPricesRoute: typeof ApiPublicHooksSnapshotPricesRoute
@@ -522,6 +561,13 @@ declare module '@tanstack/react-router' {
       path: '/verify'
       fullPath: '/verify'
       preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/software-recommendations': {
+      id: '/software-recommendations'
+      path: '/software-recommendations'
+      fullPath: '/software-recommendations'
+      preLoaderRoute: typeof SoftwareRecommendationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/showcase': {
@@ -769,6 +815,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksHawlRemindersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/erp/webhook': {
+      id: '/api/public/erp/webhook'
+      path: '/api/public/erp/webhook'
+      fullPath: '/api/public/erp/webhook'
+      preLoaderRoute: typeof ApiPublicErpWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/erp/journal': {
+      id: '/api/public/erp/journal'
+      path: '/api/public/erp/journal'
+      fullPath: '/api/public/erp/journal'
+      preLoaderRoute: typeof ApiPublicErpJournalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -810,6 +870,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   SecurityRoute: SecurityRoute,
   ShowcaseRoute: ShowcaseRoute,
+  SoftwareRecommendationsRoute: SoftwareRecommendationsRoute,
   VerifyRoute: VerifyRoute,
   WelcomeRoute: WelcomeRoute,
   ApiChatRoute: ApiChatRoute,
@@ -818,6 +879,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCalcRoute: ApiPublicCalcRoute,
   ApiPublicNisabRoute: ApiPublicNisabRoute,
   ApiPublicOpenapiRoute: ApiPublicOpenapiRoute,
+  ApiPublicErpJournalRoute: ApiPublicErpJournalRoute,
+  ApiPublicErpWebhookRoute: ApiPublicErpWebhookRoute,
   ApiPublicHooksHawlRemindersRoute: ApiPublicHooksHawlRemindersRoute,
   ApiPublicHooksSnapshotDailyPricesRoute:
     ApiPublicHooksSnapshotDailyPricesRoute,

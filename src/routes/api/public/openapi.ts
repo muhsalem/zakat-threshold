@@ -89,6 +89,51 @@ const SPEC = {
         },
       },
     },
+    "/api/public/erp/journal": {
+      get: {
+        summary: "Sample ERP journal entry",
+        description: "يرجع قيداً محاسبياً تجريبيًا بالصيغة المطلوبة (?format=quickbooks|xero|odoo|netsuite|sap|csv|xbrl|generic).",
+        tags: ["ERP"],
+        parameters: [
+          { name: "format", in: "query", schema: { enum: ["generic","quickbooks","xero","odoo","netsuite","sap","csv","xbrl"], default: "generic" } },
+        ],
+        responses: { "200": { description: "Sample journal entry" } },
+      },
+      post: {
+        summary: "Build ERP journal entry from a zakat calculation",
+        description: "يحوّل نتيجة حساب الزكاة إلى قيد محاسبي مزدوج (Dr Zakat Expense / Cr Zakat Payable) بالصيغة المختارة، مع إمكانية التنزيل كمرفق (?download=1).",
+        tags: ["ERP"],
+        parameters: [
+          { name: "format", in: "query", schema: { enum: ["generic","quickbooks","xero","odoo","netsuite","sap","csv","xbrl"], default: "generic" } },
+          { name: "download", in: "query", schema: { type: "boolean" } },
+        ],
+        requestBody: {
+          required: true,
+          content: { "application/json": { schema: { $ref: "#/components/schemas/ErpJournalInput" } } },
+        },
+        responses: {
+          "200": { description: "Journal entry rendered in requested format" },
+          "422": { description: "Missing or invalid field" },
+          "429": { description: "Rate limit exceeded" },
+        },
+      },
+    },
+    "/api/public/erp/webhook": {
+      post: {
+        summary: "iPaaS webhook receiver (HMAC-signed)",
+        description: "يستقبل أحداث Zapier/Make/n8n بعد التحقق من HMAC-SHA256 على `${timestamp}.${body}` مع نافذة صلاحية 5 دقائق لمنع Replay.",
+        tags: ["ERP"],
+        parameters: [
+          { name: "X-Signature", in: "header", required: true, schema: { type: "string" } },
+          { name: "X-Signature-Timestamp", in: "header", required: true, schema: { type: "string" } },
+        ],
+        responses: {
+          "202": { description: "Accepted" },
+          "401": { description: "Invalid signature or stale timestamp" },
+          "503": { description: "Webhook secret not configured" },
+        },
+      },
+    },
   },
   components: {
     schemas: {
@@ -141,11 +186,30 @@ const SPEC = {
           },
         },
       },
+      ErpJournalInput: {
+        type: "object",
+        required: ["entity_name", "currency", "zakat_due", "period_start", "period_end"],
+        properties: {
+          entity_name: { type: "string" },
+          entity_id: { type: "string" },
+          reference: { type: "string" },
+          currency: { type: "string", example: "SAR" },
+          zakat_due: { type: "number", minimum: 0 },
+          base_amount: { type: "number", minimum: 0 },
+          rate: { type: "number", example: 0.025 },
+          period_start: { type: "string", format: "date" },
+          period_end: { type: "string", format: "date" },
+          jurisdiction: { type: "string", example: "SA" },
+          fatwa_authority: { type: "string", example: "AAOIFI-35" },
+          memo: { type: "string" },
+        },
+      },
     },
   },
   tags: [
     { name: "Calculation", description: "حسابات الزكاة" },
     { name: "Reference Data", description: "بيانات مرجعية (نصاب، أسعار)" },
+    { name: "ERP", description: "تكامل ERP وiPaaS" },
   ],
   "x-jurisdictions": ["SA", "AE", "EG", "KW", "MY", "PK", "GB", "US", "ID"],
   "x-madhabs": ["hanafi", "maliki", "shafii", "hanbali"],
