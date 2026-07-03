@@ -19,7 +19,8 @@ const CompanyTab = lazy(() => import("@/components/zakat/CompanyTab").then((m) =
 const FitrCalculator = lazy(() => import("@/components/zakat/FitrCalculator").then((m) => ({ default: m.FitrCalculator })));
 import { fmt } from "@/lib/zakat";
 import {
-  loadClients, saveClients, wealthOf, zakatOf, complianceCheck, complianceScore,
+  fetchClients, createClient, updateClient, deleteClients, addHistory,
+  wealthOf, zakatOf, complianceCheck, complianceScore,
   COUNTRY_LABELS, MADHAB_LABELS, STATUS_LABELS, KIND_LABELS,
   type Client, type ClientKind, type ClientStatus, type Madhab,
 } from "@/lib/accountantStore";
