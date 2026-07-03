@@ -83,6 +83,9 @@ function EnterprisePage() {
         </CardContent>
       </Card>
 
+      <ErpFormatPreview />
+
+
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
