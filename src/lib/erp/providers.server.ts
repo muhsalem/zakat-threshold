@@ -142,6 +142,8 @@ async function odooPushJournal(c: ErpCreds, j: NormalizedJournalEntry): Promise<
 /* ============================== SAP =============================== */
 
 function sapAuthHeader(c: ErpCreds) {
+  // SAP API Business Hub Sandbox uses APIKey header; S/4HANA Cloud uses Basic Auth.
+  if (c.provider === "sap_sandbox") return { APIKey: c.api_key };
   const basic = Buffer.from(`${c.username ?? ""}:${c.api_key}`).toString("base64");
   return { Authorization: `Basic ${basic}` };
 }
