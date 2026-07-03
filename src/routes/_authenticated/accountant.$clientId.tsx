@@ -200,7 +200,7 @@ function ClientDetail() {
       </Card>
 
       <div className="flex items-center gap-2 text-xs text-muted-foreground">
-        <Info className="h-3.5 w-3.5" /> التعديلات تُحفظ تلقائياً محلياً. اضغط «احسب الزكاة» لتسجيل قيمة جديدة في السجل.
+        <Info className="h-3.5 w-3.5" /> التعديلات تُحفظ تلقائياً في السحابة. اضغط «احسب الزكاة» لتسجيل قيمة جديدة في السجل.
       </div>
     </main>
   );
