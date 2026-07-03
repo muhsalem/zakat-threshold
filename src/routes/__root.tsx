@@ -123,6 +123,9 @@ function RootComponent() {
 
   useEffect(() => {
     initSentry();
+    if (typeof window !== "undefined" && "serviceWorker" in navigator && window.location.hostname !== "localhost") {
+      navigator.serviceWorker.register("/sw.js").catch(() => {});
+    }
   }, []);
 
   return (
