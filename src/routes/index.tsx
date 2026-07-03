@@ -529,10 +529,11 @@ function Pricing() {
   );
 }
 
-function PriceCard({ name, price, period, tagline, features, cta, to, highlight, badge }: {
-  name: string; price: string; period: string; tagline: string;
+function PriceCard({ name, priceUSD, ccy, period, tagline, features, cta, to, highlight, badge }: {
+  name: string; priceUSD: number; ccy: string; period: string; tagline: string;
   features: string[]; cta: string; to: string; highlight?: boolean; badge?: string;
 }) {
+  const priceLabel = priceUSD < 0 ? "مخصّص" : priceUSD === 0 ? "مجاناً" : formatPrice(priceUSD, ccy);
   return (
     <Card className={`relative ${highlight ? "border-primary border-2 shadow-xl scale-[1.02] bg-card" : ""}`}>
       {badge && (
@@ -542,10 +543,13 @@ function PriceCard({ name, price, period, tagline, features, cta, to, highlight,
       )}
       <CardHeader className="pb-4">
         <div className="text-sm font-semibold text-muted-foreground">{name}</div>
-        <div className="flex items-baseline gap-1 mt-1">
-          <span className={`text-4xl font-bold ${highlight ? "text-primary" : ""}`}>{price === "مخصّص" ? price : `$${price}`}</span>
+        <div className="flex items-baseline gap-1 mt-1 flex-wrap">
+          <span className={`text-4xl font-bold ${highlight ? "text-primary" : ""}`}>{priceLabel}</span>
           <span className="text-sm text-muted-foreground">{period}</span>
         </div>
+        {priceUSD > 0 && ccy !== "USD" && (
+          <div className="text-[11px] text-muted-foreground pt-0.5">≈ ${priceUSD} USD</div>
+        )}
         <p className="text-xs text-muted-foreground pt-1">{tagline}</p>
       </CardHeader>
       <CardContent className="space-y-4">
