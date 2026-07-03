@@ -21,6 +21,8 @@ import { FloatingDock } from "@/components/FloatingDock";
 import { AppSidebar } from "@/components/AppSidebar";
 import { TopBar } from "@/components/TopBar";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { useAuth } from "@/hooks/useAuth";
+
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
