@@ -18,6 +18,7 @@ interface Payload {
   zakat_due: number;
   prepaid_zakat: number;
   net_due: number;
+  snapshot?: Record<string, any>;
 }
 
 export function SaveToHistoryCard({ payload }: { payload: Payload }) {
@@ -25,18 +26,21 @@ export function SaveToHistoryCard({ payload }: { payload: Payload }) {
   const [notes, setNotes] = useState("");
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [savedId, setSavedId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   async function handleSave() {
     if (!user) return;
     setBusy(true); setError(null);
+    const { snapshot, ...rest } = payload;
     const { data, error } = await supabase.from("zakat_records").insert({
       user_id: user.id,
-      ...payload,
+      ...rest,
+      snapshot: snapshot ?? null,
       notes: notes || null,
     }).select("id").single();
     if (!error && data) {
-      // سجل التدقيق الشرعي
+      setSavedId(data.id);
       const fp = `${user.id}-${data.id}-${payload.zakat_due}`.slice(0, 32);
       await supabase.from("sharia_audit_log").insert({
         user_id: user.id,
@@ -50,7 +54,7 @@ export function SaveToHistoryCard({ payload }: { payload: Payload }) {
     }
     setBusy(false);
     if (error) setError(error.message);
-    else { setSaved(true); setTimeout(() => setSaved(false), 4000); }
+    else { setSaved(true); setTimeout(() => setSaved(false), 6000); }
   }
 
   if (loading) return null;
