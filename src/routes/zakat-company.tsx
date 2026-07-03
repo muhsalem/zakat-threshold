@@ -38,7 +38,7 @@ function ZakatCompanyPage() {
         <CardContent className="space-y-3">
           <p className="text-sm text-muted-foreground">حاسبة زكاة الشركات في نِصاب تدعم استيراد ميزان المراجعة، تصنيف الأصول، ونماذج القطاعات (تجاري، صناعي، عقاري، مصرفي).</p>
           <div className="flex gap-2 flex-wrap">
-            <Button asChild size="lg" className="gap-1.5"><Link to="/calculator"><Calculator className="h-4 w-4" /> افتح حاسبة الشركات</Link></Button>
+            <Button asChild size="lg" className="gap-1.5"><Link to="/client-intake"><Calculator className="h-4 w-4" /> ابدأ حساب الشركة</Link></Button>
             <Button asChild variant="outline"><Link to="/enterprise">الحلول المؤسسية</Link></Button>
           </div>
         </CardContent>

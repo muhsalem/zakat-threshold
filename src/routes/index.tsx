@@ -88,7 +88,6 @@ function SiteHeader() {
           <a href="#how" className="hover:text-primary">كيف تعمل</a>
           <a href="#pricing" className="hover:text-primary">الأسعار</a>
           <a href="#faq" className="hover:text-primary">الأسئلة</a>
-          <Link to="/calculator" className="hover:text-primary">الحاسبة</Link>
         </nav>
         <div className="flex items-center gap-1">
           <LanguageToggle />
@@ -477,9 +476,9 @@ function Pricing() {
             <Badge variant="outline" className="text-sm py-1.5 px-3"><Users className="h-4 w-4 ml-1" /> خطط الأفراد</Badge>
           </div>
           <div className="grid md:grid-cols-3 gap-4 max-w-5xl mx-auto">
-            <PriceCard name="مجاني" priceUSD={0} ccy={ccy} period="دائماً" tagline="للحساب الذاتي السريع"
-              cta="ابدأ الآن" to="/calculator"
-              features={["حاسبة زكاة كاملة (أفراد)", "زكاة الفطر والذهب والفضة", "سجل النصاب التاريخي", "تقرير PDF غير معتمد"]} />
+            <PriceCard name="مجاني" priceUSD={0} ccy={ccy} period="دائماً" tagline="للتسجيل وبدء رحلة الحساب"
+              cta="ابدأ الآن" to="/client-intake"
+              features={["تسجيل البيانات ورفع المستندات", "زكاة الفطر والذهب والفضة", "سجل النصاب التاريخي", "تقرير PDF غير معتمد"]} />
             <PriceCard name="معتمد" priceUSD={19} ccy={ccy} period="/ تقرير" tagline="تقرير رسمي بمراجعة محاسب"
               highlight badge="الأكثر شعبية" cta="اطلب تقريري" to="/client-intake"
               features={["كل ميزات المجاني", "مراجعة محاسب معتمد", "تقرير PDF مختوم + رقم تحقق", "إرسال على البريد خلال يومَي عمل", "استشارة شرعية مكتوبة"]} />
@@ -641,7 +640,7 @@ function SiteFooter() {
           </div>
         </div>
         <FooterCol title="المنتج" links={[
-          ["الحاسبة", "/calculator"], ["الأسعار", "#pricing"], ["كيف تعمل", "#how"], ["للمؤسسات", "/enterprise"],
+          ["الأسعار", "#pricing"], ["كيف تعمل", "#how"], ["للمؤسسات", "/enterprise"],
         ]} />
         <FooterCol title="الحساب" links={[
           ["تسجيل دخول", "/auth"], ["بوابات الدخول", "/portal-signin"], ["نافذة العميل", "/client-intake"], ["السجل", "/history"],
