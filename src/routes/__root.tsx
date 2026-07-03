@@ -183,6 +183,10 @@ function RootComponent() {
           مستشار ذكي
         </Link>
         <AdminFloatingLinks />
+        <CommandPalette />
+        <OnboardingWizard />
+        <PWAInstallPrompt />
+        <MobileBottomNav />
       </LanguageProvider>
     </QueryClientProvider>
   );
