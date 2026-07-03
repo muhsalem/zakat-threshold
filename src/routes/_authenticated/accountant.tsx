@@ -359,18 +359,7 @@ function AccountantPortal() {
               <p className="text-xs text-muted-foreground">حاسبة الزكاة الكاملة (أفراد / شركات / زكاة الفطر) — نفس المحرك المعتمد بدون الحاجة لمغادرة اللوحة.</p>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue="individual" className="space-y-4">
-                <TabsList>
-                  <TabsTrigger value="individual" className="gap-1.5"><Users className="h-3.5 w-3.5" /> أفراد</TabsTrigger>
-                  <TabsTrigger value="company" className="gap-1.5"><Building2 className="h-3.5 w-3.5" /> شركات ومؤسسات</TabsTrigger>
-                  <TabsTrigger value="fitr" className="gap-1.5"><Calculator className="h-3.5 w-3.5" /> زكاة الفطر</TabsTrigger>
-                </TabsList>
-                <Suspense fallback={<div className="flex items-center justify-center py-16 text-muted-foreground"><Loader2 className="h-5 w-5 animate-spin ml-2" /> جارٍ التحميل...</div>}>
-                  <TabsContent value="individual"><IndividualTab /></TabsContent>
-                  <TabsContent value="company"><CompanyTab /></TabsContent>
-                  <TabsContent value="fitr"><FitrCalculator /></TabsContent>
-                </Suspense>
-              </Tabs>
+              <CalcModeGate />
             </CardContent>
           </Card>
         </TabsContent>
