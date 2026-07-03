@@ -119,8 +119,9 @@ export function AppSidebar() {
         {calcItems.length > 0 && (
           <SidebarGroup>
             <SidebarGroupLabel>
-              {accountType === "company" ? "حاسبات الشركات" : accountType === "institution" ? "حاسبات المؤسسات" : "حاسبات الأفراد"}
+              {isAccountant ? "كل الحاسبات" : accountType === "company" ? "حاسبات الشركات" : accountType === "institution" ? "حاسبات المؤسسات" : "حاسبات الأفراد"}
             </SidebarGroupLabel>
+
             <SidebarGroupContent>
               <SidebarMenu>
                 {calcItems.map((i) => (
