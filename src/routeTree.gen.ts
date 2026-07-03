@@ -39,6 +39,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuditRouteImport } from './routes/audit'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as AdvisorRouteImport } from './routes/advisor'
+import { Route as AConsoleRouteImport } from './routes/a-console'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LegalTermsRouteImport } from './routes/legal.terms'
@@ -213,6 +214,11 @@ const AdvisorRoute = AdvisorRouteImport.update({
   path: '/advisor',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AConsoleRoute = AConsoleRouteImport.update({
+  id: '/a-console',
+  path: '/a-console',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
@@ -337,6 +343,7 @@ const ApiPublicErpJournalRoute = ApiPublicErpJournalRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/a-console': typeof AConsoleRoute
   '/advisor': typeof AdvisorRoute
   '/analytics': typeof AnalyticsRoute
   '/audit': typeof AuditRoute
@@ -391,6 +398,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/a-console': typeof AConsoleRoute
   '/advisor': typeof AdvisorRoute
   '/analytics': typeof AnalyticsRoute
   '/audit': typeof AuditRoute
@@ -447,6 +455,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/a-console': typeof AConsoleRoute
   '/advisor': typeof AdvisorRoute
   '/analytics': typeof AnalyticsRoute
   '/audit': typeof AuditRoute
@@ -503,6 +512,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/a-console'
     | '/advisor'
     | '/analytics'
     | '/audit'
@@ -557,6 +567,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/a-console'
     | '/advisor'
     | '/analytics'
     | '/audit'
@@ -612,6 +623,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/a-console'
     | '/advisor'
     | '/analytics'
     | '/audit'
@@ -668,6 +680,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AConsoleRoute: typeof AConsoleRoute
   AdvisorRoute: typeof AdvisorRoute
   AnalyticsRoute: typeof AnalyticsRoute
   AuditRoute: typeof AuditRoute
@@ -925,6 +938,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdvisorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/a-console': {
+      id: '/a-console'
+      path: '/a-console'
+      fullPath: '/a-console'
+      preLoaderRoute: typeof AConsoleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated': {
       id: '/_authenticated'
       path: ''
@@ -1130,6 +1150,7 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AConsoleRoute: AConsoleRoute,
   AdvisorRoute: AdvisorRoute,
   AnalyticsRoute: AnalyticsRoute,
   AuditRoute: AuditRoute,
