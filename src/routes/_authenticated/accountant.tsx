@@ -325,6 +325,22 @@ function AccountantPortal() {
       <p className="text-[11px] text-muted-foreground">
         البيانات تُحفظ محلياً في متصفحك (localStorage) للتجربة السريعة — للاستخدام الإنتاجي اربط بوابة المحاسب بجداول Lovable Cloud.
       </p>
+        </TabsContent>
+
+        <TabsContent value="prices" className="mt-0">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <LineChart className="h-5 w-5 text-primary" /> السجل التاريخي لأسعار الذهب والفضة
+              </CardTitle>
+              <p className="text-xs text-muted-foreground">قاعدة بيانات يومية بالدولار/جرام من 1975 حتى اليوم — لاحتساب نصاب زكاة عملائك لأي تاريخ حول.</p>
+            </CardHeader>
+            <CardContent>
+              <PricesHistoryPanel compact />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </main>
   );
 }
