@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as VerifyRouteImport } from './routes/verify'
+import { Route as SoftwareRecommendationsRouteImport } from './routes/software-recommendations'
 import { Route as ShowcaseRouteImport } from './routes/showcase'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
@@ -57,6 +58,11 @@ const WelcomeRoute = WelcomeRouteImport.update({
 const VerifyRoute = VerifyRouteImport.update({
   id: '/verify',
   path: '/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SoftwareRecommendationsRoute = SoftwareRecommendationsRouteImport.update({
+  id: '/software-recommendations',
+  path: '/software-recommendations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ShowcaseRoute = ShowcaseRouteImport.update({
@@ -271,6 +277,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/showcase': typeof ShowcaseRoute
+  '/software-recommendations': typeof SoftwareRecommendationsRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -311,6 +318,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/showcase': typeof ShowcaseRoute
+  '/software-recommendations': typeof SoftwareRecommendationsRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -353,6 +361,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/showcase': typeof ShowcaseRoute
+  '/software-recommendations': typeof SoftwareRecommendationsRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
@@ -395,6 +404,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/security'
     | '/showcase'
+    | '/software-recommendations'
     | '/verify'
     | '/welcome'
     | '/admin'
@@ -435,6 +445,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/security'
     | '/showcase'
+    | '/software-recommendations'
     | '/verify'
     | '/welcome'
     | '/admin'
@@ -476,6 +487,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/security'
     | '/showcase'
+    | '/software-recommendations'
     | '/verify'
     | '/welcome'
     | '/_authenticated/admin'
@@ -518,6 +530,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   SecurityRoute: typeof SecurityRoute
   ShowcaseRoute: typeof ShowcaseRoute
+  SoftwareRecommendationsRoute: typeof SoftwareRecommendationsRoute
   VerifyRoute: typeof VerifyRoute
   WelcomeRoute: typeof WelcomeRoute
   ApiChatRoute: typeof ApiChatRoute
@@ -548,6 +561,13 @@ declare module '@tanstack/react-router' {
       path: '/verify'
       fullPath: '/verify'
       preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/software-recommendations': {
+      id: '/software-recommendations'
+      path: '/software-recommendations'
+      fullPath: '/software-recommendations'
+      preLoaderRoute: typeof SoftwareRecommendationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/showcase': {
@@ -850,6 +870,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   SecurityRoute: SecurityRoute,
   ShowcaseRoute: ShowcaseRoute,
+  SoftwareRecommendationsRoute: SoftwareRecommendationsRoute,
   VerifyRoute: VerifyRoute,
   WelcomeRoute: WelcomeRoute,
   ApiChatRoute: ApiChatRoute,
