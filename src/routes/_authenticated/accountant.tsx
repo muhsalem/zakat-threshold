@@ -174,6 +174,13 @@ function AccountantPortal() {
         </div>
       </header>
 
+      <Tabs defaultValue="clients" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="clients" className="gap-1.5"><Users className="h-3.5 w-3.5" /> العملاء والمحفظة</TabsTrigger>
+          <TabsTrigger value="prices" className="gap-1.5"><LineChart className="h-3.5 w-3.5" /> السجل التاريخي للأسعار</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="clients" className="space-y-6 mt-0">
       <section className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
         <Kpi icon={<Users className="h-4 w-4" />} label="أفراد" value={String(totals.individuals)} />
         <Kpi icon={<Building2 className="h-4 w-4" />} label="شركات/مؤسسات" value={String(totals.companies)} />
