@@ -18,6 +18,7 @@ const IndividualTab = lazy(() => import("@/components/zakat/IndividualTab").then
 const CompanyTab = lazy(() => import("@/components/zakat/CompanyTab").then((m) => ({ default: m.CompanyTab })));
 const FitrCalculator = lazy(() => import("@/components/zakat/FitrCalculator").then((m) => ({ default: m.FitrCalculator })));
 import { fmt } from "@/lib/zakat";
+import { supabase } from "@/integrations/supabase/client";
 import {
   fetchClients, createClient, updateClient, deleteClients, addHistory,
   wealthOf, zakatOf, complianceCheck, complianceScore,
