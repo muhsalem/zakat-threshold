@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 });
 
 function DashboardPage() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [type, setType] = useState<AccountType | null>(null);
   const [displayName, setDisplayName] = useState<string>("");
@@ -30,6 +31,18 @@ function DashboardPage() {
     (async () => {
       const { data: auth } = await supabase.auth.getUser();
       if (!auth.user) { setLoading(false); return; }
+
+      // Accountants/Admins get the full workspace, not a wizard.
+      const { data: roles } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", auth.user.id);
+      const roleList = ((roles as any[]) ?? []).map((r) => r.role);
+      if (roleList.includes("accountant") || roleList.includes("admin")) {
+        navigate({ to: "/accountant" });
+        return;
+      }
+
       const { data } = await supabase
         .from("profiles")
         .select("account_type, display_name")
@@ -39,7 +52,7 @@ function DashboardPage() {
       setDisplayName((data as any)?.display_name ?? auth.user.email ?? "");
       setLoading(false);
     })();
-  }, []);
+  }, [navigate]);
 
   if (loading) {
     return (
