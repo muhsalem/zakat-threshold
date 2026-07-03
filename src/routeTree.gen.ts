@@ -34,7 +34,6 @@ import { Route as DemoRouteImport } from './routes/demo'
 import { Route as CropsRouteImport } from './routes/crops'
 import { Route as ComplianceRouteImport } from './routes/compliance'
 import { Route as ClientIntakeRouteImport } from './routes/client-intake'
-import { Route as CalculatorRouteImport } from './routes/calculator'
 import { Route as AwardSubmissionRouteImport } from './routes/award-submission'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuditRouteImport } from './routes/audit'
@@ -188,11 +187,6 @@ const ClientIntakeRoute = ClientIntakeRouteImport.update({
   path: '/client-intake',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CalculatorRoute = CalculatorRouteImport.update({
-  id: '/calculator',
-  path: '/calculator',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AwardSubmissionRoute = AwardSubmissionRouteImport.update({
   id: '/award-submission',
   path: '/award-submission',
@@ -342,7 +336,6 @@ export interface FileRoutesByFullPath {
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/award-submission': typeof AwardSubmissionRoute
-  '/calculator': typeof CalculatorRoute
   '/client-intake': typeof ClientIntakeRoute
   '/compliance': typeof ComplianceRoute
   '/crops': typeof CropsRoute
@@ -396,7 +389,6 @@ export interface FileRoutesByTo {
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/award-submission': typeof AwardSubmissionRoute
-  '/calculator': typeof CalculatorRoute
   '/client-intake': typeof ClientIntakeRoute
   '/compliance': typeof ComplianceRoute
   '/crops': typeof CropsRoute
@@ -452,7 +444,6 @@ export interface FileRoutesById {
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/award-submission': typeof AwardSubmissionRoute
-  '/calculator': typeof CalculatorRoute
   '/client-intake': typeof ClientIntakeRoute
   '/compliance': typeof ComplianceRoute
   '/crops': typeof CropsRoute
@@ -508,7 +499,6 @@ export interface FileRouteTypes {
     | '/audit'
     | '/auth'
     | '/award-submission'
-    | '/calculator'
     | '/client-intake'
     | '/compliance'
     | '/crops'
@@ -562,7 +552,6 @@ export interface FileRouteTypes {
     | '/audit'
     | '/auth'
     | '/award-submission'
-    | '/calculator'
     | '/client-intake'
     | '/compliance'
     | '/crops'
@@ -617,7 +606,6 @@ export interface FileRouteTypes {
     | '/audit'
     | '/auth'
     | '/award-submission'
-    | '/calculator'
     | '/client-intake'
     | '/compliance'
     | '/crops'
@@ -673,7 +661,6 @@ export interface RootRouteChildren {
   AuditRoute: typeof AuditRoute
   AuthRoute: typeof AuthRoute
   AwardSubmissionRoute: typeof AwardSubmissionRoute
-  CalculatorRoute: typeof CalculatorRoute
   ClientIntakeRoute: typeof ClientIntakeRoute
   ComplianceRoute: typeof ComplianceRoute
   CropsRoute: typeof CropsRoute
@@ -889,13 +876,6 @@ declare module '@tanstack/react-router' {
       path: '/client-intake'
       fullPath: '/client-intake'
       preLoaderRoute: typeof ClientIntakeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/calculator': {
-      id: '/calculator'
-      path: '/calculator'
-      fullPath: '/calculator'
-      preLoaderRoute: typeof CalculatorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/award-submission': {
@@ -1134,7 +1114,6 @@ const rootRouteChildren: RootRouteChildren = {
   AuditRoute: AuditRoute,
   AuthRoute: AuthRoute,
   AwardSubmissionRoute: AwardSubmissionRoute,
-  CalculatorRoute: CalculatorRoute,
   ClientIntakeRoute: ClientIntakeRoute,
   ComplianceRoute: ComplianceRoute,
   CropsRoute: CropsRoute,
@@ -1178,3 +1157,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

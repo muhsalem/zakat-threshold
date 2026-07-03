@@ -39,7 +39,7 @@ function ZakatGoldPage() {
         <CardContent className="space-y-3">
           <p className="text-sm text-muted-foreground">حاسبة نِصاب تُطبّق آخر أسعار الذهب من مصادر السوق، وتدعم الإدخال بالجرام أو بالقيمة.</p>
           <div className="flex gap-2 flex-wrap">
-            <Button asChild size="lg" className="gap-1.5"><Link to="/calculator"><Calculator className="h-4 w-4" /> افتح الحاسبة</Link></Button>
+            <Button asChild size="lg" className="gap-1.5"><Link to="/client-intake"><Calculator className="h-4 w-4" /> ابدأ حساب الذهب</Link></Button>
             <Button asChild variant="outline"><Link to="/prices-history">سجل أسعار الذهب</Link></Button>
           </div>
         </CardContent>
