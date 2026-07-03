@@ -340,6 +340,17 @@ function ClientIntakePage() {
         </TabsContent>
       </Tabs>
 
+      {/* honeypot — invisible to real users, catches bots */}
+      <input
+        ref={honeypotRef}
+        type="text"
+        name="company_website"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        style={{ position: "absolute", left: "-10000px", width: 1, height: 1, opacity: 0 }}
+      />
+
       <div className="flex justify-between gap-2">
         <Button variant="ghost" onClick={() => navigate({ to: "/" })} className="gap-1">
           <ArrowLeft className="h-4 w-4" /> إلغاء
