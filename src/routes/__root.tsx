@@ -13,6 +13,10 @@ import appCss from "../styles.css?url";
 import { initSentry } from "@/lib/sentry";
 import { LanguageProvider } from "@/lib/i18n";
 import { AdminFloatingLinks } from "@/components/AdminFloatingLinks";
+import { CommandPalette } from "@/components/CommandPalette";
+import { OnboardingWizard } from "@/components/OnboardingWizard";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 
 function NotFoundComponent() {
   return (
