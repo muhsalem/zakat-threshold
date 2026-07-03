@@ -1,4 +1,5 @@
-// متجر بسيط لبوابة المحاسب — يعتمد localStorage. للاستخدام الإنتاجي يُربط بجداول Lovable Cloud.
+// متجر بوابة المحاسب — يعتمد Lovable Cloud (Supabase) مع RLS يقيّد كل محاسب على عملائه فقط.
+import { supabase } from "@/integrations/supabase/client";
 import { ZAKAT_RATE } from "@/lib/zakat";
 
 export type ClientKind = "individual" | "company" | "institution";
@@ -6,12 +7,12 @@ export type ClientStatus = "new" | "in_progress" | "review" | "completed" | "arc
 export type Madhab = "hanafi" | "maliki" | "shafii" | "hanbali" | "mixed";
 
 export type ZakatBreakdown = {
-  cash: number;         // نقد وأرصدة
-  gold: number;         // ذهب/فضة (بالقيمة)
-  investments: number;  // أسهم/صناديق/عقارات تجارية
-  inventory: number;    // بضاعة/عروض تجارة (للشركات)
-  receivables: number;  // ديون مستحقة للعميل
-  debts: number;        // ديون على العميل (تُطرح)
+  cash: number;
+  gold: number;
+  investments: number;
+  inventory: number;
+  receivables: number;
+  debts: number;
 };
 
 export type HistoryEntry = {
@@ -23,17 +24,18 @@ export type HistoryEntry = {
 
 export type Client = {
   id: string;
+  ownerId: string;
   name: string;
   kind: ClientKind;
   currency: string;
-  country: string;            // SA, EG, AE, KW, ...
+  country: string;
   madhab: Madhab;
-  fiscalYear: number;         // 2025, 2026
+  fiscalYear: number;
   status: ClientStatus;
-  hawlDate: string;           // ISO
+  hawlDate: string;
   nisab: number;
   breakdown: ZakatBreakdown;
-  lastCalcAt?: string;        // ISO
+  lastCalcAt?: string;
   lastCalcAmount?: number;
   notes?: string;
   history: HistoryEntry[];
@@ -41,8 +43,75 @@ export type Client = {
   createdVia?: "manual" | "intake";
 };
 
-const KEY = "accountant_clients_v2";
+function emptyBreakdown(): ZakatBreakdown {
+  return { cash: 0, gold: 0, investments: 0, inventory: 0, receivables: 0, debts: 0 };
+}
 
+function normalizeBreakdown(input: unknown): ZakatBreakdown {
+  const b = (input ?? {}) as Partial<ZakatBreakdown>;
+  return {
+    cash: Number(b.cash) || 0,
+    gold: Number(b.gold) || 0,
+    investments: Number(b.investments) || 0,
+    inventory: Number(b.inventory) || 0,
+    receivables: Number(b.receivables) || 0,
+    debts: Number(b.debts) || 0,
+  };
+}
+
+type ClientRow = {
+  id: string;
+  owner_id: string;
+  name: string;
+  email: string | null;
+  kind: string;
+  currency: string;
+  country: string;
+  madhab: string;
+  fiscal_year: number;
+  status: string;
+  hawl_date: string | null;
+  nisab: number | string;
+  breakdown: unknown;
+  notes: string | null;
+  created_via: string;
+  last_calc_at: string | null;
+  last_calc_amount: number | string | null;
+};
+
+type HistoryRow = {
+  id: string;
+  client_id: string;
+  action: string;
+  by_name: string | null;
+  amount: number | string | null;
+  created_at: string;
+};
+
+function rowToClient(r: ClientRow, history: HistoryEntry[] = []): Client {
+  return {
+    id: r.id,
+    ownerId: r.owner_id,
+    name: r.name,
+    email: r.email ?? undefined,
+    kind: (r.kind as ClientKind) || "individual",
+    currency: r.currency || "SAR",
+    country: r.country || "SA",
+    madhab: (r.madhab as Madhab) || "mixed",
+    fiscalYear: r.fiscal_year,
+    status: (r.status as ClientStatus) || "new",
+    hawlDate: r.hawl_date ?? "",
+    nisab: Number(r.nisab) || 0,
+    breakdown: normalizeBreakdown(r.breakdown),
+    notes: r.notes ?? undefined,
+    createdVia: (r.created_via as "manual" | "intake") || "manual",
+    lastCalcAt: r.last_calc_at ?? undefined,
+    lastCalcAmount: r.last_calc_amount != null ? Number(r.last_calc_amount) : undefined,
+    history,
+  };
+}
+
+// ============ Derived / pure helpers ============
 export function wealthOf(c: Client): number {
   const b = c.breakdown;
   return Math.max(0, b.cash + b.gold + b.investments + b.inventory + b.receivables - b.debts);
@@ -81,90 +150,138 @@ export function complianceScore(c: Client): number {
   return Math.max(0, 100 - errors * 30 - warns * 10);
 }
 
-function emptyBreakdown(): ZakatBreakdown {
-  return { cash: 0, gold: 0, investments: 0, inventory: 0, receivables: 0, debts: 0 };
+// ============ Data access (Supabase) ============
+async function getOwnerId(): Promise<string | null> {
+  const { data } = await supabase.auth.getUser();
+  return data.user?.id ?? null;
 }
 
-const SEED: Client[] = [
-  {
-    id: "c1", name: "أحمد الغامدي", kind: "individual", currency: "SAR", country: "SA",
-    madhab: "hanbali", fiscalYear: 2026, status: "in_progress", hawlDate: "2026-08-14",
-    nisab: 24000, createdVia: "manual",
-    breakdown: { cash: 65000, gold: 40000, investments: 25000, inventory: 0, receivables: 5000, debts: 7000 },
-    history: [{ at: new Date().toISOString(), action: "أنشأ العميل" }],
-  },
-  {
-    id: "c2", name: "شركة الرواسي التجارية", kind: "company", currency: "SAR", country: "SA",
-    madhab: "mixed", fiscalYear: 2026, status: "review", hawlDate: "2026-07-30",
-    nisab: 24000, createdVia: "manual",
-    breakdown: { cash: 1200000, gold: 0, investments: 800000, inventory: 3000000, receivables: 450000, debts: 630000 },
-    history: [{ at: new Date().toISOString(), action: "استيراد ميزان مراجعة" }],
-    lastCalcAt: new Date(Date.now() - 5 * 86400000).toISOString(),
-    lastCalcAmount: 120000,
-  },
-  {
-    id: "c3", name: "منى العتيبي", kind: "individual", currency: "SAR", country: "SA",
-    madhab: "shafii", fiscalYear: 2026, status: "new", hawlDate: "2026-09-02",
-    nisab: 24000, breakdown: emptyBreakdown(), history: [], createdVia: "intake",
-  },
-  {
-    id: "c4", name: "مؤسسة نور الصناعية", kind: "institution", currency: "SAR", country: "AE",
-    madhab: "maliki", fiscalYear: 2026, status: "completed", hawlDate: "2025-10-11",
-    nisab: 24000, createdVia: "manual",
-    breakdown: { cash: 320000, gold: 0, investments: 400000, inventory: 250000, receivables: 15000, debts: 20000 },
-    history: [
-      { at: new Date(Date.now() - 30 * 86400000).toISOString(), action: "أنشأ العميل" },
-      { at: new Date(Date.now() - 2 * 86400000).toISOString(), action: "احتساب الزكاة", amount: 24125 },
-    ],
-    lastCalcAt: new Date(Date.now() - 2 * 86400000).toISOString(),
-    lastCalcAmount: 24125,
-  },
-];
-
-export function loadClients(): Client[] {
-  if (typeof window === "undefined") return SEED;
-  try {
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return SEED;
-    return JSON.parse(raw) as Client[];
-  } catch { return SEED; }
+export async function fetchClients(): Promise<Client[]> {
+  const { data: rows, error } = await supabase
+    .from("accountant_clients")
+    .select("*")
+    .order("updated_at", { ascending: false });
+  if (error) throw error;
+  const list = (rows ?? []) as ClientRow[];
+  if (list.length === 0) return [];
+  const ids = list.map((r) => r.id);
+  const { data: hist } = await supabase
+    .from("accountant_client_history")
+    .select("*")
+    .in("client_id", ids)
+    .order("created_at", { ascending: true });
+  const byClient = new Map<string, HistoryEntry[]>();
+  ((hist ?? []) as HistoryRow[]).forEach((h) => {
+    const arr = byClient.get(h.client_id) ?? [];
+    arr.push({
+      at: h.created_at,
+      action: h.action,
+      by: h.by_name ?? undefined,
+      amount: h.amount != null ? Number(h.amount) : undefined,
+    });
+    byClient.set(h.client_id, arr);
+  });
+  return list.map((r) => rowToClient(r, byClient.get(r.id) ?? []));
 }
 
-export function saveClients(list: Client[]) {
-  if (typeof window === "undefined") return;
-  try { localStorage.setItem(KEY, JSON.stringify(list)); } catch {}
+export async function fetchClient(id: string): Promise<Client | null> {
+  const { data, error } = await supabase.from("accountant_clients").select("*").eq("id", id).maybeSingle();
+  if (error) throw error;
+  if (!data) return null;
+  const { data: hist } = await supabase
+    .from("accountant_client_history")
+    .select("*")
+    .eq("client_id", id)
+    .order("created_at", { ascending: true });
+  const history: HistoryEntry[] = ((hist ?? []) as HistoryRow[]).map((h) => ({
+    at: h.created_at, action: h.action,
+    by: h.by_name ?? undefined,
+    amount: h.amount != null ? Number(h.amount) : undefined,
+  }));
+  return rowToClient(data as ClientRow, history);
 }
 
-export function upsertClient(c: Client) {
-  const list = loadClients();
-  const idx = list.findIndex((x) => x.id === c.id);
-  if (idx >= 0) list[idx] = c; else list.push(c);
-  saveClients(list);
+export type ClientPatch = Partial<Omit<Client, "id" | "ownerId" | "history">>;
+
+function patchToRow(p: ClientPatch): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  if (p.name !== undefined) out.name = p.name;
+  if (p.email !== undefined) out.email = p.email;
+  if (p.kind !== undefined) out.kind = p.kind;
+  if (p.currency !== undefined) out.currency = p.currency;
+  if (p.country !== undefined) out.country = p.country;
+  if (p.madhab !== undefined) out.madhab = p.madhab;
+  if (p.fiscalYear !== undefined) out.fiscal_year = p.fiscalYear;
+  if (p.status !== undefined) out.status = p.status;
+  if (p.hawlDate !== undefined) out.hawl_date = p.hawlDate || null;
+  if (p.nisab !== undefined) out.nisab = p.nisab;
+  if (p.breakdown !== undefined) out.breakdown = p.breakdown;
+  if (p.notes !== undefined) out.notes = p.notes;
+  if (p.createdVia !== undefined) out.created_via = p.createdVia;
+  if (p.lastCalcAt !== undefined) out.last_calc_at = p.lastCalcAt || null;
+  if (p.lastCalcAmount !== undefined) out.last_calc_amount = p.lastCalcAmount ?? null;
+  return out;
 }
 
-export function newClientFromIntake(payload: {
-  name: string; email: string; kind: ClientKind; country: string; madhab: Madhab;
-  breakdown: Partial<ZakatBreakdown>; hawlDate?: string; notes?: string;
-}): Client {
-  return {
-    id: crypto.randomUUID(),
-    name: payload.name,
-    email: payload.email,
-    kind: payload.kind,
-    currency: "SAR",
-    country: payload.country,
-    madhab: payload.madhab,
-    fiscalYear: new Date().getFullYear(),
-    status: "new",
-    hawlDate: payload.hawlDate || new Date(Date.now() + 180 * 86400000).toISOString().slice(0, 10),
-    nisab: 24000,
-    breakdown: { ...emptyBreakdown(), ...payload.breakdown },
-    notes: payload.notes,
-    createdVia: "intake",
-    history: [{ at: new Date().toISOString(), action: "استلام بيانات من العميل عبر النافذة التسويقية" }],
+export async function updateClient(id: string, patch: ClientPatch): Promise<void> {
+  const row = patchToRow(patch) as never;
+  const { error } = await supabase.from("accountant_clients").update(row).eq("id", id);
+  if (error) throw error;
+}
+
+export async function createClient(input: {
+  name: string; kind: ClientKind; country: string; madhab: Madhab;
+  currency?: string; fiscalYear?: number; hawlDate?: string; nisab?: number;
+  breakdown?: Partial<ZakatBreakdown>; email?: string; notes?: string;
+  createdVia?: "manual" | "intake"; status?: ClientStatus;
+}): Promise<Client> {
+  const ownerId = await getOwnerId();
+  if (!ownerId) throw new Error("يجب تسجيل الدخول أولاً");
+  const row = {
+    owner_id: ownerId,
+    name: input.name,
+    email: input.email ?? null,
+    kind: input.kind,
+    currency: input.currency ?? "SAR",
+    country: input.country,
+    madhab: input.madhab,
+    fiscal_year: input.fiscalYear ?? new Date().getFullYear(),
+    status: input.status ?? "new",
+    hawl_date: input.hawlDate ?? new Date(Date.now() + 180 * 86400000).toISOString().slice(0, 10),
+    nisab: input.nisab ?? 24000,
+    breakdown: { ...emptyBreakdown(), ...(input.breakdown ?? {}) },
+    notes: input.notes ?? null,
+    created_via: input.createdVia ?? "manual",
   };
+  const { data, error } = await supabase.from("accountant_clients").insert(row).select("*").single();
+  if (error) throw error;
+  await addHistory(data.id, {
+    at: new Date().toISOString(),
+    action: input.createdVia === "intake" ? "استلام بيانات من العميل عبر النافذة التسويقية" : "أنشأ العميل يدوياً",
+  });
+  return rowToClient(data as ClientRow, []);
 }
 
+export async function deleteClients(ids: string[]): Promise<void> {
+  if (ids.length === 0) return;
+  const { error } = await supabase.from("accountant_clients").delete().in("id", ids);
+  if (error) throw error;
+}
+
+export async function addHistory(clientId: string, entry: Omit<HistoryEntry, "at"> & { at?: string }): Promise<void> {
+  const ownerId = await getOwnerId();
+  if (!ownerId) return;
+  const { error } = await supabase.from("accountant_client_history").insert({
+    client_id: clientId,
+    owner_id: ownerId,
+    action: entry.action,
+    by_name: entry.by ?? null,
+    amount: entry.amount ?? null,
+  });
+  if (error) throw error;
+}
+
+// ============ Labels ============
 export const COUNTRY_LABELS: Record<string, string> = {
   SA: "السعودية", AE: "الإمارات", KW: "الكويت", QA: "قطر", BH: "البحرين", OM: "عُمان",
   EG: "مصر", JO: "الأردن", MA: "المغرب", TR: "تركيا", ID: "إندونيسيا", MY: "ماليزيا",

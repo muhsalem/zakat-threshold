@@ -17,7 +17,8 @@ import {
   CheckCircle2, Sparkles, Shield, Users, Building2, ArrowLeft, Send,
   Award, FileCheck2, Stamp, Scale, Landmark, Coins, Wheat, Home, Briefcase,
 } from "lucide-react";
-import { upsertClient, newClientFromIntake, type ClientKind, type Madhab, MADHAB_LABELS, COUNTRY_LABELS } from "@/lib/accountantStore";
+import { createClient as createAccountantClient, type ClientKind, type Madhab, MADHAB_LABELS, COUNTRY_LABELS } from "@/lib/accountantStore";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/client-intake")({
   head: () => ({
@@ -114,7 +115,7 @@ function ClientIntakePage() {
     hawlDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "تاريخ غير صالح"),
   });
 
-  const submit = () => {
+  const submit = async () => {
     // honeypot: bots fill hidden field
     if (honeypotRef.current?.value) { toast.error("تعذّر الإرسال"); return; }
     // rate: at least 2 seconds since form open
@@ -135,18 +136,39 @@ function ClientIntakePage() {
       form.notes,
     ].filter(Boolean).join(" \n ") : form.notes;
 
-    const client = newClientFromIntake({
+    const payload = {
       name: form.name, email: form.email, kind: form.kind, country: form.country, madhab: form.madhab,
       hawlDate: form.hawlDate,
       breakdown: { cash: aggCash, gold: form.gold, investments: aggInv, inventory: aggInventory, receivables: form.receivables, debts: aggDebts },
       notes: `[${mode === "comprehensive" ? "تقرير شامل معتمد" : "حساب سريع"}] ${notesExtras}`,
-    });
-    upsertClient(client);
+      createdVia: "intake" as const,
+    };
+
+    // إذا كان المستخدم مسجّل الدخول: احفظ في Lovable Cloud مباشرة
+    const { data: userRes } = await supabase.auth.getUser();
+    if (userRes.user) {
+      try {
+        await createAccountantClient(payload);
+      } catch (e) {
+        toast.error("تعذّر الحفظ في السحابة", { description: (e as Error).message });
+        return;
+      }
+    } else {
+      // لا يوجد جلسة — احفظ الطلب محلياً كمسودة استلام حتى يستوردها المحاسب
+      try {
+        const key = "public_intake_queue_v1";
+        const raw = localStorage.getItem(key);
+        const list = raw ? JSON.parse(raw) : [];
+        list.push({ ...payload, at: new Date().toISOString() });
+        localStorage.setItem(key, JSON.stringify(list));
+      } catch {}
+    }
     try { localStorage.removeItem(DRAFT_KEY); } catch {}
     setDraftSavedAt(null);
     setSubmitted(mode);
     toast.success(mode === "comprehensive" ? "تم إرسال طلب التقرير الشامل" : "تم إرسال بياناتك للمحاسب");
   };
+
 
   if (submitted) {
     const isComp = submitted === "comprehensive";
@@ -355,7 +377,7 @@ function ClientIntakePage() {
         <Button variant="ghost" onClick={() => navigate({ to: "/" })} className="gap-1">
           <ArrowLeft className="h-4 w-4" /> إلغاء
         </Button>
-        <Button size="lg" onClick={submit} className="gap-1.5">
+        <Button size="lg" onClick={() => void submit()} className="gap-1.5">
           <Send className="h-4 w-4" /> {mode === "comprehensive" ? "طلب التقرير الشامل" : "إرسال إلى المحاسب"}
         </Button>
       </div>

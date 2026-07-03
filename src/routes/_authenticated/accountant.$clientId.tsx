@@ -11,7 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowRight, Save, Trash2, Calculator, CheckCircle2, AlertTriangle, Info, History, User, Building2 } from "lucide-react";
 import { fmt, ZAKAT_RATE } from "@/lib/zakat";
 import {
-  loadClients, saveClients, wealthOf, zakatOf, complianceCheck, complianceScore,
+  fetchClient, updateClient, deleteClients, addHistory,
+  wealthOf, zakatOf, complianceCheck, complianceScore,
   COUNTRY_LABELS, MADHAB_LABELS, STATUS_LABELS, KIND_LABELS,
   type Client, type ClientStatus, type ZakatBreakdown,
 } from "@/lib/accountantStore";
@@ -32,10 +33,11 @@ function ClientDetail() {
   const navigate = useNavigate();
   const [client, setClient] = useState<Client | null>(null);
 
-  useEffect(() => {
-    const c = loadClients().find((x) => x.id === clientId) || null;
-    setClient(c);
-  }, [clientId]);
+  const reload = async () => {
+    try { setClient(await fetchClient(clientId)); }
+    catch (e) { toast.error("تعذّر التحميل", { description: (e as Error).message }); }
+  };
+  useEffect(() => { void reload(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [clientId]);
 
   if (!client) {
     return (
@@ -46,15 +48,14 @@ function ClientDetail() {
     );
   }
 
-  const updateAll = (patch: Partial<Client>) => {
-    const list = loadClients();
-    const next = list.map((c) => c.id === client.id ? { ...c, ...patch } : c);
-    saveClients(next);
+  const applyPatch = async (patch: Partial<Client>) => {
     setClient({ ...client, ...patch });
+    try { await updateClient(client.id, patch); }
+    catch (e) { toast.error("تعذّر الحفظ", { description: (e as Error).message }); await reload(); }
   };
 
   const updateBreakdown = (key: keyof ZakatBreakdown, v: number) => {
-    updateAll({ breakdown: { ...client.breakdown, [key]: v } });
+    void applyPatch({ breakdown: { ...client.breakdown, [key]: v } });
   };
 
   const wealth = wealthOf(client);
@@ -63,31 +64,27 @@ function ClientDetail() {
   const issues = complianceCheck(client);
   const score = complianceScore(client);
 
-  const recalc = () => {
+  const recalc = async () => {
     const amount = zakatOf(client);
-    updateAll({
-      lastCalcAt: new Date().toISOString(),
-      lastCalcAmount: amount,
-      status: "review",
-      history: [...client.history, { at: new Date().toISOString(), action: "احتساب الزكاة", amount }],
-    });
+    await applyPatch({ lastCalcAt: new Date().toISOString(), lastCalcAmount: amount, status: "review" });
+    try { await addHistory(client.id, { action: "احتساب الزكاة", amount }); await reload(); }
+    catch (e) { toast.error("تعذّر تسجيل السجل", { description: (e as Error).message }); }
     toast.success("تم الاحتساب", { description: `الزكاة المستحقة: ${fmt(amount)} ${client.currency}` });
   };
 
-  const setStatus = (status: ClientStatus) => {
-    updateAll({
-      status,
-      history: [...client.history, { at: new Date().toISOString(), action: `تغيير الحالة إلى ${STATUS_LABELS[status]}` }],
-    });
+  const setStatus = async (status: ClientStatus) => {
+    await applyPatch({ status });
+    try { await addHistory(client.id, { action: `تغيير الحالة إلى ${STATUS_LABELS[status]}` }); await reload(); }
+    catch (e) { toast.error("تعذّر تسجيل السجل", { description: (e as Error).message }); }
     toast.success("تم تحديث الحالة");
   };
 
-  const deleteClient = () => {
+  const deleteClient = async () => {
     if (!confirm(`حذف العميل ${client.name}؟`)) return;
-    saveClients(loadClients().filter((c) => c.id !== client.id));
-    toast.success("تم الحذف");
-    navigate({ to: "/accountant" });
+    try { await deleteClients([client.id]); toast.success("تم الحذف"); navigate({ to: "/accountant" }); }
+    catch (e) { toast.error("تعذّر الحذف", { description: (e as Error).message }); }
   };
+
 
   return (
     <main className="container mx-auto max-w-5xl px-4 py-8 space-y-6" dir="rtl">
@@ -170,10 +167,10 @@ function ClientDetail() {
           <NumField label="عروض تجارة/مخزون" value={client.breakdown.inventory} onChange={(v) => updateBreakdown("inventory", v)} />
           <NumField label="ديون مستحقة للعميل" value={client.breakdown.receivables} onChange={(v) => updateBreakdown("receivables", v)} />
           <NumField label="ديون على العميل (تُطرح)" value={client.breakdown.debts} onChange={(v) => updateBreakdown("debts", v)} />
-          <NumField label="النصاب" value={client.nisab} onChange={(v) => updateAll({ nisab: v })} />
+          <NumField label="النصاب" value={client.nisab} onChange={(v) => void applyPatch({ nisab: v })} />
           <div className="space-y-1.5">
             <Label className="text-xs">تاريخ الحول</Label>
-            <Input type="date" value={client.hawlDate} onChange={(e) => updateAll({ hawlDate: e.target.value })} />
+            <Input type="date" value={client.hawlDate} onChange={(e) => void applyPatch({ hawlDate: e.target.value })} />
           </div>
         </CardContent>
       </Card>
@@ -203,7 +200,7 @@ function ClientDetail() {
       </Card>
 
       <div className="flex items-center gap-2 text-xs text-muted-foreground">
-        <Info className="h-3.5 w-3.5" /> التعديلات تُحفظ تلقائياً محلياً. اضغط «احسب الزكاة» لتسجيل قيمة جديدة في السجل.
+        <Info className="h-3.5 w-3.5" /> التعديلات تُحفظ تلقائياً في السحابة. اضغط «احسب الزكاة» لتسجيل قيمة جديدة في السجل.
       </div>
     </main>
   );

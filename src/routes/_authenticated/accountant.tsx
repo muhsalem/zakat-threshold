@@ -19,7 +19,8 @@ const CompanyTab = lazy(() => import("@/components/zakat/CompanyTab").then((m) =
 const FitrCalculator = lazy(() => import("@/components/zakat/FitrCalculator").then((m) => ({ default: m.FitrCalculator })));
 import { fmt } from "@/lib/zakat";
 import {
-  loadClients, saveClients, wealthOf, zakatOf, complianceCheck, complianceScore,
+  fetchClients, createClient, updateClient, deleteClients, addHistory,
+  wealthOf, zakatOf, complianceCheck, complianceScore,
   COUNTRY_LABELS, MADHAB_LABELS, STATUS_LABELS, KIND_LABELS,
   type Client, type ClientKind, type ClientStatus, type Madhab,
 } from "@/lib/accountantStore";
@@ -50,9 +51,11 @@ function AccountantPortal() {
     calculated: "all" as "all" | "yes" | "no",
   });
 
-  useEffect(() => { setClients(loadClients()); }, []);
-
-  const persist = (next: Client[]) => { setClients(next); saveClients(next); };
+  const reload = async () => {
+    try { setClients(await fetchClients()); }
+    catch (e) { toast.error("تعذّر تحميل العملاء", { description: (e as Error).message }); }
+  };
+  useEffect(() => { void reload(); }, []);
 
   const rows = useMemo(() => {
     return clients
@@ -98,25 +101,25 @@ function AccountantPortal() {
   const selectedClients = clients.filter((c) => selected.has(c.id));
 
   // ---- إجراءات جماعية ----
-  const bulkRecalculate = () => {
+  const bulkRecalculate = async () => {
     if (selectedClients.length === 0) return toast.error("اختر عملاء أولاً");
     let total = 0;
-    const next = clients.map((c) => {
-      if (!selected.has(c.id)) return c;
-      const amount = zakatOf(c);
-      total += amount;
-      return {
-        ...c,
-        lastCalcAt: new Date().toISOString(),
-        lastCalcAmount: amount,
-        status: "review" as ClientStatus,
-        history: [...c.history, { at: new Date().toISOString(), action: "إعادة احتساب جماعي", amount }],
-      };
-    });
-    persist(next);
-    toast.success(`تم إعادة الحساب لـ ${selectedClients.length} عميل`, {
-      description: `إجمالي الزكاة: ${fmt(total)} ر.س`,
-    });
+    try {
+      for (const c of selectedClients) {
+        const amount = zakatOf(c);
+        total += amount;
+        await updateClient(c.id, {
+          lastCalcAt: new Date().toISOString(),
+          lastCalcAmount: amount,
+          status: "review",
+        });
+        await addHistory(c.id, { action: "إعادة احتساب جماعي", amount });
+      }
+      await reload();
+      toast.success(`تم إعادة الحساب لـ ${selectedClients.length} عميل`, {
+        description: `إجمالي الزكاة: ${fmt(total)} ر.س`,
+      });
+    } catch (e) { toast.error("تعذّر التنفيذ", { description: (e as Error).message }); }
   };
 
   const bulkReports = () => {
@@ -137,23 +140,30 @@ function AccountantPortal() {
     toast.success(`تم إنشاء دفعة تقارير لـ ${selectedClients.length} عميل`);
   };
 
-  const bulkStatus = (status: ClientStatus) => {
+  const bulkStatus = async (status: ClientStatus) => {
     if (selectedClients.length === 0) return toast.error("اختر عملاء أولاً");
-    const next = clients.map((c) => selected.has(c.id) ? {
-      ...c, status,
-      history: [...c.history, { at: new Date().toISOString(), action: `تغيير الحالة إلى ${STATUS_LABELS[status]}` }],
-    } : c);
-    persist(next);
-    toast.success(`تم تحديث حالة ${selectedClients.length} عميل`);
+    try {
+      for (const c of selectedClients) {
+        await updateClient(c.id, { status });
+        await addHistory(c.id, { action: `تغيير الحالة إلى ${STATUS_LABELS[status]}` });
+      }
+      await reload();
+      toast.success(`تم تحديث حالة ${selectedClients.length} عميل`);
+    } catch (e) { toast.error("تعذّر التنفيذ", { description: (e as Error).message }); }
   };
 
-  const bulkDelete = () => {
+  const bulkDelete = async () => {
     if (selectedClients.length === 0) return;
     if (!confirm(`حذف ${selectedClients.length} عميل؟`)) return;
-    persist(clients.filter((c) => !selected.has(c.id)));
-    setSelected(new Set());
-    toast.success("تم الحذف");
+    try {
+      await deleteClients(selectedClients.map((c) => c.id));
+      setSelected(new Set());
+      await reload();
+      toast.success("تم الحذف");
+    } catch (e) { toast.error("تعذّر الحذف", { description: (e as Error).message }); }
   };
+
+
 
   const uniqueCountries = Array.from(new Set(clients.map((c) => c.country)));
   const uniqueYears = Array.from(new Set(clients.map((c) => c.fiscalYear))).sort((a, b) => b - a);
@@ -246,7 +256,7 @@ function AccountantPortal() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="flex items-center gap-2"><Landmark className="h-5 w-5 text-primary" /> العملاء ({rows.length})</CardTitle>
-          <Button size="sm" onClick={() => addClientPrompt(clients, persist)} className="gap-1"><Plus className="h-4 w-4" /> إضافة</Button>
+          <Button size="sm" onClick={() => void addClientPrompt(reload)} className="gap-1"><Plus className="h-4 w-4" /> إضافة</Button>
         </CardHeader>
         <CardContent>
           <div className="border rounded-lg overflow-x-auto">
@@ -332,7 +342,7 @@ function AccountantPortal() {
       </Card>
 
       <p className="text-[11px] text-muted-foreground">
-        البيانات تُحفظ محلياً في متصفحك (localStorage) للتجربة السريعة — للاستخدام الإنتاجي اربط بوابة المحاسب بجداول Lovable Cloud.
+        بيانات العملاء محفوظة في Lovable Cloud بحماية RLS — لا يراها إلا مالك الحساب.
       </p>
         </TabsContent>
 
@@ -402,23 +412,21 @@ function StatusBadge({ status }: { status: ClientStatus }) {
   return <Badge variant="outline" className={`text-[10px] ${styles[status]}`}>{STATUS_LABELS[status]}</Badge>;
 }
 
-function addClientPrompt(clients: Client[], persist: (n: Client[]) => void) {
+async function addClientPrompt(reload: () => Promise<void>) {
   const name = prompt("اسم العميل");
   if (!name) return;
   const kind = (prompt("النوع (individual / company / institution)", "individual") || "individual") as ClientKind;
   const country = prompt("رمز الدولة (SA / EG / AE ...)", "SA") || "SA";
   const madhab = (prompt("المذهب (hanafi / maliki / shafii / hanbali / mixed)", "mixed") || "mixed") as Madhab;
-  persist([...clients, {
-    id: crypto.randomUUID(), name, kind, currency: "SAR", country, madhab,
-    fiscalYear: new Date().getFullYear(), status: "new",
-    hawlDate: new Date(Date.now() + 180 * 86400000).toISOString().slice(0, 10),
-    nisab: 24000,
-    breakdown: { cash: 0, gold: 0, investments: 0, inventory: 0, receivables: 0, debts: 0 },
-    history: [{ at: new Date().toISOString(), action: "أنشأ العميل يدوياً" }],
-    createdVia: "manual",
-  }]);
-  toast.success("تمت الإضافة");
+  try {
+    await createClient({ name, kind, country, madhab, createdVia: "manual" });
+    await reload();
+    toast.success("تمت الإضافة");
+  } catch (e) {
+    toast.error("تعذّرت الإضافة", { description: (e as Error).message });
+  }
 }
+
 
 function SavedRecordsPanel() {
   const [rows, setRows] = useState<any[]>([]);
