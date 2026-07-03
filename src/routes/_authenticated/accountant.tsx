@@ -412,23 +412,21 @@ function StatusBadge({ status }: { status: ClientStatus }) {
   return <Badge variant="outline" className={`text-[10px] ${styles[status]}`}>{STATUS_LABELS[status]}</Badge>;
 }
 
-function addClientPrompt(clients: Client[], persist: (n: Client[]) => void) {
+async function addClientPrompt(reload: () => Promise<void>) {
   const name = prompt("اسم العميل");
   if (!name) return;
   const kind = (prompt("النوع (individual / company / institution)", "individual") || "individual") as ClientKind;
   const country = prompt("رمز الدولة (SA / EG / AE ...)", "SA") || "SA";
   const madhab = (prompt("المذهب (hanafi / maliki / shafii / hanbali / mixed)", "mixed") || "mixed") as Madhab;
-  persist([...clients, {
-    id: crypto.randomUUID(), name, kind, currency: "SAR", country, madhab,
-    fiscalYear: new Date().getFullYear(), status: "new",
-    hawlDate: new Date(Date.now() + 180 * 86400000).toISOString().slice(0, 10),
-    nisab: 24000,
-    breakdown: { cash: 0, gold: 0, investments: 0, inventory: 0, receivables: 0, debts: 0 },
-    history: [{ at: new Date().toISOString(), action: "أنشأ العميل يدوياً" }],
-    createdVia: "manual",
-  }]);
-  toast.success("تمت الإضافة");
+  try {
+    await createClient({ name, kind, country, madhab, createdVia: "manual" });
+    await reload();
+    toast.success("تمت الإضافة");
+  } catch (e) {
+    toast.error("تعذّرت الإضافة", { description: (e as Error).message });
+  }
 }
+
 
 function SavedRecordsPanel() {
   const [rows, setRows] = useState<any[]>([]);
