@@ -186,7 +186,7 @@ function Row({ label, value, bold, highlight, muted }: { label: string; value: s
   );
 }
 
-const SNAPSHOT_LABELS: Record<string, string> = {
+const SNAPSHOT_LABELS: { [key: string]: string } = {
   cash: "نقد باليد", bankAccounts: "أرصدة بنكية", savingsBonds: "صكوك ادخارية",
   cryptoValue: "عملات رقمية", gold: "ذهب/فضة (قيمة)", goldGrams: "ذهب (جرام)",
   silverGrams: "فضة (جرام)", jewelryPersonal: "حلي شخصي",
