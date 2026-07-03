@@ -46,6 +46,8 @@ import { Route as ApiPublicPricesHistoryRouteImport } from './routes/api/public/
 import { Route as ApiPublicHooksSnapshotPricesRouteImport } from './routes/api/public/hooks/snapshot-prices'
 import { Route as ApiPublicHooksSnapshotDailyPricesRouteImport } from './routes/api/public/hooks/snapshot-daily-prices'
 import { Route as ApiPublicHooksHawlRemindersRouteImport } from './routes/api/public/hooks/hawl-reminders'
+import { Route as ApiPublicErpWebhookRouteImport } from './routes/api/public/erp/webhook'
+import { Route as ApiPublicErpJournalRouteImport } from './routes/api/public/erp/journal'
 
 const WelcomeRoute = WelcomeRouteImport.update({
   id: '/welcome',
@@ -236,6 +238,16 @@ const ApiPublicHooksHawlRemindersRoute =
     path: '/api/public/hooks/hawl-reminders',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicErpWebhookRoute = ApiPublicErpWebhookRouteImport.update({
+  id: '/api/public/erp/webhook',
+  path: '/api/public/erp/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicErpJournalRoute = ApiPublicErpJournalRouteImport.update({
+  id: '/api/public/erp/journal',
+  path: '/api/public/erp/journal',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -270,6 +282,8 @@ export interface FileRoutesByFullPath {
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
   '/api/public/openapi': typeof ApiPublicOpenapiRoute
+  '/api/public/erp/journal': typeof ApiPublicErpJournalRoute
+  '/api/public/erp/webhook': typeof ApiPublicErpWebhookRoute
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
   '/api/public/hooks/snapshot-daily-prices': typeof ApiPublicHooksSnapshotDailyPricesRoute
   '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
@@ -308,6 +322,8 @@ export interface FileRoutesByTo {
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
   '/api/public/openapi': typeof ApiPublicOpenapiRoute
+  '/api/public/erp/journal': typeof ApiPublicErpJournalRoute
+  '/api/public/erp/webhook': typeof ApiPublicErpWebhookRoute
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
   '/api/public/hooks/snapshot-daily-prices': typeof ApiPublicHooksSnapshotDailyPricesRoute
   '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
@@ -348,6 +364,8 @@ export interface FileRoutesById {
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
   '/api/public/openapi': typeof ApiPublicOpenapiRoute
+  '/api/public/erp/journal': typeof ApiPublicErpJournalRoute
+  '/api/public/erp/webhook': typeof ApiPublicErpWebhookRoute
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
   '/api/public/hooks/snapshot-daily-prices': typeof ApiPublicHooksSnapshotDailyPricesRoute
   '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
@@ -388,6 +406,8 @@ export interface FileRouteTypes {
     | '/api/public/calc'
     | '/api/public/nisab'
     | '/api/public/openapi'
+    | '/api/public/erp/journal'
+    | '/api/public/erp/webhook'
     | '/api/public/hooks/hawl-reminders'
     | '/api/public/hooks/snapshot-daily-prices'
     | '/api/public/hooks/snapshot-prices'
@@ -426,6 +446,8 @@ export interface FileRouteTypes {
     | '/api/public/calc'
     | '/api/public/nisab'
     | '/api/public/openapi'
+    | '/api/public/erp/journal'
+    | '/api/public/erp/webhook'
     | '/api/public/hooks/hawl-reminders'
     | '/api/public/hooks/snapshot-daily-prices'
     | '/api/public/hooks/snapshot-prices'
@@ -465,6 +487,8 @@ export interface FileRouteTypes {
     | '/api/public/calc'
     | '/api/public/nisab'
     | '/api/public/openapi'
+    | '/api/public/erp/journal'
+    | '/api/public/erp/webhook'
     | '/api/public/hooks/hawl-reminders'
     | '/api/public/hooks/snapshot-daily-prices'
     | '/api/public/hooks/snapshot-prices'
@@ -502,6 +526,8 @@ export interface RootRouteChildren {
   ApiPublicCalcRoute: typeof ApiPublicCalcRoute
   ApiPublicNisabRoute: typeof ApiPublicNisabRoute
   ApiPublicOpenapiRoute: typeof ApiPublicOpenapiRoute
+  ApiPublicErpJournalRoute: typeof ApiPublicErpJournalRoute
+  ApiPublicErpWebhookRoute: typeof ApiPublicErpWebhookRoute
   ApiPublicHooksHawlRemindersRoute: typeof ApiPublicHooksHawlRemindersRoute
   ApiPublicHooksSnapshotDailyPricesRoute: typeof ApiPublicHooksSnapshotDailyPricesRoute
   ApiPublicHooksSnapshotPricesRoute: typeof ApiPublicHooksSnapshotPricesRoute
@@ -769,6 +795,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksHawlRemindersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/erp/webhook': {
+      id: '/api/public/erp/webhook'
+      path: '/api/public/erp/webhook'
+      fullPath: '/api/public/erp/webhook'
+      preLoaderRoute: typeof ApiPublicErpWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/erp/journal': {
+      id: '/api/public/erp/journal'
+      path: '/api/public/erp/journal'
+      fullPath: '/api/public/erp/journal'
+      preLoaderRoute: typeof ApiPublicErpJournalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -818,6 +858,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCalcRoute: ApiPublicCalcRoute,
   ApiPublicNisabRoute: ApiPublicNisabRoute,
   ApiPublicOpenapiRoute: ApiPublicOpenapiRoute,
+  ApiPublicErpJournalRoute: ApiPublicErpJournalRoute,
+  ApiPublicErpWebhookRoute: ApiPublicErpWebhookRoute,
   ApiPublicHooksHawlRemindersRoute: ApiPublicHooksHawlRemindersRoute,
   ApiPublicHooksSnapshotDailyPricesRoute:
     ApiPublicHooksSnapshotDailyPricesRoute,
