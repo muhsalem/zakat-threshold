@@ -146,8 +146,8 @@ export const pushZakatRecordToErp = createServerFn({ method: "POST" })
       reference: journal.reference,
       amount: journal.lines[0]?.debit ?? 0,
       currency: journal.currency,
-      request_payload: journal as unknown as Record<string, unknown>,
-      response_payload: (res.raw ?? null) as Record<string, unknown> | null,
+      request_payload: JSON.parse(JSON.stringify(journal)),
+      response_payload: res.raw ? JSON.parse(JSON.stringify(res.raw)) : null,
       error_message: res.error ?? null,
     });
 
