@@ -30,6 +30,7 @@ import { Route as DevelopersRouteImport } from './routes/developers'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as CropsRouteImport } from './routes/crops'
 import { Route as ComplianceRouteImport } from './routes/compliance'
+import { Route as ClientIntakeRouteImport } from './routes/client-intake'
 import { Route as AwardSubmissionRouteImport } from './routes/award-submission'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuditRouteImport } from './routes/audit'
@@ -160,6 +161,11 @@ const CropsRoute = CropsRouteImport.update({
 const ComplianceRoute = ComplianceRouteImport.update({
   id: '/compliance',
   path: '/compliance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClientIntakeRoute = ClientIntakeRouteImport.update({
+  id: '/client-intake',
+  path: '/client-intake',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AwardSubmissionRoute = AwardSubmissionRouteImport.update({
@@ -305,6 +311,7 @@ export interface FileRoutesByFullPath {
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/award-submission': typeof AwardSubmissionRoute
+  '/client-intake': typeof ClientIntakeRoute
   '/compliance': typeof ComplianceRoute
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
@@ -353,6 +360,7 @@ export interface FileRoutesByTo {
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/award-submission': typeof AwardSubmissionRoute
+  '/client-intake': typeof ClientIntakeRoute
   '/compliance': typeof ComplianceRoute
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
@@ -403,6 +411,7 @@ export interface FileRoutesById {
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/award-submission': typeof AwardSubmissionRoute
+  '/client-intake': typeof ClientIntakeRoute
   '/compliance': typeof ComplianceRoute
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
@@ -453,6 +462,7 @@ export interface FileRouteTypes {
     | '/audit'
     | '/auth'
     | '/award-submission'
+    | '/client-intake'
     | '/compliance'
     | '/crops'
     | '/demo'
@@ -501,6 +511,7 @@ export interface FileRouteTypes {
     | '/audit'
     | '/auth'
     | '/award-submission'
+    | '/client-intake'
     | '/compliance'
     | '/crops'
     | '/demo'
@@ -550,6 +561,7 @@ export interface FileRouteTypes {
     | '/audit'
     | '/auth'
     | '/award-submission'
+    | '/client-intake'
     | '/compliance'
     | '/crops'
     | '/demo'
@@ -600,6 +612,7 @@ export interface RootRouteChildren {
   AuditRoute: typeof AuditRoute
   AuthRoute: typeof AuthRoute
   AwardSubmissionRoute: typeof AwardSubmissionRoute
+  ClientIntakeRoute: typeof ClientIntakeRoute
   ComplianceRoute: typeof ComplianceRoute
   CropsRoute: typeof CropsRoute
   DemoRoute: typeof DemoRoute
@@ -783,6 +796,13 @@ declare module '@tanstack/react-router' {
       path: '/compliance'
       fullPath: '/compliance'
       preLoaderRoute: typeof ComplianceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/client-intake': {
+      id: '/client-intake'
+      path: '/client-intake'
+      fullPath: '/client-intake'
+      preLoaderRoute: typeof ClientIntakeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/award-submission': {
@@ -1011,6 +1031,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuditRoute: AuditRoute,
   AuthRoute: AuthRoute,
   AwardSubmissionRoute: AwardSubmissionRoute,
+  ClientIntakeRoute: ClientIntakeRoute,
   ComplianceRoute: ComplianceRoute,
   CropsRoute: CropsRoute,
   DemoRoute: DemoRoute,
