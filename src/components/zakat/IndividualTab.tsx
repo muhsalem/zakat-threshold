@@ -1949,6 +1949,7 @@ export function IndividualTab() {
             zakat_due: calc.total,
             prepaid_zakat: num(prepaidZakat),
             net_due: Math.max(0, calc.total - num(prepaidZakat)),
+            snapshot: { calc, prepaidZakat: num(prepaidZakat), prepaidYears: num(prepaidYears), countryCode, currencyName, savedAt: new Date().toISOString() },
           }}
         />
 
