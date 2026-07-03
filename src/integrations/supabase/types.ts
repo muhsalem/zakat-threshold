@@ -14,6 +14,110 @@ export type Database = {
   }
   public: {
     Tables: {
+      accountant_client_history: {
+        Row: {
+          action: string
+          amount: number | null
+          by_name: string | null
+          client_id: string
+          created_at: string
+          id: string
+          owner_id: string
+        }
+        Insert: {
+          action: string
+          amount?: number | null
+          by_name?: string | null
+          client_id: string
+          created_at?: string
+          id?: string
+          owner_id: string
+        }
+        Update: {
+          action?: string
+          amount?: number | null
+          by_name?: string | null
+          client_id?: string
+          created_at?: string
+          id?: string
+          owner_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "accountant_client_history_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "accountant_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      accountant_clients: {
+        Row: {
+          breakdown: Json
+          country: string
+          created_at: string
+          created_via: string
+          currency: string
+          email: string | null
+          fiscal_year: number
+          hawl_date: string | null
+          id: string
+          kind: string
+          last_calc_amount: number | null
+          last_calc_at: string | null
+          madhab: string
+          name: string
+          nisab: number
+          notes: string | null
+          owner_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          breakdown?: Json
+          country?: string
+          created_at?: string
+          created_via?: string
+          currency?: string
+          email?: string | null
+          fiscal_year?: number
+          hawl_date?: string | null
+          id?: string
+          kind?: string
+          last_calc_amount?: number | null
+          last_calc_at?: string | null
+          madhab?: string
+          name: string
+          nisab?: number
+          notes?: string | null
+          owner_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          breakdown?: Json
+          country?: string
+          created_at?: string
+          created_via?: string
+          currency?: string
+          email?: string | null
+          fiscal_year?: number
+          hawl_date?: string | null
+          id?: string
+          kind?: string
+          last_calc_amount?: number | null
+          last_calc_at?: string | null
+          madhab?: string
+          name?: string
+          nisab?: number
+          notes?: string | null
+          owner_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       erp_connections: {
         Row: {
           api_key: string
