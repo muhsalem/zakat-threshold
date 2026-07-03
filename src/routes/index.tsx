@@ -56,7 +56,6 @@ function Landing() {
     <div className="min-h-screen bg-background">
       <SiteHeader />
       <Hero />
-      <FreeCalcSection />
       <TrustBar />
       <Features />
       <HowItWorks />
@@ -69,20 +68,6 @@ function Landing() {
   );
 }
 
-function FreeCalcSection() {
-  return (
-    <section className="container mx-auto px-4 py-12 md:py-16" id="free-calc" dir="rtl">
-      <div className="text-center max-w-2xl mx-auto mb-8">
-        <Badge variant="outline" className="mb-3 border-gold/40 bg-gold/5 text-gold">مجاناً للزوار</Badge>
-        <h2 className="text-3xl md:text-4xl font-bold mb-2">جرّب الحاسبة الآن — بدون تسجيل</h2>
-        <p className="text-muted-foreground">أدخل بياناتك واحصل على تقدير فوري لزكاتك بعملة دولتك.</p>
-      </div>
-      <div className="max-w-4xl mx-auto">
-        <SimpleZakatCalculator />
-      </div>
-    </section>
-  );
-}
 
 /* ---------------- Header ---------------- */
 
