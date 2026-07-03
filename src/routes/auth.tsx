@@ -42,7 +42,7 @@ function AuthPage() {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);
     if (error) setError(error.message);
-    else navigate({ to: "/history" });
+    else navigate({ to: "/dashboard" });
   }
 
   async function handleSignup(e: React.FormEvent) {
@@ -67,7 +67,7 @@ function AuthPage() {
     const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
     if (result.error) { setError(result.error.message); setBusy(false); return; }
     if (result.redirected) return;
-    navigate({ to: "/history" });
+    navigate({ to: "/dashboard" });
   }
 
   async function handleForgot() {
