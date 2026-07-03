@@ -23,6 +23,7 @@ import { Route as GroupZakatRouteImport } from './routes/group-zakat'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EvaluationRouteImport } from './routes/evaluation'
 import { Route as EsgRouteImport } from './routes/esg'
+import { Route as EnterpriseRouteImport } from './routes/enterprise'
 import { Route as DevelopersRouteImport } from './routes/developers'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as CropsRouteImport } from './routes/crops'
@@ -114,6 +115,11 @@ const EvaluationRoute = EvaluationRouteImport.update({
 const EsgRoute = EsgRouteImport.update({
   id: '/esg',
   path: '/esg',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnterpriseRoute = EnterpriseRouteImport.update({
+  id: '/enterprise',
+  path: '/enterprise',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DevelopersRoute = DevelopersRouteImport.update({
@@ -240,6 +246,7 @@ export interface FileRoutesByFullPath {
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
+  '/enterprise': typeof EnterpriseRoute
   '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
@@ -277,6 +284,7 @@ export interface FileRoutesByTo {
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
+  '/enterprise': typeof EnterpriseRoute
   '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
@@ -316,6 +324,7 @@ export interface FileRoutesById {
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
+  '/enterprise': typeof EnterpriseRoute
   '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
@@ -355,6 +364,7 @@ export interface FileRouteTypes {
     | '/crops'
     | '/demo'
     | '/developers'
+    | '/enterprise'
     | '/esg'
     | '/evaluation'
     | '/faq'
@@ -392,6 +402,7 @@ export interface FileRouteTypes {
     | '/crops'
     | '/demo'
     | '/developers'
+    | '/enterprise'
     | '/esg'
     | '/evaluation'
     | '/faq'
@@ -430,6 +441,7 @@ export interface FileRouteTypes {
     | '/crops'
     | '/demo'
     | '/developers'
+    | '/enterprise'
     | '/esg'
     | '/evaluation'
     | '/faq'
@@ -469,6 +481,7 @@ export interface RootRouteChildren {
   CropsRoute: typeof CropsRoute
   DemoRoute: typeof DemoRoute
   DevelopersRoute: typeof DevelopersRoute
+  EnterpriseRoute: typeof EnterpriseRoute
   EsgRoute: typeof EsgRoute
   EvaluationRoute: typeof EvaluationRoute
   FaqRoute: typeof FaqRoute
@@ -593,6 +606,13 @@ declare module '@tanstack/react-router' {
       path: '/esg'
       fullPath: '/esg'
       preLoaderRoute: typeof EsgRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/enterprise': {
+      id: '/enterprise'
+      path: '/enterprise'
+      fullPath: '/enterprise'
+      preLoaderRoute: typeof EnterpriseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/developers': {
@@ -777,6 +797,7 @@ const rootRouteChildren: RootRouteChildren = {
   CropsRoute: CropsRoute,
   DemoRoute: DemoRoute,
   DevelopersRoute: DevelopersRoute,
+  EnterpriseRoute: EnterpriseRoute,
   EsgRoute: EsgRoute,
   EvaluationRoute: EvaluationRoute,
   FaqRoute: FaqRoute,
