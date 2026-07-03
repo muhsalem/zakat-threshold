@@ -18,6 +18,9 @@ import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { FloatingDock } from "@/components/FloatingDock";
+import { AppSidebar } from "@/components/AppSidebar";
+import { TopBar } from "@/components/TopBar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
@@ -143,7 +146,17 @@ function RootComponent() {
         >
           تخطَّ إلى المحتوى الرئيسي
         </a>
-        <Outlet />
+        <SidebarProvider>
+          <div className="min-h-screen flex w-full" dir="rtl">
+            <AppSidebar />
+            <div className="flex-1 flex flex-col min-w-0">
+              <TopBar />
+              <main className="flex-1">
+                <Outlet />
+              </main>
+            </div>
+          </div>
+        </SidebarProvider>
         <FloatingDock />
         <AdminFloatingLinks />
         <CommandPalette />
@@ -151,7 +164,6 @@ function RootComponent() {
         <PWAInstallPrompt />
         <MobileBottomNav />
         <SonnerToaster />
-
       </LanguageProvider>
     </QueryClientProvider>
   );
