@@ -430,3 +430,87 @@ function addClientPrompt(clients: Client[], persist: (n: Client[]) => void) {
   }]);
   toast.success("تمت الإضافة");
 }
+
+function SavedRecordsPanel() {
+  const [rows, setRows] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      const { supabase } = await import("@/integrations/supabase/client");
+      const { data, error } = await supabase
+        .from("zakat_records")
+        .select("id,record_type,hijri_year,gregorian_date,currency,total_assets,zakat_base,zakat_due,net_due,notes,created_at,user_id")
+        .order("created_at", { ascending: false })
+        .limit(200);
+      if (error) setErr(error.message); else setRows(data ?? []);
+      setLoading(false);
+    })();
+  }, []);
+
+  const filtered = rows.filter((r) =>
+    !query || r.id.includes(query) || (r.hijri_year ?? "").includes(query) || (r.notes ?? "").includes(query)
+  );
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-base">
+          <FileText className="h-5 w-5 text-primary" /> نماذج الحاسبة المحفوظة
+        </CardTitle>
+        <p className="text-xs text-muted-foreground">
+          كل عميل يحفظ حسبته من داخل الحاسبة تظهر هنا فوراً — اضغط "تقرير معتمد" لفتح المستند القابل للطباعة مع بصمة التدقيق الشرعي.
+        </p>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <Input placeholder="بحث بالرقم أو السنة أو الملاحظات..." value={query} onChange={(e) => setQuery(e.target.value)} />
+        {loading && <div className="text-center text-muted-foreground py-8">جارٍ التحميل...</div>}
+        {err && <Alert variant="destructive"><AlertDescription>{err}</AlertDescription></Alert>}
+        {!loading && !err && (
+          <div className="border rounded-lg overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>التاريخ</TableHead>
+                  <TableHead>النوع</TableHead>
+                  <TableHead>السنة</TableHead>
+                  <TableHead>العملة</TableHead>
+                  <TableHead className="text-end">الوعاء</TableHead>
+                  <TableHead className="text-end">الزكاة</TableHead>
+                  <TableHead className="text-end">الصافي</TableHead>
+                  <TableHead>إجراء</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filtered.length === 0 && (
+                  <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">لا توجد نماذج محفوظة بعد.</TableCell></TableRow>
+                )}
+                {filtered.map((r) => (
+                  <TableRow key={r.id}>
+                    <TableCell className="text-xs">{new Date(r.created_at).toLocaleDateString("ar-EG")}</TableCell>
+                    <TableCell><Badge variant="outline">{r.record_type === "individual" ? "فرد" : "شركة"}</Badge></TableCell>
+                    <TableCell className="text-xs">{r.hijri_year || "—"}</TableCell>
+                    <TableCell className="text-xs">{r.currency}</TableCell>
+                    <TableCell className="text-end" dir="ltr">{fmt(Number(r.total_assets))}</TableCell>
+                    <TableCell className="text-end font-semibold text-primary" dir="ltr">{fmt(Number(r.zakat_due))}</TableCell>
+                    <TableCell className="text-end" dir="ltr">{fmt(Number(r.net_due))}</TableCell>
+                    <TableCell>
+                      <Button asChild size="sm" className="gap-1">
+                        <Link to="/certified-report/$recordId" params={{ recordId: r.id }}>
+                          <FileText className="h-3.5 w-3.5" /> تقرير معتمد
+                        </Link>
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
