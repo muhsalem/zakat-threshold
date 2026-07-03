@@ -185,3 +185,58 @@ function Row({ label, value, bold, highlight, muted }: { label: string; value: s
     </div>
   );
 }
+
+const SNAPSHOT_LABELS: Record<string, string> = {
+  cash: "نقد باليد", bankAccounts: "أرصدة بنكية", savingsBonds: "صكوك ادخارية",
+  cryptoValue: "عملات رقمية", gold: "ذهب/فضة (قيمة)", goldGrams: "ذهب (جرام)",
+  silverGrams: "فضة (جرام)", jewelryPersonal: "حلي شخصي",
+  investments: "استثمارات", stocksTrading: "أسهم للمتاجرة", stocksLongTerm: "أسهم طويلة الأجل",
+  mutualFunds: "صناديق استثمارية", sukuk: "صكوك",
+  inventory: "عروض تجارة/مخزون", realEstateTrading: "عقار للمتاجرة",
+  realEstateRental: "عقار مؤجَّر", rentalIncomeAnnual: "دخل إيجاري سنوي",
+  agricultureValue: "قيمة المحصول الزراعي", agricultureType: "نوع الري",
+  livestockCamels: "إبل (عدد)", livestockCattle: "بقر (عدد)", livestockSheep: "غنم (عدد)",
+  salaryMonthly: "راتب شهري", endOfServiceBenefits: "مكافأة نهاية خدمة",
+  businessAssets: "أصول تشغيلية", businessLiabilities: "التزامات قصيرة الأجل",
+  receivables: "ديون مستحقة لك", debts: "ديون عليك",
+  hijriYear: "السنة الهجرية", country: "الدولة", madhab: "المذهب", hawlDate: "تاريخ الحول",
+  nisab: "قيمة النصاب",
+};
+
+function flattenSnapshot(obj: any, prefix = ""): Array<[string, unknown]> {
+  const out: Array<[string, unknown]> = [];
+  if (!obj || typeof obj !== "object") return out;
+  for (const [k, v] of Object.entries(obj)) {
+    if (v == null || v === "" || v === 0 || v === false) continue;
+    if (typeof v === "object" && !Array.isArray(v)) {
+      out.push(...flattenSnapshot(v, prefix ? `${prefix}.${k}` : k));
+    } else {
+      out.push([prefix ? `${prefix}.${k}` : k, v]);
+    }
+  }
+  return out;
+}
+
+function SnapshotBreakdown({ snapshot, fmt, currency }: { snapshot: any; fmt: (n: number) => string; currency: string }) {
+  const entries = flattenSnapshot(snapshot);
+  if (entries.length === 0) return null;
+  return (
+    <section>
+      <h3 className="font-bold mb-2">تفصيل بنود الاحتساب</h3>
+      <div className="rounded-lg border overflow-hidden">
+        {entries.map(([k, v], i) => {
+          const shortKey = k.split(".").pop() || k;
+          const label = SNAPSHOT_LABELS[shortKey] || shortKey;
+          const isNum = typeof v === "number";
+          const display = isNum ? `${fmt(v as number)} ${currency}` : String(v);
+          return (
+            <div key={k} className={`flex justify-between px-3 py-1.5 text-sm border-b last:border-b-0 ${i % 2 ? "bg-muted/20" : ""}`}>
+              <span className="text-muted-foreground">{label}</span>
+              <span className="font-medium" dir={isNum ? "ltr" : "rtl"}>{display}</span>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
