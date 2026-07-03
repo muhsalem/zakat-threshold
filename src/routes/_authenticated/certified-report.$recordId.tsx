@@ -139,14 +139,7 @@ function CertifiedReportPage() {
             </section>
           )}
 
-          {record.snapshot && (
-            <section>
-              <h3 className="font-bold mb-2">تفصيل بنود الاحتساب</h3>
-              <pre className="text-[11px] bg-muted/40 p-3 rounded overflow-x-auto whitespace-pre-wrap" dir="ltr">
-                {JSON.stringify(record.snapshot, null, 2)}
-              </pre>
-            </section>
-          )}
+          {record.snapshot && <SnapshotBreakdown snapshot={record.snapshot} fmt={fmt} currency={record.currency} />}
 
           <section className="border-t pt-4">
             <h3 className="font-bold mb-2 flex items-center gap-1.5"><ShieldCheck className="h-4 w-4 text-emerald-600" /> البصمة الشرعية</h3>
