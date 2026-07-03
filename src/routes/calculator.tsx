@@ -83,29 +83,52 @@ function CalculatorPage() {
           <p className="text-muted-foreground leading-relaxed">{t("hero.body")}</p>
         </section>
 
-        <Tabs defaultValue="individual" className="space-y-6" dir={lang === "ar" ? "rtl" : "ltr"}>
-          <TabsList dir={lang === "ar" ? "rtl" : "ltr"} className="grid w-full max-w-5xl mx-auto h-auto gap-1 grid-cols-2 md:grid-cols-4">
-            <TabsTrigger value="individual" className="gap-1.5 text-xs md:text-sm py-2.5">
-              <Users className="h-3.5 w-3.5 md:h-4 md:w-4" /> {t("tabs.individual")}
-            </TabsTrigger>
-            <TabsTrigger id="tab-company" value="company" className="gap-1.5 text-xs md:text-sm py-2.5">
-              <Building2 className="h-3.5 w-3.5 md:h-4 md:w-4" /> {t("tabs.company")}
-            </TabsTrigger>
-            <TabsTrigger value="fitr" className="gap-1.5 text-xs md:text-sm py-2.5">
-              <Wheat className="h-3.5 w-3.5 md:h-4 md:w-4" /> {t("tabs.fitr")}
-            </TabsTrigger>
-            <TabsTrigger value="history" className="gap-1.5 text-xs md:text-sm py-2.5">
-              <Scroll className="h-3.5 w-3.5 md:h-4 md:w-4" /> {t("tabs.history")}
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="individual"><Suspense fallback={<TabFallback />}><IndividualTab /></Suspense></TabsContent>
-          <TabsContent value="company"><Suspense fallback={<TabFallback />}><CompanyTab /></Suspense></TabsContent>
-          <TabsContent value="fitr" className="max-w-6xl mx-auto"><Suspense fallback={<TabFallback />}><FitrCalculator /></Suspense></TabsContent>
-          <TabsContent value="history" className="max-w-4xl mx-auto"><NisabHistory /></TabsContent>
-        </Tabs>
+        {!mode ? (
+          <section className="max-w-5xl mx-auto" dir={lang === "ar" ? "rtl" : "ltr"}>
+            <div className="text-center mb-6">
+              <h3 className="text-xl md:text-2xl font-bold mb-2">ابدأ باختيار نوع الحساب</h3>
+              <p className="text-sm text-muted-foreground">اختَر المسار الذي يناسبك لعرض الأسئلة الخاصة به فقط.</p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-4">
+              <ModeCard color="from-primary/15 to-primary/5 border-primary/30" icon={<Users className="h-6 w-6 text-primary" />}
+                title={t("tabs.individual")} desc="زكاة المال والذهب والفضة والراتب والاستثمارات للأفراد." onClick={() => setMode("individual")} />
+              <ModeCard color="from-emerald-500/15 to-emerald-500/5 border-emerald-500/30" icon={<Building2 className="h-6 w-6 text-emerald-600" />}
+                title={t("tabs.company")} desc="زكاة عروض التجارة والمخزون والذمم للشركات والمؤسسات." onClick={() => setMode("company")} />
+              <ModeCard color="from-gold/20 to-gold/5 border-gold/40" icon={<Wheat className="h-6 w-6 text-gold" />}
+                title={t("tabs.fitr")} desc="حساب زكاة الفطر لأفراد الأسرة قبيل عيد الفطر." onClick={() => setMode("fitr")} />
+            </div>
+            <div className="mt-8 max-w-4xl mx-auto">
+              <div className="text-xs text-muted-foreground text-center mb-2">سجل النصاب التاريخي (مرجعي)</div>
+              <NisabHistory />
+            </div>
+          </section>
+        ) : (
+          <div className="max-w-6xl mx-auto space-y-4" dir={lang === "ar" ? "rtl" : "ltr"}>
+            <button onClick={() => setMode(null)} className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
+              <ArrowRight className="h-4 w-4" /> تغيير نوع الحساب
+            </button>
+            <Suspense fallback={<TabFallback />}>
+              {mode === "individual" && <IndividualTab />}
+              {mode === "company" && <CompanyTab />}
+              {mode === "fitr" && <FitrCalculator />}
+            </Suspense>
+          </div>
+        )}
       </main>
     </div>
+  );
+}
+
+function ModeCard({ color, icon, title, desc, onClick }: { color: string; icon: React.ReactNode; title: string; desc: string; onClick: () => void }) {
+  return (
+    <button onClick={onClick} className={`text-right group rounded-xl border-2 bg-gradient-to-br ${color} p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all`}>
+      <div className="flex items-center gap-3 mb-2">
+        <div className="h-11 w-11 rounded-lg bg-background/70 flex items-center justify-center shadow-sm">{icon}</div>
+        <h4 className="font-bold text-lg">{title}</h4>
+      </div>
+      <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
+      <div className="mt-3 text-xs font-semibold text-primary group-hover:underline">ابدأ الحساب ←</div>
+    </button>
   );
 }
 
