@@ -147,15 +147,7 @@ function RootComponent() {
           تخطَّ إلى المحتوى الرئيسي
         </a>
         <SidebarProvider>
-          <div className="min-h-screen flex w-full" dir="rtl">
-            <AppSidebar />
-            <div className="flex-1 flex flex-col min-w-0">
-              <TopBar />
-              <main className="flex-1">
-                <Outlet />
-              </main>
-            </div>
-          </div>
+          <AppShell />
         </SidebarProvider>
         <FloatingDock />
         <AdminFloatingLinks />
@@ -168,3 +160,19 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+
+function AppShell() {
+  const { user } = useAuth();
+  return (
+    <div className="min-h-screen flex w-full" dir="rtl">
+      {user && <AppSidebar />}
+      <div className="flex-1 flex flex-col min-w-0">
+        <TopBar />
+        <main className="flex-1">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
+}
+
