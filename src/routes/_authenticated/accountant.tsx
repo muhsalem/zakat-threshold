@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Briefcase, Users, Building2, Search, Plus, TrendingUp, Wallet, Calculator, FileText, AlertTriangle, CheckCircle2, Filter, Landmark, LineChart } from "lucide-react";
 import { PricesHistoryPanel } from "@/components/zakat/PricesHistoryPanel";
+import { SimpleZakatCalculator } from "@/components/zakat/SimpleZakatCalculator";
 import { fmt } from "@/lib/zakat";
 import {
   loadClients, saveClients, wealthOf, zakatOf, complianceCheck, complianceScore,
@@ -178,6 +179,7 @@ function AccountantPortal() {
         <TabsList>
           <TabsTrigger value="clients" className="gap-1.5"><Users className="h-3.5 w-3.5" /> العملاء والمحفظة</TabsTrigger>
           <TabsTrigger value="prices" className="gap-1.5"><LineChart className="h-3.5 w-3.5" /> السجل التاريخي للأسعار</TabsTrigger>
+          <TabsTrigger value="calc" className="gap-1.5"><Calculator className="h-3.5 w-3.5" /> الحاسبة السريعة</TabsTrigger>
         </TabsList>
 
         <TabsContent value="clients" className="space-y-6 mt-0">
@@ -337,6 +339,20 @@ function AccountantPortal() {
             </CardHeader>
             <CardContent>
               <PricesHistoryPanel compact />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="calc" className="mt-0">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Calculator className="h-5 w-5 text-primary" /> الحاسبة السريعة داخل بوابة المحاسب
+              </CardTitle>
+              <p className="text-xs text-muted-foreground">استعملها لمراجعة تقدير سريع مع العميل قبل فتح ملفه الكامل.</p>
+            </CardHeader>
+            <CardContent>
+              <SimpleZakatCalculator />
             </CardContent>
           </Card>
         </TabsContent>
