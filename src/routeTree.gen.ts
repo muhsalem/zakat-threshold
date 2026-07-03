@@ -22,6 +22,8 @@ import { Route as HistoryRouteImport } from './routes/history'
 import { Route as GroupZakatRouteImport } from './routes/group-zakat'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EvaluationRouteImport } from './routes/evaluation'
+import { Route as EsgRouteImport } from './routes/esg'
+import { Route as EnterpriseRouteImport } from './routes/enterprise'
 import { Route as DevelopersRouteImport } from './routes/developers'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as CropsRouteImport } from './routes/crops'
@@ -37,6 +39,7 @@ import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedAuditReviewRouteImport } from './routes/_authenticated/audit-review'
 import { Route as AuthenticatedAttestationsRouteImport } from './routes/_authenticated/attestations'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as ApiPublicOpenapiRouteImport } from './routes/api/public/openapi'
 import { Route as ApiPublicNisabRouteImport } from './routes/api/public/nisab'
 import { Route as ApiPublicCalcRouteImport } from './routes/api/public/calc'
 import { Route as ApiPublicPricesHistoryRouteImport } from './routes/api/public/prices/history'
@@ -107,6 +110,16 @@ const FaqRoute = FaqRouteImport.update({
 const EvaluationRoute = EvaluationRouteImport.update({
   id: '/evaluation',
   path: '/evaluation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EsgRoute = EsgRouteImport.update({
+  id: '/esg',
+  path: '/esg',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnterpriseRoute = EnterpriseRouteImport.update({
+  id: '/enterprise',
+  path: '/enterprise',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DevelopersRoute = DevelopersRouteImport.update({
@@ -185,6 +198,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicOpenapiRoute = ApiPublicOpenapiRouteImport.update({
+  id: '/api/public/openapi',
+  path: '/api/public/openapi',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicNisabRoute = ApiPublicNisabRouteImport.update({
   id: '/api/public/nisab',
   path: '/api/public/nisab',
@@ -228,6 +246,8 @@ export interface FileRoutesByFullPath {
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
+  '/enterprise': typeof EnterpriseRoute
+  '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
   '/group-zakat': typeof GroupZakatRoute
@@ -249,6 +269,7 @@ export interface FileRoutesByFullPath {
   '/legal/terms': typeof LegalTermsRoute
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
+  '/api/public/openapi': typeof ApiPublicOpenapiRoute
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
   '/api/public/hooks/snapshot-daily-prices': typeof ApiPublicHooksSnapshotDailyPricesRoute
   '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
@@ -263,6 +284,8 @@ export interface FileRoutesByTo {
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
+  '/enterprise': typeof EnterpriseRoute
+  '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
   '/group-zakat': typeof GroupZakatRoute
@@ -284,6 +307,7 @@ export interface FileRoutesByTo {
   '/legal/terms': typeof LegalTermsRoute
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
+  '/api/public/openapi': typeof ApiPublicOpenapiRoute
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
   '/api/public/hooks/snapshot-daily-prices': typeof ApiPublicHooksSnapshotDailyPricesRoute
   '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
@@ -300,6 +324,8 @@ export interface FileRoutesById {
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
+  '/enterprise': typeof EnterpriseRoute
+  '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
   '/group-zakat': typeof GroupZakatRoute
@@ -321,6 +347,7 @@ export interface FileRoutesById {
   '/legal/terms': typeof LegalTermsRoute
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
+  '/api/public/openapi': typeof ApiPublicOpenapiRoute
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
   '/api/public/hooks/snapshot-daily-prices': typeof ApiPublicHooksSnapshotDailyPricesRoute
   '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
@@ -337,6 +364,8 @@ export interface FileRouteTypes {
     | '/crops'
     | '/demo'
     | '/developers'
+    | '/enterprise'
+    | '/esg'
     | '/evaluation'
     | '/faq'
     | '/group-zakat'
@@ -358,6 +387,7 @@ export interface FileRouteTypes {
     | '/legal/terms'
     | '/api/public/calc'
     | '/api/public/nisab'
+    | '/api/public/openapi'
     | '/api/public/hooks/hawl-reminders'
     | '/api/public/hooks/snapshot-daily-prices'
     | '/api/public/hooks/snapshot-prices'
@@ -372,6 +402,8 @@ export interface FileRouteTypes {
     | '/crops'
     | '/demo'
     | '/developers'
+    | '/enterprise'
+    | '/esg'
     | '/evaluation'
     | '/faq'
     | '/group-zakat'
@@ -393,6 +425,7 @@ export interface FileRouteTypes {
     | '/legal/terms'
     | '/api/public/calc'
     | '/api/public/nisab'
+    | '/api/public/openapi'
     | '/api/public/hooks/hawl-reminders'
     | '/api/public/hooks/snapshot-daily-prices'
     | '/api/public/hooks/snapshot-prices'
@@ -408,6 +441,8 @@ export interface FileRouteTypes {
     | '/crops'
     | '/demo'
     | '/developers'
+    | '/enterprise'
+    | '/esg'
     | '/evaluation'
     | '/faq'
     | '/group-zakat'
@@ -429,6 +464,7 @@ export interface FileRouteTypes {
     | '/legal/terms'
     | '/api/public/calc'
     | '/api/public/nisab'
+    | '/api/public/openapi'
     | '/api/public/hooks/hawl-reminders'
     | '/api/public/hooks/snapshot-daily-prices'
     | '/api/public/hooks/snapshot-prices'
@@ -445,6 +481,8 @@ export interface RootRouteChildren {
   CropsRoute: typeof CropsRoute
   DemoRoute: typeof DemoRoute
   DevelopersRoute: typeof DevelopersRoute
+  EnterpriseRoute: typeof EnterpriseRoute
+  EsgRoute: typeof EsgRoute
   EvaluationRoute: typeof EvaluationRoute
   FaqRoute: typeof FaqRoute
   GroupZakatRoute: typeof GroupZakatRoute
@@ -463,6 +501,7 @@ export interface RootRouteChildren {
   LegalTermsRoute: typeof LegalTermsRoute
   ApiPublicCalcRoute: typeof ApiPublicCalcRoute
   ApiPublicNisabRoute: typeof ApiPublicNisabRoute
+  ApiPublicOpenapiRoute: typeof ApiPublicOpenapiRoute
   ApiPublicHooksHawlRemindersRoute: typeof ApiPublicHooksHawlRemindersRoute
   ApiPublicHooksSnapshotDailyPricesRoute: typeof ApiPublicHooksSnapshotDailyPricesRoute
   ApiPublicHooksSnapshotPricesRoute: typeof ApiPublicHooksSnapshotPricesRoute
@@ -560,6 +599,20 @@ declare module '@tanstack/react-router' {
       path: '/evaluation'
       fullPath: '/evaluation'
       preLoaderRoute: typeof EvaluationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/esg': {
+      id: '/esg'
+      path: '/esg'
+      fullPath: '/esg'
+      preLoaderRoute: typeof EsgRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/enterprise': {
+      id: '/enterprise'
+      path: '/enterprise'
+      fullPath: '/enterprise'
+      preLoaderRoute: typeof EnterpriseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/developers': {
@@ -667,6 +720,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/openapi': {
+      id: '/api/public/openapi'
+      path: '/api/public/openapi'
+      fullPath: '/api/public/openapi'
+      preLoaderRoute: typeof ApiPublicOpenapiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/nisab': {
       id: '/api/public/nisab'
       path: '/api/public/nisab'
@@ -737,6 +797,8 @@ const rootRouteChildren: RootRouteChildren = {
   CropsRoute: CropsRoute,
   DemoRoute: DemoRoute,
   DevelopersRoute: DevelopersRoute,
+  EnterpriseRoute: EnterpriseRoute,
+  EsgRoute: EsgRoute,
   EvaluationRoute: EvaluationRoute,
   FaqRoute: FaqRoute,
   GroupZakatRoute: GroupZakatRoute,
@@ -755,6 +817,7 @@ const rootRouteChildren: RootRouteChildren = {
   LegalTermsRoute: LegalTermsRoute,
   ApiPublicCalcRoute: ApiPublicCalcRoute,
   ApiPublicNisabRoute: ApiPublicNisabRoute,
+  ApiPublicOpenapiRoute: ApiPublicOpenapiRoute,
   ApiPublicHooksHawlRemindersRoute: ApiPublicHooksHawlRemindersRoute,
   ApiPublicHooksSnapshotDailyPricesRoute:
     ApiPublicHooksSnapshotDailyPricesRoute,
@@ -764,13 +827,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
