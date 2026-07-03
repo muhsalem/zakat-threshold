@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { z } from "zod";
 import { Progress } from "@/components/ui/progress";
 import { Save, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
@@ -102,8 +103,24 @@ function ClientIntakePage() {
     return Math.round(((requiredDone + anyValue) / total) * 100);
   }, [form]);
 
+  const submittedAtRef = useRef<number>(Date.now());
+  const honeypotRef = useRef<HTMLInputElement>(null);
+
+  const intakeSchema = z.object({
+    name: z.string().trim().min(2, "الاسم يجب ألا يقلّ عن حرفين").max(100, "الاسم طويل جداً"),
+    email: z.string().trim().email("بريد إلكتروني غير صالح").max(255),
+    phone: z.string().trim().max(20, "رقم الجوال طويل جداً").optional().or(z.literal("")),
+    notes: z.string().max(2000, "الملاحظات طويلة جداً").optional().or(z.literal("")),
+    hawlDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "تاريخ غير صالح"),
+  });
+
   const submit = () => {
-    if (!form.name.trim() || !form.email.trim()) return toast.error("الاسم والبريد مطلوبان");
+    // honeypot: bots fill hidden field
+    if (honeypotRef.current?.value) { toast.error("تعذّر الإرسال"); return; }
+    // rate: at least 2 seconds since form open
+    if (Date.now() - submittedAtRef.current < 2000) { toast.error("انتظر لحظة قبل الإرسال"); return; }
+    const parsed = intakeSchema.safeParse({ name: form.name, email: form.email, phone: form.phone, notes: form.notes, hawlDate: form.hawlDate });
+    if (!parsed.success) return toast.error(parsed.error.issues[0]?.message || "بيانات غير صالحة");
     const aggCash = form.cash + form.bankAccounts + form.savingsBonds + form.cryptoValue;
     const aggInv = form.investments + form.stocksTrading + form.stocksLongTerm + form.mutualFunds + form.sukuk
                    + form.realEstateTrading + form.rentalIncomeAnnual;
@@ -322,6 +339,17 @@ function ClientIntakePage() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* honeypot — invisible to real users, catches bots */}
+      <input
+        ref={honeypotRef}
+        type="text"
+        name="company_website"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        style={{ position: "absolute", left: "-10000px", width: 1, height: 1, opacity: 0 }}
+      />
 
       <div className="flex justify-between gap-2">
         <Button variant="ghost" onClick={() => navigate({ to: "/" })} className="gap-1">
