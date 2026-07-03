@@ -18,6 +18,7 @@ const IndividualTab = lazy(() => import("@/components/zakat/IndividualTab").then
 const CompanyTab = lazy(() => import("@/components/zakat/CompanyTab").then((m) => ({ default: m.CompanyTab })));
 const FitrCalculator = lazy(() => import("@/components/zakat/FitrCalculator").then((m) => ({ default: m.FitrCalculator })));
 import { fmt } from "@/lib/zakat";
+import { supabase } from "@/integrations/supabase/client";
 import {
   fetchClients, createClient, updateClient, deleteClients, addHistory,
   wealthOf, zakatOf, complianceCheck, complianceScore,
@@ -55,7 +56,50 @@ function AccountantPortal() {
     try { setClients(await fetchClients()); }
     catch (e) { toast.error("تعذّر تحميل العملاء", { description: (e as Error).message }); }
   };
-  useEffect(() => { void reload(); }, []);
+
+  useEffect(() => {
+    let ownerId: string | null = null;
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+
+    const subscribeRealtime = (uid: string) => {
+      if (channel) supabase.removeChannel(channel);
+      channel = supabase
+        .channel(`accountant_clients:${uid}`)
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "accountant_clients", filter: `owner_id=eq.${uid}` },
+          () => { void reload(); },
+        )
+        .subscribe();
+    };
+
+    void (async () => {
+      const { data } = await supabase.auth.getUser();
+      ownerId = data.user?.id ?? null;
+      await reload();
+      if (ownerId) subscribeRealtime(ownerId);
+    })();
+
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" || event === "USER_UPDATED" || event === "TOKEN_REFRESHED") {
+        const uid = session?.user?.id ?? null;
+        if (uid && uid !== ownerId) {
+          ownerId = uid;
+          subscribeRealtime(uid);
+        }
+        void reload();
+      } else if (event === "SIGNED_OUT") {
+        ownerId = null;
+        if (channel) { supabase.removeChannel(channel); channel = null; }
+        setClients([]);
+      }
+    });
+
+    return () => {
+      sub.subscription.unsubscribe();
+      if (channel) supabase.removeChannel(channel);
+    };
+  }, []);
 
   const rows = useMemo(() => {
     return clients
