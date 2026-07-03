@@ -9,7 +9,7 @@ import { IndividualWizard } from "@/components/wizards/IndividualWizard";
 import { CompanyWizard } from "@/components/wizards/CompanyWizard";
 import { InstitutionWizard } from "@/components/wizards/InstitutionWizard";
 
-type AccountType = "individual" | "company" | "institution";
+type AccountType = "individual" | "company" | "institution" | "admin";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -49,8 +49,8 @@ function DashboardPage() {
     );
   }
 
-  const label = type === "company" ? "شركة" : type === "institution" ? "مؤسسة" : "فرد";
-  const Icon = type === "company" ? Building2 : type === "institution" ? Landmark : User;
+  const label = type === "admin" ? "مدير" : type === "company" ? "شركة" : type === "institution" ? "مؤسسة" : "فرد";
+  const Icon = type === "admin" ? Landmark : type === "company" ? Building2 : type === "institution" ? Landmark : User;
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-5xl">
