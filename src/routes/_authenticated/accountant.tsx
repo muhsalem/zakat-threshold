@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Briefcase, Users, Building2, Search, Plus, TrendingUp, Wallet, Calculator, FileText, AlertTriangle, CheckCircle2, Filter, Landmark, LineChart } from "lucide-react";
 import { PricesHistoryPanel } from "@/components/zakat/PricesHistoryPanel";
+import { NisabHistory } from "@/components/zakat/NisabHistory";
 import { lazy, Suspense } from "react";
 import { Loader2 } from "lucide-react";
 const IndividualTab = lazy(() => import("@/components/zakat/IndividualTab").then((m) => ({ default: m.IndividualTab })));
@@ -267,7 +268,7 @@ function AccountantPortal() {
           <TabsTrigger value="dashboard" className="gap-1.5"><LineChart className="h-3.5 w-3.5" /> لوحة التحكم</TabsTrigger>
           <TabsTrigger value="clients" className="gap-1.5"><Users className="h-3.5 w-3.5" /> العملاء والمحفظة</TabsTrigger>
           <TabsTrigger value="saved" className="gap-1.5"><FileText className="h-3.5 w-3.5" /> المحفوظات (تقارير معتمدة)</TabsTrigger>
-          <TabsTrigger value="prices" className="gap-1.5"><LineChart className="h-3.5 w-3.5" /> السجل التاريخي للأسعار</TabsTrigger>
+          <TabsTrigger value="prices" className="gap-1.5"><LineChart className="h-3.5 w-3.5" /> الأنصبة وسجل الأسعار</TabsTrigger>
           <TabsTrigger value="calc" className="gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"><Calculator className="h-3.5 w-3.5" /> الحاسبة الشاملة</TabsTrigger>
         </TabsList>
 
@@ -426,12 +427,21 @@ function AccountantPortal() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
-                <LineChart className="h-5 w-5 text-primary" /> السجل التاريخي لأسعار الذهب والفضة
+                <LineChart className="h-5 w-5 text-primary" /> قاعدة الأنصبة وسجل أسعار الذهب والفضة
               </CardTitle>
-              <p className="text-xs text-muted-foreground">قاعدة بيانات يومية بالدولار/جرام من 1975 حتى اليوم — لاحتساب نصاب زكاة عملائك لأي تاريخ حول.</p>
+              <p className="text-xs text-muted-foreground">
+                مرجع موحّد: قاعدة بيانات الأنصبة السنوية/الشهرية بالعملات المحلية + السجل التاريخي اليومي بالدولار — لاحتساب نصاب زكاة عملائك لأي تاريخ حَول.
+              </p>
             </CardHeader>
             <CardContent>
-              <PricesHistoryPanel compact />
+              <Tabs defaultValue="nisab" className="space-y-3">
+                <TabsList className="w-full grid grid-cols-2">
+                  <TabsTrigger value="nisab" className="gap-1.5"><Landmark className="h-3.5 w-3.5" /> قاعدة بيانات الأنصبة</TabsTrigger>
+                  <TabsTrigger value="daily" className="gap-1.5"><LineChart className="h-3.5 w-3.5" /> السجل اليومي للأسعار</TabsTrigger>
+                </TabsList>
+                <TabsContent value="nisab" className="mt-0"><NisabHistory /></TabsContent>
+                <TabsContent value="daily" className="mt-0"><PricesHistoryPanel compact /></TabsContent>
+              </Tabs>
             </CardContent>
           </Card>
         </TabsContent>
