@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ZakatGoldRouteImport } from './routes/zakat-gold'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as StatusRouteImport } from './routes/status'
@@ -61,6 +62,11 @@ import { Route as ApiPublicHooksHawlRemindersRouteImport } from './routes/api/pu
 import { Route as ApiPublicErpWebhookRouteImport } from './routes/api/public/erp/webhook'
 import { Route as ApiPublicErpJournalRouteImport } from './routes/api/public/erp/journal'
 
+const ZakatGoldRoute = ZakatGoldRouteImport.update({
+  id: '/zakat-gold',
+  path: '/zakat-gold',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WelcomeRoute = WelcomeRouteImport.update({
   id: '/welcome',
   path: '/welcome',
@@ -354,6 +360,7 @@ export interface FileRoutesByFullPath {
   '/status': typeof StatusRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
+  '/zakat-gold': typeof ZakatGoldRoute
   '/accountant': typeof AuthenticatedAccountantRouteWithChildren
   '/admin': typeof AuthenticatedAdminRoute
   '/attestations': typeof AuthenticatedAttestationsRoute
@@ -406,6 +413,7 @@ export interface FileRoutesByTo {
   '/status': typeof StatusRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
+  '/zakat-gold': typeof ZakatGoldRoute
   '/accountant': typeof AuthenticatedAccountantRouteWithChildren
   '/admin': typeof AuthenticatedAdminRoute
   '/attestations': typeof AuthenticatedAttestationsRoute
@@ -460,6 +468,7 @@ export interface FileRoutesById {
   '/status': typeof StatusRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
+  '/zakat-gold': typeof ZakatGoldRoute
   '/_authenticated/accountant': typeof AuthenticatedAccountantRouteWithChildren
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/attestations': typeof AuthenticatedAttestationsRoute
@@ -514,6 +523,7 @@ export interface FileRouteTypes {
     | '/status'
     | '/verify'
     | '/welcome'
+    | '/zakat-gold'
     | '/accountant'
     | '/admin'
     | '/attestations'
@@ -566,6 +576,7 @@ export interface FileRouteTypes {
     | '/status'
     | '/verify'
     | '/welcome'
+    | '/zakat-gold'
     | '/accountant'
     | '/admin'
     | '/attestations'
@@ -619,6 +630,7 @@ export interface FileRouteTypes {
     | '/status'
     | '/verify'
     | '/welcome'
+    | '/zakat-gold'
     | '/_authenticated/accountant'
     | '/_authenticated/admin'
     | '/_authenticated/attestations'
@@ -673,6 +685,7 @@ export interface RootRouteChildren {
   StatusRoute: typeof StatusRoute
   VerifyRoute: typeof VerifyRoute
   WelcomeRoute: typeof WelcomeRoute
+  ZakatGoldRoute: typeof ZakatGoldRoute
   ApiChatRoute: typeof ApiChatRoute
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   LegalTermsRoute: typeof LegalTermsRoute
@@ -690,6 +703,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/zakat-gold': {
+      id: '/zakat-gold'
+      path: '/zakat-gold'
+      fullPath: '/zakat-gold'
+      preLoaderRoute: typeof ZakatGoldRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/welcome': {
       id: '/welcome'
       path: '/welcome'
@@ -1118,6 +1138,7 @@ const rootRouteChildren: RootRouteChildren = {
   StatusRoute: StatusRoute,
   VerifyRoute: VerifyRoute,
   WelcomeRoute: WelcomeRoute,
+  ZakatGoldRoute: ZakatGoldRoute,
   ApiChatRoute: ApiChatRoute,
   LegalPrivacyRoute: LegalPrivacyRoute,
   LegalTermsRoute: LegalTermsRoute,
