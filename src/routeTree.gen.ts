@@ -28,9 +28,11 @@ import { Route as EnterpriseRouteImport } from './routes/enterprise'
 import { Route as DevelopersRouteImport } from './routes/developers'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as CropsRouteImport } from './routes/crops'
+import { Route as ComplianceRouteImport } from './routes/compliance'
 import { Route as AwardSubmissionRouteImport } from './routes/award-submission'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuditRouteImport } from './routes/audit'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as AdvisorRouteImport } from './routes/advisor'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -145,6 +147,11 @@ const CropsRoute = CropsRouteImport.update({
   path: '/crops',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ComplianceRoute = ComplianceRouteImport.update({
+  id: '/compliance',
+  path: '/compliance',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AwardSubmissionRoute = AwardSubmissionRouteImport.update({
   id: '/award-submission',
   path: '/award-submission',
@@ -158,6 +165,11 @@ const AuthRoute = AuthRouteImport.update({
 const AuditRoute = AuditRouteImport.update({
   id: '/audit',
   path: '/audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdvisorRoute = AdvisorRouteImport.update({
@@ -258,9 +270,11 @@ const ApiPublicErpJournalRoute = ApiPublicErpJournalRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/advisor': typeof AdvisorRoute
+  '/analytics': typeof AnalyticsRoute
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/award-submission': typeof AwardSubmissionRoute
+  '/compliance': typeof ComplianceRoute
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
@@ -299,9 +313,11 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/advisor': typeof AdvisorRoute
+  '/analytics': typeof AnalyticsRoute
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/award-submission': typeof AwardSubmissionRoute
+  '/compliance': typeof ComplianceRoute
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
@@ -342,9 +358,11 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/advisor': typeof AdvisorRoute
+  '/analytics': typeof AnalyticsRoute
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/award-submission': typeof AwardSubmissionRoute
+  '/compliance': typeof ComplianceRoute
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
@@ -385,9 +403,11 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/advisor'
+    | '/analytics'
     | '/audit'
     | '/auth'
     | '/award-submission'
+    | '/compliance'
     | '/crops'
     | '/demo'
     | '/developers'
@@ -426,9 +446,11 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/advisor'
+    | '/analytics'
     | '/audit'
     | '/auth'
     | '/award-submission'
+    | '/compliance'
     | '/crops'
     | '/demo'
     | '/developers'
@@ -468,9 +490,11 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/advisor'
+    | '/analytics'
     | '/audit'
     | '/auth'
     | '/award-submission'
+    | '/compliance'
     | '/crops'
     | '/demo'
     | '/developers'
@@ -511,9 +535,11 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AdvisorRoute: typeof AdvisorRoute
+  AnalyticsRoute: typeof AnalyticsRoute
   AuditRoute: typeof AuditRoute
   AuthRoute: typeof AuthRoute
   AwardSubmissionRoute: typeof AwardSubmissionRoute
+  ComplianceRoute: typeof ComplianceRoute
   CropsRoute: typeof CropsRoute
   DemoRoute: typeof DemoRoute
   DevelopersRoute: typeof DevelopersRoute
@@ -682,6 +708,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CropsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/compliance': {
+      id: '/compliance'
+      path: '/compliance'
+      fullPath: '/compliance'
+      preLoaderRoute: typeof ComplianceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/award-submission': {
       id: '/award-submission'
       path: '/award-submission'
@@ -701,6 +734,13 @@ declare module '@tanstack/react-router' {
       path: '/audit'
       fullPath: '/audit'
       preLoaderRoute: typeof AuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/advisor': {
@@ -851,9 +891,11 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AdvisorRoute: AdvisorRoute,
+  AnalyticsRoute: AnalyticsRoute,
   AuditRoute: AuditRoute,
   AuthRoute: AuthRoute,
   AwardSubmissionRoute: AwardSubmissionRoute,
+  ComplianceRoute: ComplianceRoute,
   CropsRoute: CropsRoute,
   DemoRoute: DemoRoute,
   DevelopersRoute: DevelopersRoute,
