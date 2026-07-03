@@ -47,13 +47,15 @@ export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const currentPath = useRouterState({ select: (r) => r.location.pathname });
-  const { accountType } = useAuth();
+  const { accountType, isAccountant } = useAuth();
   const [q, setQ] = useState("");
   const results = useMemo(() => searchEntries(q), [q]);
   const isActive = (p: string) => currentPath === p;
 
-  const navItems = NAV.filter((i) => isVisible(i.audience, accountType));
-  const calcItems = CALCS.filter((i) => isVisible(i.audience, accountType));
+  // Accountants see everything (full calculator access).
+  const navItems = isAccountant ? NAV : NAV.filter((i) => isVisible(i.audience, accountType));
+  const calcItems = isAccountant ? CALCS : CALCS.filter((i) => isVisible(i.audience, accountType));
+
 
   return (
     <Sidebar collapsible="icon" side="right">
@@ -117,8 +119,9 @@ export function AppSidebar() {
         {calcItems.length > 0 && (
           <SidebarGroup>
             <SidebarGroupLabel>
-              {accountType === "company" ? "حاسبات الشركات" : accountType === "institution" ? "حاسبات المؤسسات" : "حاسبات الأفراد"}
+              {isAccountant ? "كل الحاسبات" : accountType === "company" ? "حاسبات الشركات" : accountType === "institution" ? "حاسبات المؤسسات" : "حاسبات الأفراد"}
             </SidebarGroupLabel>
+
             <SidebarGroupContent>
               <SidebarMenu>
                 {calcItems.map((i) => (
