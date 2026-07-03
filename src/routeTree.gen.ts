@@ -39,12 +39,14 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuditRouteImport } from './routes/audit'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as AdvisorRouteImport } from './routes/advisor'
+import { Route as AConsoleRouteImport } from './routes/a-console'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LegalTermsRouteImport } from './routes/legal.terms'
 import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedErpSetupRouteImport } from './routes/_authenticated/erp-setup'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAuditReviewRouteImport } from './routes/_authenticated/audit-review'
 import { Route as AuthenticatedAttestationsRouteImport } from './routes/_authenticated/attestations'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -212,6 +214,11 @@ const AdvisorRoute = AdvisorRouteImport.update({
   path: '/advisor',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AConsoleRoute = AConsoleRouteImport.update({
+  id: '/a-console',
+  path: '/a-console',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
@@ -239,6 +246,11 @@ const ApiChatRoute = ApiChatRouteImport.update({
 const AuthenticatedErpSetupRoute = AuthenticatedErpSetupRouteImport.update({
   id: '/erp-setup',
   path: '/erp-setup',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAuditReviewRoute =
@@ -331,6 +343,7 @@ const ApiPublicErpJournalRoute = ApiPublicErpJournalRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/a-console': typeof AConsoleRoute
   '/advisor': typeof AdvisorRoute
   '/analytics': typeof AnalyticsRoute
   '/audit': typeof AuditRoute
@@ -365,6 +378,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/attestations': typeof AuthenticatedAttestationsRoute
   '/audit-review': typeof AuthenticatedAuditReviewRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/erp-setup': typeof AuthenticatedErpSetupRoute
   '/api/chat': typeof ApiChatRoute
   '/legal/privacy': typeof LegalPrivacyRoute
@@ -384,6 +398,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/a-console': typeof AConsoleRoute
   '/advisor': typeof AdvisorRoute
   '/analytics': typeof AnalyticsRoute
   '/audit': typeof AuditRoute
@@ -418,6 +433,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/attestations': typeof AuthenticatedAttestationsRoute
   '/audit-review': typeof AuthenticatedAuditReviewRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/erp-setup': typeof AuthenticatedErpSetupRoute
   '/api/chat': typeof ApiChatRoute
   '/legal/privacy': typeof LegalPrivacyRoute
@@ -439,6 +455,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/a-console': typeof AConsoleRoute
   '/advisor': typeof AdvisorRoute
   '/analytics': typeof AnalyticsRoute
   '/audit': typeof AuditRoute
@@ -473,6 +490,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/attestations': typeof AuthenticatedAttestationsRoute
   '/_authenticated/audit-review': typeof AuthenticatedAuditReviewRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/erp-setup': typeof AuthenticatedErpSetupRoute
   '/api/chat': typeof ApiChatRoute
   '/legal/privacy': typeof LegalPrivacyRoute
@@ -494,6 +512,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/a-console'
     | '/advisor'
     | '/analytics'
     | '/audit'
@@ -528,6 +547,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/attestations'
     | '/audit-review'
+    | '/dashboard'
     | '/erp-setup'
     | '/api/chat'
     | '/legal/privacy'
@@ -547,6 +567,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/a-console'
     | '/advisor'
     | '/analytics'
     | '/audit'
@@ -581,6 +602,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/attestations'
     | '/audit-review'
+    | '/dashboard'
     | '/erp-setup'
     | '/api/chat'
     | '/legal/privacy'
@@ -601,6 +623,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/a-console'
     | '/advisor'
     | '/analytics'
     | '/audit'
@@ -635,6 +658,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/attestations'
     | '/_authenticated/audit-review'
+    | '/_authenticated/dashboard'
     | '/_authenticated/erp-setup'
     | '/api/chat'
     | '/legal/privacy'
@@ -656,6 +680,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AConsoleRoute: typeof AConsoleRoute
   AdvisorRoute: typeof AdvisorRoute
   AnalyticsRoute: typeof AnalyticsRoute
   AuditRoute: typeof AuditRoute
@@ -913,6 +938,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdvisorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/a-console': {
+      id: '/a-console'
+      path: '/a-console'
+      fullPath: '/a-console'
+      preLoaderRoute: typeof AConsoleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated': {
       id: '/_authenticated'
       path: ''
@@ -953,6 +985,13 @@ declare module '@tanstack/react-router' {
       path: '/erp-setup'
       fullPath: '/erp-setup'
       preLoaderRoute: typeof AuthenticatedErpSetupRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/audit-review': {
@@ -1089,6 +1128,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedAttestationsRoute: typeof AuthenticatedAttestationsRoute
   AuthenticatedAuditReviewRoute: typeof AuthenticatedAuditReviewRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedErpSetupRoute: typeof AuthenticatedErpSetupRoute
   AuthenticatedCertifiedReportRecordIdRoute: typeof AuthenticatedCertifiedReportRecordIdRoute
 }
@@ -1098,6 +1138,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedAttestationsRoute: AuthenticatedAttestationsRoute,
   AuthenticatedAuditReviewRoute: AuthenticatedAuditReviewRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedErpSetupRoute: AuthenticatedErpSetupRoute,
   AuthenticatedCertifiedReportRecordIdRoute:
     AuthenticatedCertifiedReportRecordIdRoute,
@@ -1109,6 +1150,7 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AConsoleRoute: AConsoleRoute,
   AdvisorRoute: AdvisorRoute,
   AnalyticsRoute: AnalyticsRoute,
   AuditRoute: AuditRoute,

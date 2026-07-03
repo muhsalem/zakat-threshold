@@ -27,12 +27,13 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [accountType, setAccountType] = useState<"individual" | "company" | "institution">("individual");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!authLoading && user) navigate({ to: "/history" });
+    if (!authLoading && user) navigate({ to: "/dashboard" });
   }, [authLoading, user, navigate]);
 
   async function handleLogin(e: React.FormEvent) {
@@ -41,19 +42,19 @@ function AuthPage() {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);
     if (error) setError(error.message);
-    else navigate({ to: "/history" });
+    else navigate({ to: "/dashboard" });
   }
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
     setError(null); setInfo(null); setBusy(true);
-    const redirectUrl = `${window.location.origin}/history`;
+    const redirectUrl = `${window.location.origin}/dashboard`;
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         emailRedirectTo: redirectUrl,
-        data: { display_name: displayName || email },
+        data: { display_name: displayName || email, account_type: accountType },
       },
     });
     setBusy(false);
@@ -66,7 +67,7 @@ function AuthPage() {
     const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
     if (result.error) { setError(result.error.message); setBusy(false); return; }
     if (result.redirected) return;
-    navigate({ to: "/history" });
+    navigate({ to: "/dashboard" });
   }
 
   async function handleForgot() {
@@ -128,8 +129,34 @@ function AuthPage() {
               <TabsContent value="signup">
                 <form onSubmit={handleSignup} className="space-y-3 mt-4">
                   <div className="space-y-1.5">
+                    <Label>نوع الحساب (يُختار مرة واحدة)</Label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {([
+                        { v: "individual", label: "فرد" },
+                        { v: "company", label: "شركة" },
+                        { v: "institution", label: "مؤسسة" },
+                      ] as const).map((o) => (
+                        <button
+                          type="button"
+                          key={o.v}
+                          onClick={() => setAccountType(o.v)}
+                          className={`rounded-md border px-2 py-2 text-sm font-medium transition ${
+                            accountType === o.v
+                              ? "border-primary bg-primary/10 text-primary"
+                              : "border-input hover:border-primary/50"
+                          }`}
+                        >
+                          {o.label}
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">
+                      يحدد النموذج المناسب داخل لوحتك (لا يمكن تغييره لاحقاً بسهولة).
+                    </p>
+                  </div>
+                  <div className="space-y-1.5">
                     <Label>الاسم</Label>
-                    <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="اسمك" />
+                    <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="اسمك أو اسم الجهة" />
                   </div>
                   <div className="space-y-1.5">
                     <Label>البريد الإلكتروني</Label>
