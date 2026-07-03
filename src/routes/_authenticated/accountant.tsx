@@ -342,7 +342,7 @@ function AccountantPortal() {
       </Card>
 
       <p className="text-[11px] text-muted-foreground">
-        البيانات تُحفظ محلياً في متصفحك (localStorage) للتجربة السريعة — للاستخدام الإنتاجي اربط بوابة المحاسب بجداول Lovable Cloud.
+        بيانات العملاء محفوظة في Lovable Cloud بحماية RLS — لا يراها إلا مالك الحساب.
       </p>
         </TabsContent>
 
