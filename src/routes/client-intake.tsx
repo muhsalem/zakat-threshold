@@ -377,7 +377,7 @@ function ClientIntakePage() {
         <Button variant="ghost" onClick={() => navigate({ to: "/" })} className="gap-1">
           <ArrowLeft className="h-4 w-4" /> إلغاء
         </Button>
-        <Button size="lg" onClick={submit} className="gap-1.5">
+        <Button size="lg" onClick={() => void submit()} className="gap-1.5">
           <Send className="h-4 w-4" /> {mode === "comprehensive" ? "طلب التقرير الشامل" : "إرسال إلى المحاسب"}
         </Button>
       </div>
