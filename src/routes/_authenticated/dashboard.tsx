@@ -9,7 +9,7 @@ import { IndividualWizard } from "@/components/wizards/IndividualWizard";
 import { CompanyWizard } from "@/components/wizards/CompanyWizard";
 import { InstitutionWizard } from "@/components/wizards/InstitutionWizard";
 
-type AccountType = "individual" | "company" | "institution";
+type AccountType = "individual" | "company" | "institution" | "admin";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
-export type AccountType = "individual" | "company" | "institution";
+export type AccountType = "individual" | "company" | "institution" | "admin";
 export type AppRole = "admin" | "moderator" | "user" | "accountant";
 
 export function useAuth() {
