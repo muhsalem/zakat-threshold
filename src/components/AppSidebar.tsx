@@ -34,7 +34,7 @@ export function AppSidebar() {
   const isActive = (p: string) => currentPath === p;
 
   return (
-    <Sidebar collapsible="icon" side="left">
+    <Sidebar collapsible="icon" side="right">
       <SidebarContent>
         {!collapsed && (
           <div className="p-2">
