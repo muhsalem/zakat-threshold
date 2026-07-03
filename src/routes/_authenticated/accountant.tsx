@@ -256,7 +256,7 @@ function AccountantPortal() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="flex items-center gap-2"><Landmark className="h-5 w-5 text-primary" /> العملاء ({rows.length})</CardTitle>
-          <Button size="sm" onClick={() => addClientPrompt(clients, persist)} className="gap-1"><Plus className="h-4 w-4" /> إضافة</Button>
+          <Button size="sm" onClick={() => void addClientPrompt(reload)} className="gap-1"><Plus className="h-4 w-4" /> إضافة</Button>
         </CardHeader>
         <CardContent>
           <div className="border rounded-lg overflow-x-auto">
