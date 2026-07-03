@@ -1,5 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Progress } from "@/components/ui/progress";
+import { Save, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -69,8 +71,36 @@ function ClientIntakePage() {
   const [signedIn, setSignedIn] = useState(false);
   const [form, setForm] = useState<FormState>(emptyForm);
   const [submitted, setSubmitted] = useState<null | ReportMode>(null);
+  const [draftSavedAt, setDraftSavedAt] = useState<string | null>(null);
+
+  const DRAFT_KEY = "client_intake_draft_v1";
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed?.form) { setForm(parsed.form); setDraftSavedAt(parsed.at || null); }
+      }
+    } catch {}
+  }, []);
 
   const set = <K extends keyof FormState>(k: K, v: FormState[K]) => setForm((f) => ({ ...f, [k]: v }));
+
+  const saveDraft = () => {
+    const at = new Date().toISOString();
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ form, at })); setDraftSavedAt(at); toast.success("تم حفظ المسودة"); } catch { toast.error("تعذر حفظ المسودة"); }
+  };
+  const clearDraft = () => { try { localStorage.removeItem(DRAFT_KEY); } catch {} setDraftSavedAt(null); setForm(emptyForm); toast.info("تم مسح المسودة"); };
+
+  const progress = useMemo(() => {
+    const required: Array<keyof FormState> = ["name", "email", "country", "madhab", "hawlDate"];
+    const requiredDone = required.filter((k) => String(form[k] ?? "").trim().length > 0).length;
+    const numericKeys: Array<keyof FormState> = ["cash", "bankAccounts", "gold", "goldGrams", "silverGrams", "investments", "stocksTrading", "stocksLongTerm", "mutualFunds", "sukuk", "realEstateTrading", "realEstateRental", "agricultureValue", "livestockCamels", "livestockCattle", "livestockSheep", "salaryMonthly", "inventory", "businessAssets", "receivables"];
+    const anyValue = numericKeys.some((k) => Number(form[k]) > 0) ? 1 : 0;
+    const total = required.length + 1;
+    return Math.round(((requiredDone + anyValue) / total) * 100);
+  }, [form]);
 
   const submit = () => {
     if (!form.name.trim() || !form.email.trim()) return toast.error("الاسم والبريد مطلوبان");
@@ -95,6 +125,8 @@ function ClientIntakePage() {
       notes: `[${mode === "comprehensive" ? "تقرير شامل معتمد" : "حساب سريع"}] ${notesExtras}`,
     });
     upsertClient(client);
+    try { localStorage.removeItem(DRAFT_KEY); } catch {}
+    setDraftSavedAt(null);
     setSubmitted(mode);
     toast.success(mode === "comprehensive" ? "تم إرسال طلب التقرير الشامل" : "تم إرسال بياناتك للمحاسب");
   };
@@ -165,6 +197,23 @@ function ClientIntakePage() {
           </AlertDescription>
         </Alert>
       )}
+
+      {/* اختيار نوع النموذج */}
+      {/* شريط تقدّم + حفظ مسودة */}
+      <Card>
+        <CardContent className="py-4 space-y-2">
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <div className="text-sm font-semibold">اكتمال النموذج: <span className="text-primary">{progress}%</span></div>
+            <div className="flex items-center gap-2">
+              {draftSavedAt && <span className="text-[11px] text-muted-foreground">آخر حفظ: {new Date(draftSavedAt).toLocaleString("ar-EG")}</span>}
+              <Button size="sm" variant="outline" onClick={saveDraft} className="gap-1.5"><Save className="h-3.5 w-3.5" /> حفظ مسودة</Button>
+              {draftSavedAt && <Button size="sm" variant="ghost" onClick={clearDraft} className="gap-1.5 text-destructive"><RotateCcw className="h-3.5 w-3.5" /> مسح</Button>}
+            </div>
+          </div>
+          <Progress value={progress} />
+          <p className="text-[11px] text-muted-foreground">تُحفظ المسودة محلياً في متصفحك ولا تُرسل إلا عند الضغط على زر الإرسال.</p>
+        </CardContent>
+      </Card>
 
       {/* اختيار نوع النموذج */}
       <Tabs value={mode} onValueChange={(v) => setMode(v as ReportMode)}>
