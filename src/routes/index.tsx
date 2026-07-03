@@ -13,6 +13,8 @@ import {
   LogIn, LogOut, Award, BookOpen, Cpu, Lock, Database, LineChart,
   Landmark, HandCoins, Scale, Zap, PhoneCall, FileText,
 } from "lucide-react";
+import { SimpleZakatCalculator } from "@/components/zakat/SimpleZakatCalculator";
+import nisabLogo from "@/assets/nisab-logo.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -53,6 +55,7 @@ function Landing() {
     <div className="min-h-screen bg-background">
       <SiteHeader />
       <Hero />
+      <FreeCalcSection />
       <TrustBar />
       <Features />
       <HowItWorks />
@@ -72,9 +75,7 @@ function SiteHeader() {
     <header className="border-b border-border/60 bg-card/70 backdrop-blur sticky top-0 z-30">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between gap-3">
         <Link to="/" className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-md">
-            <Moon className="h-5 w-5 text-primary-foreground" />
-          </div>
+          <img src={nisabLogo.url} alt="نِصاب — حاسبة الزكاة" className="h-12 w-12 rounded-xl object-contain bg-white shadow-md" />
           <div className="leading-tight">
             <div className="font-bold">نِصاب</div>
             <div className="text-[10px] text-muted-foreground">Zakat Platform</div>
