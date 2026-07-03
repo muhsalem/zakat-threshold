@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -388,7 +389,76 @@ function AudienceCard({ icon, title, points, ctaLabel, ctaTo, highlight }: {
 
 /* ---------------- Pricing ---------------- */
 
+// أسعار صرف تقريبية مقابل الدولار (تُحدَّث دورياً)
+const CURRENCIES: Record<string, { code: string; symbol: string; rate: number; label: string; round: number }> = {
+  USD: { code: "USD", symbol: "$",     rate: 1,      label: "دولار أمريكي",  round: 1 },
+  SAR: { code: "SAR", symbol: "ر.س",   rate: 3.75,   label: "ريال سعودي",    round: 5 },
+  AED: { code: "AED", symbol: "د.إ",   rate: 3.67,   label: "درهم إماراتي",  round: 5 },
+  QAR: { code: "QAR", symbol: "ر.ق",   rate: 3.64,   label: "ريال قطري",     round: 5 },
+  KWD: { code: "KWD", symbol: "د.ك",   rate: 0.307,  label: "دينار كويتي",   round: 1 },
+  BHD: { code: "BHD", symbol: "د.ب",   rate: 0.376,  label: "دينار بحريني",  round: 1 },
+  OMR: { code: "OMR", symbol: "ر.ع",   rate: 0.385,  label: "ريال عُماني",   round: 1 },
+  EGP: { code: "EGP", symbol: "ج.م",   rate: 48,     label: "جنيه مصري",     round: 10 },
+  JOD: { code: "JOD", symbol: "د.أ",   rate: 0.709,  label: "دينار أردني",   round: 1 },
+  MAD: { code: "MAD", symbol: "د.م",   rate: 10,     label: "درهم مغربي",    round: 5 },
+  TND: { code: "TND", symbol: "د.ت",   rate: 3.15,   label: "دينار تونسي",   round: 1 },
+  DZD: { code: "DZD", symbol: "د.ج",   rate: 134,    label: "دينار جزائري",  round: 50 },
+  TRY: { code: "TRY", symbol: "₺",     rate: 34,     label: "ليرة تركية",    round: 10 },
+  MYR: { code: "MYR", symbol: "RM",    rate: 4.7,    label: "رينغيت ماليزي", round: 1 },
+  IDR: { code: "IDR", symbol: "Rp",    rate: 15800,  label: "روبية إندونيسية", round: 5000 },
+  PKR: { code: "PKR", symbol: "₨",     rate: 278,    label: "روبية باكستانية", round: 50 },
+  GBP: { code: "GBP", symbol: "£",     rate: 0.78,   label: "جنيه إسترليني", round: 1 },
+  EUR: { code: "EUR", symbol: "€",     rate: 0.92,   label: "يورو",          round: 1 },
+};
+
+const COUNTRY_TO_CCY: Record<string, string> = {
+  SA: "SAR", AE: "AED", QA: "QAR", KW: "KWD", BH: "BHD", OM: "OMR",
+  EG: "EGP", JO: "JOD", MA: "MAD", TN: "TND", DZ: "DZD",
+  TR: "TRY", MY: "MYR", ID: "IDR", PK: "PKR",
+  GB: "GBP", UK: "GBP", IE: "EUR", DE: "EUR", FR: "EUR", ES: "EUR", IT: "EUR", NL: "EUR", BE: "EUR",
+  US: "USD",
+};
+
+function detectCurrency(): string {
+  if (typeof navigator === "undefined") return "USD";
+  const langs = [navigator.language, ...(navigator.languages ?? [])];
+  for (const l of langs) {
+    const cc = l.split("-")[1]?.toUpperCase();
+    if (cc && COUNTRY_TO_CCY[cc]) return COUNTRY_TO_CCY[cc];
+  }
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+    if (tz.includes("Riyadh")) return "SAR";
+    if (tz.includes("Dubai")) return "AED";
+    if (tz.includes("Cairo")) return "EGP";
+    if (tz.includes("Kuwait")) return "KWD";
+    if (tz.includes("Qatar")) return "QAR";
+    if (tz.includes("Bahrain")) return "BHD";
+    if (tz.includes("Muscat")) return "OMR";
+    if (tz.includes("Amman")) return "JOD";
+    if (tz.includes("Istanbul")) return "TRY";
+    if (tz.includes("Casablanca")) return "MAD";
+    if (tz.includes("Kuala_Lumpur")) return "MYR";
+    if (tz.includes("Jakarta")) return "IDR";
+    if (tz.includes("Karachi")) return "PKR";
+    if (tz.includes("London")) return "GBP";
+  } catch {}
+  return "USD";
+}
+
+function formatPrice(usd: number, ccyCode: string): string {
+  const c = CURRENCIES[ccyCode] ?? CURRENCIES.USD;
+  const raw = usd * c.rate;
+  const rounded = Math.max(c.round, Math.round(raw / c.round) * c.round);
+  const formatted = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(rounded);
+  return c.code === "USD" ? `$${formatted}` : `${formatted} ${c.symbol}`;
+}
+
 function Pricing() {
+  const [ccy, setCcy] = useState<string>("USD");
+  useEffect(() => { setCcy(detectCurrency()); }, []);
+  const current = CURRENCIES[ccy] ?? CURRENCIES.USD;
+
   return (
     <section id="pricing" className="bg-muted/30 border-y" dir="rtl">
       <div className="container mx-auto px-4 py-20">
@@ -398,57 +468,39 @@ function Pricing() {
           subtitle="أسعار شفافة بلا رسوم خفية. جميع الخطط تشمل التحديثات ودعم عربي."
         />
 
+        <div className="flex items-center justify-center gap-2 mb-8">
+          <span className="text-xs text-muted-foreground">العملة:</span>
+          <select
+            value={ccy}
+            onChange={(e) => setCcy(e.target.value)}
+            className="rounded-md border bg-background px-2 py-1 text-sm"
+            aria-label="اختر عملة العرض"
+          >
+            {Object.values(CURRENCIES).map((c) => (
+              <option key={c.code} value={c.code}>{c.label} ({c.code})</option>
+            ))}
+          </select>
+          {ccy !== "USD" && (
+            <span className="text-[11px] text-muted-foreground">
+              (تحويل تقريبي من الدولار — 1$ ≈ {current.rate} {current.symbol})
+            </span>
+          )}
+        </div>
+
         <div className="mb-10">
           <div className="text-center mb-6">
             <Badge variant="outline" className="text-sm py-1.5 px-3"><Users className="h-4 w-4 ml-1" /> خطط الأفراد</Badge>
           </div>
           <div className="grid md:grid-cols-3 gap-4 max-w-5xl mx-auto">
-            <PriceCard
-              name="مجاني"
-              price="0"
-              period="دائماً"
-              tagline="للحساب الذاتي السريع"
-              cta="ابدأ الآن"
-              to="/calculator"
-              features={[
-                "حاسبة زكاة كاملة (أفراد)",
-                "زكاة الفطر والذهب والفضة",
-                "سجل النصاب التاريخي",
-                "تقرير PDF غير معتمد",
-              ]}
-            />
-            <PriceCard
-              name="معتمد"
-              price="19"
-              period="/ تقرير"
-              tagline="تقرير رسمي بمراجعة محاسب"
-              highlight
-              badge="الأكثر شعبية"
-              cta="اطلب تقريري"
-              to="/client-intake"
-              features={[
-                "كل ميزات المجاني",
-                "مراجعة محاسب معتمد",
-                "تقرير PDF مختوم + رقم تحقق",
-                "إرسال على البريد خلال يومَي عمل",
-                "استشارة شرعية مكتوبة",
-              ]}
-            />
-            <PriceCard
-              name="سنوي VIP"
-              price="79"
-              period="/ سنة"
-              tagline="متابعة كاملة على مدار الحول"
-              cta="اشترك سنوياً"
-              to="/client-intake"
-              features={[
-                "4 تقارير معتمدة سنوياً",
-                "تذكير حَوْلي بالبريد والواتساب",
-                "أرشيف تقارير مؤمّن",
-                "أولوية دعم مباشر",
-                "استشارات شرعية غير محدودة",
-              ]}
-            />
+            <PriceCard name="مجاني" priceUSD={0} ccy={ccy} period="دائماً" tagline="للحساب الذاتي السريع"
+              cta="ابدأ الآن" to="/calculator"
+              features={["حاسبة زكاة كاملة (أفراد)", "زكاة الفطر والذهب والفضة", "سجل النصاب التاريخي", "تقرير PDF غير معتمد"]} />
+            <PriceCard name="معتمد" priceUSD={19} ccy={ccy} period="/ تقرير" tagline="تقرير رسمي بمراجعة محاسب"
+              highlight badge="الأكثر شعبية" cta="اطلب تقريري" to="/client-intake"
+              features={["كل ميزات المجاني", "مراجعة محاسب معتمد", "تقرير PDF مختوم + رقم تحقق", "إرسال على البريد خلال يومَي عمل", "استشارة شرعية مكتوبة"]} />
+            <PriceCard name="سنوي VIP" priceUSD={79} ccy={ccy} period="/ سنة" tagline="متابعة كاملة على مدار الحول"
+              cta="اشترك سنوياً" to="/client-intake"
+              features={["4 تقارير معتمدة سنوياً", "تذكير حَوْلي بالبريد والواتساب", "أرشيف تقارير مؤمّن", "أولوية دعم مباشر", "استشارات شرعية غير محدودة"]} />
           </div>
         </div>
 
@@ -457,70 +509,31 @@ function Pricing() {
             <Badge variant="outline" className="text-sm py-1.5 px-3"><Building2 className="h-4 w-4 ml-1" /> خطط الشركات والمؤسسات</Badge>
           </div>
           <div className="grid md:grid-cols-3 gap-4 max-w-5xl mx-auto">
-            <PriceCard
-              name="Startup"
-              price="149"
-              period="/ شهر"
-              tagline="للشركات الناشئة وSMEs"
-              cta="ابدأ اشتراك الشركة"
-              to="/client-intake"
-              features={[
-                "حساب زكوي شهري/سنوي",
-                "حتى 100 قيد محاسبي",
-                "استيراد Excel و CSV",
-                "تقرير معتمد ربع سنوي",
-                "دعم بريدي (48 ساعة)",
-              ]}
-            />
-            <PriceCard
-              name="Business"
-              price="499"
-              period="/ شهر"
-              tagline="للشركات متوسطة الحجم"
-              highlight
-              badge="الأكثر توازناً"
-              cta="اطلب تجربة"
-              to="/client-intake"
-              features={[
-                "قيود غير محدودة",
-                "ربط ERP (Odoo / Zoho / SAP)",
-                "تقارير شهرية معتمدة",
-                "لوحة تحكم مالية كاملة",
-                "محاسب مخصّص لحسابك",
-                "توزيع المصارف الثمانية",
-              ]}
-            />
-            <PriceCard
-              name="Enterprise"
-              price="مخصّص"
-              period="/ سنوياً"
-              tagline="للمؤسسات والأوقاف الكبرى"
-              cta="تواصل مع المبيعات"
-              to="/enterprise"
-              features={[
-                "SLA زمن استجابة ساعة",
-                "SSO / SAML وأمان مؤسسي",
-                "ربط ERP مؤسسي مخصّص",
-                "فروع ومستخدمين غير محدودين",
-                "تقارير IFRS + ESG + AAOIFI",
-                "مدير حساب + مستشار شرعي",
-              ]}
-            />
+            <PriceCard name="Startup" priceUSD={149} ccy={ccy} period="/ شهر" tagline="للشركات الناشئة وSMEs"
+              cta="ابدأ اشتراك الشركة" to="/client-intake"
+              features={["حساب زكوي شهري/سنوي", "حتى 100 قيد محاسبي", "استيراد Excel و CSV", "تقرير معتمد ربع سنوي", "دعم بريدي (48 ساعة)"]} />
+            <PriceCard name="Business" priceUSD={499} ccy={ccy} period="/ شهر" tagline="للشركات متوسطة الحجم"
+              highlight badge="الأكثر توازناً" cta="اطلب تجربة" to="/client-intake"
+              features={["قيود غير محدودة", "ربط ERP (Odoo / Zoho / SAP)", "تقارير شهرية معتمدة", "لوحة تحكم مالية كاملة", "محاسب مخصّص لحسابك", "توزيع المصارف الثمانية"]} />
+            <PriceCard name="Enterprise" priceUSD={-1} ccy={ccy} period="/ سنوياً" tagline="للمؤسسات والأوقاف الكبرى"
+              cta="تواصل مع المبيعات" to="/enterprise"
+              features={["SLA زمن استجابة ساعة", "SSO / SAML وأمان مؤسسي", "ربط ERP مؤسسي مخصّص", "فروع ومستخدمين غير محدودين", "تقارير IFRS + ESG + AAOIFI", "مدير حساب + مستشار شرعي"]} />
           </div>
         </div>
 
         <p className="text-center text-xs text-muted-foreground mt-8">
-          الأسعار بالدولار الأمريكي • تشمل ضريبة القيمة المضافة حيثما تنطبق • إمكانية الدفع بعملات محلية
+          الأسعار مرجعها الدولار وتُعرض بعملتك المحلية بالتحويل التقريبي • الفوترة الفعلية تشمل ضريبة القيمة المضافة حيثما تنطبق
         </p>
       </div>
     </section>
   );
 }
 
-function PriceCard({ name, price, period, tagline, features, cta, to, highlight, badge }: {
-  name: string; price: string; period: string; tagline: string;
+function PriceCard({ name, priceUSD, ccy, period, tagline, features, cta, to, highlight, badge }: {
+  name: string; priceUSD: number; ccy: string; period: string; tagline: string;
   features: string[]; cta: string; to: string; highlight?: boolean; badge?: string;
 }) {
+  const priceLabel = priceUSD < 0 ? "مخصّص" : priceUSD === 0 ? "مجاناً" : formatPrice(priceUSD, ccy);
   return (
     <Card className={`relative ${highlight ? "border-primary border-2 shadow-xl scale-[1.02] bg-card" : ""}`}>
       {badge && (
@@ -530,10 +543,13 @@ function PriceCard({ name, price, period, tagline, features, cta, to, highlight,
       )}
       <CardHeader className="pb-4">
         <div className="text-sm font-semibold text-muted-foreground">{name}</div>
-        <div className="flex items-baseline gap-1 mt-1">
-          <span className={`text-4xl font-bold ${highlight ? "text-primary" : ""}`}>{price === "مخصّص" ? price : `$${price}`}</span>
+        <div className="flex items-baseline gap-1 mt-1 flex-wrap">
+          <span className={`text-4xl font-bold ${highlight ? "text-primary" : ""}`}>{priceLabel}</span>
           <span className="text-sm text-muted-foreground">{period}</span>
         </div>
+        {priceUSD > 0 && ccy !== "USD" && (
+          <div className="text-[11px] text-muted-foreground pt-0.5">≈ ${priceUSD} USD</div>
+        )}
         <p className="text-xs text-muted-foreground pt-1">{tagline}</p>
       </CardHeader>
       <CardContent className="space-y-4">
