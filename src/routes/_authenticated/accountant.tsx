@@ -40,6 +40,18 @@ export const Route = createFileRoute("/_authenticated/accountant")({
 });
 
 function AccountantPortal() {
+  // بوابة مقيّدة بدور 'accountant' — تُمنح عبر /a-console بكلمة المرور الرئيسية.
+  const [roleChecked, setRoleChecked] = useState(false);
+  const [hasAccess, setHasAccess] = useState(false);
+  useEffect(() => {
+    (async () => {
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) { setRoleChecked(true); return; }
+      const { data } = await supabase.rpc("has_role", { _user_id: auth.user.id, _role: "accountant" });
+      setHasAccess(Boolean(data));
+      setRoleChecked(true);
+    })();
+  }, []);
   const [clients, setClients] = useState<Client[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [q, setQ] = useState("");
@@ -211,6 +223,21 @@ function AccountantPortal() {
 
   const uniqueCountries = Array.from(new Set(clients.map((c) => c.country)));
   const uniqueYears = Array.from(new Set(clients.map((c) => c.fiscalYear))).sort((a, b) => b - a);
+
+  if (!roleChecked) {
+    return <div className="flex items-center justify-center min-h-[50vh]"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
+  }
+  if (!hasAccess) {
+    return (
+      <main className="container mx-auto max-w-md px-4 py-16 text-center" dir="rtl">
+        <Alert variant="destructive">
+          <AlertDescription>
+            هذه البوابة مقيّدة لحسابات المحاسبين المعتمدين فقط. إن كنت تملك كلمة المرور الرئيسية فادخل عبر <Link to="/a-console" className="underline font-medium">البوابة الإدارية</Link>.
+          </AlertDescription>
+        </Alert>
+      </main>
+    );
+  }
 
   return (
     <main className="container mx-auto max-w-7xl px-4 py-8 space-y-6" dir="rtl">
