@@ -40,6 +40,18 @@ export const Route = createFileRoute("/_authenticated/accountant")({
 });
 
 function AccountantPortal() {
+  // بوابة مقيّدة بدور 'accountant' — تُمنح عبر /a-console بكلمة المرور الرئيسية.
+  const [roleChecked, setRoleChecked] = useState(false);
+  const [hasAccess, setHasAccess] = useState(false);
+  useEffect(() => {
+    (async () => {
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) { setRoleChecked(true); return; }
+      const { data } = await supabase.rpc("has_role", { _user_id: auth.user.id, _role: "accountant" });
+      setHasAccess(Boolean(data));
+      setRoleChecked(true);
+    })();
+  }, []);
   const [clients, setClients] = useState<Client[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [q, setQ] = useState("");
