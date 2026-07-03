@@ -9,68 +9,119 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, Sparkles, Shield, Users, Building2, ArrowLeft, Send } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import {
+  CheckCircle2, Sparkles, Shield, Users, Building2, ArrowLeft, Send,
+  Award, FileCheck2, Stamp, Scale, Landmark, Coins, Wheat, Home, Briefcase,
+} from "lucide-react";
 import { upsertClient, newClientFromIntake, type ClientKind, type Madhab, MADHAB_LABELS, COUNTRY_LABELS } from "@/lib/accountantStore";
 
 export const Route = createFileRoute("/client-intake")({
   head: () => ({
     meta: [
       { title: "احسب زكاتك مع محاسبك المعتمد — نافذة العميل" },
-      { name: "description", content: "أدخل بياناتك المالية بأمان لتصلك حاسبة زكاة مخصصة، وترسل مباشرة إلى محاسبك أو شركتك المعتمدة." },
+      { name: "description", content: "نموذج بسيط أو تقرير زكاة شامل معتمد يُرسل بريدياً خلال يومَي عمل من محاسب مرخّص." },
       { property: "og:title", content: "احسب زكاتك — نافذة العميل" },
-      { property: "og:description", content: "تسليم بيانات آمن للمحاسب المعتمد" },
+      { property: "og:description", content: "تسليم بيانات آمن للمحاسب المعتمد وتقرير PDF مختوم" },
       { property: "og:type", content: "website" },
     ],
   }),
   component: ClientIntakePage,
 });
 
+type ReportMode = "quick" | "comprehensive";
+
+type FormState = {
+  name: string; email: string; phone: string; kind: ClientKind; country: string; madhab: Madhab;
+  hawlDate: string;
+  // basic
+  cash: number; gold: number; investments: number; inventory: number; receivables: number; debts: number;
+  // comprehensive extras
+  bankAccounts: number; savingsBonds: number; cryptoValue: number;
+  goldGrams: number; silverGrams: number; jewelryPersonal: number;
+  stocksTrading: number; stocksLongTerm: number; mutualFunds: number; sukuk: number;
+  realEstateTrading: number; realEstateRental: number; rentalIncomeAnnual: number;
+  agricultureType: "none" | "rainfed" | "irrigated"; agricultureValue: number;
+  livestockCamels: number; livestockCattle: number; livestockSheep: number;
+  salaryMonthly: number; endOfServiceBenefits: number;
+  businessAssets: number; businessLiabilities: number;
+  notes: string;
+};
+
+const emptyForm: FormState = {
+  name: "", email: "", phone: "", kind: "individual", country: "SA", madhab: "mixed",
+  hawlDate: new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10),
+  cash: 0, gold: 0, investments: 0, inventory: 0, receivables: 0, debts: 0,
+  bankAccounts: 0, savingsBonds: 0, cryptoValue: 0,
+  goldGrams: 0, silverGrams: 0, jewelryPersonal: 0,
+  stocksTrading: 0, stocksLongTerm: 0, mutualFunds: 0, sukuk: 0,
+  realEstateTrading: 0, realEstateRental: 0, rentalIncomeAnnual: 0,
+  agricultureType: "none", agricultureValue: 0,
+  livestockCamels: 0, livestockCattle: 0, livestockSheep: 0,
+  salaryMonthly: 0, endOfServiceBenefits: 0,
+  businessAssets: 0, businessLiabilities: 0,
+  notes: "",
+};
+
 function ClientIntakePage() {
   const navigate = useNavigate();
+  const [mode, setMode] = useState<ReportMode>("quick");
   const [signedIn, setSignedIn] = useState(false);
-  const [form, setForm] = useState({
-    name: "", email: "", kind: "individual" as ClientKind, country: "SA", madhab: "mixed" as Madhab,
-    cash: 0, gold: 0, investments: 0, inventory: 0, receivables: 0, debts: 0,
-    notes: "",
-  });
-  const [submitted, setSubmitted] = useState(false);
+  const [form, setForm] = useState<FormState>(emptyForm);
+  const [submitted, setSubmitted] = useState<null | ReportMode>(null);
+
+  const set = <K extends keyof FormState>(k: K, v: FormState[K]) => setForm((f) => ({ ...f, [k]: v }));
 
   const submit = () => {
     if (!form.name.trim() || !form.email.trim()) return toast.error("الاسم والبريد مطلوبان");
+    const aggCash = form.cash + form.bankAccounts + form.savingsBonds + form.cryptoValue;
+    const aggInv = form.investments + form.stocksTrading + form.stocksLongTerm + form.mutualFunds + form.sukuk
+                   + form.realEstateTrading + form.rentalIncomeAnnual;
+    const aggInventory = form.inventory + form.businessAssets + form.agricultureValue;
+    const aggDebts = form.debts + form.businessLiabilities;
+    const notesExtras = mode === "comprehensive" ? [
+      `ذهب: ${form.goldGrams} جم — فضة: ${form.silverGrams} جم — حلي شخصي: ${form.jewelryPersonal}`,
+      `عقار إيجاري: ${form.realEstateRental} — دخل إيجاري سنوي: ${form.rentalIncomeAnnual}`,
+      `زراعة: ${form.agricultureType} بقيمة ${form.agricultureValue}`,
+      `أنعام — إبل: ${form.livestockCamels} · بقر: ${form.livestockCattle} · غنم: ${form.livestockSheep}`,
+      `راتب شهري: ${form.salaryMonthly} — مكافأة نهاية خدمة: ${form.endOfServiceBenefits}`,
+      form.notes,
+    ].filter(Boolean).join(" \n ") : form.notes;
+
     const client = newClientFromIntake({
       name: form.name, email: form.email, kind: form.kind, country: form.country, madhab: form.madhab,
-      breakdown: {
-        cash: form.cash, gold: form.gold, investments: form.investments,
-        inventory: form.inventory, receivables: form.receivables, debts: form.debts,
-      },
-      notes: form.notes,
+      hawlDate: form.hawlDate,
+      breakdown: { cash: aggCash, gold: form.gold, investments: aggInv, inventory: aggInventory, receivables: form.receivables, debts: aggDebts },
+      notes: `[${mode === "comprehensive" ? "تقرير شامل معتمد" : "حساب سريع"}] ${notesExtras}`,
     });
     upsertClient(client);
-    setSubmitted(true);
-    toast.success("تم إرسال بياناتك إلى المحاسب", { description: "سيتواصل معك المحاسب بعد مراجعة الحساب." });
+    setSubmitted(mode);
+    toast.success(mode === "comprehensive" ? "تم إرسال طلب التقرير الشامل" : "تم إرسال بياناتك للمحاسب");
   };
 
   if (submitted) {
+    const isComp = submitted === "comprehensive";
     return (
       <main className="container mx-auto max-w-2xl px-4 py-16 text-center space-y-4" dir="rtl">
         <CheckCircle2 className="h-16 w-16 text-emerald-500 mx-auto" />
         <h1 className="text-3xl font-bold">تم استلام بياناتك بنجاح</h1>
         <p className="text-muted-foreground leading-relaxed">
-          شكراً لك — تم إرسال بياناتك إلى المحاسب المعتمد للمراجعة.
+          {isComp ? "طلب تقرير الزكاة الشامل قيد الإعداد من محاسب مرخّص." : "بياناتك بين يدي المحاسب المعتمد للمراجعة."}
           <br />
-          سيتم إعداد تقرير الزكاة الرسمي وإرساله على بريدك الإلكتروني <b>خلال يومَي عمل</b> بحد أقصى.
+          سيصلك التقرير الرسمي على بريدك <b>خلال يومَي عمل</b> بحد أقصى.
         </p>
         <div className="rounded-lg border bg-primary/5 p-4 text-sm text-right space-y-2">
           <div className="font-semibold flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-primary" /> ما التالي؟</div>
           <ol className="list-decimal pr-6 space-y-1 text-muted-foreground">
             <li>يستلم المحاسب المعتمد بياناتك خلال دقائق.</li>
-            <li>يراجع البيانات ويحسب الزكاة وفق المعايير الشرعية.</li>
+            <li>مراجعة وتصنيف الأصول والالتزامات وفق المعايير الشرعية.</li>
+            {isComp && <li>احتساب زكاة كل نوع من الأصول (نقد، ذهب، أسهم، عقار، زراعة، أنعام، تجارة).</li>}
             <li>يصلك تقرير PDF مختوم برقم مرجعي قابل للتحقق.</li>
           </ol>
         </div>
         <div className="flex justify-center gap-2 pt-2">
           <Button asChild variant="outline"><Link to="/">العودة للرئيسية</Link></Button>
-          <Button onClick={() => { setSubmitted(false); setForm({ ...form, name: "", email: "" }); }}>إرسال حساب آخر</Button>
+          <Button onClick={() => { setSubmitted(null); setForm(emptyForm); }}>إرسال حساب آخر</Button>
         </div>
       </main>
     );
@@ -78,21 +129,29 @@ function ClientIntakePage() {
 
   return (
     <main className="container mx-auto max-w-5xl px-4 py-8 space-y-6" dir="rtl">
-      {/* هيرو تسويقي */}
       <section className="relative rounded-2xl bg-gradient-to-l from-primary/15 via-primary/5 to-background border p-8 md:p-12 space-y-4">
         <Badge variant="outline" className="gap-1"><Sparkles className="h-3 w-3" /> نافذة العميل</Badge>
         <h1 className="text-3xl md:text-4xl font-bold leading-tight">
-          احسب زكاتك بدقة شرعية — وأرسلها لمحاسبك بضغطة زر
+          احسب زكاتك بدقة شرعية — أو اطلب تقريراً شاملاً معتمداً
         </h1>
         <p className="text-muted-foreground max-w-2xl">
-          أدخل بياناتك المالية في نموذج آمن، وتصل مباشرة إلى المحاسب أو الشركة المعتمدة عبر منصتنا لمراجعتها واعتمادها.
-          مبنية على المعايير الشرعية للاتحاد الدولي لعلماء المسلمين وهيئة المحاسبة (AAOIFI).
+          نموذج بسيط لحساب سريع، أو نموذج متكامل مشتق من زكاة الأفراد يشمل كل الأصول والالتزامات ويُصدر تقرير PDF مختوم برقم مرجعي قابل للتحقق.
         </p>
-        <div className="flex flex-wrap gap-3">
-          <FeatureChip icon={<Shield className="h-3.5 w-3.5" />} text="حماية بيانات مشفّرة" />
-          <FeatureChip icon={<CheckCircle2 className="h-3.5 w-3.5" />} text="مراجعة محاسب معتمد" />
+        <div className="flex flex-wrap gap-2">
+          <FeatureChip icon={<Shield className="h-3.5 w-3.5" />} text="بيانات مشفّرة" />
+          <FeatureChip icon={<CheckCircle2 className="h-3.5 w-3.5" />} text="محاسب معتمد" />
           <FeatureChip icon={<Users className="h-3.5 w-3.5" />} text="أفراد وشركات ومؤسسات" />
         </div>
+      </section>
+
+      {/* مزايا التقرير المعتمد */}
+      <section className="grid md:grid-cols-3 gap-3">
+        <BenefitCard icon={<Award className="h-5 w-5" />} title="اعتماد شرعي ومحاسبي" text="مراجعة من محاسب مرخّص وفق معايير AAOIFI 35 والاتحاد الدولي لعلماء المسلمين." />
+        <BenefitCard icon={<Stamp className="h-5 w-5" />} title="PDF مختوم برقم مرجعي" text="تقرير رسمي بختم رقمي ورقم تحقق يمكن مشاركته مع الجهات المصرفية والزكوية." />
+        <BenefitCard icon={<Scale className="h-5 w-5" />} title="تصنيف كل الأصول" text="زكاة النقد، الذهب، الأسهم، العقار، الزروع، الأنعام، عروض التجارة — كل صنف بحسابه الفقهي." />
+        <BenefitCard icon={<FileCheck2 className="h-5 w-5" />} title="مصفوفة الامتثال" text="تحقق تلقائي من اكتمال البيانات وتنبيه لأي نقص قبل إصدار التقرير." />
+        <BenefitCard icon={<Landmark className="h-5 w-5" />} title="مقارنة المذاهب" text="عرض احتمالات الحساب على المذاهب الأربعة والفتوى المختارة مع دليلها." />
+        <BenefitCard icon={<Sparkles className="h-5 w-5" />} title="تسليم خلال يومَي عمل" text="التزام SLA مع تذكير آلي بموعد الحول القادم لتجديد الحساب." />
       </section>
 
       {!signedIn && (
@@ -107,74 +166,186 @@ function ClientIntakePage() {
         </Alert>
       )}
 
-      <Card>
-        <CardHeader><CardTitle>بياناتك</CardTitle></CardHeader>
-        <CardContent className="grid md:grid-cols-2 gap-4">
-          <Field label="الاسم الكامل *">
-            <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="محمد بن عبدالله" />
-          </Field>
-          <Field label="البريد الإلكتروني *">
-            <Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="you@example.com" dir="ltr" />
-          </Field>
-          <Field label="نوع الحساب">
-            <Select value={form.kind} onValueChange={(v) => setForm({ ...form, kind: v as ClientKind })}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="individual"><Users className="inline h-3.5 w-3.5 ms-1" /> فرد</SelectItem>
-                <SelectItem value="company"><Building2 className="inline h-3.5 w-3.5 ms-1" /> شركة</SelectItem>
-                <SelectItem value="institution"><Building2 className="inline h-3.5 w-3.5 ms-1" /> مؤسسة</SelectItem>
-              </SelectContent>
-            </Select>
-          </Field>
-          <Field label="الدولة">
-            <Select value={form.country} onValueChange={(v) => setForm({ ...form, country: v })}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {Object.entries(COUNTRY_LABELS).map(([v, l]) => <SelectItem key={v} value={v}>{l}</SelectItem>)}
-              </SelectContent>
-            </Select>
-          </Field>
-          <Field label="المذهب الفقهي">
-            <Select value={form.madhab} onValueChange={(v) => setForm({ ...form, madhab: v as Madhab })}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {(Object.entries(MADHAB_LABELS) as [Madhab, string][]).map(([v, l]) => <SelectItem key={v} value={v}>{l}</SelectItem>)}
-              </SelectContent>
-            </Select>
-          </Field>
-        </CardContent>
-      </Card>
+      {/* اختيار نوع النموذج */}
+      <Tabs value={mode} onValueChange={(v) => setMode(v as ReportMode)}>
+        <TabsList className="grid grid-cols-2 max-w-md">
+          <TabsTrigger value="quick" className="gap-1.5"><Send className="h-3.5 w-3.5" /> حساب سريع</TabsTrigger>
+          <TabsTrigger value="comprehensive" className="gap-1.5"><Award className="h-3.5 w-3.5" /> تقرير شامل معتمد</TabsTrigger>
+        </TabsList>
 
-      <Card>
-        <CardHeader><CardTitle>الأصول والالتزامات</CardTitle></CardHeader>
-        <CardContent className="grid md:grid-cols-2 gap-4">
-          <NumField label="نقد وأرصدة بنكية" v={form.cash} on={(v) => setForm({ ...form, cash: v })} />
-          <NumField label="ذهب/فضة (بالقيمة)" v={form.gold} on={(v) => setForm({ ...form, gold: v })} />
-          <NumField label="أسهم واستثمارات" v={form.investments} on={(v) => setForm({ ...form, investments: v })} />
-          <NumField label="عروض تجارة/مخزون" v={form.inventory} on={(v) => setForm({ ...form, inventory: v })} />
-          <NumField label="ديون مستحقة لك" v={form.receivables} on={(v) => setForm({ ...form, receivables: v })} />
-          <NumField label="ديون عليك" v={form.debts} on={(v) => setForm({ ...form, debts: v })} />
-          <div className="md:col-span-2">
-            <Field label="ملاحظات للمحاسب">
-              <Textarea rows={3} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder="أي تفاصيل إضافية..." />
+        <TabsContent value="quick" className="space-y-4 mt-4">
+          <BasicInfoCard form={form} set={set} />
+          <Card>
+            <CardHeader><CardTitle className="text-base">الأصول والالتزامات (مختصر)</CardTitle></CardHeader>
+            <CardContent className="grid md:grid-cols-2 gap-4">
+              <NumField label="نقد وأرصدة بنكية" v={form.cash} on={(v) => set("cash", v)} />
+              <NumField label="ذهب/فضة (بالقيمة)" v={form.gold} on={(v) => set("gold", v)} />
+              <NumField label="أسهم واستثمارات" v={form.investments} on={(v) => set("investments", v)} />
+              <NumField label="عروض تجارة/مخزون" v={form.inventory} on={(v) => set("inventory", v)} />
+              <NumField label="ديون مستحقة لك" v={form.receivables} on={(v) => set("receivables", v)} />
+              <NumField label="ديون عليك" v={form.debts} on={(v) => set("debts", v)} />
+              <div className="md:col-span-2">
+                <Field label="ملاحظات">
+                  <Textarea rows={2} value={form.notes} onChange={(e) => set("notes", e.target.value)} />
+                </Field>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="comprehensive" className="space-y-4 mt-4">
+          <Alert className="border-primary/40 bg-primary/5">
+            <AlertDescription className="text-sm">
+              <b>النموذج الشامل</b> مشتق من تبويب زكاة الأفراد المتقدّم ويغطي جميع أصناف المال الزكوية. أدخل ما ينطبق عليك فقط — واترك الباقي صفراً.
+            </AlertDescription>
+          </Alert>
+          <BasicInfoCard form={form} set={set} />
+
+          <SectionCard title="1) النقد والأصول السائلة" icon={<Coins className="h-4 w-4" />}>
+            <NumField label="نقد باليد" v={form.cash} on={(v) => set("cash", v)} />
+            <NumField label="أرصدة بنكية (جاري/توفير)" v={form.bankAccounts} on={(v) => set("bankAccounts", v)} />
+            <NumField label="صكوك ادخارية/شهادات" v={form.savingsBonds} on={(v) => set("savingsBonds", v)} />
+            <NumField label="عملات رقمية (بالقيمة)" v={form.cryptoValue} on={(v) => set("cryptoValue", v)} />
+          </SectionCard>
+
+          <SectionCard title="2) الذهب والفضة" icon={<Coins className="h-4 w-4" />}>
+            <NumField label="ذهب — الوزن بالجرام" v={form.goldGrams} on={(v) => set("goldGrams", v)} />
+            <NumField label="فضة — الوزن بالجرام" v={form.silverGrams} on={(v) => set("silverGrams", v)} />
+            <NumField label="حلي شخصي (بالقيمة)" v={form.jewelryPersonal} on={(v) => set("jewelryPersonal", v)} />
+            <NumField label="ذهب/فضة أخرى (بالقيمة)" v={form.gold} on={(v) => set("gold", v)} />
+          </SectionCard>
+
+          <SectionCard title="3) الاستثمارات والأوراق المالية" icon={<Briefcase className="h-4 w-4" />}>
+            <NumField label="أسهم للمتاجرة" v={form.stocksTrading} on={(v) => set("stocksTrading", v)} />
+            <NumField label="أسهم طويلة الأجل (زكاة على المتداول)" v={form.stocksLongTerm} on={(v) => set("stocksLongTerm", v)} />
+            <NumField label="صناديق استثمارية" v={form.mutualFunds} on={(v) => set("mutualFunds", v)} />
+            <NumField label="صكوك" v={form.sukuk} on={(v) => set("sukuk", v)} />
+          </SectionCard>
+
+          <SectionCard title="4) العقارات" icon={<Home className="h-4 w-4" />}>
+            <NumField label="عقار للمتاجرة" v={form.realEstateTrading} on={(v) => set("realEstateTrading", v)} />
+            <NumField label="عقار مؤجَّر (قيمة الأصل)" v={form.realEstateRental} on={(v) => set("realEstateRental", v)} />
+            <NumField label="دخل الإيجار السنوي" v={form.rentalIncomeAnnual} on={(v) => set("rentalIncomeAnnual", v)} />
+          </SectionCard>
+
+          <SectionCard title="5) الزروع والثمار" icon={<Wheat className="h-4 w-4" />}>
+            <Field label="نوع الري">
+              <Select value={form.agricultureType} onValueChange={(v) => set("agricultureType", v as FormState["agricultureType"])}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">لا يوجد</SelectItem>
+                  <SelectItem value="rainfed">بعل/سماوي (10%)</SelectItem>
+                  <SelectItem value="irrigated">مروي بكلفة (5%)</SelectItem>
+                </SelectContent>
+              </Select>
             </Field>
-          </div>
-        </CardContent>
-      </Card>
+            <NumField label="قيمة المحصول" v={form.agricultureValue} on={(v) => set("agricultureValue", v)} />
+          </SectionCard>
+
+          <SectionCard title="6) الأنعام (بالعدد)" icon={<Landmark className="h-4 w-4" />}>
+            <NumField label="إبل" v={form.livestockCamels} on={(v) => set("livestockCamels", v)} />
+            <NumField label="بقر" v={form.livestockCattle} on={(v) => set("livestockCattle", v)} />
+            <NumField label="غنم" v={form.livestockSheep} on={(v) => set("livestockSheep", v)} />
+          </SectionCard>
+
+          <SectionCard title="7) الرواتب والمكافآت" icon={<Briefcase className="h-4 w-4" />}>
+            <NumField label="راتب شهري" v={form.salaryMonthly} on={(v) => set("salaryMonthly", v)} />
+            <NumField label="مكافأة نهاية خدمة مقبوضة" v={form.endOfServiceBenefits} on={(v) => set("endOfServiceBenefits", v)} />
+          </SectionCard>
+
+          <SectionCard title="8) نشاط تجاري/مؤسسة" icon={<Building2 className="h-4 w-4" />}>
+            <NumField label="عروض تجارة/مخزون" v={form.inventory} on={(v) => set("inventory", v)} />
+            <NumField label="أصول تشغيلية زكوية" v={form.businessAssets} on={(v) => set("businessAssets", v)} />
+            <NumField label="التزامات قصيرة الأجل" v={form.businessLiabilities} on={(v) => set("businessLiabilities", v)} />
+          </SectionCard>
+
+          <SectionCard title="9) الديون" icon={<Scale className="h-4 w-4" />}>
+            <NumField label="ديون مستحقة لك (مرجوّة)" v={form.receivables} on={(v) => set("receivables", v)} />
+            <NumField label="ديون عليك (قصيرة الأجل)" v={form.debts} on={(v) => set("debts", v)} />
+          </SectionCard>
+
+          <Card>
+            <CardHeader><CardTitle className="text-base">ملاحظات ومرفقات للمحاسب</CardTitle></CardHeader>
+            <CardContent>
+              <Textarea rows={4} value={form.notes} onChange={(e) => set("notes", e.target.value)}
+                placeholder="أي تفاصيل إضافية أو اشتراطات فقهية معينة، وموعد الحول الهجري..." />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
       <div className="flex justify-between gap-2">
         <Button variant="ghost" onClick={() => navigate({ to: "/" })} className="gap-1">
           <ArrowLeft className="h-4 w-4" /> إلغاء
         </Button>
         <Button size="lg" onClick={submit} className="gap-1.5">
-          <Send className="h-4 w-4" /> إرسال إلى المحاسب
+          <Send className="h-4 w-4" /> {mode === "comprehensive" ? "طلب التقرير الشامل" : "إرسال إلى المحاسب"}
         </Button>
       </div>
 
       <p className="text-[11px] text-muted-foreground text-center">
-        بإرسالك النموذج فأنت توافق على مشاركة بياناتك مع المحاسب/الشركة المسجّلين على المنصة لغرض احتساب الزكاة فقط.
+        بإرسالك النموذج فأنت توافق على مشاركة بياناتك مع المحاسب/الشركة المعتمدين لغرض احتساب الزكاة فقط.
       </p>
     </main>
+  );
+}
+
+function BasicInfoCard({ form, set }: { form: FormState; set: <K extends keyof FormState>(k: K, v: FormState[K]) => void }) {
+  return (
+    <Card>
+      <CardHeader><CardTitle className="text-base">بياناتك الأساسية</CardTitle></CardHeader>
+      <CardContent className="grid md:grid-cols-2 gap-4">
+        <Field label="الاسم الكامل *"><Input value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="محمد بن عبدالله" /></Field>
+        <Field label="البريد الإلكتروني *"><Input type="email" value={form.email} onChange={(e) => set("email", e.target.value)} dir="ltr" /></Field>
+        <Field label="رقم الجوال"><Input value={form.phone} onChange={(e) => set("phone", e.target.value)} dir="ltr" placeholder="+9665..." /></Field>
+        <Field label="تاريخ الحول"><Input type="date" value={form.hawlDate} onChange={(e) => set("hawlDate", e.target.value)} /></Field>
+        <Field label="نوع الحساب">
+          <Select value={form.kind} onValueChange={(v) => set("kind", v as ClientKind)}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="individual">فرد</SelectItem>
+              <SelectItem value="company">شركة</SelectItem>
+              <SelectItem value="institution">مؤسسة</SelectItem>
+            </SelectContent>
+          </Select>
+        </Field>
+        <Field label="الدولة">
+          <Select value={form.country} onValueChange={(v) => set("country", v)}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {Object.entries(COUNTRY_LABELS).map(([v, l]) => <SelectItem key={v} value={v}>{l}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </Field>
+        <Field label="المذهب الفقهي">
+          <Select value={form.madhab} onValueChange={(v) => set("madhab", v as Madhab)}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {(Object.entries(MADHAB_LABELS) as [Madhab, string][]).map(([v, l]) => <SelectItem key={v} value={v}>{l}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </Field>
+      </CardContent>
+    </Card>
+  );
+}
+
+function SectionCard({ title, icon, children }: { title: string; icon: React.ReactNode; children: React.ReactNode }) {
+  return (
+    <Card>
+      <CardHeader className="pb-3"><CardTitle className="text-sm flex items-center gap-2">{icon}{title}</CardTitle></CardHeader>
+      <CardContent className="grid md:grid-cols-2 gap-4">{children}</CardContent>
+    </Card>
+  );
+}
+
+function BenefitCard({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
+  return (
+    <div className="rounded-lg border bg-card p-4 space-y-2">
+      <div className="inline-flex items-center justify-center h-9 w-9 rounded-md bg-primary/10 text-primary">{icon}</div>
+      <div className="font-semibold text-sm">{title}</div>
+      <div className="text-xs text-muted-foreground leading-relaxed">{text}</div>
+    </div>
   );
 }
 
