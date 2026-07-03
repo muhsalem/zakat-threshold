@@ -199,6 +199,23 @@ function ClientIntakePage() {
       )}
 
       {/* اختيار نوع النموذج */}
+      {/* شريط تقدّم + حفظ مسودة */}
+      <Card>
+        <CardContent className="py-4 space-y-2">
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <div className="text-sm font-semibold">اكتمال النموذج: <span className="text-primary">{progress}%</span></div>
+            <div className="flex items-center gap-2">
+              {draftSavedAt && <span className="text-[11px] text-muted-foreground">آخر حفظ: {new Date(draftSavedAt).toLocaleString("ar-EG")}</span>}
+              <Button size="sm" variant="outline" onClick={saveDraft} className="gap-1.5"><Save className="h-3.5 w-3.5" /> حفظ مسودة</Button>
+              {draftSavedAt && <Button size="sm" variant="ghost" onClick={clearDraft} className="gap-1.5 text-destructive"><RotateCcw className="h-3.5 w-3.5" /> مسح</Button>}
+            </div>
+          </div>
+          <Progress value={progress} />
+          <p className="text-[11px] text-muted-foreground">تُحفظ المسودة محلياً في متصفحك ولا تُرسل إلا عند الضغط على زر الإرسال.</p>
+        </CardContent>
+      </Card>
+
+      {/* اختيار نوع النموذج */}
       <Tabs value={mode} onValueChange={(v) => setMode(v as ReportMode)}>
         <TabsList className="grid grid-cols-2 max-w-md">
           <TabsTrigger value="quick" className="gap-1.5"><Send className="h-3.5 w-3.5" /> حساب سريع</TabsTrigger>
