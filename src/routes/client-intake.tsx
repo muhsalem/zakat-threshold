@@ -17,7 +17,8 @@ import {
   CheckCircle2, Sparkles, Shield, Users, Building2, ArrowLeft, Send,
   Award, FileCheck2, Stamp, Scale, Landmark, Coins, Wheat, Home, Briefcase,
 } from "lucide-react";
-import { upsertClient, newClientFromIntake, type ClientKind, type Madhab, MADHAB_LABELS, COUNTRY_LABELS } from "@/lib/accountantStore";
+import { createClient as createAccountantClient, type ClientKind, type Madhab, MADHAB_LABELS, COUNTRY_LABELS } from "@/lib/accountantStore";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/client-intake")({
   head: () => ({
