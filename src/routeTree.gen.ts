@@ -44,6 +44,7 @@ import { Route as AuthenticatedErpSetupRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAuditReviewRouteImport } from './routes/_authenticated/audit-review'
 import { Route as AuthenticatedAttestationsRouteImport } from './routes/_authenticated/attestations'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAccountantRouteImport } from './routes/_authenticated/accountant'
 import { Route as ApiPublicOpenapiRouteImport } from './routes/api/public/openapi'
 import { Route as ApiPublicNisabRouteImport } from './routes/api/public/nisab'
 import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
@@ -231,6 +232,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAccountantRoute = AuthenticatedAccountantRouteImport.update({
+  id: '/accountant',
+  path: '/accountant',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const ApiPublicOpenapiRoute = ApiPublicOpenapiRouteImport.update({
   id: '/api/public/openapi',
   path: '/api/public/openapi',
@@ -313,6 +319,7 @@ export interface FileRoutesByFullPath {
   '/status': typeof StatusRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
+  '/accountant': typeof AuthenticatedAccountantRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/attestations': typeof AuthenticatedAttestationsRoute
   '/audit-review': typeof AuthenticatedAuditReviewRoute
@@ -359,6 +366,7 @@ export interface FileRoutesByTo {
   '/status': typeof StatusRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
+  '/accountant': typeof AuthenticatedAccountantRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/attestations': typeof AuthenticatedAttestationsRoute
   '/audit-review': typeof AuthenticatedAuditReviewRoute
@@ -407,6 +415,7 @@ export interface FileRoutesById {
   '/status': typeof StatusRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
+  '/_authenticated/accountant': typeof AuthenticatedAccountantRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/attestations': typeof AuthenticatedAttestationsRoute
   '/_authenticated/audit-review': typeof AuthenticatedAuditReviewRoute
@@ -455,6 +464,7 @@ export interface FileRouteTypes {
     | '/status'
     | '/verify'
     | '/welcome'
+    | '/accountant'
     | '/admin'
     | '/attestations'
     | '/audit-review'
@@ -501,6 +511,7 @@ export interface FileRouteTypes {
     | '/status'
     | '/verify'
     | '/welcome'
+    | '/accountant'
     | '/admin'
     | '/attestations'
     | '/audit-review'
@@ -548,6 +559,7 @@ export interface FileRouteTypes {
     | '/status'
     | '/verify'
     | '/welcome'
+    | '/_authenticated/accountant'
     | '/_authenticated/admin'
     | '/_authenticated/attestations'
     | '/_authenticated/audit-review'
@@ -858,6 +870,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/accountant': {
+      id: '/_authenticated/accountant'
+      path: '/accountant'
+      fullPath: '/accountant'
+      preLoaderRoute: typeof AuthenticatedAccountantRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/public/openapi': {
       id: '/api/public/openapi'
       path: '/api/public/openapi'
@@ -932,6 +951,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAccountantRoute: typeof AuthenticatedAccountantRoute
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedAttestationsRoute: typeof AuthenticatedAttestationsRoute
   AuthenticatedAuditReviewRoute: typeof AuthenticatedAuditReviewRoute
@@ -939,6 +959,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAccountantRoute: AuthenticatedAccountantRoute,
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedAttestationsRoute: AuthenticatedAttestationsRoute,
   AuthenticatedAuditReviewRoute: AuthenticatedAuditReviewRoute,
