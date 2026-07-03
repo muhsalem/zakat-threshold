@@ -51,9 +51,11 @@ function AccountantPortal() {
     calculated: "all" as "all" | "yes" | "no",
   });
 
-  useEffect(() => { setClients(loadClients()); }, []);
-
-  const persist = (next: Client[]) => { setClients(next); saveClients(next); };
+  const reload = async () => {
+    try { setClients(await fetchClients()); }
+    catch (e) { toast.error("تعذّر تحميل العملاء", { description: (e as Error).message }); }
+  };
+  useEffect(() => { void reload(); }, []);
 
   const rows = useMemo(() => {
     return clients
