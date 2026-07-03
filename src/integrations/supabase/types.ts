@@ -14,6 +14,123 @@ export type Database = {
   }
   public: {
     Tables: {
+      erp_connections: {
+        Row: {
+          api_key: string
+          base_url: string
+          created_at: string
+          db_name: string | null
+          extra: Json
+          id: string
+          is_active: boolean
+          label: string
+          last_test_status: string | null
+          last_tested_at: string | null
+          provider: string
+          updated_at: string
+          user_id: string
+          username: string | null
+        }
+        Insert: {
+          api_key: string
+          base_url: string
+          created_at?: string
+          db_name?: string | null
+          extra?: Json
+          id?: string
+          is_active?: boolean
+          label?: string
+          last_test_status?: string | null
+          last_tested_at?: string | null
+          provider: string
+          updated_at?: string
+          user_id: string
+          username?: string | null
+        }
+        Update: {
+          api_key?: string
+          base_url?: string
+          created_at?: string
+          db_name?: string | null
+          extra?: Json
+          id?: string
+          is_active?: boolean
+          label?: string
+          last_test_status?: string | null
+          last_tested_at?: string | null
+          provider?: string
+          updated_at?: string
+          user_id?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
+      erp_sync_log: {
+        Row: {
+          amount: number | null
+          connection_id: string
+          created_at: string
+          currency: string | null
+          error_message: string | null
+          external_id: string | null
+          id: string
+          provider: string
+          reference: string | null
+          request_payload: Json | null
+          response_payload: Json | null
+          status: string
+          user_id: string
+          zakat_record_id: string | null
+        }
+        Insert: {
+          amount?: number | null
+          connection_id: string
+          created_at?: string
+          currency?: string | null
+          error_message?: string | null
+          external_id?: string | null
+          id?: string
+          provider: string
+          reference?: string | null
+          request_payload?: Json | null
+          response_payload?: Json | null
+          status?: string
+          user_id: string
+          zakat_record_id?: string | null
+        }
+        Update: {
+          amount?: number | null
+          connection_id?: string
+          created_at?: string
+          currency?: string | null
+          error_message?: string | null
+          external_id?: string | null
+          id?: string
+          provider?: string
+          reference?: string | null
+          request_payload?: Json | null
+          response_payload?: Json | null
+          status?: string
+          user_id?: string
+          zakat_record_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "erp_sync_log_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "erp_connections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "erp_sync_log_zakat_record_id_fkey"
+            columns: ["zakat_record_id"]
+            isOneToOne: false
+            referencedRelation: "zakat_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       metal_prices_daily: {
         Row: {
           created_at: string
