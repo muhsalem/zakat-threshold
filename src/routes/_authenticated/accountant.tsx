@@ -359,18 +359,7 @@ function AccountantPortal() {
               <p className="text-xs text-muted-foreground">حاسبة الزكاة الكاملة (أفراد / شركات / زكاة الفطر) — نفس المحرك المعتمد بدون الحاجة لمغادرة اللوحة.</p>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue="individual" className="space-y-4">
-                <TabsList>
-                  <TabsTrigger value="individual" className="gap-1.5"><Users className="h-3.5 w-3.5" /> أفراد</TabsTrigger>
-                  <TabsTrigger value="company" className="gap-1.5"><Building2 className="h-3.5 w-3.5" /> شركات ومؤسسات</TabsTrigger>
-                  <TabsTrigger value="fitr" className="gap-1.5"><Calculator className="h-3.5 w-3.5" /> زكاة الفطر</TabsTrigger>
-                </TabsList>
-                <Suspense fallback={<div className="flex items-center justify-center py-16 text-muted-foreground"><Loader2 className="h-5 w-5 animate-spin ml-2" /> جارٍ التحميل...</div>}>
-                  <TabsContent value="individual"><IndividualTab /></TabsContent>
-                  <TabsContent value="company"><CompanyTab /></TabsContent>
-                  <TabsContent value="fitr"><FitrCalculator /></TabsContent>
-                </Suspense>
-              </Tabs>
+              <CalcModeGate />
             </CardContent>
           </Card>
         </TabsContent>
@@ -513,4 +502,50 @@ function SavedRecordsPanel() {
     </Card>
   );
 }
+
+function CalcModeGate() {
+  const [mode, setMode] = useState<"individual" | "company" | "fitr" | null>(null);
+  if (!mode) {
+    return (
+      <div className="space-y-4">
+        <div className="text-center">
+          <h3 className="text-lg font-bold mb-1">اختر نوع الحساب</h3>
+          <p className="text-xs text-muted-foreground">حدّد المسار قبل عرض الأسئلة لتفادي الحقول غير ذات الصلة.</p>
+        </div>
+        <div className="grid md:grid-cols-3 gap-3">
+          <GateCard color="from-primary/15 to-primary/5 border-primary/30" icon={<Users className="h-6 w-6 text-primary" />}
+            title="زكاة الأفراد" desc="مال، ذهب، فضة، راتب، استثمارات." onClick={() => setMode("individual")} />
+          <GateCard color="from-emerald-500/15 to-emerald-500/5 border-emerald-500/30" icon={<Building2 className="h-6 w-6 text-emerald-600" />}
+            title="زكاة الشركات والمؤسسات" desc="عروض التجارة، المخزون، الذمم، الالتزامات." onClick={() => setMode("company")} />
+          <GateCard color="from-amber-500/15 to-amber-500/5 border-amber-500/30" icon={<Calculator className="h-6 w-6 text-amber-600" />}
+            title="زكاة الفطر" desc="حسب عدد أفراد الأسرة قبيل عيد الفطر." onClick={() => setMode("fitr")} />
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="space-y-3">
+      <button onClick={() => setMode(null)} className="text-sm text-primary hover:underline">← تغيير نوع الحساب</button>
+      <Suspense fallback={<div className="flex items-center justify-center py-16 text-muted-foreground"><Loader2 className="h-5 w-5 animate-spin ml-2" /> جارٍ التحميل...</div>}>
+        {mode === "individual" && <IndividualTab />}
+        {mode === "company" && <CompanyTab />}
+        {mode === "fitr" && <FitrCalculator />}
+      </Suspense>
+    </div>
+  );
+}
+
+function GateCard({ color, icon, title, desc, onClick }: { color: string; icon: React.ReactNode; title: string; desc: string; onClick: () => void }) {
+  return (
+    <button onClick={onClick} className={`text-right rounded-xl border-2 bg-gradient-to-br ${color} p-4 hover:shadow-md hover:-translate-y-0.5 transition-all`}>
+      <div className="flex items-center gap-2 mb-1.5">
+        <div className="h-10 w-10 rounded-lg bg-background/70 flex items-center justify-center">{icon}</div>
+        <h4 className="font-bold">{title}</h4>
+      </div>
+      <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
+      <div className="mt-2 text-xs font-semibold text-primary">ابدأ ←</div>
+    </button>
+  );
+}
+
 
