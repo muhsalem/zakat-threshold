@@ -71,8 +71,36 @@ function ClientIntakePage() {
   const [signedIn, setSignedIn] = useState(false);
   const [form, setForm] = useState<FormState>(emptyForm);
   const [submitted, setSubmitted] = useState<null | ReportMode>(null);
+  const [draftSavedAt, setDraftSavedAt] = useState<string | null>(null);
+
+  const DRAFT_KEY = "client_intake_draft_v1";
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed?.form) { setForm(parsed.form); setDraftSavedAt(parsed.at || null); }
+      }
+    } catch {}
+  }, []);
 
   const set = <K extends keyof FormState>(k: K, v: FormState[K]) => setForm((f) => ({ ...f, [k]: v }));
+
+  const saveDraft = () => {
+    const at = new Date().toISOString();
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ form, at })); setDraftSavedAt(at); toast.success("تم حفظ المسودة"); } catch { toast.error("تعذر حفظ المسودة"); }
+  };
+  const clearDraft = () => { try { localStorage.removeItem(DRAFT_KEY); } catch {} setDraftSavedAt(null); setForm(emptyForm); toast.info("تم مسح المسودة"); };
+
+  const progress = useMemo(() => {
+    const required: Array<keyof FormState> = ["name", "email", "country", "madhab", "hawlDate"];
+    const requiredDone = required.filter((k) => String(form[k] ?? "").trim().length > 0).length;
+    const numericKeys: Array<keyof FormState> = ["cash", "bankAccounts", "gold", "goldGrams", "silverGrams", "investments", "stocksTrading", "stocksLongTerm", "mutualFunds", "sukuk", "realEstateTrading", "realEstateRental", "agricultureValue", "livestockCamels", "livestockCattle", "livestockSheep", "salaryMonthly", "inventory", "businessAssets", "receivables"];
+    const anyValue = numericKeys.some((k) => Number(form[k]) > 0) ? 1 : 0;
+    const total = required.length + 1;
+    return Math.round(((requiredDone + anyValue) / total) * 100);
+  }, [form]);
 
   const submit = () => {
     if (!form.name.trim() || !form.email.trim()) return toast.error("الاسم والبريد مطلوبان");
