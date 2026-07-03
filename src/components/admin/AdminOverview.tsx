@@ -12,7 +12,7 @@ type RecordRow = {
   id: string;
   user_id: string;
   hijri_year: number | null;
-  entity_type: string | null;
+  record_type: string | null;
   total_assets: number | null;
   zakat_due: number | null;
   currency: string | null;
@@ -43,7 +43,7 @@ export function AdminOverview() {
       setLoading(true);
       const [{ data: recs }, { data: profs }, { data: apprs }] = await Promise.all([
         supabase.from("zakat_records")
-          .select("id,user_id,hijri_year,entity_type,total_assets,zakat_due,currency,created_at")
+          .select("id,user_id,hijri_year,record_type,total_assets,zakat_due,currency,created_at")
           .order("created_at", { ascending: false })
           .limit(200),
         supabase.from("profiles").select("user_id,display_name,account_type"),
@@ -83,7 +83,7 @@ export function AdminOverview() {
     const query = q.trim().toLowerCase();
     return rows.filter((r) => {
       if (statusFilter !== "all" && r.status !== statusFilter) return false;
-      if (typeFilter !== "all" && r.entity_type !== typeFilter) return false;
+      if (typeFilter !== "all" && r.record_type !== typeFilter) return false;
       if (!query) return true;
       return (
         (r.display_name ?? "").toLowerCase().includes(query) ||
@@ -179,7 +179,7 @@ export function AdminOverview() {
                     <tr key={r.id} className="border-b hover:bg-muted/30">
                       <td className="py-2 px-2 text-xs">{new Date(r.created_at).toLocaleDateString("ar-EG")}</td>
                       <td className="py-2 px-2 text-xs">{r.display_name ?? "—"}</td>
-                      <td className="py-2 px-2 text-xs">{r.entity_type ?? "—"}</td>
+                      <td className="py-2 px-2 text-xs">{r.record_type ?? "—"}</td>
                       <td className="py-2 px-2 text-xs">{r.hijri_year ?? "—"}</td>
                       <td className="py-2 px-2 text-xs">{(Number(r.total_assets) || 0).toLocaleString("ar-EG")}</td>
                       <td className="py-2 px-2 text-xs font-medium">{(Number(r.zakat_due) || 0).toLocaleString("ar-EG")} {r.currency ?? ""}</td>
