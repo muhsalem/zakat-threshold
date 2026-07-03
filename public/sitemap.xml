@@ -18,6 +18,8 @@
   <url><loc>/enterprise</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>/esg</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>/software-recommendations</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>/compliance</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>/analytics</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>/security</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
   <url><loc>/legal/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>/legal/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>

@@ -112,6 +112,161 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     basis: ["فتوى مجمع الفقه الإسلامي الدولي — الدورة الثالثة"],
     evidence: "تُزكّى مع سائر المال عند الحول، ولا زكاة مستقلة على الراتب.",
   },
+
+  // صناديق التقاعد والادخار الاختياري
+  {
+    id: "retirement-voluntary-aaoifi",
+    topic: "retirement.voluntary",
+    authority: "aaoifi",
+    ruling: "permissible_with_zakat",
+    rate: 0.025,
+    basis: ["AAOIFI-35 §2/1/6"],
+    evidence: "الاشتراكات الاختيارية القابلة للسحب مالٌ مملوك يُزكَّى عند حولان الحول على القيمة الفعلية القابلة للاسترداد.",
+  },
+  {
+    id: "retirement-mandatory-ifa-2004",
+    topic: "retirement.mandatory",
+    authority: "ifa-oic",
+    ruling: "permissible_no_zakat",
+    basis: ["قرار 143 (16/9) مجمع الفقه الإسلامي الدولي"],
+    evidence: "الاقتطاعات الحكومية الإلزامية دَينٌ غير مقبوض ولا يجب فيها زكاة حتى القبض؛ يُزكّى ما يُقبض عن سنة واحدة.",
+    effective_from: "2004-01-01",
+  },
+  {
+    id: "retirement-401k-us",
+    topic: "retirement.401k",
+    authority: "aaoifi",
+    jurisdiction: ["US"],
+    ruling: "permissible_with_zakat",
+    basis: ["AAOIFI-35", "Fiqh Council of North America 2014"],
+    evidence: "401(k)/IRA: يُزكّى الجزء القابل للسحب فعلاً بعد خصم الضرائب والغرامات؛ الجزء المحبوس مؤجّل الزكاة حتى القبض.",
+  },
+
+  // التأمين والتكافل
+  {
+    id: "takaful-participation-aaoifi-26",
+    topic: "insurance.takaful",
+    authority: "aaoifi",
+    ruling: "permissible_with_zakat",
+    basis: ["AAOIFI-26"],
+    evidence: "حصة المشترك في صندوق التكافل ماله؛ تُزكّى القيمة القابلة للاسترداد سنوياً.",
+  },
+  {
+    id: "insurance-commercial-cash-value",
+    topic: "insurance.commercial_cash_value",
+    authority: "ifa-oic",
+    ruling: "permissible_with_zakat",
+    basis: ["قرار 9 (9/2) مجمع الفقه الإسلامي"],
+    evidence: "القيمة النقدية القابلة للاسترداد من بوليصة التأمين التجاري تُعامل كمال مملوك لأغراض الزكاة رغم اختلاف العلماء في حكم العقد نفسه.",
+  },
+
+  // الوقف والأوقاف الاستثمارية
+  {
+    id: "waqf-productive-aaoifi-33",
+    topic: "waqf.productive",
+    authority: "aaoifi",
+    ruling: "permissible_no_zakat",
+    basis: ["AAOIFI-33"],
+    evidence: "أصل الوقف الخيري لا زكاة فيه لخروجه عن الملك؛ أما ريعه الموزَّع فيُزكّى في يد المستفيد.",
+  },
+  {
+    id: "waqf-family-shafii",
+    topic: "waqf.family",
+    authority: "aaoifi",
+    madhab: ["shafii"],
+    ruling: "permissible_with_zakat",
+    basis: ["مغني المحتاج للشربيني"],
+    evidence: "الوقف الذُّرِّي إن استلمه المستحق يُزكّى على قوله عند بلوغه النصاب مع الحول.",
+  },
+
+  // السندات والصكوك
+  {
+    id: "sukuk-ijara-aaoifi-17",
+    topic: "sukuk.ijara",
+    authority: "aaoifi",
+    ruling: "permissible_with_zakat",
+    basis: ["AAOIFI-17"],
+    evidence: "صكوك الإجارة تمثّل ملكية شائعة في أعيان مؤجّرة؛ تُزكّى على قيمتها السوقية.",
+  },
+  {
+    id: "bonds-conventional-ifa",
+    topic: "bonds.conventional",
+    authority: "ifa-oic",
+    ruling: "prohibited",
+    basis: ["قرار 60 (11/6) مجمع الفقه الإسلامي"],
+    evidence: "السندات الربوية محرّمة؛ ويجب التخلّص من الفائدة، ويُزكّى رأس المال فقط دون الفوائد.",
+  },
+
+  // الأصول الرقمية غير Bitcoin
+  {
+    id: "nft-utility-aaoifi-59",
+    topic: "crypto.nft_utility",
+    authority: "aaoifi",
+    ruling: "permissible_with_zakat",
+    basis: ["AAOIFI-59"],
+    evidence: "NFTs ذات المنفعة المشروعة تُعامل كأصل تجاري إن نُويت للتجارة؛ تُزكّى على القيمة السوقية.",
+    effective_from: "2023-01-01",
+  },
+  {
+    id: "stablecoin-usdc-aaoifi",
+    topic: "crypto.stablecoin",
+    authority: "aaoifi",
+    ruling: "permissible_with_zakat",
+    rate: 0.025,
+    basis: ["AAOIFI-59"],
+    evidence: "العملات المستقرة المضمونة بالدولار (USDC/USDT) تُعامل كنقد أجنبي؛ تُزكّى كاملةً عند بلوغ النصاب.",
+    effective_from: "2024-01-01",
+  },
+
+  // العملات الأجنبية والاحتياطيات
+  {
+    id: "fx-holdings-aaoifi-1",
+    topic: "fx.holdings",
+    authority: "aaoifi",
+    ruling: "permissible_with_zakat",
+    rate: 0.025,
+    basis: ["AAOIFI-1"],
+    evidence: "العملات الأجنبية أثمان مصطلح عليها؛ تُقوَّم بعملة الوطن يوم الحول وتُزكّى إن بلغت النصاب مع بقية المال.",
+  },
+
+  // الديون
+  {
+    id: "debts-strong-hanafi",
+    topic: "debts.strong",
+    authority: "aaoifi",
+    madhab: ["hanafi"],
+    ruling: "permissible_with_zakat",
+    basis: ["فقه أبي حنيفة — الدَّين القوي"],
+    evidence: "الدَّين المرجوّ السداد يُزكّى مع المال كل حول عند الحنفية.",
+  },
+  {
+    id: "debts-doubtful-jumhur",
+    topic: "debts.doubtful",
+    authority: "ifa-oic",
+    ruling: "permissible_no_zakat",
+    basis: ["قرار 1 مجمع الفقه — الدورة الثانية"],
+    evidence: "الدَّين الضعيف (المتعثّر/المجحود) لا زكاة فيه حتى يُقبض، ثم يُزكّى لعام واحد.",
+  },
+
+  // الذهب المستعمل والحُلي
+  {
+    id: "jewelry-worn-jumhur",
+    topic: "gold.jewelry_worn",
+    authority: "ifa-oic",
+    ruling: "permissible_no_zakat",
+    basis: ["قرار جمهور المالكية والشافعية والحنابلة"],
+    evidence: "الحُلي المستعمل للزينة المشروعة لا زكاة فيه عند الجمهور، وعليه العمل في أكثر الفتاوى المعاصرة.",
+  },
+  {
+    id: "jewelry-worn-hanafi",
+    topic: "gold.jewelry_worn",
+    authority: "aaoifi",
+    madhab: ["hanafi"],
+    ruling: "permissible_with_zakat",
+    rate: 0.025,
+    basis: ["مذهب الحنفية"],
+    evidence: "الحنفية يوجبون الزكاة في الحُلي مطلقاً بلغ النصاب.",
+  },
 ];
 
 // ==== الاستعلامات ====
