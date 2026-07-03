@@ -224,7 +224,8 @@ function patchToRow(p: ClientPatch): Record<string, unknown> {
 }
 
 export async function updateClient(id: string, patch: ClientPatch): Promise<void> {
-  const { error } = await supabase.from("accountant_clients").update(patchToRow(patch)).eq("id", id);
+  const row = patchToRow(patch) as never;
+  const { error } = await supabase.from("accountant_clients").update(row).eq("id", id);
   if (error) throw error;
 }
 
