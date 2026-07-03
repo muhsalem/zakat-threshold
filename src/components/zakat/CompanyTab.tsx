@@ -39,6 +39,7 @@ import { Button } from "@/components/ui/button";
 import { downloadZakatPdf } from "./ReactPdfReport";
 import { downloadReportExcel } from "@/lib/exportExcel";
 import AdvancedToolsHub from "./AdvancedToolsHub";
+import { MethodsComparison } from "./MethodsComparison";
 import HijriDateField from "./HijriDateField";
 import { CurrencyConverterCard } from "./CurrencyConverterCard";
 import type { FxRate, FxInfo } from "@/lib/fx";
