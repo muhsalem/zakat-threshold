@@ -21,8 +21,6 @@ const PORTALS: Item[] = [
 
 const INFO: Item[] = [
   { to: "/verify", label: "التحقق من تقرير", icon: ShieldCheck },
-  { to: "/organizations", label: "المؤسسات", icon: Building2 },
-  { to: "/prices-history", label: "سجل الأسعار", icon: LineChart },
   { to: "/faq", label: "الأسئلة الشائعة", icon: HelpCircle },
 ];
 
