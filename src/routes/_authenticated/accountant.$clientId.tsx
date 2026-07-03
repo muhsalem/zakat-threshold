@@ -167,10 +167,10 @@ function ClientDetail() {
           <NumField label="عروض تجارة/مخزون" value={client.breakdown.inventory} onChange={(v) => updateBreakdown("inventory", v)} />
           <NumField label="ديون مستحقة للعميل" value={client.breakdown.receivables} onChange={(v) => updateBreakdown("receivables", v)} />
           <NumField label="ديون على العميل (تُطرح)" value={client.breakdown.debts} onChange={(v) => updateBreakdown("debts", v)} />
-          <NumField label="النصاب" value={client.nisab} onChange={(v) => updateAll({ nisab: v })} />
+          <NumField label="النصاب" value={client.nisab} onChange={(v) => void applyPatch({ nisab: v })} />
           <div className="space-y-1.5">
             <Label className="text-xs">تاريخ الحول</Label>
-            <Input type="date" value={client.hawlDate} onChange={(e) => updateAll({ hawlDate: e.target.value })} />
+            <Input type="date" value={client.hawlDate} onChange={(e) => void applyPatch({ hawlDate: e.target.value })} />
           </div>
         </CardContent>
       </Card>
