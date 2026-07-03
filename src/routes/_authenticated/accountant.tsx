@@ -268,7 +268,7 @@ function AccountantPortal() {
           <TabsTrigger value="clients" className="gap-1.5"><Users className="h-3.5 w-3.5" /> العملاء والمحفظة</TabsTrigger>
           <TabsTrigger value="saved" className="gap-1.5"><FileText className="h-3.5 w-3.5" /> المحفوظات (تقارير معتمدة)</TabsTrigger>
           <TabsTrigger value="prices" className="gap-1.5"><LineChart className="h-3.5 w-3.5" /> السجل التاريخي للأسعار</TabsTrigger>
-          <TabsTrigger value="calc" className="gap-1.5"><Calculator className="h-3.5 w-3.5" /> الحاسبة الأساسية</TabsTrigger>
+          <TabsTrigger value="calc" className="gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"><Calculator className="h-3.5 w-3.5" /> الحاسبة الشاملة</TabsTrigger>
         </TabsList>
 
         <TabsContent value="dashboard" className="mt-0"><AccountantDashboard /></TabsContent>
@@ -440,12 +440,23 @@ function AccountantPortal() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
-                <Calculator className="h-5 w-5 text-primary" /> الحاسبة الأساسية داخل بوابة المحاسب
+                <Calculator className="h-5 w-5 text-primary" /> الحاسبة الشاملة داخل بوابة المحاسب
               </CardTitle>
-              <p className="text-xs text-muted-foreground">حاسبة الزكاة الكاملة (أفراد / شركات / زكاة الفطر) — نفس المحرك المعتمد بدون الحاجة لمغادرة اللوحة.</p>
+              <p className="text-xs text-muted-foreground">جميع مسارات الزكاة (أفراد، شركات ومؤسسات، زكاة الفطر) في تبويبات فرعية — بدون مغادرة اللوحة.</p>
             </CardHeader>
             <CardContent>
-              <CalcModeGate />
+              <Tabs defaultValue="individual" className="space-y-3">
+                <TabsList className="w-full grid grid-cols-3">
+                  <TabsTrigger value="individual" className="gap-1.5"><Users className="h-3.5 w-3.5" /> زكاة الأفراد</TabsTrigger>
+                  <TabsTrigger value="company" className="gap-1.5"><Building2 className="h-3.5 w-3.5" /> زكاة الشركات والمؤسسات</TabsTrigger>
+                  <TabsTrigger value="fitr" className="gap-1.5"><Calculator className="h-3.5 w-3.5" /> زكاة الفطر</TabsTrigger>
+                </TabsList>
+                <Suspense fallback={<div className="flex items-center justify-center py-16 text-muted-foreground"><Loader2 className="h-5 w-5 animate-spin ml-2" /> جارٍ التحميل...</div>}>
+                  <TabsContent value="individual" className="mt-0"><IndividualTab /></TabsContent>
+                  <TabsContent value="company" className="mt-0"><CompanyTab /></TabsContent>
+                  <TabsContent value="fitr" className="mt-0"><FitrCalculator /></TabsContent>
+                </Suspense>
+              </Tabs>
             </CardContent>
           </Card>
         </TabsContent>
