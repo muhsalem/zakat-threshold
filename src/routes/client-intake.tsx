@@ -55,10 +55,20 @@ function ClientIntakePage() {
       <main className="container mx-auto max-w-2xl px-4 py-16 text-center space-y-4" dir="rtl">
         <CheckCircle2 className="h-16 w-16 text-emerald-500 mx-auto" />
         <h1 className="text-3xl font-bold">تم استلام بياناتك بنجاح</h1>
-        <p className="text-muted-foreground">
-          سيقوم المحاسب/الشركة بمراجعة بياناتك واحتساب الزكاة، وستصلك النتيجة على بريدك.
+        <p className="text-muted-foreground leading-relaxed">
+          شكراً لك — تم إرسال بياناتك إلى المحاسب المعتمد للمراجعة.
+          <br />
+          سيتم إعداد تقرير الزكاة الرسمي وإرساله على بريدك الإلكتروني <b>خلال يومَي عمل</b> بحد أقصى.
         </p>
-        <div className="flex justify-center gap-2">
+        <div className="rounded-lg border bg-primary/5 p-4 text-sm text-right space-y-2">
+          <div className="font-semibold flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-primary" /> ما التالي؟</div>
+          <ol className="list-decimal pr-6 space-y-1 text-muted-foreground">
+            <li>يستلم المحاسب المعتمد بياناتك خلال دقائق.</li>
+            <li>يراجع البيانات ويحسب الزكاة وفق المعايير الشرعية.</li>
+            <li>يصلك تقرير PDF مختوم برقم مرجعي قابل للتحقق.</li>
+          </ol>
+        </div>
+        <div className="flex justify-center gap-2 pt-2">
           <Button asChild variant="outline"><Link to="/">العودة للرئيسية</Link></Button>
           <Button onClick={() => { setSubmitted(false); setForm({ ...form, name: "", email: "" }); }}>إرسال حساب آخر</Button>
         </div>
