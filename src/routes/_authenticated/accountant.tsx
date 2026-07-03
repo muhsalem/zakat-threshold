@@ -18,6 +18,8 @@ const IndividualTab = lazy(() => import("@/components/zakat/IndividualTab").then
 const CompanyTab = lazy(() => import("@/components/zakat/CompanyTab").then((m) => ({ default: m.CompanyTab })));
 const FitrCalculator = lazy(() => import("@/components/zakat/FitrCalculator").then((m) => ({ default: m.FitrCalculator })));
 import { fmt } from "@/lib/zakat";
+import { AccountantDashboard } from "@/components/accountant/AccountantDashboard";
+
 import { supabase } from "@/integrations/supabase/client";
 import {
   fetchClients, createClient, updateClient, deleteClients, addHistory,
@@ -260,15 +262,18 @@ function AccountantPortal() {
         </div>
       </header>
 
-      <Tabs defaultValue="clients" className="space-y-6">
+      <Tabs defaultValue="dashboard" className="space-y-6">
         <TabsList>
+          <TabsTrigger value="dashboard" className="gap-1.5"><LineChart className="h-3.5 w-3.5" /> لوحة التحكم</TabsTrigger>
           <TabsTrigger value="clients" className="gap-1.5"><Users className="h-3.5 w-3.5" /> العملاء والمحفظة</TabsTrigger>
           <TabsTrigger value="saved" className="gap-1.5"><FileText className="h-3.5 w-3.5" /> المحفوظات (تقارير معتمدة)</TabsTrigger>
           <TabsTrigger value="prices" className="gap-1.5"><LineChart className="h-3.5 w-3.5" /> السجل التاريخي للأسعار</TabsTrigger>
           <TabsTrigger value="calc" className="gap-1.5"><Calculator className="h-3.5 w-3.5" /> الحاسبة الأساسية</TabsTrigger>
         </TabsList>
 
+        <TabsContent value="dashboard" className="mt-0"><AccountantDashboard /></TabsContent>
         <TabsContent value="saved" className="mt-0"><SavedRecordsPanel /></TabsContent>
+
 
         <TabsContent value="clients" className="space-y-6 mt-0">
       <section className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
