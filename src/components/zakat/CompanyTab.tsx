@@ -1266,7 +1266,27 @@ export function CompanyTab() {
                 </Alert>
               )}
 
+              <MethodsComparison
+                values={{
+                  net_assets: calc.netAssets,
+                  net_working_capital: calc.netWorkingCapital,
+                  working_capital: calc.workingCapital,
+                  net_income: calc.netIncome,
+                  net_equity: calc.netEquity,
+                  invested_funds: calc.investedFunds,
+                }}
+                labels={METHOD_LABELS}
+                labelsEn={METHOD_LABELS_EN}
+                active={method}
+                onSelect={setMethod}
+                zakatableRatio={calc.zakatableRatio}
+                rate={calc.rate}
+                nisabValue={calc.nisabValue}
+                currencyName={currencyName}
+              />
+
               <Tabs value={method} onValueChange={(v) => setMethod(v as CalcMethod)} dir="rtl">
+
                 <TabsList dir="rtl" className="grid grid-cols-2 md:grid-cols-6 w-full h-auto">
                   <TabsTrigger value="net_assets" className="text-xs">صافي الموجودات</TabsTrigger>
                   <TabsTrigger value="net_working_capital" className="text-xs">صافي رأس المال العامل</TabsTrigger>
