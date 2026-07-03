@@ -12,7 +12,11 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Briefcase, Users, Building2, Search, Plus, TrendingUp, Wallet, Calculator, FileText, AlertTriangle, CheckCircle2, Filter, Landmark, LineChart } from "lucide-react";
 import { PricesHistoryPanel } from "@/components/zakat/PricesHistoryPanel";
-import { SimpleZakatCalculator } from "@/components/zakat/SimpleZakatCalculator";
+import { lazy, Suspense } from "react";
+import { Loader2 } from "lucide-react";
+const IndividualTab = lazy(() => import("@/components/zakat/IndividualTab").then((m) => ({ default: m.IndividualTab })));
+const CompanyTab = lazy(() => import("@/components/zakat/CompanyTab").then((m) => ({ default: m.CompanyTab })));
+const FitrCalculator = lazy(() => import("@/components/zakat/FitrCalculator").then((m) => ({ default: m.FitrCalculator })));
 import { fmt } from "@/lib/zakat";
 import {
   loadClients, saveClients, wealthOf, zakatOf, complianceCheck, complianceScore,
