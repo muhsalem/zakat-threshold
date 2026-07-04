@@ -118,6 +118,26 @@ export function IndividualWizard() {
             <Button onClick={printReport} className="w-full gap-2">
               <FileText className="h-4 w-4" /> تصدير تقرير PDF
             </Button>
+            <SaveToHistoryCard
+              payload={{
+                record_type: "individual",
+                hijri_year: null,
+                currency: "SAR",
+                total_assets: total.gross,
+                total_liabilities: parseFloat(debtsOn || "0") || 0,
+                zakat_base: total.net,
+                zakat_due: total.zakat,
+                prepaid_zakat: 0,
+                net_due: total.zakat,
+                snapshot: {
+                  source: "IndividualWizard",
+                  cash, banks, debtsOwed, debtsOn,
+                  goldGrams, silverGrams, goldGramPrice,
+                  stocks, crypto, inventory,
+                  nisabValue: total.nisabValue, reaches: total.reaches,
+                },
+              }}
+            />
           </div>
         )}
 
