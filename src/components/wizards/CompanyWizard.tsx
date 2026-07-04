@@ -148,6 +148,35 @@ export function CompanyWizard() {
             <Button onClick={printReport} className="w-full gap-2 mt-3">
               <FileText className="h-4 w-4" /> تصدير تقرير PDF
             </Button>
+            <SaveToHistoryCard
+              payload={{
+                record_type: "company",
+                hijri_year: null,
+                currency: "SAR",
+                total_assets: num(totalAssets),
+                total_liabilities: num(currentLiabilities),
+                zakat_base: computed.zakatable,
+                zakat_due: computed.zakat,
+                prepaid_zakat: 0,
+                net_due: computed.zakat,
+                snapshot: {
+                  source: "CompanyWizard",
+                  companyName, activity,
+                  totalAssets: num(totalAssets),
+                  totalEquity: num(totalEquity),
+                  currentAssets: num(currentAssets),
+                  currentLiabilities: num(currentLiabilities),
+                  exempt: {
+                    foreign: num(shForeign) / 100,
+                    government: num(shGov) / 100,
+                    conditional: num(shCond) / 100,
+                    nonMuslim: num(shNonMuslim) / 100,
+                  },
+                  base: computed.base,
+                  zakatable: computed.zakatable,
+                },
+              }}
+            />
           </div>
         )}
 
