@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ChevronRight, ChevronLeft, FileText, Wallet, Coins, TrendingUp, Package, CheckCircle2 } from "lucide-react";
 import { fmt } from "@/lib/zakat";
 import { toast } from "sonner";
+import { SaveToHistoryCard } from "@/components/zakat/SaveToHistoryCard";
 
 const STEPS = [
   { key: "cash", title: "النقد والودائع", icon: Wallet },
