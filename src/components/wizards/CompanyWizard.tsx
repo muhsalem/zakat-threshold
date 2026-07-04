@@ -10,6 +10,7 @@ import { AlertCircle, Building2, ChevronLeft, ChevronRight, FileText, CheckCircl
 import { fmt } from "@/lib/zakat";
 import { validateCompanyInputs, type ValidationError } from "@/lib/validation/companyInputsSchema";
 import { toast } from "sonner";
+import { SaveToHistoryCard } from "@/components/zakat/SaveToHistoryCard";
 
 const STEPS = [
   { key: "basics", title: "البيانات الأساسية" },
