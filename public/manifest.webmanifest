@@ -1,21 +1,23 @@
 {
-  "name": "حاسبة الزكاة الشاملة",
-  "short_name": "حاسبة الزكاة",
-  "description": "احسب زكاة المال والذهب والفضة وعروض التجارة والزروع والأنعام وفق المعايير الشرعية.",
+  "name": "نِصاب — منصة الزكاة المعتمدة",
+  "short_name": "نِصاب",
+  "description": "احسب زكاتك واحصل على تقرير معتمد من محاسب مرخّص خلال 48 ساعة. للأفراد والشركات وفق AAOIFI 35.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "orientation": "portrait",
   "lang": "ar",
   "dir": "rtl",
   "theme_color": "#2d6a52",
   "background_color": "#f8f6f0",
+  "categories": ["finance", "utilities"],
   "icons": [
     {
       "src": "/icon-192.svg",
       "sizes": "192x192",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "/icon-512.svg",
@@ -23,5 +25,33 @@
       "type": "image/svg+xml",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "shortcuts": [
+    {
+      "name": "احسب زكاة الأفراد",
+      "url": "/client-intake?kind=individual",
+      "description": "نموذج زكاة الأفراد"
+    },
+    {
+      "name": "احسب زكاة الشركات",
+      "url": "/client-intake?kind=company",
+      "description": "نموذج زكاة الشركات"
+    },
+    {
+      "name": "لوحة المحاسب",
+      "url": "/accountant",
+      "description": "بوابة المحاسبين المعتمدين"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/og-image.jpg",
+      "sizes": "1200x640",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "نِصاب — الصفحة الرئيسية"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
 }

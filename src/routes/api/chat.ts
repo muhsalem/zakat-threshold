@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
+import { Anthropic } from "@anthropic-ai/sdk";
 
 const SYSTEM_PROMPT = `أنت "مستشار نِصاب" — مساعد متخصص في فقه ومحاسبة الزكاة وفق المعايير الشرعية المعتمدة (خاصةً المعيار الشرعي 35 من AAOIFI، وفتاوى المجامع الفقهية الكبرى).
 
@@ -13,6 +15,23 @@ const SYSTEM_PROMPT = `أنت "مستشار نِصاب" — مساعد متخص�
 - لا تخترع أرقامًا أو فتاوى. إذا لم تعرف، قل "لا أعلم بدقة، يُستحسن الرجوع لجهة إفتاء معتمدة".
 - اجعل الإجابة منظمة بعناوين ونقاط حين يلزم.`;
 
+function buildProvider() {
+  // 1) Lovable AI Gateway (الأولوية الأولى)
+  const lovableKey = process.env.LOVABLE_API_KEY;
+  if (lovableKey) {
+    return { provider: createLovableAiGatewayProvider(lovableKey), model: "google/gemini-2.0-flash-lite" };
+  }
+
+  // 2) OpenAI-compatible endpoint (بديل مرن)
+  const openaiKey = process.env.OPENAI_API_KEY;
+  if (openaiKey) {
+    const openai = createOpenAICompatible({ name: "openai", baseURL: "https://api.openai.com/v1", headers: { Authorization: `Bearer ${openaiKey}` } });
+    return { provider: openai, model: "gpt-4o-mini" };
+  }
+
+  return null;
+}
+
 export const Route = createFileRoute("/api/chat")({
   server: {
     handlers: {
@@ -20,12 +39,46 @@ export const Route = createFileRoute("/api/chat")({
         const { messages } = (await request.json()) as { messages?: UIMessage[] };
         if (!Array.isArray(messages)) return new Response("Messages required", { status: 400 });
 
-        const key = process.env.LOVABLE_API_KEY;
-        if (!key) return new Response("Missing LOVABLE_API_KEY", { status: 500 });
+        const config = buildProvider();
 
-        const gateway = createLovableAiGatewayProvider(key);
+        // 3) Anthropic fallback مباشر (إذا لا يوجد provider آخر)
+        if (!config) {
+          const anthropicKey = process.env.ANTHROPIC_API_KEY;
+          if (!anthropicKey) {
+            return new Response(
+              JSON.stringify({ error: "لم يُهيَّأ أي مفتاح AI. أضف LOVABLE_API_KEY أو OPENAI_API_KEY أو ANTHROPIC_API_KEY في متغيرات البيئة." }),
+              { status: 503, headers: { "Content-Type": "application/json" } }
+            );
+          }
+          const client = new Anthropic({ apiKey: anthropicKey });
+          const userMessages = messages.filter((m) => m.role === "user" || m.role === "assistant").map((m) => ({
+            role: m.role as "user" | "assistant",
+            content: typeof m.content === "string" ? m.content : JSON.stringify(m.content),
+          }));
+          const stream = await client.messages.create({
+            model: "claude-haiku-4-5-20251001",
+            max_tokens: 1024,
+            system: SYSTEM_PROMPT,
+            messages: userMessages,
+            stream: true,
+          });
+          const encoder = new TextEncoder();
+          const readable = new ReadableStream({
+            async start(controller) {
+              for await (const event of stream) {
+                if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "text", text: event.delta.text })}\n\n`));
+                }
+              }
+              controller.enqueue(encoder.encode("data: [DONE]\n\n"));
+              controller.close();
+            },
+          });
+          return new Response(readable, { headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache" } });
+        }
+
         const result = streamText({
-          model: gateway("google/gemini-3-flash-preview"),
+          model: config.provider(config.model),
           system: SYSTEM_PROMPT,
           messages: await convertToModelMessages(messages),
         });

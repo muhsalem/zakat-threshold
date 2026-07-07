@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 // removed home-page calculator import (calculator moved into accountant dashboard)
 import nisabLogo from "@/assets/nisab-logo.png.asset.json";
+import { PayButton } from "@/components/PayButton";
+import type { PlanId } from "@/lib/payments";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -480,10 +482,10 @@ function Pricing() {
               cta="ابدأ الآن" to="/client-intake"
               features={["تسجيل البيانات ورفع المستندات", "زكاة الفطر والذهب والفضة", "سجل النصاب التاريخي", "تقرير PDF غير معتمد"]} />
             <PriceCard name="معتمد" priceUSD={19} ccy={ccy} period="/ تقرير" tagline="تقرير رسمي بمراجعة محاسب"
-              highlight badge="الأكثر شعبية" cta="اطلب تقريري" to="/client-intake"
+              highlight badge="الأكثر شعبية" cta="اطلب تقريري" to="/client-intake" planId="certified"
               features={["كل ميزات المجاني", "مراجعة محاسب معتمد", "تقرير PDF مختوم + رقم تحقق", "إرسال على البريد خلال يومَي عمل", "استشارة شرعية مكتوبة"]} />
             <PriceCard name="سنوي VIP" priceUSD={79} ccy={ccy} period="/ سنة" tagline="متابعة كاملة على مدار الحول"
-              cta="اشترك سنوياً" to="/client-intake"
+              cta="اشترك سنوياً" to="/client-intake" planId="vip_annual"
               features={["4 تقارير معتمدة سنوياً", "تذكير حَوْلي بالبريد والواتساب", "أرشيف تقارير مؤمّن", "أولوية دعم مباشر", "استشارات شرعية غير محدودة"]} />
           </div>
         </div>
@@ -494,10 +496,10 @@ function Pricing() {
           </div>
           <div className="grid md:grid-cols-3 gap-4 max-w-5xl mx-auto">
             <PriceCard name="Startup" priceUSD={149} ccy={ccy} period="/ شهر" tagline="للشركات الناشئة وSMEs"
-              cta="ابدأ اشتراك الشركة" to="/client-intake"
+              cta="ابدأ اشتراك الشركة" to="/client-intake" planId="startup"
               features={["حساب زكوي شهري/سنوي", "حتى 100 قيد محاسبي", "استيراد Excel و CSV", "تقرير معتمد ربع سنوي", "دعم بريدي (48 ساعة)"]} />
             <PriceCard name="Business" priceUSD={499} ccy={ccy} period="/ شهر" tagline="للشركات متوسطة الحجم"
-              highlight badge="الأكثر توازناً" cta="اطلب تجربة" to="/client-intake"
+              highlight badge="الأكثر توازناً" cta="اطلب تجربة" to="/client-intake" planId="business"
               features={["قيود غير محدودة", "ربط ERP (Odoo / Zoho / SAP)", "تقارير شهرية معتمدة", "لوحة تحكم مالية كاملة", "محاسب مخصّص لحسابك", "توزيع المصارف الثمانية"]} />
             <PriceCard name="Enterprise" priceUSD={-1} ccy={ccy} period="/ سنوياً" tagline="للمؤسسات والأوقاف الكبرى"
               cta="تواصل مع المبيعات" to="/enterprise"
@@ -513,9 +515,10 @@ function Pricing() {
   );
 }
 
-function PriceCard({ name, priceUSD, ccy, period, tagline, features, cta, to, highlight, badge }: {
+function PriceCard({ name, priceUSD, ccy, period, tagline, features, cta, to, highlight, badge, planId }: {
   name: string; priceUSD: number; ccy: string; period: string; tagline: string;
   features: string[]; cta: string; to: string; highlight?: boolean; badge?: string;
+  planId?: PlanId;
 }) {
   const priceLabel = priceUSD < 0 ? "مخصّص" : priceUSD === 0 ? "مجاناً" : formatPrice(priceUSD, ccy);
   return (
@@ -545,9 +548,14 @@ function PriceCard({ name, priceUSD, ccy, period, tagline, features, cta, to, hi
             </li>
           ))}
         </ul>
-        <Link to={to}>
-          <Button variant={highlight ? "default" : "outline"} className="w-full">{cta}</Button>
-        </Link>
+        {planId ? (
+          <PayButton planId={planId} label={cta} returnPath="/dashboard"
+            variant={highlight ? "default" : "outline"} className="w-full" />
+        ) : (
+          <Link to={to}>
+            <Button variant={highlight ? "default" : "outline"} className="w-full">{cta}</Button>
+          </Link>
+        )}
       </CardContent>
     </Card>
   );

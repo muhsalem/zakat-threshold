@@ -167,6 +167,21 @@ function ClientIntakePage() {
     setDraftSavedAt(null);
     setSubmitted(mode);
     toast.success(mode === "comprehensive" ? "تم إرسال طلب التقرير الشامل" : "تم إرسال بياناتك للمحاسب");
+
+    // إرسال بريد تأكيد للعميل عبر Edge Function
+    if (form.email) {
+      supabase.functions.invoke("send-report-email", {
+        body: {
+          to: form.email,
+          clientName: form.name,
+          zakatDue: 0,
+          currency: "SAR",
+          reportId: `INTAKE-${Date.now()}`,
+          gregorianDate: new Date().toLocaleDateString("ar-SA"),
+          accountantName: undefined,
+        },
+      }).catch(() => {});
+    }
   };
 
 
