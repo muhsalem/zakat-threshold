@@ -15,6 +15,8 @@ import {
 import { fmt, COUNTRY_PRICES, ZAKAT_RATE } from "@/lib/zakat";
 import { toast } from "sonner";
 import { SaveToHistoryCard } from "@/components/zakat/SaveToHistoryCard";
+import { useWizardAutosave } from "@/hooks/useWizardAutosave";
+import { ResumeDraftBanner, AutosaveIndicator } from "@/components/wizards/ResumeDraftBanner";
 
 const STEPS = [
   { key: "profile",     title: "بيانات الشركة والعملة والسنة",       icon: Building2 },
@@ -97,7 +99,51 @@ export function CompanyWizard() {
   const [shWaqf, setShWaqf] = useState("0");
   const [shNonMuslim, setShNonMuslim] = useState("0");
 
+  // ---- Autosave ----
+  const snapshot = {
+    step,
+    companyName, activity, sector, yearType, fiscalYear, countryCode,
+    cashOnHand, bankCurrent, bankSavings, bankDeposits, pettyCash,
+    tradeReceivables, notesReceivable, prepaidExpenses, supplierAdvances, doubtfulProvisions,
+    rawMaterials, wip, finishedGoods, goodsInTransit, spareParts, obsoleteStock,
+    tradeSecurities, heldForSaleShares, heldForInvestShares, investZakatablePct, sukuk, subsidiariesZakatable,
+    realEstateForSale, landForSale, rentIncomeSaved,
+    tradedLivestock, tradedPoultryNet, tradedFishNet, honeyValue,
+    shortTermPayables, accruedExpenses, taxesDue, dividendsDeclared, longTermDueThisYear, prepaidZakat,
+    shForeign, shGov, shWaqf, shNonMuslim,
+  };
+  const { savedDraft, savedAt, dismissDraft } =
+    useWizardAutosave<typeof snapshot>("wizard:company:v1", snapshot, step);
+  function restoreDraft() {
+    const d = savedDraft?.data; if (!d) return;
+    setCompanyName(d.companyName ?? ""); setActivity(d.activity ?? ""); setSector(d.sector ?? "trade");
+    setYearType(d.yearType ?? "hijri"); setFiscalYear(d.fiscalYear ?? ""); setCountryCode(d.countryCode ?? "SA");
+    setCashOnHand(d.cashOnHand ?? ""); setBankCurrent(d.bankCurrent ?? "");
+    setBankSavings(d.bankSavings ?? ""); setBankDeposits(d.bankDeposits ?? ""); setPettyCash(d.pettyCash ?? "");
+    setTradeReceivables(d.tradeReceivables ?? ""); setNotesReceivable(d.notesReceivable ?? "");
+    setPrepaidExpenses(d.prepaidExpenses ?? ""); setSupplierAdvances(d.supplierAdvances ?? "");
+    setDoubtfulProvisions(d.doubtfulProvisions ?? "");
+    setRawMaterials(d.rawMaterials ?? ""); setWip(d.wip ?? ""); setFinishedGoods(d.finishedGoods ?? "");
+    setGoodsInTransit(d.goodsInTransit ?? ""); setSpareParts(d.spareParts ?? ""); setObsoleteStock(d.obsoleteStock ?? "");
+    setTradeSecurities(d.tradeSecurities ?? ""); setHeldForSaleShares(d.heldForSaleShares ?? "");
+    setHeldForInvestShares(d.heldForInvestShares ?? ""); setInvestZakatablePct(d.investZakatablePct ?? "40");
+    setSukuk(d.sukuk ?? ""); setSubsidiariesZakatable(d.subsidiariesZakatable ?? "");
+    setRealEstateForSale(d.realEstateForSale ?? ""); setLandForSale(d.landForSale ?? "");
+    setRentIncomeSaved(d.rentIncomeSaved ?? "");
+    setTradedLivestock(d.tradedLivestock ?? ""); setTradedPoultryNet(d.tradedPoultryNet ?? "");
+    setTradedFishNet(d.tradedFishNet ?? ""); setHoneyValue(d.honeyValue ?? "");
+    setShortTermPayables(d.shortTermPayables ?? ""); setAccruedExpenses(d.accruedExpenses ?? "");
+    setTaxesDue(d.taxesDue ?? ""); setDividendsDeclared(d.dividendsDeclared ?? "");
+    setLongTermDueThisYear(d.longTermDueThisYear ?? ""); setPrepaidZakat(d.prepaidZakat ?? "");
+    setShForeign(d.shForeign ?? "0"); setShGov(d.shGov ?? "0");
+    setShWaqf(d.shWaqf ?? "0"); setShNonMuslim(d.shNonMuslim ?? "0");
+    setStep(savedDraft?.step ?? 0);
+    dismissDraft();
+    toast.success("تمّت استعادة المسودّة");
+  }
+
   const n = (x: string) => parseFloat(x || "0") || 0;
+
 
   const totals = useMemo(() => {
     const cash = n(cashOnHand) + n(bankCurrent) + n(bankSavings) + n(bankDeposits) + n(pettyCash);
