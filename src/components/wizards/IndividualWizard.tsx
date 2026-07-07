@@ -243,6 +243,7 @@ export function IndividualWizard() {
             <Icon className="h-5 w-5 text-primary" /> {S.title}
           </CardTitle>
           <div className="flex items-center gap-2">
+            <AutosaveIndicator savedAt={savedAt} />
             <Badge variant="outline" className="text-xs">{step + 1} / {STEPS.length}</Badge>
             <Badge variant="secondary" className="text-[10px]" dir="ltr">
               {country.name} · {currency}
@@ -270,6 +271,9 @@ export function IndividualWizard() {
       </CardHeader>
 
       <CardContent className="space-y-4">
+        {savedDraft && (
+          <ResumeDraftBanner savedAt={savedDraft.at} onResume={restoreDraft} onDismiss={dismissDraft} />
+        )}
 
         {step === 0 && (
           <div className="grid sm:grid-cols-2 gap-3">
