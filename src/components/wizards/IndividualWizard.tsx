@@ -15,6 +15,8 @@ import {
 import { fmt, COUNTRY_PRICES, GOLD_NISAB_GRAMS, SILVER_NISAB_GRAMS, ZAKAT_RATE } from "@/lib/zakat";
 import { toast } from "sonner";
 import { SaveToHistoryCard } from "@/components/zakat/SaveToHistoryCard";
+import { useWizardAutosave } from "@/hooks/useWizardAutosave";
+import { ResumeDraftBanner, AutosaveIndicator } from "@/components/wizards/ResumeDraftBanner";
 
 const GOLD_PURITY: Record<string, number> = {
   "24": 1, "22": 22 / 24, "21": 21 / 24, "18": 18 / 24, "14": 14 / 24, "12": 12 / 24, "9": 9 / 24,
@@ -105,6 +107,45 @@ export function IndividualWizard() {
 
   // ---- الديون عليك ----
   const [debtsOnYou, setDebtsOnYou] = useState("");
+
+  // ---- Autosave (استئناف تلقائي) ----
+  const snapshot = {
+    step,
+    name, countryCode, goldPrice, silverPrice,
+    cashHand, bankChecking, bankSavings, bankTermDeposits, debtsToYou,
+    gBullion, gJewelry, gCoins, gStoneGrams, jewelryPurpose, jewelryOpinion,
+    sBullion, sJewelry, sCoins, silverPurpose, silverOpinion,
+    stocksInvest, stocksTrade, funds, sukuk, investZakatablePct,
+    crypto, inventory, tradeReceivables, ecommerceStock, digitalProducts,
+    realEstateTrade, rentIncomeSaved,
+    livestockValue, cropsValue, cropsIrrigated, debtsOnYou,
+  };
+  const { savedDraft, savedAt, clear: clearDraft, dismissDraft } =
+    useWizardAutosave<typeof snapshot>("wizard:individual:v1", snapshot, step);
+  function restoreDraft() {
+    const d = savedDraft?.data; if (!d) return;
+    setName(d.name ?? ""); setCountryCode(d.countryCode ?? "EG");
+    setGoldPrice(d.goldPrice ?? ""); setSilverPrice(d.silverPrice ?? "");
+    setCashHand(d.cashHand ?? ""); setBankChecking(d.bankChecking ?? "");
+    setBankSavings(d.bankSavings ?? ""); setBankTermDeposits(d.bankTermDeposits ?? "");
+    setDebtsToYou(d.debtsToYou ?? "");
+    setGBullion(d.gBullion ?? {}); setGJewelry(d.gJewelry ?? {}); setGCoins(d.gCoins ?? {});
+    setGStoneGrams(d.gStoneGrams ?? ""); setJewelryPurpose(d.jewelryPurpose ?? "wear");
+    setJewelryOpinion(d.jewelryOpinion ?? "majority");
+    setSBullion(d.sBullion ?? {}); setSJewelry(d.sJewelry ?? {}); setSCoins(d.sCoins ?? {});
+    setSilverPurpose(d.silverPurpose ?? "wear"); setSilverOpinion(d.silverOpinion ?? "majority");
+    setStocksInvest(d.stocksInvest ?? ""); setStocksTrade(d.stocksTrade ?? "");
+    setFunds(d.funds ?? ""); setSukuk(d.sukuk ?? ""); setInvestZakatablePct(d.investZakatablePct ?? "40");
+    setCrypto(d.crypto ?? "");
+    setInventory(d.inventory ?? ""); setTradeReceivables(d.tradeReceivables ?? "");
+    setEcommerceStock(d.ecommerceStock ?? ""); setDigitalProducts(d.digitalProducts ?? "");
+    setRealEstateTrade(d.realEstateTrade ?? ""); setRentIncomeSaved(d.rentIncomeSaved ?? "");
+    setLivestockValue(d.livestockValue ?? ""); setCropsValue(d.cropsValue ?? "");
+    setCropsIrrigated(d.cropsIrrigated ?? "rain"); setDebtsOnYou(d.debtsOnYou ?? "");
+    setStep(savedDraft?.step ?? 0);
+    dismissDraft();
+    toast.success("تمّت استعادة المسودّة");
+  }
 
   // ---- الحسابات ----
   const n = (x: string) => parseFloat(x || "0") || 0;
@@ -202,6 +243,7 @@ export function IndividualWizard() {
             <Icon className="h-5 w-5 text-primary" /> {S.title}
           </CardTitle>
           <div className="flex items-center gap-2">
+            <AutosaveIndicator savedAt={savedAt} />
             <Badge variant="outline" className="text-xs">{step + 1} / {STEPS.length}</Badge>
             <Badge variant="secondary" className="text-[10px]" dir="ltr">
               {country.name} · {currency}
@@ -229,6 +271,9 @@ export function IndividualWizard() {
       </CardHeader>
 
       <CardContent className="space-y-4">
+        {savedDraft && (
+          <ResumeDraftBanner savedAt={savedDraft.at} onResume={restoreDraft} onDismiss={dismissDraft} />
+        )}
 
         {step === 0 && (
           <div className="grid sm:grid-cols-2 gap-3">
