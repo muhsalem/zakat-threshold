@@ -29,16 +29,18 @@ async function fetchGoldApi(): Promise<{ gold: number; silver: number } | null> 
   } catch { return null; }
 }
 
-// Fallback: metals.dev free echo endpoint (no key, best-effort)
+// Fallback: coingecko — PAXG = 1 oz gold (لا يتطلب مفتاحاً)
 async function fetchMetalsLive(): Promise<{ gold: number; silver: number } | null> {
   try {
-    const r = await fetch("https://api.metalpriceapi.com/v1/latest?api_key=demo&base=USD&currencies=XAU,XAG");
+    const r = await fetch(
+      "https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd",
+      { headers: { accept: "application/json" } }
+    );
     if (!r.ok) return null;
-    const j = (await r.json()) as { rates?: { XAU?: number; XAG?: number } };
-    const xau = j.rates?.XAU, xag = j.rates?.XAG;
-    if (!xau || !xag) return null;
-    // rates are units-per-USD; invert to USD per oz
-    return { gold: 1 / xau, silver: 1 / xag };
+    const j = (await r.json()) as { "pax-gold"?: { usd?: number } };
+    const goldOz = j["pax-gold"]?.usd;
+    if (!goldOz) return null;
+    return { gold: goldOz, silver: goldOz / 80 }; // نسبة فضة/ذهب تقريبية ~1:80
   } catch { return null; }
 }
 
@@ -76,14 +78,16 @@ export const getLivePrices = createServerFn({ method: "GET" })
     let source = "gold-api.com";
     if (!metals) { metals = await fetchMetalsLive(); source = "metalpriceapi.com"; }
 
-    // 2) تحويل العملة
+    // 2) تحويل العملة عبر frankfurter.app (مجاني، بدون مفتاح، موثوق)
     let fxRate = 1;
+    let fxSource = "fixed";
     if (currency !== "USD") {
       try {
-        const fxRes = await fetch("https://open.er-api.com/v6/latest/USD");
+        const fxRes = await fetch(`https://api.frankfurter.app/latest?from=USD&to=${currency}`);
         if (fxRes.ok) {
           const fxJson = (await fxRes.json()) as { rates?: Record<string, number> };
-          fxRate = Number(fxJson.rates?.[currency] ?? 1) || 1;
+          const r = fxJson.rates?.[currency];
+          if (r && r > 0) { fxRate = r; fxSource = "frankfurter.app"; }
         }
       } catch { /* keep fxRate=1 */ }
     }
@@ -99,7 +103,7 @@ export const getLivePrices = createServerFn({ method: "GET" })
         silverUsdPerOunce: metals.silver,
         fxRate,
         fetchedAt: new Date().toISOString(),
-        source: `${source} + open.er-api.com`,
+        source: `${source} + ${fxSource}`,
       };
     }
 

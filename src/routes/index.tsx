@@ -176,7 +176,7 @@ function Hero() {
               <StatMini label="زكاة مستحقة" value="2,895" tone="gold" />
             </div>
             <div className="border-t pt-3 flex items-center justify-between text-xs text-muted-foreground">
-              <span>معتمد من: أ. م. عبدالرحمن — CPA</span>
+              <span>معتمد من محاسب قانوني مرخّص — CPA</span>
               <span className="inline-flex items-center gap-1"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> مطابق AAOIFI 35</span>
             </div>
           </div>

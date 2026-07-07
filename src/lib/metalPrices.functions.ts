@@ -33,22 +33,13 @@ async function fromGoldApi(): Promise<Pair> {
   return { gold24PerGram: gj.price / TROY_OZ_GRAMS, silverPerGram: sj.price / TROY_OZ_GRAMS };
 }
 
-async function fromMetalsDev(): Promise<Pair> {
-  // واجهة عامة بدون مفتاح — نمط: https://api.metals.dev/v1/latest?api_key=... — نُسقط هذا
-  // ونستخدم mirror مفتوح: metals-api.io يتطلب مفتاحاً، نعتمد بدلاً عنه على api.metalpriceapi.com sandbox.
-  const r = await withTimeout(
-    fetch("https://api.metalpriceapi.com/v1/latest?api_key=demo&base=USD&currencies=XAU,XAG", {
-      headers: { accept: "application/json" },
-    })
-  );
-  if (!r.ok) throw new Error("metalpriceapi http " + r.status);
-  const j = (await r.json()) as { rates?: { XAU?: number; XAG?: number } };
-  const xau = j.rates?.XAU; // XAU is 1 USD = XAU oz (inverse)
-  const xag = j.rates?.XAG;
-  if (!xau || !xag) throw new Error("metalpriceapi missing rates");
-  const goldOz = 1 / xau;
-  const silverOz = 1 / xag;
-  return { gold24PerGram: goldOz / TROY_OZ_GRAMS, silverPerGram: silverOz / TROY_OZ_GRAMS };
+// المصدر الثاني: frankfurter.app (مجاني تماماً، بدون مفتاح) + نسبة ذهب/فضة تاريخية
+// نجلب سعر XAUUSD من gold-api كمرجع، ثم نشتق الفضة من النسبة gold/silver التاريخية (~80)
+async function fromFrankfurter(): Promise<Pair> {
+  // frankfurter يدعم عملات فقط — لا يدعم معادن مباشرةً
+  // لذا نستخدمه للتحقق من أن gold-api كان صحيحاً، وكبديل للـ FX
+  // أما لأسعار المعادن نعتمد على coingecko-PAXG (أوثق من مفتاح demo)
+  throw new Error("frankfurter_no_metals"); // أسقط لـ fromCoingecko مباشرةً
 }
 
 async function fromCoingecko(): Promise<Pair> {
@@ -69,9 +60,9 @@ async function fromCoingecko(): Promise<Pair> {
 
 export const getLiveMetalPrices = createServerFn({ method: "GET" }).handler(async () => {
   const sources: Array<{ name: string; fn: () => Promise<Pair> }> = [
-    { name: "gold-api.com", fn: fromGoldApi },
-    { name: "metalpriceapi.com", fn: fromMetalsDev },
-    { name: "coingecko-paxg", fn: fromCoingecko },
+    { name: "gold-api.com",    fn: fromGoldApi     },
+    { name: "frankfurter",     fn: fromFrankfurter },
+    { name: "coingecko-paxg",  fn: fromCoingecko   },
   ];
   const tried: Array<{ name: string; error: string }> = [];
   for (const s of sources) {

@@ -8,7 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowRight, Save, Trash2, Calculator, CheckCircle2, AlertTriangle, Info, History, User, Building2 } from "lucide-react";
+import { ArrowRight, Save, Trash2, Calculator, CheckCircle2, AlertTriangle, Info, History, User, Building2, Send, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { signReport } from "@/lib/signature.functions";
 import { fmt, ZAKAT_RATE } from "@/lib/zakat";
 import {
   fetchClient, updateClient, deleteClients, addHistory,
@@ -85,6 +87,57 @@ function ClientDetail() {
     catch (e) { toast.error("تعذّر الحذف", { description: (e as Error).message }); }
   };
 
+  const [sendingReport, setSendingReport] = useState(false);
+
+  const issueAndSendReport = async () => {
+    if (!client.email) { toast.error("لا يوجد بريد إلكتروني للعميل"); return; }
+    setSendingReport(true);
+    try {
+      const zakatAmount = zakatOf(client);
+      const reportId = `RPT-${client.id.slice(0, 8).toUpperCase()}-${Date.now().toString(36).toUpperCase()}`;
+      const issued = new Date().toISOString();
+      const hash = btoa(`${reportId}|${zakatAmount}|${issued}`).slice(0, 16);
+      const { sig } = await signReport({ data: { id: reportId, hash, issued } });
+
+      // احفظ في zakat_records
+      await supabase.from("zakat_records").insert({
+        record_type: client.kind,
+        gregorian_date: issued.slice(0, 10),
+        currency: client.currency,
+        total_assets: wealthOf(client),
+        total_liabilities: client.breakdown.debts,
+        zakat_base: wealthOf(client),
+        zakat_due: zakatAmount,
+        prepaid_zakat: 0,
+        net_due: zakatAmount,
+        notes: `[معتمد] ${client.name} — ${reportId} sig:${sig}`,
+        snapshot: { client, reportId, sig },
+      });
+
+      // أرسل البريد
+      const { error } = await supabase.functions.invoke("send-report-email", {
+        body: {
+          to: client.email,
+          clientName: client.name,
+          zakatDue: zakatAmount,
+          currency: client.currency,
+          reportId,
+          gregorianDate: issued.slice(0, 10),
+          accountantName: "المحاسب المعتمد",
+        },
+      });
+      if (error) throw new Error(error.message);
+
+      await applyPatch({ status: "completed" });
+      await addHistory(client.id, { action: `إصدار تقرير معتمد ${reportId}`, amount: zakatAmount });
+      toast.success("تم إصدار التقرير وإرساله", { description: `${client.email} — ${reportId}` });
+    } catch (e) {
+      toast.error("تعذّر إصدار التقرير", { description: (e as Error).message });
+    } finally {
+      setSendingReport(false);
+    }
+  };
+
 
   return (
     <main className="container mx-auto max-w-5xl px-4 py-8 space-y-6" dir="rtl">
@@ -116,6 +169,10 @@ function ClientDetail() {
             </SelectContent>
           </Select>
           <Button onClick={recalc} className="gap-1.5"><Calculator className="h-4 w-4" /> احسب الزكاة</Button>
+          <Button onClick={issueAndSendReport} disabled={sendingReport} variant="outline" className="gap-1.5 border-emerald-500 text-emerald-700 hover:bg-emerald-50">
+            {sendingReport ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+            إصدار وإرسال التقرير
+          </Button>
           <Button variant="ghost" size="icon" onClick={deleteClient}><Trash2 className="h-4 w-4 text-destructive" /></Button>
         </div>
       </header>
