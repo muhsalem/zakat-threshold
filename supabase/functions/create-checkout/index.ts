@@ -43,6 +43,12 @@ Deno.serve(async (req) => {
     const siteUrl = Deno.env.get("SITE_URL") ?? "http://localhost:8080";
     const plan = PLANS[planId];
 
+    if (!plan.priceId) {
+      return new Response(JSON.stringify({ error: `لم يتم إعداد Stripe Price ID للخطة (${planId}). يُرجى ضبط متغيّر البيئة المناسب.` }), {
+        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const session = await stripe.checkout.sessions.create({
       mode: plan.mode,
       payment_method_types: ["card"],
