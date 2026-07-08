@@ -13,11 +13,10 @@ const corsHeaders = {
 type PlanId = "certified" | "vip_annual" | "startup" | "business";
 
 const PLANS: Record<PlanId, { priceId: string; mode: "payment" | "subscription" }> = {
-  // استبدل بـ Price IDs الحقيقية من لوحة Stripe
-  certified:   { priceId: "price_certified_placeholder",   mode: "payment"      },
-  vip_annual:  { priceId: "price_vip_annual_placeholder",  mode: "subscription" },
-  startup:     { priceId: "price_startup_placeholder",     mode: "subscription" },
-  business:    { priceId: "price_business_placeholder",    mode: "subscription" },
+  certified:   { priceId: Deno.env.get("STRIPE_PRICE_CERTIFIED")  ?? "", mode: "payment"      },
+  vip_annual:  { priceId: Deno.env.get("STRIPE_PRICE_VIP_ANNUAL") ?? "", mode: "subscription" },
+  startup:     { priceId: Deno.env.get("STRIPE_PRICE_STARTUP")    ?? "", mode: "subscription" },
+  business:    { priceId: Deno.env.get("STRIPE_PRICE_BUSINESS")   ?? "", mode: "subscription" },
 };
 
 Deno.serve(async (req) => {
