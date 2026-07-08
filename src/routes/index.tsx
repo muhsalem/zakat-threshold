@@ -549,7 +549,7 @@ function PriceCard({ name, priceUSD, ccy, period, tagline, features, cta, to, hi
           ))}
         </ul>
         {planId ? (
-          <PayButton planId={planId} label={cta} returnPath="/dashboard"
+          <PayButton planId={planId} label={cta} returnPath="/checkout-result"
             variant={highlight ? "default" : "outline"} className="w-full" />
         ) : (
           <Link to={to}>
