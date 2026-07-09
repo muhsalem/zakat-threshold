@@ -340,42 +340,119 @@ function DraftsPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
-            <HistoryIcon className="h-5 w-5 text-primary" /> سجل المحاولات السابقة ({records.length})
+            <HistoryIcon className="h-5 w-5 text-primary" /> سجل المحاولات السابقة ({filteredRecords.length}
+            {filteredRecords.length !== records.length ? ` / ${records.length}` : ""})
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
+          {records.length > 0 && (
+            <div className="space-y-3 rounded-md border bg-muted/20 p-3">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="space-y-1.5 lg:col-span-2">
+                  <Label className="text-xs">بحث</Label>
+                  <div className="relative">
+                    <Search className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                    <Input
+                      value={q}
+                      onChange={(e) => setQ(e.target.value)}
+                      placeholder="سنة، عملة، ملاحظة، مبلغ…"
+                      className="pr-8 h-9 text-sm"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">النوع</Label>
+                  <Select value={typeFilter} onValueChange={(v) => setTypeFilter(v as TypeFilter)}>
+                    <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">الكل</SelectItem>
+                      <SelectItem value="individual">فرد</SelectItem>
+                      <SelectItem value="company">شركة</SelectItem>
+                      <SelectItem value="institution">مؤسسة</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">الحالة</Label>
+                  <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as StatusFilter)}>
+                    <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">الكل</SelectItem>
+                      <SelectItem value="due">مستحقة</SelectItem>
+                      <SelectItem value="paid">مدفوعة</SelectItem>
+                      <SelectItem value="zero">دون النصاب</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">من تاريخ</Label>
+                  <Input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} className="h-9 text-sm" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">إلى تاريخ</Label>
+                  <Input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} className="h-9 text-sm" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">فرز</Label>
+                  <Select value={sortKey} onValueChange={(v) => setSortKey(v as SortKey)}>
+                    <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="date_desc">التاريخ ↓</SelectItem>
+                      <SelectItem value="date_asc">التاريخ ↑</SelectItem>
+                      <SelectItem value="amount_desc">المبلغ ↓</SelectItem>
+                      <SelectItem value="amount_asc">المبلغ ↑</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="flex justify-end">
+                <Button variant="ghost" size="sm" onClick={resetFilters} className="h-7 gap-1 text-xs">
+                  <X className="h-3 w-3" /> إعادة تعيين
+                </Button>
+              </div>
+            </div>
+          )}
           {records.length === 0 ? (
             <p className="text-sm text-muted-foreground">لم تُنجز أي حسابات معتمدة بعد.</p>
+          ) : filteredRecords.length === 0 ? (
+            <p className="text-sm text-muted-foreground">لا توجد نتائج تطابق التصفية الحالية.</p>
           ) : (
             <ul className="divide-y">
-              {records.map((r) => (
-                <li key={r.id} className="py-3 flex items-center justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-medium">{r.hijri_year ?? r.gregorian_date}</span>
-                      <Badge variant="outline" className="text-[10px]">{r.record_type}</Badge>
-                      <span className="text-xs text-muted-foreground">
-                        الزكاة: {Number(r.zakat_due).toLocaleString()} {r.currency}
-                      </span>
+              {filteredRecords.map((r) => {
+                const st = statusOf(r);
+                const stVariant = st === "paid" ? "secondary" : st === "due" ? "default" : "outline";
+                return (
+                  <li key={r.id} className="py-3 flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-medium">{r.hijri_year ?? r.gregorian_date}</span>
+                        <Badge variant="outline" className="text-[10px]">
+                          {KIND_LABEL[(r.record_type as Draft["wizard_kind"]) ?? "individual"] ?? r.record_type}
+                        </Badge>
+                        <Badge variant={stVariant} className="text-[10px]">{STATUS_LABEL[st]}</Badge>
+                        <span className="text-xs text-muted-foreground">
+                          الزكاة: {Number(r.zakat_due).toLocaleString()} {r.currency}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-muted-foreground mt-0.5">
+                        محفوظ: {new Date(r.created_at).toLocaleString("ar")}
+                      </p>
                     </div>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">
-                      محفوظ: {new Date(r.created_at).toLocaleString("ar")}
-                    </p>
-                  </div>
-                  <div className="flex gap-1.5 shrink-0">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => reopenRecord(r)}
-                      className="h-8 gap-1"
-                      disabled={!r.snapshot}
-                      title={r.snapshot ? "إعادة فتح كمسودة" : "لا تحمل بيانات مصدر"}
-                    >
-                      <Play className="h-3 w-3" /> إعادة فتح
-                    </Button>
-                  </div>
-                </li>
-              ))}
+                    <div className="flex gap-1.5 shrink-0">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => reopenRecord(r)}
+                        className="h-8 gap-1"
+                        disabled={!r.snapshot}
+                        title={r.snapshot ? "إعادة فتح كمسودة" : "لا تحمل بيانات مصدر"}
+                      >
+                        <Play className="h-3 w-3" /> إعادة فتح
+                      </Button>
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </CardContent>
