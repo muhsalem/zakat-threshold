@@ -23,7 +23,6 @@ import {
 const KEY = "zakat_onboarding_v1";
 
 type Kind = "individual" | "company" | "group";
-type Madhab = "hanafi" | "shafii" | "maliki" | "hanbali" | "jafari";
 type Country = "SA" | "EG" | "AE" | "TR" | "MY" | "US" | "GLOBAL";
 
 const KINDS: {
