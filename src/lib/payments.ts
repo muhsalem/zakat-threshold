@@ -17,56 +17,30 @@ export const PLANS: PlanMeta[] = [
   { id: "business",   name: "Business",   priceUSD: 499, period: "/ شهر",   audience: "company"    },
 ];
 
-/**
- * يفتح جلسة Stripe Checkout في نفس النافذة.
- * يعيد { ok: true } إذا تمّ التوجيه، أو { ok: false, error } إذا فشل.
- */
-export async function startCheckout(planId: PlanId, returnPath = "/"): Promise<{ ok: boolean; error?: string }> {
+/** يفتح جلسة Checkout في نفس النافذة. */
+export async function startCheckout(planId: PlanId, returnPath = "/checkout-result"): Promise<{ ok: boolean; error?: string }> {
   const { data: authData } = await supabase.auth.getUser();
   const user = authData?.user;
   if (!user) return { ok: false, error: "يجب تسجيل الدخول أولاً" };
 
   const { data, error } = await supabase.functions.invoke("create-checkout", {
-    body: {
-      planId,
-      userId: user.id,
-      email: user.email ?? "",
-      returnPath,
-    },
+    body: { planId, userId: user.id, email: user.email ?? "", returnPath },
   });
 
   if (error || !data?.url) {
     return { ok: false, error: error?.message ?? "فشل إنشاء جلسة الدفع" };
   }
 
-  window.location.href = data.url;
+  window.location.href = data.url as string;
   return { ok: true };
 }
 
-/** تحقق من حالة الدفع بعد العودة من Stripe */
-export async function verifyCheckoutSession(sessionId: string): Promise<"paid" | "pending" | "error"> {
-  const { data, error } = await supabase
-    .from("payments")
-    .select("status")
-    .eq("stripe_session_id", sessionId)
-    .maybeSingle();
-
-  if (error || !data) return "error";
-  return data.status === "paid" ? "paid" : "pending";
+/** تحقق من حالة الدفع بعد العودة (stub — لا يوجد جدول payments بعد) */
+export async function verifyCheckoutSession(_sessionId: string): Promise<"paid" | "pending" | "error"> {
+  return "pending";
 }
 
-/** خطة المستخدم الحالية */
+/** خطة المستخدم الحالية (stub — يُضاف لاحقاً بعد إنشاء أعمدة plan) */
 export async function getUserPlan(): Promise<string> {
-  const { data: authData } = await supabase.auth.getUser();
-  if (!authData?.user) return "free";
-
-  const { data } = await supabase
-    .from("profiles")
-    .select("plan, plan_expires_at")
-    .eq("id", authData.user.id)
-    .maybeSingle();
-
-  if (!data) return "free";
-  if (data.plan_expires_at && new Date(data.plan_expires_at) < new Date()) return "free";
-  return data.plan ?? "free";
+  return "free";
 }
