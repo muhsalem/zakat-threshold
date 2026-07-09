@@ -54,9 +54,16 @@ type Record_ = {
   currency: string;
   zakat_base: number;
   zakat_due: number;
+  prepaid_zakat: number | null;
+  net_due: number | null;
+  notes: string | null;
   snapshot: Record<string, unknown> | null;
   created_at: string;
 };
+
+type TypeFilter = "all" | "individual" | "company" | "institution";
+type StatusFilter = "all" | "due" | "paid" | "zero";
+type SortKey = "date_desc" | "date_asc" | "amount_desc" | "amount_asc";
 
 const WIZARD_KEYS: Record<Draft["wizard_kind"], string> = {
   individual: "wizard:individual:v1",
