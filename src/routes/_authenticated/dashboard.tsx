@@ -8,6 +8,7 @@ import { User, Building2, Landmark, Loader2, ArrowLeft } from "lucide-react";
 import { IndividualWizard } from "@/components/wizards/IndividualWizard";
 import { CompanyWizard } from "@/components/wizards/CompanyWizard";
 import { InstitutionWizard } from "@/components/wizards/InstitutionWizard";
+import { RestoreLastDraftBanner } from "@/components/wizards/RestoreLastDraftBanner";
 
 type AccountType = "individual" | "company" | "institution" | "admin";
 
