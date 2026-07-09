@@ -82,7 +82,7 @@ function BlogPost() {
       </Link>
       <header className="space-y-3 border-b pb-4">
         <div className="flex flex-wrap gap-1.5">
-          {post.tags.map((t) => <Badge key={t} variant="secondary">{t}</Badge>)}
+          {post.tags.map((t: string) => <Badge key={t} variant="secondary">{t}</Badge>)}
         </div>
         <h1 className="text-3xl font-bold leading-tight">{post.title}</h1>
         <p className="text-muted-foreground">{post.description}</p>
