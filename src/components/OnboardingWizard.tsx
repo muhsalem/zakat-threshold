@@ -158,30 +158,6 @@ export function OnboardingWizard() {
           </div>
         )}
 
-        {step === 2 && (
-          <div className="space-y-3">
-            <div className="text-sm text-muted-foreground">
-              اختر المذهب أو الهيئة الشرعية المرجعية
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {MADHABS.map((m) => (
-                <Button
-                  key={m.id}
-                  variant={madhab === m.id ? "default" : "outline"}
-                  onClick={() => setMadhab(m.id)}
-                  className="justify-start"
-                >
-                  {madhab === m.id && <CheckCircle2 className="ml-2 h-4 w-4" />}
-                  {m.label}
-                </Button>
-              ))}
-            </div>
-            <p className="text-xs text-muted-foreground pt-2">
-              الاختيار يُوجّه الفتاوى الافتراضية فقط، ويمكنك مقارنة المذاهب داخل التطبيق في أي وقت.
-            </p>
-          </div>
-        )}
-
         <DialogFooter className="gap-2 sm:justify-between">
           <Button
             variant="ghost"
@@ -200,11 +176,18 @@ export function OnboardingWizard() {
                 <ArrowRight className="ml-1 h-4 w-4" /> السابق
               </Button>
             )}
-            {step < 2 ? (
+            {step < 1 ? (
               <Button disabled={!canNext} onClick={() => setStep(step + 1)}>
                 التالي <ArrowLeft className="mr-1 h-4 w-4" />
               </Button>
             ) : (
+              <Button disabled={!canNext} onClick={finish}>
+                ابدأ الحساب <ArrowLeft className="mr-1 h-4 w-4" />
+              </Button>
+            )}
+          </div>
+        </DialogFooter>
+
               <Button disabled={!canNext} onClick={finish}>
                 ابدأ الحساب <ArrowLeft className="mr-1 h-4 w-4" />
               </Button>
