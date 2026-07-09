@@ -25,14 +25,17 @@ Deno.serve(async (req) => {
 
   try {
     const resendKey = Deno.env.get("RESEND_API_KEY");
-    if (!resendKey) return new Response(JSON.stringify({ error: "RESEND_API_KEY غير محدد" }), { status: 500 });
+    if (!resendKey)
+      return new Response(JSON.stringify({ error: "RESEND_API_KEY غير محدد" }), { status: 500 });
 
     const payload: Payload = await req.json();
     const siteUrl = Deno.env.get("SITE_URL") ?? "https://nisab.app";
     const verifyUrl = payload.verifyUrl ?? `${siteUrl}/verify?id=${payload.reportId}`;
 
     const zakatFormatted = new Intl.NumberFormat("ar-SA", {
-      style: "currency", currency: payload.currency, maximumFractionDigits: 2,
+      style: "currency",
+      currency: payload.currency,
+      maximumFractionDigits: 2,
     }).format(payload.zakatDue);
 
     const html = `
@@ -59,7 +62,9 @@ Deno.serve(async (req) => {
         <div style="color:#9ca3af;font-size:12px;margin-top:4px">${payload.hijriDate ?? ""} — ${payload.gregorianDate}</div>
       </div>
 
-      ${payload.accountantName ? `
+      ${
+        payload.accountantName
+          ? `
       <div style="background:#fffbeb;border:1px solid #fbbf24;border-radius:8px;padding:16px;margin-bottom:20px">
         <div style="display:flex;align-items:center;gap:8px">
           <span style="color:#d97706;font-size:18px">✅</span>
@@ -68,7 +73,9 @@ Deno.serve(async (req) => {
             <div style="color:#78350f;font-size:13px">راجعه وأجازه: ${payload.accountantName}</div>
           </div>
         </div>
-      </div>` : ""}
+      </div>`
+          : ""
+      }
 
       <div style="margin:24px 0">
         <a href="${verifyUrl}"
@@ -107,7 +114,8 @@ Deno.serve(async (req) => {
   } catch (err) {
     console.error("send-report-email error:", err);
     return new Response(JSON.stringify({ error: String(err) }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 });

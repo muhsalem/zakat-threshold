@@ -13,10 +13,15 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, s) => {
       setSession(s);
       setUser(s?.user ?? null);
-      if (!s?.user) { setAccountType(null); setRoles([]); }
+      if (!s?.user) {
+        setAccountType(null);
+        setRoles([]);
+      }
     });
     supabase.auth.getSession().then(({ data: { session: s } }) => {
       setSession(s);
@@ -46,7 +51,9 @@ export function useAuth() {
         if (cancelled) return;
         setRoles(((data as any[]) ?? []).map((r) => r.role as AppRole));
       });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [user]);
 
   const isAccountant = roles.includes("accountant");
@@ -54,4 +61,3 @@ export function useAuth() {
 
   return { session, user, accountType, roles, isAccountant, isAdmin, loading };
 }
-

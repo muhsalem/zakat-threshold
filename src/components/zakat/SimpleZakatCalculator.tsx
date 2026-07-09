@@ -4,7 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Calculator, Globe2, Sparkles, CheckCircle2 } from "lucide-react";
 import { ZAKAT_RATE, GOLD_NISAB_GRAMS, num, fmt } from "@/lib/zakat";
 
@@ -17,7 +23,7 @@ type CountryPreset = {
   code: string;
   name: string;
   currency: string;
-  goldGram: number;   // approx local price per gram 24k
+  goldGram: number; // approx local price per gram 24k
   silverGram: number; // approx local price per gram
 };
 
@@ -45,11 +51,25 @@ const COUNTRIES: CountryPreset[] = [
 ];
 
 const CC_TO_CODE: Record<string, string> = {
-  AR: "SA", "AR-SA": "SA", "AR-AE": "AE", "AR-EG": "EG", "AR-KW": "KW",
-  "AR-QA": "QA", "AR-BH": "BH", "AR-OM": "OM", "AR-JO": "JO",
-  "AR-IQ": "IQ", "AR-MA": "MA", "AR-DZ": "DZ", "AR-TN": "TN",
-  "TR-TR": "TR", "UR-PK": "PK", "MS-MY": "MY", "ID-ID": "ID",
-  "EN-US": "US", "EN-GB": "GB",
+  AR: "SA",
+  "AR-SA": "SA",
+  "AR-AE": "AE",
+  "AR-EG": "EG",
+  "AR-KW": "KW",
+  "AR-QA": "QA",
+  "AR-BH": "BH",
+  "AR-OM": "OM",
+  "AR-JO": "JO",
+  "AR-IQ": "IQ",
+  "AR-MA": "MA",
+  "AR-DZ": "DZ",
+  "AR-TN": "TN",
+  "TR-TR": "TR",
+  "UR-PK": "PK",
+  "MS-MY": "MY",
+  "ID-ID": "ID",
+  "EN-US": "US",
+  "EN-GB": "GB",
 };
 
 function detectCountry(): string {
@@ -77,7 +97,7 @@ export function SimpleZakatCalculator() {
 
   const country = useMemo(
     () => COUNTRIES.find((c) => c.code === countryCode) ?? COUNTRIES[0],
-    [countryCode]
+    [countryCode],
   );
 
   useEffect(() => {
@@ -104,32 +124,53 @@ export function SimpleZakatCalculator() {
         <CardTitle className="flex items-center gap-2 text-xl">
           <Sparkles className="h-5 w-5 text-gold" />
           حاسبة الزكاة المجانية السريعة
-          <Badge variant="secondary" className="mr-auto">مجاناً — بدون تسجيل</Badge>
+          <Badge variant="secondary" className="mr-auto">
+            مجاناً — بدون تسجيل
+          </Badge>
         </CardTitle>
         <p className="text-xs text-muted-foreground">
-          احسب زكاتك في أقل من دقيقة. تُحدَّد العملة وأسعار الذهب والفضة تلقائياً حسب دولتك، ويمكنك تعديلها.
+          احسب زكاتك في أقل من دقيقة. تُحدَّد العملة وأسعار الذهب والفضة تلقائياً حسب دولتك، ويمكنك
+          تعديلها.
         </p>
       </CardHeader>
       <CardContent className="pt-5 space-y-5">
         <div className="grid sm:grid-cols-3 gap-3">
           <div className="space-y-1.5">
-            <Label className="text-xs flex items-center gap-1"><Globe2 className="h-3.5 w-3.5" /> الدولة</Label>
+            <Label className="text-xs flex items-center gap-1">
+              <Globe2 className="h-3.5 w-3.5" /> الدولة
+            </Label>
             <Select value={countryCode} onValueChange={setCountryCode}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent className="max-h-72">
                 {COUNTRIES.map((c) => (
-                  <SelectItem key={c.code} value={c.code}>{c.name} ({c.currency})</SelectItem>
+                  <SelectItem key={c.code} value={c.code}>
+                    {c.name} ({c.currency})
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-1.5">
             <Label className="text-xs">سعر غرام الذهب 24 ({country.currency})</Label>
-            <Input type="number" value={goldPrice} onChange={(e) => setGoldPrice(e.target.value)} dir="ltr" style={{ textAlign: "right" }} />
+            <Input
+              type="number"
+              value={goldPrice}
+              onChange={(e) => setGoldPrice(e.target.value)}
+              dir="ltr"
+              style={{ textAlign: "right" }}
+            />
           </div>
           <div className="space-y-1.5">
             <Label className="text-xs">سعر غرام الفضة ({country.currency})</Label>
-            <Input type="number" value={silverPrice} onChange={(e) => setSilverPrice(e.target.value)} dir="ltr" style={{ textAlign: "right" }} />
+            <Input
+              type="number"
+              value={silverPrice}
+              onChange={(e) => setSilverPrice(e.target.value)}
+              dir="ltr"
+              style={{ textAlign: "right" }}
+            />
           </div>
         </div>
 
@@ -150,10 +191,17 @@ export function SimpleZakatCalculator() {
           <Calculator className="h-7 w-7 mx-auto mb-1 opacity-90" />
           <div className="text-xs opacity-90">زكاتك المستحقة</div>
           <div className="text-4xl md:text-5xl font-black tracking-tight my-1">
-            {fmt(r.zakat)} <span className="text-base font-medium opacity-80">{country.currency}</span>
+            {fmt(r.zakat)}{" "}
+            <span className="text-base font-medium opacity-80">{country.currency}</span>
           </div>
           <Badge variant={r.reaches ? "secondary" : "destructive"} className="mt-1">
-            {r.reaches ? <><CheckCircle2 className="h-3 w-3 ml-1" /> بلغ النصاب</> : "أقل من النصاب — لا زكاة"}
+            {r.reaches ? (
+              <>
+                <CheckCircle2 className="h-3 w-3 ml-1" /> بلغ النصاب
+              </>
+            ) : (
+              "أقل من النصاب — لا زكاة"
+            )}
           </Badge>
           <div className="text-[11px] opacity-80 mt-2">
             النصاب المرجعي: {fmt(r.nisab)} {country.currency} · نسبة الزكاة 2.5%
@@ -162,8 +210,9 @@ export function SimpleZakatCalculator() {
 
         <Alert className="border-gold/30 bg-gold/5">
           <AlertDescription className="text-xs leading-relaxed">
-            هذه حاسبة تقديرية للأصول الشائعة (نقد + ذهب + فضة). للحساب الكامل الذي يشمل العقار والتجارة
-            والاستثمارات والزروع والأنعام، استخدم <b>الحاسبة الاحترافية</b>، أو أرسل بياناتك لمحاسب معتمد لاستلام تقرير رسمي خلال 48 ساعة.
+            هذه حاسبة تقديرية للأصول الشائعة (نقد + ذهب + فضة). للحساب الكامل الذي يشمل العقار
+            والتجارة والاستثمارات والزروع والأنعام، استخدم <b>الحاسبة الاحترافية</b>، أو أرسل
+            بياناتك لمحاسب معتمد لاستلام تقرير رسمي خلال 48 ساعة.
           </AlertDescription>
         </Alert>
       </CardContent>
@@ -171,11 +220,28 @@ export function SimpleZakatCalculator() {
   );
 }
 
-function Field({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+function Field({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
   return (
     <div className="space-y-1.5">
       <Label className="text-xs">{label}</Label>
-      <Input type="number" min="0" step="0.01" value={value} onChange={(e) => onChange(e.target.value)} placeholder="0" dir="ltr" style={{ textAlign: "right" }} />
+      <Input
+        type="number"
+        min="0"
+        step="0.01"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="0"
+        dir="ltr"
+        style={{ textAlign: "right" }}
+      />
     </div>
   );
 }

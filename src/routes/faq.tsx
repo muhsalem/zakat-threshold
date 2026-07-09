@@ -1,7 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Accordion, AccordionContent, AccordionItem, AccordionTrigger,
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,18 +14,36 @@ export const Route = createFileRoute("/faq")({
   head: () => ({
     meta: [
       { title: "الأسئلة الشائعة عن الزكاة | حاسبة الزكاة" },
-      { name: "description", content: "إجابات موثّقة لأكثر من 30 سؤالاً شائعاً حول الزكاة: النصاب، الحول، الذهب والفضة، الأسهم والصكوك، العملات الرقمية، عروض التجارة، الزروع، الأنعام، الركاز، الديون، وزكاة الفطر." },
+      {
+        name: "description",
+        content:
+          "إجابات موثّقة لأكثر من 30 سؤالاً شائعاً حول الزكاة: النصاب، الحول، الذهب والفضة، الأسهم والصكوك، العملات الرقمية، عروض التجارة، الزروع، الأنعام، الركاز، الديون، وزكاة الفطر.",
+      },
       { property: "og:title", content: "الأسئلة الشائعة عن الزكاة" },
-      { property: "og:description", content: "مرجع مختصر للمزكّي يجمع أحكام الزكاة الفقهية بأدلتها مع مصادر AAOIFI والمجامع الفقهية." },
+      {
+        property: "og:description",
+        content:
+          "مرجع مختصر للمزكّي يجمع أحكام الزكاة الفقهية بأدلتها مع مصادر AAOIFI والمجامع الفقهية.",
+      },
     ],
   }),
   component: FaqPage,
-  errorComponent: ({ error }) => <div className="p-8 text-center text-destructive">{(error as Error).message}</div>,
+  errorComponent: ({ error }) => (
+    <div className="p-8 text-center text-destructive">{(error as Error).message}</div>
+  ),
   notFoundComponent: () => <div className="p-8 text-center">الصفحة غير موجودة</div>,
 });
 
-interface QA { q: string; a: string; ref?: string; }
-interface Section { title: string; icon?: string; items: QA[]; }
+interface QA {
+  q: string;
+  a: string;
+  ref?: string;
+}
+interface Section {
+  title: string;
+  icon?: string;
+  items: QA[];
+}
 
 const SECTIONS: Section[] = [
   {
@@ -178,12 +199,12 @@ const SECTIONS: Section[] = [
 ];
 
 function FaqPage() {
-  const allFaqs = SECTIONS.flatMap(s => s.items);
+  const allFaqs = SECTIONS.flatMap((s) => s.items);
   // JSON-LD لمحركات البحث
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: allFaqs.map(qa => ({
+    mainEntity: allFaqs.map((qa) => ({
       "@type": "Question",
       name: qa.q,
       acceptedAnswer: { "@type": "Answer", text: qa.a + (qa.ref ? " — " + qa.ref : "") },
@@ -192,7 +213,10 @@ function FaqPage() {
 
   return (
     <div dir="rtl" className="container max-w-4xl mx-auto px-4 py-8 md:py-12 space-y-6">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
 
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
@@ -207,7 +231,8 @@ function FaqPage() {
             الأسئلة الشائعة عن الزكاة
           </h1>
           <p className="text-muted-foreground mt-2 text-sm md:text-base leading-relaxed">
-            إجابات موثّقة بالأدلة الشرعية ومعايير AAOIFI ومخرجات المجامع الفقهية المعاصرة، مرتّبة في {SECTIONS.length} محاور تغطّي أبرز ما يحتاجه المزكّي اليوم.
+            إجابات موثّقة بالأدلة الشرعية ومعايير AAOIFI ومخرجات المجامع الفقهية المعاصرة، مرتّبة في{" "}
+            {SECTIONS.length} محاور تغطّي أبرز ما يحتاجه المزكّي اليوم.
           </p>
         </div>
         <Button asChild variant="outline" className="gap-2">
@@ -224,7 +249,9 @@ function FaqPage() {
             <CardTitle className="text-lg md:text-xl flex items-center gap-2">
               <span className="text-primary">{String(idx + 1).padStart(2, "0")}</span>
               {section.title}
-              <Badge variant="outline" className="ms-auto">{section.items.length}</Badge>
+              <Badge variant="outline" className="ms-auto">
+                {section.items.length}
+              </Badge>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -256,7 +283,8 @@ function FaqPage() {
       <Card className="bg-primary/5 border-primary/20">
         <CardContent className="pt-6 text-center space-y-3">
           <p className="text-sm text-muted-foreground">
-            تنبيه: هذه الإجابات للتعريف والإرشاد العام، ولا تُغني عن استشارة المتخصصين في الحالات الخاصة والمركّبة.
+            تنبيه: هذه الإجابات للتعريف والإرشاد العام، ولا تُغني عن استشارة المتخصصين في الحالات
+            الخاصة والمركّبة.
           </p>
           <Button asChild>
             <Link to="/advisor">استشر المستشار الذكي للزكاة</Link>

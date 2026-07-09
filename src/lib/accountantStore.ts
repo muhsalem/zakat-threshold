@@ -131,15 +131,26 @@ export function complianceCheck(c: Client): ComplianceIssue[] {
     issues.push({ level: "error", code: "empty", message: "لم تُدخل أي أصول زكوية" });
   }
   if (c.kind !== "individual" && b.inventory === 0) {
-    issues.push({ level: "warn", code: "no_inventory", message: "لا توجد عروض تجارة/مخزون للشركة" });
+    issues.push({
+      level: "warn",
+      code: "no_inventory",
+      message: "لا توجد عروض تجارة/مخزون للشركة",
+    });
   }
-  if (b.cash === 0) issues.push({ level: "warn", code: "no_cash", message: "لم يُدخل النقد والأرصدة البنكية" });
-  if (b.gold === 0 && c.kind === "individual") issues.push({ level: "warn", code: "no_gold", message: "لم يُدخل الذهب والفضة" });
-  if (b.investments === 0) issues.push({ level: "warn", code: "no_inv", message: "لم تُدخل الأسهم/الاستثمارات" });
-  if (b.debts === 0) issues.push({ level: "warn", code: "no_debts", message: "لم يتم التحقق من الديون المستحقة" });
-  if (!c.hawlDate) issues.push({ level: "error", code: "no_hawl", message: "تاريخ الحول غير محدد" });
-  if (c.nisab <= 0) issues.push({ level: "error", code: "no_nisab", message: "قيمة النصاب غير محددة" });
-  if (issues.length === 0) issues.push({ level: "ok", code: "ready", message: "البيانات جاهزة للتقرير" });
+  if (b.cash === 0)
+    issues.push({ level: "warn", code: "no_cash", message: "لم يُدخل النقد والأرصدة البنكية" });
+  if (b.gold === 0 && c.kind === "individual")
+    issues.push({ level: "warn", code: "no_gold", message: "لم يُدخل الذهب والفضة" });
+  if (b.investments === 0)
+    issues.push({ level: "warn", code: "no_inv", message: "لم تُدخل الأسهم/الاستثمارات" });
+  if (b.debts === 0)
+    issues.push({ level: "warn", code: "no_debts", message: "لم يتم التحقق من الديون المستحقة" });
+  if (!c.hawlDate)
+    issues.push({ level: "error", code: "no_hawl", message: "تاريخ الحول غير محدد" });
+  if (c.nisab <= 0)
+    issues.push({ level: "error", code: "no_nisab", message: "قيمة النصاب غير محددة" });
+  if (issues.length === 0)
+    issues.push({ level: "ok", code: "ready", message: "البيانات جاهزة للتقرير" });
   return issues;
 }
 
@@ -185,7 +196,11 @@ export async function fetchClients(): Promise<Client[]> {
 }
 
 export async function fetchClient(id: string): Promise<Client | null> {
-  const { data, error } = await supabase.from("accountant_clients").select("*").eq("id", id).maybeSingle();
+  const { data, error } = await supabase
+    .from("accountant_clients")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
   if (error) throw error;
   if (!data) return null;
   const { data: hist } = await supabase
@@ -194,7 +209,8 @@ export async function fetchClient(id: string): Promise<Client | null> {
     .eq("client_id", id)
     .order("created_at", { ascending: true });
   const history: HistoryEntry[] = ((hist ?? []) as HistoryRow[]).map((h) => ({
-    at: h.created_at, action: h.action,
+    at: h.created_at,
+    action: h.action,
     by: h.by_name ?? undefined,
     amount: h.amount != null ? Number(h.amount) : undefined,
   }));
@@ -230,10 +246,19 @@ export async function updateClient(id: string, patch: ClientPatch): Promise<void
 }
 
 export async function createClient(input: {
-  name: string; kind: ClientKind; country: string; madhab: Madhab;
-  currency?: string; fiscalYear?: number; hawlDate?: string; nisab?: number;
-  breakdown?: Partial<ZakatBreakdown>; email?: string; notes?: string;
-  createdVia?: "manual" | "intake"; status?: ClientStatus;
+  name: string;
+  kind: ClientKind;
+  country: string;
+  madhab: Madhab;
+  currency?: string;
+  fiscalYear?: number;
+  hawlDate?: string;
+  nisab?: number;
+  breakdown?: Partial<ZakatBreakdown>;
+  email?: string;
+  notes?: string;
+  createdVia?: "manual" | "intake";
+  status?: ClientStatus;
 }): Promise<Client> {
   const ownerId = await getOwnerId();
   if (!ownerId) throw new Error("يجب تسجيل الدخول أولاً");
@@ -253,11 +278,18 @@ export async function createClient(input: {
     notes: input.notes ?? null,
     created_via: input.createdVia ?? "manual",
   };
-  const { data, error } = await supabase.from("accountant_clients").insert(row).select("*").single();
+  const { data, error } = await supabase
+    .from("accountant_clients")
+    .insert(row)
+    .select("*")
+    .single();
   if (error) throw error;
   await addHistory(data.id, {
     at: new Date().toISOString(),
-    action: input.createdVia === "intake" ? "استلام بيانات من العميل عبر النافذة التسويقية" : "أنشأ العميل يدوياً",
+    action:
+      input.createdVia === "intake"
+        ? "استلام بيانات من العميل عبر النافذة التسويقية"
+        : "أنشأ العميل يدوياً",
   });
   return rowToClient(data as ClientRow, []);
 }
@@ -268,7 +300,10 @@ export async function deleteClients(ids: string[]): Promise<void> {
   if (error) throw error;
 }
 
-export async function addHistory(clientId: string, entry: Omit<HistoryEntry, "at"> & { at?: string }): Promise<void> {
+export async function addHistory(
+  clientId: string,
+  entry: Omit<HistoryEntry, "at"> & { at?: string },
+): Promise<void> {
   const ownerId = await getOwnerId();
   if (!ownerId) return;
   const { error } = await supabase.from("accountant_client_history").insert({
@@ -283,18 +318,38 @@ export async function addHistory(clientId: string, entry: Omit<HistoryEntry, "at
 
 // ============ Labels ============
 export const COUNTRY_LABELS: Record<string, string> = {
-  SA: "السعودية", AE: "الإمارات", KW: "الكويت", QA: "قطر", BH: "البحرين", OM: "عُمان",
-  EG: "مصر", JO: "الأردن", MA: "المغرب", TR: "تركيا", ID: "إندونيسيا", MY: "ماليزيا",
+  SA: "السعودية",
+  AE: "الإمارات",
+  KW: "الكويت",
+  QA: "قطر",
+  BH: "البحرين",
+  OM: "عُمان",
+  EG: "مصر",
+  JO: "الأردن",
+  MA: "المغرب",
+  TR: "تركيا",
+  ID: "إندونيسيا",
+  MY: "ماليزيا",
 };
 
 export const MADHAB_LABELS: Record<Madhab, string> = {
-  hanafi: "حنفي", maliki: "مالكي", shafii: "شافعي", hanbali: "حنبلي", mixed: "مختلط/موازن",
+  hanafi: "حنفي",
+  maliki: "مالكي",
+  shafii: "شافعي",
+  hanbali: "حنبلي",
+  mixed: "مختلط/موازن",
 };
 
 export const STATUS_LABELS: Record<ClientStatus, string> = {
-  new: "جديد", in_progress: "قيد الإعداد", review: "قيد المراجعة", completed: "مكتمل", archived: "مؤرشف",
+  new: "جديد",
+  in_progress: "قيد الإعداد",
+  review: "قيد المراجعة",
+  completed: "مكتمل",
+  archived: "مؤرشف",
 };
 
 export const KIND_LABELS: Record<ClientKind, string> = {
-  individual: "فرد", company: "شركة", institution: "مؤسسة",
+  individual: "فرد",
+  company: "شركة",
+  institution: "مؤسسة",
 };

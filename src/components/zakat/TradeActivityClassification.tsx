@@ -5,19 +5,27 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
-import {
-  Popover, PopoverContent, PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon, Search, Building2, Store, ScrollText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
-  EGY_SHOP_LICENSES, SHOP_CATEGORY_LABELS,
+  EGY_SHOP_LICENSES,
+  SHOP_CATEGORY_LABELS,
   type ShopLicenseCategory,
 } from "@/lib/tradeClassifications";
 
@@ -60,8 +68,8 @@ export default function TradeActivityClassification({ value, onChange, onOpenCom
       <Alert className="border-primary/15 bg-background">
         <AlertDescription className="text-xs leading-relaxed text-right">
           سجّل <b>تاريخ تشغيل النشاط</b> لاحتساب بدء الحول التجاري بدقة. إن كان نشاطك يخص
-          <b> شركة قائمة</b> فعّل الخيار وانتقل إلى تبويب <b>«زكاة الشركات»</b> حيث يظهر
-          تصنيف النشاط التلقائي حسب <b>دولة الشركة</b> والقطاع المختار.
+          <b> شركة قائمة</b> فعّل الخيار وانتقل إلى تبويب <b>«زكاة الشركات»</b> حيث يظهر تصنيف
+          النشاط التلقائي حسب <b>دولة الشركة</b> والقطاع المختار.
         </AlertDescription>
       </Alert>
 
@@ -73,11 +81,18 @@ export default function TradeActivityClassification({ value, onChange, onOpenCom
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                className={cn("w-full justify-start text-right font-normal", !startDateObj && "text-muted-foreground")}
+                className={cn(
+                  "w-full justify-start text-right font-normal",
+                  !startDateObj && "text-muted-foreground",
+                )}
               >
                 <CalendarIcon className="ml-2 h-4 w-4" />
                 {startDateObj
-                  ? startDateObj.toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" })
+                  ? startDateObj.toLocaleDateString("ar-EG", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })
                   : "اختر التاريخ…"}
               </Button>
             </PopoverTrigger>
@@ -171,10 +186,7 @@ function ShopLicensingTable({
     return EGY_SHOP_LICENSES.filter((r) => {
       if (cat !== "all" && r.category !== cat) return false;
       if (!term) return true;
-      return (
-        r.nameAr.toLowerCase().includes(term) ||
-        (r.notes || "").toLowerCase().includes(term)
-      );
+      return r.nameAr.toLowerCase().includes(term) || (r.notes || "").toLowerCase().includes(term);
     });
   }, [cat, q]);
 
@@ -192,10 +204,9 @@ function ShopLicensingTable({
 
       <Alert className="border-primary/10 bg-muted/30">
         <AlertDescription className="text-xs leading-relaxed text-right">
-          قائمة مرجعية لأنواع المحال التجارية والخدمية الشائعة في السوق المصري —
-          تساعدك على <b>التعرف على طبيعة نشاطك</b> واختيار الاسم المناسب،
-          ولتنبيهك على المحال <b>المحرّمة شرعًا</b> (كحوليات/قمار) كي تُستبعد من
-          وعاء الزكاة ويُتخلَّص من كسبها.
+          قائمة مرجعية لأنواع المحال التجارية والخدمية الشائعة في السوق المصري — تساعدك على{" "}
+          <b>التعرف على طبيعة نشاطك</b> واختيار الاسم المناسب، ولتنبيهك على المحال{" "}
+          <b>المحرّمة شرعًا</b> (كحوليات/قمار) كي تُستبعد من وعاء الزكاة ويُتخلَّص من كسبها.
         </AlertDescription>
       </Alert>
 
@@ -245,9 +256,7 @@ function ShopLicensingTable({
                 <TableRow key={r.nameAr}>
                   <TableCell className="text-xs">
                     <div className="font-medium">{r.nameAr}</div>
-                    {r.notes && (
-                      <div className="text-[10px] text-muted-foreground">{r.notes}</div>
-                    )}
+                    {r.notes && <div className="text-[10px] text-muted-foreground">{r.notes}</div>}
                   </TableCell>
                   <TableCell className="text-xs">{SHOP_CATEGORY_LABELS[r.category]}</TableCell>
                   <TableCell>

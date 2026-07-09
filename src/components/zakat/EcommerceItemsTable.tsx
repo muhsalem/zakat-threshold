@@ -2,10 +2,19 @@ import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Plus, Trash2, ListPlus, Info } from "lucide-react";
@@ -17,8 +26,8 @@ export interface EcommerceItem {
   name: string;
   category: EcommerceCategory;
   qty: string;
-  price: string;     // سعر البيع للوحدة
-  saleDate: string;  // تاريخ البيع / يوم الوجوب
+  price: string; // سعر البيع للوحدة
+  saleDate: string; // تاريخ البيع / يوم الوجوب
   notes?: string;
 }
 
@@ -45,9 +54,10 @@ const num = (v: string) => {
 function newItem(): EcommerceItem {
   const today = new Date().toISOString().slice(0, 10);
   return {
-    id: typeof crypto !== "undefined" && "randomUUID" in crypto
-      ? crypto.randomUUID()
-      : `it_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    id:
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : `it_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
     name: "",
     category: "physical",
     qty: "1",
@@ -76,7 +86,11 @@ interface Props {
 }
 
 export function EcommerceItemsTable({
-  items, onItemsChange, currencyName, dueDateHint, onTotalsChange,
+  items,
+  onItemsChange,
+  currencyName,
+  dueDateHint,
+  onTotalsChange,
 }: Props) {
   const totals = useMemo(() => computeEcommerceTotals(items), [items]);
 
@@ -109,10 +123,14 @@ export function EcommerceItemsTable({
       <Alert className="border-primary/20 bg-primary/5">
         <Info className="h-4 w-4" />
         <AlertDescription className="text-xs leading-relaxed text-right">
-          أدخل كل منتج/خدمة بقيمته السوقية يوم وجوب الزكاة. يُعتدّ بالكمية المتبقّية للبيع
-          وسعر البيع لكل وحدة. يُغذّى الإجمالي تلقائيًا حسب التصنيف
-          (مادي/رقمي/خدمة/مستحقات).
-          {dueDateHint ? <> يوم الوجوب المرجعي: <b>{dueDateHint}</b>.</> : null}
+          أدخل كل منتج/خدمة بقيمته السوقية يوم وجوب الزكاة. يُعتدّ بالكمية المتبقّية للبيع وسعر
+          البيع لكل وحدة. يُغذّى الإجمالي تلقائيًا حسب التصنيف (مادي/رقمي/خدمة/مستحقات).
+          {dueDateHint ? (
+            <>
+              {" "}
+              يوم الوجوب المرجعي: <b>{dueDateHint}</b>.
+            </>
+          ) : null}
         </AlertDescription>
       </Alert>
 
@@ -128,7 +146,9 @@ export function EcommerceItemsTable({
                 <TableHead className="text-right min-w-[160px]">المنتج/الخدمة</TableHead>
                 <TableHead className="text-right min-w-[130px]">التصنيف</TableHead>
                 <TableHead className="text-right w-[90px]">الكمية</TableHead>
-                <TableHead className="text-right min-w-[120px]">سعر البيع للوحدة ({currencyName})</TableHead>
+                <TableHead className="text-right min-w-[120px]">
+                  سعر البيع للوحدة ({currencyName})
+                </TableHead>
                 <TableHead className="text-right min-w-[150px]">تاريخ البيع / يوم الوجوب</TableHead>
                 <TableHead className="text-right min-w-[110px]">الإجمالي</TableHead>
                 <TableHead className="w-[40px]" />
@@ -151,38 +171,45 @@ export function EcommerceItemsTable({
                         value={it.category}
                         onValueChange={(v: EcommerceCategory) => update(it.id, { category: v })}
                       >
-                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
                         <SelectContent>
                           {(Object.keys(CATEGORY_LABEL) as EcommerceCategory[]).map((k) => (
-                            <SelectItem key={k} value={k}>{CATEGORY_LABEL[k]}</SelectItem>
+                            <SelectItem key={k} value={k}>
+                              {CATEGORY_LABEL[k]}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     </TableCell>
                     <TableCell>
                       <Input
-                        inputMode="decimal" value={it.qty}
+                        inputMode="decimal"
+                        value={it.qty}
                         onChange={(e) => update(it.id, { qty: e.target.value })}
                       />
                     </TableCell>
                     <TableCell>
                       <Input
-                        inputMode="decimal" value={it.price}
+                        inputMode="decimal"
+                        value={it.price}
                         onChange={(e) => update(it.id, { price: e.target.value })}
                       />
                     </TableCell>
                     <TableCell>
                       <Input
-                        type="date" value={it.saleDate}
+                        type="date"
+                        value={it.saleDate}
                         onChange={(e) => update(it.id, { saleDate: e.target.value })}
                       />
                     </TableCell>
-                    <TableCell className="tabular-nums font-semibold">
-                      {fmt(line)}
-                    </TableCell>
+                    <TableCell className="tabular-nums font-semibold">{fmt(line)}</TableCell>
                     <TableCell>
                       <Button
-                        type="button" size="icon" variant="ghost"
+                        type="button"
+                        size="icon"
+                        variant="ghost"
                         onClick={() => remove(it.id)}
                         aria-label="حذف"
                       >

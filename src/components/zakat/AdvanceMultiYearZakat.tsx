@@ -39,7 +39,13 @@ export default function AdvanceMultiYearZakat({ annualZakat = 0, currencyName = 
         <div className="grid sm:grid-cols-2 gap-3">
           <div>
             <Label>عدد السنوات (1-5)</Label>
-            <Input type="number" min={1} max={5} value={years} onChange={(e) => setYears(e.target.value)} />
+            <Input
+              type="number"
+              min={1}
+              max={5}
+              value={years}
+              onChange={(e) => setYears(e.target.value)}
+            />
           </div>
           <div>
             <Label>توقّع نمو/تضخم سنوي %</Label>
@@ -49,20 +55,25 @@ export default function AdvanceMultiYearZakat({ annualZakat = 0, currencyName = 
 
         <div className="rounded-lg border bg-muted/40 p-4 space-y-2">
           <div className="text-sm text-muted-foreground">تقدير زكاة {result.years} سنوات قادمة</div>
-          <div className="text-2xl font-bold text-primary">{fmt(result.total)} {currencyName}</div>
+          <div className="text-2xl font-bold text-primary">
+            {fmt(result.total)} {currencyName}
+          </div>
           <div className="text-xs space-y-1 pt-2 border-t">
             {result.breakdown.map((b) => (
               <div key={b.year} className="flex justify-between">
                 <span>السنة {b.year}</span>
-                <span className="font-mono">{fmt(b.estimate)} {currencyName}</span>
+                <span className="font-mono">
+                  {fmt(b.estimate)} {currencyName}
+                </span>
               </div>
             ))}
           </div>
         </div>
 
         <p className="text-xs text-muted-foreground border-r-2 border-primary/40 pr-3 leading-relaxed">
-          <strong>الحكم:</strong> أجاز الجمهور (الحنفية والشافعية والحنابلة) تعجيل الزكاة لسنة أو أكثر بشرط ملك النصاب،
-          ويُحتسب من زكاة السنوات القادمة. ويُجبر الفرق إن زاد الواجب الفعلي عند الحول. (المغني لابن قدامة، المجموع للنووي).
+          <strong>الحكم:</strong> أجاز الجمهور (الحنفية والشافعية والحنابلة) تعجيل الزكاة لسنة أو
+          أكثر بشرط ملك النصاب، ويُحتسب من زكاة السنوات القادمة. ويُجبر الفرق إن زاد الواجب الفعلي
+          عند الحول. (المغني لابن قدامة، المجموع للنووي).
         </p>
       </CardContent>
     </Card>

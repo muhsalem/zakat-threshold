@@ -36,7 +36,7 @@ export function buildReportWorkbook(data: PrintReportData): XLSX.WorkBook {
 
   // ورقة 2: تفاصيل بنود الزكاة
   const rowsHeader = [["البند", "القيمة الإجمالية", "النصاب", "بلغ النصاب؟", "الزكاة المستحقة"]];
-  const rowsBody = data.rows.map(r => [
+  const rowsBody = data.rows.map((r) => [
     r.label,
     r.gross,
     r.nisab ?? "—",
@@ -50,12 +50,24 @@ export function buildReportWorkbook(data: PrintReportData): XLSX.WorkBook {
 
   // ورقة 3: زكاة بهيمة الأنعام (إن وُجدت)
   if (data.livestock?.show) {
-    const mode = data.livestock.mode ?? (data.livestock.tradeValue && data.livestock.tradeValue > 0 ? "trade" : "grazing");
+    const mode =
+      data.livestock.mode ??
+      (data.livestock.tradeValue && data.livestock.tradeValue > 0 ? "trade" : "grazing");
     const ls: (string | number)[][] = [
       ["زكاة بهيمة الأنعام"],
       [],
-      ["نمط التزكية", mode === "trade" ? "للتجارة (عروض تجارة بنسبة 2.5%)" : "سائمة (راعية في الكلأ المباح طوال الحول)"],
-      ["معدّل الزكاة", mode === "trade" ? `${(ZAKAT_RATE * 100).toFixed(2)}% من القيمة السوقية` : "وفق الجداول النبوية الواردة في صحيح البخاري ومصنّفات الفقهاء"],
+      [
+        "نمط التزكية",
+        mode === "trade"
+          ? "للتجارة (عروض تجارة بنسبة 2.5%)"
+          : "سائمة (راعية في الكلأ المباح طوال الحول)",
+      ],
+      [
+        "معدّل الزكاة",
+        mode === "trade"
+          ? `${(ZAKAT_RATE * 100).toFixed(2)}% من القيمة السوقية`
+          : "وفق الجداول النبوية الواردة في صحيح البخاري ومصنّفات الفقهاء",
+      ],
       [],
     ];
 
@@ -69,18 +81,48 @@ export function buildReportWorkbook(data: PrintReportData): XLSX.WorkBook {
         ["الغنم/المعز", data.livestock.sheep, "—", "—"],
         ["الإجمالي (مدمج في وعاء عروض التجارة)", "", val, zak],
         [],
-        ["ملاحظة", "تُضمّ قيمة الأنعام المعدّة للتجارة إلى وعاء عروض التجارة وتُزكّى بنسبة 2.5% بعد بلوغ النصاب وحَول الحول، دون تطبيق جداول السائمة."],
+        [
+          "ملاحظة",
+          "تُضمّ قيمة الأنعام المعدّة للتجارة إلى وعاء عروض التجارة وتُزكّى بنسبة 2.5% بعد بلوغ النصاب وحَول الحول، دون تطبيق جداول السائمة.",
+        ],
       );
     } else {
       ls.push(
         ["النوع", "العدد", "النصاب الأدنى", "بلغ النصاب؟", "مقدار الزكاة الواجبة"],
-        ["الإبل", data.livestock.camels, "5 من الإبل", data.livestock.camels >= 5 ? "نعم" : "لا", camelZakat(data.livestock.camels)],
-        ["البقر/الجاموس", data.livestock.cows, "30 من البقر", data.livestock.cows >= 30 ? "نعم" : "لا", cowZakat(data.livestock.cows)],
-        ["الغنم/المعز", data.livestock.sheep, "40 من الغنم", data.livestock.sheep >= 40 ? "نعم" : "لا", sheepZakat(data.livestock.sheep)],
+        [
+          "الإبل",
+          data.livestock.camels,
+          "5 من الإبل",
+          data.livestock.camels >= 5 ? "نعم" : "لا",
+          camelZakat(data.livestock.camels),
+        ],
+        [
+          "البقر/الجاموس",
+          data.livestock.cows,
+          "30 من البقر",
+          data.livestock.cows >= 30 ? "نعم" : "لا",
+          cowZakat(data.livestock.cows),
+        ],
+        [
+          "الغنم/المعز",
+          data.livestock.sheep,
+          "40 من الغنم",
+          data.livestock.sheep >= 40 ? "نعم" : "لا",
+          sheepZakat(data.livestock.sheep),
+        ],
         [],
-        ["شروط السائمة", "أن تكون راعيةً في الكلأ المباح أكثر العام، وأن يحول عليها الحول، وأن تبلغ النصاب، وألّا تكون عاملةً للحرث أو السقي."],
-        ["الخصومات", "لا تُحسم ديون مالك الأنعام من العدد؛ والزكاة تتعلّق بالعين لا بالقيمة، وتؤدّى من جنس المال غالبًا أو قيمته عند الحاجة."],
-        ["المرجع", "صحيح البخاري — كتاب الزكاة (كتاب أبي بكر الصدّيق رضي الله عنه)، ومعيار AAOIFI رقم (35) للزكاة."],
+        [
+          "شروط السائمة",
+          "أن تكون راعيةً في الكلأ المباح أكثر العام، وأن يحول عليها الحول، وأن تبلغ النصاب، وألّا تكون عاملةً للحرث أو السقي.",
+        ],
+        [
+          "الخصومات",
+          "لا تُحسم ديون مالك الأنعام من العدد؛ والزكاة تتعلّق بالعين لا بالقيمة، وتؤدّى من جنس المال غالبًا أو قيمته عند الحاجة.",
+        ],
+        [
+          "المرجع",
+          "صحيح البخاري — كتاب الزكاة (كتاب أبي بكر الصدّيق رضي الله عنه)، ومعيار AAOIFI رقم (35) للزكاة.",
+        ],
       );
     }
 
@@ -102,13 +144,24 @@ export function buildReportWorkbook(data: PrintReportData): XLSX.WorkBook {
       ["القيمة الجوهرية للخيارات (max(0, السعر − التنفيذ) × العدد)", +e.intrinsic.toFixed(2)],
       ["قيمة RSUs المستحقّة بسعر السوق", e.rsuValue],
       ["إجمالي قاعدة الزكاة", +e.base.toFixed(2)],
-      ["نية المزكّي", e.intentTrade ? "المتاجرة (تُزكّى 2.5%)" : "الاحتفاظ (تُزكّى موجودات الشركة الزكوية بحسب النسبة)"],
-      ["النصاب المعتمد", `النصاب النقدي (الأنفع للفقراء) = ${data.moneyNisab} ${data.currencyName}`],
+      [
+        "نية المزكّي",
+        e.intentTrade
+          ? "المتاجرة (تُزكّى 2.5%)"
+          : "الاحتفاظ (تُزكّى موجودات الشركة الزكوية بحسب النسبة)",
+      ],
+      [
+        "النصاب المعتمد",
+        `النصاب النقدي (الأنفع للفقراء) = ${data.moneyNisab} ${data.currencyName}`,
+      ],
       ["بلغ النصاب؟", e.base >= data.moneyNisab ? "نعم" : "لا"],
       ["الخصومات المطبّقة", "الخيارات غير المستحقّة (Unvested) لا تُحسب لعدم تمام الملك"],
       ["الزكاة المستحقة", +e.zakat.toFixed(2)],
       [],
-      ["المرجع", "AAOIFI — معيار الزكاة رقم (35) + قرارات الندوات الفقهية المعاصرة بشأن منح الأسهم للموظفين"],
+      [
+        "المرجع",
+        "AAOIFI — معيار الزكاة رقم (35) + قرارات الندوات الفقهية المعاصرة بشأن منح الأسهم للموظفين",
+      ],
     ];
     const wsE = XLSX.utils.aoa_to_sheet(esopRows);
     wsE["!cols"] = [{ wch: 55 }, { wch: 50 }];
@@ -132,7 +185,10 @@ export function buildReportWorkbook(data: PrintReportData): XLSX.WorkBook {
       ["الزكاة المستحقة", +w.zakat.toFixed(2)],
       [],
       ["القاعدة الفقهية", "أصل الوقف لا تجب فيه الزكاة لخروجه عن الملك."],
-      ["الاستثناءات", "1) عروض التجارة المملوكة للوقف للاسترباح. 2) غلّة الوقف المخصّصة للموقوف عليهم المعيّنين إذا بلغت النصاب وكانوا أغنياء."],
+      [
+        "الاستثناءات",
+        "1) عروض التجارة المملوكة للوقف للاسترباح. 2) غلّة الوقف المخصّصة للموقوف عليهم المعيّنين إذا بلغت النصاب وكانوا أغنياء.",
+      ],
       ["المرجع", "قرار مجمع الفقه الإسلامي الدولي رقم 140 (15/4) + معيار AAOIFI رقم (35)"],
     ];
     const wsW = XLSX.utils.aoa_to_sheet(waqfRows);
@@ -142,7 +198,16 @@ export function buildReportWorkbook(data: PrintReportData): XLSX.WorkBook {
 
   // ورقة: بيان الخصومات والمبرّرات (الفحص البصري لكل خصم)
   if (data.deductions && data.deductions.length > 0) {
-    const dedHeader = [["البند", "القيمة المُدخلة", `العملة (${data.currencyName})`, "تم احتسابه؟", "السبب الشرعي/المحاسبي", "المرجع"]];
+    const dedHeader = [
+      [
+        "البند",
+        "القيمة المُدخلة",
+        `العملة (${data.currencyName})`,
+        "تم احتسابه؟",
+        "السبب الشرعي/المحاسبي",
+        "المرجع",
+      ],
+    ];
     const dedRows = data.deductions.map((d) => [
       d.label,
       d.amount,
@@ -151,11 +216,29 @@ export function buildReportWorkbook(data: PrintReportData): XLSX.WorkBook {
       d.reason,
       d.ref || "—",
     ]);
-    const includedTotal = data.deductions.filter((d) => d.included).reduce((s, d) => s + (d.amount || 0), 0);
-    const excludedTotal = data.deductions.filter((d) => !d.included).reduce((s, d) => s + (d.amount || 0), 0);
+    const includedTotal = data.deductions
+      .filter((d) => d.included)
+      .reduce((s, d) => s + (d.amount || 0), 0);
+    const excludedTotal = data.deductions
+      .filter((d) => !d.included)
+      .reduce((s, d) => s + (d.amount || 0), 0);
     dedRows.push(["—", "", "", "", "", ""]);
-    dedRows.push(["إجمالي الخصومات المُحتسبة", includedTotal, data.currencyName, "—", "تدخل في حساب الوعاء الزكوي الصافي", "—"]);
-    dedRows.push(["إجمالي البنود المستبعدة", excludedTotal, data.currencyName, "—", "لا تُخصم لعدم استيفاء شروط الخصم الشرعية", "—"]);
+    dedRows.push([
+      "إجمالي الخصومات المُحتسبة",
+      includedTotal,
+      data.currencyName,
+      "—",
+      "تدخل في حساب الوعاء الزكوي الصافي",
+      "—",
+    ]);
+    dedRows.push([
+      "إجمالي البنود المستبعدة",
+      excludedTotal,
+      data.currencyName,
+      "—",
+      "لا تُخصم لعدم استيفاء شروط الخصم الشرعية",
+      "—",
+    ]);
     const wsD = XLSX.utils.aoa_to_sheet([
       ["بيان الخصومات والمبرّرات الشرعية"],
       ["كل سطر يوضّح القيمة المُدخلة، ما إذا تم احتسابها أو استبعادها، والسبب والمرجع الشرعي."],
@@ -178,7 +261,13 @@ export function buildReportWorkbook(data: PrintReportData): XLSX.WorkBook {
       ...data.fx.rates.map((r) => [r.from, r.rate]),
       [],
       ["تفاصيل البنود المحوَّلة"],
-      ["البند", "القيمة الأصلية", "العملة الأصلية", "السعر المستخدم", `القيمة بعد التحويل (${data.fx.reportCurrency})`],
+      [
+        "البند",
+        "القيمة الأصلية",
+        "العملة الأصلية",
+        "السعر المستخدم",
+        `القيمة بعد التحويل (${data.fx.reportCurrency})`,
+      ],
       ...data.fx.entries.map((e) => [
         e.label,
         e.originalAmount,

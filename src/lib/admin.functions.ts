@@ -102,7 +102,10 @@ export const revokeRole = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-async function supabaseAdmin_log(context: { userId: string }, data: { userId: string; role: Role }) {
+async function supabaseAdmin_log(
+  context: { userId: string },
+  data: { userId: string; role: Role },
+) {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   await supabaseAdmin.from("sharia_audit_log").insert({
     user_id: context.userId,
@@ -119,11 +122,14 @@ export const listPendingApprovals = createServerFn({ method: "GET" })
     const ctx = context as any;
     // المدقّق في أي منظّمة OR مدير عام
     const { data: isAdmin } = await ctx.supabase.rpc("has_role", {
-      _user_id: ctx.userId, _role: "admin",
+      _user_id: ctx.userId,
+      _role: "admin",
     });
     const { data, error } = await ctx.supabase
       .from("zakat_approvals")
-      .select("id, title, status, fingerprint, submitted_at, organization_id, maker_id, checker_note")
+      .select(
+        "id, title, status, fingerprint, submitted_at, organization_id, maker_id, checker_note",
+      )
       .eq("status", "pending")
       .order("submitted_at", { ascending: false })
       .limit(200);

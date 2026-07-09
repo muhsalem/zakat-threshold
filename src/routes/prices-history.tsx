@@ -3,10 +3,23 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Sparkles, HelpCircle } from "lucide-react";
 
@@ -79,7 +92,12 @@ function RelBadge({ r }: { r: Row["reliability"] }) {
 }
 
 function RelDot({ r }: { r: Row["reliability"] }) {
-  return <span className={`inline-block h-2.5 w-2.5 rounded-full ${REL_META[r].dot}`} title={REL_META[r].label} />;
+  return (
+    <span
+      className={`inline-block h-2.5 w-2.5 rounded-full ${REL_META[r].dot}`}
+      title={REL_META[r].label}
+    />
+  );
 }
 
 function PricesHistoryPage() {
@@ -87,7 +105,9 @@ function PricesHistoryPage() {
   const [err, setErr] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [pickedDate, setPickedDate] = useState<string>(new Date().toISOString().slice(0, 10));
-  const [relFilter, setRelFilter] = useState<"all" | "direct" | "secondary" | "derived" | "estimated">("all");
+  const [relFilter, setRelFilter] = useState<
+    "all" | "direct" | "secondary" | "derived" | "estimated"
+  >("all");
 
   useEffect(() => {
     (async () => {
@@ -96,7 +116,10 @@ function PricesHistoryPage() {
         .select("price_date, metal, price_usd_per_gram, source, reliability")
         .order("price_date", { ascending: false })
         .limit(5000);
-      if (error) { setErr(error.message); return; }
+      if (error) {
+        setErr(error.message);
+        return;
+      }
       setRows((data ?? []) as Row[]);
     })();
   }, []);
@@ -137,7 +160,9 @@ function PricesHistoryPage() {
     const target = pickedDate;
     const dates = Array.from(byDate.keys()).sort();
     let best = dates[0];
-    for (const d of dates) if (d <= target) best = d; else break;
+    for (const d of dates)
+      if (d <= target) best = d;
+      else break;
     const e = byDate.get(best);
     return { date: best, gold: e?.gold, silver: e?.silver };
   }, [byDate, pickedDate, rows]);
@@ -150,8 +175,8 @@ function PricesHistoryPage() {
       <header className="space-y-2">
         <h1 className="text-3xl font-bold">السجل التاريخي لأسعار الذهب والفضة</h1>
         <p className="text-muted-foreground">
-          قاعدة بيانات يومية وشهرية بالدولار/جرام من 1975 حتى اليوم. تُستخدم لاحتساب نصاب
-          الزكاة بدقة عند أي تاريخ سابق، وتُحدَّث يومياً تلقائياً.
+          قاعدة بيانات يومية وشهرية بالدولار/جرام من 1975 حتى اليوم. تُستخدم لاحتساب نصاب الزكاة
+          بدقة عند أي تاريخ سابق، وتُحدَّث يومياً تلقائياً.
         </p>
         <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
           <Badge variant="outline">إجمالي السجلات: {fmt(rows.length, 0)}</Badge>
@@ -167,7 +192,8 @@ function PricesHistoryPage() {
             <RelDot r="derived" /> <span className="mr-1">مشتق: {fmt(relCounts.derived, 0)}</span>
           </Badge>
           <Badge variant="outline" className={REL_META.estimated.cls}>
-            <RelDot r="estimated" /> <span className="mr-1">تقديري: {fmt(relCounts.estimated, 0)}</span>
+            <RelDot r="estimated" />{" "}
+            <span className="mr-1">تقديري: {fmt(relCounts.estimated, 0)}</span>
           </Badge>
         </div>
       </header>
@@ -187,13 +213,18 @@ function PricesHistoryPage() {
           {pickedNearest && (
             <div className="grid sm:grid-cols-2 gap-3">
               <div className="rounded-md border p-3">
-                <div className="text-sm text-muted-foreground">أقرب تاريخ متاح: {pickedNearest.date}</div>
+                <div className="text-sm text-muted-foreground">
+                  أقرب تاريخ متاح: {pickedNearest.date}
+                </div>
                 <div className="mt-2 text-lg font-semibold">
                   ذهب: {fmt(pickedNearest.gold?.price_usd_per_gram ?? 0, 4)} USD/جم
                 </div>
-                <div className="text-sm">نصاب الذهب: {fmt((pickedNearest.gold?.price_usd_per_gram ?? 0) * GOLD_NISAB)} USD</div>
+                <div className="text-sm">
+                  نصاب الذهب: {fmt((pickedNearest.gold?.price_usd_per_gram ?? 0) * GOLD_NISAB)} USD
+                </div>
                 <div className="text-sm text-primary">
-                  زكاة نصاب الذهب: {fmt((pickedNearest.gold?.price_usd_per_gram ?? 0) * GOLD_NISAB * ZAKAT)} USD
+                  زكاة نصاب الذهب:{" "}
+                  {fmt((pickedNearest.gold?.price_usd_per_gram ?? 0) * GOLD_NISAB * ZAKAT)} USD
                 </div>
                 {pickedNearest.gold && <RelBadge r={pickedNearest.gold.reliability} />}
               </div>
@@ -202,9 +233,13 @@ function PricesHistoryPage() {
                 <div className="mt-2 text-lg font-semibold">
                   فضة: {fmt(pickedNearest.silver?.price_usd_per_gram ?? 0, 4)} USD/جم
                 </div>
-                <div className="text-sm">نصاب الفضة: {fmt((pickedNearest.silver?.price_usd_per_gram ?? 0) * SILVER_NISAB)} USD</div>
+                <div className="text-sm">
+                  نصاب الفضة: {fmt((pickedNearest.silver?.price_usd_per_gram ?? 0) * SILVER_NISAB)}{" "}
+                  USD
+                </div>
                 <div className="text-sm text-primary">
-                  زكاة نصاب الفضة: {fmt((pickedNearest.silver?.price_usd_per_gram ?? 0) * SILVER_NISAB * ZAKAT)} USD
+                  زكاة نصاب الفضة:{" "}
+                  {fmt((pickedNearest.silver?.price_usd_per_gram ?? 0) * SILVER_NISAB * ZAKAT)} USD
                 </div>
                 {pickedNearest.silver && <RelBadge r={pickedNearest.silver.reliability} />}
               </div>
@@ -224,7 +259,9 @@ function PricesHistoryPage() {
               <CardTitle>كل التواريخ ({fmt(filteredDates.length, 0)})</CardTitle>
               <div className="flex flex-wrap items-end gap-3 pt-2">
                 <div className="flex-1 min-w-[220px]">
-                  <label className="text-xs text-muted-foreground block mb-1">ابحث بتاريخ أو سنة</label>
+                  <label className="text-xs text-muted-foreground block mb-1">
+                    ابحث بتاريخ أو سنة
+                  </label>
                   <Input
                     placeholder="مثال: 2020 أو 2020-03"
                     value={query}
@@ -233,9 +270,16 @@ function PricesHistoryPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-muted-foreground block mb-1">تصفية حسب مستوى الثقة</label>
-                  <Select value={relFilter} onValueChange={(v) => setRelFilter(v as typeof relFilter)}>
-                    <SelectTrigger className="w-[200px]"><SelectValue /></SelectTrigger>
+                  <label className="text-xs text-muted-foreground block mb-1">
+                    تصفية حسب مستوى الثقة
+                  </label>
+                  <Select
+                    value={relFilter}
+                    onValueChange={(v) => setRelFilter(v as typeof relFilter)}
+                  >
+                    <SelectTrigger className="w-[200px]">
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">كل المستويات</SelectItem>
                       <SelectItem value="direct">مباشر فقط (Direct)</SelectItem>
@@ -246,7 +290,14 @@ function PricesHistoryPage() {
                   </Select>
                 </div>
                 {(query || relFilter !== "all") && (
-                  <Button variant="ghost" size="sm" onClick={() => { setQuery(""); setRelFilter("all"); }}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setQuery("");
+                      setRelFilter("all");
+                    }}
+                  >
                     مسح الفلاتر
                   </Button>
                 )}
@@ -277,14 +328,18 @@ function PricesHistoryPage() {
                         <TableCell>{fmt(g * GOLD_NISAB)}</TableCell>
                         <TableCell>{fmt(s, 4)}</TableCell>
                         <TableCell>{fmt(s * SILVER_NISAB)}</TableCell>
-                        <TableCell><RelBadge r={rel} /></TableCell>
+                        <TableCell>
+                          <RelBadge r={rel} />
+                        </TableCell>
                       </TableRow>
                     );
                   })}
                 </TableBody>
               </Table>
               {filteredDates.length > 600 && (
-                <p className="text-sm text-muted-foreground mt-2">يُعرض أول 600 سجل — استخدم البحث للتصفية.</p>
+                <p className="text-sm text-muted-foreground mt-2">
+                  يُعرض أول 600 سجل — استخدم البحث للتصفية.
+                </p>
               )}
             </CardContent>
           </Card>
@@ -294,9 +349,15 @@ function PricesHistoryPage() {
             <CardContent className="prose dark:prose-invert max-w-none pt-6">
               <h3>المصادر ودرجات الثقة</h3>
               <ul>
-                <li><strong>مباشر:</strong> سعر مسحوب يومياً من واجهات gold-api / metalpriceapi.</li>
-                <li><strong>مشتق:</strong> سعر مُحتسب من مرجع آخر (مثل متوسط السنة).</li>
-                <li><strong>تقديري:</strong> سعر تاريخي بمتوسط سنوي من مصادر علنية (London PM Fix).</li>
+                <li>
+                  <strong>مباشر:</strong> سعر مسحوب يومياً من واجهات gold-api / metalpriceapi.
+                </li>
+                <li>
+                  <strong>مشتق:</strong> سعر مُحتسب من مرجع آخر (مثل متوسط السنة).
+                </li>
+                <li>
+                  <strong>تقديري:</strong> سعر تاريخي بمتوسط سنوي من مصادر علنية (London PM Fix).
+                </li>
               </ul>
               <h3>التغطية</h3>
               <p>1975→2025: متوسطات شهرية تقديرية. 2026→الآن: سجل يومي يُحدَّث تلقائياً.</p>

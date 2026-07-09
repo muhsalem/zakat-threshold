@@ -10,7 +10,9 @@ export function ShariaBoardCard() {
         <CardTitle className="flex items-center gap-2 text-base">
           <ShieldCheck className="h-4 w-4 text-primary" />
           المرجعية الشرعية والاعتماد
-          <Badge variant="outline" className="text-[10px] mr-auto">Sharia Governance</Badge>
+          <Badge variant="outline" className="text-[10px] mr-auto">
+            Sharia Governance
+          </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3 text-xs leading-relaxed">
@@ -18,7 +20,8 @@ export function ShariaBoardCard() {
           <BookOpen className="h-4 w-4" />
           <AlertDescription className="space-y-2">
             <p>
-              تستند هذه الحاسبة إلى المعايير والمصادر الفقهية المعتمدة دولياً، وتلتزم بمنهجية الحوكمة الشرعية المعمول بها في المؤسسات المالية الإسلامية.
+              تستند هذه الحاسبة إلى المعايير والمصادر الفقهية المعتمدة دولياً، وتلتزم بمنهجية
+              الحوكمة الشرعية المعمول بها في المؤسسات المالية الإسلامية.
             </p>
           </AlertDescription>
         </Alert>
@@ -48,7 +51,8 @@ export function ShariaBoardCard() {
         </div>
 
         <p className="text-[10px] text-muted-foreground border-t border-border pt-2">
-          نسعى لاعتماد رسمي من هيئة شرعية مستقلة. للاستفسار الفقهي اعتمد على دار الإفتاء في بلدك أو هيئة شرعية معتمدة.
+          نسعى لاعتماد رسمي من هيئة شرعية مستقلة. للاستفسار الفقهي اعتمد على دار الإفتاء في بلدك أو
+          هيئة شرعية معتمدة.
         </p>
       </CardContent>
     </Card>

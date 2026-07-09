@@ -4,20 +4,37 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
-  ShieldCheck, Target, Compass, Award, Users, Scale, BookOpen, ArrowRight, CheckCircle2,
+  ShieldCheck,
+  Target,
+  Compass,
+  Award,
+  Users,
+  Scale,
+  BookOpen,
+  ArrowRight,
+  CheckCircle2,
 } from "lucide-react";
 
 export const Route = createFileRoute("/governance")({
   head: () => ({
     meta: [
       { title: "الرؤية والرسالة والحوكمة | نِصاب" },
-      { name: "description", content: "ميثاق الحوكمة الشرعية والمؤسسية لمنصة نِصاب: الرؤية، الرسالة، القيم، أعضاء الهيئة الاستشارية، ومصادر الفتاوى المعتمدة." },
+      {
+        name: "description",
+        content:
+          "ميثاق الحوكمة الشرعية والمؤسسية لمنصة نِصاب: الرؤية، الرسالة، القيم، أعضاء الهيئة الاستشارية، ومصادر الفتاوى المعتمدة.",
+      },
       { property: "og:title", content: "الحوكمة والميثاق — نِصاب" },
-      { property: "og:description", content: "شفافية كاملة حول منهج نِصاب في حساب الزكاة، الهيئة الشرعية، والحوكمة المؤسسية." },
+      {
+        property: "og:description",
+        content: "شفافية كاملة حول منهج نِصاب في حساب الزكاة، الهيئة الشرعية، والحوكمة المؤسسية.",
+      },
     ],
   }),
   component: GovernancePage,
-  errorComponent: ({ error }) => <div className="p-8 text-center text-destructive">{(error as Error).message}</div>,
+  errorComponent: ({ error }) => (
+    <div className="p-8 text-center text-destructive">{(error as Error).message}</div>
+  ),
   notFoundComponent: () => <div className="p-8 text-center">الصفحة غير موجودة</div>,
 });
 
@@ -25,10 +42,13 @@ function GovernancePage() {
   return (
     <div className="container mx-auto max-w-5xl px-4 py-10 space-y-8" dir="rtl">
       <header className="text-center space-y-3">
-        <Badge className="bg-primary/10 text-primary border-primary/20">Governance Charter — v1.0</Badge>
+        <Badge className="bg-primary/10 text-primary border-primary/20">
+          Governance Charter — v1.0
+        </Badge>
         <h1 className="text-3xl md:text-4xl font-bold">الرؤية والرسالة والحوكمة</h1>
         <p className="text-muted-foreground text-sm max-w-2xl mx-auto">
-          ميثاق الحوكمة الشرعية والمؤسسية لمنصة نِصاب. نلتزم بأعلى معايير الشفافية والمصداقية الفقهية والمهنية.
+          ميثاق الحوكمة الشرعية والمؤسسية لمنصة نِصاب. نلتزم بأعلى معايير الشفافية والمصداقية
+          الفقهية والمهنية.
         </p>
       </header>
 
@@ -40,8 +60,8 @@ function GovernancePage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="text-sm leading-relaxed">
-            أن نكون المرجع العالمي الأول لحساب الزكاة للأفراد والمؤسسات، بجودة مؤسسية،
-            ودقة شرعية موثّقة، وشفافية كاملة عبر جميع الولايات القضائية والمذاهب الفقهية.
+            أن نكون المرجع العالمي الأول لحساب الزكاة للأفراد والمؤسسات، بجودة مؤسسية، ودقة شرعية
+            موثّقة، وشفافية كاملة عبر جميع الولايات القضائية والمذاهب الفقهية.
           </CardContent>
         </Card>
 
@@ -52,9 +72,9 @@ function GovernancePage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="text-sm leading-relaxed">
-            تمكين المسلم — فرداً أو مؤسسة — من إخراج زكاته بدقة وثقة، عبر منصة تجمع بين
-            العمق الفقهي (AAOIFI، مجامع الفقه، الفتاوى الوطنية) والاحتراف المحاسبي
-            (IFRS، ZATCA، XBRL) والذكاء الاصطناعي المسؤول.
+            تمكين المسلم — فرداً أو مؤسسة — من إخراج زكاته بدقة وثقة، عبر منصة تجمع بين العمق الفقهي
+            (AAOIFI، مجامع الفقه، الفتاوى الوطنية) والاحتراف المحاسبي (IFRS، ZATCA، XBRL) والذكاء
+            الاصطناعي المسؤول.
           </CardContent>
         </Card>
       </div>
@@ -69,7 +89,10 @@ function GovernancePage() {
           {[
             { t: "الأمانة الشرعية", d: "كل رقم موثَّق بدليله الفقهي ومصدره." },
             { t: "الشفافية الكاملة", d: "منهج مفتوح، خطوات حساب مرئية، سجل تعديلات فتاوى علني." },
-            { t: "الدقة المهنية", d: "اختبارات آلية شاملة (Unit + Property-based) على المحرك الحسابي." },
+            {
+              t: "الدقة المهنية",
+              d: "اختبارات آلية شاملة (Unit + Property-based) على المحرك الحسابي.",
+            },
             { t: "التعددية الفقهية", d: "احترام المذاهب الأربعة وفتاوى الهيئات الوطنية." },
             { t: "الخصوصية أولاً", d: "بيانات المزكّي مُشفَّرة، لا نبيعها ولا نشاركها." },
             { t: "الاستقلالية", d: "لا نتلقّى تمويلاً يؤثّر على استقلالية الفتوى." },
@@ -92,8 +115,9 @@ function GovernancePage() {
           <Alert className="border-primary/20 bg-primary/5">
             <BookOpen className="h-4 w-4" />
             <AlertDescription className="text-xs">
-              <strong>حالة الاعتماد الشرعي:</strong> المنصة في مرحلة السعي للاعتماد الرسمي من هيئة شرعية مستقلة.
-              حتى ذلك الحين، تعتمد المنصة على المعايير المنشورة (AAOIFI، مجامع الفقه) ولا تُغني عن استفتاء عالم مختصّ.
+              <strong>حالة الاعتماد الشرعي:</strong> المنصة في مرحلة السعي للاعتماد الرسمي من هيئة
+              شرعية مستقلة. حتى ذلك الحين، تعتمد المنصة على المعايير المنشورة (AAOIFI، مجامع الفقه)
+              ولا تُغني عن استفتاء عالم مختصّ.
             </AlertDescription>
           </Alert>
 
@@ -119,7 +143,13 @@ function GovernancePage() {
               <li>توثيق الفتوى بمصدرها الأصلي (كتاب، قرار، رقم معيار).</li>
               <li>تصنيفها حسب: الموضوع، الهيئة، المذهب، الولاية القضائية.</li>
               <li>مراجعة من عالم مختصّ قبل النشر.</li>
-              <li>تسجيلها في <Link to="/sharia-changelog" className="text-primary underline">سجل التغيير</Link> مع التاريخ والمرجع.</li>
+              <li>
+                تسجيلها في{" "}
+                <Link to="/sharia-changelog" className="text-primary underline">
+                  سجل التغيير
+                </Link>{" "}
+                مع التاريخ والمرجع.
+              </li>
               <li>إشعار المستخدمين المتأثرين عند حدوث تغيير جوهري.</li>
             </ol>
           </div>
@@ -158,7 +188,10 @@ function GovernancePage() {
         <CardContent className="text-sm space-y-2">
           <div className="grid md:grid-cols-2 gap-3">
             {[
-              { t: "خصوصية البيانات", d: "التزام بـ GDPR والأنظمة المحلية. لا مشاركة بيانات مع أطراف ثالثة." },
+              {
+                t: "خصوصية البيانات",
+                d: "التزام بـ GDPR والأنظمة المحلية. لا مشاركة بيانات مع أطراف ثالثة.",
+              },
               { t: "الأمن السيبراني", d: "تشفير TLS، RLS على قاعدة البيانات، سجلّ عمليات كامل." },
               { t: "التدقيق الشرعي", d: "سجلّ Sharia Audit Trail قابل للتصدير لكل حساب." },
               { t: "استمرارية الأعمال", d: "نسخ احتياطية يومية، استعادة كوارث خلال 4 ساعات." },
@@ -177,7 +210,9 @@ function GovernancePage() {
 
       <div className="flex flex-wrap gap-2 justify-center">
         <Button asChild variant="outline" size="sm">
-          <Link to="/sharia-changelog">سجل تحديث الفتاوى <ArrowRight className="h-4 w-4 mr-1" /></Link>
+          <Link to="/sharia-changelog">
+            سجل تحديث الفتاوى <ArrowRight className="h-4 w-4 mr-1" />
+          </Link>
         </Button>
         <Button asChild variant="outline" size="sm">
           <Link to="/legal/privacy">سياسة الخصوصية</Link>

@@ -27,7 +27,8 @@ function ResetPasswordPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setBusy(true); setError(null);
+    setBusy(true);
+    setError(null);
     const { error } = await supabase.auth.updateUser({ password });
     setBusy(false);
     if (error) setError(error.message);
@@ -40,19 +41,36 @@ function ResetPasswordPage() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
       <Card className="w-full max-w-md">
-        <CardHeader><CardTitle className="text-center">إعادة تعيين كلمة المرور</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle className="text-center">إعادة تعيين كلمة المرور</CardTitle>
+        </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-3">
             <div className="space-y-1.5">
               <Label>كلمة المرور الجديدة</Label>
-              <Input type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} dir="ltr" />
+              <Input
+                type="password"
+                required
+                minLength={6}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                dir="ltr"
+              />
             </div>
             <Button type="submit" className="w-full" disabled={busy}>
               {busy ? "جاري الحفظ..." : "حفظ كلمة المرور"}
             </Button>
           </form>
-          {error && <Alert variant="destructive" className="mt-4"><AlertDescription>{error}</AlertDescription></Alert>}
-          {info && <Alert className="mt-4 border-primary/30 bg-primary/5"><AlertDescription>{info}</AlertDescription></Alert>}
+          {error && (
+            <Alert variant="destructive" className="mt-4">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+          {info && (
+            <Alert className="mt-4 border-primary/30 bg-primary/5">
+              <AlertDescription>{info}</AlertDescription>
+            </Alert>
+          )}
         </CardContent>
       </Card>
     </div>

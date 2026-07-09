@@ -1,6 +1,15 @@
 import { describe, it, expect } from "vitest";
 import fc from "fast-check";
-import { ZAKAT_RATE, num, karatToPure24, camelZakat, cowZakat, sheepZakat, GOLD_NISAB_GRAMS, SILVER_NISAB_GRAMS } from "./zakat";
+import {
+  ZAKAT_RATE,
+  num,
+  karatToPure24,
+  camelZakat,
+  cowZakat,
+  sheepZakat,
+  GOLD_NISAB_GRAMS,
+  SILVER_NISAB_GRAMS,
+} from "./zakat";
 
 /**
  * اختبارات قائمة على الخصائص (Property-based) لمحرك الزكاة.
@@ -14,7 +23,7 @@ describe("Property-based: num()", () => {
         const r = num(v as string | number);
         return r >= 0 && Number.isFinite(r);
       }),
-      { numRuns: 2000 }
+      { numRuns: 2000 },
     );
   });
 });
@@ -26,7 +35,7 @@ describe("Property-based: حساب الزكاة الأساسي", () => {
         const zakat = assets * ZAKAT_RATE;
         return Math.abs(zakat / assets - 0.025) < 1e-9;
       }),
-      { numRuns: 2000 }
+      { numRuns: 2000 },
     );
   });
 
@@ -37,7 +46,7 @@ describe("Property-based: حساب الزكاة الأساسي", () => {
       fc.property(fc.double({ min: 0, max: nisab - 1, noNaN: true }), (assets) => {
         return assets < nisab;
       }),
-      { numRuns: 500 }
+      { numRuns: 500 },
     );
   });
 });
@@ -48,7 +57,7 @@ describe("Property-based: karatToPure24()", () => {
       fc.property(fc.double({ min: 0.001, max: 1e6, noNaN: true }), (g) => {
         return Math.abs(karatToPure24(g, 24) - g) < 1e-9 * Math.max(1, g);
       }),
-      { numRuns: 500 }
+      { numRuns: 500 },
     );
   });
 
@@ -60,9 +69,9 @@ describe("Property-based: karatToPure24()", () => {
         (g, k) => {
           const r = karatToPure24(g, k);
           return r <= g * (1 + 1e-9);
-        }
+        },
       ),
-      { numRuns: 1000 }
+      { numRuns: 1000 },
     );
   });
 });
@@ -73,29 +82,29 @@ describe("Property-based: زكاة الأنعام (رتابة)", () => {
       fc.property(fc.integer({ min: 5, max: 10000 }), (n) => {
         return camelZakat(n) !== "لا زكاة";
       }),
-      { numRuns: 500 }
+      { numRuns: 500 },
     );
   });
 
   it("زكاة البقر: أقل من 30 = لا زكاة، من 30 فأكثر توجد زكاة", () => {
     fc.assert(
       fc.property(fc.integer({ min: 0, max: 29 }), (n) => cowZakat(n) === "لا زكاة"),
-      { numRuns: 300 }
+      { numRuns: 300 },
     );
     fc.assert(
       fc.property(fc.integer({ min: 30, max: 5000 }), (n) => cowZakat(n) !== "لا زكاة"),
-      { numRuns: 500 }
+      { numRuns: 500 },
     );
   });
 
   it("زكاة الغنم: أقل من 40 = لا زكاة، من 40 فأكثر توجد", () => {
     fc.assert(
       fc.property(fc.integer({ min: 0, max: 39 }), (n) => sheepZakat(n) === "لا زكاة"),
-      { numRuns: 200 }
+      { numRuns: 200 },
     );
     fc.assert(
       fc.property(fc.integer({ min: 40, max: 10000 }), (n) => sheepZakat(n) !== "لا زكاة"),
-      { numRuns: 500 }
+      { numRuns: 500 },
     );
   });
 });
@@ -104,11 +113,13 @@ describe("Property-based: عدم انفجار المحرك", () => {
   it("جميع دوال الأنعام تُرجع سلسلة نصية للأعداد ≥ 0", () => {
     fc.assert(
       fc.property(fc.integer({ min: 0, max: 100000 }), (n) => {
-        return typeof camelZakat(n) === "string"
-          && typeof cowZakat(n) === "string"
-          && typeof sheepZakat(n) === "string";
+        return (
+          typeof camelZakat(n) === "string" &&
+          typeof cowZakat(n) === "string" &&
+          typeof sheepZakat(n) === "string"
+        );
       }),
-      { numRuns: 1000 }
+      { numRuns: 1000 },
     );
   });
 });

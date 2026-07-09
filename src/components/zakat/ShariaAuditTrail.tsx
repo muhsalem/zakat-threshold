@@ -32,7 +32,11 @@ const ROWS: Row[] = [
     pot: "الأصول الرقمية والمحافظ الاستثمارية (Crypto)",
     rule: "العملات المشفّرة تُزكَّى كنقد بالقيمة السوقية يوم الحول",
     rate: "2.5%",
-    refs: ["دار الإفتاء المصرية 2018", "هيئة كبار العلماء التركية 2017", "بيت الفتوى الفلسطيني 2020"],
+    refs: [
+      "دار الإفتاء المصرية 2018",
+      "هيئة كبار العلماء التركية 2017",
+      "بيت الفتوى الفلسطيني 2020",
+    ],
   },
   {
     pot: "الدخل وعروض التجارة والمستغلات والإيرادات",
@@ -73,7 +77,9 @@ export function ShariaAuditTrail() {
         <CardTitle className="flex items-center gap-2 text-base">
           <ShieldCheck className="h-4 w-4 text-emerald-600" />
           سجل التدقيق الشرعي للأوعية الزكوية
-          <Badge variant="outline" className="text-[10px] mr-auto">AAOIFI · المجامع الفقهية · بيت الزكاة</Badge>
+          <Badge variant="outline" className="text-[10px] mr-auto">
+            AAOIFI · المجامع الفقهية · بيت الزكاة
+          </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="pt-3">
@@ -90,13 +96,21 @@ export function ShariaAuditTrail() {
             <tbody>
               {ROWS.map((r, i) => (
                 <tr key={i} className="border-t border-border/50 align-top hover:bg-accent/30">
-                  <td className="p-2 font-semibold text-foreground/90 whitespace-nowrap">{r.pot}</td>
+                  <td className="p-2 font-semibold text-foreground/90 whitespace-nowrap">
+                    {r.pot}
+                  </td>
                   <td className="p-2 leading-relaxed text-muted-foreground">{r.rule}</td>
-                  <td className="p-2"><Badge variant="secondary" className="text-[10px]">{r.rate}</Badge></td>
+                  <td className="p-2">
+                    <Badge variant="secondary" className="text-[10px]">
+                      {r.rate}
+                    </Badge>
+                  </td>
                   <td className="p-2">
                     <div className="flex flex-wrap gap-1">
                       {r.refs.map((ref, j) => (
-                        <Badge key={j} variant="outline" className="text-[10px] font-normal">{ref}</Badge>
+                        <Badge key={j} variant="outline" className="text-[10px] font-normal">
+                          {ref}
+                        </Badge>
                       ))}
                     </div>
                   </td>
@@ -106,7 +120,8 @@ export function ShariaAuditTrail() {
           </table>
         </div>
         <p className="mt-3 text-[11px] text-muted-foreground leading-relaxed">
-          <b>ملاحظة:</b> هذا السجل استرشادي يوثّق المراجع الفقهية المعتمدة لكل وعاء. للحالات الخاصة يُرجى مراجعة دار الإفتاء المختصة.
+          <b>ملاحظة:</b> هذا السجل استرشادي يوثّق المراجع الفقهية المعتمدة لكل وعاء. للحالات الخاصة
+          يُرجى مراجعة دار الإفتاء المختصة.
         </p>
       </CardContent>
     </Card>

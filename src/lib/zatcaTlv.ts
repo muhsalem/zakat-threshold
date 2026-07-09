@@ -13,7 +13,10 @@ function concat(arrs: Uint8Array[]): Uint8Array {
   const total = arrs.reduce((s, a) => s + a.length, 0);
   const out = new Uint8Array(total);
   let off = 0;
-  for (const a of arrs) { out.set(a, off); off += a.length; }
+  for (const a of arrs) {
+    out.set(a, off);
+    off += a.length;
+  }
   return out;
 }
 
@@ -28,11 +31,11 @@ function toBase64(bytes: Uint8Array): string {
  * يستخدم للإفصاح عن الزكاة كفاتورة استرشادية.
  */
 export function buildZatcaTlvQr(opts: {
-  sellerName: string;        // اسم الجهة / المنصة
-  vatNumber: string;         // رقم VAT (أو معرّف بديل)
-  timestampIso: string;      // ISO 8601
-  invoiceTotal: number;      // الإجمالي شامل
-  vatTotal: number;          // ضريبة القيمة المضافة (0 للزكاة)
+  sellerName: string; // اسم الجهة / المنصة
+  vatNumber: string; // رقم VAT (أو معرّف بديل)
+  timestampIso: string; // ISO 8601
+  invoiceTotal: number; // الإجمالي شامل
+  vatTotal: number; // ضريبة القيمة المضافة (0 للزكاة)
 }): string {
   const bytes = concat([
     tlv(1, opts.sellerName),

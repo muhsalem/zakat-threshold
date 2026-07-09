@@ -21,26 +21,27 @@ export const Route = createFileRoute("/api/public/nisab")({
         const url = new URL(request.url);
         const currency = (url.searchParams.get("currency") || "USD").toUpperCase().slice(0, 6);
 
-
         const supabase = createClient<Database>(
           process.env.SUPABASE_URL!,
           process.env.SUPABASE_PUBLISHABLE_KEY!,
-          { auth: { storage: undefined, persistSession: false, autoRefreshToken: false } }
+          { auth: { storage: undefined, persistSession: false, autoRefreshToken: false } },
         );
 
         const { data, error } = await supabase
           .from("nisab_prices")
-          .select("currency, gold_price_per_gram, silver_price_per_gram, gold_nisab, silver_nisab, recorded_at")
+          .select(
+            "currency, gold_price_per_gram, silver_price_per_gram, gold_nisab, silver_nisab, recorded_at",
+          )
           .eq("currency", currency)
           .order("recorded_at", { ascending: false })
           .limit(1)
           .maybeSingle();
 
         if (error) {
-          return new Response(
-            JSON.stringify({ ok: false, error: "lookup_failed" }),
-            { status: 500, headers: CORS }
-          );
+          return new Response(JSON.stringify({ ok: false, error: "lookup_failed" }), {
+            status: 500,
+            headers: CORS,
+          });
         }
 
         return new Response(
@@ -54,7 +55,7 @@ export const Route = createFileRoute("/api/public/nisab")({
             source: "AAOIFI 35 / Bayt al-Zakat",
             generated_at: new Date().toISOString(),
           }),
-          { headers: CORS }
+          { headers: CORS },
         );
       },
     },

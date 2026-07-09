@@ -88,7 +88,7 @@ export type CompanyInputs = z.infer<typeof companyInputsSchema>;
 export type ValidationError = { path: string; message: string };
 
 export function validateCompanyInputs(
-  raw: Partial<Record<keyof CompanyInputs, number>>
+  raw: Partial<Record<keyof CompanyInputs, number>>,
 ): { ok: true; data: CompanyInputs } | { ok: false; errors: ValidationError[] } {
   const result = companyInputsSchema.safeParse(raw);
   if (result.success) return { ok: true, data: result.data };

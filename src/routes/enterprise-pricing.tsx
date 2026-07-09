@@ -8,7 +8,11 @@ export const Route = createFileRoute("/enterprise-pricing")({
   head: () => ({
     meta: [
       { title: "خطط المؤسسات والتسعير — نِصاب" },
-      { name: "description", content: "خطط مؤسسية لحساب الزكاة للشركات والبنوك الإسلامية والصناديق الوقفية — Startup, Business, Enterprise مع ERP وSSO ودعم شرعي مخصّص." },
+      {
+        name: "description",
+        content:
+          "خطط مؤسسية لحساب الزكاة للشركات والبنوك الإسلامية والصناديق الوقفية — Startup, Business, Enterprise مع ERP وSSO ودعم شرعي مخصّص.",
+      },
       { property: "og:title", content: "خطط المؤسسات والتسعير — نِصاب" },
       { property: "og:description", content: "حلول زكاة مؤسسية: Startup / Business / Enterprise" },
       { property: "og:type", content: "website" },
@@ -120,10 +124,13 @@ function EnterprisePricing() {
   return (
     <div className="container max-w-6xl py-10 space-y-10" dir="rtl">
       <header className="text-center space-y-3">
-        <Badge variant="secondary" className="gap-1"><Sparkles className="h-3.5 w-3.5" /> خطط المؤسسات</Badge>
+        <Badge variant="secondary" className="gap-1">
+          <Sparkles className="h-3.5 w-3.5" /> خطط المؤسسات
+        </Badge>
         <h1 className="text-3xl md:text-4xl font-bold">تسعير مصمَّم للنمو المؤسسي</h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          حلول زكاة كاملة للشركات والبنوك الإسلامية والصناديق الوقفية — من الشركات الناشئة إلى المجموعات متعددة الجنسيات.
+          حلول زكاة كاملة للشركات والبنوك الإسلامية والصناديق الوقفية — من الشركات الناشئة إلى
+          المجموعات متعددة الجنسيات.
         </p>
       </header>
 
@@ -155,11 +162,15 @@ function EnterprisePricing() {
                 </ul>
                 {t.ctaTo ? (
                   <Link to={t.ctaTo}>
-                    <Button className="w-full" variant={t.highlight ? "default" : "outline"}>{t.cta}</Button>
+                    <Button className="w-full" variant={t.highlight ? "default" : "outline"}>
+                      {t.cta}
+                    </Button>
                   </Link>
                 ) : (
                   <a href={t.ctaHref}>
-                    <Button className="w-full gap-1.5" variant="outline"><Mail className="h-4 w-4" /> {t.cta}</Button>
+                    <Button className="w-full gap-1.5" variant="outline">
+                      <Mail className="h-4 w-4" /> {t.cta}
+                    </Button>
                   </a>
                 )}
               </CardContent>
@@ -184,9 +195,15 @@ function EnterprisePricing() {
               {COMPARE.map((r) => (
                 <tr key={r.label} className="border-t">
                   <td className="p-3 text-right font-medium">{r.label}</td>
-                  <td className="p-3 text-center"><Cell v={r.startup} /></td>
-                  <td className="p-3 text-center bg-primary/5"><Cell v={r.business} /></td>
-                  <td className="p-3 text-center"><Cell v={r.enterprise} /></td>
+                  <td className="p-3 text-center">
+                    <Cell v={r.startup} />
+                  </td>
+                  <td className="p-3 text-center bg-primary/5">
+                    <Cell v={r.business} />
+                  </td>
+                  <td className="p-3 text-center">
+                    <Cell v={r.enterprise} />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -197,10 +214,13 @@ function EnterprisePricing() {
       <section className="bg-muted/30 rounded-lg p-6 text-center space-y-3">
         <h2 className="text-xl font-bold">هل تحتاج حلاً مخصّصاً؟</h2>
         <p className="text-sm text-muted-foreground max-w-xl mx-auto">
-          فريقنا يصمّم عقود مؤسسية مخصّصة للبنوك الإسلامية وصناديق الأوقاف والمجموعات متعددة الجنسيات — تشمل الاستضافة السيادية والتدقيق الشرعي.
+          فريقنا يصمّم عقود مؤسسية مخصّصة للبنوك الإسلامية وصناديق الأوقاف والمجموعات متعددة
+          الجنسيات — تشمل الاستضافة السيادية والتدقيق الشرعي.
         </p>
         <a href="mailto:enterprise@nisab.app">
-          <Button className="gap-1.5"><Mail className="h-4 w-4" /> تحدّث مع المبيعات</Button>
+          <Button className="gap-1.5">
+            <Mail className="h-4 w-4" /> تحدّث مع المبيعات
+          </Button>
         </a>
       </section>
     </div>

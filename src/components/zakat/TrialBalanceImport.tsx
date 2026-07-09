@@ -48,17 +48,31 @@ function parseCSV(text: string): string[][] {
   let inQ = false;
   for (let i = 0; i < text.length; i++) {
     const c = text[i];
-    if (c === '"') { inQ = !inQ; continue; }
-    if (c === "," && !inQ) { cur.push(cell); cell = ""; continue; }
+    if (c === '"') {
+      inQ = !inQ;
+      continue;
+    }
+    if (c === "," && !inQ) {
+      cur.push(cell);
+      cell = "";
+      continue;
+    }
     if ((c === "\n" || c === "\r") && !inQ) {
-      if (cell.length || cur.length) { cur.push(cell); rows.push(cur); }
-      cur = []; cell = "";
+      if (cell.length || cur.length) {
+        cur.push(cell);
+        rows.push(cur);
+      }
+      cur = [];
+      cell = "";
       if (c === "\r" && text[i + 1] === "\n") i++;
       continue;
     }
     cell += c;
   }
-  if (cell.length || cur.length) { cur.push(cell); rows.push(cur); }
+  if (cell.length || cur.length) {
+    cur.push(cell);
+    rows.push(cur);
+  }
   return rows.filter((r) => r.some((x) => x.trim().length));
 }
 
@@ -69,7 +83,8 @@ export function TrialBalanceImport({ onMapped }: Props) {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const handleFile = async (f: File) => {
-    setError(null); setUnmapped([]);
+    setError(null);
+    setUnmapped([]);
     try {
       const isExcel = /\.(xlsx|xls)$/i.test(f.name);
       let rows: string[][];
@@ -95,9 +110,14 @@ export function TrialBalanceImport({ onMapped }: Props) {
       if (creditIdx === -1) creditIdx = 2;
 
       const acc: TrialBalanceMapped = {
-        cash: 0, receivables: 0, inventory: 0, shortTermInvest: 0,
-        fixedAssets: 0, shortTermDebt: 0,
-        totals: { debit: 0, credit: 0 }, rowCount: 0,
+        cash: 0,
+        receivables: 0,
+        inventory: 0,
+        shortTermInvest: 0,
+        fixedAssets: 0,
+        shortTermDebt: 0,
+        totals: { debit: 0, credit: 0 },
+        rowCount: 0,
       };
       const unknown: string[] = [];
 
@@ -111,7 +131,10 @@ export function TrialBalanceImport({ onMapped }: Props) {
         acc.totals.credit += credit;
         acc.rowCount++;
         const cat = classify(label);
-        if (!cat) { unknown.push(label); continue; }
+        if (!cat) {
+          unknown.push(label);
+          continue;
+        }
         const amount = Math.abs(debit - credit);
         if (cat === "shortTermDebt") acc.shortTermDebt += amount;
         else acc[cat] += amount;
@@ -139,7 +162,9 @@ export function TrialBalanceImport({ onMapped }: Props) {
     const blob = new Blob(["\uFEFF" + sample], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url; a.download = "trial-balance-sample.csv"; a.click();
+    a.href = url;
+    a.download = "trial-balance-sample.csv";
+    a.click();
     URL.revokeObjectURL(url);
   };
 
@@ -149,15 +174,17 @@ export function TrialBalanceImport({ onMapped }: Props) {
         <CardTitle className="flex items-center gap-2 text-base">
           <FileSpreadsheet className="h-4 w-4 text-primary" />
           استيراد ميزان المراجعة (CSV) لتغذية الوعاء الزكوي تلقائيًا
-          <Badge variant="outline" className="text-[10px] mr-auto">Beta</Badge>
+          <Badge variant="outline" className="text-[10px] mr-auto">
+            Beta
+          </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         <Alert className="border-primary/20 bg-primary/5">
           <AlertDescription className="text-xs leading-relaxed">
-            ارفع ميزان مراجعة بصيغة <b>CSV</b> أو <b>Excel (.xlsx/.xls)</b> بالأعمدة: <b>اسم الحساب · مدين · دائن</b>.
-            ستُصنَّف الحسابات تلقائيًا (نقد، ذمم، مخزون، أصول ثابتة، ديون) بناءً على الكلمات المفتاحية.
-            راجع الحسابات غير المصنّفة وأضفها يدويًا.
+            ارفع ميزان مراجعة بصيغة <b>CSV</b> أو <b>Excel (.xlsx/.xls)</b> بالأعمدة:{" "}
+            <b>اسم الحساب · مدين · دائن</b>. ستُصنَّف الحسابات تلقائيًا (نقد، ذمم، مخزون، أصول
+            ثابتة، ديون) بناءً على الكلمات المفتاحية. راجع الحسابات غير المصنّفة وأضفها يدويًا.
           </AlertDescription>
         </Alert>
 
@@ -169,7 +196,8 @@ export function TrialBalanceImport({ onMapped }: Props) {
             <Download className="h-4 w-4" /> تحميل قالب نموذجي
           </Button>
           <input
-            ref={fileRef} type="file"
+            ref={fileRef}
+            type="file"
             accept=".csv,text/csv,.xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
             className="hidden"
             onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
@@ -187,7 +215,8 @@ export function TrialBalanceImport({ onMapped }: Props) {
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-xs text-primary">
               <CheckCircle2 className="h-4 w-4" />
-              تم استيراد {result.rowCount} صف. إجمالي مدين: {fmt(result.totals.debit)} · إجمالي دائن: {fmt(result.totals.credit)}
+              تم استيراد {result.rowCount} صف. إجمالي مدين: {fmt(result.totals.debit)} · إجمالي
+              دائن: {fmt(result.totals.credit)}
               {Math.abs(result.totals.debit - result.totals.credit) > 1 && (
                 <span className="text-destructive">— تحذير: الميزان غير متوازن!</span>
               )}
@@ -212,9 +241,21 @@ export function TrialBalanceImport({ onMapped }: Props) {
   );
 }
 
-function Row({ label, v, muted, negative }: { label: string; v: number; muted?: boolean; negative?: boolean }) {
+function Row({
+  label,
+  v,
+  muted,
+  negative,
+}: {
+  label: string;
+  v: number;
+  muted?: boolean;
+  negative?: boolean;
+}) {
   return (
-    <div className={`flex justify-between rounded-md border p-2 ${muted ? "border-muted text-muted-foreground" : negative ? "border-destructive/30 bg-destructive/5" : "border-primary/30 bg-primary/5"}`}>
+    <div
+      className={`flex justify-between rounded-md border p-2 ${muted ? "border-muted text-muted-foreground" : negative ? "border-destructive/30 bg-destructive/5" : "border-primary/30 bg-primary/5"}`}
+    >
       <span>{label}</span>
       <b>{fmt(v)}</b>
     </div>

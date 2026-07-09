@@ -5,7 +5,9 @@ import { Label } from "@/components/ui/label";
 import { num, fmt } from "@/lib/zakat";
 import { TrendingDown } from "lucide-react";
 
-interface Props { currencyName?: string }
+interface Props {
+  currencyName?: string;
+}
 
 export default function InflationAdjusterCard({ currencyName = "ج.م" }: Props) {
   const [nisab, setNisab] = useState("");
@@ -31,26 +33,40 @@ export default function InflationAdjusterCard({ currencyName = "ج.م" }: Props)
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="grid sm:grid-cols-3 gap-3">
-          <div><Label>قيمة النصاب الحالية</Label>
-            <Input inputMode="decimal" value={nisab} onChange={(e) => setNisab(e.target.value)} /></div>
-          <div><Label>معدّل التضخم السنوي %</Label>
-            <Input inputMode="decimal" value={inflation} onChange={(e) => setInflation(e.target.value)} /></div>
-          <div><Label>عدد السنوات</Label>
-            <Input inputMode="decimal" value={years} onChange={(e) => setYears(e.target.value)} /></div>
+          <div>
+            <Label>قيمة النصاب الحالية</Label>
+            <Input inputMode="decimal" value={nisab} onChange={(e) => setNisab(e.target.value)} />
+          </div>
+          <div>
+            <Label>معدّل التضخم السنوي %</Label>
+            <Input
+              inputMode="decimal"
+              value={inflation}
+              onChange={(e) => setInflation(e.target.value)}
+            />
+          </div>
+          <div>
+            <Label>عدد السنوات</Label>
+            <Input inputMode="decimal" value={years} onChange={(e) => setYears(e.target.value)} />
+          </div>
         </div>
         <div className="rounded-lg border bg-muted/40 p-4 grid sm:grid-cols-2 gap-3 text-sm">
           <div>
             <div className="text-muted-foreground">النصاب المُعدَّل (القوة الشرائية)</div>
-            <div className="font-bold text-lg">{fmt(result.adjusted)} {currencyName}</div>
+            <div className="font-bold text-lg">
+              {fmt(result.adjusted)} {currencyName}
+            </div>
           </div>
           <div>
             <div className="text-muted-foreground">فرق التضخم</div>
-            <div className="font-bold text-lg text-amber-600">{fmt(result.realLoss)} {currencyName}</div>
+            <div className="font-bold text-lg text-amber-600">
+              {fmt(result.realLoss)} {currencyName}
+            </div>
           </div>
         </div>
         <p className="text-xs text-muted-foreground border-r-2 border-primary/40 pr-3">
-          المرجع: ندوة قضايا الزكاة المعاصرة — يُعتبر تقدير النصاب بالأنفع للفقراء؛ في الدول ذات التضخم العالي
-          يُوصى بتحديث قيمة النصاب الذهبية/الفضية دوريًا.
+          المرجع: ندوة قضايا الزكاة المعاصرة — يُعتبر تقدير النصاب بالأنفع للفقراء؛ في الدول ذات
+          التضخم العالي يُوصى بتحديث قيمة النصاب الذهبية/الفضية دوريًا.
         </p>
       </CardContent>
     </Card>

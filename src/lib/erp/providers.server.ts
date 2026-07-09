@@ -39,7 +39,11 @@ async function jfetch(url: string, init: RequestInit & { timeoutMs?: number } = 
     const res = await fetch(url, { ...init, signal: ctrl.signal });
     const txt = await res.text();
     let json: unknown = null;
-    try { json = txt ? JSON.parse(txt) : null; } catch { json = txt; }
+    try {
+      json = txt ? JSON.parse(txt) : null;
+    } catch {
+      json = txt;
+    }
     return { status: res.status, ok: res.ok, body: json };
   } finally {
     clearTimeout(t);
@@ -53,9 +57,11 @@ async function odooAuthenticate(c: ErpCreds): Promise<number> {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      jsonrpc: "2.0", method: "call",
+      jsonrpc: "2.0",
+      method: "call",
       params: {
-        service: "common", method: "authenticate",
+        service: "common",
+        method: "authenticate",
         args: [c.db_name ?? "", c.username ?? "", c.api_key, {}],
       },
     }),
@@ -73,20 +79,27 @@ async function odooTest(c: ErpCreds): Promise<TestResult> {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        jsonrpc: "2.0", method: "call",
+        jsonrpc: "2.0",
+        method: "call",
         params: { service: "common", method: "version", args: [] },
       }),
     });
-    const server = (v.body as { result?: { server_version?: string } } | null)?.result?.server_version;
+    const server = (v.body as { result?: { server_version?: string } } | null)?.result
+      ?.server_version;
     // 2) authenticate to prove creds
     const uid = await odooAuthenticate(c);
     return {
-      ok: true, provider: c.provider, latency_ms: Date.now() - t0,
-      version: server, message: `Odoo ${server ?? ""} — uid ${uid}`,
+      ok: true,
+      provider: c.provider,
+      latency_ms: Date.now() - t0,
+      version: server,
+      message: `Odoo ${server ?? ""} — uid ${uid}`,
     };
   } catch (e) {
     return {
-      ok: false, provider: c.provider, latency_ms: Date.now() - t0,
+      ok: false,
+      provider: c.provider,
+      latency_ms: Date.now() - t0,
       message: e instanceof Error ? e.message : "unknown_error",
     };
   }
@@ -98,26 +111,41 @@ async function odooPushJournal(c: ErpCreds, j: NormalizedJournalEntry): Promise<
     const url = `${c.base_url.replace(/\/$/, "")}/jsonrpc`;
 
     // Create account.move with line_ids inline (using account codes).
-    const line_ids = j.lines.map((ln) => [0, 0, {
-      name: ln.description ?? j.memo,
-      debit: ln.debit,
-      credit: ln.credit,
-      // In real Odoo, account_id must be integer. We store code in ref for the demo/sandbox.
-      ref: ln.account_code,
-    }]);
+    const line_ids = j.lines.map((ln) => [
+      0,
+      0,
+      {
+        name: ln.description ?? j.memo,
+        debit: ln.debit,
+        credit: ln.credit,
+        // In real Odoo, account_id must be integer. We store code in ref for the demo/sandbox.
+        ref: ln.account_code,
+      },
+    ]);
 
     const payload = {
-      jsonrpc: "2.0", method: "call",
+      jsonrpc: "2.0",
+      method: "call",
       params: {
-        service: "object", method: "execute_kw",
-        args: [c.db_name ?? "", uid, c.api_key, "account.move", "create", [{
-          ref: j.reference,
-          date: j.date,
-          journal_id: 1,               // default sales/misc journal; user maps later
-          move_type: "entry",
-          narration: j.memo,
-          line_ids,
-        }]],
+        service: "object",
+        method: "execute_kw",
+        args: [
+          c.db_name ?? "",
+          uid,
+          c.api_key,
+          "account.move",
+          "create",
+          [
+            {
+              ref: j.reference,
+              date: j.date,
+              journal_id: 1, // default sales/misc journal; user maps later
+              move_type: "entry",
+              narration: j.memo,
+              line_ids,
+            },
+          ],
+        ],
       },
     };
     const r = await jfetch(url, {
@@ -129,13 +157,22 @@ async function odooPushJournal(c: ErpCreds, j: NormalizedJournalEntry): Promise<
     const raw = body?.result;
     const id = Array.isArray(raw) ? raw[0] : raw;
     if (!id) {
-      return { ok: false, status: r.status, raw: body,
-        error: (body?.error as { data?: { message?: string } })?.data?.message ?? "odoo_create_failed" };
+      return {
+        ok: false,
+        status: r.status,
+        raw: body,
+        error:
+          (body?.error as { data?: { message?: string } })?.data?.message ?? "odoo_create_failed",
+      };
     }
     return { ok: true, external_id: String(id), status: r.status, raw: body };
   } catch (e) {
-    return { ok: false, status: 0, raw: null,
-      error: e instanceof Error ? e.message : "odoo_push_failed" };
+    return {
+      ok: false,
+      status: 0,
+      raw: null,
+      error: e instanceof Error ? e.message : "odoo_push_failed",
+    };
   }
 }
 
@@ -158,12 +195,16 @@ async function sapTest(c: ErpCreds): Promise<TestResult> {
       headers: { Accept: "application/xml", ...sapAuthHeader(c) },
     });
     return {
-      ok: r.ok, provider: c.provider, latency_ms: Date.now() - t0,
+      ok: r.ok,
+      provider: c.provider,
+      latency_ms: Date.now() - t0,
       message: r.ok ? "SAP OData metadata reachable" : `HTTP ${r.status}`,
     };
   } catch (e) {
     return {
-      ok: false, provider: c.provider, latency_ms: Date.now() - t0,
+      ok: false,
+      provider: c.provider,
+      latency_ms: Date.now() - t0,
       message: e instanceof Error ? e.message : "unknown_error",
     };
   }
@@ -177,8 +218,9 @@ async function sapPushJournal(c: ErpCreds, j: NormalizedJournalEntry): Promise<P
       method: "GET",
       headers: { "x-csrf-token": "fetch", Accept: "application/json", ...sapAuthHeader(c) },
     });
-    const csrf = ((tk.body as unknown) instanceof Object &&
-      (tk.body as { __token?: string })?.__token) || "fetch";
+    const csrf =
+      ((tk.body as unknown) instanceof Object && (tk.body as { __token?: string })?.__token) ||
+      "fetch";
 
     const [dr, cr] = j.lines;
     const payload = {
@@ -191,8 +233,16 @@ async function sapPushJournal(c: ErpCreds, j: NormalizedJournalEntry): Promise<P
       DocumentHeaderText: j.memo.slice(0, 25),
       to_Item: {
         results: [
-          { GLAccount: dr?.account_code, DebitCreditCode: "S", AmountInTransactionCurrency: dr?.debit ?? 0 },
-          { GLAccount: cr?.account_code, DebitCreditCode: "H", AmountInTransactionCurrency: cr?.credit ?? 0 },
+          {
+            GLAccount: dr?.account_code,
+            DebitCreditCode: "S",
+            AmountInTransactionCurrency: dr?.debit ?? 0,
+          },
+          {
+            GLAccount: cr?.account_code,
+            DebitCreditCode: "H",
+            AmountInTransactionCurrency: cr?.credit ?? 0,
+          },
         ],
       },
     };
@@ -209,13 +259,16 @@ async function sapPushJournal(c: ErpCreds, j: NormalizedJournalEntry): Promise<P
     const body = r.body as { d?: { AccountingDocument?: string } } | null;
     const id = body?.d?.AccountingDocument;
     if (!r.ok || !id) {
-      return { ok: false, status: r.status, raw: body,
-        error: `sap_http_${r.status}` };
+      return { ok: false, status: r.status, raw: body, error: `sap_http_${r.status}` };
     }
     return { ok: true, external_id: id, status: r.status, raw: body };
   } catch (e) {
-    return { ok: false, status: 0, raw: null,
-      error: e instanceof Error ? e.message : "sap_push_failed" };
+    return {
+      ok: false,
+      status: 0,
+      raw: null,
+      error: e instanceof Error ? e.message : "sap_push_failed",
+    };
   }
 }
 

@@ -6,7 +6,9 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { num, fmt, ZAKAT_RATE } from "@/lib/zakat";
 import { TrendingUp } from "lucide-react";
 
-interface Props { currencyName?: string }
+interface Props {
+  currencyName?: string;
+}
 
 export default function StockClassificationAdvanced({ currencyName = "ج.م" }: Props) {
   // أسهم للمتاجرة
@@ -44,30 +46,62 @@ export default function StockClassificationAdvanced({ currencyName = "ج.م" }: 
       <CardContent>
         <Tabs defaultValue="trade">
           <TabsList className="grid w-full grid-cols-4 h-auto">
-            <TabsTrigger value="trade" className="text-xs">للمتاجرة</TabsTrigger>
-            <TabsTrigger value="hold" className="text-xs">للاقتناء</TabsTrigger>
-            <TabsTrigger value="reit" className="text-xs">REIT</TabsTrigger>
-            <TabsTrigger value="etf" className="text-xs">ETF</TabsTrigger>
+            <TabsTrigger value="trade" className="text-xs">
+              للمتاجرة
+            </TabsTrigger>
+            <TabsTrigger value="hold" className="text-xs">
+              للاقتناء
+            </TabsTrigger>
+            <TabsTrigger value="reit" className="text-xs">
+              REIT
+            </TabsTrigger>
+            <TabsTrigger value="etf" className="text-xs">
+              ETF
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="trade" className="space-y-3 pt-3">
             <Label>القيمة السوقية الحالية للمحفظة</Label>
-            <Input inputMode="decimal" value={tradeMarket} onChange={(e) => setTradeMarket(e.target.value)} />
+            <Input
+              inputMode="decimal"
+              value={tradeMarket}
+              onChange={(e) => setTradeMarket(e.target.value)}
+            />
             <div className="rounded bg-muted/40 p-3 text-sm">
-              الزكاة: <strong className="text-primary">{fmt(trade)} {currencyName}</strong>
-              <p className="text-xs text-muted-foreground mt-1">عروض تجارة: 2.5% من القيمة السوقية وفق الجمهور.</p>
+              الزكاة:{" "}
+              <strong className="text-primary">
+                {fmt(trade)} {currencyName}
+              </strong>
+              <p className="text-xs text-muted-foreground mt-1">
+                عروض تجارة: 2.5% من القيمة السوقية وفق الجمهور.
+              </p>
             </div>
           </TabsContent>
 
           <TabsContent value="hold" className="space-y-3 pt-3">
             <div className="grid sm:grid-cols-2 gap-3">
-              <div><Label>الموجودات الزكوية للسهم الواحد</Label>
-                <Input inputMode="decimal" value={holdShare} onChange={(e) => setHoldShare(e.target.value)} /></div>
-              <div><Label>عدد الأسهم</Label>
-                <Input inputMode="decimal" value={holdCount} onChange={(e) => setHoldCount(e.target.value)} /></div>
+              <div>
+                <Label>الموجودات الزكوية للسهم الواحد</Label>
+                <Input
+                  inputMode="decimal"
+                  value={holdShare}
+                  onChange={(e) => setHoldShare(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label>عدد الأسهم</Label>
+                <Input
+                  inputMode="decimal"
+                  value={holdCount}
+                  onChange={(e) => setHoldCount(e.target.value)}
+                />
+              </div>
             </div>
             <div className="rounded bg-muted/40 p-3 text-sm">
-              الزكاة: <strong className="text-primary">{fmt(hold)} {currencyName}</strong>
+              الزكاة:{" "}
+              <strong className="text-primary">
+                {fmt(hold)} {currencyName}
+              </strong>
               <p className="text-xs text-muted-foreground mt-1">
                 AAOIFI 21: للاقتناء — تُحسب على نصيب السهم من النقود والذمم والبضاعة فقط.
               </p>
@@ -76,15 +110,36 @@ export default function StockClassificationAdvanced({ currencyName = "ج.م" }: 
 
           <TabsContent value="reit" className="space-y-3 pt-3">
             <div className="grid sm:grid-cols-3 gap-3">
-              <div><Label>عدد الوحدات</Label>
-                <Input inputMode="decimal" value={reitUnits} onChange={(e) => setReitUnits(e.target.value)} /></div>
-              <div><Label>صافي قيمة الوحدة (NAV)</Label>
-                <Input inputMode="decimal" value={reitNAV} onChange={(e) => setReitNAV(e.target.value)} /></div>
-              <div><Label>التوزيعات السنوية</Label>
-                <Input inputMode="decimal" value={reitIncome} onChange={(e) => setReitIncome(e.target.value)} /></div>
+              <div>
+                <Label>عدد الوحدات</Label>
+                <Input
+                  inputMode="decimal"
+                  value={reitUnits}
+                  onChange={(e) => setReitUnits(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label>صافي قيمة الوحدة (NAV)</Label>
+                <Input
+                  inputMode="decimal"
+                  value={reitNAV}
+                  onChange={(e) => setReitNAV(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label>التوزيعات السنوية</Label>
+                <Input
+                  inputMode="decimal"
+                  value={reitIncome}
+                  onChange={(e) => setReitIncome(e.target.value)}
+                />
+              </div>
             </div>
             <div className="rounded bg-muted/40 p-3 text-sm">
-              الزكاة: <strong className="text-primary">{fmt(reit)} {currencyName}</strong>
+              الزكاة:{" "}
+              <strong className="text-primary">
+                {fmt(reit)} {currencyName}
+              </strong>
               <p className="text-xs text-muted-foreground mt-1">
                 صناديق REIT (عقارات مدرّة): تُقاس على المستغلات؛ 2.5% على NAV + التوزيعات (الجمهور).
               </p>
@@ -93,13 +148,28 @@ export default function StockClassificationAdvanced({ currencyName = "ج.م" }: 
 
           <TabsContent value="etf" className="space-y-3 pt-3">
             <div className="grid sm:grid-cols-2 gap-3">
-              <div><Label>القيمة السوقية للصندوق</Label>
-                <Input inputMode="decimal" value={etfMarket} onChange={(e) => setEtfMarket(e.target.value)} /></div>
-              <div><Label>نسبة المكوّنات الحلال %</Label>
-                <Input inputMode="decimal" value={etfHalalPct} onChange={(e) => setEtfHalalPct(e.target.value)} /></div>
+              <div>
+                <Label>القيمة السوقية للصندوق</Label>
+                <Input
+                  inputMode="decimal"
+                  value={etfMarket}
+                  onChange={(e) => setEtfMarket(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label>نسبة المكوّنات الحلال %</Label>
+                <Input
+                  inputMode="decimal"
+                  value={etfHalalPct}
+                  onChange={(e) => setEtfHalalPct(e.target.value)}
+                />
+              </div>
             </div>
             <div className="rounded bg-muted/40 p-3 text-sm">
-              الزكاة: <strong className="text-primary">{fmt(etf)} {currencyName}</strong>
+              الزكاة:{" "}
+              <strong className="text-primary">
+                {fmt(etf)} {currencyName}
+              </strong>
               <p className="text-xs text-muted-foreground mt-1">
                 صناديق المؤشرات: تُزكّى نسبة المكوّنات الحلال فقط؛ المكوّنات المحرّمة تُطهَّر.
               </p>

@@ -42,7 +42,9 @@ export function useWizardAutosave<T>(
     }
     // Delay arming so the initial state doesn't overwrite the saved draft
     // before the user has a chance to click "استئناف".
-    const t = setTimeout(() => { armedRef.current = true; }, 250);
+    const t = setTimeout(() => {
+      armedRef.current = true;
+    }, 250);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
@@ -60,11 +62,17 @@ export function useWizardAutosave<T>(
         /* quota / serialization errors are non-fatal */
       }
     }, debounceMs);
-    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
   }, [key, snapshot, step, debounceMs]);
 
   const clear = () => {
-    try { window.localStorage.removeItem(key); } catch { /* noop */ }
+    try {
+      window.localStorage.removeItem(key);
+    } catch {
+      /* noop */
+    }
     setSavedDraft(null);
     setSavedAt(null);
   };

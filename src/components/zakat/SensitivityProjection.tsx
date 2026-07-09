@@ -81,7 +81,13 @@ export default function SensitivityProjection({
           </div>
           <div>
             <Label>عدد السنوات (1-30)</Label>
-            <Input type="number" min={1} max={30} value={years} onChange={(e) => setYears(e.target.value)} />
+            <Input
+              type="number"
+              min={1}
+              max={30}
+              value={years}
+              onChange={(e) => setYears(e.target.value)}
+            />
           </div>
           <div>
             <Label>نمو الوعاء السنوي %</Label>
@@ -89,7 +95,11 @@ export default function SensitivityProjection({
           </div>
           <div>
             <Label>تضخم سنوي %</Label>
-            <Input inputMode="decimal" value={inflation} onChange={(e) => setInflation(e.target.value)} />
+            <Input
+              inputMode="decimal"
+              value={inflation}
+              onChange={(e) => setInflation(e.target.value)}
+            />
           </div>
         </div>
 
@@ -117,12 +127,25 @@ export default function SensitivityProjection({
                   </thead>
                   <tbody>
                     {sensitivity.map((r) => (
-                      <tr key={r.pct} className={r.pct === 0 ? "bg-primary/10 font-semibold" : "border-t"}>
-                        <td className="p-2">{r.pct > 0 ? "+" : ""}{r.pct.toFixed(1)}%</td>
-                        <td className="p-2 font-mono">{fmt(r.base)} {currencyName}</td>
-                        <td className="p-2 font-mono">{fmt(r.zakat)} {currencyName}</td>
-                        <td className={`p-2 font-mono ${r.delta > 0 ? "text-emerald-600" : r.delta < 0 ? "text-red-600" : ""}`}>
-                          {r.delta > 0 ? "+" : ""}{fmt(r.delta)} {currencyName}
+                      <tr
+                        key={r.pct}
+                        className={r.pct === 0 ? "bg-primary/10 font-semibold" : "border-t"}
+                      >
+                        <td className="p-2">
+                          {r.pct > 0 ? "+" : ""}
+                          {r.pct.toFixed(1)}%
+                        </td>
+                        <td className="p-2 font-mono">
+                          {fmt(r.base)} {currencyName}
+                        </td>
+                        <td className="p-2 font-mono">
+                          {fmt(r.zakat)} {currencyName}
+                        </td>
+                        <td
+                          className={`p-2 font-mono ${r.delta > 0 ? "text-emerald-600" : r.delta < 0 ? "text-red-600" : ""}`}
+                        >
+                          {r.delta > 0 ? "+" : ""}
+                          {fmt(r.delta)} {currencyName}
                         </td>
                       </tr>
                     ))}
@@ -130,7 +153,8 @@ export default function SensitivityProjection({
                 </table>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
-                يُظهر هذا الجدول مدى تأثّر زكاتك إذا تغيّر وعاء الزكاة ارتفاعاً أو انخفاضاً بنسبة الصدمة المُدخلة.
+                يُظهر هذا الجدول مدى تأثّر زكاتك إذا تغيّر وعاء الزكاة ارتفاعاً أو انخفاضاً بنسبة
+                الصدمة المُدخلة.
               </p>
             </section>
 
@@ -154,9 +178,15 @@ export default function SensitivityProjection({
                     {projection.rows.map((r) => (
                       <tr key={r.year} className="border-t">
                         <td className="p-2">{r.year}</td>
-                        <td className="p-2 font-mono">{fmt(r.base)} {currencyName}</td>
-                        <td className="p-2 font-mono">{fmt(r.zakat)} {currencyName}</td>
-                        <td className="p-2 font-mono text-muted-foreground">{fmt(r.realZakat)} {currencyName}</td>
+                        <td className="p-2 font-mono">
+                          {fmt(r.base)} {currencyName}
+                        </td>
+                        <td className="p-2 font-mono">
+                          {fmt(r.zakat)} {currencyName}
+                        </td>
+                        <td className="p-2 font-mono text-muted-foreground">
+                          {fmt(r.realZakat)} {currencyName}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -166,18 +196,25 @@ export default function SensitivityProjection({
               <div className="grid sm:grid-cols-2 gap-3 mt-3">
                 <div className="rounded-lg border bg-muted/40 p-3">
                   <div className="text-xs text-muted-foreground">إجمالي الزكاة الاسمية</div>
-                  <div className="text-lg font-bold text-primary">{fmt(projection.cumulativeNominal)} {currencyName}</div>
+                  <div className="text-lg font-bold text-primary">
+                    {fmt(projection.cumulativeNominal)} {currencyName}
+                  </div>
                 </div>
                 <div className="rounded-lg border bg-muted/40 p-3">
-                  <div className="text-xs text-muted-foreground">إجمالي الزكاة بالقيمة الحقيقية (مخصومة بالتضخم)</div>
-                  <div className="text-lg font-bold">{fmt(projection.cumulativeReal)} {currencyName}</div>
+                  <div className="text-xs text-muted-foreground">
+                    إجمالي الزكاة بالقيمة الحقيقية (مخصومة بالتضخم)
+                  </div>
+                  <div className="text-lg font-bold">
+                    {fmt(projection.cumulativeReal)} {currencyName}
+                  </div>
                 </div>
               </div>
             </section>
 
             <p className="text-xs text-muted-foreground border-r-2 border-primary/40 pr-3 leading-relaxed">
-              <strong>ملاحظة:</strong> هذه التوقعات استرشادية فقط لأغراض التخطيط المالي، والزكاة الفعلية تُحتسب على
-              الوعاء الحقيقي عند تمام الحول كل سنة. المعدل المعتمد: {(ZAKAT_RATE * 100).toFixed(3)}%.
+              <strong>ملاحظة:</strong> هذه التوقعات استرشادية فقط لأغراض التخطيط المالي، والزكاة
+              الفعلية تُحتسب على الوعاء الحقيقي عند تمام الحول كل سنة. المعدل المعتمد:{" "}
+              {(ZAKAT_RATE * 100).toFixed(3)}%.
             </p>
           </>
         )}

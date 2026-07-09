@@ -20,11 +20,30 @@ import { ZAKAT_RATE, fmt, num } from "@/lib/zakat";
 type Method = "net-assets" | "net-invested-funds";
 type EntityKind = "islamic-bank" | "commercial-bank" | "takaful" | "commercial-insurance";
 
-function Num({ label, value, onChange, hint }: { label: string; value: string; onChange: (v: string) => void; hint?: string }) {
+function Num({
+  label,
+  value,
+  onChange,
+  hint,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  hint?: string;
+}) {
   return (
     <div className="space-y-1">
       <Label className="text-xs">{label}</Label>
-      <Input type="number" min="0" step="0.01" value={value} onChange={(e) => onChange(e.target.value)} dir="ltr" style={{ textAlign: "right" }} placeholder="0" />
+      <Input
+        type="number"
+        min="0"
+        step="0.01"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        dir="ltr"
+        style={{ textAlign: "right" }}
+        placeholder="0"
+      />
       {hint && <p className="text-[10px] text-muted-foreground">{hint}</p>}
     </div>
   );
@@ -43,12 +62,12 @@ export function BankInsuranceZakatSection({ currencyName = "ج.م" }: { currency
   const [deductLiabilities, setDeductLiabilities] = useState("0"); // ودائع العملاء/الالتزامات قصيرة الأجل المُستحقة قبل الحول
 
   // طريقة صافي الأموال المستثمرة (Net Invested Funds)
-  const [equity, setEquity] = useState("0");           // حقوق المساهمين
-  const [provisions, setProvisions] = useState("0");   // مخصصات + احتياطيات
-  const [longTerm, setLongTerm] = useState("0");       // قروض/صكوك طويلة الأجل
+  const [equity, setEquity] = useState("0"); // حقوق المساهمين
+  const [provisions, setProvisions] = useState("0"); // مخصصات + احتياطيات
+  const [longTerm, setLongTerm] = useState("0"); // قروض/صكوك طويلة الأجل
   const [fixedAssets, setFixedAssets] = useState("0"); // أصول ثابتة + معنوية
   const [subsidiaries, setSubsidiaries] = useState("0"); // استثمارات في تابعة تُزكِّي نفسها
-  const [losses, setLosses] = useState("0");           // خسائر متراكمة
+  const [losses, setLosses] = useState("0"); // خسائر متراكمة
 
   // تأمين: أموال المساهمين (للزكاة) + صندوق المشتركين (مستثنى للتكافل)
   const [shareholderFunds, setShareholderFunds] = useState("0");
@@ -65,10 +84,30 @@ export function BankInsuranceZakatSection({ currencyName = "ج.م" }: { currency
       return Math.max(0, assets - num(deductLiabilities));
     }
     // net-invested-funds (طريقة صافي الأموال المستثمرة — AAOIFI 35)
-    const base = num(equity) + num(provisions) + num(longTerm)
-      - num(fixedAssets) - num(subsidiaries) - num(losses);
+    const base =
+      num(equity) +
+      num(provisions) +
+      num(longTerm) -
+      num(fixedAssets) -
+      num(subsidiaries) -
+      num(losses);
     return Math.max(0, base);
-  }, [isBank, method, cash, interbank, financings, securities, gold, deductLiabilities, equity, provisions, longTerm, fixedAssets, subsidiaries, losses]);
+  }, [
+    isBank,
+    method,
+    cash,
+    interbank,
+    financings,
+    securities,
+    gold,
+    deductLiabilities,
+    equity,
+    provisions,
+    longTerm,
+    fixedAssets,
+    subsidiaries,
+    losses,
+  ]);
 
   const insuranceBase = useMemo(() => {
     if (!isInsurance) return 0;
@@ -79,26 +118,35 @@ export function BankInsuranceZakatSection({ currencyName = "ج.م" }: { currency
   const base = isBank ? bankBase : insuranceBase;
   const zakat = base * ZAKAT_RATE;
 
-  const purification = kind === "commercial-bank" || kind === "commercial-insurance"
-    ? num(haramRevenue)
-    : 0;
+  const purification =
+    kind === "commercial-bank" || kind === "commercial-insurance" ? num(haramRevenue) : 0;
 
   return (
     <Card className="shadow-soft border-primary/20">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
-          {isInsurance ? <Shield className="h-4 w-4 text-primary" /> : <Landmark className="h-4 w-4 text-primary" />}
+          {isInsurance ? (
+            <Shield className="h-4 w-4 text-primary" />
+          ) : (
+            <Landmark className="h-4 w-4 text-primary" />
+          )}
           زكاة البنوك وشركات التأمين
-          <Badge variant="outline" className="text-[10px] mr-auto">AAOIFI 35 / 9</Badge>
+          <Badge variant="outline" className="text-[10px] mr-auto">
+            AAOIFI 35 / 9
+          </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <Alert className="border-primary/20 bg-primary/5">
           <Info className="h-4 w-4" />
           <AlertDescription className="text-xs leading-relaxed">
-            البنوك: تُحسب الزكاة إمّا على <b>صافي الموجودات الزكوية</b> (نقد + ذمم + تمويلات + أوراق مالية − التزامات قصيرة) أو على
-            <b> صافي الأموال المستثمرة</b> (حقوق المساهمين + المخصصات + القروض طويلة الأجل − الأصول الثابتة − تابعة مُزكِّية − خسائر).
-            <br />التأمين التكافلي: الزكاة على <b>أموال المساهمين فقط</b>، أما صندوق المشتركين فلا زكاة فيه لأنه مرصود لتغطية الأخطار.
+            البنوك: تُحسب الزكاة إمّا على <b>صافي الموجودات الزكوية</b> (نقد + ذمم + تمويلات + أوراق
+            مالية − التزامات قصيرة) أو على
+            <b> صافي الأموال المستثمرة</b> (حقوق المساهمين + المخصصات + القروض طويلة الأجل − الأصول
+            الثابتة − تابعة مُزكِّية − خسائر).
+            <br />
+            التأمين التكافلي: الزكاة على <b>أموال المساهمين فقط</b>، أما صندوق المشتركين فلا زكاة
+            فيه لأنه مرصود لتغطية الأخطار.
           </AlertDescription>
         </Alert>
 
@@ -107,10 +155,18 @@ export function BankInsuranceZakatSection({ currencyName = "ج.م" }: { currency
             <Label className="text-xs">نوع المنشأة</Label>
             <Tabs value={kind} onValueChange={(v) => setKind(v as EntityKind)}>
               <TabsList className="grid grid-cols-2 h-auto">
-                <TabsTrigger value="islamic-bank" className="text-[11px]">بنك إسلامي</TabsTrigger>
-                <TabsTrigger value="commercial-bank" className="text-[11px]">بنك تجاري</TabsTrigger>
-                <TabsTrigger value="takaful" className="text-[11px]">تأمين تكافلي</TabsTrigger>
-                <TabsTrigger value="commercial-insurance" className="text-[11px]">تأمين تجاري</TabsTrigger>
+                <TabsTrigger value="islamic-bank" className="text-[11px]">
+                  بنك إسلامي
+                </TabsTrigger>
+                <TabsTrigger value="commercial-bank" className="text-[11px]">
+                  بنك تجاري
+                </TabsTrigger>
+                <TabsTrigger value="takaful" className="text-[11px]">
+                  تأمين تكافلي
+                </TabsTrigger>
+                <TabsTrigger value="commercial-insurance" className="text-[11px]">
+                  تأمين تجاري
+                </TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
@@ -118,9 +174,17 @@ export function BankInsuranceZakatSection({ currencyName = "ج.م" }: { currency
           {isBank && (
             <div className="space-y-1">
               <Label className="text-xs">طريقة الحساب</Label>
-              <RadioGroup value={method} onValueChange={(v) => setMethod(v as Method)} className="flex gap-3 text-xs">
-                <label className="flex items-center gap-1.5"><RadioGroupItem value="net-invested-funds" /> صافي الأموال المستثمرة</label>
-                <label className="flex items-center gap-1.5"><RadioGroupItem value="net-assets" /> صافي الموجودات</label>
+              <RadioGroup
+                value={method}
+                onValueChange={(v) => setMethod(v as Method)}
+                className="flex gap-3 text-xs"
+              >
+                <label className="flex items-center gap-1.5">
+                  <RadioGroupItem value="net-invested-funds" /> صافي الأموال المستثمرة
+                </label>
+                <label className="flex items-center gap-1.5">
+                  <RadioGroupItem value="net-assets" /> صافي الموجودات
+                </label>
               </RadioGroup>
             </div>
           )}
@@ -130,13 +194,25 @@ export function BankInsuranceZakatSection({ currencyName = "ج.م" }: { currency
           <div className="grid md:grid-cols-3 gap-3">
             <Num label="النقد والأرصدة لدى البنك المركزي" value={cash} onChange={setCash} />
             <Num label="أرصدة لدى البنوك (قابلة للسحب)" value={interbank} onChange={setInterbank} />
-            <Num label="تمويلات/قروض قصيرة الأجل (محتملة التحصيل)" value={financings} onChange={setFinancings} />
+            <Num
+              label="تمويلات/قروض قصيرة الأجل (محتملة التحصيل)"
+              value={financings}
+              onChange={setFinancings}
+            />
             <Num label="أوراق مالية للمتاجرة" value={securities} onChange={setSecurities} />
             <Num label="ذهب/فضة بحوزة البنك" value={gold} onChange={setGold} />
-            <Num label="(−) ودائع/التزامات قصيرة مُستحقة" value={deductLiabilities} onChange={setDeductLiabilities} />
+            <Num
+              label="(−) ودائع/التزامات قصيرة مُستحقة"
+              value={deductLiabilities}
+              onChange={setDeductLiabilities}
+            />
             {kind === "commercial-bank" && (
-              <Num label="إيرادات ربوية للتطهير" value={haramRevenue} onChange={setHaramRevenue}
-                hint="فوائد ربوية تُصرف في وجوه البر دون نية القربة — قبل احتساب الزكاة على الأصل" />
+              <Num
+                label="إيرادات ربوية للتطهير"
+                value={haramRevenue}
+                onChange={setHaramRevenue}
+                hint="فوائد ربوية تُصرف في وجوه البر دون نية القربة — قبل احتساب الزكاة على الأصل"
+              />
             )}
           </div>
         )}
@@ -146,25 +222,48 @@ export function BankInsuranceZakatSection({ currencyName = "ج.م" }: { currency
             <Num label="حقوق المساهمين" value={equity} onChange={setEquity} />
             <Num label="المخصصات + الاحتياطيات" value={provisions} onChange={setProvisions} />
             <Num label="قروض/صكوك طويلة الأجل" value={longTerm} onChange={setLongTerm} />
-            <Num label="(−) الأصول الثابتة والمعنوية" value={fixedAssets} onChange={setFixedAssets} />
-            <Num label="(−) استثمارات في تابعة تُزكِّي نفسها" value={subsidiaries} onChange={setSubsidiaries} />
+            <Num
+              label="(−) الأصول الثابتة والمعنوية"
+              value={fixedAssets}
+              onChange={setFixedAssets}
+            />
+            <Num
+              label="(−) استثمارات في تابعة تُزكِّي نفسها"
+              value={subsidiaries}
+              onChange={setSubsidiaries}
+            />
             <Num label="(−) خسائر متراكمة" value={losses} onChange={setLosses} />
             {kind === "commercial-bank" && (
-              <Num label="إيرادات ربوية للتطهير" value={haramRevenue} onChange={setHaramRevenue}
-                hint="تُحسب وتُخرج قبل الزكاة على رأس المال" />
+              <Num
+                label="إيرادات ربوية للتطهير"
+                value={haramRevenue}
+                onChange={setHaramRevenue}
+                hint="تُحسب وتُخرج قبل الزكاة على رأس المال"
+              />
             )}
           </div>
         )}
 
-
         {isInsurance && (
           <div className="grid md:grid-cols-3 gap-3">
-            <Num label="أموال المساهمين (الوعاء الزكوي)" value={shareholderFunds} onChange={setShareholderFunds} />
-            <Num label="صندوق المشتركين (مستثنى)" value={participantsFund} onChange={setParticipantsFund}
-              hint="لا زكاة عليه في التكافل — مرصود لتغطية الأخطار" />
+            <Num
+              label="أموال المساهمين (الوعاء الزكوي)"
+              value={shareholderFunds}
+              onChange={setShareholderFunds}
+            />
+            <Num
+              label="صندوق المشتركين (مستثنى)"
+              value={participantsFund}
+              onChange={setParticipantsFund}
+              hint="لا زكاة عليه في التكافل — مرصود لتغطية الأخطار"
+            />
             {kind === "commercial-insurance" && (
-              <Num label="إيرادات محرَّمة للتطهير" value={haramRevenue} onChange={setHaramRevenue}
-                hint="تُصرف في وجوه البر دون نية القربة" />
+              <Num
+                label="إيرادات محرَّمة للتطهير"
+                value={haramRevenue}
+                onChange={setHaramRevenue}
+                hint="تُصرف في وجوه البر دون نية القربة"
+              />
             )}
           </div>
         )}
@@ -172,16 +271,22 @@ export function BankInsuranceZakatSection({ currencyName = "ج.م" }: { currency
         <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 grid md:grid-cols-3 gap-2 text-sm">
           <div>
             <div className="text-xs text-muted-foreground">الوعاء الزكوي</div>
-            <div className="font-bold text-primary">{fmt(base)} {currencyName}</div>
+            <div className="font-bold text-primary">
+              {fmt(base)} {currencyName}
+            </div>
           </div>
           <div>
             <div className="text-xs text-muted-foreground">الزكاة المستحقّة (2.5%)</div>
-            <div className="font-bold text-primary text-lg">{fmt(zakat)} {currencyName}</div>
+            <div className="font-bold text-primary text-lg">
+              {fmt(zakat)} {currencyName}
+            </div>
           </div>
           {purification > 0 && (
             <div>
               <div className="text-xs text-muted-foreground">مبلغ التطهير</div>
-              <div className="font-bold text-destructive">{fmt(purification)} {currencyName}</div>
+              <div className="font-bold text-destructive">
+                {fmt(purification)} {currencyName}
+              </div>
             </div>
           )}
         </div>
@@ -189,8 +294,8 @@ export function BankInsuranceZakatSection({ currencyName = "ج.م" }: { currency
         <Alert className="border-muted">
           <Scale className="h-4 w-4" />
           <AlertDescription className="text-[11px] leading-relaxed">
-            <b>مرجع:</b> AAOIFI — معيار الزكاة (35) للبنوك، ومعيار التأمين التكافلي (26/41).
-            النتائج إرشادية ولا تُغني عن مراجعة هيئة الرقابة الشرعية والمحاسب القانوني.
+            <b>مرجع:</b> AAOIFI — معيار الزكاة (35) للبنوك، ومعيار التأمين التكافلي (26/41). النتائج
+            إرشادية ولا تُغني عن مراجعة هيئة الرقابة الشرعية والمحاسب القانوني.
           </AlertDescription>
         </Alert>
       </CardContent>

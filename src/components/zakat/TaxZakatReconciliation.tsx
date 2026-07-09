@@ -7,7 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Scale, Info } from "lucide-react";
 import { num, fmt } from "@/lib/zakat";
 
-interface Props { currencyName: string; }
+interface Props {
+  currencyName: string;
+}
 
 /**
  * ورقة عمل مطابقة الوعاء الزكوي مع الوعاء الضريبي
@@ -28,12 +30,26 @@ export function TaxZakatReconciliation({ currencyName }: Props) {
 
   const calc = useMemo(() => {
     const profit = num(accountingProfit);
-    const zakatBase = profit + num(interestExp) + num(donationsDed) + num(unrealizedLosses)
-                     - num(exemptIncome) - num(fixedAssetSale);
+    const zakatBase =
+      profit +
+      num(interestExp) +
+      num(donationsDed) +
+      num(unrealizedLosses) -
+      num(exemptIncome) -
+      num(fixedAssetSale);
     const taxBase = profit + (num(accountingDepreciation) - num(taxDepreciation));
     const variance = zakatBase - taxBase;
     return { zakatBase, taxBase, variance };
-  }, [accountingProfit, interestExp, donationsDed, unrealizedLosses, exemptIncome, fixedAssetSale, taxDepreciation, accountingDepreciation]);
+  }, [
+    accountingProfit,
+    interestExp,
+    donationsDed,
+    unrealizedLosses,
+    exemptIncome,
+    fixedAssetSale,
+    taxDepreciation,
+    accountingDepreciation,
+  ]);
 
   return (
     <Card className="shadow-soft border-primary/20">
@@ -41,7 +57,9 @@ export function TaxZakatReconciliation({ currencyName }: Props) {
         <CardTitle className="flex items-center gap-2 text-base">
           <Scale className="h-4 w-4 text-primary" />
           مطابقة الوعاء الزكوي مع الوعاء الضريبي
-          <Badge variant="outline" className="text-[10px] mr-auto">ZATCA · IFRS · AAOIFI</Badge>
+          <Badge variant="outline" className="text-[10px] mr-auto">
+            ZATCA · IFRS · AAOIFI
+          </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -56,24 +74,53 @@ export function TaxZakatReconciliation({ currencyName }: Props) {
 
         <div>
           <Label className="text-sm">الربح المحاسبي قبل الزكاة والضريبة</Label>
-          <Input type="number" dir="ltr" style={{ textAlign: "right" }}
-            value={accountingProfit} onChange={(e) => setAccountingProfit(e.target.value)} placeholder="0" />
+          <Input
+            type="number"
+            dir="ltr"
+            style={{ textAlign: "right" }}
+            value={accountingProfit}
+            onChange={(e) => setAccountingProfit(e.target.value)}
+            placeholder="0"
+          />
         </div>
 
         <div className="rounded-md border border-primary/20 p-3 space-y-2">
-          <div className="text-xs font-semibold text-primary">إضافات للوعاء الزكوي (تُضاف للربح)</div>
+          <div className="text-xs font-semibold text-primary">
+            إضافات للوعاء الزكوي (تُضاف للربح)
+          </div>
           <div className="grid md:grid-cols-3 gap-2">
             <div>
               <Label className="text-[11px]">فوائد ربوية مدفوعة</Label>
-              <Input type="number" dir="ltr" style={{ textAlign: "right" }} value={interestExp} onChange={(e) => setInterestExp(e.target.value)} placeholder="0" />
+              <Input
+                type="number"
+                dir="ltr"
+                style={{ textAlign: "right" }}
+                value={interestExp}
+                onChange={(e) => setInterestExp(e.target.value)}
+                placeholder="0"
+              />
             </div>
             <div>
               <Label className="text-[11px]">تبرعات مخصومة محاسبيًا</Label>
-              <Input type="number" dir="ltr" style={{ textAlign: "right" }} value={donationsDed} onChange={(e) => setDonationsDed(e.target.value)} placeholder="0" />
+              <Input
+                type="number"
+                dir="ltr"
+                style={{ textAlign: "right" }}
+                value={donationsDed}
+                onChange={(e) => setDonationsDed(e.target.value)}
+                placeholder="0"
+              />
             </div>
             <div>
               <Label className="text-[11px]">خسائر غير محقّقة</Label>
-              <Input type="number" dir="ltr" style={{ textAlign: "right" }} value={unrealizedLosses} onChange={(e) => setUnrealizedLosses(e.target.value)} placeholder="0" />
+              <Input
+                type="number"
+                dir="ltr"
+                style={{ textAlign: "right" }}
+                value={unrealizedLosses}
+                onChange={(e) => setUnrealizedLosses(e.target.value)}
+                placeholder="0"
+              />
             </div>
           </div>
         </div>
@@ -83,35 +130,77 @@ export function TaxZakatReconciliation({ currencyName }: Props) {
           <div className="grid md:grid-cols-2 gap-2">
             <div>
               <Label className="text-[11px]">دخل مستثنى زكويًا</Label>
-              <Input type="number" dir="ltr" style={{ textAlign: "right" }} value={exemptIncome} onChange={(e) => setExemptIncome(e.target.value)} placeholder="0" />
+              <Input
+                type="number"
+                dir="ltr"
+                style={{ textAlign: "right" }}
+                value={exemptIncome}
+                onChange={(e) => setExemptIncome(e.target.value)}
+                placeholder="0"
+              />
             </div>
             <div>
               <Label className="text-[11px]">أرباح بيع أصول ثابتة</Label>
-              <Input type="number" dir="ltr" style={{ textAlign: "right" }} value={fixedAssetSale} onChange={(e) => setFixedAssetSale(e.target.value)} placeholder="0" />
+              <Input
+                type="number"
+                dir="ltr"
+                style={{ textAlign: "right" }}
+                value={fixedAssetSale}
+                onChange={(e) => setFixedAssetSale(e.target.value)}
+                placeholder="0"
+              />
             </div>
           </div>
         </div>
 
         <div className="rounded-md border border-muted p-3 space-y-2">
-          <div className="text-xs font-semibold text-muted-foreground">فروقات ضريبية فقط (لا تؤثر زكويًا)</div>
+          <div className="text-xs font-semibold text-muted-foreground">
+            فروقات ضريبية فقط (لا تؤثر زكويًا)
+          </div>
           <div className="grid md:grid-cols-2 gap-2">
             <div>
               <Label className="text-[11px]">إهلاك محاسبي</Label>
-              <Input type="number" dir="ltr" style={{ textAlign: "right" }} value={accountingDepreciation} onChange={(e) => setAccountingDepreciation(e.target.value)} placeholder="0" />
+              <Input
+                type="number"
+                dir="ltr"
+                style={{ textAlign: "right" }}
+                value={accountingDepreciation}
+                onChange={(e) => setAccountingDepreciation(e.target.value)}
+                placeholder="0"
+              />
             </div>
             <div>
               <Label className="text-[11px]">إهلاك ضريبي</Label>
-              <Input type="number" dir="ltr" style={{ textAlign: "right" }} value={taxDepreciation} onChange={(e) => setTaxDepreciation(e.target.value)} placeholder="0" />
+              <Input
+                type="number"
+                dir="ltr"
+                style={{ textAlign: "right" }}
+                value={taxDepreciation}
+                onChange={(e) => setTaxDepreciation(e.target.value)}
+                placeholder="0"
+              />
             </div>
           </div>
         </div>
 
         <div className="rounded-lg bg-primary/10 border border-primary/30 p-3 space-y-1 text-sm">
-          <div className="flex justify-between"><span>الوعاء الزكوي المطابق:</span><b>{fmt(calc.zakatBase)} {currencyName}</b></div>
-          <div className="flex justify-between"><span>الوعاء الضريبي المطابق:</span><b>{fmt(calc.taxBase)} {currencyName}</b></div>
+          <div className="flex justify-between">
+            <span>الوعاء الزكوي المطابق:</span>
+            <b>
+              {fmt(calc.zakatBase)} {currencyName}
+            </b>
+          </div>
+          <div className="flex justify-between">
+            <span>الوعاء الضريبي المطابق:</span>
+            <b>
+              {fmt(calc.taxBase)} {currencyName}
+            </b>
+          </div>
           <div className="flex justify-between text-primary border-t border-primary/30 pt-1">
             <span>الفرق (زكوي − ضريبي):</span>
-            <b className={calc.variance >= 0 ? "" : "text-destructive"}>{fmt(calc.variance)} {currencyName}</b>
+            <b className={calc.variance >= 0 ? "" : "text-destructive"}>
+              {fmt(calc.variance)} {currencyName}
+            </b>
           </div>
         </div>
       </CardContent>

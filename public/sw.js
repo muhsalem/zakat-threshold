@@ -12,17 +12,21 @@ const EXTERNAL_API_HOSTS = [
 
 self.addEventListener("install", (e) => {
   e.waitUntil(
-    caches.open(CACHE_NAME)
+    caches
+      .open(CACHE_NAME)
       .then((c) => c.addAll(STATIC_ASSETS))
-      .then(() => self.skipWaiting())
+      .then(() => self.skipWaiting()),
   );
 });
 
 self.addEventListener("activate", (e) => {
   e.waitUntil(
-    caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))))
-      .then(() => self.clients.claim())
+    caches
+      .keys()
+      .then((keys) =>
+        Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))),
+      )
+      .then(() => self.clients.claim()),
   );
 });
 
@@ -34,18 +38,23 @@ self.addEventListener("fetch", (e) => {
   // APIs الخارجية: network-first مع fallback 503
   if (EXTERNAL_API_HOSTS.some((h) => url.hostname.includes(h))) {
     e.respondWith(
-      fetch(req).catch(() =>
-        new Response(JSON.stringify({ error: "offline", cached: false }), {
-          status: 503,
-          headers: { "Content-Type": "application/json" },
-        })
-      )
+      fetch(req).catch(
+        () =>
+          new Response(JSON.stringify({ error: "offline", cached: false }), {
+            status: 503,
+            headers: { "Content-Type": "application/json" },
+          }),
+      ),
     );
     return;
   }
 
   // Supabase وأي API داخلي: network-only (لا يُخزَّن)
-  if (url.hostname.includes("supabase.co") || url.pathname.startsWith("/api/") || url.pathname.startsWith("/auth")) {
+  if (
+    url.hostname.includes("supabase.co") ||
+    url.pathname.startsWith("/api/") ||
+    url.pathname.startsWith("/auth")
+  ) {
     return;
   }
 
@@ -60,7 +69,7 @@ self.addEventListener("fetch", (e) => {
         })
         .catch(() => cached ?? new Response("offline", { status: 503 }));
       return cached ?? networkFetch;
-    })
+    }),
   );
 });
 
@@ -90,6 +99,6 @@ self.addEventListener("notificationclick", (e) => {
     self.clients.matchAll({ type: "window" }).then((clients) => {
       if (clients.length) return clients[0].focus();
       return self.clients.openWindow("/");
-    })
+    }),
   );
 });

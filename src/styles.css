@@ -98,34 +98,63 @@
 }
 
 @layer base {
-  * { border-color: var(--color-border); }
-  html { direction: rtl; }
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    direction: rtl;
+  }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     background-image:
-      radial-gradient(circle at 0% 0%, color-mix(in oklab, var(--primary) 8%, transparent), transparent 50%),
-      radial-gradient(circle at 100% 100%, color-mix(in oklab, var(--gold) 10%, transparent), transparent 50%);
+      radial-gradient(
+        circle at 0% 0%,
+        color-mix(in oklab, var(--primary) 8%, transparent),
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 100% 100%,
+        color-mix(in oklab, var(--gold) 10%, transparent),
+        transparent 50%
+      );
     background-attachment: fixed;
   }
-  h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
 }
 
 @layer utilities {
-  .text-gold { color: var(--gold); }
-  .bg-gold { background-color: var(--gold); }
+  .text-gold {
+    color: var(--gold);
+  }
+  .bg-gold {
+    background-color: var(--gold);
+  }
   .bg-gradient-primary {
-    background-image: linear-gradient(135deg,
+    background-image: linear-gradient(
+      135deg,
       color-mix(in oklab, var(--primary) 95%, black),
       var(--primary),
-      color-mix(in oklab, var(--primary) 80%, var(--gold)));
+      color-mix(in oklab, var(--primary) 80%, var(--gold))
+    );
   }
   .bg-gradient-gold {
-    background-image: linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 70%, white));
+    background-image: linear-gradient(
+      135deg,
+      var(--gold),
+      color-mix(in oklab, var(--gold) 70%, white)
+    );
   }
   .shadow-soft {
-    box-shadow: 0 1px 2px 0 oklch(0 0 0 / 0.04), 0 8px 24px -8px color-mix(in oklab, var(--primary) 18%, transparent);
+    box-shadow:
+      0 1px 2px 0 oklch(0 0 0 / 0.04),
+      0 8px 24px -8px color-mix(in oklab, var(--primary) 18%, transparent);
   }
   .shadow-gold {
     box-shadow: 0 8px 32px -8px color-mix(in oklab, var(--gold) 40%, transparent);
@@ -133,7 +162,9 @@
 }
 
 /* تقرير الطباعة الاحترافي — مخفي افتراضياً، يظهر فقط في الطباعة */
-#print-report { display: none; }
+#print-report {
+  display: none;
+}
 
 @media print {
   @page {
@@ -141,7 +172,8 @@
     margin: 18mm 14mm 22mm 14mm;
   }
 
-  html, body {
+  html,
+  body {
     background: white !important;
     background-image: none !important;
     color: #111 !important;
@@ -153,7 +185,9 @@
   }
 
   /* إخفاء واجهة التطبيق، إظهار تقرير الطباعة فقط */
-  body > *:not(#print-report) { display: none !important; }
+  body > *:not(#print-report) {
+    display: none !important;
+  }
   #print-report {
     display: block !important;
     position: static !important;
@@ -165,14 +199,31 @@
   }
 
   /* فاصل صفحات + منع تقطيع البطاقات والجداول */
-  .print-page-break { page-break-before: always; break-before: page; }
-  .print-avoid-break, .print-card, .print-table, tr, td, th {
+  .print-page-break {
+    page-break-before: always;
+    break-before: page;
+  }
+  .print-avoid-break,
+  .print-card,
+  .print-table,
+  tr,
+  td,
+  th {
     page-break-inside: avoid;
     break-inside: avoid;
   }
-  h1, h2, h3, h4 { page-break-after: avoid; break-after: avoid; }
+  h1,
+  h2,
+  h3,
+  h4 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
 
-  a { color: #111 !important; text-decoration: none !important; }
+  a {
+    color: #111 !important;
+    text-decoration: none !important;
+  }
 }
 
 /* وضع تصدير PDF — يستبدل ألوان oklch بقيم متوافقة مع html2canvas */
@@ -204,7 +255,6 @@
 .pdf-export-mode #print-report * {
   background-image: none !important;
 }
-
 
 /* Mobile-first: make any data table horizontally scrollable on small screens */
 @media (max-width: 768px) {

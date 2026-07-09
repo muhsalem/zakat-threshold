@@ -13,7 +13,12 @@ export const Route = createFileRoute("/security")({
   head: () => ({ meta: [{ title: "الأمان والتحقق بخطوتين | نِصاب" }] }),
 });
 
-interface Factor { id: string; friendly_name?: string; factor_type: string; status: string }
+interface Factor {
+  id: string;
+  friendly_name?: string;
+  factor_type: string;
+  status: string;
+}
 
 function SecurityPage() {
   const { user, loading } = useAuth();
@@ -29,16 +34,22 @@ function SecurityPage() {
     const { data } = await supabase.auth.mfa.listFactors();
     setFactors((data?.all as Factor[]) ?? []);
   }
-  useEffect(() => { if (user) refresh(); }, [user]);
+  useEffect(() => {
+    if (user) refresh();
+  }, [user]);
 
   async function startEnroll() {
-    setBusy(true); setMsg(null);
+    setBusy(true);
+    setMsg(null);
     const { data, error } = await supabase.auth.mfa.enroll({
       factorType: "totp",
       friendlyName: `نِصاب-${new Date().toISOString().slice(0, 10)}`,
     });
     setBusy(false);
-    if (error) { setMsg({ kind: "err", text: error.message }); return; }
+    if (error) {
+      setMsg({ kind: "err", text: error.message });
+      return;
+    }
     setEnrollQr(data.totp.qr_code);
     setEnrollSecret(data.totp.secret);
     setEnrollFactorId(data.id);
@@ -46,16 +57,29 @@ function SecurityPage() {
 
   async function verifyEnroll() {
     if (!enrollFactorId) return;
-    setBusy(true); setMsg(null);
+    setBusy(true);
+    setMsg(null);
     const ch = await supabase.auth.mfa.challenge({ factorId: enrollFactorId });
-    if (ch.error) { setBusy(false); setMsg({ kind: "err", text: ch.error.message }); return; }
+    if (ch.error) {
+      setBusy(false);
+      setMsg({ kind: "err", text: ch.error.message });
+      return;
+    }
     const vr = await supabase.auth.mfa.verify({
-      factorId: enrollFactorId, challengeId: ch.data.id, code,
+      factorId: enrollFactorId,
+      challengeId: ch.data.id,
+      code,
     });
     setBusy(false);
-    if (vr.error) { setMsg({ kind: "err", text: vr.error.message }); return; }
+    if (vr.error) {
+      setMsg({ kind: "err", text: vr.error.message });
+      return;
+    }
     setMsg({ kind: "ok", text: "تم تفعيل التحقق بخطوتين بنجاح" });
-    setEnrollQr(null); setEnrollSecret(null); setEnrollFactorId(null); setCode("");
+    setEnrollQr(null);
+    setEnrollSecret(null);
+    setEnrollFactorId(null);
+    setCode("");
     refresh();
   }
 
@@ -64,7 +88,10 @@ function SecurityPage() {
     const { error } = await supabase.auth.mfa.unenroll({ factorId: id });
     setBusy(false);
     if (error) setMsg({ kind: "err", text: error.message });
-    else { setMsg({ kind: "ok", text: "تم الإلغاء" }); refresh(); }
+    else {
+      setMsg({ kind: "ok", text: "تم الإلغاء" });
+      refresh();
+    }
   }
 
   if (loading) return null;
@@ -76,14 +103,21 @@ function SecurityPage() {
         <h1 className="text-2xl font-bold">الأمان والتحقق بخطوتين</h1>
       </div>
       <p className="text-sm text-muted-foreground">
-        فعِّل التحقق بخطوتين (TOTP) لحماية حسابك. تحتاج إلى تطبيق مصادقة مثل Google Authenticator أو Authy.
+        فعِّل التحقق بخطوتين (TOTP) لحماية حسابك. تحتاج إلى تطبيق مصادقة مثل Google Authenticator أو
+        Authy.
       </p>
 
       {!user ? (
-        <Card><CardContent className="py-8 text-center space-y-3">
-          <p className="text-sm">يجب تسجيل الدخول أولًا.</p>
-          <Link to="/auth"><Button className="gap-1.5"><LogIn className="h-4 w-4" /> دخول</Button></Link>
-        </CardContent></Card>
+        <Card>
+          <CardContent className="py-8 text-center space-y-3">
+            <p className="text-sm">يجب تسجيل الدخول أولًا.</p>
+            <Link to="/auth">
+              <Button className="gap-1.5">
+                <LogIn className="h-4 w-4" /> دخول
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
       ) : (
         <>
           {msg && (
@@ -103,13 +137,21 @@ function SecurityPage() {
                 <p className="text-sm text-muted-foreground">لا يوجد عامل تحقق بعد.</p>
               ) : (
                 factors.map((f) => (
-                  <div key={f.id} className="flex items-center justify-between border rounded-md p-3 text-sm">
+                  <div
+                    key={f.id}
+                    className="flex items-center justify-between border rounded-md p-3 text-sm"
+                  >
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-primary" />
                       <span className="font-medium">{f.friendly_name || f.factor_type}</span>
                       <span className="text-xs text-muted-foreground">({f.status})</span>
                     </div>
-                    <Button size="sm" variant="ghost" onClick={() => removeFactor(f.id)} disabled={busy}>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => removeFactor(f.id)}
+                      disabled={busy}
+                    >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
@@ -133,15 +175,26 @@ function SecurityPage() {
                 </div>
                 {enrollSecret && (
                   <div className="text-xs text-center text-muted-foreground">
-                    أو أدخل المفتاح يدويًا: <code className="font-mono text-foreground">{enrollSecret}</code>
+                    أو أدخل المفتاح يدويًا:{" "}
+                    <code className="font-mono text-foreground">{enrollSecret}</code>
                   </div>
                 )}
                 <div className="space-y-2">
                   <label className="text-sm font-medium">رمز التحقق المكوَّن من 6 أرقام</label>
-                  <Input value={code} onChange={(e) => setCode(e.target.value)} maxLength={6}
-                    inputMode="numeric" placeholder="123456" dir="ltr" />
+                  <Input
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
+                    maxLength={6}
+                    inputMode="numeric"
+                    placeholder="123456"
+                    dir="ltr"
+                  />
                 </div>
-                <Button onClick={verifyEnroll} disabled={busy || code.length !== 6} className="w-full">
+                <Button
+                  onClick={verifyEnroll}
+                  disabled={busy || code.length !== 6}
+                  className="w-full"
+                >
                   {busy ? "جاري التحقق…" : "تأكيد التفعيل"}
                 </Button>
               </CardContent>

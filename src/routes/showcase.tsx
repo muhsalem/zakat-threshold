@@ -8,7 +8,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Download, Play, ArrowRight, Sparkles, ShieldCheck, FileText, Award, ChevronDown } from "lucide-react";
+import {
+  Download,
+  Play,
+  ArrowRight,
+  Sparkles,
+  ShieldCheck,
+  FileText,
+  Award,
+  ChevronDown,
+} from "lucide-react";
 import videoAsset from "@/assets/media/zakat-marketing.mp4.asset.json";
 import videoAsset480p from "@/assets/media/zakat-marketing-480p.mp4.asset.json";
 import pptxAsset from "@/assets/media/zakat-jury-presentation.pptx.asset.json";
@@ -26,7 +35,11 @@ export const Route = createFileRoute("/showcase")({
   head: () => ({
     meta: [
       { title: "عرض المنصة للجنة التحكيم — منصة الزكاة الذكية" },
-      { name: "description", content: "فيديو تسويقي وعرض تقديمي شامل لمنصة الزكاة الذكية مُقدَّم إلى لجنة تحكيم الجائزة." },
+      {
+        name: "description",
+        content:
+          "فيديو تسويقي وعرض تقديمي شامل لمنصة الزكاة الذكية مُقدَّم إلى لجنة تحكيم الجائزة.",
+      },
       { property: "og:title", content: "منصة الزكاة الذكية — عرض الجائزة" },
       { property: "og:description", content: "اكتشف الفيديو التسويقي وحمّل العرض التقديمي." },
       { property: "og:type", content: "article" },
@@ -41,7 +54,10 @@ export const Route = createFileRoute("/showcase")({
 
 function ShowcasePage() {
   return (
-    <div dir="rtl" className="min-h-screen bg-gradient-to-b from-[#0B2A4A] via-[#0F3A63] to-[#0B2A4A] text-white">
+    <div
+      dir="rtl"
+      className="min-h-screen bg-gradient-to-b from-[#0B2A4A] via-[#0F3A63] to-[#0B2A4A] text-white"
+    >
       {/* Header */}
       <header className="border-b border-white/10 backdrop-blur-sm sticky top-0 z-20 bg-[#0B2A4A]/80">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
@@ -86,7 +102,9 @@ function ShowcasePage() {
           />
         </div>
         <div className="max-w-5xl mx-auto mt-5 flex flex-wrap items-center justify-between gap-3 text-sm text-white/70">
-          <span className="flex items-center gap-2"><Play className="h-4 w-4 text-[#C9A35A]" /> فيديو تسويقي تعريفي — جودة عالية</span>
+          <span className="flex items-center gap-2">
+            <Play className="h-4 w-4 text-[#C9A35A]" /> فيديو تسويقي تعريفي — جودة عالية
+          </span>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -106,24 +124,34 @@ function ShowcasePage() {
             >
               <DropdownMenuLabel className="text-white/90">اختر جودة التنزيل</DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-white/10" />
-              <DropdownMenuItem asChild className="cursor-pointer focus:bg-[#C9A35A]/15 focus:text-white">
+              <DropdownMenuItem
+                asChild
+                className="cursor-pointer focus:bg-[#C9A35A]/15 focus:text-white"
+              >
                 <a
                   href={videoAsset.url}
                   download="zakat-marketing-1080p.mp4"
                   className="flex items-center justify-between gap-3"
                 >
                   <span className="font-semibold">1080p</span>
-                  <span className="text-white/60 text-xs">Full HD — {formatBytes(videoAsset.size)}</span>
+                  <span className="text-white/60 text-xs">
+                    Full HD — {formatBytes(videoAsset.size)}
+                  </span>
                 </a>
               </DropdownMenuItem>
-              <DropdownMenuItem asChild className="cursor-pointer focus:bg-[#C9A35A]/15 focus:text-white">
+              <DropdownMenuItem
+                asChild
+                className="cursor-pointer focus:bg-[#C9A35A]/15 focus:text-white"
+              >
                 <a
                   href={videoAsset480p.url}
                   download="zakat-marketing-480p.mp4"
                   className="flex items-center justify-between gap-3"
                 >
                   <span className="font-semibold">480p</span>
-                  <span className="text-white/60 text-xs">HD — {formatBytes(videoAsset480p.size)}</span>
+                  <span className="text-white/60 text-xs">
+                    HD — {formatBytes(videoAsset480p.size)}
+                  </span>
                 </a>
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -140,7 +168,8 @@ function ShowcasePage() {
             </div>
             <h3 className="text-2xl font-bold mb-2">العرض التقديمي للجنة</h3>
             <p className="text-white/70 mb-6 leading-relaxed">
-              ١٢ شريحة بتصميم احترافي تعرض الحلّ، البنية، المرجعية الشرعية، الابتكار، والأثر المتوقّع.
+              ١٢ شريحة بتصميم احترافي تعرض الحلّ، البنية، المرجعية الشرعية، الابتكار، والأثر
+              المتوقّع.
             </p>
             <a href={pptxAsset.url} download="zakat-jury-presentation.pptx">
               <Button className="w-full bg-[#C9A35A] hover:bg-[#b8924b] text-[#0B2A4A] font-bold gap-2">
@@ -156,10 +185,14 @@ function ShowcasePage() {
             </div>
             <h3 className="text-2xl font-bold mb-2">جرّب المنصة مباشرة</h3>
             <p className="text-white/70 mb-6 leading-relaxed">
-              ادخل إلى الحاسبة الشاملة للأفراد والشركات والمجموعات وفق معيار AAOIFI 35 وتقويم أم القرى.
+              ادخل إلى الحاسبة الشاملة للأفراد والشركات والمجموعات وفق معيار AAOIFI 35 وتقويم أم
+              القرى.
             </p>
             <Link to="/">
-              <Button variant="outline" className="w-full border-[#C9A35A]/40 text-[#C9A35A] hover:bg-[#C9A35A]/10 font-bold gap-2">
+              <Button
+                variant="outline"
+                className="w-full border-[#C9A35A]/40 text-[#C9A35A] hover:bg-[#C9A35A]/10 font-bold gap-2"
+              >
                 فتح الحاسبة
                 <ArrowRight className="h-5 w-5" />
               </Button>

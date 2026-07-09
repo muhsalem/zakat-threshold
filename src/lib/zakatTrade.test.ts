@@ -14,8 +14,7 @@ describe("honeyZakatableValue() — نصاب العسل", () => {
     expect(honeyZakatableValue({ kg: HONEY_NISAB_KG - 1, pricePerKg: 50 })).toBe(0);
   });
   it("عند بلوغ النصاب بالضبط → يُحتسب", () => {
-    expect(honeyZakatableValue({ kg: HONEY_NISAB_KG, pricePerKg: 100 }))
-      .toBe(HONEY_NISAB_KG * 100);
+    expect(honeyZakatableValue({ kg: HONEY_NISAB_KG, pricePerKg: 100 })).toBe(HONEY_NISAB_KG * 100);
   });
   it("فوق النصاب → كامل القيمة", () => {
     expect(honeyZakatableValue({ kg: 1000, pricePerKg: 150 })).toBe(150000);
@@ -57,8 +56,8 @@ describe("livestockTradeBase() — أنعام للتجارة", () => {
 describe("aggregateAgriTrade() — منع الازدواج وتجميع لعروض التجارة", () => {
   it("جميع المصادر صفر → إجمالي صفر", () => {
     const r = aggregateAgriTrade({
-      honey: { kg: 100, pricePerKg: 50 },  // دون النصاب
-      fish: { value: 100, cost: 200 },      // سالب
+      honey: { kg: 100, pricePerKg: 50 }, // دون النصاب
+      fish: { value: 100, cost: 200 }, // سالب
       poultry: { value: 0, cost: 0 },
       livestock: { enabled: false, marketValue: 100000 },
     });
@@ -83,10 +82,10 @@ describe("aggregateAgriTrade() — منع الازدواج وتجميع لعرو
 
   it("سيناريو شامل: عسل بالنصاب + سمك ربح + دواجن خسارة + أنعام للتجارة", () => {
     const r = aggregateAgriTrade({
-      honey: { kg: HONEY_NISAB_KG, pricePerKg: 100 },         // 65,300
-      fish: { value: 20000, cost: 5000 },                      // 15,000
-      poultry: { value: 1000, cost: 5000 },                    // 0 (خسارة)
-      livestock: { enabled: true, marketValue: 200000 },       // 200,000
+      honey: { kg: HONEY_NISAB_KG, pricePerKg: 100 }, // 65,300
+      fish: { value: 20000, cost: 5000 }, // 15,000
+      poultry: { value: 1000, cost: 5000 }, // 0 (خسارة)
+      livestock: { enabled: true, marketValue: 200000 }, // 200,000
     });
     expect(r.honey).toBe(HONEY_NISAB_KG * 100);
     expect(r.fish).toBe(15000);

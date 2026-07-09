@@ -55,8 +55,7 @@ export const getMarketQuote = createServerFn({ method: "GET" })
 
       const meta = result.meta ?? {};
       const timestamps: number[] = result.timestamp ?? [];
-      const closes: (number | null)[] =
-        result.indicators?.quote?.[0]?.close ?? [];
+      const closes: (number | null)[] = result.indicators?.quote?.[0]?.close ?? [];
 
       // Pick the closing price at-or-before the requested date; else latest valid close.
       let pickedTs: number | null = null;

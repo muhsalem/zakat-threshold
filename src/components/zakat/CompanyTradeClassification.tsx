@@ -4,16 +4,28 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { BookOpen, Search, ExternalLink, Globe2, Layers } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
-  TRADE_ACTIVITIES, TRADE_GROUP_LABELS, CLASSIFICATION_REFS,
-  type TradeActivityGroup, type TradeActivityRow,
+  TRADE_ACTIVITIES,
+  TRADE_GROUP_LABELS,
+  CLASSIFICATION_REFS,
+  type TradeActivityGroup,
+  type TradeActivityRow,
 } from "@/lib/tradeClassifications";
 
 export interface CompanyTradeClassificationValue {
@@ -34,12 +46,30 @@ export function emptyCompanyTradeClassification(): CompanyTradeClassificationVal
 /** خريطة الدولة → معيار التصنيف الرسمي المعتمد لديها */
 const COUNTRY_STANDARD: Record<string, CompanyTradeClassificationValue["standard"]> = {
   EG: "CAPMAS",
-  SA: "ISIC", AE: "ISIC", KW: "ISIC", QA: "ISIC", BH: "ISIC", OM: "ISIC",
-  JO: "ISIC", MA: "ISIC", DZ: "ISIC", TN: "ISIC", LY: "ISIC",
-  MY: "ISIC", TR: "ISIC",
-  GB: "UKSIC", UK: "UKSIC",
-  US: "NAICS", CA: "NAICS", MX: "NAICS",
-  FR: "NACE", DE: "NACE", IT: "NACE", ES: "NACE", NL: "NACE", BE: "NACE",
+  SA: "ISIC",
+  AE: "ISIC",
+  KW: "ISIC",
+  QA: "ISIC",
+  BH: "ISIC",
+  OM: "ISIC",
+  JO: "ISIC",
+  MA: "ISIC",
+  DZ: "ISIC",
+  TN: "ISIC",
+  LY: "ISIC",
+  MY: "ISIC",
+  TR: "ISIC",
+  GB: "UKSIC",
+  UK: "UKSIC",
+  US: "NAICS",
+  CA: "NAICS",
+  MX: "NAICS",
+  FR: "NACE",
+  DE: "NACE",
+  IT: "NACE",
+  ES: "NACE",
+  NL: "NACE",
+  BE: "NACE",
 };
 
 const STANDARD_LABELS: Record<CompanyTradeClassificationValue["standard"], string> = {
@@ -53,19 +83,39 @@ const STANDARD_LABELS: Record<CompanyTradeClassificationValue["standard"], strin
 /** ربط معرّف القطاع من تبويب الشركات بمجموعة الأنشطة لتقليل قائمة البحث */
 const SECTOR_TO_GROUPS: Record<string, TradeActivityGroup[]> = {
   // أولى
-  agri: ["agriculture"], livestock: ["agriculture"], forestry: ["agriculture"], fishing: ["agriculture"],
-  minerals: ["industry"], oilgas: ["industry"], quarries: ["industry"],
+  agri: ["agriculture"],
+  livestock: ["agriculture"],
+  forestry: ["agriculture"],
+  fishing: ["agriculture"],
+  minerals: ["industry"],
+  oilgas: ["industry"],
+  quarries: ["industry"],
   // صناعي
-  manuf: ["industry"], food: ["industry", "food"], pharma: ["industry"], textile: ["industry"],
-  auto: ["industry"], renewable: ["industry"], utilities: ["services", "industry"], construct: ["construction"],
+  manuf: ["industry"],
+  food: ["industry", "food"],
+  pharma: ["industry"],
+  textile: ["industry"],
+  auto: ["industry"],
+  renewable: ["industry"],
+  utilities: ["services", "industry"],
+  construct: ["construction"],
   // تجاري
-  trade_w: ["wholesale", "retail"], import: ["wholesale"],
-  ecommerce: ["retail"], gold_trade: ["retail", "wholesale"], used_goods: ["retail"],
+  trade_w: ["wholesale", "retail"],
+  import: ["wholesale"],
+  ecommerce: ["retail"],
+  gold_trade: ["retail", "wholesale"],
+  used_goods: ["retail"],
   // خدمي
-  islamic_fin: ["services"], takaful: ["services"], consult: ["services"],
-  health: ["services"], education: ["services"],
-  tourism: ["tourism", "food"], transport: ["transport"],
-  software: ["tech"], media: ["tech", "services"], realestate: ["services"],
+  islamic_fin: ["services"],
+  takaful: ["services"],
+  consult: ["services"],
+  health: ["services"],
+  education: ["services"],
+  tourism: ["tourism", "food"],
+  transport: ["transport"],
+  software: ["tech"],
+  media: ["tech", "services"],
+  realestate: ["services"],
 };
 
 interface Props {
@@ -80,7 +130,12 @@ interface Props {
 }
 
 export default function CompanyTradeClassification({
-  countryCode, countryName, sectorId, sectorLabel, value, onChange,
+  countryCode,
+  countryName,
+  sectorId,
+  sectorLabel,
+  value,
+  onChange,
 }: Props) {
   const standard = COUNTRY_STANDARD[countryCode] ?? "ISIC";
   const [filter, setFilter] = useState<TradeActivityGroup | "all">("all");
@@ -115,11 +170,16 @@ export default function CompanyTradeClassification({
   /** اختيار العمود المُبرز حسب معيار الدولة */
   const codeOf = (r: TradeActivityRow) => {
     switch (standard) {
-      case "CAPMAS": return r.egyCode;
-      case "NACE":   return r.nace;
-      case "NAICS":  return r.naics;
-      case "UKSIC":  return r.ukSic;
-      default:       return r.isic;
+      case "CAPMAS":
+        return r.egyCode;
+      case "NACE":
+        return r.nace;
+      case "NAICS":
+        return r.naics;
+      case "UKSIC":
+        return r.ukSic;
+      default:
+        return r.isic;
     }
   };
 
@@ -140,10 +200,11 @@ export default function CompanyTradeClassification({
       <Alert className="border-primary/15 bg-background">
         <Globe2 className="h-4 w-4" />
         <AlertDescription className="text-xs leading-relaxed text-right">
-          المعيار المعتمد لدولة <b>{countryName ?? countryCode}</b> هو: <b>{STANDARD_LABELS[standard]}</b> —
-          يُطبَّق <b>تلقائياً</b> عند تغيير دولة الشركة، وتُصفَّى الأنشطة وفق <b>قطاع النشاط</b>
-          المختار{sectorLabel ? ` (${sectorLabel})` : ""}، ثم تُربط نتيجة التصنيف بنموذج الزكاة المناسب
-          (تجارة / صناعة / مستغلات / خدمات) في تبويب «النموذج القطاعي» أدناه.
+          المعيار المعتمد لدولة <b>{countryName ?? countryCode}</b> هو:{" "}
+          <b>{STANDARD_LABELS[standard]}</b> — يُطبَّق <b>تلقائياً</b> عند تغيير دولة الشركة،
+          وتُصفَّى الأنشطة وفق <b>قطاع النشاط</b>
+          المختار{sectorLabel ? ` (${sectorLabel})` : ""}، ثم تُربط نتيجة التصنيف بنموذج الزكاة
+          المناسب (تجارة / صناعة / مستغلات / خدمات) في تبويب «النموذج القطاعي» أدناه.
         </AlertDescription>
       </Alert>
 
@@ -164,7 +225,9 @@ export default function CompanyTradeClassification({
           <SelectContent>
             <SelectItem value="all">كل المجموعات</SelectItem>
             {Object.entries(TRADE_GROUP_LABELS).map(([k, label]) => (
-              <SelectItem key={k} value={k}>{label}</SelectItem>
+              <SelectItem key={k} value={k}>
+                {label}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -188,7 +251,9 @@ export default function CompanyTradeClassification({
           <TableHeader>
             <TableRow>
               <TableHead className="text-right">النشاط</TableHead>
-              <TableHead className="text-right">كود {standard === "CAPMAS" ? "مصر (CAPMAS)" : standard}</TableHead>
+              <TableHead className="text-right">
+                كود {standard === "CAPMAS" ? "مصر (CAPMAS)" : standard}
+              </TableHead>
               <TableHead className="text-right">إجراء</TableHead>
             </TableRow>
           </TableHeader>
@@ -207,16 +272,18 @@ export default function CompanyTradeClassification({
                   <TableRow key={r.egyCode} className={cn(isSelected && "bg-primary/10")}>
                     <TableCell className="text-xs">
                       <div className="font-medium">{r.nameAr}</div>
-                      <div className="text-[10px] text-muted-foreground">{TRADE_GROUP_LABELS[r.group]}</div>
+                      <div className="text-[10px] text-muted-foreground">
+                        {TRADE_GROUP_LABELS[r.group]}
+                      </div>
                     </TableCell>
-                    <TableCell className="text-xs tabular-nums font-bold text-primary">{code}</TableCell>
+                    <TableCell className="text-xs tabular-nums font-bold text-primary">
+                      {code}
+                    </TableCell>
                     <TableCell>
                       <Button
                         size="sm"
                         variant={isSelected ? "default" : "outline"}
-                        onClick={() =>
-                          onChange({ code, name: r.nameAr, standard, group: r.group })
-                        }
+                        onClick={() => onChange({ code, name: r.nameAr, standard, group: r.group })}
                       >
                         {isSelected ? "مختار" : "اختر"}
                       </Button>
@@ -230,7 +297,9 @@ export default function CompanyTradeClassification({
       </div>
 
       <details className="rounded-md border bg-background p-3 text-xs">
-        <summary className="cursor-pointer font-semibold">المراجع الرسمية للتصنيفات الدولية</summary>
+        <summary className="cursor-pointer font-semibold">
+          المراجع الرسمية للتصنيفات الدولية
+        </summary>
         <ul className="mt-2 space-y-1">
           {CLASSIFICATION_REFS.map((ref) => (
             <li key={ref.url} className="flex items-center justify-between gap-2">

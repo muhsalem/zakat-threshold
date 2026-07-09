@@ -30,7 +30,14 @@ type Entity = {
 };
 
 function emptyChild(): Entity {
-  return { id: crypto.randomUUID(), name: "شركة تابعة", ownershipPct: 100, zakatableAssets: 0, intercompanyEliminations: 0, isParent: false };
+  return {
+    id: crypto.randomUUID(),
+    name: "شركة تابعة",
+    ownershipPct: 100,
+    zakatableAssets: 0,
+    intercompanyEliminations: 0,
+    isParent: false,
+  };
 }
 
 export function GroupConsolidation({ currency = "USD" }: { currency?: string }) {
@@ -66,7 +73,9 @@ export function GroupConsolidation({ currency = "USD" }: { currency?: string }) 
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Building2 className="h-5 w-5 text-primary" /> توحيد زكاة المجموعة (قابضة + تابعات)
-          <Badge variant="outline" className="text-[10px]">AAOIFI FAS 9</Badge>
+          <Badge variant="outline" className="text-[10px]">
+            AAOIFI FAS 9
+          </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-5">
@@ -83,11 +92,25 @@ export function GroupConsolidation({ currency = "USD" }: { currency?: string }) 
         <div className="border rounded-lg p-3 bg-primary/5 space-y-3">
           <div className="flex items-center gap-2">
             <Badge>قابضة</Badge>
-            <Input value={parent.name} onChange={(e) => setParent((p) => ({ ...p, name: e.target.value }))} className="flex-1" />
+            <Input
+              value={parent.name}
+              onChange={(e) => setParent((p) => ({ ...p, name: e.target.value }))}
+              className="flex-1"
+            />
           </div>
           <div className="grid md:grid-cols-2 gap-3">
-            <NumField label="الموجودات الزكوية" value={parent.zakatableAssets} onChange={(v) => setParent((p) => ({ ...p, zakatableAssets: v }))} currency={currency} />
-            <NumField label="المعاملات البينية (تُستبعَد)" value={parent.intercompanyEliminations} onChange={(v) => setParent((p) => ({ ...p, intercompanyEliminations: v }))} currency={currency} />
+            <NumField
+              label="الموجودات الزكوية"
+              value={parent.zakatableAssets}
+              onChange={(v) => setParent((p) => ({ ...p, zakatableAssets: v }))}
+              currency={currency}
+            />
+            <NumField
+              label="المعاملات البينية (تُستبعَد)"
+              value={parent.intercompanyEliminations}
+              onChange={(v) => setParent((p) => ({ ...p, intercompanyEliminations: v }))}
+              currency={currency}
+            />
           </div>
         </div>
 
@@ -96,25 +119,56 @@ export function GroupConsolidation({ currency = "USD" }: { currency?: string }) 
           <div key={c.id} className="border rounded-lg p-3 space-y-3 bg-card/50">
             <div className="flex items-center gap-2">
               <Badge variant="outline">تابعة</Badge>
-              <Input value={c.name} onChange={(e) => updateChild(c.id, { name: e.target.value })} className="flex-1" />
-              <Button variant="ghost" size="icon" onClick={() => removeChild(c.id)} aria-label="حذف الشركة التابعة">
+              <Input
+                value={c.name}
+                onChange={(e) => updateChild(c.id, { name: e.target.value })}
+                className="flex-1"
+              />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => removeChild(c.id)}
+                aria-label="حذف الشركة التابعة"
+              >
                 <Trash2 className="h-4 w-4 text-destructive" />
               </Button>
             </div>
             <div className="grid md:grid-cols-3 gap-3">
               <div className="space-y-1.5">
                 <Label className="text-xs">% ملكية القابضة فيها</Label>
-                <Input type="number" min="0" max="100" step="0.01" value={c.ownershipPct || ""}
+                <Input
+                  type="number"
+                  min="0"
+                  max="100"
+                  step="0.01"
+                  value={c.ownershipPct || ""}
                   onChange={(e) => updateChild(c.id, { ownershipPct: Number(e.target.value) || 0 })}
-                  dir="ltr" style={{ textAlign: "right" }} />
+                  dir="ltr"
+                  style={{ textAlign: "right" }}
+                />
               </div>
-              <NumField label="موجوداتها الزكوية" value={c.zakatableAssets} onChange={(v) => updateChild(c.id, { zakatableAssets: v })} currency={currency} />
-              <NumField label="المعاملات البينية" value={c.intercompanyEliminations} onChange={(v) => updateChild(c.id, { intercompanyEliminations: v })} currency={currency} />
+              <NumField
+                label="موجوداتها الزكوية"
+                value={c.zakatableAssets}
+                onChange={(v) => updateChild(c.id, { zakatableAssets: v })}
+                currency={currency}
+              />
+              <NumField
+                label="المعاملات البينية"
+                value={c.intercompanyEliminations}
+                onChange={(v) => updateChild(c.id, { intercompanyEliminations: v })}
+                currency={currency}
+              />
             </div>
           </div>
         ))}
 
-        <Button variant="outline" size="sm" onClick={() => setChildren((cs) => [...cs, emptyChild()])} className="gap-1.5">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setChildren((cs) => [...cs, emptyChild()])}
+          className="gap-1.5"
+        >
           <Plus className="h-3.5 w-3.5" /> إضافة شركة تابعة
         </Button>
 
@@ -133,20 +187,34 @@ export function GroupConsolidation({ currency = "USD" }: { currency?: string }) 
               {rows.map((r) => (
                 <tr key={r.id} className="border-t">
                   <td className="p-2">{r.name}</td>
-                  <td className="p-2 text-end" dir="ltr">{r.isParent ? "100" : r.ownershipPct}%</td>
-                  <td className="p-2 text-end" dir="ltr">{fmt(r.net)}</td>
-                  <td className="p-2 text-end font-semibold" dir="ltr">{fmt(r.contribution)}</td>
+                  <td className="p-2 text-end" dir="ltr">
+                    {r.isParent ? "100" : r.ownershipPct}%
+                  </td>
+                  <td className="p-2 text-end" dir="ltr">
+                    {fmt(r.net)}
+                  </td>
+                  <td className="p-2 text-end font-semibold" dir="ltr">
+                    {fmt(r.contribution)}
+                  </td>
                 </tr>
               ))}
             </tbody>
             <tfoot className="bg-primary/5">
               <tr className="border-t">
-                <td className="p-2 font-bold" colSpan={3}>إجمالي الوعاء الزكوي الموحَّد</td>
-                <td className="p-2 text-end font-bold" dir="ltr">{fmt(total)} {currency}</td>
+                <td className="p-2 font-bold" colSpan={3}>
+                  إجمالي الوعاء الزكوي الموحَّد
+                </td>
+                <td className="p-2 text-end font-bold" dir="ltr">
+                  {fmt(total)} {currency}
+                </td>
               </tr>
               <tr className="border-t">
-                <td className="p-2 font-bold text-primary" colSpan={3}>زكاة المجموعة (2.5%)</td>
-                <td className="p-2 text-end font-bold text-primary" dir="ltr">{fmt(zakat)} {currency}</td>
+                <td className="p-2 font-bold text-primary" colSpan={3}>
+                  زكاة المجموعة (2.5%)
+                </td>
+                <td className="p-2 text-end font-bold text-primary" dir="ltr">
+                  {fmt(zakat)} {currency}
+                </td>
               </tr>
             </tfoot>
           </table>
@@ -156,15 +224,34 @@ export function GroupConsolidation({ currency = "USD" }: { currency?: string }) 
   );
 }
 
-function NumField({ label, value, onChange, currency }: { label: string; value: number; onChange: (v: number) => void; currency: string }) {
+function NumField({
+  label,
+  value,
+  onChange,
+  currency,
+}: {
+  label: string;
+  value: number;
+  onChange: (v: number) => void;
+  currency: string;
+}) {
   return (
     <div className="space-y-1.5">
       <Label className="text-xs">{label}</Label>
       <div className="relative">
-        <Input type="number" min="0" step="0.01" value={value || ""}
+        <Input
+          type="number"
+          min="0"
+          step="0.01"
+          value={value || ""}
           onChange={(e) => onChange(Number(e.target.value) || 0)}
-          dir="ltr" style={{ textAlign: "right" }} className="pl-12" />
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">{currency}</span>
+          dir="ltr"
+          style={{ textAlign: "right" }}
+          className="pl-12"
+        />
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">
+          {currency}
+        </span>
       </div>
     </div>
   );

@@ -23,8 +23,8 @@ interface Props {
 // Tools relevant per audience (محاسبياً وفقهياً)
 const TOOLS: Record<Mode, string[]> = {
   individual: ["salary", "advance", "sensitivity", "purify", "inflation", "stats"],
-  company:    ["stocks", "sensitivity", "advance", "purify", "inflation", "stats"],
-  all:        ["salary", "stocks", "advance", "sensitivity", "purify", "inflation", "stats"],
+  company: ["stocks", "sensitivity", "advance", "purify", "inflation", "stats"],
+  all: ["salary", "stocks", "advance", "sensitivity", "purify", "inflation", "stats"],
 };
 
 const LABELS: Record<string, string> = {
@@ -45,11 +45,13 @@ export default function AdvancedToolsHub({
   title,
 }: Props) {
   const tools = TOOLS[mode];
-  const headerTitle = title ?? (mode === "individual"
-    ? "أدوات الأفراد المتقدمة (مالية وفقهية)"
-    : mode === "company"
-      ? "أدوات الشركات المتقدمة (محاسبية وفقهية)"
-      : "أدوات متقدمة (مالية ومحاسبية وفقهية)");
+  const headerTitle =
+    title ??
+    (mode === "individual"
+      ? "أدوات الأفراد المتقدمة (مالية وفقهية)"
+      : mode === "company"
+        ? "أدوات الشركات المتقدمة (محاسبية وفقهية)"
+        : "أدوات متقدمة (مالية ومحاسبية وفقهية)");
 
   const panels: Record<string, ReactElement> = {
     salary: <SalaryZakatCalculator currencyName={currencyName} nisabValue={nisabValue} />,
@@ -73,11 +75,15 @@ export default function AdvancedToolsHub({
         <Tabs defaultValue={tools[0]}>
           <TabsList className="flex flex-wrap h-auto justify-start gap-1">
             {tools.map((t) => (
-              <TabsTrigger key={t} value={t} className="text-xs">{LABELS[t]}</TabsTrigger>
+              <TabsTrigger key={t} value={t} className="text-xs">
+                {LABELS[t]}
+              </TabsTrigger>
             ))}
           </TabsList>
           {tools.map((t) => (
-            <TabsContent key={t} value={t}>{panels[t]}</TabsContent>
+            <TabsContent key={t} value={t}>
+              {panels[t]}
+            </TabsContent>
           ))}
         </Tabs>
       </CardContent>

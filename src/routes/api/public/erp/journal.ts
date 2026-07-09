@@ -63,17 +63,32 @@ export const Route = createFileRoute("/api/public/erp/journal")({
         try {
           payload = (await request.json()) as ZakatCalcInput;
         } catch {
-          return Response.json({ ok: false, error: "invalid_json" }, { status: 400, headers: CORS });
+          return Response.json(
+            { ok: false, error: "invalid_json" },
+            { status: 400, headers: CORS },
+          );
         }
 
-        const required = ["entity_name", "currency", "zakat_due", "period_start", "period_end"] as const;
+        const required = [
+          "entity_name",
+          "currency",
+          "zakat_due",
+          "period_start",
+          "period_end",
+        ] as const;
         for (const k of required) {
           if (payload[k] === undefined || payload[k] === null || payload[k] === "") {
-            return Response.json({ ok: false, error: `missing_field:${k}` }, { status: 422, headers: CORS });
+            return Response.json(
+              { ok: false, error: `missing_field:${k}` },
+              { status: 422, headers: CORS },
+            );
           }
         }
         if (typeof payload.zakat_due !== "number" || !(payload.zakat_due > 0)) {
-          return Response.json({ ok: false, error: "zakat_due_must_be_positive_number" }, { status: 422, headers: CORS });
+          return Response.json(
+            { ok: false, error: "zakat_due_must_be_positive_number" },
+            { status: 422, headers: CORS },
+          );
         }
 
         const url = new URL(request.url);
@@ -89,7 +104,8 @@ export const Route = createFileRoute("/api/public/erp/journal")({
             "X-Format": format,
           };
           if (asDownload) {
-            headers["Content-Disposition"] = `attachment; filename="${j.reference}.${out.filenameSuffix}"`;
+            headers["Content-Disposition"] =
+              `attachment; filename="${j.reference}.${out.filenameSuffix}"`;
           }
           return new Response(out.body, { status: 200, headers });
         } catch (e) {

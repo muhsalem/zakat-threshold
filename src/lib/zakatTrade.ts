@@ -11,12 +11,21 @@
 import { ZAKAT_RATE } from "./zakat";
 
 export const HONEY_NISAB_KG = 653; // قياساً على نصاب الزروع (5 أوسق)
-export const HONEY_RATE = 0.10;
-export const RIKAZ_RATE = 0.20;
+export const HONEY_RATE = 0.1;
+export const RIKAZ_RATE = 0.2;
 
-export interface HoneyInput { kg: number; pricePerKg: number; }
-export interface NetInput { value: number; cost: number; }
-export interface LivestockTradeInput { enabled: boolean; marketValue: number; }
+export interface HoneyInput {
+  kg: number;
+  pricePerKg: number;
+}
+export interface NetInput {
+  value: number;
+  cost: number;
+}
+export interface LivestockTradeInput {
+  enabled: boolean;
+  marketValue: number;
+}
 
 export function honeyZakatableValue(input: HoneyInput): number {
   const kg = Math.max(0, input.kg);
@@ -41,8 +50,8 @@ export interface AgriTradeAggregate {
   fish: number;
   poultry: number;
   livestock: number;
-  total: number;       // مجموع القاعدة المُضافة لعروض التجارة
-  zakat: number;       // 2.5% من المجموع (مجرد إشارة — تُحسب في الإجمالي الكلي)
+  total: number; // مجموع القاعدة المُضافة لعروض التجارة
+  zakat: number; // 2.5% من المجموع (مجرد إشارة — تُحسب في الإجمالي الكلي)
 }
 
 export interface AgriTradeInputs {

@@ -12,7 +12,13 @@ interface Props {
   className?: string;
 }
 
-export function PayButton({ planId, label = "اشترِ الآن", returnPath = "/", variant = "default", className }: Props) {
+export function PayButton({
+  planId,
+  label = "اشترِ الآن",
+  returnPath = "/",
+  variant = "default",
+  className,
+}: Props) {
   const [loading, setLoading] = useState(false);
 
   async function handlePay() {
@@ -27,7 +33,11 @@ export function PayButton({ planId, label = "اشترِ الآن", returnPath = 
 
   return (
     <Button variant={variant} className={className} onClick={handlePay} disabled={loading}>
-      {loading ? <Loader2 className="h-4 w-4 animate-spin ml-2" /> : <CreditCard className="h-4 w-4 ml-2" />}
+      {loading ? (
+        <Loader2 className="h-4 w-4 animate-spin ml-2" />
+      ) : (
+        <CreditCard className="h-4 w-4 ml-2" />
+      )}
       {label}
     </Button>
   );

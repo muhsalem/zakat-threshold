@@ -5,7 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Info, Building2, Truck, Briefcase, HandCoins, Users, AlertTriangle } from "lucide-react";
 import { currency as fmtCurrency, num } from "@/lib/zakat";
 
@@ -14,8 +20,22 @@ interface Props {
   onTotalChange: (zakatable: number) => void;
 }
 
-type RentRow = { id: number; type: string; income: string; halal: boolean; owned: boolean; inCash: boolean };
-type IncomeRow = { id: number; source: string; amount: string; halal: boolean; owned: boolean; inCash: boolean };
+type RentRow = {
+  id: number;
+  type: string;
+  income: string;
+  halal: boolean;
+  owned: boolean;
+  inCash: boolean;
+};
+type IncomeRow = {
+  id: number;
+  source: string;
+  amount: string;
+  halal: boolean;
+  owned: boolean;
+  inCash: boolean;
+};
 
 const RENT_PROPS = [
   { v: "apartment", l: "شقق سكنية" },
@@ -87,15 +107,23 @@ export function IncomeUsufructSection({ currencyName, onTotalChange }: Props) {
 
     const incomeTotal = sumRows(incomes);
 
-    const partnerZak = hasPartnership
-      ? (num(companyZakatableBase) * (num(partnerShare) / 100))
-      : 0;
+    const partnerZak = hasPartnership ? num(companyZakatableBase) * (num(partnerShare) / 100) : 0;
 
     const zakatable = netUsufruct + incomeTotal + partnerZak;
     return { propsIncome, vehIncome, netUsufruct, incomeTotal, partnerZak, zakatable };
-  }, [props_, vehicles, incomes, usufructExpenses, hasPartnership, partnerShare, companyZakatableBase]);
+  }, [
+    props_,
+    vehicles,
+    incomes,
+    usufructExpenses,
+    hasPartnership,
+    partnerShare,
+    companyZakatableBase,
+  ]);
 
-  useEffect(() => { onTotalChange(totals.zakatable); }, [totals.zakatable, onTotalChange]);
+  useEffect(() => {
+    onTotalChange(totals.zakatable);
+  }, [totals.zakatable, onTotalChange]);
 
   const renderRentRow = (
     list: { v: string; l: string }[],
@@ -115,35 +143,83 @@ export function IncomeUsufructSection({ currencyName, onTotalChange }: Props) {
         <div key={r.id} className="grid grid-cols-12 gap-2 items-center bg-muted/30 p-2 rounded">
           <div className="col-span-12 md:col-span-4">
             <Select value={r.type} onValueChange={(v) => ops.update(r.id, { type: v } as any)}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>{list.map((p) => <SelectItem key={p.v} value={p.v}>{p.l}</SelectItem>)}</SelectContent>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {list.map((p) => (
+                  <SelectItem key={p.v} value={p.v}>
+                    {p.l}
+                  </SelectItem>
+                ))}
+              </SelectContent>
             </Select>
           </div>
           <div className="col-span-12 md:col-span-3">
-            <Input type="number" min="0" step="0.01" value={r.income}
+            <Input
+              type="number"
+              min="0"
+              step="0.01"
+              value={r.income}
               onChange={(e) => ops.update(r.id, { income: e.target.value } as any)}
-              dir="ltr" style={{ textAlign: "right" }} placeholder="0" />
+              dir="ltr"
+              style={{ textAlign: "right" }}
+              placeholder="0"
+            />
           </div>
           <div className="col-span-4 md:col-span-2 flex items-center gap-2">
-            <Switch checked={r.halal} onCheckedChange={(v) => ops.update(r.id, { halal: v } as any)} />
+            <Switch
+              checked={r.halal}
+              onCheckedChange={(v) => ops.update(r.id, { halal: v } as any)}
+            />
             <span className="text-xs">حلال</span>
           </div>
           <div className="col-span-4 md:col-span-2 flex items-center gap-2">
-            <Switch checked={r.owned} onCheckedChange={(v) => ops.update(r.id, { owned: v } as any)} />
+            <Switch
+              checked={r.owned}
+              onCheckedChange={(v) => ops.update(r.id, { owned: v } as any)}
+            />
             <span className="text-xs">ملك تام</span>
           </div>
           <div className="col-span-4 md:col-span-1">
-            <Button type="button" size="sm" variant="ghost" onClick={() => ops.remove(r.id)} disabled={rows.length <= 1}>×</Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              onClick={() => ops.remove(r.id)}
+              disabled={rows.length <= 1}
+            >
+              ×
+            </Button>
           </div>
           <div className="col-span-12 flex items-center gap-2 px-1">
-            <Switch checked={r.inCash} onCheckedChange={(v) => ops.update(r.id, { inCash: v } as any)} />
-            <span className="text-[11px] text-muted-foreground">هذا الإيراد محسوب ضمن «النقدية والبنوك» — استبعده منعاً للازدواج</span>
+            <Switch
+              checked={r.inCash}
+              onCheckedChange={(v) => ops.update(r.id, { inCash: v } as any)}
+            />
+            <span className="text-[11px] text-muted-foreground">
+              هذا الإيراد محسوب ضمن «النقدية والبنوك» — استبعده منعاً للازدواج
+            </span>
           </div>
         </div>
       ))}
-      <Button type="button" size="sm" variant="outline" onClick={() =>
-        ops.add({ id: 0, type: defaultType, income: "", halal: true, owned: true, inCash: false } as RentRow)
-      }>+ إضافة</Button>
+      <Button
+        type="button"
+        size="sm"
+        variant="outline"
+        onClick={() =>
+          ops.add({
+            id: 0,
+            type: defaultType,
+            income: "",
+            halal: true,
+            owned: true,
+            inCash: false,
+          } as RentRow)
+        }
+      >
+        + إضافة
+      </Button>
     </div>
   );
 
@@ -152,9 +228,11 @@ export function IncomeUsufructSection({ currencyName, onTotalChange }: Props) {
       <Alert className="border-primary/20 bg-primary/5">
         <Info className="h-4 w-4" />
         <AlertDescription className="text-xs leading-relaxed">
-          <b>المستغلات</b>: لا زكاة في رقبتها (العقار/الآلة)، وإنما في <b>صافي إيرادها المُدّخر</b> بعد النفقات إذا بلغ النصاب وحال عليه الحول.
+          <b>المستغلات</b>: لا زكاة في رقبتها (العقار/الآلة)، وإنما في <b>صافي إيرادها المُدّخر</b>{" "}
+          بعد النفقات إذا بلغ النصاب وحال عليه الحول.
           <br />
-          <b>الدخل</b>: يُزكَّى ما <b>تبقى</b> من الراتب وسائر الدخول في تاريخ الحول (مذهب الجمهور)، ويُشترط أن يكون <b>حلالاً</b> و<b>مملوكاً ملكاً تاماً</b>.
+          <b>الدخل</b>: يُزكَّى ما <b>تبقى</b> من الراتب وسائر الدخول في تاريخ الحول (مذهب الجمهور)،
+          ويُشترط أن يكون <b>حلالاً</b> و<b>مملوكاً ملكاً تاماً</b>.
         </AlertDescription>
       </Alert>
 
@@ -176,11 +254,22 @@ export function IncomeUsufructSection({ currencyName, onTotalChange }: Props) {
 
       {/* مصاريف المستغلات */}
       <div className="rounded-lg border bg-card p-4 space-y-2">
-        <Label className="text-sm">المصاريف والنفقات الضرورية للمستغلات (صيانة، ضرائب عقارية، تأمين…)</Label>
-        <Input type="number" min="0" step="0.01" value={usufructExpenses}
-          onChange={(e) => setUsufructExpenses(e.target.value)} dir="ltr" style={{ textAlign: "right" }} placeholder="0" />
+        <Label className="text-sm">
+          المصاريف والنفقات الضرورية للمستغلات (صيانة، ضرائب عقارية، تأمين…)
+        </Label>
+        <Input
+          type="number"
+          min="0"
+          step="0.01"
+          value={usufructExpenses}
+          onChange={(e) => setUsufructExpenses(e.target.value)}
+          dir="ltr"
+          style={{ textAlign: "right" }}
+          placeholder="0"
+        />
         <p className="text-[11px] text-muted-foreground">
-          تُخصم من إجمالي الإيراد لاحتساب الصافي المُدّخر. صافي المستغلات: <b className="text-primary">{fmt(totals.netUsufruct)}</b>
+          تُخصم من إجمالي الإيراد لاحتساب الصافي المُدّخر. صافي المستغلات:{" "}
+          <b className="text-primary">{fmt(totals.netUsufruct)}</b>
         </p>
       </div>
 
@@ -192,7 +281,8 @@ export function IncomeUsufructSection({ currencyName, onTotalChange }: Props) {
           <HandCoins className="h-4 w-4" /> ج) زكاة الدخل (الرواتب والمصادر الأخرى)
         </div>
         <p className="text-[11px] text-muted-foreground">
-          أدخل المتبقي من كل مصدر دخل بعد المصاريف الضرورية. ما حال عليه الحول ولم يُنفَق يدخل في الوعاء.
+          أدخل المتبقي من كل مصدر دخل بعد المصاريف الضرورية. ما حال عليه الحول ولم يُنفَق يدخل في
+          الوعاء.
         </p>
         <div className="space-y-2">
           <div className="hidden md:grid grid-cols-12 gap-2 text-[11px] text-muted-foreground px-1">
@@ -203,44 +293,99 @@ export function IncomeUsufructSection({ currencyName, onTotalChange }: Props) {
             <div className="col-span-1">حذف</div>
           </div>
           {incomes.map((r) => (
-            <div key={r.id} className="grid grid-cols-12 gap-2 items-center bg-muted/30 p-2 rounded">
+            <div
+              key={r.id}
+              className="grid grid-cols-12 gap-2 items-center bg-muted/30 p-2 rounded"
+            >
               <div className="col-span-12 md:col-span-4">
                 <Select value={r.source} onValueChange={(v) => incOps.update(r.id, { source: v })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>{INCOME_SOURCES.map((p) => <SelectItem key={p.v} value={p.v}>{p.l}</SelectItem>)}</SelectContent>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {INCOME_SOURCES.map((p) => (
+                      <SelectItem key={p.v} value={p.v}>
+                        {p.l}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
                 </Select>
               </div>
               <div className="col-span-12 md:col-span-3">
-                <Input type="number" min="0" step="0.01" value={r.amount}
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={r.amount}
                   onChange={(e) => incOps.update(r.id, { amount: e.target.value })}
-                  dir="ltr" style={{ textAlign: "right" }} placeholder="0" />
+                  dir="ltr"
+                  style={{ textAlign: "right" }}
+                  placeholder="0"
+                />
               </div>
               <div className="col-span-4 md:col-span-2 flex items-center gap-2">
-                <Switch checked={r.halal} onCheckedChange={(v) => incOps.update(r.id, { halal: v })} />
+                <Switch
+                  checked={r.halal}
+                  onCheckedChange={(v) => incOps.update(r.id, { halal: v })}
+                />
                 <span className="text-xs">حلال</span>
               </div>
               <div className="col-span-4 md:col-span-2 flex items-center gap-2">
-                <Switch checked={r.owned} onCheckedChange={(v) => incOps.update(r.id, { owned: v })} />
+                <Switch
+                  checked={r.owned}
+                  onCheckedChange={(v) => incOps.update(r.id, { owned: v })}
+                />
                 <span className="text-xs">ملك تام</span>
               </div>
               <div className="col-span-4 md:col-span-1">
-                <Button type="button" size="sm" variant="ghost" onClick={() => incOps.remove(r.id)} disabled={incomes.length <= 1}>×</Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => incOps.remove(r.id)}
+                  disabled={incomes.length <= 1}
+                >
+                  ×
+                </Button>
               </div>
               <div className="col-span-12 flex items-center gap-2 px-1">
-                <Switch checked={r.inCash} onCheckedChange={(v) => incOps.update(r.id, { inCash: v })} />
-                <span className="text-[11px] text-muted-foreground">هذا الدخل محسوب ضمن «النقدية والبنوك» — استبعده منعاً للازدواج</span>
+                <Switch
+                  checked={r.inCash}
+                  onCheckedChange={(v) => incOps.update(r.id, { inCash: v })}
+                />
+                <span className="text-[11px] text-muted-foreground">
+                  هذا الدخل محسوب ضمن «النقدية والبنوك» — استبعده منعاً للازدواج
+                </span>
               </div>
               {(!r.halal || !r.owned) && (
                 <div className="col-span-12 flex items-start gap-2 text-[11px] text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 rounded px-2 py-1">
                   <AlertTriangle className="h-3 w-3 mt-0.5 flex-shrink-0" />
-                  <span>{!r.halal ? "المال غير الحلال يجب التخلص منه ولا تجب فيه الزكاة." : "ما ليس مملوكاً ملكاً تاماً (كالمعاش غير المقبوض) لا تجب فيه الزكاة حتى يُقبض."}</span>
+                  <span>
+                    {!r.halal
+                      ? "المال غير الحلال يجب التخلص منه ولا تجب فيه الزكاة."
+                      : "ما ليس مملوكاً ملكاً تاماً (كالمعاش غير المقبوض) لا تجب فيه الزكاة حتى يُقبض."}
+                  </span>
                 </div>
               )}
             </div>
           ))}
-          <Button type="button" size="sm" variant="outline" onClick={() =>
-            incOps.add({ id: 0, source: "other", amount: "", halal: true, owned: true, inCash: false } as IncomeRow)
-          }>+ إضافة مصدر دخل</Button>
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            onClick={() =>
+              incOps.add({
+                id: 0,
+                source: "other",
+                amount: "",
+                halal: true,
+                owned: true,
+                inCash: false,
+              } as IncomeRow)
+            }
+          >
+            + إضافة مصدر دخل
+          </Button>
         </div>
       </div>
 
@@ -260,24 +405,46 @@ export function IncomeUsufructSection({ currencyName, onTotalChange }: Props) {
             <Alert className="border-primary/20 bg-primary/5">
               <Info className="h-4 w-4" />
               <AlertDescription className="text-xs">
-                إذا كانت الشركة <b>تُخرج زكاتها</b> عن كامل وعائها فلا يلزمك إعادة احتسابها — اتركها صفراً.
-                وإلا، أدخل <b>وعاء الشركة الزكوي</b> (من نموذج «زكاة الشركات») ونسبة حصتك لاحتساب نصيبك.
+                إذا كانت الشركة <b>تُخرج زكاتها</b> عن كامل وعائها فلا يلزمك إعادة احتسابها — اتركها
+                صفراً. وإلا، أدخل <b>وعاء الشركة الزكوي</b> (من نموذج «زكاة الشركات») ونسبة حصتك
+                لاحتساب نصيبك.
               </AlertDescription>
             </Alert>
             <div className="grid md:grid-cols-3 gap-3">
               <div>
                 <Label className="text-xs">اسم الشركة</Label>
-                <Input value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="…" />
+                <Input
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
+                  placeholder="…"
+                />
               </div>
               <div>
                 <Label className="text-xs">نسبة حصتك %</Label>
-                <Input type="number" min="0" max="100" step="0.01" value={partnerShare}
-                  onChange={(e) => setPartnerShare(e.target.value)} dir="ltr" style={{ textAlign: "right" }} placeholder="0" />
+                <Input
+                  type="number"
+                  min="0"
+                  max="100"
+                  step="0.01"
+                  value={partnerShare}
+                  onChange={(e) => setPartnerShare(e.target.value)}
+                  dir="ltr"
+                  style={{ textAlign: "right" }}
+                  placeholder="0"
+                />
               </div>
               <div>
                 <Label className="text-xs">وعاء الشركة الزكوي ({currencyName})</Label>
-                <Input type="number" min="0" step="0.01" value={companyZakatableBase}
-                  onChange={(e) => setCompanyZakatableBase(e.target.value)} dir="ltr" style={{ textAlign: "right" }} placeholder="0" />
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={companyZakatableBase}
+                  onChange={(e) => setCompanyZakatableBase(e.target.value)}
+                  dir="ltr"
+                  style={{ textAlign: "right" }}
+                  placeholder="0"
+                />
               </div>
             </div>
             <p className="text-[11px] text-muted-foreground">

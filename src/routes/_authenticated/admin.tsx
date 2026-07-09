@@ -6,7 +6,13 @@ import { listUsersWithRoles, grantRole, revokeRole } from "@/lib/admin.functions
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminOverview } from "@/components/admin/AdminOverview";
 import { useState } from "react";
@@ -45,12 +51,18 @@ function AdminPage() {
 
   const grantM = useMutation({
     mutationFn: (v: { userId: string; role: Role }) => grantFn({ data: v }),
-    onSuccess: () => { toast.success("تم منح الدور"); qc.invalidateQueries({ queryKey: ["admin", "users"] }); },
+    onSuccess: () => {
+      toast.success("تم منح الدور");
+      qc.invalidateQueries({ queryKey: ["admin", "users"] });
+    },
     onError: (e: Error) => toast.error(e.message),
   });
   const revokeM = useMutation({
     mutationFn: (v: { userId: string; role: Role }) => revokeFn({ data: v }),
-    onSuccess: () => { toast.success("تم سحب الدور"); qc.invalidateQueries({ queryKey: ["admin", "users"] }); },
+    onSuccess: () => {
+      toast.success("تم سحب الدور");
+      qc.invalidateQueries({ queryKey: ["admin", "users"] });
+    },
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -61,16 +73,24 @@ function AdminPage() {
           <Shield className="h-7 w-7 text-primary" />
           <div>
             <h1 className="text-2xl font-bold">لوحة الإدارة</h1>
-            <p className="text-sm text-muted-foreground">ملخص النظام، إدارة الأدوار، ووصول سريع للتقارير.</p>
+            <p className="text-sm text-muted-foreground">
+              ملخص النظام، إدارة الأدوار، ووصول سريع للتقارير.
+            </p>
           </div>
         </div>
-        <Link to="/audit-review"><Button variant="outline">مراجعة الاعتمادات</Button></Link>
+        <Link to="/audit-review">
+          <Button variant="outline">مراجعة الاعتمادات</Button>
+        </Link>
       </div>
 
       <Tabs defaultValue="overview" className="w-full">
         <TabsList>
-          <TabsTrigger value="overview" className="gap-1"><LayoutDashboard className="h-4 w-4" /> لوحة التحكم</TabsTrigger>
-          <TabsTrigger value="users" className="gap-1"><Users className="h-4 w-4" /> إدارة الأدوار</TabsTrigger>
+          <TabsTrigger value="overview" className="gap-1">
+            <LayoutDashboard className="h-4 w-4" /> لوحة التحكم
+          </TabsTrigger>
+          <TabsTrigger value="users" className="gap-1">
+            <Users className="h-4 w-4" /> إدارة الأدوار
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="mt-4">
@@ -79,10 +99,15 @@ function AdminPage() {
 
         <TabsContent value="users" className="mt-4">
           <Card>
-            <CardHeader><CardTitle>المستخدمون</CardTitle></CardHeader>
+            <CardHeader>
+              <CardTitle>المستخدمون</CardTitle>
+            </CardHeader>
             <CardContent>
-              {isLoading ? <p className="text-sm text-muted-foreground">جارٍ التحميل…</p> :
-                !data?.length ? <p className="text-sm text-muted-foreground">لا يوجد مستخدمون.</p> :
+              {isLoading ? (
+                <p className="text-sm text-muted-foreground">جارٍ التحميل…</p>
+              ) : !data?.length ? (
+                <p className="text-sm text-muted-foreground">لا يوجد مستخدمون.</p>
+              ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead className="text-right border-b">
@@ -95,7 +120,9 @@ function AdminPage() {
                     </thead>
                     <tbody>
                       {data.map((u) => (
-                        <UserRow key={u.id} user={u}
+                        <UserRow
+                          key={u.id}
+                          user={u}
                           onGrant={(role) => grantM.mutate({ userId: u.id, role })}
                           onRevoke={(role) => revokeM.mutate({ userId: u.id, role })}
                         />
@@ -103,11 +130,12 @@ function AdminPage() {
                     </tbody>
                   </table>
                 </div>
-              }
+              )}
             </CardContent>
           </Card>
           <p className="text-xs text-muted-foreground mt-3">
-            كل منح/سحب يُسجَّل في <code>sharia_audit_log</code> مع بصمة المستخدم والدور لأغراض التدقيق.
+            كل منح/سحب يُسجَّل في <code>sharia_audit_log</code> مع بصمة المستخدم والدور لأغراض
+            التدقيق.
           </p>
         </TabsContent>
       </Tabs>
@@ -115,9 +143,14 @@ function AdminPage() {
   );
 }
 
-function UserRow({ user, onGrant, onRevoke }: {
+function UserRow({
+  user,
+  onGrant,
+  onRevoke,
+}: {
   user: { id: string; email: string; roles: Role[]; last_sign_in_at: string | null };
-  onGrant: (r: Role) => void; onRevoke: (r: Role) => void;
+  onGrant: (r: Role) => void;
+  onRevoke: (r: Role) => void;
 }) {
   const [pick, setPick] = useState<Role>("user");
   return (
@@ -129,7 +162,13 @@ function UserRow({ user, onGrant, onRevoke }: {
           {user.roles.map((r) => (
             <Badge key={r} variant={r === "admin" ? "default" : "secondary"} className="gap-1">
               {ROLE_LABEL[r]}
-              <button onClick={() => onRevoke(r)} className="opacity-60 hover:opacity-100" title="سحب"><UserMinus className="h-3 w-3" /></button>
+              <button
+                onClick={() => onRevoke(r)}
+                className="opacity-60 hover:opacity-100"
+                title="سحب"
+              >
+                <UserMinus className="h-3 w-3" />
+              </button>
             </Badge>
           ))}
         </div>
@@ -140,7 +179,9 @@ function UserRow({ user, onGrant, onRevoke }: {
       <td className="py-2 px-2">
         <div className="flex items-center gap-2">
           <Select value={pick} onValueChange={(v) => setPick(v as Role)}>
-            <SelectTrigger className="h-8 w-32"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-8 w-32">
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="admin">مدير</SelectItem>
               <SelectItem value="moderator">مدقّق</SelectItem>

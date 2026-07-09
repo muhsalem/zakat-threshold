@@ -36,7 +36,9 @@ export function useAuditEntries(enabled: boolean = true, limit: number = 50) {
         setEntries((data as AuditEntry[]) ?? []);
         setLoading(false);
       });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [enabled, user, limit]);
 
   return { entries, loading };

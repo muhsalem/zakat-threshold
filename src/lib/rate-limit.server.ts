@@ -6,7 +6,7 @@ const buckets = new Map<string, Bucket>();
 
 export function rateLimit(
   request: Request,
-  opts: { key: string; limit: number; windowMs: number }
+  opts: { key: string; limit: number; windowMs: number },
 ): { ok: true } | { ok: false; retryAfter: number } {
   const ip =
     request.headers.get("cf-connecting-ip") ||
@@ -28,7 +28,7 @@ export function rateLimit(
 
 export function rateLimitResponse(
   retryAfter: number,
-  extraHeaders: Record<string, string> = {}
+  extraHeaders: Record<string, string> = {},
 ): Response {
   return new Response(
     JSON.stringify({ ok: false, error: "rate_limited", retry_after: retryAfter }),
@@ -39,6 +39,6 @@ export function rateLimitResponse(
         "Retry-After": String(retryAfter),
         ...extraHeaders,
       },
-    }
+    },
   );
 }

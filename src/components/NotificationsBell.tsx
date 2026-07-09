@@ -47,7 +47,7 @@ export function NotificationsBell() {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` },
-        () => load()
+        () => load(),
       )
       .subscribe();
     return () => {
@@ -86,7 +86,11 @@ export function NotificationsBell() {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="relative gap-1.5">
-          {unread > 0 ? <BellRing className="h-4 w-4 text-primary" /> : <Bell className="h-4 w-4" />}
+          {unread > 0 ? (
+            <BellRing className="h-4 w-4 text-primary" />
+          ) : (
+            <Bell className="h-4 w-4" />
+          )}
           {unread > 0 && (
             <Badge
               variant="default"
@@ -101,7 +105,11 @@ export function NotificationsBell() {
         <div className="flex items-center justify-between px-4 py-3 border-b">
           <div className="font-semibold text-sm flex items-center gap-2">
             <Bell className="h-4 w-4" /> الإشعارات
-            {unread > 0 && <Badge variant="secondary" className="h-5">{unread} جديدة</Badge>}
+            {unread > 0 && (
+              <Badge variant="secondary" className="h-5">
+                {unread} جديدة
+              </Badge>
+            )}
           </div>
           <div className="flex items-center gap-1">
             {unread > 0 && (
@@ -110,7 +118,12 @@ export function NotificationsBell() {
               </Button>
             )}
             {items.length > 0 && (
-              <Button variant="ghost" size="sm" className="h-7 px-2 text-xs text-destructive" onClick={clearAll}>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 px-2 text-xs text-destructive"
+                onClick={clearAll}
+              >
                 <Trash2 className="h-3.5 w-3.5" />
               </Button>
             )}
@@ -135,11 +148,15 @@ export function NotificationsBell() {
                   <div className="flex items-start gap-2">
                     <div className="flex-1 min-w-0">
                       <div className="font-medium flex items-center gap-2">
-                        {!n.read_at && <span className="h-2 w-2 rounded-full bg-primary shrink-0" />}
+                        {!n.read_at && (
+                          <span className="h-2 w-2 rounded-full bg-primary shrink-0" />
+                        )}
                         {n.title}
                       </div>
                       {n.body && (
-                        <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{n.body}</p>
+                        <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                          {n.body}
+                        </p>
                       )}
                       <div className="text-[11px] text-muted-foreground mt-1.5 flex items-center gap-2 flex-wrap">
                         <span>{new Date(n.created_at).toLocaleString("ar-EG")}</span>

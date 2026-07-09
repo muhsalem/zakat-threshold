@@ -82,10 +82,18 @@ export function MadhabsComparison() {
               <thead>
                 <tr className="bg-muted/60">
                   <th className="p-2 text-right border border-border font-bold">المسألة</th>
-                  <th className="p-2 text-right border border-border font-bold text-primary">الحنفية</th>
-                  <th className="p-2 text-right border border-border font-bold text-primary">المالكية</th>
-                  <th className="p-2 text-right border border-border font-bold text-primary">الشافعية</th>
-                  <th className="p-2 text-right border border-border font-bold text-primary">الحنابلة</th>
+                  <th className="p-2 text-right border border-border font-bold text-primary">
+                    الحنفية
+                  </th>
+                  <th className="p-2 text-right border border-border font-bold text-primary">
+                    المالكية
+                  </th>
+                  <th className="p-2 text-right border border-border font-bold text-primary">
+                    الشافعية
+                  </th>
+                  <th className="p-2 text-right border border-border font-bold text-primary">
+                    الحنابلة
+                  </th>
                 </tr>
               </thead>
               <tbody>

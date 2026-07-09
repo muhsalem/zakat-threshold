@@ -22,7 +22,9 @@ export const listErpConnections = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { data, error } = await context.supabase
       .from("erp_connections")
-      .select("id, provider, label, base_url, db_name, username, is_active, last_tested_at, last_test_status, created_at")
+      .select(
+        "id, provider, label, base_url, db_name, username, is_active, last_tested_at, last_test_status, created_at",
+      )
       .order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
     return data ?? [];
@@ -70,7 +72,9 @@ export const testErpConnection = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { data: c, error } = await context.supabase
       .from("erp_connections")
-      .select("*").eq("id", data.id).single();
+      .select("*")
+      .eq("id", data.id)
+      .single();
     if (error || !c) throw new Error(error?.message ?? "not_found");
 
     const creds: ErpCreds = {
@@ -81,10 +85,15 @@ export const testErpConnection = createServerFn({ method: "POST" })
       api_key: c.api_key,
     };
     const res = await testConnection(creds);
-    await context.supabase.from("erp_connections").update({
-      last_tested_at: new Date().toISOString(),
-      last_test_status: res.ok ? `ok:${res.message}`.slice(0, 200) : `error:${res.message}`.slice(0, 200),
-    }).eq("id", data.id);
+    await context.supabase
+      .from("erp_connections")
+      .update({
+        last_tested_at: new Date().toISOString(),
+        last_test_status: res.ok
+          ? `ok:${res.message}`.slice(0, 200)
+          : `error:${res.message}`.slice(0, 200),
+      })
+      .eq("id", data.id);
     return res;
   });
 
@@ -93,7 +102,9 @@ export const listErpSyncLog = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { data, error } = await context.supabase
       .from("erp_sync_log")
-      .select("id, connection_id, zakat_record_id, provider, external_id, status, reference, amount, currency, error_message, created_at")
+      .select(
+        "id, connection_id, zakat_record_id, provider, external_id, status, reference, amount, currency, error_message, created_at",
+      )
       .order("created_at", { ascending: false })
       .limit(50);
     if (error) throw new Error(error.message);

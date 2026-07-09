@@ -31,14 +31,19 @@ export function SaveToHistoryCard({ payload }: { payload: Payload }) {
 
   async function handleSave() {
     if (!user) return;
-    setBusy(true); setError(null);
+    setBusy(true);
+    setError(null);
     const { snapshot, ...rest } = payload;
-    const { data, error } = await supabase.from("zakat_records").insert({
-      user_id: user.id,
-      ...rest,
-      snapshot: snapshot ?? null,
-      notes: notes || null,
-    }).select("id").single();
+    const { data, error } = await supabase
+      .from("zakat_records")
+      .insert({
+        user_id: user.id,
+        ...rest,
+        snapshot: snapshot ?? null,
+        notes: notes || null,
+      })
+      .select("id")
+      .single();
     if (!error && data) {
       setSavedId(data.id);
       const fp = `${user.id}-${data.id}-${payload.zakat_due}`.slice(0, 32);
@@ -54,7 +59,10 @@ export function SaveToHistoryCard({ payload }: { payload: Payload }) {
     }
     setBusy(false);
     if (error) setError(error.message);
-    else { setSaved(true); setTimeout(() => setSaved(false), 6000); }
+    else {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 6000);
+    }
   }
 
   if (loading) return null;
@@ -71,7 +79,10 @@ export function SaveToHistoryCard({ payload }: { payload: Payload }) {
           <Alert className="border-primary/20 bg-primary/5">
             <AlertDescription className="text-xs leading-relaxed">
               سجّل دخولك لحفظ نتيجة الزكاة وتتبّع تطورها عبر السنوات مع مخططات إحصائية.
-              <Link to="/auth" className="inline-flex items-center gap-1 mr-2 text-primary font-bold hover:underline">
+              <Link
+                to="/auth"
+                className="inline-flex items-center gap-1 mr-2 text-primary font-bold hover:underline"
+              >
                 <LogIn className="h-3 w-3" /> دخول / إنشاء حساب
               </Link>
             </AlertDescription>
@@ -86,18 +97,45 @@ export function SaveToHistoryCard({ payload }: { payload: Payload }) {
               className="text-sm"
             />
             <div className="flex items-center gap-2 flex-wrap">
-              <Button onClick={handleSave} disabled={busy || saved} className="gap-1.5 flex-1 min-w-[160px]">
-                {saved ? <><CheckCircle2 className="h-4 w-4" /> تم الحفظ</> : busy ? "جاري الحفظ..." : <><Save className="h-4 w-4" /> حفظ هذه السنة</>}
+              <Button
+                onClick={handleSave}
+                disabled={busy || saved}
+                className="gap-1.5 flex-1 min-w-[160px]"
+              >
+                {saved ? (
+                  <>
+                    <CheckCircle2 className="h-4 w-4" /> تم الحفظ
+                  </>
+                ) : busy ? (
+                  "جاري الحفظ..."
+                ) : (
+                  <>
+                    <Save className="h-4 w-4" /> حفظ هذه السنة
+                  </>
+                )}
               </Button>
               {savedId && (
                 <Link to="/certified-report/$recordId" params={{ recordId: savedId }}>
-                  <Button variant="default" className="bg-gold hover:bg-gold/90 text-gold-foreground">تقرير معتمد</Button>
+                  <Button
+                    variant="default"
+                    className="bg-gold hover:bg-gold/90 text-gold-foreground"
+                  >
+                    تقرير معتمد
+                  </Button>
                 </Link>
               )}
-              <Link to="/history"><Button variant="outline">السجل</Button></Link>
-              <Link to="/audit"><Button variant="outline">التدقيق</Button></Link>
+              <Link to="/history">
+                <Button variant="outline">السجل</Button>
+              </Link>
+              <Link to="/audit">
+                <Button variant="outline">التدقيق</Button>
+              </Link>
             </div>
-            {error && <Alert variant="destructive"><AlertDescription className="text-xs">{error}</AlertDescription></Alert>}
+            {error && (
+              <Alert variant="destructive">
+                <AlertDescription className="text-xs">{error}</AlertDescription>
+              </Alert>
+            )}
           </>
         )}
       </CardContent>

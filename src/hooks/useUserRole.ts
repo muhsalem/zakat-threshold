@@ -11,7 +11,11 @@ export function useUserRole() {
 
   useEffect(() => {
     if (authLoading) return;
-    if (!user) { setRoles([]); setLoading(false); return; }
+    if (!user) {
+      setRoles([]);
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
     setLoading(true);
     supabase
@@ -23,7 +27,9 @@ export function useUserRole() {
         setRoles(((data as { role: AppRole }[]) ?? []).map((r) => r.role));
         setLoading(false);
       });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [user, authLoading]);
 
   const hasRole = (r: AppRole) => roles.includes(r);

@@ -47,7 +47,10 @@ export function HistoricalMetalPriceCard() {
         .select("price_date, metal, price_usd_per_gram, reliability")
         .order("price_date", { ascending: false })
         .limit(4000);
-      if (error) { setErr(error.message); return; }
+      if (error) {
+        setErr(error.message);
+        return;
+      }
       setRows((data ?? []) as Row[]);
     })();
   }, []);
@@ -66,7 +69,9 @@ export function HistoricalMetalPriceCard() {
     if (!rows || rows.length === 0) return null;
     const dates = Array.from(byDate.keys()).sort();
     let best = dates[0];
-    for (const d of dates) if (d <= picked) best = d; else break;
+    for (const d of dates)
+      if (d <= picked) best = d;
+      else break;
     const e = byDate.get(best);
     return { date: best, gold: e?.gold, silver: e?.silver };
   }, [byDate, picked, rows]);
@@ -119,9 +124,16 @@ export function HistoricalMetalPriceCard() {
                       </Badge>
                     )}
                   </div>
-                  <div className="text-sm">ذهب: <b>{fmt(nearest.gold?.price_usd_per_gram ?? 0, 4)}</b> USD/جم</div>
-                  <div className="text-sm">نصاب الذهب: <b>{fmt((nearest.gold?.price_usd_per_gram ?? 0) * GOLD_NISAB)}</b> USD</div>
-                  <div className="text-sm text-primary">زكاته: {fmt((nearest.gold?.price_usd_per_gram ?? 0) * GOLD_NISAB * ZAKAT)} USD</div>
+                  <div className="text-sm">
+                    ذهب: <b>{fmt(nearest.gold?.price_usd_per_gram ?? 0, 4)}</b> USD/جم
+                  </div>
+                  <div className="text-sm">
+                    نصاب الذهب: <b>{fmt((nearest.gold?.price_usd_per_gram ?? 0) * GOLD_NISAB)}</b>{" "}
+                    USD
+                  </div>
+                  <div className="text-sm text-primary">
+                    زكاته: {fmt((nearest.gold?.price_usd_per_gram ?? 0) * GOLD_NISAB * ZAKAT)} USD
+                  </div>
                 </div>
                 <div className="rounded-md border bg-muted p-3">
                   <div className="flex items-center justify-between mb-1">
@@ -132,17 +144,31 @@ export function HistoricalMetalPriceCard() {
                       </Badge>
                     )}
                   </div>
-                  <div className="text-sm">فضة: <b>{fmt(nearest.silver?.price_usd_per_gram ?? 0, 4)}</b> USD/جم</div>
-                  <div className="text-sm">نصاب الفضة: <b>{fmt((nearest.silver?.price_usd_per_gram ?? 0) * SILVER_NISAB)}</b> USD</div>
-                  <div className="text-sm text-primary">زكاته: {fmt((nearest.silver?.price_usd_per_gram ?? 0) * SILVER_NISAB * ZAKAT)} USD</div>
+                  <div className="text-sm">
+                    فضة: <b>{fmt(nearest.silver?.price_usd_per_gram ?? 0, 4)}</b> USD/جم
+                  </div>
+                  <div className="text-sm">
+                    نصاب الفضة:{" "}
+                    <b>{fmt((nearest.silver?.price_usd_per_gram ?? 0) * SILVER_NISAB)}</b> USD
+                  </div>
+                  <div className="text-sm text-primary">
+                    زكاته: {fmt((nearest.silver?.price_usd_per_gram ?? 0) * SILVER_NISAB * ZAKAT)}{" "}
+                    USD
+                  </div>
                 </div>
               </div>
             )}
 
             <div className="flex flex-wrap gap-2 text-[10px]">
-              <Badge variant="outline" className={REL_STYLE.direct}>مباشر: مأخوذ يومياً من مزوّد أسعار</Badge>
-              <Badge variant="outline" className={REL_STYLE.derived}>مشتق: محسوب من مرجع آخر</Badge>
-              <Badge variant="outline" className={REL_STYLE.estimated}>تقديري: متوسط سنوي تاريخي</Badge>
+              <Badge variant="outline" className={REL_STYLE.direct}>
+                مباشر: مأخوذ يومياً من مزوّد أسعار
+              </Badge>
+              <Badge variant="outline" className={REL_STYLE.derived}>
+                مشتق: محسوب من مرجع آخر
+              </Badge>
+              <Badge variant="outline" className={REL_STYLE.estimated}>
+                تقديري: متوسط سنوي تاريخي
+              </Badge>
             </div>
           </>
         )}

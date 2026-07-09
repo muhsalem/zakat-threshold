@@ -7,9 +7,24 @@ import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
-import { Info, RefreshCw, Wallet, Smartphone, CreditCard, Building2, PiggyBank, Banknote, Bitcoin, Award } from "lucide-react";
+import {
+  Info,
+  RefreshCw,
+  Wallet,
+  Smartphone,
+  CreditCard,
+  Building2,
+  PiggyBank,
+  Banknote,
+  Bitcoin,
+  Award,
+} from "lucide-react";
 import { COUNTRY_PRICES, currency as fmtCurrency, num } from "@/lib/zakat";
 import bankCardsImg from "@/assets/bank-cards.png";
 import HijriDateField from "./HijriDateField";
@@ -33,7 +48,7 @@ const BANKS_BY_COUNTRY: Record<string, CountryBanks> = {
       { v: "misr", l: "بنك مصر", window: "كنانة — فروع المعاملات الإسلامية" },
       { v: "banque_du_caire", l: "بنك القاهرة", window: "فروع ومنتجات إسلامية" },
       { v: "aibank", l: "المصرف العربي الدولي (aiBANK)", window: "أوعية ادخارية إسلامية" },
-      { v: "umb", l: "المصرف المتحد", window: "صيرفة إسلامية + بطاقة \"رخاء\"" },
+      { v: "umb", l: "المصرف المتحد", window: 'صيرفة إسلامية + بطاقة "رخاء"' },
       { v: "hdb", l: "بنك التعمير والإسكان (HDB)", window: "فروع / منتجات إسلامية" },
       { v: "nbk_eg", l: "بنك الكويت الوطني – مصر (NBK Egypt)", window: "خدمات مصرفية إسلامية" },
       { v: "fab_eg", l: "بنك أبو ظبي الأول – مصر (FAB Misr)", window: "خدمات مصرفية إسلامية" },
@@ -130,11 +145,7 @@ const BANKS_BY_COUNTRY: Record<string, CountryBanks> = {
     ],
   },
   JO: {
-    islamic: [
-      "البنك الإسلامي الأردني",
-      "البنك العربي الإسلامي الدولي",
-      "بنك صفوة الإسلامي",
-    ],
+    islamic: ["البنك الإسلامي الأردني", "البنك العربي الإسلامي الدولي", "بنك صفوة الإسلامي"],
     traditional: [
       { v: "arab", l: "البنك العربي", window: "—" },
       { v: "housing", l: "بنك الإسكان", window: "إسكان إسلامي" },
@@ -194,22 +205,26 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
 
   // ب) العملات الأجنبية (متعددة)
   type FxRow = { id: number; code: string; amount: string; rate: string };
-  const [fxRows, setFxRows] = useState<FxRow[]>([
-    { id: 1, code: "US", amount: "", rate: "" },
-  ]);
+  const [fxRows, setFxRows] = useState<FxRow[]>([{ id: 1, code: "US", amount: "", rate: "" }]);
   const [fxUpdatedAt, setFxUpdatedAt] = useState<string>("");
 
   const refreshFxRates = () => {
-    setFxRows((rows) => rows.map((r) => {
-      const fc = COUNTRY_PRICES.find((c) => c.code === r.code);
-      if (!fc) return r;
-      const rate = deriveRate(country.gold24, fc.gold24);
-      return { ...r, rate: rate ? rate.toFixed(4) : "" };
-    }));
-    setFxUpdatedAt(new Date().toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" }));
+    setFxRows((rows) =>
+      rows.map((r) => {
+        const fc = COUNTRY_PRICES.find((c) => c.code === r.code);
+        if (!fc) return r;
+        const rate = deriveRate(country.gold24, fc.gold24);
+        return { ...r, rate: rate ? rate.toFixed(4) : "" };
+      }),
+    );
+    setFxUpdatedAt(
+      new Date().toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" }),
+    );
   };
   // تحديث الأسعار تلقائياً عند تغيير الدولة المختارة
-  useEffect(() => { refreshFxRates(); /* eslint-disable-next-line */ }, [countryCode]);
+  useEffect(() => {
+    refreshFxRates(); /* eslint-disable-next-line */
+  }, [countryCode]);
 
   // قائمة بنوك الدولة (تتغيّر مع الدولة)
   const countryBanks = useMemo(() => getCountryBanks(country.code), [country.code]);
@@ -285,7 +300,13 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   const [ccInterestPaid, setCcInterestPaid] = useState("");
 
   // و) المحافظ الرقمية — محافظ شركات الاتصالات (تُزكَّى كنقد دائماً — لا ربط بنكي)
-  type WalletRow = { id: number; provider: string; amount: string; linked: "linked" | "standalone"; linkedBank?: string };
+  type WalletRow = {
+    id: number;
+    provider: string;
+    amount: string;
+    linked: "linked" | "standalone";
+    linkedBank?: string;
+  };
   const [telcoWallets, setTelcoWallets] = useState<WalletRow[]>([
     { id: 1, provider: "vodafone", amount: "", linked: "standalone" },
   ]);
@@ -300,18 +321,27 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
     setFxRows((r) => [...r, { id: Date.now(), code: "US", amount: "", rate: "" }]);
   const removeFx = (id: number) => setFxRows((r) => r.filter((x) => x.id !== id));
   const updateFx = (id: number, patch: Partial<FxRow>) =>
-    setFxRows((rows) => rows.map((r) => {
-      if (r.id !== id) return r;
-      const next = { ...r, ...patch };
-      if (patch.code !== undefined) {
-        const fc = COUNTRY_PRICES.find((c) => c.code === patch.code);
-        if (fc) next.rate = deriveRate(country.gold24, fc.gold24).toFixed(4);
-      }
-      return next;
-    }));
+    setFxRows((rows) =>
+      rows.map((r) => {
+        if (r.id !== id) return r;
+        const next = { ...r, ...patch };
+        if (patch.code !== undefined) {
+          const fc = COUNTRY_PRICES.find((c) => c.code === patch.code);
+          if (fc) next.rate = deriveRate(country.gold24, fc.gold24).toFixed(4);
+        }
+        return next;
+      }),
+    );
 
-  const makeWalletOps = (setter: React.Dispatch<React.SetStateAction<WalletRow[]>>, defaultProvider: string) => ({
-    add: () => setter((r) => [...r, { id: Date.now(), provider: defaultProvider, amount: "", linked: "standalone" }]),
+  const makeWalletOps = (
+    setter: React.Dispatch<React.SetStateAction<WalletRow[]>>,
+    defaultProvider: string,
+  ) => ({
+    add: () =>
+      setter((r) => [
+        ...r,
+        { id: Date.now(), provider: defaultProvider, amount: "", linked: "standalone" },
+      ]),
     remove: (id: number) => setter((r) => r.filter((x) => x.id !== id)),
     update: (id: number, patch: Partial<WalletRow>) =>
       setter((rows) => rows.map((r) => (r.id === id ? { ...r, ...patch } : r))),
@@ -325,9 +355,8 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
     const tFx = fxRows.reduce((s, r) => s + num(r.amount) * num(r.rate), 0);
     const tCurr = num(currBalance);
     const savBal = num(savBalance);
-    const tSav = savType === "islamic"
-      ? Math.max(0, savBal * (1 - num(savPurifyPct) / 100))
-      : savBal;
+    const tSav =
+      savType === "islamic" ? Math.max(0, savBal * (1 - num(savPurifyPct) / 100)) : savBal;
     const tDep = num(depPrincipal);
     const tCert = num(certPrincipal);
     const tPost = num(postPrincipal) || num(postSavings);
@@ -336,20 +365,51 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
     // محافظ شركات الاتصالات: لا يوجد ربط بنكي — تُحتسب دائماً.
     const tTelco = telcoWallets.reduce((s, w) => s + num(w.amount), 0);
     // المحافظ البنكية: إن كانت مربوطة بحساب لُغيت لمنع الازدواج.
-    const tBankWal = bankWallets.reduce((s, w) => s + (w.linked === "linked" ? 0 : num(w.amount)), 0);
+    const tBankWal = bankWallets.reduce(
+      (s, w) => s + (w.linked === "linked" ? 0 : num(w.amount)),
+      0,
+    );
     const tWallets = tTelco + tBankWal;
 
     const gross = tCash + tFx + tCurr + tSav + tDep + tCert + tPost + tCards + tWallets;
     const debts = tCreditDue;
     const zakatable = Math.max(0, gross - debts);
-    return { tCash, tFx, tCurr, tSav, tDep, tCert, tPost, tCards, tCreditDue, tTelco, tBankWal, tWallets, gross, zakatable };
+    return {
+      tCash,
+      tFx,
+      tCurr,
+      tSav,
+      tDep,
+      tCert,
+      tPost,
+      tCards,
+      tCreditDue,
+      tTelco,
+      tBankWal,
+      tWallets,
+      gross,
+      zakatable,
+    };
   }, [
-    cashHome, fxRows, currBalance, savBalance, savPurifyPct, savType,
-    depPrincipal, certPrincipal, postPrincipal, postSavings,
-    cardPrepaid, ccDue, telcoWallets, bankWallets,
+    cashHome,
+    fxRows,
+    currBalance,
+    savBalance,
+    savPurifyPct,
+    savType,
+    depPrincipal,
+    certPrincipal,
+    postPrincipal,
+    postSavings,
+    cardPrepaid,
+    ccDue,
+    telcoWallets,
+    bankWallets,
   ]);
 
-  useEffect(() => { onTotalChange(totals.zakatable); }, [totals.zakatable, onTotalChange]);
+  useEffect(() => {
+    onTotalChange(totals.zakatable);
+  }, [totals.zakatable, onTotalChange]);
 
   const cur = (n: number) => fmtCurrency(n, currencyName);
 
@@ -363,8 +423,20 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
         <div className="space-y-1.5">
           <Label className="text-sm">نقد في اليد والخزنة المنزلية</Label>
           <div className="relative">
-            <Input type="number" min="0" step="0.01" value={cashHome} onChange={(e) => setCashHome(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
+            <Input
+              type="number"
+              min="0"
+              step="0.01"
+              value={cashHome}
+              onChange={(e) => setCashHome(e.target.value)}
+              dir="ltr"
+              style={{ textAlign: "right" }}
+              className="pl-14"
+              placeholder="0"
+            />
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+              {currencyName}
+            </span>
           </div>
         </div>
       </div>
@@ -375,12 +447,19 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
           <div className="flex items-center gap-2 text-sm font-semibold text-primary">
             <Banknote className="h-4 w-4" /> ب · العملات الأجنبية
           </div>
-          <Button type="button" size="sm" variant="outline" onClick={refreshFxRates} className="gap-1">
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            onClick={refreshFxRates}
+            className="gap-1"
+          >
             <RefreshCw className="h-3 w-3" /> تحديث الأسعار
           </Button>
         </div>
         <p className="text-xs text-muted-foreground">
-          الأسعار تُحتسب تلقائياً مقابل عملة <b>{country.name}</b> ({country.currency}) — آخر تحديث: <b>{fxUpdatedAt}</b>
+          الأسعار تُحتسب تلقائياً مقابل عملة <b>{country.name}</b> ({country.currency}) — آخر تحديث:{" "}
+          <b>{fxUpdatedAt}</b>
         </p>
         <div className="space-y-2">
           {fxRows.map((r) => (
@@ -388,31 +467,62 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
               <div className="col-span-4">
                 <Label className="text-xs">العملة</Label>
                 <Select value={r.code} onValueChange={(v) => updateFx(r.id, { code: v })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent className="max-h-72">
                     {COUNTRY_PRICES.filter((c) => c.code !== country.code).map((c) => (
-                      <SelectItem key={c.code} value={c.code}>{c.currency} — {c.name}</SelectItem>
+                      <SelectItem key={c.code} value={c.code}>
+                        {c.currency} — {c.name}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
               <div className="col-span-3">
                 <Label className="text-xs">المبلغ</Label>
-                <Input type="number" min="0" step="0.01" value={r.amount} onChange={(e) => updateFx(r.id, { amount: e.target.value })} dir="ltr" style={{ textAlign: "right" }} placeholder="0" />
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={r.amount}
+                  onChange={(e) => updateFx(r.id, { amount: e.target.value })}
+                  dir="ltr"
+                  style={{ textAlign: "right" }}
+                  placeholder="0"
+                />
               </div>
               <div className="col-span-3">
                 <Label className="text-xs">سعر الوحدة ({currencyName})</Label>
-                <Input type="number" min="0" step="0.0001" value={r.rate} onChange={(e) => updateFx(r.id, { rate: e.target.value })} dir="ltr" style={{ textAlign: "right" }} />
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.0001"
+                  value={r.rate}
+                  onChange={(e) => updateFx(r.id, { rate: e.target.value })}
+                  dir="ltr"
+                  style={{ textAlign: "right" }}
+                />
               </div>
               <div className="col-span-2 flex gap-1">
-                <Button type="button" size="sm" variant="ghost" onClick={() => removeFx(r.id)} disabled={fxRows.length <= 1}>حذف</Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => removeFx(r.id)}
+                  disabled={fxRows.length <= 1}
+                >
+                  حذف
+                </Button>
               </div>
               <div className="col-span-12 text-xs text-muted-foreground -mt-1">
                 = <b>{cur(num(r.amount) * num(r.rate))}</b>
               </div>
             </div>
           ))}
-          <Button type="button" size="sm" variant="outline" onClick={addFx}>+ إضافة عملة</Button>
+          <Button type="button" size="sm" variant="outline" onClick={addFx}>
+            + إضافة عملة
+          </Button>
         </div>
       </div>
 
@@ -427,28 +537,70 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
         <div className="grid md:grid-cols-2 gap-3">
           <div className="space-y-1.5">
             <Label className="text-xs">نوع البنك</Label>
-            <RadioGroup value={currType} onValueChange={(v) => setCurrType(v as BankType)} className="flex gap-3 pt-2">
-              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer"><RadioGroupItem value="islamic" id="curr-i" /><Label htmlFor="curr-i" className="text-xs cursor-pointer">بنك إسلامي</Label></div>
-              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer"><RadioGroupItem value="traditional" id="curr-t" /><Label htmlFor="curr-t" className="text-xs cursor-pointer">بنك تقليدي</Label></div>
+            <RadioGroup
+              value={currType}
+              onValueChange={(v) => setCurrType(v as BankType)}
+              className="flex gap-3 pt-2"
+            >
+              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer">
+                <RadioGroupItem value="islamic" id="curr-i" />
+                <Label htmlFor="curr-i" className="text-xs cursor-pointer">
+                  بنك إسلامي
+                </Label>
+              </div>
+              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer">
+                <RadioGroupItem value="traditional" id="curr-t" />
+                <Label htmlFor="curr-t" className="text-xs cursor-pointer">
+                  بنك تقليدي
+                </Label>
+              </div>
             </RadioGroup>
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs">{currType === "islamic" ? "رصيد الحساب (الأصل + عائد حلال)" : "أصل المبلغ فقط (بدون الفوائد الربوية)"}</Label>
+            <Label className="text-xs">
+              {currType === "islamic"
+                ? "رصيد الحساب (الأصل + عائد حلال)"
+                : "أصل المبلغ فقط (بدون الفوائد الربوية)"}
+            </Label>
             <div className="relative">
-              <Input type="number" min="0" step="0.01" value={currBalance} onChange={(e) => setCurrBalance(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
+              <Input
+                type="number"
+                min="0"
+                step="0.01"
+                value={currBalance}
+                onChange={(e) => setCurrBalance(e.target.value)}
+                dir="ltr"
+                style={{ textAlign: "right" }}
+                className="pl-14"
+                placeholder="0"
+              />
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                {currencyName}
+              </span>
             </div>
           </div>
-          <HijriDateField compact label="تاريخ فتح الحساب" value={currOpenedAt} onChange={setCurrOpenedAt} />
+          <HijriDateField
+            compact
+            label="تاريخ فتح الحساب"
+            value={currOpenedAt}
+            onChange={setCurrOpenedAt}
+          />
           <div className="space-y-1.5 md:col-span-2">
             <BankPicker
-              type={currType} setType={setCurrType}
-              islamicBank={currIslamicBank} setIslamicBank={setCurrIslamicBank}
-              tradBank={currTradBank} setTradBank={setCurrTradBank}
-              useWindow={currUseWindow} setUseWindow={setCurrUseWindow}
-              branch={currBranch} setBranch={setCurrBranch}
+              type={currType}
+              setType={setCurrType}
+              islamicBank={currIslamicBank}
+              setIslamicBank={setCurrIslamicBank}
+              tradBank={currTradBank}
+              setTradBank={setCurrTradBank}
+              useWindow={currUseWindow}
+              setUseWindow={setCurrUseWindow}
+              branch={currBranch}
+              setBranch={setCurrBranch}
               idPrefix="curr"
-              islamicBanks={countryBanks.islamic} traditionalBanks={countryBanks.traditional} countryName={country.name}
+              islamicBanks={countryBanks.islamic}
+              traditionalBanks={countryBanks.traditional}
+              countryName={country.name}
             />
           </div>
         </div>
@@ -456,7 +608,8 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
           <Alert className="border-info/30 bg-info/5">
             <Info className="h-4 w-4" />
             <AlertDescription className="text-xs">
-              البنك التقليدي: أدرج <b>أصل المبلغ فقط</b> بدون الفوائد الربوية — الفوائد يُتخلَّص منها في وجوه الخير.
+              البنك التقليدي: أدرج <b>أصل المبلغ فقط</b> بدون الفوائد الربوية — الفوائد يُتخلَّص
+              منها في وجوه الخير.
             </AlertDescription>
           </Alert>
         )}
@@ -464,12 +617,12 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
           <Alert className="border-primary/30 bg-primary/5">
             <Info className="h-4 w-4" />
             <AlertDescription className="text-xs">
-              نافذة إسلامية داخل بنك تقليدي — تعامل معاملة البنوك الإسلامية: زكاة الرصيد كاملاً مع خصم نسبة التطهير إن وجدت في التقرير الشرعي.
+              نافذة إسلامية داخل بنك تقليدي — تعامل معاملة البنوك الإسلامية: زكاة الرصيد كاملاً مع
+              خصم نسبة التطهير إن وجدت في التقرير الشرعي.
             </AlertDescription>
           </Alert>
         )}
       </div>
-
 
       {/* د) التوفير والادخار */}
       <div className="rounded-lg border bg-card p-4 space-y-3">
@@ -482,42 +635,96 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
         <div className="grid md:grid-cols-2 gap-3">
           <div className="space-y-1.5">
             <Label className="text-xs">نوع البنك</Label>
-            <RadioGroup value={savType} onValueChange={(v) => setSavType(v as BankType)} className="flex gap-3 pt-2">
-              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer"><RadioGroupItem value="islamic" id="sav-i" /><Label htmlFor="sav-i" className="text-xs cursor-pointer">بنك إسلامي</Label></div>
-              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer"><RadioGroupItem value="traditional" id="sav-t" /><Label htmlFor="sav-t" className="text-xs cursor-pointer">بنك تقليدي</Label></div>
+            <RadioGroup
+              value={savType}
+              onValueChange={(v) => setSavType(v as BankType)}
+              className="flex gap-3 pt-2"
+            >
+              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer">
+                <RadioGroupItem value="islamic" id="sav-i" />
+                <Label htmlFor="sav-i" className="text-xs cursor-pointer">
+                  بنك إسلامي
+                </Label>
+              </div>
+              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer">
+                <RadioGroupItem value="traditional" id="sav-t" />
+                <Label htmlFor="sav-t" className="text-xs cursor-pointer">
+                  بنك تقليدي
+                </Label>
+              </div>
             </RadioGroup>
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs">{savType === "islamic" ? "الرصيد (الأصل + العائد الحلال)" : "أصل المبلغ فقط (بدون الفوائد الربوية)"}</Label>
+            <Label className="text-xs">
+              {savType === "islamic"
+                ? "الرصيد (الأصل + العائد الحلال)"
+                : "أصل المبلغ فقط (بدون الفوائد الربوية)"}
+            </Label>
             <div className="relative">
-              <Input type="number" min="0" step="0.01" value={savBalance} onChange={(e) => setSavBalance(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
+              <Input
+                type="number"
+                min="0"
+                step="0.01"
+                value={savBalance}
+                onChange={(e) => setSavBalance(e.target.value)}
+                dir="ltr"
+                style={{ textAlign: "right" }}
+                className="pl-14"
+                placeholder="0"
+              />
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                {currencyName}
+              </span>
             </div>
           </div>
           {savType === "islamic" && (
             <div className="space-y-1.5">
               <Label className="text-xs">نسبة التطهير (من التقرير الشرعي للبنك) %</Label>
               <div className="relative">
-                <Input type="number" min="0" max="100" step="0.01" value={savPurifyPct} onChange={(e) => setSavPurifyPct(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-8" placeholder="0" />
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">%</span>
+                <Input
+                  type="number"
+                  min="0"
+                  max="100"
+                  step="0.01"
+                  value={savPurifyPct}
+                  onChange={(e) => setSavPurifyPct(e.target.value)}
+                  dir="ltr"
+                  style={{ textAlign: "right" }}
+                  className="pl-8"
+                  placeholder="0"
+                />
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                  %
+                </span>
               </div>
             </div>
           )}
-          <HijriDateField compact label="تاريخ فتح الحساب" value={savOpenedAt} onChange={setSavOpenedAt} />
+          <HijriDateField
+            compact
+            label="تاريخ فتح الحساب"
+            value={savOpenedAt}
+            onChange={setSavOpenedAt}
+          />
           <div className="space-y-1.5 md:col-span-2">
             <BankPicker
-              type={savType} setType={setSavType}
-              islamicBank={savIslamicBank} setIslamicBank={setSavIslamicBank}
-              tradBank={savTradBank} setTradBank={setSavTradBank}
-              useWindow={savUseWindow} setUseWindow={setSavUseWindow}
-              branch={savBranch} setBranch={setSavBranch}
+              type={savType}
+              setType={setSavType}
+              islamicBank={savIslamicBank}
+              setIslamicBank={setSavIslamicBank}
+              tradBank={savTradBank}
+              setTradBank={setSavTradBank}
+              useWindow={savUseWindow}
+              setUseWindow={setSavUseWindow}
+              branch={savBranch}
+              setBranch={setSavBranch}
               idPrefix="sav"
-              islamicBanks={countryBanks.islamic} traditionalBanks={countryBanks.traditional} countryName={country.name}
+              islamicBanks={countryBanks.islamic}
+              traditionalBanks={countryBanks.traditional}
+              countryName={country.name}
             />
           </div>
         </div>
       </div>
-
 
       {/* هـ-١) الودائع */}
       <div className="rounded-lg border bg-card p-4 space-y-3">
@@ -530,28 +737,67 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
         <div className="grid md:grid-cols-2 gap-3">
           <div className="space-y-1.5">
             <Label className="text-xs">نوع البنك</Label>
-            <RadioGroup value={depType} onValueChange={(v) => setDepType(v as BankType)} className="flex gap-3 pt-2">
-              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer"><RadioGroupItem value="islamic" id="dep-i" /><Label htmlFor="dep-i" className="text-xs cursor-pointer">بنك إسلامي</Label></div>
-              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer"><RadioGroupItem value="traditional" id="dep-t" /><Label htmlFor="dep-t" className="text-xs cursor-pointer">بنك تقليدي</Label></div>
+            <RadioGroup
+              value={depType}
+              onValueChange={(v) => setDepType(v as BankType)}
+              className="flex gap-3 pt-2"
+            >
+              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer">
+                <RadioGroupItem value="islamic" id="dep-i" />
+                <Label htmlFor="dep-i" className="text-xs cursor-pointer">
+                  بنك إسلامي
+                </Label>
+              </div>
+              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer">
+                <RadioGroupItem value="traditional" id="dep-t" />
+                <Label htmlFor="dep-t" className="text-xs cursor-pointer">
+                  بنك تقليدي
+                </Label>
+              </div>
             </RadioGroup>
           </div>
-          <HijriDateField compact label="تاريخ فتح الوديعة" value={depOpenedAt} onChange={setDepOpenedAt} />
+          <HijriDateField
+            compact
+            label="تاريخ فتح الوديعة"
+            value={depOpenedAt}
+            onChange={setDepOpenedAt}
+          />
           <div className="md:col-span-2">
             <BankPicker
-              type={depType} setType={setDepType}
-              islamicBank={depIslamicBank} setIslamicBank={setDepIslamicBank}
-              tradBank={depTradBank} setTradBank={setDepTradBank}
-              useWindow={false} setUseWindow={() => {}}
-              branch={depBranch} setBranch={setDepBranch}
+              type={depType}
+              setType={setDepType}
+              islamicBank={depIslamicBank}
+              setIslamicBank={setDepIslamicBank}
+              tradBank={depTradBank}
+              setTradBank={setDepTradBank}
+              useWindow={false}
+              setUseWindow={() => {}}
+              branch={depBranch}
+              setBranch={setDepBranch}
               idPrefix="dep"
-              islamicBanks={countryBanks.islamic} traditionalBanks={countryBanks.traditional} countryName={country.name} hideWindow
+              islamicBanks={countryBanks.islamic}
+              traditionalBanks={countryBanks.traditional}
+              countryName={country.name}
+              hideWindow
             />
           </div>
           <div className="space-y-1.5 md:col-span-2">
             <Label className="text-xs">أصل الودائع</Label>
             <div className="relative">
-              <Input type="number" min="0" step="0.01" value={depPrincipal} onChange={(e) => setDepPrincipal(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
+              <Input
+                type="number"
+                min="0"
+                step="0.01"
+                value={depPrincipal}
+                onChange={(e) => setDepPrincipal(e.target.value)}
+                dir="ltr"
+                style={{ textAlign: "right" }}
+                className="pl-14"
+                placeholder="0"
+              />
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                {currencyName}
+              </span>
             </div>
           </div>
         </div>
@@ -568,31 +814,69 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
         <div className="grid md:grid-cols-2 gap-3">
           <div className="space-y-1.5">
             <Label className="text-xs">نوع البنك</Label>
-            <RadioGroup value={certType} onValueChange={(v) => setCertType(v as BankType)} className="flex gap-3 pt-2">
-              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer"><RadioGroupItem value="islamic" id="cert-i" /><Label htmlFor="cert-i" className="text-xs cursor-pointer">بنك إسلامي</Label></div>
-              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer"><RadioGroupItem value="traditional" id="cert-t" /><Label htmlFor="cert-t" className="text-xs cursor-pointer">بنك تقليدي</Label></div>
+            <RadioGroup
+              value={certType}
+              onValueChange={(v) => setCertType(v as BankType)}
+              className="flex gap-3 pt-2"
+            >
+              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer">
+                <RadioGroupItem value="islamic" id="cert-i" />
+                <Label htmlFor="cert-i" className="text-xs cursor-pointer">
+                  بنك إسلامي
+                </Label>
+              </div>
+              <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer">
+                <RadioGroupItem value="traditional" id="cert-t" />
+                <Label htmlFor="cert-t" className="text-xs cursor-pointer">
+                  بنك تقليدي
+                </Label>
+              </div>
             </RadioGroup>
           </div>
           <div className="space-y-1.5">
             <Label className="text-xs">تاريخ شراء الشهادة</Label>
-            <Input type="date" value={certOpenedAt} onChange={(e) => setCertOpenedAt(e.target.value)} />
+            <Input
+              type="date"
+              value={certOpenedAt}
+              onChange={(e) => setCertOpenedAt(e.target.value)}
+            />
           </div>
           <div className="md:col-span-2">
             <BankPicker
-              type={certType} setType={setCertType}
-              islamicBank={certIslamicBank} setIslamicBank={setCertIslamicBank}
-              tradBank={certTradBank} setTradBank={setCertTradBank}
-              useWindow={false} setUseWindow={() => {}}
-              branch={certBranch} setBranch={setCertBranch}
+              type={certType}
+              setType={setCertType}
+              islamicBank={certIslamicBank}
+              setIslamicBank={setCertIslamicBank}
+              tradBank={certTradBank}
+              setTradBank={setCertTradBank}
+              useWindow={false}
+              setUseWindow={() => {}}
+              branch={certBranch}
+              setBranch={setCertBranch}
               idPrefix="cert"
-              islamicBanks={countryBanks.islamic} traditionalBanks={countryBanks.traditional} countryName={country.name} hideWindow
+              islamicBanks={countryBanks.islamic}
+              traditionalBanks={countryBanks.traditional}
+              countryName={country.name}
+              hideWindow
             />
           </div>
           <div className="space-y-1.5 md:col-span-2">
             <Label className="text-xs">أصل الشهادات (دون العائد الربوي)</Label>
             <div className="relative">
-              <Input type="number" min="0" step="0.01" value={certPrincipal} onChange={(e) => setCertPrincipal(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
+              <Input
+                type="number"
+                min="0"
+                step="0.01"
+                value={certPrincipal}
+                onChange={(e) => setCertPrincipal(e.target.value)}
+                dir="ltr"
+                style={{ textAlign: "right" }}
+                className="pl-14"
+                placeholder="0"
+              />
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                {currencyName}
+              </span>
             </div>
           </div>
         </div>
@@ -607,23 +891,47 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
           <div className="space-y-1.5">
             <Label className="text-xs">رصيد الدفتر الحالي (للعلم)</Label>
             <div className="relative">
-              <Input type="number" min="0" step="0.01" value={postSavings} onChange={(e) => setPostSavings(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
+              <Input
+                type="number"
+                min="0"
+                step="0.01"
+                value={postSavings}
+                onChange={(e) => setPostSavings(e.target.value)}
+                dir="ltr"
+                style={{ textAlign: "right" }}
+                className="pl-14"
+                placeholder="0"
+              />
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                {currencyName}
+              </span>
             </div>
           </div>
           <div className="space-y-1.5">
             <Label className="text-xs">أصل المبلغ عند الإيداع (يُزكَّى)</Label>
             <div className="relative">
-              <Input type="number" min="0" step="0.01" value={postPrincipal} onChange={(e) => setPostPrincipal(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
+              <Input
+                type="number"
+                min="0"
+                step="0.01"
+                value={postPrincipal}
+                onChange={(e) => setPostPrincipal(e.target.value)}
+                dir="ltr"
+                style={{ textAlign: "right" }}
+                className="pl-14"
+                placeholder="0"
+              />
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                {currencyName}
+              </span>
             </div>
           </div>
         </div>
         <p className="text-xs text-muted-foreground">
-          دفتر توفير البريد يُعدّ من المعاملات الربوية — تُزكَّى <b>أصل المبالغ المُودَعة فقط</b> دون الفوائد المتراكمة.
+          دفتر توفير البريد يُعدّ من المعاملات الربوية — تُزكَّى <b>أصل المبالغ المُودَعة فقط</b>{" "}
+          دون الفوائد المتراكمة.
         </p>
       </div>
-
 
       {/* هـ) البطاقات البنكية */}
       <div className="rounded-lg border bg-card p-4 space-y-4">
@@ -633,12 +941,26 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
 
         {/* هـ-أ) Prepaid */}
         <div className="space-y-2 rounded-md border p-3">
-          <div className="text-xs font-semibold text-muted-foreground">هـ-أ · بطاقات Prepaid (الرصيد المتاح — وعاء زكوي)</div>
+          <div className="text-xs font-semibold text-muted-foreground">
+            هـ-أ · بطاقات Prepaid (الرصيد المتاح — وعاء زكوي)
+          </div>
           <div className="space-y-1.5">
             <Label className="text-xs">رصيد Prepaid المتاح</Label>
             <div className="relative">
-              <Input type="number" min="0" step="0.01" value={cardPrepaid} onChange={(e) => setCardPrepaid(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
+              <Input
+                type="number"
+                min="0"
+                step="0.01"
+                value={cardPrepaid}
+                onChange={(e) => setCardPrepaid(e.target.value)}
+                dir="ltr"
+                style={{ textAlign: "right" }}
+                className="pl-14"
+                placeholder="0"
+              />
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                {currencyName}
+              </span>
             </div>
           </div>
         </div>
@@ -646,36 +968,75 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
         {/* هـ-ب) بطاقات ائتمانية */}
         <div className="space-y-3 rounded-md border border-destructive/20 p-3 bg-destructive/5">
           <div className="flex items-center gap-2">
-            <div className="text-xs font-semibold text-destructive">هـ-ب · بطاقات ائتمانية (ديون — تُخصم من الوعاء)</div>
+            <div className="text-xs font-semibold text-destructive">
+              هـ-ب · بطاقات ائتمانية (ديون — تُخصم من الوعاء)
+            </div>
             <Badge variant={ccType === "islamic" ? "default" : "secondary"} className="text-[10px]">
-              {ccType === "islamic" ? "بنك إسلامي" : ccUseWindow ? "فرع/نافذة إسلامية" : "بنك تقليدي"}
+              {ccType === "islamic"
+                ? "بنك إسلامي"
+                : ccUseWindow
+                  ? "فرع/نافذة إسلامية"
+                  : "بنك تقليدي"}
             </Badge>
           </div>
 
           <div className="grid md:grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label className="text-xs">نوع البنك المصدر</Label>
-              <RadioGroup value={ccType} onValueChange={(v) => setCcType(v as BankType)} className="flex gap-3 pt-2">
-                <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer"><RadioGroupItem value="islamic" id="cc-i" /><Label htmlFor="cc-i" className="text-xs cursor-pointer">بنك إسلامي</Label></div>
-                <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer"><RadioGroupItem value="traditional" id="cc-t" /><Label htmlFor="cc-t" className="text-xs cursor-pointer">بنك تقليدي</Label></div>
+              <RadioGroup
+                value={ccType}
+                onValueChange={(v) => setCcType(v as BankType)}
+                className="flex gap-3 pt-2"
+              >
+                <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer">
+                  <RadioGroupItem value="islamic" id="cc-i" />
+                  <Label htmlFor="cc-i" className="text-xs cursor-pointer">
+                    بنك إسلامي
+                  </Label>
+                </div>
+                <div className="flex items-center gap-2 border rounded-md px-3 py-1.5 cursor-pointer">
+                  <RadioGroupItem value="traditional" id="cc-t" />
+                  <Label htmlFor="cc-t" className="text-xs cursor-pointer">
+                    بنك تقليدي
+                  </Label>
+                </div>
               </RadioGroup>
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs">المبلغ المستحق على البطاقة (الدين)</Label>
               <div className="relative">
-                <Input type="number" min="0" step="0.01" value={ccDue} onChange={(e) => setCcDue(e.target.value)} dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={ccDue}
+                  onChange={(e) => setCcDue(e.target.value)}
+                  dir="ltr"
+                  style={{ textAlign: "right" }}
+                  className="pl-14"
+                  placeholder="0"
+                />
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                  {currencyName}
+                </span>
               </div>
             </div>
             <div className="md:col-span-2">
               <BankPicker
-                type={ccType} setType={setCcType}
-                islamicBank={ccIslamicBank} setIslamicBank={setCcIslamicBank}
-                tradBank={ccTradBank} setTradBank={setCcTradBank}
-                useWindow={ccUseWindow} setUseWindow={setCcUseWindow}
-                branch={ccBranch} setBranch={setCcBranch}
+                type={ccType}
+                setType={setCcType}
+                islamicBank={ccIslamicBank}
+                setIslamicBank={setCcIslamicBank}
+                tradBank={ccTradBank}
+                setTradBank={setCcTradBank}
+                useWindow={ccUseWindow}
+                setUseWindow={setCcUseWindow}
+                branch={ccBranch}
+                setBranch={setCcBranch}
                 idPrefix="cc"
-                islamicBanks={countryBanks.islamic} traditionalBanks={countryBanks.traditional} countryName={country.name}
+                islamicBanks={countryBanks.islamic}
+                traditionalBanks={countryBanks.traditional}
+                countryName={country.name}
               />
             </div>
           </div>
@@ -692,7 +1053,8 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
             <Alert className="border-info/30 bg-info/5">
               <Info className="h-4 w-4" />
               <AlertDescription className="text-xs">
-                بطاقة ائتمانية من بنك تقليدي: يُخصم الدين من الوعاء. تأكد من عدم احتساب أي فوائد ربوية ضمن المبلغ المستحق.
+                بطاقة ائتمانية من بنك تقليدي: يُخصم الدين من الوعاء. تأكد من عدم احتساب أي فوائد
+                ربوية ضمن المبلغ المستحق.
               </AlertDescription>
             </Alert>
           )}
@@ -700,7 +1062,8 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
             <Alert className="border-primary/30 bg-primary/5">
               <Info className="h-4 w-4" />
               <AlertDescription className="text-xs">
-                بطاقة ائتمانية من فرع/نافذة إسلامية: المبلغ المستحق يُخصم من الوعاء كدين. تحقق من أن النافذة معتمدة شرعياً.
+                بطاقة ائتمانية من فرع/نافذة إسلامية: المبلغ المستحق يُخصم من الوعاء كدين. تحقق من أن
+                النافذة معتمدة شرعياً.
               </AlertDescription>
             </Alert>
           )}
@@ -712,12 +1075,24 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
                 💧 تطهير الفوائد الربوية (مستقل عن الزكاة)
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs">إجمالي الفوائد الربوية المدفوعة على البطاقة خلال السنة</Label>
+                <Label className="text-xs">
+                  إجمالي الفوائد الربوية المدفوعة على البطاقة خلال السنة
+                </Label>
                 <div className="relative">
-                  <Input type="number" min="0" step="0.01" value={ccInterestPaid}
+                  <Input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={ccInterestPaid}
                     onChange={(e) => setCcInterestPaid(e.target.value)}
-                    dir="ltr" style={{ textAlign: "right" }} className="pl-14" placeholder="0" />
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">{currencyName}</span>
+                    dir="ltr"
+                    style={{ textAlign: "right" }}
+                    className="pl-14"
+                    placeholder="0"
+                  />
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                    {currencyName}
+                  </span>
                 </div>
               </div>
               {num(ccInterestPaid) > 0 && (
@@ -727,8 +1102,9 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
                     <b className="text-amber-700 dark:text-amber-400">{cur(num(ccInterestPaid))}</b>
                   </div>
                   <p className="text-[11px] text-muted-foreground leading-relaxed">
-                    <b>تنبيه شرعي:</b> هذا المبلغ لا يُحتسب من الزكاة. يُصرف في وجوه الخير العامة (إصلاحات/فقراء بنية صدقة لا زكاة)
-                    لأنه عوض عن مال خبيث لا تبرأ به الذمة من الزكاة. — AAOIFI · المعيار 21.
+                    <b>تنبيه شرعي:</b> هذا المبلغ لا يُحتسب من الزكاة. يُصرف في وجوه الخير العامة
+                    (إصلاحات/فقراء بنية صدقة لا زكاة) لأنه عوض عن مال خبيث لا تبرأ به الذمة من
+                    الزكاة. — AAOIFI · المعيار 21.
                   </p>
                 </div>
               )}
@@ -772,49 +1148,61 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
         note="المحافظ البنكية غالبًا ما تكون مربوطة بحساب جاري — حدِّد «مربوطة» لمنع التكرار المحاسبي."
       />
 
-
       {/* ح) محافظ العملات المشفّرة — مُنقولة إلى تبويب «زكاة العملات الرقمية والمحافظ الاستثمارية» */}
       <div className="rounded-lg border border-dashed border-primary/30 bg-primary/5 p-3 text-xs text-muted-foreground">
-        <b className="text-primary">ملاحظة:</b> أُدخل محافظ العملات المشفّرة (BTC / ETH / USDT …) في تبويب
-        <b> «زكاة العملات الرقمية والمحافظ الاستثمارية»</b> ضمن قسم «العملات الرقمية (Crypto)»، تجنّباً لازدواج الاحتساب.
+        <b className="text-primary">ملاحظة:</b> أُدخل محافظ العملات المشفّرة (BTC / ETH / USDT …) في
+        تبويب
+        <b> «زكاة العملات الرقمية والمحافظ الاستثمارية»</b> ضمن قسم «العملات الرقمية (Crypto)»،
+        تجنّباً لازدواج الاحتساب.
       </div>
-
-
 
       {/* الملخّص */}
       <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 space-y-1.5">
         <div className="flex items-center justify-between text-xs">
-          <span className="text-muted-foreground">كاش ومدخرات</span><b>{cur(totals.tCash)}</b>
+          <span className="text-muted-foreground">كاش ومدخرات</span>
+          <b>{cur(totals.tCash)}</b>
         </div>
         <div className="flex items-center justify-between text-xs">
-          <span className="text-muted-foreground">عملات أجنبية</span><b>{cur(totals.tFx)}</b>
+          <span className="text-muted-foreground">عملات أجنبية</span>
+          <b>{cur(totals.tFx)}</b>
         </div>
         <div className="flex items-center justify-between text-xs">
-          <span className="text-muted-foreground">حسابات جارية</span><b>{cur(totals.tCurr)}</b>
+          <span className="text-muted-foreground">حسابات جارية</span>
+          <b>{cur(totals.tCurr)}</b>
         </div>
         <div className="flex items-center justify-between text-xs">
-          <span className="text-muted-foreground">توفير وادخار</span><b>{cur(totals.tSav)}</b>
+          <span className="text-muted-foreground">توفير وادخار</span>
+          <b>{cur(totals.tSav)}</b>
         </div>
         <div className="flex items-center justify-between text-xs">
-          <span className="text-muted-foreground">ودائع وشهادات</span><b>{cur(totals.tDep)}</b>
+          <span className="text-muted-foreground">ودائع وشهادات</span>
+          <b>{cur(totals.tDep)}</b>
         </div>
         <div className="flex items-center justify-between text-xs">
-          <span className="text-muted-foreground">دفتر توفير البريد</span><b>{cur(totals.tPost)}</b>
+          <span className="text-muted-foreground">دفتر توفير البريد</span>
+          <b>{cur(totals.tPost)}</b>
         </div>
         <div className="flex items-center justify-between text-xs">
-          <span className="text-muted-foreground">بطاقات Prepaid</span><b>{cur(totals.tCards)}</b>
+          <span className="text-muted-foreground">بطاقات Prepaid</span>
+          <b>{cur(totals.tCards)}</b>
         </div>
         <div className="flex items-center justify-between text-xs">
-          <span className="text-muted-foreground">محافظ شركات الاتصالات</span><b>{cur(totals.tTelco)}</b>
+          <span className="text-muted-foreground">محافظ شركات الاتصالات</span>
+          <b>{cur(totals.tTelco)}</b>
         </div>
         <div className="flex items-center justify-between text-xs">
-          <span className="text-muted-foreground">محافظ بنكية ودفع إلكتروني</span><b>{cur(totals.tBankWal)}</b>
+          <span className="text-muted-foreground">محافظ بنكية ودفع إلكتروني</span>
+          <b>{cur(totals.tBankWal)}</b>
         </div>
         {totals.tCreditDue > 0 && (
           <div className="flex items-center justify-between text-xs text-destructive">
             <span>
               − دين بطاقات ائتمانية
-              {ccType === "islamic" ? " (بنك إسلامي)" : ccUseWindow ? " (فرع/نافذة إسلامية)" : " (بنك تقليدي)"}
+              {ccType === "islamic"
+                ? " (بنك إسلامي)"
+                : ccUseWindow
+                  ? " (فرع/نافذة إسلامية)"
+                  : " (بنك تقليدي)"}
             </span>
             <b>−{cur(totals.tCreditDue)}</b>
           </div>
@@ -829,14 +1217,27 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
   );
 }
 
-type WalletRowT = { id: number; provider: string; amount: string; linked: "linked" | "standalone"; linkedBank?: string };
+type WalletRowT = {
+  id: number;
+  provider: string;
+  amount: string;
+  linked: "linked" | "standalone";
+  linkedBank?: string;
+};
 interface WalletOps {
   add: () => void;
   remove: (id: number) => void;
   update: (id: number, patch: Partial<WalletRowT>) => void;
 }
 function WalletGroup({
-  title, rows, ops, currencyName, providers, note, forceStandalone, hideLink,
+  title,
+  rows,
+  ops,
+  currencyName,
+  providers,
+  note,
+  forceStandalone,
+  hideLink,
 }: {
   title: string;
   rows: WalletRowT[];
@@ -860,24 +1261,47 @@ function WalletGroup({
             <div className={hideLink ? "col-span-6" : "col-span-4"}>
               <Label className="text-xs">النوع</Label>
               <Select value={w.provider} onValueChange={(v) => ops.update(w.id, { provider: v })}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
-                  {providers.map((p) => <SelectItem key={p.v} value={p.v}>{p.l}</SelectItem>)}
+                  {providers.map((p) => (
+                    <SelectItem key={p.v} value={p.v}>
+                      {p.l}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
             <div className={hideLink ? "col-span-4" : "col-span-3"}>
               <Label className="text-xs">الرصيد</Label>
               <div className="relative">
-                <Input type="number" min="0" step="0.01" value={w.amount} onChange={(e) => ops.update(w.id, { amount: e.target.value })} dir="ltr" style={{ textAlign: "right" }} className="pl-12" placeholder="0" />
-                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">{currencyName}</span>
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={w.amount}
+                  onChange={(e) => ops.update(w.id, { amount: e.target.value })}
+                  dir="ltr"
+                  style={{ textAlign: "right" }}
+                  className="pl-12"
+                  placeholder="0"
+                />
+                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">
+                  {currencyName}
+                </span>
               </div>
             </div>
             {!hideLink && (
               <div className="col-span-3">
                 <Label className="text-xs">الربط بحساب بنكي</Label>
-                <Select value={w.linked} onValueChange={(v) => ops.update(w.id, { linked: v as "linked" | "standalone" })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                <Select
+                  value={w.linked}
+                  onValueChange={(v) => ops.update(w.id, { linked: v as "linked" | "standalone" })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="standalone">مستقلة — تُزكَّى</SelectItem>
                     <SelectItem value="linked">مربوطة — تُستثنى</SelectItem>
@@ -886,11 +1310,24 @@ function WalletGroup({
               </div>
             )}
             <div className="col-span-2 flex gap-1">
-              <Button type="button" size="sm" variant="ghost" onClick={() => ops.remove(w.id)} disabled={rows.length <= 1}>حذف</Button>
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                onClick={() => ops.remove(w.id)}
+                disabled={rows.length <= 1}
+              >
+                حذف
+              </Button>
             </div>
             {!hideLink && w.linked === "linked" && (
               <div className="col-span-12">
-                <Input value={w.linkedBank ?? ""} onChange={(e) => ops.update(w.id, { linkedBank: e.target.value })} placeholder="اسم البنك المرتبط (للتوثيق)" className="text-xs" />
+                <Input
+                  value={w.linkedBank ?? ""}
+                  onChange={(e) => ops.update(w.id, { linkedBank: e.target.value })}
+                  placeholder="اسم البنك المرتبط (للتوثيق)"
+                  className="text-xs"
+                />
                 <div className="text-[11px] text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 rounded px-2 py-1 mt-1">
                   ⓘ مربوطة بحساب بنكي — لن تُحتسب هنا، تأكَّد من إدراج رصيد البنك في القسم المناسب.
                 </div>
@@ -898,11 +1335,12 @@ function WalletGroup({
             )}
           </div>
         ))}
-        <Button type="button" size="sm" variant="outline" onClick={ops.add}>+ إضافة</Button>
+        <Button type="button" size="sm" variant="outline" onClick={ops.add}>
+          + إضافة
+        </Button>
       </div>
     </div>
   );
-
 }
 
 type BankCategory = "islamic_full" | "window" | "pure";
@@ -916,10 +1354,21 @@ type UnifiedBank = {
 type BankFilter = "all" | BankCategory;
 
 function BankPicker({
-  type, setType,
-  islamicBank, setIslamicBank, tradBank, setTradBank,
-  useWindow, setUseWindow, branch, setBranch, idPrefix, hideWindow,
-  islamicBanks, traditionalBanks, countryName,
+  type,
+  setType,
+  islamicBank,
+  setIslamicBank,
+  tradBank,
+  setTradBank,
+  useWindow,
+  setUseWindow,
+  branch,
+  setBranch,
+  idPrefix,
+  hideWindow,
+  islamicBanks,
+  traditionalBanks,
+  countryName,
 }: {
   type: BankType;
   setType?: (t: BankType) => void;
@@ -950,7 +1399,7 @@ function BankPicker({
         category: hasWindow(b) ? "window" : "pure",
         tradV: b.v,
         window: b.window,
-      })
+      }),
     );
     return items;
   }, [islamicBanks, traditionalBanks]);
@@ -962,7 +1411,7 @@ function BankPicker({
       window: unified.filter((u) => u.category === "window").length,
       pure: unified.filter((u) => u.category === "pure").length,
     }),
-    [unified]
+    [unified],
   );
 
   const [filter, setFilter] = useState<BankFilter>("all");
@@ -973,15 +1422,15 @@ function BankPicker({
     return unified.filter(
       (u) =>
         (filter === "all" || u.category === filter) &&
-        (q === "" || u.label.toLowerCase().includes(q) || (u.window ?? "").toLowerCase().includes(q))
+        (q === "" ||
+          u.label.toLowerCase().includes(q) ||
+          (u.window ?? "").toLowerCase().includes(q)),
     );
   }, [unified, filter, query]);
 
   // المفتاح المختار حالياً (مبني على type + الاختيار)
   const selectedKey =
-    type === "islamic"
-      ? islamicBank ? `i:${islamicBank}` : ""
-      : tradBank ? `t:${tradBank}` : "";
+    type === "islamic" ? (islamicBank ? `i:${islamicBank}` : "") : tradBank ? `t:${tradBank}` : "";
 
   const selectedItem = unified.find((u) => u.key === selectedKey);
 
@@ -1002,10 +1451,22 @@ function BankPicker({
 
   const CategoryBadge = ({ c }: { c: BankCategory }) => {
     if (c === "islamic_full")
-      return <Badge variant="default" className="text-[10px]">كامل إسلامي</Badge>;
+      return (
+        <Badge variant="default" className="text-[10px]">
+          كامل إسلامي
+        </Badge>
+      );
     if (c === "window")
-      return <Badge variant="secondary" className="text-[10px]">نوافذ/منتجات إسلامية</Badge>;
-    return <Badge variant="outline" className="text-[10px]">تقليدي بالكامل</Badge>;
+      return (
+        <Badge variant="secondary" className="text-[10px]">
+          نوافذ/منتجات إسلامية
+        </Badge>
+      );
+    return (
+      <Badge variant="outline" className="text-[10px]">
+        تقليدي بالكامل
+      </Badge>
+    );
   };
 
   const filterChip = (val: BankFilter, label: string, count: number) => (
@@ -1097,7 +1558,11 @@ function BankPicker({
 
         <div className="space-y-1.5 md:col-span-2">
           <Label className="text-xs">الفرع</Label>
-          <Input value={branch} onChange={(e) => setBranch(e.target.value)} placeholder="اسم الفرع" />
+          <Input
+            value={branch}
+            onChange={(e) => setBranch(e.target.value)}
+            placeholder="اسم الفرع"
+          />
         </div>
       </div>
     </div>

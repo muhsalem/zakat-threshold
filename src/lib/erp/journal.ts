@@ -18,15 +18,15 @@ export type JournalCurrency = string; // ISO-4217
 export interface ZakatCalcInput {
   entity_name: string;
   entity_id?: string;
-  reference?: string;           // مثل: رقم الإقرار / رقم العملية
+  reference?: string; // مثل: رقم الإقرار / رقم العملية
   currency: JournalCurrency;
   zakat_due: number;
-  base_amount?: number;         // الوعاء الزكوي
-  rate?: number;                // 0.025 أو 0.02577
-  period_start: string;         // ISO date
-  period_end: string;           // ISO date (تاريخ حولان الحول)
-  jurisdiction?: string;        // ISO-3166 alpha-2
-  fatwa_authority?: string;     // e.g. "AAOIFI-35" | "ZATCA" | "IFA-OIC"
+  base_amount?: number; // الوعاء الزكوي
+  rate?: number; // 0.025 أو 0.02577
+  period_start: string; // ISO date
+  period_end: string; // ISO date (تاريخ حولان الحول)
+  jurisdiction?: string; // ISO-3166 alpha-2
+  fatwa_authority?: string; // e.g. "AAOIFI-35" | "ZATCA" | "IFA-OIC"
   memo?: string;
 }
 
@@ -39,8 +39,8 @@ export interface JournalLine {
 }
 
 export interface NormalizedJournalEntry {
-  id: string;                   // نُنشئه من reference + timestamp
-  date: string;                 // ISO date (period_end)
+  id: string; // نُنشئه من reference + timestamp
+  date: string; // ISO date (period_end)
   currency: JournalCurrency;
   memo: string;
   reference: string;
@@ -138,7 +138,11 @@ export function toQuickBooks(j: NormalizedJournalEntry): AdapterOutput {
       })),
     },
   };
-  return { contentType: "application/json", filenameSuffix: "qbo.json", body: JSON.stringify(body, null, 2) };
+  return {
+    contentType: "application/json",
+    filenameSuffix: "qbo.json",
+    body: JSON.stringify(body, null, 2),
+  };
 }
 
 // Xero — ManualJournal API
@@ -160,7 +164,11 @@ export function toXero(j: NormalizedJournalEntry): AdapterOutput {
       },
     ],
   };
-  return { contentType: "application/json", filenameSuffix: "xero.json", body: JSON.stringify(body, null, 2) };
+  return {
+    contentType: "application/json",
+    filenameSuffix: "xero.json",
+    body: JSON.stringify(body, null, 2),
+  };
 }
 
 // Odoo — account.move payload (usable via XML-RPC / REST wrapper)
@@ -185,7 +193,11 @@ export function toOdoo(j: NormalizedJournalEntry): AdapterOutput {
       ]),
     },
   };
-  return { contentType: "application/json", filenameSuffix: "odoo.json", body: JSON.stringify(body, null, 2) };
+  return {
+    contentType: "application/json",
+    filenameSuffix: "odoo.json",
+    body: JSON.stringify(body, null, 2),
+  };
 }
 
 // NetSuite — SuiteTalk JournalEntry
@@ -204,12 +216,17 @@ export function toNetSuite(j: NormalizedJournalEntry): AdapterOutput {
       memo: l.description,
     })),
   };
-  return { contentType: "application/json", filenameSuffix: "netsuite.json", body: JSON.stringify(body, null, 2) };
+  return {
+    contentType: "application/json",
+    filenameSuffix: "netsuite.json",
+    body: JSON.stringify(body, null, 2),
+  };
 }
 
 // SAP — IDoc ACC_DOCUMENT03 (Financial Accounting Document)
 export function toSapIDoc(j: NormalizedJournalEntry): AdapterOutput {
-  const esc = (s: string) => s.replace(/[<>&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" } as any)[c]);
+  const esc = (s: string) =>
+    s.replace(/[<>&]/g, (c) => (({ "<": "&lt;", ">": "&gt;", "&": "&amp;" }) as any)[c]);
   const items = j.lines
     .map(
       (l, i) => `    <E1BPACGL09>
@@ -244,7 +261,16 @@ ${items}
 // Zoho Books / Sage / Wave / generic CSV
 export function toCsv(j: NormalizedJournalEntry): AdapterOutput {
   const rows = [
-    ["Date", "Reference", "Account Code", "Account Name", "Description", "Debit", "Credit", "Currency"],
+    [
+      "Date",
+      "Reference",
+      "Account Code",
+      "Account Name",
+      "Description",
+      "Debit",
+      "Credit",
+      "Currency",
+    ],
     ...j.lines.map((l) => [
       j.date,
       j.reference,
@@ -263,7 +289,8 @@ export function toCsv(j: NormalizedJournalEntry): AdapterOutput {
 // XBRL — مبسّط (compatible with ZATCA e-invoicing tagging conventions)
 export function toXbrl(j: NormalizedJournalEntry): AdapterOutput {
   const total = j.lines.reduce((s, l) => s + l.debit, 0);
-  const esc = (s: string) => s.replace(/[<>&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" } as any)[c]);
+  const esc = (s: string) =>
+    s.replace(/[<>&]/g, (c) => (({ "<": "&lt;", ">": "&gt;", "&": "&amp;" }) as any)[c]);
   const body = `<?xml version="1.0" encoding="UTF-8"?>
 <xbrl xmlns="http://www.xbrl.org/2003/instance"
       xmlns:zkt="https://schema.zakat.lovable.app/2026"
@@ -281,17 +308,32 @@ export function toXbrl(j: NormalizedJournalEntry): AdapterOutput {
   return { contentType: "application/xml", filenameSuffix: "xbrl.xml", body };
 }
 
-export type ErpFormat = "generic" | "quickbooks" | "xero" | "odoo" | "netsuite" | "sap" | "csv" | "xbrl";
+export type ErpFormat =
+  | "generic"
+  | "quickbooks"
+  | "xero"
+  | "odoo"
+  | "netsuite"
+  | "sap"
+  | "csv"
+  | "xbrl";
 
 export function renderJournal(j: NormalizedJournalEntry, format: ErpFormat): AdapterOutput {
   switch (format) {
-    case "quickbooks": return toQuickBooks(j);
-    case "xero":       return toXero(j);
-    case "odoo":       return toOdoo(j);
-    case "netsuite":   return toNetSuite(j);
-    case "sap":        return toSapIDoc(j);
-    case "csv":        return toCsv(j);
-    case "xbrl":       return toXbrl(j);
+    case "quickbooks":
+      return toQuickBooks(j);
+    case "xero":
+      return toXero(j);
+    case "odoo":
+      return toOdoo(j);
+    case "netsuite":
+      return toNetSuite(j);
+    case "sap":
+      return toSapIDoc(j);
+    case "csv":
+      return toCsv(j);
+    case "xbrl":
+      return toXbrl(j);
     case "generic":
     default:
       return {
@@ -303,5 +345,12 @@ export function renderJournal(j: NormalizedJournalEntry, format: ErpFormat): Ada
 }
 
 export const SUPPORTED_ERP_FORMATS: ErpFormat[] = [
-  "generic", "quickbooks", "xero", "odoo", "netsuite", "sap", "csv", "xbrl",
+  "generic",
+  "quickbooks",
+  "xero",
+  "odoo",
+  "netsuite",
+  "sap",
+  "csv",
+  "xbrl",
 ];

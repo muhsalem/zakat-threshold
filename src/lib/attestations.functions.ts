@@ -23,8 +23,12 @@ export const createAttestation = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const ctx = context as any;
     const canonical = JSON.stringify({
-      t: data.title, a: data.attestorName, l: data.attestorLicense ?? null,
-      o: data.opinion, r: data.shariaRefs, p: data.payload,
+      t: data.title,
+      a: data.attestorName,
+      l: data.attestorLicense ?? null,
+      o: data.opinion,
+      r: data.shariaRefs,
+      p: data.payload,
     });
     const hash = createHash("sha256").update(canonical).digest("hex");
 

@@ -1,17 +1,16 @@
-import {
-  Document,
-  Page,
-  Text,
-  View,
-  StyleSheet,
-  Font,
-  pdf,
-  Image,
-} from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Font, pdf, Image } from "@react-pdf/renderer";
 import cairoRegular from "@/assets/fonts/Cairo-Regular.ttf";
 import cairoBold from "@/assets/fonts/Cairo-Bold.ttf";
 import logoUrl from "@/assets/zakat-logo.png";
-import { currency as fmtCurrency, ZAKAT_RECIPIENTS, GOLD_NISAB_GRAMS, SILVER_NISAB_GRAMS, camelZakat, cowZakat, sheepZakat } from "@/lib/zakat";
+import {
+  currency as fmtCurrency,
+  ZAKAT_RECIPIENTS,
+  GOLD_NISAB_GRAMS,
+  SILVER_NISAB_GRAMS,
+  camelZakat,
+  cowZakat,
+  sheepZakat,
+} from "@/lib/zakat";
 import { SHARIA_REFERENCES, RULING_LEVEL_LABELS } from "@/lib/shariaReferences";
 import type { PrintReportData } from "./PrintReport";
 
@@ -242,7 +241,13 @@ const styles = StyleSheet.create({
     padding: 8,
     marginBottom: 6,
   },
-  recipientTitle: { ...BASE_TEXT, fontSize: 11, fontWeight: 700, color: C.primary, marginBottom: 2 },
+  recipientTitle: {
+    ...BASE_TEXT,
+    fontSize: 11,
+    fontWeight: 700,
+    color: C.primary,
+    marginBottom: 2,
+  },
   recipientDesc: { ...BASE_TEXT, fontSize: 9, color: C.text, lineHeight: 1.6 },
   // العلامة المائية — صغيرة وفي الذيل لتفادي تداخلها مع المحتوى
   watermark: {
@@ -299,14 +304,22 @@ const styles = StyleSheet.create({
 // بصمة بسيطة (FNV-1a 32-bit hex) — للتحقق من سلامة بيانات التقرير
 function fingerprint(data: PrintReportData): string {
   const seed = [
-    data.name, data.profession, data.countryCode, data.currencyName,
-    data.calendarBasis, data.effectiveRate.toFixed(6),
-    data.monetaryGross.toFixed(2), data.debts.toFixed(2),
-    data.monetaryBase.toFixed(2), data.totalZakat.toFixed(2),
-    data.goldPricePerGram?.toFixed(4) ?? "", data.silverPricePerGram?.toFixed(4) ?? "",
+    data.name,
+    data.profession,
+    data.countryCode,
+    data.currencyName,
+    data.calendarBasis,
+    data.effectiveRate.toFixed(6),
+    data.monetaryGross.toFixed(2),
+    data.debts.toFixed(2),
+    data.monetaryBase.toFixed(2),
+    data.totalZakat.toFixed(2),
+    data.goldPricePerGram?.toFixed(4) ?? "",
+    data.silverPricePerGram?.toFixed(4) ?? "",
     ...data.rows.map((r) => `${r.label}|${r.gross.toFixed(2)}|${r.zakat.toFixed(2)}`),
   ].join("§");
-  let h1 = 0x811c9dc5, h2 = 0xdeadbeef;
+  let h1 = 0x811c9dc5,
+    h2 = 0xdeadbeef;
   for (let i = 0; i < seed.length; i++) {
     const c = seed.charCodeAt(i);
     h1 = Math.imul(h1 ^ c, 0x01000193) >>> 0;
@@ -321,7 +334,9 @@ const PLATFORM_TAGLINE = "الحاسبة الشرعية المعتمدة للز�
 
 function nowAr(): string {
   return new Date().toLocaleDateString("ar-EG", {
-    year: "numeric", month: "long", day: "numeric",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
 }
 
@@ -339,7 +354,15 @@ function makeReportId(name: string): string {
   return `NSB-${seed}-${stamp}`;
 }
 
-function ReportFooter({ reportId, page, total }: { reportId: string; page: number; total: number }) {
+function ReportFooter({
+  reportId,
+  page,
+  total,
+}: {
+  reportId: string;
+  page: number;
+  total: number;
+}) {
   return (
     <View style={styles.footer} fixed>
       <Text style={styles.footerText}>{`${PLATFORM_NAME_AR} — ${PLATFORM_TAGLINE}`}</Text>
@@ -367,10 +390,11 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
     >
       {/* ========== صفحة 1 — الغلاف ========== */}
       <Page size="A4" style={styles.page}>
-        <Text style={styles.watermark} fixed>استرشادي · INDICATIVE</Text>
+        <Text style={styles.watermark} fixed>
+          استرشادي · INDICATIVE
+        </Text>
         <View style={styles.coverWrap}>
           <Text style={styles.ribbon}>◆ NISAB · CERTIFIED ZAKAT CALCULATOR ◆</Text>
-
 
           <View style={styles.logoBox}>
             <Image src={logoUrl} style={styles.logo} />
@@ -381,7 +405,12 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
           <Text style={styles.tagline}>{PLATFORM_TAGLINE}</Text>
 
           <View style={{ marginTop: 24, alignItems: "center" }}>
-            <Text style={[styles.text, { fontSize: 14, fontWeight: 700, color: C.primary, textAlign: "center" }]}>
+            <Text
+              style={[
+                styles.text,
+                { fontSize: 14, fontWeight: 700, color: C.primary, textAlign: "center" },
+              ]}
+            >
               إقرار الزكاة الشرعي
             </Text>
             <Text style={[styles.small, { textAlign: "center", marginTop: 4 }]}>
@@ -423,23 +452,31 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
               </View>
               <View style={styles.col}>
                 <Text style={styles.kvLabel}>بصمة التحقق (Integrity)</Text>
-                <Text style={[styles.kvValue, { color: C.goldDark, fontSize: 9, fontFamily: "Courier" }]}>
+                <Text
+                  style={[
+                    styles.kvValue,
+                    { color: C.goldDark, fontSize: 9, fontFamily: "Courier" },
+                  ]}
+                >
                   {integrity}
                 </Text>
               </View>
-
             </View>
           </View>
 
           {data.verificationQrDataUrl && (
             <View style={{ marginTop: 14, alignItems: "center" }}>
               <Image src={data.verificationQrDataUrl} style={{ width: 96, height: 96 }} />
-              <Text style={[styles.small, { textAlign: "center", marginTop: 4, color: C.goldDark, fontWeight: 700 }]}>
+              <Text
+                style={[
+                  styles.small,
+                  { textAlign: "center", marginTop: 4, color: C.goldDark, fontWeight: 700 },
+                ]}
+              >
                 بادج التحقق — امسح للتحقق من رقم التقرير والملخّص
               </Text>
             </View>
           )}
-
 
           <Text style={styles.disclaimer}>
             هذا التقرير أداة استرشاديّة لحساب الزكاة وفق المعايير الشرعية المعروفة (AAOIFI رقم 35
@@ -452,12 +489,12 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
         <ReportFooter reportId={reportId} page={1} total={TOTAL_PAGES} />
       </Page>
 
-
       {/* ========== صفحة 2 — الحسابات ========== */}
       <Page size="A4" style={styles.page}>
-        <Text style={styles.watermark} fixed>استرشادي · INDICATIVE</Text>
+        <Text style={styles.watermark} fixed>
+          استرشادي · INDICATIVE
+        </Text>
         <Text style={styles.h1}>ملخص النتيجة</Text>
-
 
         <View style={styles.hero}>
           <Text style={styles.heroLabel}>إجمالي الزكاة الواجبة</Text>
@@ -498,11 +535,7 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
             <Text style={styles.th}>الزكاة</Text>
           </View>
           {eligibleRows.map((r, i) => (
-            <View
-              key={i}
-              style={[styles.tr, ...(i % 2 === 1 ? [styles.trAlt] : [])]}
-              wrap={false}
-            >
+            <View key={i} style={[styles.tr, ...(i % 2 === 1 ? [styles.trAlt] : [])]} wrap={false}>
               <Text style={[styles.td, { flex: 2 }]}>{r.label}</Text>
               <Text style={styles.tdNum}>{fmtCurrency(r.gross, cur)}</Text>
               <Text style={styles.tdNum}>{r.nisab != null ? fmtCurrency(r.nisab, cur) : "—"}</Text>
@@ -543,21 +576,31 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
                 <Text style={[styles.th, { flex: 2.4 }]}>السبب / المرجع</Text>
               </View>
               {data.deductions.map((d, i) => (
-                <View key={i} style={[styles.tr, ...(i % 2 === 1 ? [styles.trAlt] : [])]} wrap={false}>
+                <View
+                  key={i}
+                  style={[styles.tr, ...(i % 2 === 1 ? [styles.trAlt] : [])]}
+                  wrap={false}
+                >
                   <Text style={[styles.td, { flex: 1.8 }]}>{d.label}</Text>
                   <Text style={[styles.tdNum, { flex: 1 }]}>{fmtCurrency(d.amount, cur)}</Text>
-                  <Text style={[styles.td, { flex: 0.9, color: d.included ? C.primary : C.muted, fontWeight: 700 }]}>
+                  <Text
+                    style={[
+                      styles.td,
+                      { flex: 0.9, color: d.included ? C.primary : C.muted, fontWeight: 700 },
+                    ]}
+                  >
                     {d.included ? "مُحتسب" : "مُستبعد"}
                   </Text>
                   <Text style={[styles.td, { flex: 2.4, fontSize: 8 }]}>
-                    {d.reason}{d.ref ? ` — ${d.ref}` : ""}
+                    {d.reason}
+                    {d.ref ? ` — ${d.ref}` : ""}
                   </Text>
                 </View>
               ))}
             </View>
             <Text style={[styles.small, { marginTop: 4 }]}>
-              يُظهر هذا الجدول لكل بند سبب احتسابه أو استبعاده مع المرجع الشرعي/المحاسبي،
-              لتمكين المراجع من تتبّع منطق الخصم.
+              يُظهر هذا الجدول لكل بند سبب احتسابه أو استبعاده مع المرجع الشرعي/المحاسبي، لتمكين
+              المراجع من تتبّع منطق الخصم.
             </Text>
           </>
         )}
@@ -574,12 +617,20 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
                 <View style={styles.table}>
                   <View style={styles.tr}>
                     <Text style={[styles.th, { flex: 1 }]}>العملة الأصلية</Text>
-                    <Text style={[styles.th, { flex: 2 }]}>السعر مقابل {data.fx.reportCurrency}</Text>
+                    <Text style={[styles.th, { flex: 2 }]}>
+                      السعر مقابل {data.fx.reportCurrency}
+                    </Text>
                   </View>
                   {data.fx.rates.map((r, i) => (
-                    <View key={i} style={[styles.tr, ...(i % 2 === 1 ? [styles.trAlt] : [])]} wrap={false}>
+                    <View
+                      key={i}
+                      style={[styles.tr, ...(i % 2 === 1 ? [styles.trAlt] : [])]}
+                      wrap={false}
+                    >
                       <Text style={[styles.td, { flex: 1, fontWeight: 700 }]}>{r.from}</Text>
-                      <Text style={[styles.td, { flex: 2 }]}>{`1 ${r.from} = ${r.rate} ${r.to}`}</Text>
+                      <Text
+                        style={[styles.td, { flex: 2 }]}
+                      >{`1 ${r.from} = ${r.rate} ${r.to}`}</Text>
                     </View>
                   ))}
                 </View>
@@ -595,11 +646,19 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
                       <Text style={[styles.th, { flex: 1.3 }]}>بعد التحويل</Text>
                     </View>
                     {data.fx.entries.map((e, i) => (
-                      <View key={i} style={[styles.tr, ...(i % 2 === 1 ? [styles.trAlt] : [])]} wrap={false}>
+                      <View
+                        key={i}
+                        style={[styles.tr, ...(i % 2 === 1 ? [styles.trAlt] : [])]}
+                        wrap={false}
+                      >
                         <Text style={[styles.td, { flex: 2 }]}>{e.label}</Text>
-                        <Text style={[styles.tdNum, { flex: 1.2 }]}>{`${e.originalAmount} ${e.originalCurrency}`}</Text>
+                        <Text
+                          style={[styles.tdNum, { flex: 1.2 }]}
+                        >{`${e.originalAmount} ${e.originalCurrency}`}</Text>
                         <Text style={[styles.tdNum, { flex: 0.8 }]}>{e.rate.toFixed(4)}</Text>
-                        <Text style={[styles.tdNum, { flex: 1.3 }]}>{fmtCurrency(e.convertedAmount, cur)}</Text>
+                        <Text style={[styles.tdNum, { flex: 1.3 }]}>
+                          {fmtCurrency(e.convertedAmount, cur)}
+                        </Text>
                       </View>
                     ))}
                   </View>
@@ -608,8 +667,6 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
             </View>
           </>
         )}
-
-
 
         {data.hawlComplete != null && (
           <View style={styles.card}>
@@ -647,8 +704,9 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
               <Text style={styles.h2}>زكاة بهيمة الأنعام (تُؤدَّى عيناً لا قيمةً)</Text>
               <View style={styles.card}>
                 <Text style={[styles.small, { marginBottom: 6 }]}>
-                  التصنيف: سائمة (راعية أكثر الحول في الكلأ المباح) — لا تُخصم منها مصاريف العلف عند الجمهور.
-                  النصاب: الإبل ≥ ٥، البقر ≥ ٣٠، الغنم ≥ ٤٠. المرجع: السنّة المتواترة وAAOIFI 35/ملحق 4.
+                  التصنيف: سائمة (راعية أكثر الحول في الكلأ المباح) — لا تُخصم منها مصاريف العلف عند
+                  الجمهور. النصاب: الإبل ≥ ٥، البقر ≥ ٣٠، الغنم ≥ ٤٠. المرجع: السنّة المتواترة
+                  وAAOIFI 35/ملحق 4.
                 </Text>
                 <View style={styles.table}>
                   <View style={styles.tr}>
@@ -662,7 +720,9 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
                       <Text style={[styles.td, { flex: 1 }]}>الإبل</Text>
                       <Text style={[styles.tdNum, { flex: 1 }]}>{data.livestock.camels}</Text>
                       <Text style={[styles.td, { flex: 1 }]}>≥ ٥</Text>
-                      <Text style={[styles.td, { flex: 2 }]}>{camelZakat(data.livestock.camels)}</Text>
+                      <Text style={[styles.td, { flex: 2 }]}>
+                        {camelZakat(data.livestock.camels)}
+                      </Text>
                     </View>
                   )}
                   {data.livestock.cows > 0 && (
@@ -678,13 +738,16 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
                       <Text style={[styles.td, { flex: 1 }]}>الغنم/المعز</Text>
                       <Text style={[styles.tdNum, { flex: 1 }]}>{data.livestock.sheep}</Text>
                       <Text style={[styles.td, { flex: 1 }]}>≥ ٤٠</Text>
-                      <Text style={[styles.td, { flex: 2 }]}>{sheepZakat(data.livestock.sheep)}</Text>
+                      <Text style={[styles.td, { flex: 2 }]}>
+                        {sheepZakat(data.livestock.sheep)}
+                      </Text>
                     </View>
                   )}
                 </View>
                 <Text style={[styles.small, { marginTop: 6 }]}>
-                  ملاحظة: إن كانت الأنعام معروضة للتجارة فتُقوَّم بقيمتها السوقية وتُضمّ لوعاء عروض التجارة بنسبة ٢٫٥٪،
-                  وقد أُدرجت في هذه الحالة ضمن الوعاء التجاري أعلاه ولا تُحسب هنا عيناً.
+                  ملاحظة: إن كانت الأنعام معروضة للتجارة فتُقوَّم بقيمتها السوقية وتُضمّ لوعاء عروض
+                  التجارة بنسبة ٢٫٥٪، وقد أُدرجت في هذه الحالة ضمن الوعاء التجاري أعلاه ولا تُحسب
+                  هنا عيناً.
                 </Text>
               </View>
             </>
@@ -695,24 +758,95 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
             <Text style={styles.h2}>زكاة خيارات/منح أسهم الموظفين (ESOP / RSU)</Text>
             <View style={styles.card}>
               <Text style={[styles.small, { marginBottom: 6 }]}>
-                المرجع: AAOIFI 35 + قرارات الندوات الفقهية المعاصرة. الخيارات غير المستحقّة (Unvested) لا تُحسب لعدم تمام الملك.
+                المرجع: AAOIFI 35 + قرارات الندوات الفقهية المعاصرة. الخيارات غير المستحقّة
+                (Unvested) لا تُحسب لعدم تمام الملك.
               </Text>
-              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>عدد الخيارات المستحقّة (Vested)</Text>
-                <Text style={styles.kvValue}>{data.esop.vestedShares}</Text></View>
-              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>القيمة الجوهرية للخيارات</Text>
-                <Text style={styles.kvValue}>{fmtCurrency(data.esop.intrinsic, cur)}</Text></View>
-              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>قيمة RSUs المستحقّة بسعر السوق</Text>
-                <Text style={styles.kvValue}>{fmtCurrency(data.esop.rsuValue, cur)}</Text></View>
-              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>إجمالي قاعدة الزكاة</Text>
-                <Text style={styles.kvValue}>{fmtCurrency(data.esop.base, cur)}</Text></View>
-              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>النصاب المعتمد</Text>
-                <Text style={styles.kvValue}>{fmtCurrency(data.moneyNisab, cur)}</Text></View>
-              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>بلغ النصاب؟</Text>
-                <Text style={styles.kvValue}>{data.esop.base >= data.moneyNisab ? "نعم" : "لا"}</Text></View>
-              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>نية المزكّي</Text>
-                <Text style={styles.kvValue}>{data.esop.intentTrade ? "المتاجرة (٢٫٥٪)" : "الاحتفاظ (موجودات الشركة)"}</Text></View>
-              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>الزكاة المستحقة</Text>
-                <Text style={[styles.kvValue, { fontWeight: 700 }]}>{fmtCurrency(data.esop.zakat, cur)}</Text></View>
+              <View
+                style={{
+                  flexDirection: "row-reverse",
+                  justifyContent: "space-between",
+                  marginBottom: 4,
+                }}
+              >
+                <Text style={styles.kvLabel}>عدد الخيارات المستحقّة (Vested)</Text>
+                <Text style={styles.kvValue}>{data.esop.vestedShares}</Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row-reverse",
+                  justifyContent: "space-between",
+                  marginBottom: 4,
+                }}
+              >
+                <Text style={styles.kvLabel}>القيمة الجوهرية للخيارات</Text>
+                <Text style={styles.kvValue}>{fmtCurrency(data.esop.intrinsic, cur)}</Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row-reverse",
+                  justifyContent: "space-between",
+                  marginBottom: 4,
+                }}
+              >
+                <Text style={styles.kvLabel}>قيمة RSUs المستحقّة بسعر السوق</Text>
+                <Text style={styles.kvValue}>{fmtCurrency(data.esop.rsuValue, cur)}</Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row-reverse",
+                  justifyContent: "space-between",
+                  marginBottom: 4,
+                }}
+              >
+                <Text style={styles.kvLabel}>إجمالي قاعدة الزكاة</Text>
+                <Text style={styles.kvValue}>{fmtCurrency(data.esop.base, cur)}</Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row-reverse",
+                  justifyContent: "space-between",
+                  marginBottom: 4,
+                }}
+              >
+                <Text style={styles.kvLabel}>النصاب المعتمد</Text>
+                <Text style={styles.kvValue}>{fmtCurrency(data.moneyNisab, cur)}</Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row-reverse",
+                  justifyContent: "space-between",
+                  marginBottom: 4,
+                }}
+              >
+                <Text style={styles.kvLabel}>بلغ النصاب؟</Text>
+                <Text style={styles.kvValue}>
+                  {data.esop.base >= data.moneyNisab ? "نعم" : "لا"}
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row-reverse",
+                  justifyContent: "space-between",
+                  marginBottom: 4,
+                }}
+              >
+                <Text style={styles.kvLabel}>نية المزكّي</Text>
+                <Text style={styles.kvValue}>
+                  {data.esop.intentTrade ? "المتاجرة (٢٫٥٪)" : "الاحتفاظ (موجودات الشركة)"}
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row-reverse",
+                  justifyContent: "space-between",
+                  marginBottom: 4,
+                }}
+              >
+                <Text style={styles.kvLabel}>الزكاة المستحقة</Text>
+                <Text style={[styles.kvValue, { fontWeight: 700 }]}>
+                  {fmtCurrency(data.esop.zakat, cur)}
+                </Text>
+              </View>
             </View>
           </>
         )}
@@ -722,23 +856,84 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
             <Text style={styles.h2}>زكاة الأوقاف والمؤسسات الوقفية</Text>
             <View style={styles.card}>
               <Text style={[styles.small, { marginBottom: 6 }]}>
-                القاعدة: أصل الوقف لا تجب فيه الزكاة لخروجه عن الملك (قرار مجمع الفقه ١٤٠/١٥/٤ + AAOIFI 35).
-                الاستثناءات: عروض التجارة المملوكة للوقف، وغلّة الموقوف عليهم المعيّنين عند بلوغ النصاب.
+                القاعدة: أصل الوقف لا تجب فيه الزكاة لخروجه عن الملك (قرار مجمع الفقه ١٤٠/١٥/٤ +
+                AAOIFI 35). الاستثناءات: عروض التجارة المملوكة للوقف، وغلّة الموقوف عليهم المعيّنين
+                عند بلوغ النصاب.
               </Text>
-              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>عروض تجارة مملوكة للوقف</Text>
-                <Text style={styles.kvValue}>{fmtCurrency(data.waqf.tradeAssets, cur)}</Text></View>
-              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>غلّة موزّعة على موقوف عليهم معيّنين</Text>
-                <Text style={styles.kvValue}>{fmtCurrency(data.waqf.rentIncome, cur)}</Text></View>
-              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>خصم: أصول وقفية خيرية محبّسة (معفاة)</Text>
-                <Text style={styles.kvValue}>{fmtCurrency(data.waqf.exemptCore, cur)}</Text></View>
-              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>قاعدة الزكاة الصافية</Text>
-                <Text style={styles.kvValue}>{fmtCurrency(data.waqf.base, cur)}</Text></View>
-              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>النصاب المعتمد</Text>
-                <Text style={styles.kvValue}>{fmtCurrency(data.moneyNisab, cur)}</Text></View>
-              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>بلغ النصاب؟</Text>
-                <Text style={styles.kvValue}>{data.waqf.base >= data.moneyNisab ? "نعم" : "لا"}</Text></View>
-              <View style={{ flexDirection: "row-reverse", justifyContent: "space-between", marginBottom: 4 }}><Text style={styles.kvLabel}>الزكاة المستحقة (٢٫٥٪)</Text>
-                <Text style={[styles.kvValue, { fontWeight: 700 }]}>{fmtCurrency(data.waqf.zakat, cur)}</Text></View>
+              <View
+                style={{
+                  flexDirection: "row-reverse",
+                  justifyContent: "space-between",
+                  marginBottom: 4,
+                }}
+              >
+                <Text style={styles.kvLabel}>عروض تجارة مملوكة للوقف</Text>
+                <Text style={styles.kvValue}>{fmtCurrency(data.waqf.tradeAssets, cur)}</Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row-reverse",
+                  justifyContent: "space-between",
+                  marginBottom: 4,
+                }}
+              >
+                <Text style={styles.kvLabel}>غلّة موزّعة على موقوف عليهم معيّنين</Text>
+                <Text style={styles.kvValue}>{fmtCurrency(data.waqf.rentIncome, cur)}</Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row-reverse",
+                  justifyContent: "space-between",
+                  marginBottom: 4,
+                }}
+              >
+                <Text style={styles.kvLabel}>خصم: أصول وقفية خيرية محبّسة (معفاة)</Text>
+                <Text style={styles.kvValue}>{fmtCurrency(data.waqf.exemptCore, cur)}</Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row-reverse",
+                  justifyContent: "space-between",
+                  marginBottom: 4,
+                }}
+              >
+                <Text style={styles.kvLabel}>قاعدة الزكاة الصافية</Text>
+                <Text style={styles.kvValue}>{fmtCurrency(data.waqf.base, cur)}</Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row-reverse",
+                  justifyContent: "space-between",
+                  marginBottom: 4,
+                }}
+              >
+                <Text style={styles.kvLabel}>النصاب المعتمد</Text>
+                <Text style={styles.kvValue}>{fmtCurrency(data.moneyNisab, cur)}</Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row-reverse",
+                  justifyContent: "space-between",
+                  marginBottom: 4,
+                }}
+              >
+                <Text style={styles.kvLabel}>بلغ النصاب؟</Text>
+                <Text style={styles.kvValue}>
+                  {data.waqf.base >= data.moneyNisab ? "نعم" : "لا"}
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row-reverse",
+                  justifyContent: "space-between",
+                  marginBottom: 4,
+                }}
+              >
+                <Text style={styles.kvLabel}>الزكاة المستحقة (٢٫٥٪)</Text>
+                <Text style={[styles.kvValue, { fontWeight: 700 }]}>
+                  {fmtCurrency(data.waqf.zakat, cur)}
+                </Text>
+              </View>
             </View>
           </>
         )}
@@ -746,15 +941,16 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
         <ReportFooter reportId={reportId} page={2} total={TOTAL_PAGES} />
       </Page>
 
-
       {/* ========== صفحة 3 — مصارف الزكاة ========== */}
       <Page size="A4" style={styles.page}>
-        <Text style={styles.watermark} fixed>استرشادي · INDICATIVE</Text>
+        <Text style={styles.watermark} fixed>
+          استرشادي · INDICATIVE
+        </Text>
         <Text style={styles.h1}>مصارف الزكاة الثمانية</Text>
         <Text style={[styles.text, { color: C.muted, marginBottom: 8 }]}>
-          قال تعالى: «إِنَّمَا الصَّدَقَاتُ لِلْفُقَرَاءِ وَالْمَسَاكِينِ وَالْعَامِلِينَ
-          عَلَيْهَا وَالْمُؤَلَّفَةِ قُلُوبُهُمْ وَفِي الرِّقَابِ وَالْغَارِمِينَ وَفِي
-          سَبِيلِ {"\uFDF2"}ِ وَابْنِ السَّبِيلِ» — سورة التوبة (60).
+          قال تعالى: «إِنَّمَا الصَّدَقَاتُ لِلْفُقَرَاءِ وَالْمَسَاكِينِ وَالْعَامِلِينَ عَلَيْهَا
+          وَالْمُؤَلَّفَةِ قُلُوبُهُمْ وَفِي الرِّقَابِ وَالْغَارِمِينَ وَفِي سَبِيلِ {"\uFDF2"}ِ
+          وَابْنِ السَّبِيلِ» — سورة التوبة (60).
         </Text>
 
         {ZAKAT_RECIPIENTS.map((r, i) => (
@@ -765,15 +961,20 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
         ))}
 
         <Text style={styles.disclaimer}>
-          هذا التقرير صالح لمدة سنة قمرية (354 يوماً) من تاريخ إصداره. للتحقق من صحة التقرير
-          يُرجى الرجوع إلى منصة «نِصاب». لا يُعتبر هذا التقرير فتوى شرعية ملزمة وإنما أداة
-          مساعدة في تقدير مقدار الزكاة بناءً على البيانات المُدخَلة.
+          هذا التقرير صالح لمدة سنة قمرية (354 يوماً) من تاريخ إصداره. للتحقق من صحة التقرير يُرجى
+          الرجوع إلى منصة «نِصاب». لا يُعتبر هذا التقرير فتوى شرعية ملزمة وإنما أداة مساعدة في تقدير
+          مقدار الزكاة بناءً على البيانات المُدخَلة.
         </Text>
 
         {data.verificationQrDataUrl && (
           <View style={{ alignItems: "center", marginTop: 10, marginBottom: 6 }}>
             <Image src={data.verificationQrDataUrl} style={{ width: 72, height: 72 }} />
-            <Text style={[styles.small, { textAlign: "center", marginTop: 4, color: C.goldDark, fontWeight: 700 }]}>
+            <Text
+              style={[
+                styles.small,
+                { textAlign: "center", marginTop: 4, color: C.goldDark, fontWeight: 700 },
+              ]}
+            >
               بادج التحقق — امسح للتحقق من رقم التقرير والملخّص
             </Text>
           </View>
@@ -784,81 +985,105 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
 
       {/* ========== صفحة 4 — المراجع والتدقيق الشرعي (اختياري عند تفعيل دمج المراجعة) ========== */}
       {hasAudit && (
-      <Page size="A4" style={styles.page}>
-        <Text style={styles.watermark} fixed>استرشادي · INDICATIVE</Text>
-        <Text style={styles.h1}>المراجع والتدقيق الشرعي (Sharia Audit Trail)</Text>
-        <Text style={[styles.text, { color: C.muted, marginBottom: 6 }]}>
-          فيما يلي قائمة المراجع الشرعية المعتمدة في كل حكم طُبِّق ضمن هذا التقرير. تستند الحاسبة
-          إلى المعيار الشرعي AAOIFI رقم (35) للزكاة، وقرارات مجمع الفقه الإسلامي الدولي بجدة،
-          وقرارات المجمع الفقهي الإسلامي بمكة المكرمة، والندوات المعاصرة لقضايا الزكاة.
-        </Text>
+        <Page size="A4" style={styles.page}>
+          <Text style={styles.watermark} fixed>
+            استرشادي · INDICATIVE
+          </Text>
+          <Text style={styles.h1}>المراجع والتدقيق الشرعي (Sharia Audit Trail)</Text>
+          <Text style={[styles.text, { color: C.muted, marginBottom: 6 }]}>
+            فيما يلي قائمة المراجع الشرعية المعتمدة في كل حكم طُبِّق ضمن هذا التقرير. تستند الحاسبة
+            إلى المعيار الشرعي AAOIFI رقم (35) للزكاة، وقرارات مجمع الفقه الإسلامي الدولي بجدة،
+            وقرارات المجمع الفقهي الإسلامي بمكة المكرمة، والندوات المعاصرة لقضايا الزكاة.
+          </Text>
 
-        <View style={styles.table}>
-          <View style={styles.tr}>
-            <Text style={[styles.th, { flex: 1.2 }]}>الموضوع</Text>
-            <Text style={[styles.th, { flex: 2 }]}>الحكم المُطبَّق</Text>
-            <Text style={[styles.th, { flex: 1.5 }]}>المرجع</Text>
-            <Text style={[styles.th, { flex: 0.6 }]}>الدرجة</Text>
-          </View>
-          {SHARIA_REFERENCES.map((r, i) => (
-            <View key={i} style={[styles.refRow, ...(i % 2 === 1 ? [styles.trAlt] : [])]} wrap={false}>
-              <Text style={styles.refTopic}>{r.topic}</Text>
-              <Text style={styles.refRuling}>{r.ruling}</Text>
-              <View style={{ flex: 1.5 }}>
-                <Text style={styles.refSource}>{r.source}</Text>
-                <Text style={[styles.refSource, { fontSize: 6, fontStyle: "italic" }]}>{r.citation}</Text>
-              </View>
-              <Text style={styles.refBadge}>{RULING_LEVEL_LABELS[r.level]}</Text>
+          <View style={styles.table}>
+            <View style={styles.tr}>
+              <Text style={[styles.th, { flex: 1.2 }]}>الموضوع</Text>
+              <Text style={[styles.th, { flex: 2 }]}>الحكم المُطبَّق</Text>
+              <Text style={[styles.th, { flex: 1.5 }]}>المرجع</Text>
+              <Text style={[styles.th, { flex: 0.6 }]}>الدرجة</Text>
             </View>
-          ))}
-        </View>
-
-        {isSaudi && (
-          <View style={[styles.cardAccent, { marginTop: 10 }]} wrap={false}>
-            <Text style={[styles.h2, { marginTop: 0 }]}>ملاحظة ضريبية — المملكة العربية السعودية</Text>
-            <Text style={styles.text}>
-              يُرجى تقديم إقرار الزكاة عبر بوابة هيئة الزكاة والضريبة والجمارك (ZATCA)
-              خلال 120 يوماً من نهاية السنة المالية للمنشأة، طبقاً للائحة جباية الزكاة
-              الصادرة بقرار مجلس الوزراء رقم (61) لعام 1442هـ. هذا التقرير لا يُعدّ بديلاً
-              عن الإقرار الرسمي لدى ZATCA.
-            </Text>
-            {data.zatcaQrDataUrl && (
-              <View style={{ flexDirection: "row-reverse", alignItems: "center", gap: 10, marginTop: 8 }}>
-                <Image src={data.zatcaQrDataUrl} style={{ width: 80, height: 80 }} />
-                <Text style={[styles.small, { flex: 1 }]}>
-                  رمز QR متوافق مع المرحلة الأولى من ZATCA (TLV-Base64) — يحتوي على اسم المنصة،
-                  المعرّف الضريبي، التاريخ، وإجمالي الزكاة.
-                </Text>
+            {SHARIA_REFERENCES.map((r, i) => (
+              <View
+                key={i}
+                style={[styles.refRow, ...(i % 2 === 1 ? [styles.trAlt] : [])]}
+                wrap={false}
+              >
+                <Text style={styles.refTopic}>{r.topic}</Text>
+                <Text style={styles.refRuling}>{r.ruling}</Text>
+                <View style={{ flex: 1.5 }}>
+                  <Text style={styles.refSource}>{r.source}</Text>
+                  <Text style={[styles.refSource, { fontSize: 6, fontStyle: "italic" }]}>
+                    {r.citation}
+                  </Text>
+                </View>
+                <Text style={styles.refBadge}>{RULING_LEVEL_LABELS[r.level]}</Text>
               </View>
-            )}
+            ))}
           </View>
-        )}
 
-        <View style={styles.hashBox} wrap={false}>
-          <Text style={[styles.small, { textAlign: "center", marginBottom: 2, color: C.goldDark, fontWeight: 700 }]}>
-            بصمة التحقق الرقمية — Report Integrity Fingerprint
+          {isSaudi && (
+            <View style={[styles.cardAccent, { marginTop: 10 }]} wrap={false}>
+              <Text style={[styles.h2, { marginTop: 0 }]}>
+                ملاحظة ضريبية — المملكة العربية السعودية
+              </Text>
+              <Text style={styles.text}>
+                يُرجى تقديم إقرار الزكاة عبر بوابة هيئة الزكاة والضريبة والجمارك (ZATCA) خلال 120
+                يوماً من نهاية السنة المالية للمنشأة، طبقاً للائحة جباية الزكاة الصادرة بقرار مجلس
+                الوزراء رقم (61) لعام 1442هـ. هذا التقرير لا يُعدّ بديلاً عن الإقرار الرسمي لدى
+                ZATCA.
+              </Text>
+              {data.zatcaQrDataUrl && (
+                <View
+                  style={{
+                    flexDirection: "row-reverse",
+                    alignItems: "center",
+                    gap: 10,
+                    marginTop: 8,
+                  }}
+                >
+                  <Image src={data.zatcaQrDataUrl} style={{ width: 80, height: 80 }} />
+                  <Text style={[styles.small, { flex: 1 }]}>
+                    رمز QR متوافق مع المرحلة الأولى من ZATCA (TLV-Base64) — يحتوي على اسم المنصة،
+                    المعرّف الضريبي، التاريخ، وإجمالي الزكاة.
+                  </Text>
+                </View>
+              )}
+            </View>
+          )}
+
+          <View style={styles.hashBox} wrap={false}>
+            <Text
+              style={[
+                styles.small,
+                { textAlign: "center", marginBottom: 2, color: C.goldDark, fontWeight: 700 },
+              ]}
+            >
+              بصمة التحقق الرقمية — Report Integrity Fingerprint
+            </Text>
+            <Text style={styles.hashText}>{integrity}</Text>
+            <Text style={[styles.small, { textAlign: "center", marginTop: 4 }]}>
+              رقم التقرير: {reportId} · {issued}
+            </Text>
+          </View>
+
+          <Text style={styles.disclaimer}>
+            إعداد: منصة «نِصاب» للحوكمة الشرعية للزكاة. جميع المراجع المستخدمة في الحاسبة قابلة
+            للمراجعة على المنصة. الدرجات: «إجماع» = إجماع الفقهاء، «قول الجمهور» = رأي ثلاثة من
+            المذاهب الأربعة، «قرار مجمعي» = قرار من مجمع فقهي معتبر، «اجتهاد معاصر» = اجتهاد العلماء
+            المعاصرين في النوازل.
           </Text>
-          <Text style={styles.hashText}>{integrity}</Text>
-          <Text style={[styles.small, { textAlign: "center", marginTop: 4 }]}>
-            رقم التقرير: {reportId}  ·  {issued}
-          </Text>
-        </View>
 
-        <Text style={styles.disclaimer}>
-          إعداد: منصة «نِصاب» للحوكمة الشرعية للزكاة. جميع المراجع المستخدمة في الحاسبة قابلة
-          للمراجعة على المنصة. الدرجات: «إجماع» = إجماع الفقهاء، «قول الجمهور» = رأي ثلاثة من
-          المذاهب الأربعة، «قرار مجمعي» = قرار من مجمع فقهي معتبر، «اجتهاد معاصر» = اجتهاد
-          العلماء المعاصرين في النوازل.
-        </Text>
-
-        <ReportFooter reportId={reportId} page={4} total={TOTAL_PAGES} />
-      </Page>
+          <ReportFooter reportId={reportId} page={4} total={TOTAL_PAGES} />
+        </Page>
       )}
 
       {/* ========== صفحة 5 — ملحق سجل المراجعة والتدقيق ========== */}
       {hasAudit && (
         <Page size="A4" style={styles.page}>
-          <Text style={styles.watermark} fixed>استرشادي · INDICATIVE</Text>
+          <Text style={styles.watermark} fixed>
+            استرشادي · INDICATIVE
+          </Text>
           <Text style={styles.h1}>ملحق سجل المراجعة والتدقيق</Text>
           <Text style={[styles.text, { color: C.muted, marginBottom: 8 }]}>
             سلسلة العمليات الموثقة لهذا الحساب، تتضمن نوع العملية، التاريخ، بصمة التوثيق الفريدة،
@@ -874,15 +1099,30 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
               <Text style={[styles.th, { flex: 1.4 }]}>المراجع الشرعية</Text>
             </View>
             {data.auditEntries!.map((e, i) => (
-              <View key={e.id} style={[styles.tr, ...(i % 2 === 1 ? [styles.trAlt] : [])]} wrap={false}>
+              <View
+                key={e.id}
+                style={[styles.tr, ...(i % 2 === 1 ? [styles.trAlt] : [])]}
+                wrap={false}
+              >
                 <Text style={[styles.td, { flex: 0.4, textAlign: "center" }]}>{i + 1}</Text>
                 <Text style={[styles.td, { flex: 1.4 }]}>
-                  {(() => { try { return new Date(e.created_at).toLocaleString("ar-EG"); } catch { return e.created_at; } })()}
+                  {(() => {
+                    try {
+                      return new Date(e.created_at).toLocaleString("ar-EG");
+                    } catch {
+                      return e.created_at;
+                    }
+                  })()}
                 </Text>
                 <Text style={[styles.td, { flex: 1.2 }]}>
                   {e.action === "create_zakat_record" ? "إنشاء سجل زكاة" : e.action}
                 </Text>
-                <Text style={[styles.td, { flex: 1.6, fontFamily: "Courier", fontSize: 7, color: C.goldDark }]}>
+                <Text
+                  style={[
+                    styles.td,
+                    { flex: 1.6, fontFamily: "Courier", fontSize: 7, color: C.goldDark },
+                  ]}
+                >
                   {e.fingerprint || "—"}
                 </Text>
                 <Text style={[styles.td, { flex: 1.4, fontSize: 8 }]}>
@@ -893,15 +1133,20 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
           </View>
 
           <Text style={styles.disclaimer}>
-            يُسجَّل في هذا الملحق كل حساب أو حفظ ببصمة فريدة (SHA‑256) مع المراجع الشرعية
-            المعتمدة (AAOIFI رقم 35، قرارات مجمع الفقه الإسلامي الدولي) لضمان الشفافية
-            وإمكانية المراجعة لاحقاً. عدد العمليات المُسجَّلة: {data.auditEntries!.length}.
+            يُسجَّل في هذا الملحق كل حساب أو حفظ ببصمة فريدة (SHA‑256) مع المراجع الشرعية المعتمدة
+            (AAOIFI رقم 35، قرارات مجمع الفقه الإسلامي الدولي) لضمان الشفافية وإمكانية المراجعة
+            لاحقاً. عدد العمليات المُسجَّلة: {data.auditEntries!.length}.
           </Text>
 
           {data.verificationQrDataUrl && (
             <View style={{ alignItems: "center", marginTop: 10, marginBottom: 6 }}>
               <Image src={data.verificationQrDataUrl} style={{ width: 72, height: 72 }} />
-              <Text style={[styles.small, { textAlign: "center", marginTop: 4, color: C.goldDark, fontWeight: 700 }]}>
+              <Text
+                style={[
+                  styles.small,
+                  { textAlign: "center", marginTop: 4, color: C.goldDark, fontWeight: 700 },
+                ]}
+              >
                 بادج التحقق — امسح للتحقق من رقم التقرير والملخّص
               </Text>
             </View>
@@ -913,7 +1158,6 @@ export function ZakatPdfDocument({ data }: { data: PrintReportData }) {
     </Document>
   );
 }
-
 
 /**
  * توليد ملف PDF عبر @react-pdf/renderer وتنزيله للمستخدم.
@@ -931,12 +1175,19 @@ export async function downloadZakatPdf(data: PrintReportData, filename = "zakat-
     try {
       const QRCode = (await import("qrcode")).default;
       const origin = typeof window !== "undefined" ? window.location.origin : "https://nisab.app";
-      const payload = `${origin}/verify?rid=${encodeURIComponent(stableReportId)}` +
+      const payload =
+        `${origin}/verify?rid=${encodeURIComponent(stableReportId)}` +
         `&total=${encodeURIComponent(String(data.totalZakat))}` +
         `&cur=${encodeURIComponent(data.currencyName || "")}`;
-      const qrDataUrl = await QRCode.toDataURL(payload, { margin: 1, width: 240, errorCorrectionLevel: "M" });
+      const qrDataUrl = await QRCode.toDataURL(payload, {
+        margin: 1,
+        width: 240,
+        errorCorrectionLevel: "M",
+      });
       enriched = { ...enriched, verificationQrDataUrl: qrDataUrl };
-    } catch (e) { console.warn("Verification QR generation failed", e); }
+    } catch (e) {
+      console.warn("Verification QR generation failed", e);
+    }
   }
 
   // 3) رمز QR ZATCA للسعودية تلقائيًا
@@ -953,7 +1204,9 @@ export async function downloadZakatPdf(data: PrintReportData, filename = "zakat-
       });
       const qrDataUrl = await QRCode.toDataURL(tlv, { margin: 1, width: 240 });
       enriched = { ...enriched, zatcaQrDataUrl: qrDataUrl };
-    } catch (e) { console.warn("ZATCA QR generation failed", e); }
+    } catch (e) {
+      console.warn("ZATCA QR generation failed", e);
+    }
   }
 
   const blob = await pdf(<ZakatPdfDocument data={enriched} />).toBlob();

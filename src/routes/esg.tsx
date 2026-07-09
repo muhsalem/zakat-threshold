@@ -7,7 +7,10 @@ export const Route = createFileRoute("/esg")({
   head: () => ({
     meta: [
       { title: "تقرير الاستدامة والحوكمة (ESG) — حاسبة الزكاة" },
-      { name: "description", content: "شفافية كاملة حول أثرنا البيئي والاجتماعي والحوكمي في خدمة أموال الزكاة." },
+      {
+        name: "description",
+        content: "شفافية كاملة حول أثرنا البيئي والاجتماعي والحوكمي في خدمة أموال الزكاة.",
+      },
       { property: "og:title", content: "تقرير ESG — حاسبة الزكاة" },
       { property: "og:description", content: "الحوكمة والشفافية وإدارة أموال الزكاة." },
       { property: "og:type", content: "article" },
@@ -39,8 +42,12 @@ function EsgPage() {
           </CardHeader>
           <CardContent className="space-y-1">
             <div className="text-2xl font-bold">&lt; 0.5 g</div>
-            <div className="text-xs text-muted-foreground">CO₂e لكل عملية حساب (Cloudflare edge)</div>
-            <Badge variant="outline" className="text-[10px] mt-2">Green Hosting</Badge>
+            <div className="text-xs text-muted-foreground">
+              CO₂e لكل عملية حساب (Cloudflare edge)
+            </div>
+            <Badge variant="outline" className="text-[10px] mt-2">
+              Green Hosting
+            </Badge>
           </CardContent>
         </Card>
 
@@ -53,7 +60,9 @@ function EsgPage() {
           <CardContent className="space-y-1">
             <div className="text-2xl font-bold">8 قنوات</div>
             <div className="text-xs text-muted-foreground">تتبّع كامل للمصارف الثمانية الشرعية</div>
-            <Badge variant="outline" className="text-[10px] mt-2">Sadaqah Impact</Badge>
+            <Badge variant="outline" className="text-[10px] mt-2">
+              Sadaqah Impact
+            </Badge>
           </CardContent>
         </Card>
 
@@ -66,7 +75,9 @@ function EsgPage() {
           <CardContent className="space-y-1">
             <div className="text-2xl font-bold">Full Audit</div>
             <div className="text-xs text-muted-foreground">سجل تدقيق شرعي قابل للتصدير</div>
-            <Badge variant="outline" className="text-[10px] mt-2">Sharia Governance</Badge>
+            <Badge variant="outline" className="text-[10px] mt-2">
+              Sharia Governance
+            </Badge>
           </CardContent>
         </Card>
       </div>
@@ -124,15 +135,34 @@ function EsgPage() {
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-2">
-            {["AAOIFI 35", "AAOIFI 59", "IFA-OIC", "IFRS", "IAS", "ISO 25010", "ISO 27001 (قيد)", "WCAG 2.2 AA", "NIST CSF 2.0", "OpenAPI 3.1", "GRI (قيد)", "SASB (قيد)"].map((s) => (
-              <Badge key={s} variant="secondary" className="text-xs">{s}</Badge>
+            {[
+              "AAOIFI 35",
+              "AAOIFI 59",
+              "IFA-OIC",
+              "IFRS",
+              "IAS",
+              "ISO 25010",
+              "ISO 27001 (قيد)",
+              "WCAG 2.2 AA",
+              "NIST CSF 2.0",
+              "OpenAPI 3.1",
+              "GRI (قيد)",
+              "SASB (قيد)",
+            ].map((s) => (
+              <Badge key={s} variant="secondary" className="text-xs">
+                {s}
+              </Badge>
             ))}
           </div>
         </CardContent>
       </Card>
 
       <p className="text-xs text-muted-foreground border-t pt-4">
-        يُحدَّث هذا التقرير ربع سنوياً. لطلب نسخة كاملة موقّعة تواصل معنا عبر <a className="underline" href="/faq">مركز الدعم</a>.
+        يُحدَّث هذا التقرير ربع سنوياً. لطلب نسخة كاملة موقّعة تواصل معنا عبر{" "}
+        <a className="underline" href="/faq">
+          مركز الدعم
+        </a>
+        .
       </p>
     </main>
   );

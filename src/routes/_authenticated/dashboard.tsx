@@ -30,7 +30,10 @@ function DashboardPage() {
   useEffect(() => {
     (async () => {
       const { data: auth } = await supabase.auth.getUser();
-      if (!auth.user) { setLoading(false); return; }
+      if (!auth.user) {
+        setLoading(false);
+        return;
+      }
 
       // Accountants/Admins get the full workspace, not a wizard.
       const { data: roles } = await supabase
@@ -62,8 +65,22 @@ function DashboardPage() {
     );
   }
 
-  const label = type === "admin" ? "مدير" : type === "company" ? "شركة" : type === "institution" ? "مؤسسة" : "فرد";
-  const Icon = type === "admin" ? Landmark : type === "company" ? Building2 : type === "institution" ? Landmark : User;
+  const label =
+    type === "admin"
+      ? "مدير"
+      : type === "company"
+        ? "شركة"
+        : type === "institution"
+          ? "مؤسسة"
+          : "فرد";
+  const Icon =
+    type === "admin"
+      ? Landmark
+      : type === "company"
+        ? Building2
+        : type === "institution"
+          ? Landmark
+          : User;
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-5xl">
@@ -76,9 +93,13 @@ function DashboardPage() {
             <div>
               <CardTitle className="text-lg">مرحباً {displayName}</CardTitle>
               <div className="flex items-center gap-2 mt-1">
-                <Badge variant="outline" className="text-xs">نوع الحساب: {label}</Badge>
+                <Badge variant="outline" className="text-xs">
+                  نوع الحساب: {label}
+                </Badge>
                 <Button asChild size="sm" variant="ghost" className="h-6 text-xs">
-                  <Link to="/">الوضع المتقدم <ArrowLeft className="h-3 w-3" /></Link>
+                  <Link to="/">
+                    الوضع المتقدم <ArrowLeft className="h-3 w-3" />
+                  </Link>
                 </Button>
               </div>
             </div>
@@ -86,7 +107,8 @@ function DashboardPage() {
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            هذه لوحة موجّهة خطوة‑بخطوة تجمع أهم مدخلاتك وتصدر تقريراً جاهزاً. للوصول إلى كل التبويبات التفصيلية استخدم زر "الوضع المتقدم" أعلاه.
+            هذه لوحة موجّهة خطوة‑بخطوة تجمع أهم مدخلاتك وتصدر تقريراً جاهزاً. للوصول إلى كل
+            التبويبات التفصيلية استخدم زر "الوضع المتقدم" أعلاه.
           </p>
         </CardContent>
       </Card>

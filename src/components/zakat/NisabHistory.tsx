@@ -47,15 +47,43 @@ import { HistoricalMetalPriceCard } from "@/components/zakat/HistoricalMetalPric
 
 // Map internal country code -> ISO 4217 currency
 const ISO_CURRENCY: Record<string, string> = {
-  EG: "EGP", SA: "SAR", AE: "AED", KW: "KWD", QA: "QAR", BH: "BHD",
-  OM: "OMR", JO: "JOD", MA: "MAD", DZ: "DZD", TN: "TND", IQ: "IQD",
-  SY: "SYP", LB: "LBP", YE: "YER", SD: "SDG", LY: "LYD", PS: "ILS",
-  TR: "TRY", US: "USD", EU: "EUR", GB: "GBP",
+  EG: "EGP",
+  SA: "SAR",
+  AE: "AED",
+  KW: "KWD",
+  QA: "QAR",
+  BH: "BHD",
+  OM: "OMR",
+  JO: "JOD",
+  MA: "MAD",
+  DZ: "DZD",
+  TN: "TND",
+  IQ: "IQD",
+  SY: "SYP",
+  LB: "LBP",
+  YE: "YER",
+  SD: "SDG",
+  LY: "LYD",
+  PS: "ILS",
+  TR: "TRY",
+  US: "USD",
+  EU: "EUR",
+  GB: "GBP",
 };
 
 const MONTHS_AR = [
-  "يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
-  "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر",
+  "يناير",
+  "فبراير",
+  "مارس",
+  "أبريل",
+  "مايو",
+  "يونيو",
+  "يوليو",
+  "أغسطس",
+  "سبتمبر",
+  "أكتوبر",
+  "نوفمبر",
+  "ديسمبر",
 ];
 
 type NisabRow = {
@@ -72,8 +100,15 @@ type NisabRow = {
 
 const COUNTRY_LABEL_AR: Record<string, string> = {
   GLOBAL: "السوق العالمية (XAU/XAG)",
-  EG: "مصر", SA: "السعودية", AE: "الإمارات", KW: "الكويت", QA: "قطر",
-  BH: "البحرين", OM: "عُمان", JO: "الأردن", US: "الولايات المتحدة",
+  EG: "مصر",
+  SA: "السعودية",
+  AE: "الإمارات",
+  KW: "الكويت",
+  QA: "قطر",
+  BH: "البحرين",
+  OM: "عُمان",
+  JO: "الأردن",
+  US: "الولايات المتحدة",
 };
 
 export function NisabHistory() {
@@ -103,7 +138,9 @@ export function NisabHistory() {
       .select("*")
       .order("year", { ascending: false })
       .order("month", { ascending: false, nullsFirst: false })
-      .then(({ data }) => { if (data) setDbRows(data as NisabRow[]); });
+      .then(({ data }) => {
+        if (data) setDbRows(data as NisabRow[]);
+      });
   }, []);
 
   // الصفوف المرشَّحة حسب الدولة: المحلية أولًا، وإلا الصف العالمي (GLOBAL)
@@ -111,8 +148,9 @@ export function NisabHistory() {
     const local = dbRows.filter((r) => r.country_code === dbCountryCode);
     const localYears = new Set(local.map((r) => `${r.year}-${r.month ?? 0}`));
     const globalFallback = dbRows.filter(
-      (r) => (r.country_code === "GLOBAL" || !r.country_code) &&
-             !localYears.has(`${r.year}-${r.month ?? 0}`)
+      (r) =>
+        (r.country_code === "GLOBAL" || !r.country_code) &&
+        !localYears.has(`${r.year}-${r.month ?? 0}`),
     );
     return [...local, ...globalFallback];
   }, [dbRows, dbCountryCode]);
@@ -123,19 +161,22 @@ export function NisabHistory() {
   }, [rowsForCountry]);
 
   const monthsForYear = useMemo(
-    () => rowsForCountry.filter((r) => r.year === selectedYear && r.month !== null)
-      .map((r) => r.month as number)
-      .sort((a, b) => a - b),
-    [rowsForCountry, selectedYear]
+    () =>
+      rowsForCountry
+        .filter((r) => r.year === selectedYear && r.month !== null)
+        .map((r) => r.month as number)
+        .sort((a, b) => a - b),
+    [rowsForCountry, selectedYear],
   );
 
   const selectedRow = useMemo(() => {
     if (monthsForYear.length > 0) {
-      return rowsForCountry.find((r) => r.year === selectedYear && r.month === selectedMonth) ?? null;
+      return (
+        rowsForCountry.find((r) => r.year === selectedYear && r.month === selectedMonth) ?? null
+      );
     }
     return rowsForCountry.find((r) => r.year === selectedYear && r.month === null) ?? null;
   }, [rowsForCountry, selectedYear, selectedMonth, monthsForYear]);
-
 
   // === توقّع بقيّة العام بسيناريوهات (Scenario-Based) ===
   const forecastScenarios = useMemo(() => {
@@ -234,10 +275,7 @@ export function NisabHistory() {
 
   const goldNisabValue = num(goldPrice) * GOLD_NISAB_GRAMS;
   const silverNisabValue = num(silverPrice) * SILVER_NISAB_GRAMS;
-  const lowerNisab = Math.min(
-    goldNisabValue || Infinity,
-    silverNisabValue || Infinity,
-  );
+  const lowerNisab = Math.min(goldNisabValue || Infinity, silverNisabValue || Infinity);
 
   // --- Historical chart data (local currency only) ---
   // محدِّد دولة مستقل لمخطط 100 عام
@@ -268,10 +306,6 @@ export function NisabHistory() {
 
   const currencyLabel = chartCountry.currency;
 
-
-
-
-
   return (
     <div className="space-y-6">
       {/* نصاب اليوم */}
@@ -284,8 +318,8 @@ export function NisabHistory() {
                 نصاب اليوم — حسب الدولة (تحديث لحظي)
               </CardTitle>
               <p className="text-sm text-muted-foreground mt-1">
-                الأسعار محدّثة لحظيًّا من مصادر السوق العالمية (XAU/XAG + سعر صرف USD)،
-                ويعاد التحديث تلقائيًّا كل 5 دقائق. يمكنك تعديل القيم يدويًّا للسعر المحلي.
+                الأسعار محدّثة لحظيًّا من مصادر السوق العالمية (XAU/XAG + سعر صرف USD)، ويعاد
+                التحديث تلقائيًّا كل 5 دقائق. يمكنك تعديل القيم يدويًّا للسعر المحلي.
               </p>
             </div>
             <div className="flex flex-col items-end gap-2">
@@ -304,7 +338,9 @@ export function NisabHistory() {
                 </Badge>
               )}
               {liveError && (
-                <Badge variant="destructive" className="text-[10px]">تعذّر التحديث</Badge>
+                <Badge variant="destructive" className="text-[10px]">
+                  تعذّر التحديث
+                </Badge>
               )}
             </div>
           </div>
@@ -350,28 +386,39 @@ export function NisabHistory() {
               <div className="flex items-center gap-2 mb-2 text-gold-foreground">
                 <Gem className="h-4 w-4" />
                 <span className="font-semibold">نصاب الذهب</span>
-                <Badge variant="secondary" className="text-[10px]">85 جم</Badge>
+                <Badge variant="secondary" className="text-[10px]">
+                  85 جم
+                </Badge>
               </div>
               <p className="text-2xl font-bold">
-                {fmt(goldNisabValue)} <span className="text-sm font-normal">{country.currency}</span>
+                {fmt(goldNisabValue)}{" "}
+                <span className="text-sm font-normal">{country.currency}</span>
               </p>
             </div>
             <div className="rounded-lg border bg-muted p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Coins className="h-4 w-4" />
                 <span className="font-semibold">نصاب الفضة</span>
-                <Badge variant="secondary" className="text-[10px]">595 جم</Badge>
+                <Badge variant="secondary" className="text-[10px]">
+                  595 جم
+                </Badge>
               </div>
               <p className="text-2xl font-bold">
-                {fmt(silverNisabValue)} <span className="text-sm font-normal">{country.currency}</span>
+                {fmt(silverNisabValue)}{" "}
+                <span className="text-sm font-normal">{country.currency}</span>
               </p>
             </div>
           </div>
 
           <div className="rounded-md bg-primary/10 border border-primary/20 px-4 py-3 text-sm leading-relaxed">
-            <span className="font-semibold text-primary">القيمة الواجب اعتبارها (الأنفع للفقراء): </span>
+            <span className="font-semibold text-primary">
+              القيمة الواجب اعتبارها (الأنفع للفقراء):{" "}
+            </span>
             {isFinite(lowerNisab) ? `${fmt(lowerNisab)} ${country.currency}` : "—"}
-            <span className="text-muted-foreground"> — تجب الزكاة إذا بلغ مالك هذا الحد وحال عليه الحول.</span>
+            <span className="text-muted-foreground">
+              {" "}
+              — تجب الزكاة إذا بلغ مالك هذا الحد وحال عليه الحول.
+            </span>
           </div>
         </CardContent>
       </Card>
@@ -387,8 +434,8 @@ export function NisabHistory() {
             قاعدة بيانات الأنصبة — اختر السنة والشهر
           </CardTitle>
           <p className="text-sm text-muted-foreground text-right">
-            البيانات محفوظة في قاعدة بيانات النظام. اختر السنة، ولسنة 2026 يمكنك اختيار الشهر للاطلاع على
-            النصاب الشهري التفصيلي.
+            البيانات محفوظة في قاعدة بيانات النظام. اختر السنة، ولسنة 2026 يمكنك اختيار الشهر
+            للاطلاع على النصاب الشهري التفصيلي.
           </p>
         </CardHeader>
         <CardContent className="pt-6 space-y-4 text-right">
@@ -396,10 +443,14 @@ export function NisabHistory() {
             <div className="space-y-1.5">
               <Label className="text-xs">الدولة / العملة</Label>
               <Select value={dbCountryCode} onValueChange={setDbCountryCode}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent className="max-h-72">
                   {COUNTRY_PRICES.map((c) => (
-                    <SelectItem key={c.code} value={c.code}>{c.name} ({c.currency})</SelectItem>
+                    <SelectItem key={c.code} value={c.code}>
+                      {c.name} ({c.currency})
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -413,10 +464,14 @@ export function NisabHistory() {
                 value={String(selectedYear)}
                 onValueChange={(v) => setSelectedYear(Number(v))}
               >
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent className="max-h-72">
                   {dbYears.map((y) => (
-                    <SelectItem key={y} value={String(y)}>{y}م</SelectItem>
+                    <SelectItem key={y} value={String(y)}>
+                      {y}م
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -428,10 +483,14 @@ export function NisabHistory() {
                   value={String(selectedMonth)}
                   onValueChange={(v) => setSelectedMonth(Number(v))}
                 >
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent className="max-h-72">
                     {monthsForYear.map((m) => (
-                      <SelectItem key={m} value={String(m)}>{MONTHS_AR[m - 1]}</SelectItem>
+                      <SelectItem key={m} value={String(m)}>
+                        {MONTHS_AR[m - 1]}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -439,110 +498,153 @@ export function NisabHistory() {
             )}
           </div>
 
+          {selectedRow ? (
+            (() => {
+              const today = new Date();
+              const rowDate = new Date(selectedRow.year, (selectedRow.month ?? 1) - 1, 1);
+              const isForecast = rowDate > new Date(today.getFullYear(), today.getMonth(), 1);
+              const countryLabel =
+                COUNTRY_LABEL_AR[selectedRow.country_code || "GLOBAL"] ||
+                selectedRow.country_code ||
+                "GLOBAL";
+              const sameCurrency = selectedRow.currency === dbCountry.currency;
+              const goldLocal = sameCurrency
+                ? selectedRow.gold_price
+                : selectedRow.gold_price * dbFx;
+              const silverLocal = sameCurrency
+                ? selectedRow.silver_price
+                : selectedRow.silver_price * dbFx;
 
-          {selectedRow ? (() => {
-            const today = new Date();
-            const rowDate = new Date(selectedRow.year, (selectedRow.month ?? 1) - 1, 1);
-            const isForecast = rowDate > new Date(today.getFullYear(), today.getMonth(), 1);
-            const countryLabel = COUNTRY_LABEL_AR[selectedRow.country_code || "GLOBAL"] || (selectedRow.country_code || "GLOBAL");
-            const sameCurrency = selectedRow.currency === dbCountry.currency;
-            const goldLocal = sameCurrency ? selectedRow.gold_price : selectedRow.gold_price * dbFx;
-            const silverLocal = sameCurrency ? selectedRow.silver_price : selectedRow.silver_price * dbFx;
-
-            return (
-              <div className="space-y-3">
-                <div className="flex flex-wrap items-center gap-2 text-xs">
-                  <Badge variant="outline" className="gap-1">
-                    <Globe2 className="h-3 w-3" /> {countryLabel}
-                  </Badge>
-                  <Badge variant="secondary">مرجع: {selectedRow.currency}</Badge>
-                  <Badge className="bg-primary/10 text-primary border border-primary/30">
-                    العرض: {dbCountry.name} ({dbCountry.currency})
-                  </Badge>
-                  {isForecast ? (
-                    <Badge className="bg-amber-100 text-amber-900 border border-amber-300 gap-1">
-                      <TrendingUp className="h-3 w-3" /> توقع مستقبلي
+              return (
+                <div className="space-y-3">
+                  <div className="flex flex-wrap items-center gap-2 text-xs">
+                    <Badge variant="outline" className="gap-1">
+                      <Globe2 className="h-3 w-3" /> {countryLabel}
                     </Badge>
-                  ) : (
-                    <Badge className="bg-emerald-100 text-emerald-900 border border-emerald-300">سعر فعلي مسجل</Badge>
+                    <Badge variant="secondary">مرجع: {selectedRow.currency}</Badge>
+                    <Badge className="bg-primary/10 text-primary border border-primary/30">
+                      العرض: {dbCountry.name} ({dbCountry.currency})
+                    </Badge>
+                    {isForecast ? (
+                      <Badge className="bg-amber-100 text-amber-900 border border-amber-300 gap-1">
+                        <TrendingUp className="h-3 w-3" /> توقع مستقبلي
+                      </Badge>
+                    ) : (
+                      <Badge className="bg-emerald-100 text-emerald-900 border border-emerald-300">
+                        سعر فعلي مسجل
+                      </Badge>
+                    )}
+                  </div>
+
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    <div className="rounded-lg border border-gold/30 bg-gold/10 p-4">
+                      <div className="flex items-center gap-2 mb-2 text-gold-foreground">
+                        <Gem className="h-4 w-4" />
+                        <span className="font-semibold">سعر جرام الذهب</span>
+                      </div>
+                      <p className="text-xl font-bold">
+                        {fmt(goldLocal, 2)}{" "}
+                        <span className="text-xs font-normal">{dbCountry.currency}</span>
+                      </p>
+                      <p className="text-[11px] text-muted-foreground mt-0.5">
+                        عالميًا: {fmt(selectedRow.gold_price, 2)} {selectedRow.currency}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1.5 border-t pt-1.5">
+                        نصاب الذهب ={" "}
+                        <b>
+                          {fmt(goldLocal * GOLD_NISAB_GRAMS, 0)} {dbCountry.currency}
+                        </b>
+                      </p>
+                    </div>
+                    <div className="rounded-lg border bg-muted p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Coins className="h-4 w-4" />
+                        <span className="font-semibold">سعر جرام الفضة</span>
+                      </div>
+                      <p className="text-xl font-bold">
+                        {fmt(silverLocal, 3)}{" "}
+                        <span className="text-xs font-normal">{dbCountry.currency}</span>
+                      </p>
+                      <p className="text-[11px] text-muted-foreground mt-0.5">
+                        عالميًا: {fmt(selectedRow.silver_price, 3)} {selectedRow.currency}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1.5 border-t pt-1.5">
+                        نصاب الفضة ={" "}
+                        <b>
+                          {fmt(silverLocal * SILVER_NISAB_GRAMS, 0)} {dbCountry.currency}
+                        </b>
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* انحراف معياري: محلي vs عالمي */}
+                  <div className="rounded-md border border-primary/20 bg-primary/5 p-3 text-xs leading-relaxed">
+                    <div className="font-semibold text-primary mb-1">
+                      📊 مقارنة السعر المحلي بالعالمي
+                    </div>
+                    <div className="grid sm:grid-cols-2 gap-2">
+                      <div>
+                        الذهب — محلي حالي:{" "}
+                        <b>
+                          {fmt(dbCountry.gold24, 2)} {dbCountry.currency}
+                        </b>{" "}
+                        / مرجع السوق (محوّل):{" "}
+                        <b>
+                          {fmt(goldLocal, 2)} {dbCountry.currency}
+                        </b>{" "}
+                        <span
+                          className={
+                            dbCountry.gold24 > goldLocal ? "text-amber-700" : "text-emerald-700"
+                          }
+                        >
+                          ({dbCountry.gold24 > goldLocal ? "+" : ""}
+                          {(
+                            ((dbCountry.gold24 - goldLocal) / Math.max(1, goldLocal)) *
+                            100
+                          ).toFixed(1)}
+                          %)
+                        </span>
+                      </div>
+                      <div>
+                        الفضة — محلي حالي:{" "}
+                        <b>
+                          {fmt(dbCountry.silver, 3)} {dbCountry.currency}
+                        </b>{" "}
+                        / مرجع السوق (محوّل):{" "}
+                        <b>
+                          {fmt(silverLocal, 3)} {dbCountry.currency}
+                        </b>
+                      </div>
+                    </div>
+                  </div>
+
+                  {selectedRow.event && (
+                    <p className="text-xs text-muted-foreground">
+                      📌 {selectedRow.event}
+                      {selectedRow.hijri_year ? ` — الموافق ${selectedRow.hijri_year}هـ` : ""}
+                    </p>
+                  )}
+
+                  {isForecast && (
+                    <div className="rounded-md border border-amber-300 bg-amber-50 p-3 text-xs leading-relaxed text-amber-900">
+                      <div className="font-bold mb-1 flex items-center gap-1">
+                        <TrendingUp className="h-3.5 w-3.5" /> كيف تم احتساب هذا التوقع؟
+                      </div>
+                      <p>
+                        <b>توقع اتجاهي خطي (Trend-Based Linear Extrapolation)</b> مبني على متوسط
+                        الاتجاه الشهري للسنوات (2020–2025)، مع تنعيم بسيط ونمو الذهب التاريخي ~٨٪
+                        سنوياً والفضة ~٦٪ سنوياً.
+                      </p>
+                      <p className="mt-1.5 opacity-90">
+                        ⚠️ التوقع لأغراض تخطيطية فقط، ولا يجوز اعتماده فقهيًا لحساب الزكاة قبل حلول
+                        وقته.
+                      </p>
+                    </div>
                   )}
                 </div>
-
-                <div className="grid sm:grid-cols-2 gap-3">
-                  <div className="rounded-lg border border-gold/30 bg-gold/10 p-4">
-                    <div className="flex items-center gap-2 mb-2 text-gold-foreground">
-                      <Gem className="h-4 w-4" />
-                      <span className="font-semibold">سعر جرام الذهب</span>
-                    </div>
-                    <p className="text-xl font-bold">
-                      {fmt(goldLocal, 2)} <span className="text-xs font-normal">{dbCountry.currency}</span>
-                    </p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">
-                      عالميًا: {fmt(selectedRow.gold_price, 2)} {selectedRow.currency}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1.5 border-t pt-1.5">
-                      نصاب الذهب = <b>{fmt(goldLocal * GOLD_NISAB_GRAMS, 0)} {dbCountry.currency}</b>
-                    </p>
-                  </div>
-                  <div className="rounded-lg border bg-muted p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Coins className="h-4 w-4" />
-                      <span className="font-semibold">سعر جرام الفضة</span>
-                    </div>
-                    <p className="text-xl font-bold">
-                      {fmt(silverLocal, 3)} <span className="text-xs font-normal">{dbCountry.currency}</span>
-                    </p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">
-                      عالميًا: {fmt(selectedRow.silver_price, 3)} {selectedRow.currency}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1.5 border-t pt-1.5">
-                      نصاب الفضة = <b>{fmt(silverLocal * SILVER_NISAB_GRAMS, 0)} {dbCountry.currency}</b>
-                    </p>
-                  </div>
-                </div>
-
-                {/* انحراف معياري: محلي vs عالمي */}
-                <div className="rounded-md border border-primary/20 bg-primary/5 p-3 text-xs leading-relaxed">
-                  <div className="font-semibold text-primary mb-1">📊 مقارنة السعر المحلي بالعالمي</div>
-                  <div className="grid sm:grid-cols-2 gap-2">
-                    <div>
-                      الذهب — محلي حالي: <b>{fmt(dbCountry.gold24, 2)} {dbCountry.currency}</b>{" "}
-                      / مرجع السوق (محوّل): <b>{fmt(goldLocal, 2)} {dbCountry.currency}</b>{" "}
-                      <span className={dbCountry.gold24 > goldLocal ? "text-amber-700" : "text-emerald-700"}>
-                        ({dbCountry.gold24 > goldLocal ? "+" : ""}{(((dbCountry.gold24 - goldLocal) / Math.max(1, goldLocal)) * 100).toFixed(1)}%)
-                      </span>
-                    </div>
-                    <div>
-                      الفضة — محلي حالي: <b>{fmt(dbCountry.silver, 3)} {dbCountry.currency}</b>{" "}
-                      / مرجع السوق (محوّل): <b>{fmt(silverLocal, 3)} {dbCountry.currency}</b>
-                    </div>
-                  </div>
-                </div>
-
-                {selectedRow.event && (
-                  <p className="text-xs text-muted-foreground">
-                    📌 {selectedRow.event}
-                    {selectedRow.hijri_year ? ` — الموافق ${selectedRow.hijri_year}هـ` : ""}
-                  </p>
-                )}
-
-                {isForecast && (
-                  <div className="rounded-md border border-amber-300 bg-amber-50 p-3 text-xs leading-relaxed text-amber-900">
-                    <div className="font-bold mb-1 flex items-center gap-1">
-                      <TrendingUp className="h-3.5 w-3.5" /> كيف تم احتساب هذا التوقع؟
-                    </div>
-                    <p>
-                      <b>توقع اتجاهي خطي (Trend-Based Linear Extrapolation)</b> مبني على متوسط الاتجاه
-                      الشهري للسنوات (2020–2025)، مع تنعيم بسيط ونمو الذهب التاريخي ~٨٪ سنوياً والفضة ~٦٪ سنوياً.
-                    </p>
-                    <p className="mt-1.5 opacity-90">
-                      ⚠️ التوقع لأغراض تخطيطية فقط، ولا يجوز اعتماده فقهيًا لحساب الزكاة قبل حلول وقته.
-                    </p>
-                  </div>
-                )}
-              </div>
-            );
-          })() : (
+              );
+            })()
+          ) : (
             <p className="text-sm text-muted-foreground">لا توجد بيانات متاحة لهذا الاختيار.</p>
           )}
 
@@ -556,7 +658,8 @@ export function NisabHistory() {
                   </div>
                   <p className="text-[11px] text-muted-foreground mt-0.5">
                     الأنسب للزكاة: يقارن سيناريو محافظ/أساسي/متفائل لمساعدتك في تخطيط حولان النصاب.
-                    المرجع: آخر قراءة مسجّلة ({MONTHS_AR[forecastScenarios.asOfMonth - 1]} {forecastScenarios.asOfYear}).
+                    المرجع: آخر قراءة مسجّلة ({MONTHS_AR[forecastScenarios.asOfMonth - 1]}{" "}
+                    {forecastScenarios.asOfYear}).
                   </p>
                 </div>
                 <Badge variant="outline" className="text-[10px]">
@@ -587,19 +690,27 @@ export function NisabHistory() {
                           <td className="border px-2 py-1.5 text-right font-semibold">
                             {MONTHS_AR[m - 1]}
                           </td>
-                          <td className="border px-2 py-1.5 text-center text-emerald-700">{fmt(gC, 2)}</td>
-                          <td className="border px-2 py-1.5 text-center font-bold text-primary">{fmt(gB, 2)}</td>
-                          <td className="border px-2 py-1.5 text-center text-amber-700">{fmt(gO, 2)}</td>
+                          <td className="border px-2 py-1.5 text-center text-emerald-700">
+                            {fmt(gC, 2)}
+                          </td>
+                          <td className="border px-2 py-1.5 text-center font-bold text-primary">
+                            {fmt(gB, 2)}
+                          </td>
+                          <td className="border px-2 py-1.5 text-center text-amber-700">
+                            {fmt(gO, 2)}
+                          </td>
                           <td className="border px-2 py-1.5 text-center">{fmt(sB, 3)}</td>
                           <td className="border px-2 py-1.5 text-center print:hidden">
                             <Button
                               size="sm"
                               variant="outline"
                               className="h-6 px-2 text-[10px]"
-                              onClick={() => applyForecast(
-                                forecastScenarios.gold.base[idx].value,
-                                forecastScenarios.silver.base[idx].value
-                              )}
+                              onClick={() =>
+                                applyForecast(
+                                  forecastScenarios.gold.base[idx].value,
+                                  forecastScenarios.silver.base[idx].value,
+                                )
+                              }
                             >
                               اعتماد في (أ)
                             </Button>
@@ -613,24 +724,25 @@ export function NisabHistory() {
 
               <div className="grid sm:grid-cols-3 gap-2 text-[11px]">
                 <div className="rounded-md border border-emerald-300 bg-emerald-50 p-2 text-emerald-900">
-                  <b>محافظ (Conservative)</b> — يفترض تباطؤ النمو (50% من الاتجاه). الأكثر احتياطًا لحماية الفقير.
+                  <b>محافظ (Conservative)</b> — يفترض تباطؤ النمو (50% من الاتجاه). الأكثر احتياطًا
+                  لحماية الفقير.
                 </div>
                 <div className="rounded-md border border-primary/30 bg-primary/5 p-2">
-                  <b>أساسي (Base)</b> — استمرار الاتجاه الحالي كما هو. هو السيناريو المعتمد افتراضيًا.
+                  <b>أساسي (Base)</b> — استمرار الاتجاه الحالي كما هو. هو السيناريو المعتمد
+                  افتراضيًا.
                 </div>
                 <div className="rounded-md border border-amber-300 bg-amber-50 p-2 text-amber-900">
                   <b>متفائل (Optimistic)</b> — تسارع الاتجاه (150%). للتخطيط الأقصى.
                 </div>
               </div>
               <p className="text-[10px] text-muted-foreground leading-relaxed">
-                * هذه توقعات إحصائية وليست فتوى. عند حلول وقت الزكاة فعليًا، اعتمد دائمًا على القراءة اللحظية من بطاقة "نصاب اليوم" أعلاه.
+                * هذه توقعات إحصائية وليست فتوى. عند حلول وقت الزكاة فعليًا، اعتمد دائمًا على
+                القراءة اللحظية من بطاقة "نصاب اليوم" أعلاه.
               </p>
             </div>
           )}
         </CardContent>
       </Card>
-
-
 
       {/* رسم بياني — آخر 100 عام + نسبة الذهب/الفضة */}
       <Card className="border-gold/30 shadow-soft">
@@ -663,7 +775,6 @@ export function NisabHistory() {
               </div>
             </div>
           </div>
-
         </CardHeader>
         <CardContent className="pt-4 space-y-4">
           <div className="h-80 w-full">
@@ -674,20 +785,31 @@ export function NisabHistory() {
                 <YAxis
                   yAxisId="price"
                   tick={{ fontSize: 11 }}
-                  label={{ value: `سعر الجرام (${currencyLabel})`, angle: -90, position: "insideLeft", style: { fontSize: 11 } }}
+                  label={{
+                    value: `سعر الجرام (${currencyLabel})`,
+                    angle: -90,
+                    position: "insideLeft",
+                    style: { fontSize: 11 },
+                  }}
                 />
                 <YAxis
                   yAxisId="ratio"
                   orientation="right"
                   tick={{ fontSize: 11 }}
-                  label={{ value: "النسبة (Ratio)", angle: 90, position: "insideRight", style: { fontSize: 11 } }}
+                  label={{
+                    value: "النسبة (Ratio)",
+                    angle: 90,
+                    position: "insideRight",
+                    style: { fontSize: 11 },
+                  }}
                 />
                 <Tooltip
                   contentStyle={{ fontSize: 12, direction: "rtl" }}
                   formatter={(value: number, name: string) => {
                     if (name === "ratio") return [`${value} : 1`, "نسبة الذهب/الفضة"];
                     if (name === "gold") return [`${fmt(value, 2)} ${currencyLabel}`, "جرام الذهب"];
-                    if (name === "silver") return [`${fmt(value, 3)} ${currencyLabel}`, "جرام الفضة"];
+                    if (name === "silver")
+                      return [`${fmt(value, 3)} ${currencyLabel}`, "جرام الفضة"];
                     return [value, name];
                   }}
                   labelFormatter={(label) => `سنة ${label}م`}
@@ -741,18 +863,17 @@ export function NisabHistory() {
               <div className="flex items-center gap-1.5 font-semibold text-primary mb-1">
                 <TrendingUp className="h-3.5 w-3.5" /> نسبة الذهب/الفضة
               </div>
-              كم جرام فضة يساوي جرام ذهب — متقطّع (محور أيمن). كلما زادت النسبة كانت الفضة هي
-              الأنفع للفقراء.
+              كم جرام فضة يساوي جرام ذهب — متقطّع (محور أيمن). كلما زادت النسبة كانت الفضة هي الأنفع
+              للفقراء.
             </div>
           </div>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            * بيانات تاريخية تقديرية بالدولار. وضع &quot;بعملة الدولة&quot; يستخدم سعر صرف
-            تقديري حالي وليس تاريخيًّا — للمقارنة البصرية فقط. المرجع الشرعي هو الوزن (85 جم
-            ذهبًا و595 جم فضة).
+            * بيانات تاريخية تقديرية بالدولار. وضع &quot;بعملة الدولة&quot; يستخدم سعر صرف تقديري
+            حالي وليس تاريخيًّا — للمقارنة البصرية فقط. المرجع الشرعي هو الوزن (85 جم ذهبًا و595 جم
+            فضة).
           </p>
         </CardContent>
       </Card>
-
 
       {/* التطور التاريخي عبر العصور */}
       <Card className="border-gold/30 shadow-soft">
@@ -774,7 +895,9 @@ export function NisabHistory() {
                   <div className="absolute right-1.5 top-1.5 h-3 w-3 rounded-full bg-gradient-gold ring-4 ring-background shadow-gold" />
                   <div className="flex flex-wrap items-baseline gap-2 mb-2">
                     <h3 className="text-lg font-bold text-primary">{item.era}</h3>
-                    <Badge variant="secondary" className="text-xs">{item.period}</Badge>
+                    <Badge variant="secondary" className="text-xs">
+                      {item.period}
+                    </Badge>
                   </div>
                   <div className="grid sm:grid-cols-2 gap-2 mb-2">
                     <div className="rounded-md bg-gold/10 border border-gold/20 px-3 py-2 text-sm">

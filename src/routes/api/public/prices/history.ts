@@ -31,19 +31,21 @@ export const Route = createFileRoute("/api/public/prices/history")({
         const dateRe = /^\d{4}-\d{2}-\d{2}$/;
         if (metal && !["gold", "silver"].includes(metal)) {
           return new Response(JSON.stringify({ ok: false, error: "metal must be gold|silver" }), {
-            status: 400, headers: CORS,
+            status: 400,
+            headers: CORS,
           });
         }
         if ((from && !dateRe.test(from)) || (to && !dateRe.test(to))) {
           return new Response(JSON.stringify({ ok: false, error: "dates must be YYYY-MM-DD" }), {
-            status: 400, headers: CORS,
+            status: 400,
+            headers: CORS,
           });
         }
 
         const supabase = createClient<Database>(
           process.env.SUPABASE_URL!,
           process.env.SUPABASE_PUBLISHABLE_KEY!,
-          { auth: { storage: undefined, persistSession: false, autoRefreshToken: false } }
+          { auth: { storage: undefined, persistSession: false, autoRefreshToken: false } },
         );
 
         let q = supabase
@@ -58,7 +60,8 @@ export const Route = createFileRoute("/api/public/prices/history")({
         const { data, error } = await q;
         if (error) {
           return new Response(JSON.stringify({ ok: false, error: "lookup_failed" }), {
-            status: 500, headers: CORS,
+            status: 500,
+            headers: CORS,
           });
         }
 
@@ -73,7 +76,7 @@ export const Route = createFileRoute("/api/public/prices/history")({
             source: "Nisab historical archive 1975→present",
             generated_at: new Date().toISOString(),
           }),
-          { headers: CORS }
+          { headers: CORS },
         );
       },
     },

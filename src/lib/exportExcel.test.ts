@@ -8,7 +8,6 @@ function build(data: PrintReportData) {
   return buildReportWorkbook(data);
 }
 
-
 function baseData(overrides: Partial<PrintReportData> = {}): PrintReportData {
   return {
     name: "اختبار",
@@ -56,7 +55,8 @@ describe("Excel export — ESOP and Waqf integration", () => {
         zakat: +(esopBase * ZAKAT_RATE).toFixed(2),
       },
     });
-    const wb = build(data); const rows = readSheet(wb, "زكاة ESOP-RSU");
+    const wb = build(data);
+    const rows = readSheet(wb, "زكاة ESOP-RSU");
     const flat = rows.flat().join("|");
     expect(flat).toMatch(/زكاة خيارات/);
     // intrinsic + RSU values present
@@ -89,7 +89,8 @@ describe("Excel export — ESOP and Waqf integration", () => {
         zakat: +(base * ZAKAT_RATE).toFixed(2),
       },
     });
-    const wb = build(data); const rows = readSheet(wb, "زكاة الأوقاف");
+    const wb = build(data);
+    const rows = readSheet(wb, "زكاة الأوقاف");
     const flat = rows.flat().join("|");
     expect(flat).toMatch(/زكاة الأوقاف/);
     expect(rows.some((r) => r.includes(tradeAssets))).toBe(true);
@@ -105,7 +106,8 @@ describe("Excel export — ESOP and Waqf integration", () => {
   });
 
   it("skips ESOP and Waqf sheets when data is absent", () => {
-    const wb = build(baseData()); expect(wb.SheetNames).not.toContain("زكاة ESOP-RSU");
+    const wb = build(baseData());
+    expect(wb.SheetNames).not.toContain("زكاة ESOP-RSU");
     expect(wb.SheetNames).not.toContain("زكاة الأوقاف");
   });
 
@@ -123,7 +125,8 @@ describe("Excel export — ESOP and Waqf integration", () => {
         zakat: 0,
       },
     });
-    const wb = build(data); const rows = readSheet(wb, "زكاة ESOP-RSU");
+    const wb = build(data);
+    const rows = readSheet(wb, "زكاة ESOP-RSU");
     const flat = rows.flat().join("|");
     expect(flat).toMatch(/الاحتفاظ/);
     expect(rows.some((r) => r.includes(0))).toBe(true);
@@ -135,10 +138,17 @@ describe("Excel export — deductions and FX sheets", () => {
     const data = baseData({
       deductions: [
         { label: "قرض شخصي", amount: 12000, included: true, reason: "دين حالّ", ref: "AAOIFI 35" },
-        { label: "مهر مؤجل", amount: 50000, included: false, reason: "غير حالّ ولم يُطلب", ref: "قول الجمهور" },
+        {
+          label: "مهر مؤجل",
+          amount: 50000,
+          included: false,
+          reason: "غير حالّ ولم يُطلب",
+          ref: "قول الجمهور",
+        },
       ],
     });
-    const wb = build(data); const rows = readSheet(wb, "بيان الخصومات");
+    const wb = build(data);
+    const rows = readSheet(wb, "بيان الخصومات");
     const flat = rows.flat().join("|");
     expect(flat).toMatch(/قرض شخصي/);
     expect(flat).toMatch(/مهر مؤجل/);
@@ -154,11 +164,20 @@ describe("Excel export — deductions and FX sheets", () => {
       fx: {
         reportCurrency: "ريال",
         rates: [{ from: "USD", to: "ريال", rate: 3.75 }],
-        entries: [{ label: "حساب USD", originalAmount: 1000, originalCurrency: "USD", rate: 3.75, convertedAmount: 3750 }],
+        entries: [
+          {
+            label: "حساب USD",
+            originalAmount: 1000,
+            originalCurrency: "USD",
+            rate: 3.75,
+            convertedAmount: 3750,
+          },
+        ],
         source: "البنك المركزي",
       },
     });
-    const wb = build(data); const rows = readSheet(wb, "أسعار الصرف");
+    const wb = build(data);
+    const rows = readSheet(wb, "أسعار الصرف");
     const flat = rows.flat().join("|");
     expect(flat).toMatch(/USD/);
     expect(flat).toMatch(/3\.75/);
@@ -187,7 +206,6 @@ describe("Excel export — Rikaz integration", () => {
 });
 
 describe("PDF report data — ESOP and Waqf payload shape", () => {
-
   it("PrintReportData accepts esop and waqf and they flow through unchanged", () => {
     const data = baseData({
       esop: {

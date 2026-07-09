@@ -6,15 +6,30 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { LineChart as LineChartIcon, TrendingUp, Building2, User, Sparkles } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
-  LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,
-  BarChart, Bar, Legend, CartesianGrid, PieChart, Pie, Cell,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  Legend,
+  CartesianGrid,
+  PieChart,
+  Pie,
+  Cell,
 } from "recharts";
 
 export const Route = createFileRoute("/analytics")({
   head: () => ({
     meta: [
       { title: "لوحات المعلومات والتحليلات — حاسبة الزكاة" },
-      { name: "description", content: "مؤشرات الأداء (KPIs) والتحليلات التنبؤية للأفراد والمؤسسات — رصيد زكوي متوقّع، حساسية النصاب، ونمو الوعاء." },
+      {
+        name: "description",
+        content:
+          "مؤشرات الأداء (KPIs) والتحليلات التنبؤية للأفراد والمؤسسات — رصيد زكوي متوقّع، حساسية النصاب، ونمو الوعاء.",
+      },
       { property: "og:title", content: "لوحات المعلومات والتحليلات" },
       { property: "og:description", content: "KPIs + تحليلات تنبؤية للأفراد والمؤسسات" },
       { property: "og:type", content: "article" },
@@ -33,7 +48,7 @@ function generateIndividualSeries() {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
     wealth = wealth * (1 + (Math.random() * 0.03 - 0.005));
     const nisab = 30000 + Math.sin(i) * 800;
-    const zakat = Math.max(0, (wealth - nisab) * 0.02577 / 12);
+    const zakat = Math.max(0, ((wealth - nisab) * 0.02577) / 12);
     arr.push({
       month: d.toLocaleDateString("ar", { month: "short" }),
       wealth: Math.round(wealth),
@@ -102,22 +117,39 @@ function AnalyticsPage() {
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
         <Kpi label="متوسط الثروة (12 شهر)" value={avgWealth.toLocaleString()} suffix="ر.س" />
-        <Kpi label="زكاة متراكمة تقديرية" value={Math.round(totalZakat).toLocaleString()} suffix="ر.س" />
-        <Kpi label="فوق النصاب" value={`${Math.round((individual.filter(x => x.wealth > x.nisab).length / individual.length) * 100)}%`} />
+        <Kpi
+          label="زكاة متراكمة تقديرية"
+          value={Math.round(totalZakat).toLocaleString()}
+          suffix="ر.س"
+        />
+        <Kpi
+          label="فوق النصاب"
+          value={`${Math.round((individual.filter((x) => x.wealth > x.nisab).length / individual.length) * 100)}%`}
+        />
         <Kpi label="معدل النمو الوعائي" value={`${(growth * 100).toFixed(1)}%`} note="سنوي" />
       </div>
 
       <Tabs defaultValue="individuals">
         <TabsList>
-          <TabsTrigger value="individuals" className="gap-1"><User className="h-4 w-4" /> الأفراد</TabsTrigger>
-          <TabsTrigger value="institutions" className="gap-1"><Building2 className="h-4 w-4" /> المؤسسات</TabsTrigger>
-          <TabsTrigger value="forecast" className="gap-1"><Sparkles className="h-4 w-4" /> التنبؤ</TabsTrigger>
-          <TabsTrigger value="distribution" className="gap-1"><TrendingUp className="h-4 w-4" /> المصارف</TabsTrigger>
+          <TabsTrigger value="individuals" className="gap-1">
+            <User className="h-4 w-4" /> الأفراد
+          </TabsTrigger>
+          <TabsTrigger value="institutions" className="gap-1">
+            <Building2 className="h-4 w-4" /> المؤسسات
+          </TabsTrigger>
+          <TabsTrigger value="forecast" className="gap-1">
+            <Sparkles className="h-4 w-4" /> التنبؤ
+          </TabsTrigger>
+          <TabsTrigger value="distribution" className="gap-1">
+            <TrendingUp className="h-4 w-4" /> المصارف
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="individuals">
           <Card>
-            <CardHeader><CardTitle>الثروة مقابل النصاب — آخر 12 شهر</CardTitle></CardHeader>
+            <CardHeader>
+              <CardTitle>الثروة مقابل النصاب — آخر 12 شهر</CardTitle>
+            </CardHeader>
             <CardContent style={{ height: 340 }}>
               <ResponsiveContainer>
                 <LineChart data={individual}>
@@ -126,9 +158,26 @@ function AnalyticsPage() {
                   <YAxis fontSize={11} />
                   <Tooltip />
                   <Legend />
-                  <Line type="monotone" dataKey="wealth" stroke="hsl(var(--primary))" strokeWidth={2} name="الثروة" />
-                  <Line type="monotone" dataKey="nisab" stroke="hsl(var(--destructive))" strokeDasharray="5 5" name="النصاب" />
-                  <Line type="monotone" dataKey="zakat" stroke="hsl(var(--accent))" name="زكاة شهرية" />
+                  <Line
+                    type="monotone"
+                    dataKey="wealth"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth={2}
+                    name="الثروة"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="nisab"
+                    stroke="hsl(var(--destructive))"
+                    strokeDasharray="5 5"
+                    name="النصاب"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="zakat"
+                    stroke="hsl(var(--accent))"
+                    name="زكاة شهرية"
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </CardContent>
@@ -137,7 +186,9 @@ function AnalyticsPage() {
 
         <TabsContent value="institutions">
           <Card>
-            <CardHeader><CardTitle>الوعاء الزكوي المؤسسي — ربع سنوي</CardTitle></CardHeader>
+            <CardHeader>
+              <CardTitle>الوعاء الزكوي المؤسسي — ربع سنوي</CardTitle>
+            </CardHeader>
             <CardContent style={{ height: 340 }}>
               <ResponsiveContainer>
                 <BarChart data={institutional}>
@@ -161,7 +212,12 @@ function AnalyticsPage() {
               <CardTitle>تنبؤ الزكاة للسنة القادمة (نطاق ثقة ±12%)</CardTitle>
               <div className="flex gap-1">
                 {[0.02, 0.045, 0.08].map((g) => (
-                  <Button key={g} size="sm" variant={growth === g ? "default" : "outline"} onClick={() => setGrowth(g)}>
+                  <Button
+                    key={g}
+                    size="sm"
+                    variant={growth === g ? "default" : "outline"}
+                    onClick={() => setGrowth(g)}
+                  >
                     نمو {(g * 100).toFixed(0)}%
                   </Button>
                 ))}
@@ -175,14 +231,36 @@ function AnalyticsPage() {
                   <YAxis fontSize={11} />
                   <Tooltip />
                   <Legend />
-                  <Line type="monotone" dataKey="high" stroke="hsl(var(--muted-foreground))" strokeDasharray="4 4" name="حدّ أعلى" />
-                  <Line type="monotone" dataKey="projected" stroke="hsl(var(--primary))" strokeWidth={2} name="المتوقَّع" />
-                  <Line type="monotone" dataKey="low" stroke="hsl(var(--muted-foreground))" strokeDasharray="4 4" name="حدّ أدنى" />
+                  <Line
+                    type="monotone"
+                    dataKey="high"
+                    stroke="hsl(var(--muted-foreground))"
+                    strokeDasharray="4 4"
+                    name="حدّ أعلى"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="projected"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth={2}
+                    name="المتوقَّع"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="low"
+                    stroke="hsl(var(--muted-foreground))"
+                    strokeDasharray="4 4"
+                    name="حدّ أدنى"
+                  />
                 </LineChart>
               </ResponsiveContainer>
               <p className="text-xs text-muted-foreground mt-3">
-                نموذج بسيط قائم على النمو المُركَّب. للاستخدام المؤسسي يُنصح بربطه ببيانات ERP الفعلية عبر
-                <a className="text-primary underline mx-1" href="/api/public/erp/journal">/api/public/erp/journal</a>.
+                نموذج بسيط قائم على النمو المُركَّب. للاستخدام المؤسسي يُنصح بربطه ببيانات ERP
+                الفعلية عبر
+                <a className="text-primary underline mx-1" href="/api/public/erp/journal">
+                  /api/public/erp/journal
+                </a>
+                .
               </p>
             </CardContent>
           </Card>
@@ -190,12 +268,16 @@ function AnalyticsPage() {
 
         <TabsContent value="distribution">
           <Card>
-            <CardHeader><CardTitle>مصارف الزكاة الثمانية — توزيع تمثيلي</CardTitle></CardHeader>
+            <CardHeader>
+              <CardTitle>مصارف الزكاة الثمانية — توزيع تمثيلي</CardTitle>
+            </CardHeader>
             <CardContent style={{ height: 340 }}>
               <ResponsiveContainer>
                 <PieChart>
                   <Pie data={distribution} dataKey="value" nameKey="name" outerRadius={110} label>
-                    {distribution.map((d, i) => <Cell key={i} fill={d.color} />)}
+                    {distribution.map((d, i) => (
+                      <Cell key={i} fill={d.color} />
+                    ))}
                   </Pie>
                   <Tooltip />
                   <Legend />
@@ -207,18 +289,39 @@ function AnalyticsPage() {
       </Tabs>
 
       <Card>
-        <CardHeader><CardTitle className="text-base">تنويه منهجي</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle className="text-base">تنويه منهجي</CardTitle>
+        </CardHeader>
         <CardContent className="text-xs text-muted-foreground space-y-1">
-          <p>• الأرقام في هذه الصفحة تمثيلية للعرض وتوضيح البنية التحليلية؛ في الاستخدام الفعلي تُغذّى من حسابك أو ERP.</p>
-          <p>• التنبؤ لا يُعدّ فتوى شرعية ولا استشارة استثمارية — الزكاة تُحسب على المال المملوك فعلاً عند الحول.</p>
-          <p>• التوزيع على المصارف الثمانية استرشادي؛ الأصل هو التوزيع الفعلي من الأصناف المذكورة في قوله تعالى ﴿إنما الصدقات...﴾.</p>
+          <p>
+            • الأرقام في هذه الصفحة تمثيلية للعرض وتوضيح البنية التحليلية؛ في الاستخدام الفعلي
+            تُغذّى من حسابك أو ERP.
+          </p>
+          <p>
+            • التنبؤ لا يُعدّ فتوى شرعية ولا استشارة استثمارية — الزكاة تُحسب على المال المملوك
+            فعلاً عند الحول.
+          </p>
+          <p>
+            • التوزيع على المصارف الثمانية استرشادي؛ الأصل هو التوزيع الفعلي من الأصناف المذكورة في
+            قوله تعالى ﴿إنما الصدقات...﴾.
+          </p>
         </CardContent>
       </Card>
     </main>
   );
 }
 
-function Kpi({ label, value, suffix, note }: { label: string; value: string; suffix?: string; note?: string }) {
+function Kpi({
+  label,
+  value,
+  suffix,
+  note,
+}: {
+  label: string;
+  value: string;
+  suffix?: string;
+  note?: string;
+}) {
   return (
     <Card>
       <CardContent className="pt-4">

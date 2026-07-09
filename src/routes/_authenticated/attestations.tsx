@@ -9,7 +9,9 @@ import { Badge } from "@/components/ui/badge";
 import { Printer, Stamp, Shield, FileCheck2 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/attestations")({
-  validateSearch: (s: Record<string, unknown>) => ({ id: typeof s.id === "string" ? s.id : undefined }),
+  validateSearch: (s: Record<string, unknown>) => ({
+    id: typeof s.id === "string" ? s.id : undefined,
+  }),
   beforeLoad: async () => {
     const { data } = await supabase.auth.getUser();
     if (!data.user) throw redirect({ to: "/auth" });
@@ -31,33 +33,44 @@ function AttestationsList() {
         <Stamp className="h-7 w-7 text-primary" />
         <div>
           <h1 className="text-2xl font-bold">شهادات الاعتماد الشرعي</h1>
-          <p className="text-sm text-muted-foreground">شهادات مطبوعة ببصمة SHA-256 قابلة للتحقق العام.</p>
+          <p className="text-sm text-muted-foreground">
+            شهادات مطبوعة ببصمة SHA-256 قابلة للتحقق العام.
+          </p>
         </div>
       </div>
-      {isLoading ? <p className="text-sm">جارٍ التحميل…</p> :
-        !data?.length ? (
-          <Card><CardContent className="py-10 text-center text-muted-foreground">لا توجد شهادات بعد.</CardContent></Card>
-        ) : (
-          <div className="grid gap-3">
-            {data.map((a: any) => (
-              <Card key={a.id}>
-                <CardContent className="flex items-center justify-between py-4">
-                  <div>
-                    <div className="font-semibold">{a.title}</div>
-                    <div className="text-xs text-muted-foreground mt-1">
-                      المراجع: {a.attestor_name} · {new Date(a.issued_at).toLocaleDateString("ar-EG")}
-                    </div>
-                    <div className="text-xs font-mono text-muted-foreground mt-1">
-                      بصمة: {a.content_hash.slice(0, 24)}…
-                    </div>
+      {isLoading ? (
+        <p className="text-sm">جارٍ التحميل…</p>
+      ) : !data?.length ? (
+        <Card>
+          <CardContent className="py-10 text-center text-muted-foreground">
+            لا توجد شهادات بعد.
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-3">
+          {data.map((a: any) => (
+            <Card key={a.id}>
+              <CardContent className="flex items-center justify-between py-4">
+                <div>
+                  <div className="font-semibold">{a.title}</div>
+                  <div className="text-xs text-muted-foreground mt-1">
+                    المراجع: {a.attestor_name} · {new Date(a.issued_at).toLocaleDateString("ar-EG")}
                   </div>
-                  <a href={`/attestations?id=${a.id}`} className="text-sm text-primary hover:underline">عرض</a>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )
-      }
+                  <div className="text-xs font-mono text-muted-foreground mt-1">
+                    بصمة: {a.content_hash.slice(0, 24)}…
+                  </div>
+                </div>
+                <a
+                  href={`/attestations?id=${a.id}`}
+                  className="text-sm text-primary hover:underline"
+                >
+                  عرض
+                </a>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -69,12 +82,23 @@ function SingleAttestation({ id }: { id: string }) {
     queryFn: () => getFn({ data: { id } }),
   });
 
-  if (isLoading) return <div dir="rtl" className="container py-8">جارٍ التحميل…</div>;
-  if (!a) return <div dir="rtl" className="container py-8 text-destructive">الشهادة غير موجودة أو لا تملك صلاحية عرضها.</div>;
+  if (isLoading)
+    return (
+      <div dir="rtl" className="container py-8">
+        جارٍ التحميل…
+      </div>
+    );
+  if (!a)
+    return (
+      <div dir="rtl" className="container py-8 text-destructive">
+        الشهادة غير موجودة أو لا تملك صلاحية عرضها.
+      </div>
+    );
 
-  const verifyUrl = typeof window !== "undefined"
-    ? `${window.location.origin}/verify?id=${a.id}&hash=${a.content_hash}&issued=${a.issued_at}`
-    : "";
+  const verifyUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/verify?id=${a.id}&hash=${a.content_hash}&issued=${a.issued_at}`
+      : "";
 
   return (
     <div dir="rtl" className="container mx-auto max-w-3xl py-8">
@@ -86,7 +110,9 @@ function SingleAttestation({ id }: { id: string }) {
 
       <div className="bg-card border-4 border-double border-primary/40 rounded-lg p-10 print:border-2 print:shadow-none shadow-2xl">
         <div className="text-center space-y-3 border-b border-primary/20 pb-6">
-          <div className="flex justify-center"><Shield className="h-12 w-12 text-primary" /></div>
+          <div className="flex justify-center">
+            <Shield className="h-12 w-12 text-primary" />
+          </div>
           <h1 className="text-3xl font-bold text-primary">شهادة الاعتماد الشرعي</h1>
           <p className="text-sm text-muted-foreground">وفق معيار AAOIFI رقم (35) للزكاة</p>
         </div>
@@ -105,10 +131,14 @@ function SingleAttestation({ id }: { id: string }) {
           </div>
 
           <div>
-            <div className="text-xs font-semibold text-muted-foreground mb-2">المراجع الشرعية المعتمدة</div>
+            <div className="text-xs font-semibold text-muted-foreground mb-2">
+              المراجع الشرعية المعتمدة
+            </div>
             <div className="flex flex-wrap gap-2">
               {(a.sharia_refs ?? []).map((r: string, i: number) => (
-                <Badge key={i} variant="outline" className="text-xs">{r}</Badge>
+                <Badge key={i} variant="outline" className="text-xs">
+                  {r}
+                </Badge>
               ))}
             </div>
           </div>
@@ -127,7 +157,8 @@ function SingleAttestation({ id }: { id: string }) {
         </div>
 
         <div className="mt-6 text-center text-[10px] text-muted-foreground">
-          هذه الشهادة موقّعة رقميًا ومخزّنة في سجل التدقيق غير القابل للتعديل. أي تغيير في محتواها يُبطل البصمة.
+          هذه الشهادة موقّعة رقميًا ومخزّنة في سجل التدقيق غير القابل للتعديل. أي تغيير في محتواها
+          يُبطل البصمة.
         </div>
       </div>
     </div>

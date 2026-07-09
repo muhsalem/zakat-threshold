@@ -36,16 +36,18 @@ export function CurrencyConverterCard({ reportCurrency, value, onChange }: Props
         <CardTitle className="flex items-center gap-2 text-base">
           <Languages className="h-4 w-4 text-primary" />
           أسعار الصرف للتحويل التلقائي
-          <Badge variant="outline" className="text-[10px] mr-auto">قبل التصدير</Badge>
+          <Badge variant="outline" className="text-[10px] mr-auto">
+            قبل التصدير
+          </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         <Alert className="border-primary/20 bg-primary/5">
           <Info className="h-4 w-4" />
           <AlertDescription className="text-xs leading-relaxed">
-            أَدخل سعر صرف كل عملة أجنبية مقابل عملة التقرير ({reportCurrency}). يُستخدم السعر
-            لتوحيد جميع المبالغ في الـ PDF و Excel، مع الإفصاح في التقرير عن العملة الأصلية
-            والسعر المستخدم لكل بند للشفافية والمراجعة.
+            أَدخل سعر صرف كل عملة أجنبية مقابل عملة التقرير ({reportCurrency}). يُستخدم السعر لتوحيد
+            جميع المبالغ في الـ PDF و Excel، مع الإفصاح في التقرير عن العملة الأصلية والسعر المستخدم
+            لكل بند للشفافية والمراجعة.
           </AlertDescription>
         </Alert>
 

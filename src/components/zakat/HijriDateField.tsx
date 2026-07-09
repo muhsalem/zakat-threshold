@@ -19,9 +19,13 @@ export function toHijri(iso: string): string {
     const d = new Date(iso);
     if (isNaN(d.getTime())) return "";
     return new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura", {
-      year: "numeric", month: "long", day: "numeric",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     }).format(d);
-  } catch { return ""; }
+  } catch {
+    return "";
+  }
 }
 
 interface Props {
@@ -47,8 +51,14 @@ export default function HijriDateField({ label, value, onChange, hint, compact, 
         </Label>
         <Input id={id} type="date" value={value} onChange={(e) => onChange(e.target.value)} />
         <div className="text-[10px] text-muted-foreground flex items-center justify-between gap-2">
-          <span>هجري: <b className="text-primary">{hijri || "—"}</b></span>
-          {hijri && <Badge variant="outline" className="text-[9px]">أم القرى</Badge>}
+          <span>
+            هجري: <b className="text-primary">{hijri || "—"}</b>
+          </span>
+          {hijri && (
+            <Badge variant="outline" className="text-[9px]">
+              أم القرى
+            </Badge>
+          )}
         </div>
       </div>
     );
@@ -69,7 +79,11 @@ export default function HijriDateField({ label, value, onChange, hint, compact, 
           <Label className="text-[11px] text-muted-foreground">ما يقابله بالهجري</Label>
           <div className="h-9 flex items-center justify-between rounded-md border bg-background px-3 text-sm font-semibold text-primary">
             <span>{hijri || "—"}</span>
-            {hijri && <Badge variant="secondary" className="text-[9px]">تقويم أم القرى</Badge>}
+            {hijri && (
+              <Badge variant="secondary" className="text-[9px]">
+                تقويم أم القرى
+              </Badge>
+            )}
           </div>
         </div>
       </div>

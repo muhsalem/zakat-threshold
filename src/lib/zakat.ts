@@ -81,9 +81,9 @@ export const karatToPure24 = (grams: number, karat: number): number => {
 };
 
 // معدلات زكاة الزروع والثمار
-export const CROPS_RATE_NATURAL = 0.10;     // الري بدون كلفة (الأنهار/الأمطار)
-export const CROPS_RATE_IRRIGATED = 0.05;   // الري بكلفة
-export const CROPS_RATE_MIXED = 0.075;      // ري مشترك
+export const CROPS_RATE_NATURAL = 0.1; // الري بدون كلفة (الأنهار/الأمطار)
+export const CROPS_RATE_IRRIGATED = 0.05; // الري بكلفة
+export const CROPS_RATE_MIXED = 0.075; // ري مشترك
 
 // التطور التاريخي للنصاب
 export interface NisabHistoryItem {
@@ -177,7 +177,7 @@ export const COUNTRY_PRICES: CountryPrice[] = [
 export interface YearlyNisabRow {
   hijri: number;
   gregorian: number;
-  goldUsd: number;   // سعر جرام الذهب عيار 24 بالدولار
+  goldUsd: number; // سعر جرام الذهب عيار 24 بالدولار
   silverUsd: number; // سعر جرام الفضة بالدولار
   event?: string;
 }
@@ -186,9 +186,21 @@ export interface YearlyNisabRow {
 export const NISAB_LAST_100_YEARS: YearlyNisabRow[] = [
   { hijri: 1344, gregorian: 1925, goldUsd: 0.67, silverUsd: 0.022, event: "معيار الذهب الكلاسيكي" },
   { hijri: 1349, gregorian: 1930, goldUsd: 0.67, silverUsd: 0.012, event: "الكساد الكبير" },
-  { hijri: 1354, gregorian: 1935, goldUsd: 1.13, silverUsd: 0.021, event: "رفع سعر الذهب لـ35$/أوقية" },
+  {
+    hijri: 1354,
+    gregorian: 1935,
+    goldUsd: 1.13,
+    silverUsd: 0.021,
+    event: "رفع سعر الذهب لـ35$/أوقية",
+  },
   { hijri: 1359, gregorian: 1940, goldUsd: 1.13, silverUsd: 0.011 },
-  { hijri: 1364, gregorian: 1945, goldUsd: 1.13, silverUsd: 0.016, event: "نهاية الحرب العالمية الثانية" },
+  {
+    hijri: 1364,
+    gregorian: 1945,
+    goldUsd: 1.13,
+    silverUsd: 0.016,
+    event: "نهاية الحرب العالمية الثانية",
+  },
   { hijri: 1369, gregorian: 1950, goldUsd: 1.13, silverUsd: 0.024 },
   { hijri: 1374, gregorian: 1955, goldUsd: 1.13, silverUsd: 0.028 },
   { hijri: 1380, gregorian: 1960, goldUsd: 1.13, silverUsd: 0.029 },
@@ -201,15 +213,21 @@ export const NISAB_LAST_100_YEARS: YearlyNisabRow[] = [
   { hijri: 1415, gregorian: 1995, goldUsd: 12.43, silverUsd: 0.168 },
   { hijri: 1420, gregorian: 2000, goldUsd: 8.97, silverUsd: 0.161 },
   { hijri: 1425, gregorian: 2005, goldUsd: 14.31, silverUsd: 0.235 },
-  { hijri: 1430, gregorian: 2009, goldUsd: 31.25, silverUsd: 0.475, event: "الأزمة المالية العالمية" },
+  {
+    hijri: 1430,
+    gregorian: 2009,
+    goldUsd: 31.25,
+    silverUsd: 0.475,
+    event: "الأزمة المالية العالمية",
+  },
   { hijri: 1432, gregorian: 2011, goldUsd: 50.41, silverUsd: 1.13, event: "قفزة قياسية" },
   { hijri: 1435, gregorian: 2014, goldUsd: 40.51, silverUsd: 0.61 },
   { hijri: 1437, gregorian: 2016, goldUsd: 40.16, silverUsd: 0.55 },
   { hijri: 1440, gregorian: 2019, goldUsd: 45.01, silverUsd: 0.52 },
   { hijri: 1441, gregorian: 2020, goldUsd: 57.07, silverUsd: 0.66, event: "جائحة كوفيد-19" },
-  { hijri: 1443, gregorian: 2022, goldUsd: 58.40, silverUsd: 0.71 },
-  { hijri: 1445, gregorian: 2024, goldUsd: 75.20, silverUsd: 0.95 },
-  { hijri: 1447, gregorian: 2026, goldUsd: 95.50, silverUsd: 1.30, event: "أعلى مستوى تاريخي" },
+  { hijri: 1443, gregorian: 2022, goldUsd: 58.4, silverUsd: 0.71 },
+  { hijri: 1445, gregorian: 2024, goldUsd: 75.2, silverUsd: 0.95 },
+  { hijri: 1447, gregorian: 2026, goldUsd: 95.5, silverUsd: 1.3, event: "أعلى مستوى تاريخي" },
 ];
 
 // ============ شرط الحول والتقويم الهجري ============
@@ -217,19 +235,29 @@ export const HAWL_DAYS_HIJRI = 354; // السنة الهجرية القمرية
 export const ZAKAT_RATE_GREGORIAN = 0.02577; // معدل معدّل عند استخدام التاريخ الميلادي (الندوة السابعة للزكاة)
 
 // تحويل ميلادي إلى هجري (الخوارزمية الكويتية المعتمدة)
-export interface HijriDate { hy: number; hm: number; hd: number; }
+export interface HijriDate {
+  hy: number;
+  hm: number;
+  hd: number;
+}
 export function gregorianToHijri(gy: number, gm: number, gd: number): HijriDate {
-  const jd = Math.floor((1461 * (gy + 4800 + Math.floor((gm - 14) / 12))) / 4)
-    + Math.floor((367 * (gm - 2 - 12 * Math.floor((gm - 14) / 12))) / 12)
-    - Math.floor((3 * Math.floor((gy + 4900 + Math.floor((gm - 14) / 12)) / 100)) / 4)
-    + gd - 32075;
+  const jd =
+    Math.floor((1461 * (gy + 4800 + Math.floor((gm - 14) / 12))) / 4) +
+    Math.floor((367 * (gm - 2 - 12 * Math.floor((gm - 14) / 12))) / 12) -
+    Math.floor((3 * Math.floor((gy + 4900 + Math.floor((gm - 14) / 12)) / 100)) / 4) +
+    gd -
+    32075;
   const l = jd - 1948440 + 10632;
   const n = Math.floor((l - 1) / 10631);
   const l2 = l - 10631 * n + 354;
-  const j = Math.floor((10985 - l2) / 5316) * Math.floor((50 * l2) / 17719)
-    + Math.floor(l2 / 5670) * Math.floor((43 * l2) / 15238);
-  const l3 = l2 - Math.floor((30 - j) / 15) * Math.floor((17719 * j) / 50)
-    - Math.floor(j / 16) * Math.floor((15238 * j) / 43) + 29;
+  const j =
+    Math.floor((10985 - l2) / 5316) * Math.floor((50 * l2) / 17719) +
+    Math.floor(l2 / 5670) * Math.floor((43 * l2) / 15238);
+  const l3 =
+    l2 -
+    Math.floor((30 - j) / 15) * Math.floor((17719 * j) / 50) -
+    Math.floor(j / 16) * Math.floor((15238 * j) / 43) +
+    29;
   const hm = Math.floor((24 * l3) / 709);
   const hd = l3 - Math.floor((709 * hm) / 24);
   const hy = 30 * n + j - 30;
@@ -237,8 +265,18 @@ export function gregorianToHijri(gy: number, gm: number, gd: number): HijriDate 
 }
 
 const HIJRI_MONTHS = [
-  "محرّم", "صفر", "ربيع الأول", "ربيع الآخر", "جمادى الأولى", "جمادى الآخرة",
-  "رجب", "شعبان", "رمضان", "شوال", "ذو القعدة", "ذو الحجة",
+  "محرّم",
+  "صفر",
+  "ربيع الأول",
+  "ربيع الآخر",
+  "جمادى الأولى",
+  "جمادى الآخرة",
+  "رجب",
+  "شعبان",
+  "رمضان",
+  "شوال",
+  "ذو القعدة",
+  "ذو الحجة",
 ];
 export function formatHijri(h: HijriDate): string {
   return `${h.hd} ${HIJRI_MONTHS[h.hm - 1] ?? ""} ${h.hy}هـ`;
@@ -277,6 +315,9 @@ export const ZAKAT_RECIPIENTS: ZakatRecipient[] = [
   { name: "المؤلفة قلوبهم", description: "حديثو الإسلام أو من يُرجى إسلامهم تأليفًا لقلوبهم" },
   { name: "في الرقاب", description: "تحرير الأرقّاء، ويُلحق بهم فكّ الأسرى ومعونة المكاتبين" },
   { name: "الغارمون", description: "المدينون العاجزون عن سداد ديونهم في غير معصية" },
-  { name: "في سبيل الله", description: "الجهاد في سبيل الله، وعند بعض العلماء: كل وجوه الخير العامة" },
+  {
+    name: "في سبيل الله",
+    description: "الجهاد في سبيل الله، وعند بعض العلماء: كل وجوه الخير العامة",
+  },
   { name: "ابن السبيل", description: "المسافر المنقطع عن ماله ولو كان غنيًا في بلده" },
 ];

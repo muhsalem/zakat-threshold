@@ -8,10 +8,16 @@ export const Route = createFileRoute("/status")({
   head: () => ({
     meta: [
       { title: "حالة الخدمة — Zakat Platform Status" },
-      { name: "description", content: "لوحة حالة تشغيل حاسبة الزكاة: صحة الخدمة، واجهات API، ومحرك الفتوى." },
+      {
+        name: "description",
+        content: "لوحة حالة تشغيل حاسبة الزكاة: صحة الخدمة، واجهات API، ومحرك الفتوى.",
+      },
       { name: "robots", content: "index,follow" },
       { property: "og:title", content: "Zakat Platform — Live Status" },
-      { property: "og:description", content: "Real-time uptime and health for the Zakat calculator APIs." },
+      {
+        property: "og:description",
+        content: "Real-time uptime and health for the Zakat calculator APIs.",
+      },
     ],
   }),
   component: StatusPage,
@@ -50,7 +56,10 @@ function StatusPage() {
     };
     load();
     const id = setInterval(load, 15_000);
-    return () => { cancel = true; clearInterval(id); };
+    return () => {
+      cancel = true;
+      clearInterval(id);
+    };
   }, []);
 
   const healthy = h?.ok && !err;
@@ -62,7 +71,9 @@ function StatusPage() {
           <Activity className="h-7 w-7 text-primary" />
           <div>
             <h1 className="text-2xl font-bold">حالة المنصّة</h1>
-            <p className="text-sm text-muted-foreground">Live health of Zakat calculator services</p>
+            <p className="text-sm text-muted-foreground">
+              Live health of Zakat calculator services
+            </p>
           </div>
         </header>
 
@@ -70,9 +81,13 @@ function StatusPage() {
           <CardHeader className="flex-row items-center justify-between space-y-0">
             <CardTitle>الحالة الإجمالية</CardTitle>
             {healthy ? (
-              <Badge className="bg-emerald-600 hover:bg-emerald-600 gap-1"><CheckCircle2 className="h-3.5 w-3.5" /> Operational</Badge>
+              <Badge className="bg-emerald-600 hover:bg-emerald-600 gap-1">
+                <CheckCircle2 className="h-3.5 w-3.5" /> Operational
+              </Badge>
             ) : (
-              <Badge variant="destructive" className="gap-1"><AlertCircle className="h-3.5 w-3.5" /> Degraded</Badge>
+              <Badge variant="destructive" className="gap-1">
+                <AlertCircle className="h-3.5 w-3.5" /> Degraded
+              </Badge>
             )}
           </CardHeader>
           <CardContent className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
@@ -84,14 +99,24 @@ function StatusPage() {
         </Card>
 
         <Card>
-          <CardHeader><CardTitle>مكوّنات الخدمة</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle>مكوّنات الخدمة</CardTitle>
+          </CardHeader>
           <CardContent className="space-y-2">
-            {(h ? Object.entries(h.checks) : [
-              ["fatwa_engine", "…"], ["erp_journal", "…"], ["openapi", "…"],
-            ]).map(([k, v]) => (
+            {(h
+              ? Object.entries(h.checks)
+              : [
+                  ["fatwa_engine", "…"],
+                  ["erp_journal", "…"],
+                  ["openapi", "…"],
+                ]
+            ).map(([k, v]) => (
               <div key={k} className="flex items-center justify-between rounded border p-3 text-sm">
                 <span className="font-mono">{k}</span>
-                <Badge variant={v === "ok" ? "default" : "secondary"} className={v === "ok" ? "bg-emerald-600 hover:bg-emerald-600" : ""}>
+                <Badge
+                  variant={v === "ok" ? "default" : "secondary"}
+                  className={v === "ok" ? "bg-emerald-600 hover:bg-emerald-600" : ""}
+                >
                   {v}
                 </Badge>
               </div>

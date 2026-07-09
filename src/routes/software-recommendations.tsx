@@ -2,17 +2,34 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  Boxes, Cloud, ShieldCheck, Activity, Workflow, Bot, TestTube2,
-  Database, Lock, GitBranch, LineChart, MessagesSquare,
+  Boxes,
+  Cloud,
+  ShieldCheck,
+  Activity,
+  Workflow,
+  Bot,
+  TestTube2,
+  Database,
+  Lock,
+  GitBranch,
+  LineChart,
+  MessagesSquare,
 } from "lucide-react";
 
 export const Route = createFileRoute("/software-recommendations")({
   head: () => ({
     meta: [
       { title: "توصيات البرمجيات وموصّلات ERP — حاسبة الزكاة" },
-      { name: "description", content: "خارطة الحلول والبرمجيات الموصى بها لحاسبة الزكاة على مستوى المؤسسات: ERP وiPaaS ومراقبة وأمن وتحاليل." },
+      {
+        name: "description",
+        content:
+          "خارطة الحلول والبرمجيات الموصى بها لحاسبة الزكاة على مستوى المؤسسات: ERP وiPaaS ومراقبة وأمن وتحاليل.",
+      },
       { property: "og:title", content: "توصيات البرمجيات وموصّلات ERP" },
-      { property: "og:description", content: "Stack مؤسسي متكامل: ERP + iPaaS + Security + Observability" },
+      {
+        property: "og:description",
+        content: "Stack مؤسسي متكامل: ERP + iPaaS + Security + Observability",
+      },
       { property: "og:type", content: "article" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -20,7 +37,12 @@ export const Route = createFileRoute("/software-recommendations")({
   component: Page,
 });
 
-type Item = { name: string; role: string; status: "in-use" | "recommended" | "roadmap"; note?: string };
+type Item = {
+  name: string;
+  role: string;
+  status: "in-use" | "recommended" | "roadmap";
+  note?: string;
+};
 type Section = { title: string; icon: React.ComponentType<{ className?: string }>; items: Item[] };
 
 const SECTIONS: Section[] = [
@@ -28,25 +50,85 @@ const SECTIONS: Section[] = [
     title: "موصّلات ERP الأصلية",
     icon: Boxes,
     items: [
-      { name: "QuickBooks Online — JournalEntry API v3", role: "SMB accounting", status: "in-use", note: "endpoint: /api/public/erp/journal?format=quickbooks" },
-      { name: "Xero — ManualJournal API", role: "SMB accounting", status: "in-use", note: "?format=xero (LineAmount مع إشارة سالبة للائتمان)" },
-      { name: "Zoho Books / Sage / Wave", role: "SMB accounting", status: "in-use", note: "?format=csv (استيراد قياسي)" },
-      { name: "Odoo — account.move", role: "Open-source ERP", status: "in-use", note: "?format=odoo يُمرَّر عبر XML-RPC" },
-      { name: "NetSuite — SuiteTalk", role: "Enterprise ERP", status: "in-use", note: "?format=netsuite (REST/SOAP)" },
-      { name: "SAP S/4HANA — IDoc ACC_DOCUMENT03", role: "Enterprise ERP", status: "in-use", note: "?format=sap يُرجِع XML جاهز للاستيراد" },
-      { name: "Microsoft Dynamics 365 F&O", role: "Enterprise ERP", status: "roadmap", note: "OData v4 + Data Management Framework" },
-      { name: "Oracle Fusion Cloud ERP", role: "Enterprise ERP", status: "roadmap", note: "FBDI + REST 21D+" },
+      {
+        name: "QuickBooks Online — JournalEntry API v3",
+        role: "SMB accounting",
+        status: "in-use",
+        note: "endpoint: /api/public/erp/journal?format=quickbooks",
+      },
+      {
+        name: "Xero — ManualJournal API",
+        role: "SMB accounting",
+        status: "in-use",
+        note: "?format=xero (LineAmount مع إشارة سالبة للائتمان)",
+      },
+      {
+        name: "Zoho Books / Sage / Wave",
+        role: "SMB accounting",
+        status: "in-use",
+        note: "?format=csv (استيراد قياسي)",
+      },
+      {
+        name: "Odoo — account.move",
+        role: "Open-source ERP",
+        status: "in-use",
+        note: "?format=odoo يُمرَّر عبر XML-RPC",
+      },
+      {
+        name: "NetSuite — SuiteTalk",
+        role: "Enterprise ERP",
+        status: "in-use",
+        note: "?format=netsuite (REST/SOAP)",
+      },
+      {
+        name: "SAP S/4HANA — IDoc ACC_DOCUMENT03",
+        role: "Enterprise ERP",
+        status: "in-use",
+        note: "?format=sap يُرجِع XML جاهز للاستيراد",
+      },
+      {
+        name: "Microsoft Dynamics 365 F&O",
+        role: "Enterprise ERP",
+        status: "roadmap",
+        note: "OData v4 + Data Management Framework",
+      },
+      {
+        name: "Oracle Fusion Cloud ERP",
+        role: "Enterprise ERP",
+        status: "roadmap",
+        note: "FBDI + REST 21D+",
+      },
     ],
   },
   {
     title: "iPaaS ومنصات التنسيق",
     icon: Workflow,
     items: [
-      { name: "Zapier", role: "لا-كود، آلاف التطبيقات", status: "in-use", note: "استقبل Webhook موقّع HMAC من /api/public/erp/webhook" },
+      {
+        name: "Zapier",
+        role: "لا-كود، آلاف التطبيقات",
+        status: "in-use",
+        note: "استقبل Webhook موقّع HMAC من /api/public/erp/webhook",
+      },
       { name: "Make (Integromat)", role: "بديل مرن أرخص", status: "in-use" },
-      { name: "n8n (self-hosted)", role: "سيادة كاملة على البيانات", status: "in-use", note: "موصى به للبنوك/المؤسسات الشرعية" },
-      { name: "Workato / MuleSoft / Boomi", role: "Enterprise iPaaS", status: "recommended", note: "للتكامل مع SAP/Oracle عبر iDocs & ESB" },
-      { name: "Apache Camel / Kafka Connect", role: "Event streaming", status: "roadmap", note: "لبيئات معالجة الأحداث الشرعية" },
+      {
+        name: "n8n (self-hosted)",
+        role: "سيادة كاملة على البيانات",
+        status: "in-use",
+        note: "موصى به للبنوك/المؤسسات الشرعية",
+      },
+      {
+        name: "Workato / MuleSoft / Boomi",
+        role: "Enterprise iPaaS",
+        status: "recommended",
+        note: "للتكامل مع SAP/Oracle عبر iDocs & ESB",
+      },
+      {
+        name: "Apache Camel / Kafka Connect",
+        role: "Event streaming",
+        status: "roadmap",
+        note: "لبيئات معالجة الأحداث الشرعية",
+      },
     ],
   },
   {
@@ -57,7 +139,12 @@ const SECTIONS: Section[] = [
       { name: "CBUAE Open Finance", role: "AISP/PISP", status: "roadmap" },
       { name: "BankID / Aadhaar / Absher", role: "eKYC مسلم", status: "roadmap" },
       { name: "ISO 20022 (pain.001, camt.053)", role: "رسائل مصرفية", status: "recommended" },
-      { name: "XBRL / iXBRL", role: "تقارير رقابية (ZATCA/FCA/SEC)", status: "in-use", note: "?format=xbrl" },
+      {
+        name: "XBRL / iXBRL",
+        role: "تقارير رقابية (ZATCA/FCA/SEC)",
+        status: "in-use",
+        note: "?format=xbrl",
+      },
       { name: "PEPPOL BIS 3.0", role: "فوترة إلكترونية عابرة الحدود", status: "recommended" },
     ],
   },
@@ -65,18 +152,40 @@ const SECTIONS: Section[] = [
     title: "المراقبة والرصد (Observability)",
     icon: Activity,
     items: [
-      { name: "Sentry", role: "أخطاء واجهة/خادم", status: "recommended", note: "SDK متوافق مع Workers + tRPC" },
-      { name: "PostHog", role: "منتج/تحليلات سلوك", status: "recommended", note: "self-hosted متاح — أفضل لخصوصية الزكاة" },
-      { name: "OpenTelemetry + Grafana Tempo/Loki/Mimir", role: "Traces/Logs/Metrics", status: "recommended" },
+      {
+        name: "Sentry",
+        role: "أخطاء واجهة/خادم",
+        status: "recommended",
+        note: "SDK متوافق مع Workers + tRPC",
+      },
+      {
+        name: "PostHog",
+        role: "منتج/تحليلات سلوك",
+        status: "recommended",
+        note: "self-hosted متاح — أفضل لخصوصية الزكاة",
+      },
+      {
+        name: "OpenTelemetry + Grafana Tempo/Loki/Mimir",
+        role: "Traces/Logs/Metrics",
+        status: "recommended",
+      },
       { name: "Datadog / New Relic", role: "APM مؤسسي", status: "roadmap" },
-      { name: "Cloudflare Logpush → BigQuery/Snowflake", role: "تدقيق طويل الأمد", status: "recommended" },
+      {
+        name: "Cloudflare Logpush → BigQuery/Snowflake",
+        role: "تدقيق طويل الأمد",
+        status: "recommended",
+      },
     ],
   },
   {
     title: "الأمن السيبراني والامتثال",
     icon: ShieldCheck,
     items: [
-      { name: "Snyk / Semgrep / Trivy", role: "SAST + SCA + Container scan", status: "recommended" },
+      {
+        name: "Snyk / Semgrep / Trivy",
+        role: "SAST + SCA + Container scan",
+        status: "recommended",
+      },
       { name: "Dependabot + Renovate", role: "Patch management آلي", status: "in-use" },
       { name: "Vault (HashiCorp) / AWS KMS", role: "إدارة أسرار مؤسسية", status: "roadmap" },
       { name: "Cloudflare WAF + Bot Management + Turnstile", role: "طبقة حافة", status: "in-use" },
@@ -103,11 +212,19 @@ const SECTIONS: Section[] = [
     icon: Database,
     items: [
       { name: "Supabase Postgres + RLS", role: "قاعدة أساسية", status: "in-use" },
-      { name: "TimescaleDB / Hypertables", role: "لأسعار المعادن اليومية 50 سنة", status: "recommended" },
+      {
+        name: "TimescaleDB / Hypertables",
+        role: "لأسعار المعادن اليومية 50 سنة",
+        status: "recommended",
+      },
       { name: "pg_cron + pg_net", role: "جدولة snapshots يومية", status: "in-use" },
       { name: "Meilisearch / Typesense", role: "بحث فوري في الفتاوى", status: "recommended" },
       { name: "DuckDB / MotherDuck", role: "تحليلات جانب المتصفح", status: "recommended" },
-      { name: "Snowflake / BigQuery / Databricks", role: "Data warehouse مؤسسي", status: "roadmap" },
+      {
+        name: "Snowflake / BigQuery / Databricks",
+        role: "Data warehouse مؤسسي",
+        status: "roadmap",
+      },
     ],
   },
   {
@@ -147,7 +264,11 @@ const SECTIONS: Section[] = [
     icon: MessagesSquare,
     items: [
       { name: "Resend / SendGrid — بريد المعاملات", role: "تنبيهات الحول", status: "in-use" },
-      { name: "Twilio / MessageBird — SMS/WhatsApp", role: "تذكير الحول محلياً", status: "recommended" },
+      {
+        name: "Twilio / MessageBird — SMS/WhatsApp",
+        role: "تذكير الحول محلياً",
+        status: "recommended",
+      },
       { name: "Crisp / Intercom / Chatwoot", role: "دعم فوري", status: "roadmap" },
       { name: "Discourse", role: "مجتمع الفقهاء والمحاسبين", status: "roadmap" },
     ],
@@ -157,7 +278,11 @@ const SECTIONS: Section[] = [
     icon: Lock,
     items: [
       { name: "Supabase Auth (Google/Email/OTP)", role: "المستوى الحالي", status: "in-use" },
-      { name: "WorkOS / Auth0 — SAML SSO + SCIM", role: "متطلّب مؤسسات B2B", status: "recommended" },
+      {
+        name: "WorkOS / Auth0 — SAML SSO + SCIM",
+        role: "متطلّب مؤسسات B2B",
+        status: "recommended",
+      },
       { name: "Passkeys (WebAuthn)", role: "بدون كلمة سر", status: "recommended" },
       { name: "OpenFGA / Cerbos", role: "تفويض دقيق (RBAC/ABAC)", status: "roadmap" },
     ],
@@ -166,20 +291,32 @@ const SECTIONS: Section[] = [
 
 function statusBadge(s: Item["status"]) {
   if (s === "in-use") return <Badge className="text-[10px]">مطبَّق</Badge>;
-  if (s === "recommended") return <Badge variant="secondary" className="text-[10px]">موصى به</Badge>;
-  return <Badge variant="outline" className="text-[10px]">خارطة الطريق</Badge>;
+  if (s === "recommended")
+    return (
+      <Badge variant="secondary" className="text-[10px]">
+        موصى به
+      </Badge>
+    );
+  return (
+    <Badge variant="outline" className="text-[10px]">
+      خارطة الطريق
+    </Badge>
+  );
 }
 
 function Page() {
   const total = SECTIONS.reduce((s, x) => s + x.items.length, 0);
-  const inUse = SECTIONS.reduce((s, x) => s + x.items.filter((i) => i.status === "in-use").length, 0);
+  const inUse = SECTIONS.reduce(
+    (s, x) => s + x.items.filter((i) => i.status === "in-use").length,
+    0,
+  );
   return (
     <main className="container mx-auto max-w-6xl px-4 py-8 space-y-6" dir="rtl">
       <header className="space-y-2">
         <h1 className="text-3xl font-bold">توصيات البرمجيات وموصّلات ERP</h1>
         <p className="text-muted-foreground">
-          خارطة مرجعية مؤسسية شاملة: {total} أداة/معيار موزّعة على {SECTIONS.length} محاور،
-          منها {inUse} مطبّقة فعلاً في الحاسبة اليوم.
+          خارطة مرجعية مؤسسية شاملة: {total} أداة/معيار موزّعة على {SECTIONS.length} محاور، منها{" "}
+          {inUse} مطبّقة فعلاً في الحاسبة اليوم.
         </p>
         <div className="flex gap-2 flex-wrap text-xs">
           <Badge>مطبَّق ({inUse})</Badge>
@@ -207,7 +344,11 @@ function Page() {
                       {statusBadge(i.status)}
                     </div>
                     <div className="text-xs text-muted-foreground">{i.role}</div>
-                    {i.note && <div className="text-[11px] text-muted-foreground/80 border-t pt-1">{i.note}</div>}
+                    {i.note && (
+                      <div className="text-[11px] text-muted-foreground/80 border-t pt-1">
+                        {i.note}
+                      </div>
+                    )}
                   </div>
                 ))}
               </CardContent>
@@ -223,17 +364,42 @@ function Page() {
         <CardContent className="text-sm space-y-2">
           <p>
             تُصدَّر قيود الزكاة الآن مباشرةً بصيغ:
-            <span className="font-mono mx-2">QuickBooks · Xero · Odoo · NetSuite · SAP IDoc · CSV · XBRL · Generic JSON</span>
-            عبر <a className="text-primary underline" href="/api/public/erp/journal?format=xero" target="_blank" rel="noreferrer">/api/public/erp/journal</a>.
+            <span className="font-mono mx-2">
+              QuickBooks · Xero · Odoo · NetSuite · SAP IDoc · CSV · XBRL · Generic JSON
+            </span>
+            عبر{" "}
+            <a
+              className="text-primary underline"
+              href="/api/public/erp/journal?format=xero"
+              target="_blank"
+              rel="noreferrer"
+            >
+              /api/public/erp/journal
+            </a>
+            .
           </p>
           <p>
             يستقبل النظام Webhooks موقّعة (HMAC-SHA256 + منع Replay 5 دقائق) من iPaaS عبر
-            <a className="text-primary underline mx-1" href="/api/public/erp/webhook">/api/public/erp/webhook</a>
+            <a className="text-primary underline mx-1" href="/api/public/erp/webhook">
+              /api/public/erp/webhook
+            </a>
             — كافية اليوم لدمج Zapier/Make/n8n دون كتابة أي كود عميل.
           </p>
           <p>
-            انظر <a className="text-primary underline" href="/enterprise">/enterprise</a> للتجربة المباشرة،
-            و <a className="text-primary underline" href="/api/public/openapi" target="_blank" rel="noreferrer">/api/public/openapi</a> لمواصفات OpenAPI 3.1 الكاملة.
+            انظر{" "}
+            <a className="text-primary underline" href="/enterprise">
+              /enterprise
+            </a>{" "}
+            للتجربة المباشرة، و{" "}
+            <a
+              className="text-primary underline"
+              href="/api/public/openapi"
+              target="_blank"
+              rel="noreferrer"
+            >
+              /api/public/openapi
+            </a>{" "}
+            لمواصفات OpenAPI 3.1 الكاملة.
           </p>
         </CardContent>
       </Card>

@@ -19,14 +19,26 @@ export const Route = createFileRoute("/_authenticated/certified-report/$recordId
     const router = useRouter();
     return (
       <main className="container mx-auto max-w-2xl px-4 py-12" dir="rtl">
-        <Alert variant="destructive"><AlertDescription>{error.message}</AlertDescription></Alert>
-        <Button className="mt-4" onClick={() => { reset(); router.invalidate(); }}>إعادة المحاولة</Button>
+        <Alert variant="destructive">
+          <AlertDescription>{error.message}</AlertDescription>
+        </Alert>
+        <Button
+          className="mt-4"
+          onClick={() => {
+            reset();
+            router.invalidate();
+          }}
+        >
+          إعادة المحاولة
+        </Button>
       </main>
     );
   },
   notFoundComponent: () => (
     <main className="container mx-auto max-w-2xl px-4 py-12" dir="rtl">
-      <Alert><AlertDescription>لم يتم العثور على التقرير.</AlertDescription></Alert>
+      <Alert>
+        <AlertDescription>لم يتم العثور على التقرير.</AlertDescription>
+      </Alert>
     </main>
   ),
 });
@@ -74,23 +86,37 @@ function CertifiedReportPage() {
     })();
   }, [recordId]);
 
-  if (loading) return (
-    <main className="flex items-center justify-center py-24"><Loader2 className="h-6 w-6 animate-spin" /></main>
-  );
-  if (error || !record) return (
-    <main className="container mx-auto max-w-2xl px-4 py-12" dir="rtl">
-      <Alert variant="destructive"><AlertDescription>{error || "التقرير غير موجود"}</AlertDescription></Alert>
-      <Button asChild variant="outline" className="mt-4"><Link to="/history">العودة للسجل</Link></Button>
-    </main>
-  );
+  if (loading)
+    return (
+      <main className="flex items-center justify-center py-24">
+        <Loader2 className="h-6 w-6 animate-spin" />
+      </main>
+    );
+  if (error || !record)
+    return (
+      <main className="container mx-auto max-w-2xl px-4 py-12" dir="rtl">
+        <Alert variant="destructive">
+          <AlertDescription>{error || "التقرير غير موجود"}</AlertDescription>
+        </Alert>
+        <Button asChild variant="outline" className="mt-4">
+          <Link to="/history">العودة للسجل</Link>
+        </Button>
+      </main>
+    );
 
   const fmt = (n: number) => new Intl.NumberFormat("ar-EG", { maximumFractionDigits: 2 }).format(n);
 
   return (
     <main className="container mx-auto max-w-4xl px-4 py-8 space-y-4" dir="rtl">
       <div className="flex items-center justify-between print:hidden">
-        <Button asChild variant="ghost" size="sm" className="gap-1"><Link to="/history"><ArrowRight className="h-4 w-4" /> السجل</Link></Button>
-        <Button onClick={() => window.print()} className="gap-1.5"><Printer className="h-4 w-4" /> طباعة / PDF</Button>
+        <Button asChild variant="ghost" size="sm" className="gap-1">
+          <Link to="/history">
+            <ArrowRight className="h-4 w-4" /> السجل
+          </Link>
+        </Button>
+        <Button onClick={() => window.print()} className="gap-1.5">
+          <Printer className="h-4 w-4" /> طباعة / PDF
+        </Button>
       </div>
 
       <Card className="border-2 border-primary/30 shadow-lg print:shadow-none print:border-primary">
@@ -102,22 +128,35 @@ function CertifiedReportPage() {
                 تقرير زكاة معتمد
               </CardTitle>
               <p className="text-xs text-muted-foreground mt-1">
-                رقم التقرير: <span dir="ltr" className="font-mono">{record.id.slice(0, 8).toUpperCase()}</span>
+                رقم التقرير:{" "}
+                <span dir="ltr" className="font-mono">
+                  {record.id.slice(0, 8).toUpperCase()}
+                </span>
               </p>
             </div>
-            <Badge className="bg-gold text-gold-foreground gap-1"><BadgeCheck className="h-3 w-3" /> AAOIFI 35 · مجمع الفقه ٣/١</Badge>
+            <Badge className="bg-gold text-gold-foreground gap-1">
+              <BadgeCheck className="h-3 w-3" /> AAOIFI 35 · مجمع الفقه ٣/١
+            </Badge>
           </div>
         </CardHeader>
         <CardContent className="pt-6 space-y-6">
           <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <Info label="نوع المكلَّف" value={record.record_type === "individual" ? "فرد" : "شركة/مؤسسة"} />
+            <Info
+              label="نوع المكلَّف"
+              value={record.record_type === "individual" ? "فرد" : "شركة/مؤسسة"}
+            />
             <Info label="السنة الهجرية" value={record.hijri_year || "—"} />
-            <Info label="تاريخ الاحتساب" value={new Date(record.gregorian_date).toLocaleDateString("ar-EG")} />
+            <Info
+              label="تاريخ الاحتساب"
+              value={new Date(record.gregorian_date).toLocaleDateString("ar-EG")}
+            />
             <Info label="العملة" value={record.currency} />
           </section>
 
           <section>
-            <h3 className="font-bold mb-2 flex items-center gap-1.5"><FileText className="h-4 w-4 text-primary" /> ملخّص الوعاء الزكوي</h3>
+            <h3 className="font-bold mb-2 flex items-center gap-1.5">
+              <FileText className="h-4 w-4 text-primary" /> ملخّص الوعاء الزكوي
+            </h3>
             <div className="rounded-lg border overflow-hidden">
               <Row label="إجمالي الأصول" value={fmt(record.total_assets)} />
               <Row label="الخصوم / المطلوبات" value={fmt(record.total_liabilities)} muted />
@@ -135,18 +174,26 @@ function CertifiedReportPage() {
           {record.notes && (
             <section>
               <h3 className="font-bold mb-2">ملاحظات</h3>
-              <p className="text-sm text-muted-foreground bg-muted/40 p-3 rounded">{record.notes}</p>
+              <p className="text-sm text-muted-foreground bg-muted/40 p-3 rounded">
+                {record.notes}
+              </p>
             </section>
           )}
 
-          {record.snapshot && <SnapshotBreakdown snapshot={record.snapshot} fmt={fmt} currency={record.currency} />}
+          {record.snapshot && (
+            <SnapshotBreakdown snapshot={record.snapshot} fmt={fmt} currency={record.currency} />
+          )}
 
           <section className="border-t pt-4">
-            <h3 className="font-bold mb-2 flex items-center gap-1.5"><ShieldCheck className="h-4 w-4 text-emerald-600" /> البصمة الشرعية</h3>
+            <h3 className="font-bold mb-2 flex items-center gap-1.5">
+              <ShieldCheck className="h-4 w-4 text-emerald-600" /> البصمة الشرعية
+            </h3>
             <div className="grid md:grid-cols-2 gap-3 text-xs">
               <div>
                 <div className="text-muted-foreground">بصمة التدقيق (Fingerprint)</div>
-                <div dir="ltr" className="font-mono bg-muted/40 p-2 rounded mt-1 break-all">{fingerprint || "—"}</div>
+                <div dir="ltr" className="font-mono bg-muted/40 p-2 rounded mt-1 break-all">
+                  {fingerprint || "—"}
+                </div>
               </div>
               <div>
                 <div className="text-muted-foreground">المرجعيات</div>
@@ -160,7 +207,8 @@ function CertifiedReportPage() {
           </section>
 
           <footer className="border-t pt-4 text-center text-xs text-muted-foreground">
-            صادر عن منصة نِصاب · {new Date(record.created_at).toLocaleString("ar-EG")} · هذا التقرير قابل للتحقق عبر بصمة التدقيق.
+            صادر عن منصة نِصاب · {new Date(record.created_at).toLocaleString("ar-EG")} · هذا التقرير
+            قابل للتحقق عبر بصمة التدقيق.
           </footer>
         </CardContent>
       </Card>
@@ -177,29 +225,67 @@ function Info({ label, value }: { label: string; value: string }) {
   );
 }
 
-function Row({ label, value, bold, highlight, muted }: { label: string; value: string; bold?: boolean; highlight?: boolean; muted?: boolean }) {
+function Row({
+  label,
+  value,
+  bold,
+  highlight,
+  muted,
+}: {
+  label: string;
+  value: string;
+  bold?: boolean;
+  highlight?: boolean;
+  muted?: boolean;
+}) {
   return (
-    <div className={`flex justify-between px-3 py-2 border-b last:border-b-0 ${highlight ? "bg-primary/5" : muted ? "bg-muted/20" : ""}`}>
+    <div
+      className={`flex justify-between px-3 py-2 border-b last:border-b-0 ${highlight ? "bg-primary/5" : muted ? "bg-muted/20" : ""}`}
+    >
       <span className={`text-sm ${bold ? "font-bold" : ""}`}>{label}</span>
-      <span className={`text-sm ${bold ? "font-bold" : ""} ${highlight ? "text-primary" : ""}`} dir="ltr">{value}</span>
+      <span
+        className={`text-sm ${bold ? "font-bold" : ""} ${highlight ? "text-primary" : ""}`}
+        dir="ltr"
+      >
+        {value}
+      </span>
     </div>
   );
 }
 
 const SNAPSHOT_LABELS: { [key: string]: string } = {
-  cash: "نقد باليد", bankAccounts: "أرصدة بنكية", savingsBonds: "صكوك ادخارية",
-  cryptoValue: "عملات رقمية", gold: "ذهب/فضة (قيمة)", goldGrams: "ذهب (جرام)",
-  silverGrams: "فضة (جرام)", jewelryPersonal: "حلي شخصي",
-  investments: "استثمارات", stocksTrading: "أسهم للمتاجرة", stocksLongTerm: "أسهم طويلة الأجل",
-  mutualFunds: "صناديق استثمارية", sukuk: "صكوك",
-  inventory: "عروض تجارة/مخزون", realEstateTrading: "عقار للمتاجرة",
-  realEstateRental: "عقار مؤجَّر", rentalIncomeAnnual: "دخل إيجاري سنوي",
-  agricultureValue: "قيمة المحصول الزراعي", agricultureType: "نوع الري",
-  livestockCamels: "إبل (عدد)", livestockCattle: "بقر (عدد)", livestockSheep: "غنم (عدد)",
-  salaryMonthly: "راتب شهري", endOfServiceBenefits: "مكافأة نهاية خدمة",
-  businessAssets: "أصول تشغيلية", businessLiabilities: "التزامات قصيرة الأجل",
-  receivables: "ديون مستحقة لك", debts: "ديون عليك",
-  hijriYear: "السنة الهجرية", country: "الدولة", madhab: "المذهب", hawlDate: "تاريخ الحول",
+  cash: "نقد باليد",
+  bankAccounts: "أرصدة بنكية",
+  savingsBonds: "صكوك ادخارية",
+  cryptoValue: "عملات رقمية",
+  gold: "ذهب/فضة (قيمة)",
+  goldGrams: "ذهب (جرام)",
+  silverGrams: "فضة (جرام)",
+  jewelryPersonal: "حلي شخصي",
+  investments: "استثمارات",
+  stocksTrading: "أسهم للمتاجرة",
+  stocksLongTerm: "أسهم طويلة الأجل",
+  mutualFunds: "صناديق استثمارية",
+  sukuk: "صكوك",
+  inventory: "عروض تجارة/مخزون",
+  realEstateTrading: "عقار للمتاجرة",
+  realEstateRental: "عقار مؤجَّر",
+  rentalIncomeAnnual: "دخل إيجاري سنوي",
+  agricultureValue: "قيمة المحصول الزراعي",
+  agricultureType: "نوع الري",
+  livestockCamels: "إبل (عدد)",
+  livestockCattle: "بقر (عدد)",
+  livestockSheep: "غنم (عدد)",
+  salaryMonthly: "راتب شهري",
+  endOfServiceBenefits: "مكافأة نهاية خدمة",
+  businessAssets: "أصول تشغيلية",
+  businessLiabilities: "التزامات قصيرة الأجل",
+  receivables: "ديون مستحقة لك",
+  debts: "ديون عليك",
+  hijriYear: "السنة الهجرية",
+  country: "الدولة",
+  madhab: "المذهب",
+  hawlDate: "تاريخ الحول",
   nisab: "قيمة النصاب",
 };
 
@@ -217,7 +303,15 @@ function flattenSnapshot(obj: any, prefix = ""): Array<[string, unknown]> {
   return out;
 }
 
-function SnapshotBreakdown({ snapshot, fmt, currency }: { snapshot: any; fmt: (n: number) => string; currency: string }) {
+function SnapshotBreakdown({
+  snapshot,
+  fmt,
+  currency,
+}: {
+  snapshot: any;
+  fmt: (n: number) => string;
+  currency: string;
+}) {
   const entries = flattenSnapshot(snapshot);
   if (entries.length === 0) return null;
   return (
@@ -230,9 +324,14 @@ function SnapshotBreakdown({ snapshot, fmt, currency }: { snapshot: any; fmt: (n
           const isNum = typeof v === "number";
           const display = isNum ? `${fmt(v as number)} ${currency}` : String(v);
           return (
-            <div key={k} className={`flex justify-between px-3 py-1.5 text-sm border-b last:border-b-0 ${i % 2 ? "bg-muted/20" : ""}`}>
+            <div
+              key={k}
+              className={`flex justify-between px-3 py-1.5 text-sm border-b last:border-b-0 ${i % 2 ? "bg-muted/20" : ""}`}
+            >
               <span className="text-muted-foreground">{label}</span>
-              <span className="font-medium" dir={isNum ? "ltr" : "rtl"}>{display}</span>
+              <span className="font-medium" dir={isNum ? "ltr" : "rtl"}>
+                {display}
+              </span>
             </div>
           );
         })}
