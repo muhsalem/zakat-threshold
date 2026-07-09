@@ -593,7 +593,8 @@ export function PrintReport({ data }: { data: PrintReportData }) {
           <div style={{ textAlign: "center" }}>
             <img
               src={qrSrc}
-              alt="QR"
+              alt="رمز استجابة سريعة (QR) للتحقق من صحّة شهادة الزكاة"
+
               style={{
                 width: "110pt",
                 height: "110pt",
