@@ -828,10 +828,8 @@ async function addClientPrompt(reload: () => Promise<void>) {
   const kind = (prompt("النوع (individual / company / institution)", "individual") ||
     "individual") as ClientKind;
   const country = prompt("رمز الدولة (SA / EG / AE ...)", "SA") || "SA";
-  const madhab = (prompt("المذهب (hanafi / maliki / shafii / hanbali / mixed)", "mixed") ||
-    "mixed") as Madhab;
   try {
-    await createClient({ name, kind, country, madhab, createdVia: "manual" });
+    await createClient({ name, kind, country, madhab: "mixed", createdVia: "manual" });
     await reload();
     toast.success("تمت الإضافة");
   } catch (e) {
