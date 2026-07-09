@@ -195,6 +195,68 @@ function DraftsPage() {
     navigate({ to: "/dashboard" });
   }
 
+  function statusOf(r: Record_): "due" | "paid" | "zero" {
+    if ((Number(r.zakat_due) || 0) <= 0) return "zero";
+    const net = r.net_due != null ? Number(r.net_due) : Number(r.zakat_due) - Number(r.prepaid_zakat ?? 0);
+    return net <= 0 ? "paid" : "due";
+  }
+
+  const STATUS_LABEL: Record<"due" | "paid" | "zero", string> = {
+    due: "مستحقة",
+    paid: "مدفوعة",
+    zero: "دون النصاب",
+  };
+
+  const filteredRecords = useMemo(() => {
+    const needle = q.trim().toLowerCase();
+    const from = fromDate ? new Date(fromDate).getTime() : null;
+    const to = toDate ? new Date(toDate).getTime() + 86_400_000 - 1 : null;
+    const list = records.filter((r) => {
+      if (typeFilter !== "all" && r.record_type !== typeFilter) return false;
+      if (statusFilter !== "all" && statusOf(r) !== statusFilter) return false;
+      const t = r.gregorian_date ? new Date(r.gregorian_date).getTime() : new Date(r.created_at).getTime();
+      if (from != null && t < from) return false;
+      if (to != null && t > to) return false;
+      if (needle) {
+        const hay = [
+          r.hijri_year ?? "",
+          r.gregorian_date ?? "",
+          r.record_type,
+          r.currency,
+          r.notes ?? "",
+          String(r.zakat_due),
+        ]
+          .join(" ")
+          .toLowerCase();
+        if (!hay.includes(needle)) return false;
+      }
+      return true;
+    });
+    const cmp = (a: Record_, b: Record_) => {
+      switch (sortKey) {
+        case "date_asc":
+          return (a.gregorian_date ?? a.created_at).localeCompare(b.gregorian_date ?? b.created_at);
+        case "amount_desc":
+          return Number(b.zakat_due) - Number(a.zakat_due);
+        case "amount_asc":
+          return Number(a.zakat_due) - Number(b.zakat_due);
+        case "date_desc":
+        default:
+          return (b.gregorian_date ?? b.created_at).localeCompare(a.gregorian_date ?? a.created_at);
+      }
+    };
+    return [...list].sort(cmp);
+  }, [records, q, typeFilter, statusFilter, sortKey, fromDate, toDate]);
+
+  function resetFilters() {
+    setQ("");
+    setTypeFilter("all");
+    setStatusFilter("all");
+    setSortKey("date_desc");
+    setFromDate("");
+    setToDate("");
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
