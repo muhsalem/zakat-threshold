@@ -67,6 +67,7 @@ import { Route as AuthenticatedAccountantClientIdRouteImport } from './routes/_a
 import { Route as ApiPublicPricesHistoryRouteImport } from './routes/api/public/prices/history'
 import { Route as ApiPublicHooksSnapshotPricesRouteImport } from './routes/api/public/hooks/snapshot-prices'
 import { Route as ApiPublicHooksSnapshotDailyPricesRouteImport } from './routes/api/public/hooks/snapshot-daily-prices'
+import { Route as ApiPublicHooksSnapshotDailyNisabRouteImport } from './routes/api/public/hooks/snapshot-daily-nisab'
 import { Route as ApiPublicHooksHawlRemindersRouteImport } from './routes/api/public/hooks/hawl-reminders'
 import { Route as ApiPublicErpWebhookRouteImport } from './routes/api/public/erp/webhook'
 import { Route as ApiPublicErpJournalRouteImport } from './routes/api/public/erp/journal'
@@ -366,6 +367,12 @@ const ApiPublicHooksSnapshotDailyPricesRoute =
     path: '/api/public/hooks/snapshot-daily-prices',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksSnapshotDailyNisabRoute =
+  ApiPublicHooksSnapshotDailyNisabRouteImport.update({
+    id: '/api/public/hooks/snapshot-daily-nisab',
+    path: '/api/public/hooks/snapshot-daily-nisab',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksHawlRemindersRoute =
   ApiPublicHooksHawlRemindersRouteImport.update({
     id: '/api/public/hooks/hawl-reminders',
@@ -441,6 +448,7 @@ export interface FileRoutesByFullPath {
   '/api/public/erp/journal': typeof ApiPublicErpJournalRoute
   '/api/public/erp/webhook': typeof ApiPublicErpWebhookRoute
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
+  '/api/public/hooks/snapshot-daily-nisab': typeof ApiPublicHooksSnapshotDailyNisabRoute
   '/api/public/hooks/snapshot-daily-prices': typeof ApiPublicHooksSnapshotDailyPricesRoute
   '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
   '/api/public/prices/history': typeof ApiPublicPricesHistoryRoute
@@ -503,6 +511,7 @@ export interface FileRoutesByTo {
   '/api/public/erp/journal': typeof ApiPublicErpJournalRoute
   '/api/public/erp/webhook': typeof ApiPublicErpWebhookRoute
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
+  '/api/public/hooks/snapshot-daily-nisab': typeof ApiPublicHooksSnapshotDailyNisabRoute
   '/api/public/hooks/snapshot-daily-prices': typeof ApiPublicHooksSnapshotDailyPricesRoute
   '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
   '/api/public/prices/history': typeof ApiPublicPricesHistoryRoute
@@ -567,6 +576,7 @@ export interface FileRoutesById {
   '/api/public/erp/journal': typeof ApiPublicErpJournalRoute
   '/api/public/erp/webhook': typeof ApiPublicErpWebhookRoute
   '/api/public/hooks/hawl-reminders': typeof ApiPublicHooksHawlRemindersRoute
+  '/api/public/hooks/snapshot-daily-nisab': typeof ApiPublicHooksSnapshotDailyNisabRoute
   '/api/public/hooks/snapshot-daily-prices': typeof ApiPublicHooksSnapshotDailyPricesRoute
   '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
   '/api/public/prices/history': typeof ApiPublicPricesHistoryRoute
@@ -631,6 +641,7 @@ export interface FileRouteTypes {
     | '/api/public/erp/journal'
     | '/api/public/erp/webhook'
     | '/api/public/hooks/hawl-reminders'
+    | '/api/public/hooks/snapshot-daily-nisab'
     | '/api/public/hooks/snapshot-daily-prices'
     | '/api/public/hooks/snapshot-prices'
     | '/api/public/prices/history'
@@ -693,6 +704,7 @@ export interface FileRouteTypes {
     | '/api/public/erp/journal'
     | '/api/public/erp/webhook'
     | '/api/public/hooks/hawl-reminders'
+    | '/api/public/hooks/snapshot-daily-nisab'
     | '/api/public/hooks/snapshot-daily-prices'
     | '/api/public/hooks/snapshot-prices'
     | '/api/public/prices/history'
@@ -756,6 +768,7 @@ export interface FileRouteTypes {
     | '/api/public/erp/journal'
     | '/api/public/erp/webhook'
     | '/api/public/hooks/hawl-reminders'
+    | '/api/public/hooks/snapshot-daily-nisab'
     | '/api/public/hooks/snapshot-daily-prices'
     | '/api/public/hooks/snapshot-prices'
     | '/api/public/prices/history'
@@ -810,6 +823,7 @@ export interface RootRouteChildren {
   ApiPublicErpJournalRoute: typeof ApiPublicErpJournalRoute
   ApiPublicErpWebhookRoute: typeof ApiPublicErpWebhookRoute
   ApiPublicHooksHawlRemindersRoute: typeof ApiPublicHooksHawlRemindersRoute
+  ApiPublicHooksSnapshotDailyNisabRoute: typeof ApiPublicHooksSnapshotDailyNisabRoute
   ApiPublicHooksSnapshotDailyPricesRoute: typeof ApiPublicHooksSnapshotDailyPricesRoute
   ApiPublicHooksSnapshotPricesRoute: typeof ApiPublicHooksSnapshotPricesRoute
   ApiPublicPricesHistoryRoute: typeof ApiPublicPricesHistoryRoute
@@ -1223,6 +1237,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksSnapshotDailyPricesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/snapshot-daily-nisab': {
+      id: '/api/public/hooks/snapshot-daily-nisab'
+      path: '/api/public/hooks/snapshot-daily-nisab'
+      fullPath: '/api/public/hooks/snapshot-daily-nisab'
+      preLoaderRoute: typeof ApiPublicHooksSnapshotDailyNisabRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/hawl-reminders': {
       id: '/api/public/hooks/hawl-reminders'
       path: '/api/public/hooks/hawl-reminders'
@@ -1346,6 +1367,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicErpJournalRoute: ApiPublicErpJournalRoute,
   ApiPublicErpWebhookRoute: ApiPublicErpWebhookRoute,
   ApiPublicHooksHawlRemindersRoute: ApiPublicHooksHawlRemindersRoute,
+  ApiPublicHooksSnapshotDailyNisabRoute: ApiPublicHooksSnapshotDailyNisabRoute,
   ApiPublicHooksSnapshotDailyPricesRoute:
     ApiPublicHooksSnapshotDailyPricesRoute,
   ApiPublicHooksSnapshotPricesRoute: ApiPublicHooksSnapshotPricesRoute,
