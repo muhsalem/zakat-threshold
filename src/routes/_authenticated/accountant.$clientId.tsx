@@ -148,7 +148,8 @@ function ClientDetail() {
     }
   };
 
-  const [sendingReport, setSendingReport] = useState(false);
+
+
 
   const issueAndSendReport = async () => {
     if (!client.email) {
