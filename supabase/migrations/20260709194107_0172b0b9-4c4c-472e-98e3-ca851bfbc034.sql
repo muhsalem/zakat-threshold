@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.capture_zakat_draft_version() FROM PUBLIC, anon, authenticated;
