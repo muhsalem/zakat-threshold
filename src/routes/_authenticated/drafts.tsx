@@ -327,6 +327,7 @@ function DraftsPage() {
                     <Button size="sm" variant="default" onClick={() => reopenDraft(d)} className="h-8 gap-1">
                       <Play className="h-3 w-3" /> فتح
                     </Button>
+                    <DraftVersionsDialog draftId={d.id} draftTitle={d.title} onRestored={refresh} />
                     <Button size="sm" variant="ghost" onClick={() => removeDraft(d.id)} className="h-8 text-destructive">
                       <Trash2 className="h-3 w-3" />
                     </Button>
