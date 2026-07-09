@@ -601,9 +601,7 @@ function AccountantPortal() {
                           </TableCell>
                           <TableCell className="text-xs">
                             {COUNTRY_LABELS[c.country] ?? c.country}
-                            <div className="text-muted-foreground">
-                              {MADHAB_LABELS[c.madhab]} · {c.fiscalYear}
-                            </div>
+                            <div className="text-muted-foreground">{c.fiscalYear}</div>
                           </TableCell>
                           <TableCell>
                             <StatusBadge status={c.status} />
