@@ -59,20 +59,11 @@ const COUNTRIES: { id: Country; label: string }[] = [
   { id: "GLOBAL", label: "دولي / آخر" },
 ];
 
-const MADHABS: { id: Madhab; label: string }[] = [
-  { id: "hanafi", label: "حنفي" },
-  { id: "shafii", label: "شافعي" },
-  { id: "maliki", label: "مالكي" },
-  { id: "hanbali", label: "حنبلي" },
-  { id: "jafari", label: "جعفري" },
-];
-
 export function OnboardingWizard() {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
   const [kind, setKind] = useState<Kind | null>(null);
   const [country, setCountry] = useState<Country | null>(null);
-  const [madhab, setMadhab] = useState<Madhab | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
