@@ -117,9 +117,24 @@ function DashboardPage() {
         </CardContent>
       </Card>
 
-      {type === "individual" && <IndividualWizard />}
-      {type === "company" && <CompanyWizard />}
-      {type === "institution" && <InstitutionWizard />}
+      {type === "individual" && (
+        <>
+          <RestoreLastDraftBanner kind="individual" />
+          <IndividualWizard />
+        </>
+      )}
+      {type === "company" && (
+        <>
+          <RestoreLastDraftBanner kind="company" />
+          <CompanyWizard />
+        </>
+      )}
+      {type === "institution" && (
+        <>
+          <RestoreLastDraftBanner kind="institution" />
+          <InstitutionWizard />
+        </>
+      )}
     </div>
   );
 }
