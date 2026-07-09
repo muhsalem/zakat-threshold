@@ -1,9 +1,24 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { User, Building2, Users as UsersIcon, CheckCircle2, ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
+import {
+  User,
+  Building2,
+  Users as UsersIcon,
+  CheckCircle2,
+  ArrowLeft,
+  ArrowRight,
+  Sparkles,
+} from "lucide-react";
 
 const KEY = "zakat_onboarding_v1";
 
@@ -11,21 +26,45 @@ type Kind = "individual" | "company" | "group";
 type Madhab = "hanafi" | "shafii" | "maliki" | "hanbali" | "jafari";
 type Country = "SA" | "EG" | "AE" | "TR" | "MY" | "US" | "GLOBAL";
 
-const KINDS: { id: Kind; label: string; desc: string; to: string; icon: React.ComponentType<{ className?: string }> }[] = [
+const KINDS: {
+  id: Kind;
+  label: string;
+  desc: string;
+  to: string;
+  icon: React.ComponentType<{ className?: string }>;
+}[] = [
   { id: "individual", label: "فرد", desc: "حاسبة نقود وذهب وأسهم وعقار", to: "/", icon: User },
-  { id: "company", label: "شركة/مؤسسة", desc: "زكاة عروض التجارة والميزانية", to: "/organizations", icon: Building2 },
-  { id: "group", label: "مجموعة/شراكة", desc: "توزيع الزكاة على الشركاء", to: "/group-zakat", icon: UsersIcon },
+  {
+    id: "company",
+    label: "شركة/مؤسسة",
+    desc: "زكاة عروض التجارة والميزانية",
+    to: "/organizations",
+    icon: Building2,
+  },
+  {
+    id: "group",
+    label: "مجموعة/شراكة",
+    desc: "توزيع الزكاة على الشركاء",
+    to: "/group-zakat",
+    icon: UsersIcon,
+  },
 ];
 
 const COUNTRIES: { id: Country; label: string }[] = [
-  { id: "SA", label: "السعودية" }, { id: "EG", label: "مصر" }, { id: "AE", label: "الإمارات" },
-  { id: "TR", label: "تركيا" }, { id: "MY", label: "ماليزيا" }, { id: "US", label: "الولايات المتحدة" },
+  { id: "SA", label: "السعودية" },
+  { id: "EG", label: "مصر" },
+  { id: "AE", label: "الإمارات" },
+  { id: "TR", label: "تركيا" },
+  { id: "MY", label: "ماليزيا" },
+  { id: "US", label: "الولايات المتحدة" },
   { id: "GLOBAL", label: "دولي / آخر" },
 ];
 
 const MADHABS: { id: Madhab; label: string }[] = [
-  { id: "hanafi", label: "حنفي" }, { id: "shafii", label: "شافعي" },
-  { id: "maliki", label: "مالكي" }, { id: "hanbali", label: "حنبلي" },
+  { id: "hanafi", label: "حنفي" },
+  { id: "shafii", label: "شافعي" },
+  { id: "maliki", label: "مالكي" },
+  { id: "hanbali", label: "حنبلي" },
   { id: "jafari", label: "جعفري" },
 ];
 
@@ -71,7 +110,10 @@ export function OnboardingWizard() {
 
         <div className="flex items-center justify-center gap-2 py-2">
           {[0, 1, 2].map((i) => (
-            <div key={i} className={`h-1.5 w-16 rounded-full transition-colors ${i <= step ? "bg-primary" : "bg-muted"}`} />
+            <div
+              key={i}
+              className={`h-1.5 w-16 rounded-full transition-colors ${i <= step ? "bg-primary" : "bg-muted"}`}
+            />
           ))}
         </div>
 
@@ -106,7 +148,9 @@ export function OnboardingWizard() {
 
         {step === 1 && (
           <div className="space-y-3">
-            <div className="text-sm text-muted-foreground">اختر دولتك (لعملة النصاب والمرجع التنظيمي)</div>
+            <div className="text-sm text-muted-foreground">
+              اختر دولتك (لعملة النصاب والمرجع التنظيمي)
+            </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {COUNTRIES.map((c) => (
                 <Button
@@ -125,7 +169,9 @@ export function OnboardingWizard() {
 
         {step === 2 && (
           <div className="space-y-3">
-            <div className="text-sm text-muted-foreground">اختر المذهب أو الهيئة الشرعية المرجعية</div>
+            <div className="text-sm text-muted-foreground">
+              اختر المذهب أو الهيئة الشرعية المرجعية
+            </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {MADHABS.map((m) => (
                 <Button
@@ -146,7 +192,15 @@ export function OnboardingWizard() {
         )}
 
         <DialogFooter className="gap-2 sm:justify-between">
-          <Button variant="ghost" onClick={() => { try { window.localStorage.setItem(KEY, "skipped"); } catch {} setOpen(false); }}>
+          <Button
+            variant="ghost"
+            onClick={() => {
+              try {
+                window.localStorage.setItem(KEY, "skipped");
+              } catch {}
+              setOpen(false);
+            }}
+          >
             تخطّي
           </Button>
           <div className="flex gap-2">

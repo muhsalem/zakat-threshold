@@ -2,7 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Coins, Info } from "lucide-react";
@@ -74,7 +80,14 @@ type SukukRow = {
 };
 
 function emptyRow(): SukukRow {
-  return { id: crypto.randomUUID(), type: "ijara", intent: "trade", marketValue: 0, zakatableShare: 100, income: 0 };
+  return {
+    id: crypto.randomUUID(),
+    type: "ijara",
+    intent: "trade",
+    marketValue: 0,
+    zakatableShare: 100,
+    income: 0,
+  };
 }
 
 function computeBase(r: SukukRow): number {
@@ -97,14 +110,22 @@ function computeBase(r: SukukRow): number {
   return 0;
 }
 
-export function SukukSection({ currency = "USD", onTotalChange }: { currency?: string; onTotalChange?: (v: number) => void }) {
+export function SukukSection({
+  currency = "USD",
+  onTotalChange,
+}: {
+  currency?: string;
+  onTotalChange?: (v: number) => void;
+}) {
   const [rows, setRows] = useState<SukukRow[]>([emptyRow()]);
 
   const total = useMemo(() => rows.reduce((s, r) => s + computeBase(r), 0), [rows]);
   const zakat = total * ZAKAT_RATE;
 
   // إعلام الأب بالقاعدة الزكوية الكليّة لدمجها في الإجمالي
-  useEffect(() => { onTotalChange?.(total); }, [total, onTotalChange]);
+  useEffect(() => {
+    onTotalChange?.(total);
+  }, [total, onTotalChange]);
 
   const update = (id: string, patch: Partial<SukukRow>) =>
     setRows((rs) => rs.map((r) => (r.id === id ? { ...r, ...patch } : r)));
@@ -116,40 +137,57 @@ export function SukukSection({ currency = "USD", onTotalChange }: { currency?: s
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
           <Coins className="h-5 w-5 text-primary" /> زكاة الصكوك الإسلامية
-          <Badge variant="outline" className="text-[10px]">AAOIFI 17</Badge>
+          <Badge variant="outline" className="text-[10px]">
+            AAOIFI 17
+          </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <Alert>
           <Info className="h-4 w-4" />
           <AlertDescription className="text-xs leading-relaxed">
-            تختلف زكاة الصكوك باختلاف نوعها ونية الحامل. النظام يعتمد القاعدة الشرعية لكل نوع
-            وفق <b>المعيار الشرعي AAOIFI رقم 17</b> و<b>قرار مجمع الفقه الإسلامي الدولي رقم 30 (4/4)</b>.
+            تختلف زكاة الصكوك باختلاف نوعها ونية الحامل. النظام يعتمد القاعدة الشرعية لكل نوع وفق{" "}
+            <b>المعيار الشرعي AAOIFI رقم 17</b> و<b>قرار مجمع الفقه الإسلامي الدولي رقم 30 (4/4)</b>
+            .
           </AlertDescription>
         </Alert>
 
         {rows.map((r) => {
           const meta = SUKUK_META[r.type];
-          const showShare = r.intent === "hold" && (r.type === "mudaraba" || r.type === "musharaka" || r.type === "wakala");
+          const showShare =
+            r.intent === "hold" &&
+            (r.type === "mudaraba" || r.type === "musharaka" || r.type === "wakala");
           const showIncome = (r.type === "ijara" && r.intent === "hold") || r.type === "istisna";
           return (
             <div key={r.id} className="border rounded-lg p-3 space-y-3 bg-card/50">
               <div className="grid md:grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <Label className="text-xs">نوع الصك</Label>
-                  <Select value={r.type} onValueChange={(v) => update(r.id, { type: v as SukukType })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                  <Select
+                    value={r.type}
+                    onValueChange={(v) => update(r.id, { type: v as SukukType })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
                       {Object.entries(SUKUK_META).map(([k, m]) => (
-                        <SelectItem key={k} value={k}>{m.name}</SelectItem>
+                        <SelectItem key={k} value={k}>
+                          {m.name}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs">النية</Label>
-                  <Select value={r.intent} onValueChange={(v) => update(r.id, { intent: v as Intention })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                  <Select
+                    value={r.intent}
+                    onValueChange={(v) => update(r.id, { intent: v as Intention })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="trade">للمتاجرة (عرض تجارة)</SelectItem>
                       <SelectItem value="hold">للاحتفاظ (استثمار)</SelectItem>
@@ -161,31 +199,65 @@ export function SukukSection({ currency = "USD", onTotalChange }: { currency?: s
               <div className="grid md:grid-cols-3 gap-3">
                 <div className="space-y-1.5">
                   <Label className="text-xs">القيمة (السوقية/الاسمية)</Label>
-                  <Input type="number" min="0" step="0.01" value={r.marketValue || ""}
+                  <Input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={r.marketValue || ""}
                     onChange={(e) => update(r.id, { marketValue: Number(e.target.value) || 0 })}
-                    dir="ltr" style={{ textAlign: "right" }} />
+                    dir="ltr"
+                    style={{ textAlign: "right" }}
+                  />
                 </div>
                 {showShare && (
                   <div className="space-y-1.5">
                     <Label className="text-xs">% الموجودات الزكوية في الوعاء</Label>
-                    <Input type="number" min="0" max="100" step="1" value={r.zakatableShare || ""}
-                      onChange={(e) => update(r.id, { zakatableShare: Number(e.target.value) || 0 })}
-                      dir="ltr" style={{ textAlign: "right" }} />
+                    <Input
+                      type="number"
+                      min="0"
+                      max="100"
+                      step="1"
+                      value={r.zakatableShare || ""}
+                      onChange={(e) =>
+                        update(r.id, { zakatableShare: Number(e.target.value) || 0 })
+                      }
+                      dir="ltr"
+                      style={{ textAlign: "right" }}
+                    />
                   </div>
                 )}
                 {showIncome && (
                   <div className="space-y-1.5">
-                    <Label className="text-xs">{r.type === "istisna" ? "المستحقات النقدية" : "الغلّة السنوية"}</Label>
-                    <Input type="number" min="0" step="0.01" value={r.income || ""}
+                    <Label className="text-xs">
+                      {r.type === "istisna" ? "المستحقات النقدية" : "الغلّة السنوية"}
+                    </Label>
+                    <Input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={r.income || ""}
                       onChange={(e) => update(r.id, { income: Number(e.target.value) || 0 })}
-                      dir="ltr" style={{ textAlign: "right" }} />
+                      dir="ltr"
+                      style={{ textAlign: "right" }}
+                    />
                   </div>
                 )}
               </div>
 
               <div className="flex items-center justify-between text-xs">
-                <span className="text-muted-foreground">{meta.baseHint} <Badge variant="outline" className="ms-1 text-[10px]">{meta.ref}</Badge></span>
-                <button type="button" onClick={() => remove(r.id)} className="text-destructive hover:underline">حذف</button>
+                <span className="text-muted-foreground">
+                  {meta.baseHint}{" "}
+                  <Badge variant="outline" className="ms-1 text-[10px]">
+                    {meta.ref}
+                  </Badge>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => remove(r.id)}
+                  className="text-destructive hover:underline"
+                >
+                  حذف
+                </button>
               </div>
               <div className="text-sm font-semibold text-primary">
                 القاعدة الزكوية: {fmt(computeBase(r))} {currency}
@@ -194,13 +266,19 @@ export function SukukSection({ currency = "USD", onTotalChange }: { currency?: s
           );
         })}
 
-        <button type="button" onClick={add} className="text-sm text-primary hover:underline">+ إضافة صك آخر</button>
+        <button type="button" onClick={add} className="text-sm text-primary hover:underline">
+          + إضافة صك آخر
+        </button>
 
         <div className="border-t pt-3 flex items-center justify-between">
           <span className="text-sm text-muted-foreground">إجمالي القاعدة الزكوية للصكوك</span>
           <div className="text-end">
-            <div className="text-lg font-bold">{fmt(total)} {currency}</div>
-            <div className="text-xs text-primary">زكاة 2.5%: {fmt(zakat)} {currency}</div>
+            <div className="text-lg font-bold">
+              {fmt(total)} {currency}
+            </div>
+            <div className="text-xs text-primary">
+              زكاة 2.5%: {fmt(zakat)} {currency}
+            </div>
           </div>
         </div>
       </CardContent>

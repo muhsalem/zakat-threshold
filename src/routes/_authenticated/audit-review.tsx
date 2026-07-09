@@ -33,7 +33,8 @@ function AuditReviewPage() {
     queryFn: () => listFn(),
   });
   const mut = useMutation({
-    mutationFn: (v: { id: string; decision: "approved" | "rejected"; note?: string }) => decideFn({ data: v }),
+    mutationFn: (v: { id: string; decision: "approved" | "rejected"; note?: string }) =>
+      decideFn({ data: v }),
     onSuccess: (_d, v) => {
       toast.success(v.decision === "approved" ? "تم الاعتماد" : "تم الرفض");
       qc.invalidateQueries({ queryKey: ["approvals", "pending"] });
@@ -47,27 +48,44 @@ function AuditReviewPage() {
         <ClipboardCheck className="h-7 w-7 text-primary" />
         <div>
           <h1 className="text-2xl font-bold">مراجعة اعتماد الزكاة</h1>
-          <p className="text-sm text-muted-foreground">طلبات اعتماد تقارير الزكاة المعلّقة (مرحلة maker→checker وفق AAOIFI GS-1).</p>
+          <p className="text-sm text-muted-foreground">
+            طلبات اعتماد تقارير الزكاة المعلّقة (مرحلة maker→checker وفق AAOIFI GS-1).
+          </p>
         </div>
       </div>
 
-      {isLoading ? <p className="text-sm">جارٍ التحميل…</p> :
-        !data?.rows.length ? (
-          <Card><CardContent className="py-10 text-center text-muted-foreground">لا توجد طلبات معلّقة.</CardContent></Card>
-        ) : (
-          <div className="space-y-3">
-            {data.rows.map((r: any) => (
-              <ApprovalRow key={r.id} row={r} onDecide={(decision, note) => mut.mutate({ id: r.id, decision, note })} pending={mut.isPending} />
-            ))}
-          </div>
-        )
-      }
+      {isLoading ? (
+        <p className="text-sm">جارٍ التحميل…</p>
+      ) : !data?.rows.length ? (
+        <Card>
+          <CardContent className="py-10 text-center text-muted-foreground">
+            لا توجد طلبات معلّقة.
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-3">
+          {data.rows.map((r: any) => (
+            <ApprovalRow
+              key={r.id}
+              row={r}
+              onDecide={(decision, note) => mut.mutate({ id: r.id, decision, note })}
+              pending={mut.isPending}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
-function ApprovalRow({ row, onDecide, pending }: {
-  row: any; onDecide: (d: "approved" | "rejected", note: string) => void; pending: boolean;
+function ApprovalRow({
+  row,
+  onDecide,
+  pending,
+}: {
+  row: any;
+  onDecide: (d: "approved" | "rejected", note: string) => void;
+  pending: boolean;
 }) {
   const [note, setNote] = useState("");
   return (
@@ -76,7 +94,8 @@ function ApprovalRow({ row, onDecide, pending }: {
         <div>
           <CardTitle className="text-base">{row.title || "تقرير زكاة"}</CardTitle>
           <p className="text-xs text-muted-foreground mt-1">
-            تاريخ التقديم: {row.submitted_at ? new Date(row.submitted_at).toLocaleString("ar-EG") : "—"}
+            تاريخ التقديم:{" "}
+            {row.submitted_at ? new Date(row.submitted_at).toLocaleString("ar-EG") : "—"}
             {row.fingerprint ? ` · بصمة: ${String(row.fingerprint).slice(0, 16)}…` : ""}
           </p>
         </div>
@@ -90,10 +109,21 @@ function ApprovalRow({ row, onDecide, pending }: {
           rows={2}
         />
         <div className="flex gap-2 justify-end">
-          <Button variant="destructive" size="sm" disabled={pending} onClick={() => onDecide("rejected", note)} className="gap-1">
+          <Button
+            variant="destructive"
+            size="sm"
+            disabled={pending}
+            onClick={() => onDecide("rejected", note)}
+            className="gap-1"
+          >
             <XCircle className="h-4 w-4" /> رفض
           </Button>
-          <Button size="sm" disabled={pending} onClick={() => onDecide("approved", note)} className="gap-1">
+          <Button
+            size="sm"
+            disabled={pending}
+            onClick={() => onDecide("approved", note)}
+            className="gap-1"
+          >
             <CheckCircle2 className="h-4 w-4" /> اعتماد
           </Button>
         </div>

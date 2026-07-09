@@ -5,9 +5,16 @@ export const Route = createFileRoute("/crops")({
   head: () => ({
     meta: [
       { title: "حاسبة زكاة الزروع والثمار — النصاب والمعدّلات" },
-      { name: "description", content: "احسب زكاة المحاصيل الزراعية والثمار وفق نصاب الـ 5 أوسق ومعدّلات 10%/7.5%/5% حسب طبيعة الري." },
+      {
+        name: "description",
+        content:
+          "احسب زكاة المحاصيل الزراعية والثمار وفق نصاب الـ 5 أوسق ومعدّلات 10%/7.5%/5% حسب طبيعة الري.",
+      },
       { property: "og:title", content: "زكاة الزروع والثمار" },
-      { property: "og:description", content: "حاسبة شرعية لزكاة المحاصيل والبيوت المحمية وفق قول الجمهور." },
+      {
+        property: "og:description",
+        content: "حاسبة شرعية لزكاة المحاصيل والبيوت المحمية وفق قول الجمهور.",
+      },
     ],
   }),
   component: CropsPage,

@@ -11,14 +11,17 @@ export type PlanMeta = {
 };
 
 export const PLANS: PlanMeta[] = [
-  { id: "certified",  name: "معتمد",      priceUSD: 19,  period: "/ تقرير", audience: "individual" },
-  { id: "vip_annual", name: "سنوي VIP",   priceUSD: 79,  period: "/ سنة",   audience: "individual" },
-  { id: "startup",    name: "Startup",    priceUSD: 149, period: "/ شهر",   audience: "company"    },
-  { id: "business",   name: "Business",   priceUSD: 499, period: "/ شهر",   audience: "company"    },
+  { id: "certified", name: "معتمد", priceUSD: 19, period: "/ تقرير", audience: "individual" },
+  { id: "vip_annual", name: "سنوي VIP", priceUSD: 79, period: "/ سنة", audience: "individual" },
+  { id: "startup", name: "Startup", priceUSD: 149, period: "/ شهر", audience: "company" },
+  { id: "business", name: "Business", priceUSD: 499, period: "/ شهر", audience: "company" },
 ];
 
 /** يفتح جلسة Checkout في نفس النافذة. */
-export async function startCheckout(planId: PlanId, returnPath = "/checkout-result"): Promise<{ ok: boolean; error?: string }> {
+export async function startCheckout(
+  planId: PlanId,
+  returnPath = "/checkout-result",
+): Promise<{ ok: boolean; error?: string }> {
   const { data: authData } = await supabase.auth.getUser();
   const user = authData?.user;
   if (!user) return { ok: false, error: "يجب تسجيل الدخول أولاً" };
@@ -36,7 +39,9 @@ export async function startCheckout(planId: PlanId, returnPath = "/checkout-resu
 }
 
 /** تحقق من حالة الدفع بعد العودة (stub — لا يوجد جدول payments بعد) */
-export async function verifyCheckoutSession(_sessionId: string): Promise<"paid" | "pending" | "error"> {
+export async function verifyCheckoutSession(
+  _sessionId: string,
+): Promise<"paid" | "pending" | "error"> {
   return "pending";
 }
 

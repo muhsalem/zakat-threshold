@@ -2,10 +2,23 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Sparkles, HelpCircle } from "lucide-react";
 
@@ -27,14 +40,35 @@ function fmt(n: number, d = 2) {
 }
 
 const REL_META = {
-  direct: { label: "مباشر", icon: ShieldCheck, cls: "bg-emerald-500/15 text-emerald-700 border-emerald-500/40", dot: "bg-emerald-500" },
-  derived: { label: "مشتق", icon: Sparkles, cls: "bg-amber-500/15 text-amber-700 border-amber-500/40", dot: "bg-amber-500" },
-  estimated: { label: "تقديري", icon: HelpCircle, cls: "bg-rose-500/15 text-rose-700 border-rose-500/40", dot: "bg-rose-500" },
+  direct: {
+    label: "مباشر",
+    icon: ShieldCheck,
+    cls: "bg-emerald-500/15 text-emerald-700 border-emerald-500/40",
+    dot: "bg-emerald-500",
+  },
+  derived: {
+    label: "مشتق",
+    icon: Sparkles,
+    cls: "bg-amber-500/15 text-amber-700 border-amber-500/40",
+    dot: "bg-amber-500",
+  },
+  estimated: {
+    label: "تقديري",
+    icon: HelpCircle,
+    cls: "bg-rose-500/15 text-rose-700 border-rose-500/40",
+    dot: "bg-rose-500",
+  },
 } as const;
 
 function RelBadge({ r }: { r: Row["reliability"] }) {
-  const m = REL_META[r]; const Icon = m.icon;
-  return <Badge variant="outline" className={`gap-1 ${m.cls}`}><Icon className="h-3 w-3" />{m.label}</Badge>;
+  const m = REL_META[r];
+  const Icon = m.icon;
+  return (
+    <Badge variant="outline" className={`gap-1 ${m.cls}`}>
+      <Icon className="h-3 w-3" />
+      {m.label}
+    </Badge>
+  );
 }
 
 export function PricesHistoryPanel({ compact = false }: { compact?: boolean }) {
@@ -42,7 +76,9 @@ export function PricesHistoryPanel({ compact = false }: { compact?: boolean }) {
   const [err, setErr] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [pickedDate, setPickedDate] = useState<string>(new Date().toISOString().slice(0, 10));
-  const [relFilter, setRelFilter] = useState<"all" | "direct" | "secondary" | "derived" | "estimated">("all");
+  const [relFilter, setRelFilter] = useState<
+    "all" | "direct" | "secondary" | "derived" | "estimated"
+  >("all");
 
   useEffect(() => {
     (async () => {
@@ -51,14 +87,21 @@ export function PricesHistoryPanel({ compact = false }: { compact?: boolean }) {
         .select("price_date, metal, price_usd_per_gram, source, reliability")
         .order("price_date", { ascending: false })
         .limit(5000);
-      if (error) { setErr(error.message); return; }
+      if (error) {
+        setErr(error.message);
+        return;
+      }
       setRows((data ?? []) as Row[]);
     })();
   }, []);
 
   const byDate = useMemo(() => {
     const m = new Map<string, { gold?: Row; silver?: Row }>();
-    for (const r of rows ?? []) { const e = m.get(r.price_date) ?? {}; e[r.metal] = r; m.set(r.price_date, e); }
+    for (const r of rows ?? []) {
+      const e = m.get(r.price_date) ?? {};
+      e[r.metal] = r;
+      m.set(r.price_date, e);
+    }
     return m;
   }, [rows]);
 
@@ -81,33 +124,54 @@ export function PricesHistoryPanel({ compact = false }: { compact?: boolean }) {
     if (!rows || rows.length === 0) return null;
     const dates = Array.from(byDate.keys()).sort();
     let best = dates[0];
-    for (const d of dates) if (d <= pickedDate) best = d; else break;
+    for (const d of dates)
+      if (d <= pickedDate) best = d;
+      else break;
     const e = byDate.get(best);
     return { date: best, gold: e?.gold, silver: e?.silver };
   }, [byDate, pickedDate, rows]);
 
   if (err) return <div className="p-4 text-destructive text-sm">خطأ: {err}</div>;
-  if (!rows) return <div className="p-4 text-sm text-muted-foreground">جارٍ تحميل السجل التاريخي…</div>;
+  if (!rows)
+    return <div className="p-4 text-sm text-muted-foreground">جارٍ تحميل السجل التاريخي…</div>;
 
   return (
     <div className="space-y-4" dir="rtl">
       <Card>
-        <CardHeader className="pb-3"><CardTitle className="text-base">احسب النصاب لأي تاريخ سابق</CardTitle></CardHeader>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">احسب النصاب لأي تاريخ سابق</CardTitle>
+        </CardHeader>
         <CardContent className="space-y-3">
-          <Input type="date" value={pickedDate} min="1975-01-01"
-            onChange={(e) => setPickedDate(e.target.value)} className="max-w-xs" />
+          <Input
+            type="date"
+            value={pickedDate}
+            min="1975-01-01"
+            onChange={(e) => setPickedDate(e.target.value)}
+            className="max-w-xs"
+          />
           {pickedNearest && (
             <div className="grid sm:grid-cols-2 gap-3">
               <div className="rounded-md border p-3">
-                <div className="text-xs text-muted-foreground">أقرب تاريخ متاح: {pickedNearest.date}</div>
-                <div className="mt-1 font-semibold">ذهب: {fmt(pickedNearest.gold?.price_usd_per_gram ?? 0, 4)} USD/جم</div>
-                <div className="text-sm">نصاب الذهب: {fmt((pickedNearest.gold?.price_usd_per_gram ?? 0) * GOLD_NISAB)} USD</div>
+                <div className="text-xs text-muted-foreground">
+                  أقرب تاريخ متاح: {pickedNearest.date}
+                </div>
+                <div className="mt-1 font-semibold">
+                  ذهب: {fmt(pickedNearest.gold?.price_usd_per_gram ?? 0, 4)} USD/جم
+                </div>
+                <div className="text-sm">
+                  نصاب الذهب: {fmt((pickedNearest.gold?.price_usd_per_gram ?? 0) * GOLD_NISAB)} USD
+                </div>
                 {pickedNearest.gold && <RelBadge r={pickedNearest.gold.reliability} />}
               </div>
               <div className="rounded-md border p-3">
                 <div className="text-xs text-muted-foreground">المعدن الفضي</div>
-                <div className="mt-1 font-semibold">فضة: {fmt(pickedNearest.silver?.price_usd_per_gram ?? 0, 4)} USD/جم</div>
-                <div className="text-sm">نصاب الفضة: {fmt((pickedNearest.silver?.price_usd_per_gram ?? 0) * SILVER_NISAB)} USD</div>
+                <div className="mt-1 font-semibold">
+                  فضة: {fmt(pickedNearest.silver?.price_usd_per_gram ?? 0, 4)} USD/جم
+                </div>
+                <div className="text-sm">
+                  نصاب الفضة: {fmt((pickedNearest.silver?.price_usd_per_gram ?? 0) * SILVER_NISAB)}{" "}
+                  USD
+                </div>
                 {pickedNearest.silver && <RelBadge r={pickedNearest.silver.reliability} />}
               </div>
             </div>
@@ -123,11 +187,23 @@ export function PricesHistoryPanel({ compact = false }: { compact?: boolean }) {
         <TabsContent value="table">
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">كل التواريخ ({fmt(filteredDates.length, 0)})</CardTitle>
+              <CardTitle className="text-base">
+                كل التواريخ ({fmt(filteredDates.length, 0)})
+              </CardTitle>
               <div className="flex flex-wrap items-end gap-3 pt-2">
-                <Input placeholder="بحث بسنة/تاريخ" value={query} onChange={(e) => setQuery(e.target.value)} className="max-w-xs" />
-                <Select value={relFilter} onValueChange={(v) => setRelFilter(v as typeof relFilter)}>
-                  <SelectTrigger className="w-[200px]"><SelectValue /></SelectTrigger>
+                <Input
+                  placeholder="بحث بسنة/تاريخ"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  className="max-w-xs"
+                />
+                <Select
+                  value={relFilter}
+                  onValueChange={(v) => setRelFilter(v as typeof relFilter)}
+                >
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">كل المستويات</SelectItem>
                     <SelectItem value="direct">مباشر فقط</SelectItem>
@@ -137,11 +213,22 @@ export function PricesHistoryPanel({ compact = false }: { compact?: boolean }) {
                   </SelectContent>
                 </Select>
                 {(query || relFilter !== "all") && (
-                  <Button variant="ghost" size="sm" onClick={() => { setQuery(""); setRelFilter("all"); }}>مسح</Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setQuery("");
+                      setRelFilter("all");
+                    }}
+                  >
+                    مسح
+                  </Button>
                 )}
               </div>
             </CardHeader>
-            <CardContent className={compact ? "max-h-[400px] overflow-auto" : "max-h-[600px] overflow-auto"}>
+            <CardContent
+              className={compact ? "max-h-[400px] overflow-auto" : "max-h-[600px] overflow-auto"}
+            >
               <Table>
                 <TableHeader className="sticky top-0 bg-background">
                   <TableRow>
@@ -166,7 +253,9 @@ export function PricesHistoryPanel({ compact = false }: { compact?: boolean }) {
                         <TableCell>{fmt(g * GOLD_NISAB)}</TableCell>
                         <TableCell>{fmt(s, 4)}</TableCell>
                         <TableCell>{fmt(s * SILVER_NISAB)}</TableCell>
-                        <TableCell><RelBadge r={rel} /></TableCell>
+                        <TableCell>
+                          <RelBadge r={rel} />
+                        </TableCell>
                       </TableRow>
                     );
                   })}
@@ -178,9 +267,15 @@ export function PricesHistoryPanel({ compact = false }: { compact?: boolean }) {
         <TabsContent value="about">
           <Card>
             <CardContent className="prose dark:prose-invert max-w-none pt-6 text-sm">
-              <p><strong>مباشر:</strong> من gold-api / metalpriceapi يومياً. <strong>مشتق:</strong> محسوب من متوسط قريب. <strong>تقديري:</strong> متوسط سنوي تاريخي.</p>
+              <p>
+                <strong>مباشر:</strong> من gold-api / metalpriceapi يومياً. <strong>مشتق:</strong>{" "}
+                محسوب من متوسط قريب. <strong>تقديري:</strong> متوسط سنوي تاريخي.
+              </p>
               <p>1975→2025: متوسطات شهرية. 2026→اليوم: سجل يومي محدَّث.</p>
-              <p>نصاب الذهب 85 جم — نصاب الفضة 595 جم — نسبة الزكاة 2.5%. تُستخدم لاحتساب النصاب لأي تاريخ حول.</p>
+              <p>
+                نصاب الذهب 85 جم — نصاب الفضة 595 جم — نسبة الزكاة 2.5%. تُستخدم لاحتساب النصاب لأي
+                تاريخ حول.
+              </p>
             </CardContent>
           </Card>
         </TabsContent>

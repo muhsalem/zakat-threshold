@@ -61,13 +61,19 @@ export const Route = createFileRoute("/api/public/hooks/snapshot-prices")({
         }
 
         return new Response(
-          JSON.stringify({ ok: true, source: res.source, gold: row.gold_price, silver: row.silver_price }),
-          { headers: { "Content-Type": "application/json" } }
+          JSON.stringify({
+            ok: true,
+            source: res.source,
+            gold: row.gold_price,
+            silver: row.silver_price,
+          }),
+          { headers: { "Content-Type": "application/json" } },
         );
       },
-      GET: async () => new Response(JSON.stringify({ ok: true, hint: "POST to snapshot" }), {
-        headers: { "Content-Type": "application/json" },
-      }),
+      GET: async () =>
+        new Response(JSON.stringify({ ok: true, hint: "POST to snapshot" }), {
+          headers: { "Content-Type": "application/json" },
+        }),
     },
   },
 });

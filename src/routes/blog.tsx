@@ -8,7 +8,11 @@ export const Route = createFileRoute("/blog")({
   head: () => ({
     meta: [
       { title: "مدوّنة نِصاب — فقه الزكاة المعاصر" },
-      { name: "description", content: "مقالات متخصّصة في فقه الزكاة، معايير AAOIFI، زكاة الشركات، العملات الرقمية، ومصارف الزكاة الثمانية." },
+      {
+        name: "description",
+        content:
+          "مقالات متخصّصة في فقه الزكاة، معايير AAOIFI، زكاة الشركات، العملات الرقمية، ومصارف الزكاة الثمانية.",
+      },
       { property: "og:title", content: "مدوّنة نِصاب — فقه الزكاة المعاصر" },
       { property: "og:description", content: "مقالات فقهية ومحاسبية متخصّصة في الزكاة" },
       { property: "og:type", content: "website" },
@@ -46,15 +50,21 @@ function BlogIndex() {
                 <CardTitle className="text-lg leading-snug">{p.title}</CardTitle>
                 <div className="flex flex-wrap gap-1.5 pt-1">
                   {p.tags.slice(0, 3).map((t) => (
-                    <Badge key={t} variant="secondary" className="text-xs">{t}</Badge>
+                    <Badge key={t} variant="secondary" className="text-xs">
+                      {t}
+                    </Badge>
                   ))}
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">
                 <p className="text-sm text-muted-foreground line-clamp-3">{p.description}</p>
                 <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1"><Calendar className="h-3 w-3" /> {p.date}</span>
-                  <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {p.readMinutes} د</span>
+                  <span className="flex items-center gap-1">
+                    <Calendar className="h-3 w-3" /> {p.date}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Clock className="h-3 w-3" /> {p.readMinutes} د
+                  </span>
                 </div>
               </CardContent>
             </Card>

@@ -45,17 +45,20 @@ Deno.serve(async (req) => {
     amountPaid?: number;
     currency?: string;
   }) {
-    const { error } = await supabase.from("payments").upsert({
-      stripe_session_id:      opts.stripeSessionId,
-      stripe_customer_id:     opts.stripeCustomerId,
-      stripe_subscription_id: opts.stripeSubscriptionId,
-      user_id:    opts.userId,
-      plan_id:    opts.planId,
-      status:     opts.status,
-      amount_paid: opts.amountPaid,
-      currency:   opts.currency,
-      updated_at: new Date().toISOString(),
-    }, { onConflict: "stripe_session_id" });
+    const { error } = await supabase.from("payments").upsert(
+      {
+        stripe_session_id: opts.stripeSessionId,
+        stripe_customer_id: opts.stripeCustomerId,
+        stripe_subscription_id: opts.stripeSubscriptionId,
+        user_id: opts.userId,
+        plan_id: opts.planId,
+        status: opts.status,
+        amount_paid: opts.amountPaid,
+        currency: opts.currency,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "stripe_session_id" },
+    );
     if (error) console.error("upsertPayment error:", error);
   }
 
@@ -75,12 +78,14 @@ Deno.serve(async (req) => {
       });
       // ترقية الخطة في ملف المستخدم
       if (userId && planId) {
-        await supabase.from("profiles").update({
-          plan: planId,
-          plan_expires_at: planId === "vip_annual"
-            ? new Date(Date.now() + 365 * 864e5).toISOString()
-            : null,
-        }).eq("id", userId);
+        await supabase
+          .from("profiles")
+          .update({
+            plan: planId,
+            plan_expires_at:
+              planId === "vip_annual" ? new Date(Date.now() + 365 * 864e5).toISOString() : null,
+          })
+          .eq("id", userId);
       }
       break;
     }
@@ -106,7 +111,10 @@ Deno.serve(async (req) => {
       const subscription = event.data.object as Stripe.Subscription;
       const userId = subscription.metadata?.userId;
       if (userId) {
-        await supabase.from("profiles").update({ plan: "free", plan_expires_at: null }).eq("id", userId);
+        await supabase
+          .from("profiles")
+          .update({ plan: "free", plan_expires_at: null })
+          .eq("id", userId);
       }
       break;
     }

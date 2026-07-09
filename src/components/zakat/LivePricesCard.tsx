@@ -14,10 +14,32 @@ import { getLiveMetalPrices } from "@/lib/metalPrices.functions";
  * users can override the rate. These defaults are reasonable mid-2025 averages.
  */
 const DEFAULT_USD_RATES: Record<string, number> = {
-  USD: 1, SAR: 3.75, AED: 3.67, KWD: 0.31, QAR: 3.64, BHD: 0.376, OMR: 0.385,
-  EGP: 48, JOD: 0.71, IQD: 1310, LBP: 89500, SYP: 13000, YER: 530, MAD: 9.9,
-  DZD: 134, TND: 3.1, LYD: 4.85, SDG: 600, EUR: 0.92, GBP: 0.78, TRY: 34,
-  MYR: 4.5, IDR: 16000, PKR: 280, BDT: 120, INR: 84,
+  USD: 1,
+  SAR: 3.75,
+  AED: 3.67,
+  KWD: 0.31,
+  QAR: 3.64,
+  BHD: 0.376,
+  OMR: 0.385,
+  EGP: 48,
+  JOD: 0.71,
+  IQD: 1310,
+  LBP: 89500,
+  SYP: 13000,
+  YER: 530,
+  MAD: 9.9,
+  DZD: 134,
+  TND: 3.1,
+  LYD: 4.85,
+  SDG: 600,
+  EUR: 0.92,
+  GBP: 0.78,
+  TRY: 34,
+  MYR: 4.5,
+  IDR: 16000,
+  PKR: 280,
+  BDT: 120,
+  INR: 84,
 };
 
 interface Props {
@@ -29,13 +51,18 @@ export function LivePricesCard({ currency, onApply }: Props) {
   const fetchPrices = useServerFn(getLiveMetalPrices);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [data, setData] = useState<{ goldUsd: number; silverUsd: number; updatedAt: string } | null>(null);
+  const [data, setData] = useState<{
+    goldUsd: number;
+    silverUsd: number;
+    updatedAt: string;
+  } | null>(null);
   const [usdRate, setUsdRate] = useState(String(DEFAULT_USD_RATES[currency] ?? 1));
   const [localGold, setLocalGold] = useState("");
   const [localSilver, setLocalSilver] = useState("");
 
   async function refresh() {
-    setBusy(true); setError(null);
+    setBusy(true);
+    setError(null);
     try {
       const r = await fetchPrices();
       if (!r.ok) throw new Error(r.error);
@@ -65,10 +92,14 @@ export function LivePricesCard({ currency, onApply }: Props) {
 
   const globalGoldLocal = data ? data.goldUsd * (Number(usdRate) || 1) : 0;
   const globalSilverLocal = data ? data.silverUsd * (Number(usdRate) || 1) : 0;
-  const goldDeviation = globalGoldLocal > 0 && Number(localGold) > 0
-    ? ((Number(localGold) - globalGoldLocal) / globalGoldLocal) * 100 : 0;
-  const silverDeviation = globalSilverLocal > 0 && Number(localSilver) > 0
-    ? ((Number(localSilver) - globalSilverLocal) / globalSilverLocal) * 100 : 0;
+  const goldDeviation =
+    globalGoldLocal > 0 && Number(localGold) > 0
+      ? ((Number(localGold) - globalGoldLocal) / globalGoldLocal) * 100
+      : 0;
+  const silverDeviation =
+    globalSilverLocal > 0 && Number(localSilver) > 0
+      ? ((Number(localSilver) - globalSilverLocal) / globalSilverLocal) * 100
+      : 0;
   const highDeviation = Math.abs(goldDeviation) > 3 || Math.abs(silverDeviation) > 3;
 
   return (
@@ -92,7 +123,11 @@ export function LivePricesCard({ currency, onApply }: Props) {
           {busy ? "جاري الجلب..." : data ? "تحديث الأسعار" : "جلب الأسعار اللحظية"}
         </Button>
 
-        {error && <Alert variant="destructive"><AlertDescription className="text-xs">{error}</AlertDescription></Alert>}
+        {error && (
+          <Alert variant="destructive">
+            <AlertDescription className="text-xs">{error}</AlertDescription>
+          </Alert>
+        )}
 
         {data && (
           <>
@@ -107,49 +142,137 @@ export function LivePricesCard({ currency, onApply }: Props) {
               </div>
             </div>
             <div className="space-y-1">
-              <Label className="text-xs flex items-center gap-1"><Globe2 className="h-3 w-3" /> سعر صرف 1 USD = ؟ {currency}</Label>
-              <Input type="number" step="0.0001" value={usdRate} onChange={(e) => setUsdRate(e.target.value)} dir="ltr" style={{ textAlign: "right" }} />
+              <Label className="text-xs flex items-center gap-1">
+                <Globe2 className="h-3 w-3" /> سعر صرف 1 USD = ؟ {currency}
+              </Label>
+              <Input
+                type="number"
+                step="0.0001"
+                value={usdRate}
+                onChange={(e) => setUsdRate(e.target.value)}
+                dir="ltr"
+                style={{ textAlign: "right" }}
+              />
             </div>
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div className="rounded-md bg-primary/5 border border-primary/20 p-2 space-y-1">
-                <div className="font-semibold text-primary flex items-center gap-1"><Globe2 className="h-3 w-3" /> السعر العالمي (سبوت)</div>
-                <div>الذهب/غ: <b>{globalGoldLocal.toFixed(2)} {currency}</b></div>
-                <div>الفضة/غ: <b>{globalSilverLocal.toFixed(3)} {currency}</b></div>
-                <div className="border-t border-primary/20 pt-1 mt-1 space-y-0.5">
-                  <div>نصاب الذهب (85غ): <b>{(globalGoldLocal * 85).toFixed(0)}</b></div>
-                  <div>نصاب الفضة (595غ): <b>{(globalSilverLocal * 595).toFixed(0)}</b></div>
+                <div className="font-semibold text-primary flex items-center gap-1">
+                  <Globe2 className="h-3 w-3" /> السعر العالمي (سبوت)
                 </div>
-                <Button onClick={applyGlobal} size="sm" className="w-full mt-1 h-7 text-[11px]">اعتماد العالمي</Button>
+                <div>
+                  الذهب/غ:{" "}
+                  <b>
+                    {globalGoldLocal.toFixed(2)} {currency}
+                  </b>
+                </div>
+                <div>
+                  الفضة/غ:{" "}
+                  <b>
+                    {globalSilverLocal.toFixed(3)} {currency}
+                  </b>
+                </div>
+                <div className="border-t border-primary/20 pt-1 mt-1 space-y-0.5">
+                  <div>
+                    نصاب الذهب (85غ): <b>{(globalGoldLocal * 85).toFixed(0)}</b>
+                  </div>
+                  <div>
+                    نصاب الفضة (595غ): <b>{(globalSilverLocal * 595).toFixed(0)}</b>
+                  </div>
+                </div>
+                <Button onClick={applyGlobal} size="sm" className="w-full mt-1 h-7 text-[11px]">
+                  اعتماد العالمي
+                </Button>
               </div>
               <div className="rounded-md bg-muted/40 border border-dashed border-primary/30 p-2 space-y-1">
-                <div className="font-semibold flex items-center gap-1"><TrendingUp className="h-3 w-3" /> سعر البيع المحلي</div>
+                <div className="font-semibold flex items-center gap-1">
+                  <TrendingUp className="h-3 w-3" /> سعر البيع المحلي
+                </div>
                 <div>
                   <Label className="text-[10px]">الذهب/غ</Label>
-                  <Input type="number" step="0.01" value={localGold} onChange={(e) => setLocalGold(e.target.value)} dir="ltr" style={{ textAlign: "right" }} placeholder="0" className="h-7 text-xs" />
+                  <Input
+                    type="number"
+                    step="0.01"
+                    value={localGold}
+                    onChange={(e) => setLocalGold(e.target.value)}
+                    dir="ltr"
+                    style={{ textAlign: "right" }}
+                    placeholder="0"
+                    className="h-7 text-xs"
+                  />
                 </div>
                 <div>
                   <Label className="text-[10px]">الفضة/غ</Label>
-                  <Input type="number" step="0.001" value={localSilver} onChange={(e) => setLocalSilver(e.target.value)} dir="ltr" style={{ textAlign: "right" }} placeholder="0" className="h-7 text-xs" />
+                  <Input
+                    type="number"
+                    step="0.001"
+                    value={localSilver}
+                    onChange={(e) => setLocalSilver(e.target.value)}
+                    dir="ltr"
+                    style={{ textAlign: "right" }}
+                    placeholder="0"
+                    className="h-7 text-xs"
+                  />
                 </div>
                 {(Number(localGold) > 0 || Number(localSilver) > 0) && (
                   <div className="border-t border-primary/20 pt-1 mt-1 space-y-0.5">
-                    {Number(localGold) > 0 && <div>نصاب الذهب: <b>{(Number(localGold) * 85).toFixed(0)}</b></div>}
-                    {Number(localSilver) > 0 && <div>نصاب الفضة: <b>{(Number(localSilver) * 595).toFixed(0)}</b></div>}
-                    {Number(localGold) > 0 && <div>فرق الذهب: <b className={Math.abs(goldDeviation) > 3 ? "text-destructive" : "text-primary"}>{goldDeviation.toFixed(2)}%</b></div>}
-                    {Number(localSilver) > 0 && <div>فرق الفضة: <b className={Math.abs(silverDeviation) > 3 ? "text-destructive" : "text-primary"}>{silverDeviation.toFixed(2)}%</b></div>}
+                    {Number(localGold) > 0 && (
+                      <div>
+                        نصاب الذهب: <b>{(Number(localGold) * 85).toFixed(0)}</b>
+                      </div>
+                    )}
+                    {Number(localSilver) > 0 && (
+                      <div>
+                        نصاب الفضة: <b>{(Number(localSilver) * 595).toFixed(0)}</b>
+                      </div>
+                    )}
+                    {Number(localGold) > 0 && (
+                      <div>
+                        فرق الذهب:{" "}
+                        <b
+                          className={
+                            Math.abs(goldDeviation) > 3 ? "text-destructive" : "text-primary"
+                          }
+                        >
+                          {goldDeviation.toFixed(2)}%
+                        </b>
+                      </div>
+                    )}
+                    {Number(localSilver) > 0 && (
+                      <div>
+                        فرق الفضة:{" "}
+                        <b
+                          className={
+                            Math.abs(silverDeviation) > 3 ? "text-destructive" : "text-primary"
+                          }
+                        >
+                          {silverDeviation.toFixed(2)}%
+                        </b>
+                      </div>
+                    )}
                   </div>
                 )}
-                <Button onClick={applyLocal} size="sm" variant="secondary" className="w-full mt-1 h-7 text-[11px]" disabled={!(Number(localGold) > 0 || Number(localSilver) > 0)}>اعتماد المحلي</Button>
+                <Button
+                  onClick={applyLocal}
+                  size="sm"
+                  variant="secondary"
+                  className="w-full mt-1 h-7 text-[11px]"
+                  disabled={!(Number(localGold) > 0 || Number(localSilver) > 0)}
+                >
+                  اعتماد المحلي
+                </Button>
               </div>
             </div>
             {highDeviation && (
               <Alert variant="destructive" className="py-2">
                 <AlertDescription className="text-[11px]">
-                  تنبيه: فرق السعر المحلي مقابل العالمي يتجاوز 3% — الأفضل شرعاً اعتماد سعر البيع المحلي يوم وجوب الزكاة (الأنفع للفقراء).
+                  تنبيه: فرق السعر المحلي مقابل العالمي يتجاوز 3% — الأفضل شرعاً اعتماد سعر البيع
+                  المحلي يوم وجوب الزكاة (الأنفع للفقراء).
                 </AlertDescription>
               </Alert>
             )}
-            <div className="text-[10px] text-muted-foreground text-center">آخر تحديث: {new Date(data.updatedAt).toLocaleString("ar")}</div>
+            <div className="text-[10px] text-muted-foreground text-center">
+              آخر تحديث: {new Date(data.updatedAt).toLocaleString("ar")}
+            </div>
           </>
         )}
       </CardContent>

@@ -27,7 +27,9 @@ export function MobileBottomNav() {
                 aria-label={it.label}
                 aria-current={active ? "page" : undefined}
                 className={`flex min-h-11 flex-col items-center justify-center gap-0.5 py-2 text-[10px] transition-colors ${
-                  active ? "text-primary font-semibold" : "text-muted-foreground hover:text-foreground"
+                  active
+                    ? "text-primary font-semibold"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 <Icon className="h-5 w-5" aria-hidden="true" />

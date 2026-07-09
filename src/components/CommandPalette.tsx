@@ -11,20 +11,70 @@ import {
   CommandShortcut,
 } from "@/components/ui/command";
 import {
-  Calculator, Building2, Wheat, Landmark, History, LineChart, ShieldCheck,
-  Bot, HelpCircle, FileCheck, Boxes, ScrollText, Sparkles, Coins, Home,
-  Trophy, Users, Server, Activity, Globe, Scale, Lock, BookOpen,
+  Calculator,
+  Building2,
+  Wheat,
+  Landmark,
+  History,
+  LineChart,
+  ShieldCheck,
+  Bot,
+  HelpCircle,
+  FileCheck,
+  Boxes,
+  ScrollText,
+  Sparkles,
+  Coins,
+  Home,
+  Trophy,
+  Users,
+  Server,
+  Activity,
+  Globe,
+  Scale,
+  Lock,
+  BookOpen,
 } from "lucide-react";
 
-type Cmd = { label: string; to: string; icon: React.ComponentType<{ className?: string }>; group: string; keywords?: string };
+type Cmd = {
+  label: string;
+  to: string;
+  icon: React.ComponentType<{ className?: string }>;
+  group: string;
+  keywords?: string;
+};
 
 const COMMANDS: Cmd[] = [
-  { label: "الرئيسية / حاسبة الأفراد", to: "/", icon: Home, group: "الحاسبات", keywords: "home individual افراد" },
-  { label: "زكاة الشركات والمؤسسات", to: "/organizations", icon: Building2, group: "الحاسبات", keywords: "companies orgs شركات" },
+  {
+    label: "الرئيسية / حاسبة الأفراد",
+    to: "/",
+    icon: Home,
+    group: "الحاسبات",
+    keywords: "home individual افراد",
+  },
+  {
+    label: "زكاة الشركات والمؤسسات",
+    to: "/organizations",
+    icon: Building2,
+    group: "الحاسبات",
+    keywords: "companies orgs شركات",
+  },
   { label: "زكاة الزروع والثمار", to: "/crops", icon: Wheat, group: "الحاسبات" },
   { label: "زكاة المجموعات / الشراكات", to: "/group-zakat", icon: Users, group: "الحاسبات" },
-  { label: "حاسبة الحول متعدد السنوات", to: "/demo", icon: Calculator, group: "الحاسبات", keywords: "hawl demo" },
-  { label: "المستشار الشرعي الذكي", to: "/advisor", icon: Bot, group: "أدوات", keywords: "ai advisor" },
+  {
+    label: "حاسبة الحول متعدد السنوات",
+    to: "/demo",
+    icon: Calculator,
+    group: "الحاسبات",
+    keywords: "hawl demo",
+  },
+  {
+    label: "المستشار الشرعي الذكي",
+    to: "/advisor",
+    icon: Bot,
+    group: "أدوات",
+    keywords: "ai advisor",
+  },
   { label: "سجل الأسعار التاريخي", to: "/prices-history", icon: History, group: "أدوات" },
   { label: "تدقيق النصاب", to: "/nisab-audit", icon: ScrollText, group: "أدوات" },
   { label: "لوحة التحليلات", to: "/analytics", icon: LineChart, group: "أدوات" },
@@ -107,11 +157,21 @@ export function CommandPalette() {
           ))}
           <CommandSeparator />
           <CommandGroup heading="اختصارات">
-            <CommandItem onSelect={() => { setOpen(false); navigate({ to: "/" }); }}>
+            <CommandItem
+              onSelect={() => {
+                setOpen(false);
+                navigate({ to: "/" });
+              }}
+            >
               <Home className="mr-2 h-4 w-4" /> ابدأ حساب زكاة جديدة
               <CommandShortcut>G H</CommandShortcut>
             </CommandItem>
-            <CommandItem onSelect={() => { setOpen(false); navigate({ to: "/advisor" }); }}>
+            <CommandItem
+              onSelect={() => {
+                setOpen(false);
+                navigate({ to: "/advisor" });
+              }}
+            >
               <Bot className="mr-2 h-4 w-4" /> اسأل المستشار الشرعي
               <CommandShortcut>G A</CommandShortcut>
             </CommandItem>

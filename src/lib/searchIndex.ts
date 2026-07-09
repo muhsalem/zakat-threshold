@@ -31,10 +31,9 @@ export const searchIndex: SearchEntry[] = [
 export function searchEntries(q: string): SearchEntry[] {
   const s = q.trim().toLowerCase();
   if (!s) return [];
-  return searchIndex.filter((e) =>
-    [e.title, e.description ?? "", e.keywords ?? "", e.to]
-      .join(" ")
-      .toLowerCase()
-      .includes(s)
-  ).slice(0, 12);
+  return searchIndex
+    .filter((e) =>
+      [e.title, e.description ?? "", e.keywords ?? "", e.to].join(" ").toLowerCase().includes(s),
+    )
+    .slice(0, 12);
 }

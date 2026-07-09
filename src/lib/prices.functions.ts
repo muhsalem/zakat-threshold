@@ -26,7 +26,9 @@ async function fetchGoldApi(): Promise<{ gold: number; silver: number } | null> 
     const gj = (await g.json()) as { price: number };
     const sj = (await s.json()) as { price: number };
     return { gold: Number(gj.price), silver: Number(sj.price) };
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 // Fallback: coingecko — PAXG = 1 oz gold (لا يتطلب مفتاحاً)
@@ -34,23 +36,27 @@ async function fetchMetalsLive(): Promise<{ gold: number; silver: number } | nul
   try {
     const r = await fetch(
       "https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd",
-      { headers: { accept: "application/json" } }
+      { headers: { accept: "application/json" } },
     );
     if (!r.ok) return null;
     const j = (await r.json()) as { "pax-gold"?: { usd?: number } };
     const goldOz = j["pax-gold"]?.usd;
     if (!goldOz) return null;
     return { gold: goldOz, silver: goldOz / 80 }; // نسبة فضة/ذهب تقريبية ~1:80
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 // أخير: قيمة محفوظة في قاعدة البيانات (آخر nisab_prices)
-async function fetchDbFallback(currency: string): Promise<{ goldPerGram: number; silverPerGram: number } | null> {
+async function fetchDbFallback(
+  currency: string,
+): Promise<{ goldPerGram: number; silverPerGram: number } | null> {
   try {
     const sb = createClient<Database>(
       process.env.SUPABASE_URL!,
       process.env.SUPABASE_PUBLISHABLE_KEY!,
-      { auth: { storage: undefined, persistSession: false, autoRefreshToken: false } }
+      { auth: { storage: undefined, persistSession: false, autoRefreshToken: false } },
     );
     const { data } = await sb
       .from("nisab_prices")
@@ -63,7 +69,9 @@ async function fetchDbFallback(currency: string): Promise<{ goldPerGram: number;
       goldPerGram: Number(data.gold_price),
       silverPerGram: Number(data.silver_price),
     };
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 export const getLivePrices = createServerFn({ method: "GET" })
@@ -76,7 +84,10 @@ export const getLivePrices = createServerFn({ method: "GET" })
     // 1) محاولة المزود الأساسي ثم البديل
     let metals = await fetchGoldApi();
     let source = "gold-api.com";
-    if (!metals) { metals = await fetchMetalsLive(); source = "metalpriceapi.com"; }
+    if (!metals) {
+      metals = await fetchMetalsLive();
+      source = "metalpriceapi.com";
+    }
 
     // 2) تحويل العملة عبر frankfurter.app (مجاني، بدون مفتاح، موثوق)
     let fxRate = 1;
@@ -87,9 +98,14 @@ export const getLivePrices = createServerFn({ method: "GET" })
         if (fxRes.ok) {
           const fxJson = (await fxRes.json()) as { rates?: Record<string, number> };
           const r = fxJson.rates?.[currency];
-          if (r && r > 0) { fxRate = r; fxSource = "frankfurter.app"; }
+          if (r && r > 0) {
+            fxRate = r;
+            fxSource = "frankfurter.app";
+          }
         }
-      } catch { /* keep fxRate=1 */ }
+      } catch {
+        /* keep fxRate=1 */
+      }
     }
 
     if (metals) {

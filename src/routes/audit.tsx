@@ -26,30 +26,43 @@ function AuditPage() {
   const [busy, setBusy] = useState(true);
 
   useEffect(() => {
-    if (!user) { setBusy(false); return; }
-    supabase.from("sharia_audit_log")
+    if (!user) {
+      setBusy(false);
+      return;
+    }
+    supabase
+      .from("sharia_audit_log")
       .select("id,action,fingerprint,sharia_refs,created_at,zakat_record_id")
       .order("created_at", { ascending: false })
       .limit(100)
-      .then(({ data }) => { setRows((data as AuditRow[]) ?? []); setBusy(false); });
+      .then(({ data }) => {
+        setRows((data as AuditRow[]) ?? []);
+        setBusy(false);
+      });
   }, [user]);
 
   if (loading) return null;
 
   const downloadPdf = async () => {
     const el = document.getElementById("audit-report");
-    if (!el) { window.print(); return; }
+    if (!el) {
+      window.print();
+      return;
+    }
     try {
       const mod = await import("html2pdf.js");
       const html2pdf = (mod as any).default ?? mod;
-      await html2pdf().from(el).set({
-        margin: [10, 8, 12, 8],
-        filename: `sharia-audit-${new Date().toISOString().slice(0,10)}.pdf`,
-        image: { type: "jpeg", quality: 0.96 },
-        html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        pagebreak: { mode: ["css", "legacy"] },
-      }).save();
+      await html2pdf()
+        .from(el)
+        .set({
+          margin: [10, 8, 12, 8],
+          filename: `sharia-audit-${new Date().toISOString().slice(0, 10)}.pdf`,
+          image: { type: "jpeg", quality: 0.96 },
+          html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+          pagebreak: { mode: ["css", "legacy"] },
+        })
+        .save();
     } catch {
       window.print();
     }
@@ -74,14 +87,19 @@ function AuditPage() {
         )}
       </div>
       <p className="text-sm text-muted-foreground">
-        كل عملية حساب وحفظ زكاة تُسجَّل هنا ببصمة فريدة والمراجع الشرعية المستخدمة، لضمان الشفافية وإمكانية المراجعة.
+        كل عملية حساب وحفظ زكاة تُسجَّل هنا ببصمة فريدة والمراجع الشرعية المستخدمة، لضمان الشفافية
+        وإمكانية المراجعة.
       </p>
 
       {!user ? (
         <Card>
           <CardContent className="py-8 text-center space-y-3">
             <p className="text-sm">سجّل دخولك لعرض سجل التدقيق الخاص بك.</p>
-            <Link to="/auth"><Button className="gap-1.5"><LogIn className="h-4 w-4" /> دخول</Button></Link>
+            <Link to="/auth">
+              <Button className="gap-1.5">
+                <LogIn className="h-4 w-4" /> دخول
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       ) : busy ? (
@@ -109,12 +127,20 @@ function AuditPage() {
               </CardHeader>
               <CardContent className="text-xs space-y-1.5">
                 {r.fingerprint && (
-                  <div><span className="text-muted-foreground">البصمة:</span> <code className="font-mono">{r.fingerprint}</code></div>
+                  <div>
+                    <span className="text-muted-foreground">البصمة:</span>{" "}
+                    <code className="font-mono">{r.fingerprint}</code>
+                  </div>
                 )}
                 {r.sharia_refs && r.sharia_refs.length > 0 && (
                   <div className="flex flex-wrap gap-1.5">
                     {r.sharia_refs.map((ref) => (
-                      <span key={ref} className="px-2 py-0.5 rounded-md bg-primary/10 text-primary text-[10px] font-bold">{ref}</span>
+                      <span
+                        key={ref}
+                        className="px-2 py-0.5 rounded-md bg-primary/10 text-primary text-[10px] font-bold"
+                      >
+                        {ref}
+                      </span>
                     ))}
                   </div>
                 )}

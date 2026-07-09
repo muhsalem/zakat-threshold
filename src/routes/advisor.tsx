@@ -12,7 +12,11 @@ export const Route = createFileRoute("/advisor")({
   head: () => ({
     meta: [
       { title: "مستشار نِصاب الذكي — استشارات زكاة فورية" },
-      { name: "description", content: "اسأل مستشار الزكاة الذكي عن أحكام وطرق حساب زكاة المال، الذهب، الأسهم، التجارة، الرواتب وأنواع الزكاة المعاصرة وفق المعايير الشرعية المعتمدة." },
+      {
+        name: "description",
+        content:
+          "اسأل مستشار الزكاة الذكي عن أحكام وطرق حساب زكاة المال، الذهب، الأسهم، التجارة، الرواتب وأنواع الزكاة المعاصرة وفق المعايير الشرعية المعتمدة.",
+      },
     ],
   }),
 });
@@ -53,11 +57,16 @@ function AdvisorPage() {
           <Sparkles className="h-6 w-6 text-primary" />
           <h1 className="text-2xl font-bold">مستشار نِصاب الذكي</h1>
         </div>
-        <Link to="/"><Button variant="ghost" size="sm" className="gap-1"><ArrowRight className="h-4 w-4" /> العودة</Button></Link>
+        <Link to="/">
+          <Button variant="ghost" size="sm" className="gap-1">
+            <ArrowRight className="h-4 w-4" /> العودة
+          </Button>
+        </Link>
       </div>
 
       <p className="text-sm text-muted-foreground">
-        مساعد ذكي متخصص في فقه ومحاسبة الزكاة وفق معايير AAOIFI الشرعية. الإجابات استرشادية ولا تُغني عن مفتٍ معتمد.
+        مساعد ذكي متخصص في فقه ومحاسبة الزكاة وفق معايير AAOIFI الشرعية. الإجابات استرشادية ولا
+        تُغني عن مفتٍ معتمد.
       </p>
 
       <Card className="border-primary/30">
@@ -70,7 +79,9 @@ function AdvisorPage() {
           <div className="h-[55vh] overflow-y-auto space-y-3 rounded-md bg-muted/30 p-3">
             {messages.length === 0 && (
               <div className="space-y-3">
-                <p className="text-sm text-muted-foreground text-center">ابدأ بسؤال أو اختر اقتراحًا:</p>
+                <p className="text-sm text-muted-foreground text-center">
+                  ابدأ بسؤال أو اختر اقتراحًا:
+                </p>
                 <div className="flex flex-wrap gap-2">
                   {SUGGESTIONS.map((s) => (
                     <button
@@ -91,10 +102,18 @@ function AdvisorPage() {
               const isUser = m.role === "user";
               return (
                 <div key={m.id} className={`flex gap-2 ${isUser ? "flex-row-reverse" : ""}`}>
-                  <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${isUser ? "bg-primary text-primary-foreground" : "bg-card border"}`}>
-                    {isUser ? <User className="h-3.5 w-3.5" /> : <Bot className="h-3.5 w-3.5 text-primary" />}
+                  <div
+                    className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${isUser ? "bg-primary text-primary-foreground" : "bg-card border"}`}
+                  >
+                    {isUser ? (
+                      <User className="h-3.5 w-3.5" />
+                    ) : (
+                      <Bot className="h-3.5 w-3.5 text-primary" />
+                    )}
                   </div>
-                  <div className={`rounded-lg px-3 py-2 text-sm leading-relaxed max-w-[85%] whitespace-pre-wrap ${isUser ? "bg-primary text-primary-foreground" : "bg-card border"}`}>
+                  <div
+                    className={`rounded-lg px-3 py-2 text-sm leading-relaxed max-w-[85%] whitespace-pre-wrap ${isUser ? "bg-primary text-primary-foreground" : "bg-card border"}`}
+                  >
                     {text || (busy ? "…" : "")}
                   </div>
                 </div>
@@ -110,7 +129,10 @@ function AdvisorPage() {
           </div>
 
           <form
-            onSubmit={(e) => { e.preventDefault(); submit(input); }}
+            onSubmit={(e) => {
+              e.preventDefault();
+              submit(input);
+            }}
             className="flex gap-2"
           >
             <Input

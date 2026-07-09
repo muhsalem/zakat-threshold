@@ -5,7 +5,8 @@ const KEY = "zk-pro-mode";
 // (لا يوضع السر داخل المستودع — للنشر يُحقن من Settings → Environment).
 const FALLBACK_PASSCODE = "1430";
 const ENV_PASSCODE = (import.meta.env.VITE_PRO_PASSCODE as string | undefined)?.trim();
-export const PRO_PASSCODE = ENV_PASSCODE && ENV_PASSCODE.length >= 4 ? ENV_PASSCODE : FALLBACK_PASSCODE;
+export const PRO_PASSCODE =
+  ENV_PASSCODE && ENV_PASSCODE.length >= 4 ? ENV_PASSCODE : FALLBACK_PASSCODE;
 
 export function useProMode() {
   const [pro, setPro] = useState<boolean>(false);
@@ -20,7 +21,9 @@ export function useProMode() {
 
   const unlock = (code: string) => {
     if (code.trim() === PRO_PASSCODE) {
-      try { localStorage.setItem(KEY, "1"); } catch {}
+      try {
+        localStorage.setItem(KEY, "1");
+      } catch {}
       setPro(true);
       return true;
     }
@@ -28,7 +31,9 @@ export function useProMode() {
   };
 
   const lock = () => {
-    try { localStorage.removeItem(KEY); } catch {}
+    try {
+      localStorage.removeItem(KEY);
+    } catch {}
     setPro(false);
   };
 

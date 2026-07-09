@@ -12,7 +12,11 @@ export const Route = createFileRoute("/enterprise")({
   head: () => ({
     meta: [
       { title: "التكامل المؤسسي — حاسبة الزكاة" },
-      { name: "description", content: "موصّلات ERP وواجهات API للبنوك الإسلامية والشركات — SAP, Oracle, QuickBooks, Xero." },
+      {
+        name: "description",
+        content:
+          "موصّلات ERP وواجهات API للبنوك الإسلامية والشركات — SAP, Oracle, QuickBooks, Xero.",
+      },
       { property: "og:title", content: "التكامل المؤسسي — حاسبة الزكاة" },
       { property: "og:description", content: "ERP + Islamic Banking connectors" },
       { property: "og:type", content: "website" },
@@ -70,21 +74,22 @@ function EnterprisePage() {
                   >
                     {c.status === "available" ? "متاح" : "قيد التطوير"}
                   </Badge>
-                  <Badge variant="secondary" className="text-[10px]">{c.tier}</Badge>
+                  <Badge variant="secondary" className="text-[10px]">
+                    {c.tier}
+                  </Badge>
                   <span className="text-xs text-muted-foreground mr-auto">{c.eta}</span>
                 </div>
               </div>
             ))}
           </div>
           <p className="text-xs text-muted-foreground mt-4 border-t pt-3">
-            التكامل المتاح اليوم يعتمد على REST API عبر iPaaS. للتكامل الأصلي (Native ERP)
-            تواصل معنا لبدء برنامج Early Access.
+            التكامل المتاح اليوم يعتمد على REST API عبر iPaaS. للتكامل الأصلي (Native ERP) تواصل
+            معنا لبدء برنامج Early Access.
           </p>
         </CardContent>
       </Card>
 
       <ErpFormatPreview />
-
 
       <Card>
         <CardHeader>
@@ -126,8 +131,20 @@ function EnterprisePage() {
           <p>• قيد الحصول على: ISO 27001، SOC 2 Type II.</p>
           <p>• متوافق مع AAOIFI 35 &amp; 59، IFA-OIC، IFRS/IAS.</p>
           <p className="pt-2 border-t mt-3">
-            راجع <a className="text-primary underline" href="/developers">صفحة المطوّرين</a> للبدء
-            الفوري، أو <a className="text-primary underline" href="/api/public/openapi" target="_blank" rel="noreferrer">حمّل مواصفات OpenAPI</a>.
+            راجع{" "}
+            <a className="text-primary underline" href="/developers">
+              صفحة المطوّرين
+            </a>{" "}
+            للبدء الفوري، أو{" "}
+            <a
+              className="text-primary underline"
+              href="/api/public/openapi"
+              target="_blank"
+              rel="noreferrer"
+            >
+              حمّل مواصفات OpenAPI
+            </a>
+            .
           </p>
         </CardContent>
       </Card>
@@ -162,10 +179,18 @@ function ErpFormatPreview() {
       body: JSON.stringify(SAMPLE_PAYLOAD),
     })
       .then((r) => r.text())
-      .then((t) => { if (!cancelled) setBody(t); })
-      .catch((e) => { if (!cancelled) setBody(`// error: ${e.message}`); })
-      .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
+      .then((t) => {
+        if (!cancelled) setBody(t);
+      })
+      .catch((e) => {
+        if (!cancelled) setBody(`// error: ${e.message}`);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [format]);
 
   return (
@@ -178,13 +203,15 @@ function ErpFormatPreview() {
       </CardHeader>
       <CardContent className="space-y-3">
         <p className="text-sm text-muted-foreground">
-          يُبنى القيد المزدوج تلقائياً (Dr Zakat Expense / Cr Zakat Payable) وفق AAOIFI FAS 9.
-          اختر الصيغة لمعاينة الخرج الفعلي من <span className="font-mono">/api/public/erp/journal</span>.
+          يُبنى القيد المزدوج تلقائياً (Dr Zakat Expense / Cr Zakat Payable) وفق AAOIFI FAS 9. اختر
+          الصيغة لمعاينة الخرج الفعلي من <span className="font-mono">/api/public/erp/journal</span>.
         </p>
         <Tabs value={format} onValueChange={(v) => setFormat(v as ErpFormat)}>
           <TabsList className="flex flex-wrap h-auto">
             {SUPPORTED_ERP_FORMATS.map((f) => (
-              <TabsTrigger key={f} value={f} className="text-xs">{f}</TabsTrigger>
+              <TabsTrigger key={f} value={f} className="text-xs">
+                {f}
+              </TabsTrigger>
             ))}
           </TabsList>
           {SUPPORTED_ERP_FORMATS.map((f) => (
@@ -200,18 +227,12 @@ function ErpFormatPreview() {
         </Tabs>
         <div className="flex flex-wrap gap-2">
           <Button asChild size="sm" variant="secondary">
-            <a
-              href={`/api/public/erp/journal?format=${format}`}
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href={`/api/public/erp/journal?format=${format}`} target="_blank" rel="noreferrer">
               <ExternalLink className="h-3.5 w-3.5 me-1" /> عيّنة GET
             </a>
           </Button>
           <Button asChild size="sm">
-            <a href="/software-recommendations">
-              خارطة البرمجيات الكاملة
-            </a>
+            <a href="/software-recommendations">خارطة البرمجيات الكاملة</a>
           </Button>
           <Button asChild size="sm" variant="outline">
             <a href="/api/public/openapi" target="_blank" rel="noreferrer">

@@ -19,7 +19,10 @@ export const grantAccountantAccess = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const expected = process.env.ACCOUNTANT_MASTER_PASSWORD;
     if (!expected) {
-      return { ok: false as const, reason: "لم يُهيَّأ السر ACCOUNTANT_MASTER_PASSWORD على الخادم" };
+      return {
+        ok: false as const,
+        reason: "لم يُهيَّأ السر ACCOUNTANT_MASTER_PASSWORD على الخادم",
+      };
     }
     if (!passwordMatches(data.masterPassword, expected)) {
       // نوم قصير عشوائي لكبح المحاولات الآلية

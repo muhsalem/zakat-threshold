@@ -45,8 +45,8 @@ export function HawlReminderCard({ lastDate }: { lastDate: string | null }) {
             {info.overdue
               ? `متأخر بـ ${Math.abs(info.daysRemaining)} يوم`
               : info.due
-              ? "حلّ موعد الزكاة"
-              : `بعد ${info.daysRemaining} يوم`}
+                ? "حلّ موعد الزكاة"
+                : `بعد ${info.daysRemaining} يوم`}
           </Badge>
         </div>
 
@@ -63,7 +63,8 @@ export function HawlReminderCard({ lastDate }: { lastDate: string | null }) {
           <Alert className="border-muted">
             <CheckCircle2 className="h-4 w-4" />
             <AlertDescription className="text-xs leading-relaxed">
-              لم يحُل الحول بعد. التذكير محسوب وفق السنة الهجرية ({HAWL_DAYS_HIJRI} يوماً) من تاريخ آخر سجل لك.
+              لم يحُل الحول بعد. التذكير محسوب وفق السنة الهجرية ({HAWL_DAYS_HIJRI} يوماً) من تاريخ
+              آخر سجل لك.
             </AlertDescription>
           </Alert>
         )}

@@ -20,13 +20,17 @@ export function TopBar() {
         <SidebarTrigger />
         {!loading && !user && (
           <Button asChild size="sm" variant="default" className="h-8 gap-1.5">
-            <Link to="/auth"><LogIn className="h-3.5 w-3.5" /> دخول / تسجيل</Link>
+            <Link to="/auth">
+              <LogIn className="h-3.5 w-3.5" /> دخول / تسجيل
+            </Link>
           </Button>
         )}
         {!loading && user && (
           <>
             <Button asChild size="sm" variant="outline" className="h-8 gap-1.5">
-              <Link to="/dashboard"><LayoutDashboard className="h-3.5 w-3.5" /> لوحتي</Link>
+              <Link to="/dashboard">
+                <LayoutDashboard className="h-3.5 w-3.5" /> لوحتي
+              </Link>
             </Button>
             <Button size="sm" variant="ghost" className="h-8 gap-1.5" onClick={signOut}>
               <LogOut className="h-3.5 w-3.5" /> خروج
@@ -40,7 +44,9 @@ export function TopBar() {
         {user && (
           <span className="hidden sm:inline-flex items-center gap-1 text-muted-foreground">
             <User className="h-3.5 w-3.5" />
-            <span dir="ltr" className="truncate max-w-[160px]">{user.email}</span>
+            <span dir="ltr" className="truncate max-w-[160px]">
+              {user.email}
+            </span>
           </span>
         )}
       </div>

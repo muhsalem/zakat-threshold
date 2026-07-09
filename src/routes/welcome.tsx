@@ -3,49 +3,103 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  Calculator, ShieldCheck, FileCheck2, Building2, Sparkles, Wheat,
-  Scroll, BarChart3, BookOpen, ArrowLeft, Moon, Globe2, Lock, Users,
+  Calculator,
+  ShieldCheck,
+  FileCheck2,
+  Building2,
+  Sparkles,
+  Wheat,
+  Scroll,
+  BarChart3,
+  BookOpen,
+  ArrowLeft,
+  Moon,
+  Globe2,
+  Lock,
+  Users,
 } from "lucide-react";
 
 export const Route = createFileRoute("/welcome")({
   head: () => ({
     meta: [
       { title: "حاسبة الزكاة الشاملة — للأفراد والشركات بمعايير AAOIFI 35" },
-      { name: "description", content: "منصّة متكاملة لحساب وتدقيق الزكاة وفق معيار AAOIFI 35 ومخرجات المجامع الفقهية. للأفراد والشركات والمؤسسات الخيرية، مع تقارير PDF موقّعة وقابلة للتحقق." },
+      {
+        name: "description",
+        content:
+          "منصّة متكاملة لحساب وتدقيق الزكاة وفق معيار AAOIFI 35 ومخرجات المجامع الفقهية. للأفراد والشركات والمؤسسات الخيرية، مع تقارير PDF موقّعة وقابلة للتحقق.",
+      },
       { property: "og:title", content: "حاسبة الزكاة الشاملة — معيار AAOIFI 35" },
-      { property: "og:description", content: "احسب، دقّق، وأخرج زكاتك بثقة. أداة شاملة بـ 18 موضوعاً زكوياً، مستشار ذكي، وتدقيق شرعي رباعي." },
+      {
+        property: "og:description",
+        content:
+          "احسب، دقّق، وأخرج زكاتك بثقة. أداة شاملة بـ 18 موضوعاً زكوياً، مستشار ذكي، وتدقيق شرعي رباعي.",
+      },
       { property: "og:url", content: "/welcome" },
       { property: "og:image", content: "/og-image.jpg" },
       { name: "twitter:image", content: "/og-image.jpg" },
     ],
     links: [{ rel: "canonical", href: "/welcome" }],
-    scripts: [{
-      type: "application/ld+json",
-      children: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        name: "حاسبة الزكاة الشاملة",
-        url: "/welcome",
-        applicationCategory: "FinanceApplication",
-        operatingSystem: "Web",
-        inLanguage: "ar",
-        description: "حساب وتدقيق الزكاة وفق معيار AAOIFI 35",
-        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-      }),
-    }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          name: "حاسبة الزكاة الشاملة",
+          url: "/welcome",
+          applicationCategory: "FinanceApplication",
+          operatingSystem: "Web",
+          inLanguage: "ar",
+          description: "حساب وتدقيق الزكاة وفق معيار AAOIFI 35",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        }),
+      },
+    ],
   }),
   component: WelcomePage,
 });
 
 const FEATURES = [
-  { icon: Calculator, title: "حاسبات شاملة", body: "18 موضوعاً زكوياً: نقد، ذهب، فضة، أسهم، صكوك، عملات رقمية، عروض تجارة، زروع، أنعام، عقار، تكافل، وقف، ركاز، إيجارات، رواتب، فطر، ESOPs، تأمين." },
-  { icon: ShieldCheck, title: "تدقيق شرعي رباعي", body: "Maker / Checker / Auditor / Reviewer مع سجل تدقيق غير قابل للتعديل وتوقيع رقمي على كل تقرير." },
-  { icon: FileCheck2, title: "تقارير قابلة للتحقق", body: "PDF موقّع رقمياً بمعيار ZATCA TLV + كود QR، يتيح للجهات الخيرية والمراجعين التحقق فوراً." },
-  { icon: Building2, title: "زكاة الشركات", body: "نموذج XBRL، استيراد ميزان مراجعة، تصنيف عروض تجارة، تسوية الزكاة والضريبة، نماذج قطاعية." },
-  { icon: Sparkles, title: "مستشار ذكي", body: "ذكاء اصطناعي مدرّب على معيار AAOIFI 35 وقرارات المجامع الفقهية، يجيب بالأدلة والمصادر." },
-  { icon: Scroll, title: "نصاب تاريخي", body: "قاعدة بيانات 100 سنة (1926–2025) لأسعار الذهب والفضة لتقدير زكاة الذمم المتراكمة." },
-  { icon: Wheat, title: "زكاة الفطر", body: "حاسبة فطر بالصاع النبوي وأسعار الأقوات المحلية بالعملات المتعددة." },
-  { icon: BarChart3, title: "لوحة أثر SROI", body: "مؤشرات الأثر الاجتماعي ومحاذاة أهداف التنمية المستدامة (SDGs) للمؤسسات الخيرية." },
+  {
+    icon: Calculator,
+    title: "حاسبات شاملة",
+    body: "18 موضوعاً زكوياً: نقد، ذهب، فضة، أسهم، صكوك، عملات رقمية، عروض تجارة، زروع، أنعام، عقار، تكافل، وقف، ركاز، إيجارات، رواتب، فطر، ESOPs، تأمين.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "تدقيق شرعي رباعي",
+    body: "Maker / Checker / Auditor / Reviewer مع سجل تدقيق غير قابل للتعديل وتوقيع رقمي على كل تقرير.",
+  },
+  {
+    icon: FileCheck2,
+    title: "تقارير قابلة للتحقق",
+    body: "PDF موقّع رقمياً بمعيار ZATCA TLV + كود QR، يتيح للجهات الخيرية والمراجعين التحقق فوراً.",
+  },
+  {
+    icon: Building2,
+    title: "زكاة الشركات",
+    body: "نموذج XBRL، استيراد ميزان مراجعة، تصنيف عروض تجارة، تسوية الزكاة والضريبة، نماذج قطاعية.",
+  },
+  {
+    icon: Sparkles,
+    title: "مستشار ذكي",
+    body: "ذكاء اصطناعي مدرّب على معيار AAOIFI 35 وقرارات المجامع الفقهية، يجيب بالأدلة والمصادر.",
+  },
+  {
+    icon: Scroll,
+    title: "نصاب تاريخي",
+    body: "قاعدة بيانات 100 سنة (1926–2025) لأسعار الذهب والفضة لتقدير زكاة الذمم المتراكمة.",
+  },
+  {
+    icon: Wheat,
+    title: "زكاة الفطر",
+    body: "حاسبة فطر بالصاع النبوي وأسعار الأقوات المحلية بالعملات المتعددة.",
+  },
+  {
+    icon: BarChart3,
+    title: "لوحة أثر SROI",
+    body: "مؤشرات الأثر الاجتماعي ومحاذاة أهداف التنمية المستدامة (SDGs) للمؤسسات الخيرية.",
+  },
 ];
 
 const STATS = [
@@ -56,9 +110,36 @@ const STATS = [
 ];
 
 const AUDIENCES = [
-  { icon: Users, title: "للأفراد", points: ["حساب زكاة المال والذهب", "تذكير بحول الزكاة", "تقرير PDF للأرشيف", "زكاة الفطر والرواتب"] },
-  { icon: Building2, title: "للشركات", points: ["نموذج صافي الموجودات", "استيراد ميزان المراجعة", "تسوية الزكاة والضريبة", "تقرير XBRL رسمي"] },
-  { icon: ShieldCheck, title: "للمؤسسات الخيرية", points: ["تدقيق Maker/Checker", "توثيقات شرعية موقّعة", "لوحة أثر اجتماعي SROI", "إدارة فريق متعدّد الأدوار"] },
+  {
+    icon: Users,
+    title: "للأفراد",
+    points: [
+      "حساب زكاة المال والذهب",
+      "تذكير بحول الزكاة",
+      "تقرير PDF للأرشيف",
+      "زكاة الفطر والرواتب",
+    ],
+  },
+  {
+    icon: Building2,
+    title: "للشركات",
+    points: [
+      "نموذج صافي الموجودات",
+      "استيراد ميزان المراجعة",
+      "تسوية الزكاة والضريبة",
+      "تقرير XBRL رسمي",
+    ],
+  },
+  {
+    icon: ShieldCheck,
+    title: "للمؤسسات الخيرية",
+    points: [
+      "تدقيق Maker/Checker",
+      "توثيقات شرعية موقّعة",
+      "لوحة أثر اجتماعي SROI",
+      "إدارة فريق متعدّد الأدوار",
+    ],
+  },
 ];
 
 function WelcomePage() {
@@ -74,10 +155,22 @@ function WelcomePage() {
             <span className="font-bold">حاسبة الزكاة</span>
           </div>
           <nav className="flex items-center gap-2">
-            <Link to="/faq" className="text-sm text-muted-foreground hover:text-foreground hidden sm:inline">الأسئلة الشائعة</Link>
-            <Link to="/organizations" className="text-sm text-muted-foreground hover:text-foreground hidden sm:inline">المؤسسات</Link>
+            <Link
+              to="/faq"
+              className="text-sm text-muted-foreground hover:text-foreground hidden sm:inline"
+            >
+              الأسئلة الشائعة
+            </Link>
+            <Link
+              to="/organizations"
+              className="text-sm text-muted-foreground hover:text-foreground hidden sm:inline"
+            >
+              المؤسسات
+            </Link>
             <Button asChild size="sm" className="gap-1.5">
-              <Link to="/">ابدأ الحساب <ArrowLeft className="h-4 w-4" /></Link>
+              <Link to="/">
+                ابدأ الحساب <ArrowLeft className="h-4 w-4" />
+              </Link>
             </Button>
           </nav>
         </div>
@@ -85,7 +178,10 @@ function WelcomePage() {
 
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-border/60">
-        <div className="absolute inset-0 bg-gradient-to-bl from-primary/10 via-transparent to-gold/5" aria-hidden />
+        <div
+          className="absolute inset-0 bg-gradient-to-bl from-primary/10 via-transparent to-gold/5"
+          aria-hidden
+        />
         <div className="container mx-auto px-4 py-16 md:py-24 relative">
           <div className="max-w-3xl mx-auto text-center space-y-6">
             <Badge variant="outline" className="gap-1.5 mx-auto">
@@ -96,28 +192,41 @@ function WelcomePage() {
               منصّة الزكاة الأشمل للأفراد والشركات
             </h1>
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
-              احسب زكاتك بثقة على 18 موضوعاً شرعياً، دقّق سجلاتك برباعية المراجعة Maker/Checker/Auditor/Reviewer،
-              وأصدر تقارير PDF موقّعة رقمياً قابلة للتحقق من أي طرف.
+              احسب زكاتك بثقة على 18 موضوعاً شرعياً، دقّق سجلاتك برباعية المراجعة
+              Maker/Checker/Auditor/Reviewer، وأصدر تقارير PDF موقّعة رقمياً قابلة للتحقق من أي طرف.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
               <Button asChild size="lg" className="gap-2">
-                <Link to="/">ابدأ مجاناً <ArrowLeft className="h-4 w-4" /></Link>
+                <Link to="/">
+                  ابدأ مجاناً <ArrowLeft className="h-4 w-4" />
+                </Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="gap-2">
-                <Link to="/advisor"><Sparkles className="h-4 w-4 text-gold" /> جرّب المستشار الذكي</Link>
+                <Link to="/advisor">
+                  <Sparkles className="h-4 w-4 text-gold" /> جرّب المستشار الذكي
+                </Link>
               </Button>
             </div>
             <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground pt-3">
-              <span className="inline-flex items-center gap-1"><Lock className="h-3 w-3" /> بياناتك مشفّرة</span>
-              <span className="inline-flex items-center gap-1"><Globe2 className="h-3 w-3" /> 8 عملات</span>
-              <span className="inline-flex items-center gap-1"><BookOpen className="h-3 w-3" /> مصادر شرعية موثّقة</span>
+              <span className="inline-flex items-center gap-1">
+                <Lock className="h-3 w-3" /> بياناتك مشفّرة
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <Globe2 className="h-3 w-3" /> 8 عملات
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <BookOpen className="h-3 w-3" /> مصادر شرعية موثّقة
+              </span>
             </div>
           </div>
 
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto mt-12">
             {STATS.map((s) => (
-              <div key={s.l} className="text-center p-4 rounded-xl bg-card/60 border border-border/60">
+              <div
+                key={s.l}
+                className="text-center p-4 rounded-xl bg-card/60 border border-border/60"
+              >
                 <div className="text-2xl md:text-3xl font-extrabold text-primary">{s.v}</div>
                 <div className="text-xs text-muted-foreground mt-1">{s.l}</div>
               </div>
@@ -130,11 +239,16 @@ function WelcomePage() {
       <section className="container mx-auto px-4 py-16 md:py-20">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <h2 className="text-2xl md:text-3xl font-bold mb-3">كل ما تحتاجه لإخراج زكاتك بثقة</h2>
-          <p className="text-muted-foreground">منصّة واحدة تجمع الحاسبات والتدقيق والتقارير والمستشار الذكي.</p>
+          <p className="text-muted-foreground">
+            منصّة واحدة تجمع الحاسبات والتدقيق والتقارير والمستشار الذكي.
+          </p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
           {FEATURES.map((f) => (
-            <Card key={f.title} className="border-border/60 hover:border-primary/40 transition-colors">
+            <Card
+              key={f.title}
+              className="border-border/60 hover:border-primary/40 transition-colors"
+            >
               <CardContent className="pt-6 space-y-3">
                 <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
                   <f.icon className="h-5 w-5 text-primary" />
@@ -152,7 +266,9 @@ function WelcomePage() {
         <div className="container mx-auto px-4 py-16 md:py-20">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <h2 className="text-2xl md:text-3xl font-bold mb-3">صُمّمت لكل من يخرج الزكاة</h2>
-            <p className="text-muted-foreground">من الفرد إلى الشركة إلى المؤسسة الخيرية — تجربة مخصّصة لكل دور.</p>
+            <p className="text-muted-foreground">
+              من الفرد إلى الشركة إلى المؤسسة الخيرية — تجربة مخصّصة لكل دور.
+            </p>
           </div>
           <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {AUDIENCES.map((a) => (
@@ -185,11 +301,14 @@ function WelcomePage() {
           <CardContent className="pt-10 pb-10 text-center space-y-5">
             <h2 className="text-2xl md:text-3xl font-bold">ابدأ بحساب زكاتك خلال دقائق</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
-              مجاناً تماماً، بلا إعلانات، وبياناتك تبقى لك. تستطيع التسجيل لاحقاً لحفظ سجلّك ومتابعة حول زكاتك.
+              مجاناً تماماً، بلا إعلانات، وبياناتك تبقى لك. تستطيع التسجيل لاحقاً لحفظ سجلّك ومتابعة
+              حول زكاتك.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3">
               <Button asChild size="lg" className="gap-2">
-                <Link to="/">افتح الحاسبة الآن <ArrowLeft className="h-4 w-4" /></Link>
+                <Link to="/">
+                  افتح الحاسبة الآن <ArrowLeft className="h-4 w-4" />
+                </Link>
               </Button>
               <Button asChild size="lg" variant="outline">
                 <Link to="/faq">اقرأ الأسئلة الشائعة</Link>
@@ -207,9 +326,15 @@ function WelcomePage() {
           </div>
           <p>تنبيه: المنصّة أداة استرشادية. للحالات الخاصة يُستحسن مراجعة عالم متخصّص.</p>
           <div className="flex items-center justify-center gap-4 pt-2">
-            <Link to="/legal/privacy" className="hover:text-primary">سياسة الخصوصية</Link>
-            <Link to="/legal/terms" className="hover:text-primary">الشروط</Link>
-            <Link to="/developers" className="hover:text-primary">للمطوّرين</Link>
+            <Link to="/legal/privacy" className="hover:text-primary">
+              سياسة الخصوصية
+            </Link>
+            <Link to="/legal/terms" className="hover:text-primary">
+              الشروط
+            </Link>
+            <Link to="/developers" className="hover:text-primary">
+              للمطوّرين
+            </Link>
           </div>
           <div>© {new Date().getFullYear()} حاسبة الزكاة</div>
         </div>

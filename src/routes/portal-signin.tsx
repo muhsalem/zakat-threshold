@@ -8,7 +8,11 @@ export const Route = createFileRoute("/portal-signin")({
   head: () => ({
     meta: [
       { title: "اختر نوع الحساب — تسجيل دخول موحّد" },
-      { name: "description", content: "سجّل دخولك كمحاسب لإدارة عملائك، أو كفرد/شركة/مؤسسة لإرسال بياناتك واحتساب زكاتك." },
+      {
+        name: "description",
+        content:
+          "سجّل دخولك كمحاسب لإدارة عملائك، أو كفرد/شركة/مؤسسة لإرسال بياناتك واحتساب زكاتك.",
+      },
       { property: "og:title", content: "تسجيل دخول موحّد" },
       { property: "og:description", content: "محاسب أو عميل — اختر الوجهة المناسبة" },
     ],
@@ -30,20 +34,30 @@ type Option = {
 function PortalSignin() {
   const options: Option[] = [
     {
-      id: "accountant", title: "محاسب / مكتب محاسبة",
+      id: "accountant",
+      title: "محاسب / مكتب محاسبة",
       desc: "أدر محفظة عملائك، احسب زكواتهم بشكل جماعي، وأصدر تقارير معتمدة.",
-      icon: <Briefcase className="h-8 w-8" />, to: "/accountant", cta: "الدخول إلى بوابة المحاسب",
-      highlight: true, badge: "احترافي",
+      icon: <Briefcase className="h-8 w-8" />,
+      to: "/accountant",
+      cta: "الدخول إلى بوابة المحاسب",
+      highlight: true,
+      badge: "احترافي",
     },
     {
-      id: "individual", title: "فرد",
+      id: "individual",
+      title: "فرد",
       desc: "احسب زكاتك السنوية، احفظ تاريخ حولك، واستقبل تذكيرات آلية.",
-      icon: <User className="h-8 w-8" />, to: "/client-intake", cta: "ابدأ حساب زكاتي",
+      icon: <User className="h-8 w-8" />,
+      to: "/client-intake",
+      cta: "ابدأ حساب زكاتي",
     },
     {
-      id: "company", title: "شركة / مؤسسة",
+      id: "company",
+      title: "شركة / مؤسسة",
       desc: "أرسل ميزانك للمحاسب المعتمد لاحتساب زكاة عروض التجارة والمخزون.",
-      icon: <Building2 className="h-8 w-8" />, to: "/client-intake", cta: "إرسال بيانات الشركة",
+      icon: <Building2 className="h-8 w-8" />,
+      to: "/client-intake",
+      cta: "إرسال بيانات الشركة",
     },
   ];
 
@@ -52,17 +66,29 @@ function PortalSignin() {
       <header className="text-center space-y-2">
         <h1 className="text-3xl md:text-4xl font-bold">من أنت اليوم؟</h1>
         <p className="text-muted-foreground max-w-xl mx-auto">
-          نوجّهك إلى الواجهة الأنسب: بوابة المحاسب لإدارة العملاء، أو نافذة العميل لتقديم بياناتك بأمان.
+          نوجّهك إلى الواجهة الأنسب: بوابة المحاسب لإدارة العملاء، أو نافذة العميل لتقديم بياناتك
+          بأمان.
         </p>
       </header>
 
       <section className="grid md:grid-cols-3 gap-4">
         {options.map((o) => (
-          <Card key={o.id} className={`transition hover:shadow-lg ${o.highlight ? "border-primary/60 bg-primary/5" : ""}`}>
+          <Card
+            key={o.id}
+            className={`transition hover:shadow-lg ${o.highlight ? "border-primary/60 bg-primary/5" : ""}`}
+          >
             <CardHeader>
               <div className="flex items-center justify-between">
-                <div className={`p-3 rounded-lg ${o.highlight ? "bg-primary/15 text-primary" : "bg-muted"}`}>{o.icon}</div>
-                {o.badge && <Badge variant="secondary" className="text-[10px]">{o.badge}</Badge>}
+                <div
+                  className={`p-3 rounded-lg ${o.highlight ? "bg-primary/15 text-primary" : "bg-muted"}`}
+                >
+                  {o.icon}
+                </div>
+                {o.badge && (
+                  <Badge variant="secondary" className="text-[10px]">
+                    {o.badge}
+                  </Badge>
+                )}
               </div>
               <CardTitle className="mt-3">{o.title}</CardTitle>
             </CardHeader>
@@ -78,10 +104,15 @@ function PortalSignin() {
 
       <div className="text-center space-y-3">
         <p className="text-sm text-muted-foreground">
-          لديك حساب بالفعل؟ <Link to="/auth" className="text-primary underline">تسجيل الدخول</Link>
+          لديك حساب بالفعل؟{" "}
+          <Link to="/auth" className="text-primary underline">
+            تسجيل الدخول
+          </Link>
         </p>
         <Button asChild variant="ghost" size="sm" className="gap-1">
-          <Link to="/"><ArrowLeft className="h-4 w-4" /> العودة للرئيسية</Link>
+          <Link to="/">
+            <ArrowLeft className="h-4 w-4" /> العودة للرئيسية
+          </Link>
         </Button>
       </div>
     </main>

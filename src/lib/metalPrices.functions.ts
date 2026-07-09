@@ -24,8 +24,12 @@ type Pair = { gold24PerGram: number; silverPerGram: number };
 
 async function fromGoldApi(): Promise<Pair> {
   const [g, s] = await Promise.all([
-    withTimeout(fetch("https://api.gold-api.com/price/XAU", { headers: { accept: "application/json" } })),
-    withTimeout(fetch("https://api.gold-api.com/price/XAG", { headers: { accept: "application/json" } })),
+    withTimeout(
+      fetch("https://api.gold-api.com/price/XAU", { headers: { accept: "application/json" } }),
+    ),
+    withTimeout(
+      fetch("https://api.gold-api.com/price/XAG", { headers: { accept: "application/json" } }),
+    ),
   ]);
   if (!g.ok || !s.ok) throw new Error("gold-api http " + g.status + "/" + s.status);
   const gj = (await g.json()) as { price: number };
@@ -47,7 +51,7 @@ async function fromCoingecko(): Promise<Pair> {
   const r = await withTimeout(
     fetch("https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd", {
       headers: { accept: "application/json" },
-    })
+    }),
   );
   if (!r.ok) throw new Error("coingecko http " + r.status);
   const j = (await r.json()) as { "pax-gold"?: { usd?: number } };
@@ -60,9 +64,9 @@ async function fromCoingecko(): Promise<Pair> {
 
 export const getLiveMetalPrices = createServerFn({ method: "GET" }).handler(async () => {
   const sources: Array<{ name: string; fn: () => Promise<Pair> }> = [
-    { name: "gold-api.com",    fn: fromGoldApi     },
-    { name: "frankfurter",     fn: fromFrankfurter },
-    { name: "coingecko-paxg",  fn: fromCoingecko   },
+    { name: "gold-api.com", fn: fromGoldApi },
+    { name: "frankfurter", fn: fromFrankfurter },
+    { name: "coingecko-paxg", fn: fromCoingecko },
   ];
   const tried: Array<{ name: string; error: string }> = [];
   for (const s of sources) {

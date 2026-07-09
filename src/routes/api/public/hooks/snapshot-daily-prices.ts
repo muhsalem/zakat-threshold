@@ -57,7 +57,7 @@ export const Route = createFileRoute("/api/public/hooks/snapshot-daily-prices")(
 
         return new Response(
           JSON.stringify({ ok: true, date: today, source: res.source, rows: rows.length }),
-          { headers: { "Content-Type": "application/json" } }
+          { headers: { "Content-Type": "application/json" } },
         );
       },
       GET: async () =>

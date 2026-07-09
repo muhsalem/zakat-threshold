@@ -10,7 +10,19 @@
  */
 
 export type Madhab = "hanafi" | "maliki" | "shafii" | "hanbali";
-export type Jurisdiction = "SA" | "AE" | "EG" | "KW" | "MY" | "PK" | "GB" | "US" | "ID" | "QA" | "JO" | "TR";
+export type Jurisdiction =
+  | "SA"
+  | "AE"
+  | "EG"
+  | "KW"
+  | "MY"
+  | "PK"
+  | "GB"
+  | "US"
+  | "ID"
+  | "QA"
+  | "JO"
+  | "TR";
 export type Authority =
   | "aaoifi"
   | "ifa-oic"
@@ -21,7 +33,12 @@ export type Authority =
   | "majlis-fatwa-my"
   | "dar-al-ifta-jo";
 
-export type Ruling = "obligatory" | "permissible_with_zakat" | "permissible_no_zakat" | "prohibited" | "differed";
+export type Ruling =
+  | "obligatory"
+  | "permissible_with_zakat"
+  | "permissible_no_zakat"
+  | "prohibited"
+  | "differed";
 
 export interface FatwaRule {
   id: string;
@@ -121,7 +138,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     ruling: "permissible_with_zakat",
     rate: 0.025,
     basis: ["AAOIFI-35 §2/1/6"],
-    evidence: "الاشتراكات الاختيارية القابلة للسحب مالٌ مملوك يُزكَّى عند حولان الحول على القيمة الفعلية القابلة للاسترداد.",
+    evidence:
+      "الاشتراكات الاختيارية القابلة للسحب مالٌ مملوك يُزكَّى عند حولان الحول على القيمة الفعلية القابلة للاسترداد.",
   },
   {
     id: "retirement-mandatory-ifa-2004",
@@ -129,7 +147,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "ifa-oic",
     ruling: "permissible_no_zakat",
     basis: ["قرار 143 (16/9) مجمع الفقه الإسلامي الدولي"],
-    evidence: "الاقتطاعات الحكومية الإلزامية دَينٌ غير مقبوض ولا يجب فيها زكاة حتى القبض؛ يُزكّى ما يُقبض عن سنة واحدة.",
+    evidence:
+      "الاقتطاعات الحكومية الإلزامية دَينٌ غير مقبوض ولا يجب فيها زكاة حتى القبض؛ يُزكّى ما يُقبض عن سنة واحدة.",
     effective_from: "2004-01-01",
   },
   {
@@ -139,7 +158,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     jurisdiction: ["US"],
     ruling: "permissible_with_zakat",
     basis: ["AAOIFI-35", "Fiqh Council of North America 2014"],
-    evidence: "401(k)/IRA: يُزكّى الجزء القابل للسحب فعلاً بعد خصم الضرائب والغرامات؛ الجزء المحبوس مؤجّل الزكاة حتى القبض.",
+    evidence:
+      "401(k)/IRA: يُزكّى الجزء القابل للسحب فعلاً بعد خصم الضرائب والغرامات؛ الجزء المحبوس مؤجّل الزكاة حتى القبض.",
   },
 
   // التأمين والتكافل
@@ -157,7 +177,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "ifa-oic",
     ruling: "permissible_with_zakat",
     basis: ["قرار 9 (9/2) مجمع الفقه الإسلامي"],
-    evidence: "القيمة النقدية القابلة للاسترداد من بوليصة التأمين التجاري تُعامل كمال مملوك لأغراض الزكاة رغم اختلاف العلماء في حكم العقد نفسه.",
+    evidence:
+      "القيمة النقدية القابلة للاسترداد من بوليصة التأمين التجاري تُعامل كمال مملوك لأغراض الزكاة رغم اختلاف العلماء في حكم العقد نفسه.",
   },
 
   // الوقف والأوقاف الاستثمارية
@@ -167,7 +188,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "aaoifi",
     ruling: "permissible_no_zakat",
     basis: ["AAOIFI-33"],
-    evidence: "أصل الوقف الخيري لا زكاة فيه لخروجه عن الملك؛ أما ريعه الموزَّع فيُزكّى في يد المستفيد.",
+    evidence:
+      "أصل الوقف الخيري لا زكاة فيه لخروجه عن الملك؛ أما ريعه الموزَّع فيُزكّى في يد المستفيد.",
   },
   {
     id: "waqf-family-shafii",
@@ -204,7 +226,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "aaoifi",
     ruling: "permissible_with_zakat",
     basis: ["AAOIFI-59"],
-    evidence: "NFTs ذات المنفعة المشروعة تُعامل كأصل تجاري إن نُويت للتجارة؛ تُزكّى على القيمة السوقية.",
+    evidence:
+      "NFTs ذات المنفعة المشروعة تُعامل كأصل تجاري إن نُويت للتجارة؛ تُزكّى على القيمة السوقية.",
     effective_from: "2023-01-01",
   },
   {
@@ -214,7 +237,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     ruling: "permissible_with_zakat",
     rate: 0.025,
     basis: ["AAOIFI-59"],
-    evidence: "العملات المستقرة المضمونة بالدولار (USDC/USDT) تُعامل كنقد أجنبي؛ تُزكّى كاملةً عند بلوغ النصاب.",
+    evidence:
+      "العملات المستقرة المضمونة بالدولار (USDC/USDT) تُعامل كنقد أجنبي؛ تُزكّى كاملةً عند بلوغ النصاب.",
     effective_from: "2024-01-01",
   },
 
@@ -226,7 +250,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     ruling: "permissible_with_zakat",
     rate: 0.025,
     basis: ["AAOIFI-1"],
-    evidence: "العملات الأجنبية أثمان مصطلح عليها؛ تُقوَّم بعملة الوطن يوم الحول وتُزكّى إن بلغت النصاب مع بقية المال.",
+    evidence:
+      "العملات الأجنبية أثمان مصطلح عليها؛ تُقوَّم بعملة الوطن يوم الحول وتُزكّى إن بلغت النصاب مع بقية المال.",
   },
 
   // الديون
@@ -255,7 +280,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "ifa-oic",
     ruling: "permissible_no_zakat",
     basis: ["قرار جمهور المالكية والشافعية والحنابلة"],
-    evidence: "الحُلي المستعمل للزينة المشروعة لا زكاة فيه عند الجمهور، وعليه العمل في أكثر الفتاوى المعاصرة.",
+    evidence:
+      "الحُلي المستعمل للزينة المشروعة لا زكاة فيه عند الجمهور، وعليه العمل في أكثر الفتاوى المعاصرة.",
   },
   {
     id: "jewelry-worn-hanafi",
@@ -275,7 +301,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "ifa-oic",
     ruling: "permissible_no_zakat",
     basis: ["قرار مجمع الفقه — الدورة الثانية عشرة"],
-    evidence: "الثروة السمكية لا زكاة فيها في ذاتها؛ فإن كانت للتجارة زُكّيت زكاة عروض التجارة على القيمة السوقية.",
+    evidence:
+      "الثروة السمكية لا زكاة فيها في ذاتها؛ فإن كانت للتجارة زُكّيت زكاة عروض التجارة على القيمة السوقية.",
   },
   {
     id: "livestock-poultry-trade",
@@ -293,7 +320,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     ruling: "permissible_with_zakat",
     rate: 0.1,
     basis: ["مذهب الحنابلة والصاحبين من الحنفية"],
-    evidence: "العسل يجب فيه العُشر عند الحنابلة إذا بلغ النصاب (قيل: 160 رطلاً عراقياً ≈ 653 كجم).",
+    evidence:
+      "العسل يجب فيه العُشر عند الحنابلة إذا بلغ النصاب (قيل: 160 رطلاً عراقياً ≈ 653 كجم).",
   },
   {
     id: "crops-honey-jumhur",
@@ -309,7 +337,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "aaoifi",
     ruling: "permissible_with_zakat",
     basis: ["AAOIFI-35"],
-    evidence: "الألبان المُنتَجة للبيع تُعامل كعروض تجارة؛ تُزكّى القيمة السوقية للمخزون والذمم المدينة.",
+    evidence:
+      "الألبان المُنتَجة للبيع تُعامل كعروض تجارة؛ تُزكّى القيمة السوقية للمخزون والذمم المدينة.",
   },
 
   // === الملكية الفكرية والأصول غير الملموسة ===
@@ -319,7 +348,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "aaoifi",
     ruling: "permissible_with_zakat",
     basis: ["AAOIFI-42", "قرار مجمع الفقه 43 (5/5)"],
-    evidence: "حقوق الملكية الفكرية (براءات، علامات، حقوق نشر) المُعدَّة للبيع تُزكّى بقيمتها السوقية العادلة عند الحول.",
+    evidence:
+      "حقوق الملكية الفكرية (براءات، علامات، حقوق نشر) المُعدَّة للبيع تُزكّى بقيمتها السوقية العادلة عند الحول.",
   },
   {
     id: "ip-income-jumhur",
@@ -327,7 +357,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "ifa-oic",
     ruling: "permissible_with_zakat",
     basis: ["قياس على المستغلات"],
-    evidence: "الإتاوات والرواتب من الملكية الفكرية تُزكّى مع سائر المال إذا حال عليها الحول وبلغت النصاب.",
+    evidence:
+      "الإتاوات والرواتب من الملكية الفكرية تُزكّى مع سائر المال إذا حال عليها الحول وبلغت النصاب.",
   },
   {
     id: "domain-names-trade",
@@ -345,7 +376,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "aaoifi",
     ruling: "permissible_with_zakat",
     basis: ["AAOIFI-35 §5/2"],
-    evidence: "الأراضي المُشتراة بنيّة البيع (عروض تجارة) تُزكّى بالقيمة السوقية العادلة عند حولان الحول.",
+    evidence:
+      "الأراضي المُشتراة بنيّة البيع (عروض تجارة) تُزكّى بالقيمة السوقية العادلة عند حولان الحول.",
   },
   {
     id: "land-personal-no-zakat",
@@ -361,7 +393,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "aaoifi",
     ruling: "permissible_with_zakat",
     basis: ["AAOIFI-35 §5/3"],
-    evidence: "مشاريع التطوير العقاري: يُزكّى المخزون (Work-in-Progress + الوحدات الجاهزة للبيع) بالقيمة السوقية أو التكلفة أيهما أقل.",
+    evidence:
+      "مشاريع التطوير العقاري: يُزكّى المخزون (Work-in-Progress + الوحدات الجاهزة للبيع) بالقيمة السوقية أو التكلفة أيهما أقل.",
   },
   {
     id: "realestate-rental-mustaghallat",
@@ -369,7 +402,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "ifa-oic",
     ruling: "permissible_with_zakat",
     basis: ["قرار 2 مجمع الفقه — الدورة الثانية"],
-    evidence: "العقار المُؤجَّر (المستغلات) لا زكاة في عينه؛ وتُزكّى غلّته (الإيجار) مع سائر المال إذا بلغت النصاب وحال عليها الحول.",
+    evidence:
+      "العقار المُؤجَّر (المستغلات) لا زكاة في عينه؛ وتُزكّى غلّته (الإيجار) مع سائر المال إذا بلغت النصاب وحال عليها الحول.",
   },
   {
     id: "reit-shariah-aaoifi",
@@ -377,7 +411,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "aaoifi",
     ruling: "permissible_with_zakat",
     basis: ["AAOIFI-21", "MAIWP Guidelines"],
-    evidence: "صناديق الاستثمار العقاري المتوافقة شرعاً: يُزكّى نصيب المستثمر من الموجودات الزكوية (النقد + الذمم + الأراضي التجارية) لا كامل قيمة الوحدة.",
+    evidence:
+      "صناديق الاستثمار العقاري المتوافقة شرعاً: يُزكّى نصيب المستثمر من الموجودات الزكوية (النقد + الذمم + الأراضي التجارية) لا كامل قيمة الوحدة.",
   },
 
   // === زكاة الشركات والصناعات المتخصصة ===
@@ -387,7 +422,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "aaoifi",
     ruling: "permissible_with_zakat",
     basis: ["AAOIFI-35 §7"],
-    evidence: "البنوك الإسلامية: يُزكّى صافي الموجودات الزكوية (نقد + استثمارات قصيرة + مرابحات) بعد خصم الودائع والالتزامات؛ حسابات المضاربة تُزكّى في يد أصحابها.",
+    evidence:
+      "البنوك الإسلامية: يُزكّى صافي الموجودات الزكوية (نقد + استثمارات قصيرة + مرابحات) بعد خصم الودائع والالتزامات؛ حسابات المضاربة تُزكّى في يد أصحابها.",
   },
   {
     id: "takaful-fund-aaoifi-26",
@@ -395,7 +431,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "aaoifi",
     ruling: "permissible_with_zakat",
     basis: ["AAOIFI-26"],
-    evidence: "صناديق التكافل: تُزكّى أموال المساهمين (شركة التكافل) بمنهج الشركات، أما صندوق المشتركين فيُزكّى الفائض الموزَّع في يد المشترك.",
+    evidence:
+      "صناديق التكافل: تُزكّى أموال المساهمين (شركة التكافل) بمنهج الشركات، أما صندوق المشتركين فيُزكّى الفائض الموزَّع في يد المشترك.",
   },
   {
     id: "startup-preRevenue",
@@ -403,7 +440,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "aaoifi",
     ruling: "permissible_with_zakat",
     basis: ["AAOIFI-35"],
-    evidence: "الشركات الناشئة قبل الإيرادات: تُزكّى الأصول الزكوية (النقد المُحصَّل من التمويل + الاستثمارات) عند بلوغ النصاب وحولان الحول، حتى ولو كانت الشركة خاسرة.",
+    evidence:
+      "الشركات الناشئة قبل الإيرادات: تُزكّى الأصول الزكوية (النقد المُحصَّل من التمويل + الاستثمارات) عند بلوغ النصاب وحولان الحول، حتى ولو كانت الشركة خاسرة.",
   },
   {
     id: "holding-consolidated",
@@ -411,7 +449,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "aaoifi",
     ruling: "permissible_with_zakat",
     basis: ["AAOIFI-35 §8"],
-    evidence: "الشركات القابضة: تُحسَب الزكاة على أساس القوائم المُوحَّدة، مع مراعاة استبعاد المعاملات البينية والحصص غير المُسيطر عليها.",
+    evidence:
+      "الشركات القابضة: تُحسَب الزكاة على أساس القوائم المُوحَّدة، مع مراعاة استبعاد المعاملات البينية والحصص غير المُسيطر عليها.",
   },
   {
     id: "waqf-body-no-zakat",
@@ -419,7 +458,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "aaoifi",
     ruling: "permissible_no_zakat",
     basis: ["AAOIFI-33"],
-    evidence: "المؤسسات الوقفية لا زكاة على أصولها الموقوفة لخروجها عن الملك الخاص؛ لكن رِيع الوقف الموزَّع يُزكّى في يد المستفيد إن بلغ النصاب.",
+    evidence:
+      "المؤسسات الوقفية لا زكاة على أصولها الموقوفة لخروجها عن الملك الخاص؛ لكن رِيع الوقف الموزَّع يُزكّى في يد المستفيد إن بلغ النصاب.",
   },
   {
     id: "ngo-no-zakat",
@@ -427,7 +467,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "ifa-oic",
     ruling: "permissible_no_zakat",
     basis: ["قياس على الوقف"],
-    evidence: "الجمعيات الخيرية والمنظمات غير الربحية لا زكاة على أموالها المُخصَّصة للأغراض الخيرية؛ الأموال الاستثمارية المُدرَّة للربح قد تُزكّى إن كانت للتجارة.",
+    evidence:
+      "الجمعيات الخيرية والمنظمات غير الربحية لا زكاة على أموالها المُخصَّصة للأغراض الخيرية؛ الأموال الاستثمارية المُدرَّة للربح قد تُزكّى إن كانت للتجارة.",
   },
 
   // === زكاة الأدوات المالية الحديثة ===
@@ -437,7 +478,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "aaoifi",
     ruling: "permissible_with_zakat",
     basis: ["AAOIFI-17"],
-    evidence: "صكوك المضاربة والمشاركة: تُزكّى بحصة الصكّ من الموجودات الزكوية في المشروع (لا القيمة السوقية الكاملة).",
+    evidence:
+      "صكوك المضاربة والمشاركة: تُزكّى بحصة الصكّ من الموجودات الزكوية في المشروع (لا القيمة السوقية الكاملة).",
   },
   {
     id: "sukuk-murabaha",
@@ -453,7 +495,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "aaoifi",
     ruling: "permissible_with_zakat",
     basis: ["AAOIFI-21"],
-    evidence: "صناديق ETF المتوافقة شرعاً: تُزكّى بنسبة الموجودات الزكوية داخل الصندوق (مُعلَنة عادةً في تقرير التنقية الشرعية Purification Ratio).",
+    evidence:
+      "صناديق ETF المتوافقة شرعاً: تُزكّى بنسبة الموجودات الزكوية داخل الصندوق (مُعلَنة عادةً في تقرير التنقية الشرعية Purification Ratio).",
   },
   {
     id: "money-market-shariah",
@@ -470,7 +513,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "aaoifi",
     ruling: "prohibited",
     basis: ["AAOIFI-20", "قرار مجمع الفقه 63 (1/7)"],
-    evidence: "العقود المستقبلية الدائمة (Perpetual Futures) محرّمة لاشتمالها على الغرر والربا (Funding Rate)؛ لا تُزكّى، ويجب التخلّص من الأرباح.",
+    evidence:
+      "العقود المستقبلية الدائمة (Perpetual Futures) محرّمة لاشتمالها على الغرر والربا (Funding Rate)؛ لا تُزكّى، ويجب التخلّص من الأرباح.",
   },
   {
     id: "options-prohibited",
@@ -489,7 +533,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     ruling: "permissible_with_zakat",
     rate: 0.025,
     basis: ["AAOIFI-59"],
-    evidence: "عائدات تعدين العملات الرقمية المشروعة تُعامل كمال مُكتَسَب؛ تُزكّى مع سائر المال عند حولان الحول.",
+    evidence:
+      "عائدات تعدين العملات الرقمية المشروعة تُعامل كمال مُكتَسَب؛ تُزكّى مع سائر المال عند حولان الحول.",
   },
   {
     id: "crypto-staking-rewards",
@@ -497,7 +542,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "aaoifi",
     ruling: "differed",
     basis: ["AAOIFI-59 — قيد الدراسة"],
-    evidence: "مكافآت Staking فيها خلاف: من يُشبهها بالإجارة يُجيزها، ومن يُشبهها بالربا يمنعها. عند من يُجيزها تُزكّى مع النقد.",
+    evidence:
+      "مكافآت Staking فيها خلاف: من يُشبهها بالإجارة يُجيزها، ومن يُشبهها بالربا يمنعها. عند من يُجيزها تُزكّى مع النقد.",
   },
   {
     id: "defi-yield-prohibited",
@@ -505,7 +551,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "aaoifi",
     ruling: "prohibited",
     basis: ["AAOIFI-59", "قياس على الربا"],
-    evidence: "عوائد بروتوكولات DeFi القائمة على الإقراض بفائدة (Aave, Compound) محرّمة؛ يجب التخلّص من الأرباح، ويُزكّى رأس المال فقط.",
+    evidence:
+      "عوائد بروتوكولات DeFi القائمة على الإقراض بفائدة (Aave, Compound) محرّمة؛ يجب التخلّص من الأرباح، ويُزكّى رأس المال فقط.",
   },
   {
     id: "nft-collectible-no-zakat",
@@ -513,7 +560,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "aaoifi",
     ruling: "permissible_no_zakat",
     basis: ["قياس على المقتنيات الشخصية"],
-    evidence: "الـ NFTs المُقتناة كأصول شخصية (Art, Collectibles) لا للتجارة لا زكاة فيها؛ إن نُويت التجارة زُكّيت بالقيمة السوقية.",
+    evidence:
+      "الـ NFTs المُقتناة كأصول شخصية (Art, Collectibles) لا للتجارة لا زكاة فيها؛ إن نُويت التجارة زُكّيت بالقيمة السوقية.",
   },
 
   // === زكاة الرواتب والاستحقاقات ===
@@ -540,7 +588,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "aaoifi",
     ruling: "permissible_with_zakat",
     basis: ["AAOIFI-21"],
-    evidence: "خيارات الأسهم للموظفين (ESOP/RSU) المُستحَقَّة (Vested): تُعامل كأسهم مملوكة؛ تُزكّى بالقيمة السوقية بعد خصم تكلفة التنفيذ.",
+    evidence:
+      "خيارات الأسهم للموظفين (ESOP/RSU) المُستحَقَّة (Vested): تُعامل كأسهم مملوكة؛ تُزكّى بالقيمة السوقية بعد خصم تكلفة التنفيذ.",
   },
   {
     id: "esop-unvested-no-zakat",
@@ -548,7 +597,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "aaoifi",
     ruling: "permissible_no_zakat",
     basis: ["قياس على الدَّين غير المستحقّ"],
-    evidence: "خيارات الأسهم غير المُستحَقَّة (Unvested) لا يملكها الموظف ملكاً تاماً؛ لا زكاة عليها حتى تستحقّ.",
+    evidence:
+      "خيارات الأسهم غير المُستحَقَّة (Unvested) لا يملكها الموظف ملكاً تاماً؛ لا زكاة عليها حتى تستحقّ.",
   },
 
   // === زكاة الديون والمستحقات ===
@@ -566,7 +616,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "aaoifi",
     ruling: "permissible_no_zakat",
     basis: ["AAOIFI-35 §3/1", "قرار مجمع الفقه 165"],
-    evidence: "الديون التي عليك (قصيرة الأجل مستحقّة خلال السنة) تُخصَم من الوعاء الزكوي. الديون طويلة الأجل تُخصم بمقدار قسط سنة واحدة فقط.",
+    evidence:
+      "الديون التي عليك (قصيرة الأجل مستحقّة خلال السنة) تُخصَم من الوعاء الزكوي. الديون طويلة الأجل تُخصم بمقدار قسط سنة واحدة فقط.",
   },
   {
     id: "receivables-doubtful-provision",
@@ -574,7 +625,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "aaoifi",
     ruling: "permissible_no_zakat",
     basis: ["AAOIFI-35 §2/2/3"],
-    evidence: "الذمم المدينة المشكوك في تحصيلها (مُخصَّص Doubtful) تُخصَم من الوعاء الزكوي؛ فإن قُبضت لاحقاً زُكّيت لعام واحد.",
+    evidence:
+      "الذمم المدينة المشكوك في تحصيلها (مُخصَّص Doubtful) تُخصَم من الوعاء الزكوي؛ فإن قُبضت لاحقاً زُكّيت لعام واحد.",
   },
 
   // ==== أوعية زكوية جديدة ====
@@ -587,7 +639,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     ruling: "permissible_with_zakat",
     rate: 0.025,
     basis: ["AAOIFI-59", "قياس على عروض التجارة"],
-    evidence: "مخرجات التعدين إن قُصد بها التجارة تُعامل معاملة عروض التجارة (2.5% على القيمة السوقية عند الحول)؛ وإن كانت للاقتناء طويل الأجل فحكمها حكم النقدين إن بلغت النصاب.",
+    evidence:
+      "مخرجات التعدين إن قُصد بها التجارة تُعامل معاملة عروض التجارة (2.5% على القيمة السوقية عند الحول)؛ وإن كانت للاقتناء طويل الأجل فحكمها حكم النقدين إن بلغت النصاب.",
     effective_from: "2023-06-01",
     notes: "تُخصم تكاليف الكهرباء والمعدات كمصروفات جارية قبل حساب الوعاء.",
   },
@@ -597,7 +650,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "aaoifi",
     ruling: "differed",
     basis: ["AAOIFI-59", "دراسات المجلس الشرعي"],
-    evidence: "عوائد الـ Staking تحتاج تكييفاً فقهياً: إن كانت أجرة على خدمة تحقّق (Validator) فجائزة وتُزكّى؛ وإن كانت فائدة محضة على إيداع فمنعها الأولى.",
+    evidence:
+      "عوائد الـ Staking تحتاج تكييفاً فقهياً: إن كانت أجرة على خدمة تحقّق (Validator) فجائزة وتُزكّى؛ وإن كانت فائدة محضة على إيداع فمنعها الأولى.",
     effective_from: "2024-01-01",
   },
 
@@ -609,9 +663,11 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     ruling: "permissible_with_zakat",
     rate: 0.025,
     basis: ["AAOIFI-35 §5", "قياس على عروض التجارة"],
-    evidence: "الأسماك المستزرعة للبيع تُعدّ عروض تجارة: تُقوَّم بسعر السوق عند الحول ويُخرج 2.5% من صافي الوعاء بعد خصم الديون والمصروفات المستحقة.",
+    evidence:
+      "الأسماك المستزرعة للبيع تُعدّ عروض تجارة: تُقوَّم بسعر السوق عند الحول ويُخرج 2.5% من صافي الوعاء بعد خصم الديون والمصروفات المستحقة.",
     effective_from: "2023-01-01",
-    notes: "الأسماك المصطادة من البحر مباحة أصلاً ولا زكاة فيها لعينها، إنما زكاة عائدها المتحقّق نقداً.",
+    notes:
+      "الأسماك المصطادة من البحر مباحة أصلاً ولا زكاة فيها لعينها، إنما زكاة عائدها المتحقّق نقداً.",
   },
   {
     id: "fish-catch-cash-yield",
@@ -620,7 +676,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     ruling: "permissible_with_zakat",
     rate: 0.025,
     basis: ["قرار المجمع 143 (2003)"],
-    evidence: "صافي دخل الصيد البحري بعد المصروفات يُضمّ إلى المال ويُزكّى مع حول المال إن بلغ النصاب.",
+    evidence:
+      "صافي دخل الصيد البحري بعد المصروفات يُضمّ إلى المال ويُزكّى مع حول المال إن بلغ النصاب.",
     effective_from: "2003-01-01",
   },
 
@@ -632,7 +689,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     ruling: "permissible_with_zakat",
     rate: 0.025,
     basis: ["AAOIFI-35 §5/2"],
-    evidence: "مزارع الدواجن والألبان والبيض للتجارة تُعامل عروضَ تجارة: يُزكَّى الوعاء (المخزون + الذمم + النقد − الديون) بنسبة 2.5% عند الحول.",
+    evidence:
+      "مزارع الدواجن والألبان والبيض للتجارة تُعامل عروضَ تجارة: يُزكَّى الوعاء (المخزون + الذمم + النقد − الديون) بنسبة 2.5% عند الحول.",
     effective_from: "2023-01-01",
   },
   {
@@ -641,9 +699,10 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     authority: "aaoifi",
     madhab: ["hanafi", "hanbali"],
     ruling: "permissible_with_zakat",
-    rate: 0.10,
+    rate: 0.1,
     basis: ["قول الحنفية والحنابلة", "حديث ابن عمر"],
-    evidence: "العسل المستخرَج من أرض عشرية فيه العُشر (10%) عند الحنفية والحنابلة إن بلغ النصاب؛ ولا زكاة فيه عند الشافعية والمالكية إلا إن كان للتجارة فيُزكَّى 2.5%.",
+    evidence:
+      "العسل المستخرَج من أرض عشرية فيه العُشر (10%) عند الحنفية والحنابلة إن بلغ النصاب؛ ولا زكاة فيه عند الشافعية والمالكية إلا إن كان للتجارة فيُزكَّى 2.5%.",
     effective_from: "2023-01-01",
   },
 
@@ -655,7 +714,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     ruling: "permissible_with_zakat",
     rate: 0.025,
     basis: ["AAOIFI-35 §4", "قياس على المستغلات"],
-    evidence: "لا زكاة على أصل الملكية الفكرية (البراءة، حق النشر، العلامة التجارية)، وإنما تجب الزكاة في صافي عوائدها النقدية (Royalties) بعد ضمّها إلى مال المالك وحلول الحول بنسبة 2.5%.",
+    evidence:
+      "لا زكاة على أصل الملكية الفكرية (البراءة، حق النشر، العلامة التجارية)، وإنما تجب الزكاة في صافي عوائدها النقدية (Royalties) بعد ضمّها إلى مال المالك وحلول الحول بنسبة 2.5%.",
     effective_from: "2023-01-01",
   },
   {
@@ -665,7 +725,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     ruling: "permissible_with_zakat",
     rate: 0.025,
     basis: ["AAOIFI-35 §4/1", "قياس على عروض التجارة"],
-    evidence: "إن اقتُنيت البراءة أو حق النشر بنيّة البيع فتُقوَّم بسعر السوق عند الحول وتُزكّى 2.5% كعروض تجارة.",
+    evidence:
+      "إن اقتُنيت البراءة أو حق النشر بنيّة البيع فتُقوَّم بسعر السوق عند الحول وتُزكّى 2.5% كعروض تجارة.",
     effective_from: "2024-01-01",
   },
   {
@@ -675,7 +736,8 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     ruling: "permissible_with_zakat",
     rate: 0.025,
     basis: ["AAOIFI-35 §4"],
-    evidence: "دخل تراخيص البرمجيات (SaaS Subscriptions) يُعامل معاملة الأجرة/المستغلات: تُزكّى العوائد النقدية بعد خصم المصروفات التشغيلية عند حولان الحول.",
+    evidence:
+      "دخل تراخيص البرمجيات (SaaS Subscriptions) يُعامل معاملة الأجرة/المستغلات: تُزكّى العوائد النقدية بعد خصم المصروفات التشغيلية عند حولان الحول.",
     effective_from: "2024-01-01",
   },
 ];
@@ -722,7 +784,13 @@ export function resolveRuling(q: FatwaQuery): FatwaRule | null {
     KW: ["bait-al-zakat-kw"],
     MY: ["majlis-fatwa-my"],
     JO: ["dar-al-ifta-jo"],
-    AE: [], PK: [], GB: [], US: [], ID: [], QA: [], TR: [],
+    AE: [],
+    PK: [],
+    GB: [],
+    US: [],
+    ID: [],
+    QA: [],
+    TR: [],
   };
 
   if (q.jurisdiction) {
@@ -731,7 +799,9 @@ export function resolveRuling(q: FatwaQuery): FatwaRule | null {
       if (m) return m;
     }
   }
-  return matches.find((r) => r.authority === "aaoifi")
-    ?? matches.find((r) => r.authority === "ifa-oic")
-    ?? matches[0];
+  return (
+    matches.find((r) => r.authority === "aaoifi") ??
+    matches.find((r) => r.authority === "ifa-oic") ??
+    matches[0]
+  );
 }

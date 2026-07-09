@@ -4,7 +4,10 @@ import { Download, X } from "lucide-react";
 
 const KEY = "pwa_install_dismissed_v1";
 
-type BIPEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: "accepted" | "dismissed" }> };
+type BIPEvent = Event & {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+};
 
 export function PWAInstallPrompt() {
   const [evt, setEvt] = useState<BIPEvent | null>(null);
@@ -12,7 +15,9 @@ export function PWAInstallPrompt() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    try { if (window.localStorage.getItem(KEY)) return; } catch {}
+    try {
+      if (window.localStorage.getItem(KEY)) return;
+    } catch {}
     // hide on already-installed / standalone
     if (window.matchMedia?.("(display-mode: standalone)").matches) return;
 
@@ -28,7 +33,9 @@ export function PWAInstallPrompt() {
   if (!visible || !evt) return null;
 
   function dismiss() {
-    try { window.localStorage.setItem(KEY, String(Date.now())); } catch {}
+    try {
+      window.localStorage.setItem(KEY, String(Date.now()));
+    } catch {}
     setVisible(false);
   }
 
@@ -58,11 +65,19 @@ export function PWAInstallPrompt() {
             استخدم الحاسبة بسرعة وبدون فتح المتصفّح، مع تذكير الحول محلياً.
           </p>
           <div className="mt-2 flex gap-2">
-            <Button size="sm" onClick={install}>تثبيت</Button>
-            <Button size="sm" variant="ghost" onClick={dismiss}>لاحقاً</Button>
+            <Button size="sm" onClick={install}>
+              تثبيت
+            </Button>
+            <Button size="sm" variant="ghost" onClick={dismiss}>
+              لاحقاً
+            </Button>
           </div>
         </div>
-        <button aria-label="إغلاق" onClick={dismiss} className="text-muted-foreground hover:text-foreground">
+        <button
+          aria-label="إغلاق"
+          onClick={dismiss}
+          className="text-muted-foreground hover:text-foreground"
+        >
           <X className="h-4 w-4" />
         </button>
       </div>

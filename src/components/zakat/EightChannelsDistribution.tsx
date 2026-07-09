@@ -49,15 +49,17 @@ export function EightChannelsDistribution({ netDue, currencyName = "ج.م" }: Pr
         <CardTitle className="flex items-center gap-2 text-base">
           <HandHeart className="h-4 w-4 text-primary" />
           خطة توزيع الزكاة على المصارف الشرعية الثمانية
-          <Badge variant="outline" className="text-[10px] mr-auto">التوبة: 60</Badge>
+          <Badge variant="outline" className="text-[10px] mr-auto">
+            التوبة: 60
+          </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         <Alert className="border-primary/20 bg-primary/5">
           <Info className="h-4 w-4" />
           <AlertDescription className="text-xs leading-relaxed">
-            عدّل النسبة المئوية لكل مصرف بحسب حاجة بلدك ولجنتك. يجوز اقتصار الصرف على بعض
-            المصارف عند الحاجة (وهو رأي جمهور الفقهاء)، ولا يُشترط استيعاب الثمانية جميعًا.
+            عدّل النسبة المئوية لكل مصرف بحسب حاجة بلدك ولجنتك. يجوز اقتصار الصرف على بعض المصارف
+            عند الحاجة (وهو رأي جمهور الفقهاء)، ولا يُشترط استيعاب الثمانية جميعًا.
           </AlertDescription>
         </Alert>
 
@@ -65,8 +67,12 @@ export function EightChannelsDistribution({ netDue, currencyName = "ج.م" }: Pr
           <Button size="sm" variant="outline" onClick={reset} className="gap-1.5">
             <RotateCcw className="h-3.5 w-3.5" /> الافتراضي
           </Button>
-          <Button size="sm" variant="outline" onClick={distributeEqually}>توزيع متساوٍ</Button>
-          <Button size="sm" variant="outline" onClick={focusPoor}>تركيز على الفقراء والمساكين</Button>
+          <Button size="sm" variant="outline" onClick={distributeEqually}>
+            توزيع متساوٍ
+          </Button>
+          <Button size="sm" variant="outline" onClick={focusPoor}>
+            تركيز على الفقراء والمساكين
+          </Button>
         </div>
 
         <div className="overflow-x-auto">
@@ -87,15 +93,23 @@ export function EightChannelsDistribution({ netDue, currencyName = "ج.م" }: Pr
                     <td className="p-2 font-semibold">{r.name}</td>
                     <td className="p-2">
                       <Input
-                        type="number" min="0" max="100" step="0.5"
+                        type="number"
+                        min="0"
+                        max="100"
+                        step="0.5"
                         value={String(pct[i] ?? 0)}
                         onChange={(e) => update(i, e.target.value)}
-                        dir="ltr" style={{ textAlign: "right" }}
+                        dir="ltr"
+                        style={{ textAlign: "right" }}
                         className="h-8 text-sm"
                       />
                     </td>
-                    <td className="p-2 font-mono text-primary">{fmt(amount)} {currencyName}</td>
-                    <td className="p-2 text-xs text-muted-foreground hidden md:table-cell">{r.description}</td>
+                    <td className="p-2 font-mono text-primary">
+                      {fmt(amount)} {currencyName}
+                    </td>
+                    <td className="p-2 text-xs text-muted-foreground hidden md:table-cell">
+                      {r.description}
+                    </td>
                   </tr>
                 );
               })}
@@ -103,8 +117,12 @@ export function EightChannelsDistribution({ netDue, currencyName = "ج.م" }: Pr
             <tfoot className="bg-muted/40 font-bold">
               <tr className="border-t">
                 <td className="p-2">الإجمالي</td>
-                <td className={`p-2 ${balanced ? "text-primary" : "text-destructive"}`}>{total.toFixed(2)}%</td>
-                <td className="p-2 text-primary">{fmt(netDue || 0)} {currencyName}</td>
+                <td className={`p-2 ${balanced ? "text-primary" : "text-destructive"}`}>
+                  {total.toFixed(2)}%
+                </td>
+                <td className="p-2 text-primary">
+                  {fmt(netDue || 0)} {currencyName}
+                </td>
                 <td className="hidden md:table-cell" />
               </tr>
             </tfoot>

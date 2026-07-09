@@ -3,14 +3,24 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/nisab-audit")({
   head: () => ({
     meta: [
       { title: "مراجعة اتساق احتساب النصاب 1925–2026" },
-      { name: "description", content: "تقرير تدقيقي لمراجعة اتساق نصاب الذهب والفضة والزكاة المستحقة عبر كل السنوات." },
+      {
+        name: "description",
+        content: "تقرير تدقيقي لمراجعة اتساق نصاب الذهب والفضة والزكاة المستحقة عبر كل السنوات.",
+      },
     ],
   }),
   component: NisabAuditPage,
@@ -50,12 +60,25 @@ function fmt(n: number, d = 2) {
 
 function reliabilityBadge(r: Row["reliability"]) {
   const map = {
-    direct: { label: "مباشر", cls: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30" },
-    derived: { label: "مشتق", cls: "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30" },
-    estimated: { label: "تقديري", cls: "bg-rose-500/15 text-rose-700 dark:text-rose-400 border-rose-500/30" },
+    direct: {
+      label: "مباشر",
+      cls: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30",
+    },
+    derived: {
+      label: "مشتق",
+      cls: "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30",
+    },
+    estimated: {
+      label: "تقديري",
+      cls: "bg-rose-500/15 text-rose-700 dark:text-rose-400 border-rose-500/30",
+    },
   } as const;
   const m = map[r];
-  return <Badge variant="outline" className={m.cls}>{m.label}</Badge>;
+  return (
+    <Badge variant="outline" className={m.cls}>
+      {m.label}
+    </Badge>
+  );
 }
 
 function NisabAuditPage() {
@@ -66,10 +89,15 @@ function NisabAuditPage() {
     (async () => {
       const { data, error } = await supabase
         .from("nisab_prices")
-        .select("id, year, country_code, currency, gold_price, silver_price, gold_nisab_value, silver_nisab_value, reliability, reliability_score, source")
+        .select(
+          "id, year, country_code, currency, gold_price, silver_price, gold_nisab_value, silver_nisab_value, reliability, reliability_score, source",
+        )
         .order("country_code")
         .order("year");
-      if (error) { setErr(error.message); return; }
+      if (error) {
+        setErr(error.message);
+        return;
+      }
       setRows((data ?? []) as Row[]);
     })();
   }, []);
@@ -84,42 +112,89 @@ function NisabAuditPage() {
     }
 
     const issues: Issue[] = [];
-    const summary: Record<string, { total: number; direct: number; derived: number; estimated: number; drifts: number; zeros: number; jumps: number }> = {};
+    const summary: Record<
+      string,
+      {
+        total: number;
+        direct: number;
+        derived: number;
+        estimated: number;
+        drifts: number;
+        zeros: number;
+        jumps: number;
+      }
+    > = {};
 
     for (const [cc, list] of byCountry) {
       list.sort((a, b) => a.year - b.year);
-      summary[cc] = { total: list.length, direct: 0, derived: 0, estimated: 0, drifts: 0, zeros: 0, jumps: 0 };
+      summary[cc] = {
+        total: list.length,
+        direct: 0,
+        derived: 0,
+        estimated: 0,
+        drifts: 0,
+        zeros: 0,
+        jumps: 0,
+      };
       let prev: Row | null = null;
       for (const r of list) {
         summary[cc][r.reliability]++;
         const expGold = +(Number(r.gold_price) * GOLD_GRAMS).toFixed(4);
         const expSilv = +(Number(r.silver_price) * SILVER_GRAMS).toFixed(4);
-        if (r.gold_nisab_value != null && Math.abs(Number(r.gold_nisab_value) - expGold) > Math.max(TOL, expGold * 0.001)) {
-          issues.push({ row: r, kind: "drift_gold", detail: `مخزّن ${fmt(Number(r.gold_nisab_value))} ≠ محسوب ${fmt(expGold)}` });
+        if (
+          r.gold_nisab_value != null &&
+          Math.abs(Number(r.gold_nisab_value) - expGold) > Math.max(TOL, expGold * 0.001)
+        ) {
+          issues.push({
+            row: r,
+            kind: "drift_gold",
+            detail: `مخزّن ${fmt(Number(r.gold_nisab_value))} ≠ محسوب ${fmt(expGold)}`,
+          });
           summary[cc].drifts++;
         }
-        if (r.silver_nisab_value != null && Math.abs(Number(r.silver_nisab_value) - expSilv) > Math.max(TOL, expSilv * 0.001)) {
-          issues.push({ row: r, kind: "drift_silver", detail: `مخزّن ${fmt(Number(r.silver_nisab_value))} ≠ محسوب ${fmt(expSilv)}` });
+        if (
+          r.silver_nisab_value != null &&
+          Math.abs(Number(r.silver_nisab_value) - expSilv) > Math.max(TOL, expSilv * 0.001)
+        ) {
+          issues.push({
+            row: r,
+            kind: "drift_silver",
+            detail: `مخزّن ${fmt(Number(r.silver_nisab_value))} ≠ محسوب ${fmt(expSilv)}`,
+          });
           summary[cc].drifts++;
         }
         if (Number(r.gold_price) <= 0 || Number(r.silver_price) <= 0) {
-          issues.push({ row: r, kind: "zero_price", detail: `سعر صفري أو سالب (ذهب=${r.gold_price}، فضة=${r.silver_price})` });
+          issues.push({
+            row: r,
+            kind: "zero_price",
+            detail: `سعر صفري أو سالب (ذهب=${r.gold_price}، فضة=${r.silver_price})`,
+          });
           summary[cc].zeros++;
         }
         if (prev) {
-          const gp = Number(prev.gold_price), gc = Number(r.gold_price);
+          const gp = Number(prev.gold_price),
+            gc = Number(r.gold_price);
           if (gp > 0 && gc > 0) {
             const ratio = gc / gp;
             if (ratio > 5 || ratio < 0.2) {
-              issues.push({ row: r, kind: "yoy_jump_gold", detail: `قفزة سنوية للذهب ×${fmt(ratio)} مقارنة بـ${prev.year}` });
+              issues.push({
+                row: r,
+                kind: "yoy_jump_gold",
+                detail: `قفزة سنوية للذهب ×${fmt(ratio)} مقارنة بـ${prev.year}`,
+              });
               summary[cc].jumps++;
             }
           }
-          const sp = Number(prev.silver_price), sc = Number(r.silver_price);
+          const sp = Number(prev.silver_price),
+            sc = Number(r.silver_price);
           if (sp > 0 && sc > 0) {
             const ratio = sc / sp;
             if (ratio > 5 || ratio < 0.2) {
-              issues.push({ row: r, kind: "yoy_jump_silver", detail: `قفزة سنوية للفضة ×${fmt(ratio)} مقارنة بـ${prev.year}` });
+              issues.push({
+                row: r,
+                kind: "yoy_jump_silver",
+                detail: `قفزة سنوية للفضة ×${fmt(ratio)} مقارنة بـ${prev.year}`,
+              });
               summary[cc].jumps++;
             }
           }
@@ -147,7 +222,9 @@ function NisabAuditPage() {
       </header>
 
       <Card>
-        <CardHeader><CardTitle>ملخّص الجودة لكل دولة</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle>ملخّص الجودة لكل دولة</CardTitle>
+        </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
@@ -164,9 +241,11 @@ function NisabAuditPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {countries.map(cc => {
+              {countries.map((cc) => {
                 const s = audit.summary[cc];
-                const conf = Math.round(((s.direct * 5 + s.derived * 3 + s.estimated * 2) / (s.total * 5)) * 100);
+                const conf = Math.round(
+                  ((s.direct * 5 + s.derived * 3 + s.estimated * 2) / (s.total * 5)) * 100,
+                );
                 return (
                   <TableRow key={cc}>
                     <TableCell className="font-semibold">{cc}</TableCell>
@@ -175,9 +254,15 @@ function NisabAuditPage() {
                     <TableCell className="text-amber-600">{s.derived}</TableCell>
                     <TableCell className="text-rose-600">{s.estimated}</TableCell>
                     <TableCell>{conf}%</TableCell>
-                    <TableCell>{s.drifts === 0 ? "✓" : <span className="text-destructive">{s.drifts}</span>}</TableCell>
-                    <TableCell>{s.zeros === 0 ? "✓" : <span className="text-destructive">{s.zeros}</span>}</TableCell>
-                    <TableCell>{s.jumps === 0 ? "✓" : <span className="text-amber-600">{s.jumps}</span>}</TableCell>
+                    <TableCell>
+                      {s.drifts === 0 ? "✓" : <span className="text-destructive">{s.drifts}</span>}
+                    </TableCell>
+                    <TableCell>
+                      {s.zeros === 0 ? "✓" : <span className="text-destructive">{s.zeros}</span>}
+                    </TableCell>
+                    <TableCell>
+                      {s.jumps === 0 ? "✓" : <span className="text-amber-600">{s.jumps}</span>}
+                    </TableCell>
                   </TableRow>
                 );
               })}
@@ -194,7 +279,9 @@ function NisabAuditPage() {
 
         <TabsContent value="issues">
           <Card>
-            <CardHeader><CardTitle>القيم الشاذة أو غير المتّسقة</CardTitle></CardHeader>
+            <CardHeader>
+              <CardTitle>القيم الشاذة أو غير المتّسقة</CardTitle>
+            </CardHeader>
             <CardContent>
               {audit.issues.length === 0 ? (
                 <p className="text-emerald-600">لا توجد اختلافات — جميع الصفوف متّسقة. ✓</p>
@@ -236,7 +323,9 @@ function NisabAuditPage() {
 
         <TabsContent value="all">
           <Card>
-            <CardHeader><CardTitle>جدول كامل: نصاب وزكاة كل سنة</CardTitle></CardHeader>
+            <CardHeader>
+              <CardTitle>جدول كامل: نصاب وزكاة كل سنة</CardTitle>
+            </CardHeader>
             <CardContent className="max-h-[600px] overflow-auto">
               <Table>
                 <TableHeader className="sticky top-0 bg-background">
@@ -253,7 +342,7 @@ function NisabAuditPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {rows.map(r => {
+                  {rows.map((r) => {
                     const gn = Number(r.gold_price) * GOLD_GRAMS;
                     const sn = Number(r.silver_price) * SILVER_GRAMS;
                     return (

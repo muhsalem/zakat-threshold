@@ -88,10 +88,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "حاسبة الزكاة — للأفراد والشركات" },
-      { name: "description", content: "تطبيق شامل لحساب زكاة الأفراد والشركات وفق الضوابط الشرعية، مع التدقيق والامتثال الشرعي والتطور التاريخي للنصاب." },
+      {
+        name: "description",
+        content:
+          "تطبيق شامل لحساب زكاة الأفراد والشركات وفق الضوابط الشرعية، مع التدقيق والامتثال الشرعي والتطور التاريخي للنصاب.",
+      },
       { name: "author", content: "Zakat Calculator" },
       { property: "og:title", content: "حاسبة الزكاة — للأفراد والشركات" },
-      { property: "og:description", content: "احسب زكاة المال والذهب والفضة والأنعام والزروع وعروض التجارة بدقة، مع نموذج خاص بزكاة الشركات." },
+      {
+        property: "og:description",
+        content:
+          "احسب زكاة المال والذهب والفضة والأنعام والزروع وعروض التجارة بدقة، مع نموذج خاص بزكاة الشركات.",
+      },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "نِصاب — حاسبة الزكاة" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -177,4 +185,3 @@ function AppShell() {
     </div>
   );
 }
-

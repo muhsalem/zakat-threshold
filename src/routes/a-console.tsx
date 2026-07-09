@@ -13,10 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/a-console")({
   head: () => ({
-    meta: [
-      { title: "بوابة إدارية" },
-      { name: "robots", content: "noindex,nofollow" },
-    ],
+    meta: [{ title: "بوابة إدارية" }, { name: "robots", content: "noindex,nofollow" }],
   }),
   component: HiddenConsole,
 });
@@ -43,7 +40,10 @@ function HiddenConsole() {
     setSignInError(null);
     const { error: err } = await supabase.auth.signInWithPassword({ email, password });
     setSigningIn(false);
-    if (err) setSignInError(err.message === "Invalid login credentials" ? "بيانات الدخول غير صحيحة" : err.message);
+    if (err)
+      setSignInError(
+        err.message === "Invalid login credentials" ? "بيانات الدخول غير صحيحة" : err.message,
+      );
     // On success, useAuth updates and step 2 renders automatically.
   }
 
@@ -115,11 +115,17 @@ function HiddenConsole() {
                 {signingIn ? "جاري الدخول…" : "تسجيل الدخول"}
               </Button>
               {signInError && (
-                <Alert variant="destructive"><AlertDescription className="text-xs">{signInError}</AlertDescription></Alert>
+                <Alert variant="destructive">
+                  <AlertDescription className="text-xs">{signInError}</AlertDescription>
+                </Alert>
               )}
               <p className="text-[11px] text-muted-foreground text-center">
                 ليس لديك حساب؟{" "}
-                <button type="button" className="underline" onClick={() => navigate({ to: "/auth" })}>
+                <button
+                  type="button"
+                  className="underline"
+                  onClick={() => navigate({ to: "/auth" })}
+                >
                   أنشئ حسابًا
                 </button>
               </p>
@@ -127,7 +133,8 @@ function HiddenConsole() {
           ) : (
             <form onSubmit={handleMaster} className="space-y-3">
               <p className="text-xs text-muted-foreground">
-                الخطوة 2 من 2: تم التوثيق كـ <span dir="ltr">{user.email}</span>. أدخل كلمة المرور الرئيسية للمتابعة.
+                الخطوة 2 من 2: تم التوثيق كـ <span dir="ltr">{user.email}</span>. أدخل كلمة المرور
+                الرئيسية للمتابعة.
               </p>
               <div className="space-y-1.5">
                 <Label className="text-xs">كلمة المرور الرئيسية</Label>
@@ -149,12 +156,16 @@ function HiddenConsole() {
                 {busy ? "جاري التحقق…" : "منح صلاحية المحاسب"}
               </Button>
               {error && (
-                <Alert variant="destructive"><AlertDescription className="text-xs">{error}</AlertDescription></Alert>
+                <Alert variant="destructive">
+                  <AlertDescription className="text-xs">{error}</AlertDescription>
+                </Alert>
               )}
               <button
                 type="button"
                 className="text-[11px] text-muted-foreground underline w-full text-center"
-                onClick={async () => { await supabase.auth.signOut(); }}
+                onClick={async () => {
+                  await supabase.auth.signOut();
+                }}
               >
                 تسجيل الخروج والعودة للخطوة 1
               </button>

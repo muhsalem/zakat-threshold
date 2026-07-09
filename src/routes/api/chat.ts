@@ -19,13 +19,20 @@ function buildProvider() {
   // 1) Lovable AI Gateway (الأولوية الأولى)
   const lovableKey = process.env.LOVABLE_API_KEY;
   if (lovableKey) {
-    return { provider: createLovableAiGatewayProvider(lovableKey), model: "google/gemini-2.0-flash-lite" };
+    return {
+      provider: createLovableAiGatewayProvider(lovableKey),
+      model: "google/gemini-2.0-flash-lite",
+    };
   }
 
   // 2) OpenAI-compatible endpoint (بديل مرن)
   const openaiKey = process.env.OPENAI_API_KEY;
   if (openaiKey) {
-    const openai = createOpenAICompatible({ name: "openai", baseURL: "https://api.openai.com/v1", headers: { Authorization: `Bearer ${openaiKey}` } });
+    const openai = createOpenAICompatible({
+      name: "openai",
+      baseURL: "https://api.openai.com/v1",
+      headers: { Authorization: `Bearer ${openaiKey}` },
+    });
     return { provider: openai, model: "gpt-4o-mini" };
   }
 
@@ -46,17 +53,22 @@ export const Route = createFileRoute("/api/chat")({
           const anthropicKey = process.env.ANTHROPIC_API_KEY;
           if (!anthropicKey) {
             return new Response(
-              JSON.stringify({ error: "لم يُهيَّأ أي مفتاح AI. أضف LOVABLE_API_KEY أو OPENAI_API_KEY أو ANTHROPIC_API_KEY في متغيرات البيئة." }),
-              { status: 503, headers: { "Content-Type": "application/json" } }
+              JSON.stringify({
+                error:
+                  "لم يُهيَّأ أي مفتاح AI. أضف LOVABLE_API_KEY أو OPENAI_API_KEY أو ANTHROPIC_API_KEY في متغيرات البيئة.",
+              }),
+              { status: 503, headers: { "Content-Type": "application/json" } },
             );
           }
           const client = new Anthropic({ apiKey: anthropicKey });
-          const userMessages = messages.filter((m) => m.role === "user" || m.role === "assistant").map((m) => {
-            const text = Array.isArray(m.parts)
-              ? m.parts.map((p) => (p.type === "text" ? p.text : "")).join("")
-              : "";
-            return { role: m.role as "user" | "assistant", content: text };
-          });
+          const userMessages = messages
+            .filter((m) => m.role === "user" || m.role === "assistant")
+            .map((m) => {
+              const text = Array.isArray(m.parts)
+                ? m.parts.map((p) => (p.type === "text" ? p.text : "")).join("")
+                : "";
+              return { role: m.role as "user" | "assistant", content: text };
+            });
           const stream = await client.messages.create({
             model: "claude-haiku-4-5-20251001",
             max_tokens: 1024,
@@ -69,14 +81,20 @@ export const Route = createFileRoute("/api/chat")({
             async start(controller) {
               for await (const event of stream) {
                 if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
-                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "text", text: event.delta.text })}\n\n`));
+                  controller.enqueue(
+                    encoder.encode(
+                      `data: ${JSON.stringify({ type: "text", text: event.delta.text })}\n\n`,
+                    ),
+                  );
                 }
               }
               controller.enqueue(encoder.encode("data: [DONE]\n\n"));
               controller.close();
             },
           });
-          return new Response(readable, { headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache" } });
+          return new Response(readable, {
+            headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache" },
+          });
         }
 
         const result = streamText({

@@ -22,8 +22,14 @@ const SPEC = {
     "x-shariah-standards": ["AAOIFI-35", "AAOIFI-59", "IFA-OIC"],
   },
   servers: [
-    { url: "https://project--c0035707-4e26-4f8b-ac7b-8485d608f9ce.lovable.app", description: "Production" },
-    { url: "https://project--c0035707-4e26-4f8b-ac7b-8485d608f9ce-dev.lovable.app", description: "Preview" },
+    {
+      url: "https://project--c0035707-4e26-4f8b-ac7b-8485d608f9ce.lovable.app",
+      description: "Production",
+    },
+    {
+      url: "https://project--c0035707-4e26-4f8b-ac7b-8485d608f9ce-dev.lovable.app",
+      description: "Preview",
+    },
   ],
   paths: {
     "/api/public/calc": {
@@ -77,7 +83,11 @@ const SPEC = {
           { name: "metal", in: "query", required: true, schema: { enum: ["gold", "silver"] } },
           { name: "from", in: "query", schema: { type: "string", format: "date" } },
           { name: "to", in: "query", schema: { type: "string", format: "date" } },
-          { name: "limit", in: "query", schema: { type: "integer", minimum: 1, maximum: 5000, default: 500 } },
+          {
+            name: "limit",
+            in: "query",
+            schema: { type: "integer", minimum: 1, maximum: 5000, default: 500 },
+          },
         ],
         responses: {
           "200": {
@@ -92,24 +102,42 @@ const SPEC = {
     "/api/public/erp/journal": {
       get: {
         summary: "Sample ERP journal entry",
-        description: "يرجع قيداً محاسبياً تجريبيًا بالصيغة المطلوبة (?format=quickbooks|xero|odoo|netsuite|sap|csv|xbrl|generic).",
+        description:
+          "يرجع قيداً محاسبياً تجريبيًا بالصيغة المطلوبة (?format=quickbooks|xero|odoo|netsuite|sap|csv|xbrl|generic).",
         tags: ["ERP"],
         parameters: [
-          { name: "format", in: "query", schema: { enum: ["generic","quickbooks","xero","odoo","netsuite","sap","csv","xbrl"], default: "generic" } },
+          {
+            name: "format",
+            in: "query",
+            schema: {
+              enum: ["generic", "quickbooks", "xero", "odoo", "netsuite", "sap", "csv", "xbrl"],
+              default: "generic",
+            },
+          },
         ],
         responses: { "200": { description: "Sample journal entry" } },
       },
       post: {
         summary: "Build ERP journal entry from a zakat calculation",
-        description: "يحوّل نتيجة حساب الزكاة إلى قيد محاسبي مزدوج (Dr Zakat Expense / Cr Zakat Payable) بالصيغة المختارة، مع إمكانية التنزيل كمرفق (?download=1).",
+        description:
+          "يحوّل نتيجة حساب الزكاة إلى قيد محاسبي مزدوج (Dr Zakat Expense / Cr Zakat Payable) بالصيغة المختارة، مع إمكانية التنزيل كمرفق (?download=1).",
         tags: ["ERP"],
         parameters: [
-          { name: "format", in: "query", schema: { enum: ["generic","quickbooks","xero","odoo","netsuite","sap","csv","xbrl"], default: "generic" } },
+          {
+            name: "format",
+            in: "query",
+            schema: {
+              enum: ["generic", "quickbooks", "xero", "odoo", "netsuite", "sap", "csv", "xbrl"],
+              default: "generic",
+            },
+          },
           { name: "download", in: "query", schema: { type: "boolean" } },
         ],
         requestBody: {
           required: true,
-          content: { "application/json": { schema: { $ref: "#/components/schemas/ErpJournalInput" } } },
+          content: {
+            "application/json": { schema: { $ref: "#/components/schemas/ErpJournalInput" } },
+          },
         },
         responses: {
           "200": { description: "Journal entry rendered in requested format" },
@@ -121,11 +149,17 @@ const SPEC = {
     "/api/public/erp/webhook": {
       post: {
         summary: "iPaaS webhook receiver (HMAC-signed)",
-        description: "يستقبل أحداث Zapier/Make/n8n بعد التحقق من HMAC-SHA256 على `${timestamp}.${body}` مع نافذة صلاحية 5 دقائق لمنع Replay.",
+        description:
+          "يستقبل أحداث Zapier/Make/n8n بعد التحقق من HMAC-SHA256 على `${timestamp}.${body}` مع نافذة صلاحية 5 دقائق لمنع Replay.",
         tags: ["ERP"],
         parameters: [
           { name: "X-Signature", in: "header", required: true, schema: { type: "string" } },
-          { name: "X-Signature-Timestamp", in: "header", required: true, schema: { type: "string" } },
+          {
+            name: "X-Signature-Timestamp",
+            in: "header",
+            required: true,
+            schema: { type: "string" },
+          },
         ],
         responses: {
           "202": { description: "Accepted" },
@@ -142,7 +176,12 @@ const SPEC = {
         required: ["assets"],
         properties: {
           assets: { type: "number", description: "إجمالي الأصول الزكوية", minimum: 0 },
-          liabilities: { type: "number", description: "الديون قصيرة الأجل", minimum: 0, default: 0 },
+          liabilities: {
+            type: "number",
+            description: "الديون قصيرة الأجل",
+            minimum: 0,
+            default: 0,
+          },
           nisab: { type: "number", description: "قيمة النصاب بالعملة المحلية", minimum: 0 },
           rate: { type: "number", description: "معدل الزكاة (اختياري)", minimum: 0, maximum: 1 },
           calendar: { enum: ["hijri", "gregorian"], default: "hijri" },
@@ -163,8 +202,22 @@ const SPEC = {
       Nisab: {
         type: "object",
         properties: {
-          gold: { type: "object", properties: { grams: { type: "number" }, price_usd: { type: "number" }, value_usd: { type: "number" } } },
-          silver: { type: "object", properties: { grams: { type: "number" }, price_usd: { type: "number" }, value_usd: { type: "number" } } },
+          gold: {
+            type: "object",
+            properties: {
+              grams: { type: "number" },
+              price_usd: { type: "number" },
+              value_usd: { type: "number" },
+            },
+          },
+          silver: {
+            type: "object",
+            properties: {
+              grams: { type: "number" },
+              price_usd: { type: "number" },
+              value_usd: { type: "number" },
+            },
+          },
         },
       },
       PriceHistory: {

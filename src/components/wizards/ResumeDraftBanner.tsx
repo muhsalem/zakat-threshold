@@ -16,7 +16,9 @@ export function ResumeDraftBanner({
     <Alert className="border-primary/40 bg-primary/5">
       <History className="h-4 w-4 text-primary" />
       <AlertDescription className="flex items-center justify-between gap-2 flex-wrap text-xs">
-        <span>وجدنا مسودّة محفوظة بتاريخ <b>{when}</b>. هل تريد الاستئناف من حيث توقفت؟</span>
+        <span>
+          وجدنا مسودّة محفوظة بتاريخ <b>{when}</b>. هل تريد الاستئناف من حيث توقفت؟
+        </span>
         <div className="flex gap-2">
           <Button size="sm" variant="default" onClick={onResume} className="h-7 gap-1.5">
             استئناف

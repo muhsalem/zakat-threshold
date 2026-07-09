@@ -5,8 +5,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FileText, Users, ClipboardCheck, Wallet, Search, ExternalLink, Loader2 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  FileText,
+  Users,
+  ClipboardCheck,
+  Wallet,
+  Search,
+  ExternalLink,
+  Loader2,
+} from "lucide-react";
 
 type RecordRow = {
   id: string;
@@ -21,7 +35,10 @@ type RecordRow = {
   display_name?: string | null;
 };
 
-const STATUS_META: Record<string, { label: string; variant: "default" | "secondary" | "outline" | "destructive" }> = {
+const STATUS_META: Record<
+  string,
+  { label: string; variant: "default" | "secondary" | "outline" | "destructive" }
+> = {
   draft: { label: "مسودة", variant: "outline" },
   pending: { label: "بانتظار المراجعة", variant: "secondary" },
   approved: { label: "معتمد", variant: "default" },
@@ -31,8 +48,18 @@ const STATUS_META: Record<string, { label: string; variant: "default" | "seconda
 export function AdminOverview() {
   const [loading, setLoading] = useState(true);
   const [rows, setRows] = useState<RecordRow[]>([]);
-  const [users, setUsers] = useState<{ total: number; individual: number; company: number; institution: number; admin: number }>({
-    total: 0, individual: 0, company: 0, institution: 0, admin: 0,
+  const [users, setUsers] = useState<{
+    total: number;
+    individual: number;
+    company: number;
+    institution: number;
+    admin: number;
+  }>({
+    total: 0,
+    individual: 0,
+    company: 0,
+    institution: 0,
+    admin: 0,
   });
   const [q, setQ] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -42,7 +69,8 @@ export function AdminOverview() {
     (async () => {
       setLoading(true);
       const [{ data: recs }, { data: profs }, { data: apprs }] = await Promise.all([
-        supabase.from("zakat_records")
+        supabase
+          .from("zakat_records")
           .select("id,user_id,hijri_year,record_type,total_assets,zakat_due,currency,created_at")
           .order("created_at", { ascending: false })
           .limit(200),
@@ -105,14 +133,31 @@ export function AdminOverview() {
     <div className="space-y-4" dir="rtl">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Kpi icon={<FileText className="h-4 w-4" />} label="إجمالي الإقرارات" value={kpis.total} />
-        <Kpi icon={<ClipboardCheck className="h-4 w-4" />} label="بانتظار المراجعة" value={kpis.pending} tone="warn" />
-        <Kpi icon={<ClipboardCheck className="h-4 w-4" />} label="معتمدة" value={kpis.approved} tone="ok" />
-        <Kpi icon={<Wallet className="h-4 w-4" />} label="إجمالي الزكاة المستحقة" value={kpis.totalDue.toLocaleString("ar-EG", { maximumFractionDigits: 0 })} suffix="ر.س" />
+        <Kpi
+          icon={<ClipboardCheck className="h-4 w-4" />}
+          label="بانتظار المراجعة"
+          value={kpis.pending}
+          tone="warn"
+        />
+        <Kpi
+          icon={<ClipboardCheck className="h-4 w-4" />}
+          label="معتمدة"
+          value={kpis.approved}
+          tone="ok"
+        />
+        <Kpi
+          icon={<Wallet className="h-4 w-4" />}
+          label="إجمالي الزكاة المستحقة"
+          value={kpis.totalDue.toLocaleString("ar-EG", { maximumFractionDigits: 0 })}
+          suffix="ر.س"
+        />
       </div>
 
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="flex items-center gap-2 text-base"><Users className="h-4 w-4" /> المستخدمون</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Users className="h-4 w-4" /> المستخدمون
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-2 text-sm">
@@ -133,10 +178,17 @@ export function AdminOverview() {
           <div className="flex flex-col md:flex-row gap-2">
             <div className="relative flex-1">
               <Search className="absolute right-2 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />
-              <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="ابحث بالاسم/السنة/المعرّف…" className="pr-8" />
+              <Input
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="ابحث بالاسم/السنة/المعرّف…"
+                className="pr-8"
+              />
             </div>
             <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="w-full md:w-40"><SelectValue placeholder="النوع" /></SelectTrigger>
+              <SelectTrigger className="w-full md:w-40">
+                <SelectValue placeholder="النوع" />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">كل الأنواع</SelectItem>
                 <SelectItem value="individual">فرد</SelectItem>
@@ -145,7 +197,9 @@ export function AdminOverview() {
               </SelectContent>
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full md:w-44"><SelectValue placeholder="الحالة" /></SelectTrigger>
+              <SelectTrigger className="w-full md:w-44">
+                <SelectValue placeholder="الحالة" />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">كل الحالات</SelectItem>
                 <SelectItem value="draft">مسودة</SelectItem>
@@ -172,28 +226,42 @@ export function AdminOverview() {
               </thead>
               <tbody>
                 {filtered.length === 0 ? (
-                  <tr><td colSpan={8} className="py-6 text-center text-muted-foreground">لا نتائج مطابقة</td></tr>
-                ) : filtered.slice(0, 100).map((r) => {
-                  const meta = STATUS_META[r.status ?? "draft"] ?? STATUS_META.draft;
-                  return (
-                    <tr key={r.id} className="border-b hover:bg-muted/30">
-                      <td className="py-2 px-2 text-xs">{new Date(r.created_at).toLocaleDateString("ar-EG")}</td>
-                      <td className="py-2 px-2 text-xs">{r.display_name ?? "—"}</td>
-                      <td className="py-2 px-2 text-xs">{r.record_type ?? "—"}</td>
-                      <td className="py-2 px-2 text-xs">{r.hijri_year ?? "—"}</td>
-                      <td className="py-2 px-2 text-xs">{(Number(r.total_assets) || 0).toLocaleString("ar-EG")}</td>
-                      <td className="py-2 px-2 text-xs font-medium">{(Number(r.zakat_due) || 0).toLocaleString("ar-EG")} {r.currency ?? ""}</td>
-                      <td className="py-2 px-2"><Badge variant={meta.variant}>{meta.label}</Badge></td>
-                      <td className="py-2 px-2">
-                        <Button asChild size="sm" variant="outline" className="h-7 gap-1">
-                          <Link to="/certified-report/$recordId" params={{ recordId: r.id }}>
-                            فتح <ExternalLink className="h-3 w-3" />
-                          </Link>
-                        </Button>
-                      </td>
-                    </tr>
-                  );
-                })}
+                  <tr>
+                    <td colSpan={8} className="py-6 text-center text-muted-foreground">
+                      لا نتائج مطابقة
+                    </td>
+                  </tr>
+                ) : (
+                  filtered.slice(0, 100).map((r) => {
+                    const meta = STATUS_META[r.status ?? "draft"] ?? STATUS_META.draft;
+                    return (
+                      <tr key={r.id} className="border-b hover:bg-muted/30">
+                        <td className="py-2 px-2 text-xs">
+                          {new Date(r.created_at).toLocaleDateString("ar-EG")}
+                        </td>
+                        <td className="py-2 px-2 text-xs">{r.display_name ?? "—"}</td>
+                        <td className="py-2 px-2 text-xs">{r.record_type ?? "—"}</td>
+                        <td className="py-2 px-2 text-xs">{r.hijri_year ?? "—"}</td>
+                        <td className="py-2 px-2 text-xs">
+                          {(Number(r.total_assets) || 0).toLocaleString("ar-EG")}
+                        </td>
+                        <td className="py-2 px-2 text-xs font-medium">
+                          {(Number(r.zakat_due) || 0).toLocaleString("ar-EG")} {r.currency ?? ""}
+                        </td>
+                        <td className="py-2 px-2">
+                          <Badge variant={meta.variant}>{meta.label}</Badge>
+                        </td>
+                        <td className="py-2 px-2">
+                          <Button asChild size="sm" variant="outline" className="h-7 gap-1">
+                            <Link to="/certified-report/$recordId" params={{ recordId: r.id }}>
+                              فتح <ExternalLink className="h-3 w-3" />
+                            </Link>
+                          </Button>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
               </tbody>
             </table>
           </div>
@@ -203,14 +271,33 @@ export function AdminOverview() {
   );
 }
 
-function Kpi({ icon, label, value, suffix, tone }: { icon: React.ReactNode; label: string; value: string | number; suffix?: string; tone?: "ok" | "warn" }) {
-  const toneCls = tone === "ok" ? "text-emerald-600" : tone === "warn" ? "text-amber-600" : "text-primary";
+function Kpi({
+  icon,
+  label,
+  value,
+  suffix,
+  tone,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string | number;
+  suffix?: string;
+  tone?: "ok" | "warn";
+}) {
+  const toneCls =
+    tone === "ok" ? "text-emerald-600" : tone === "warn" ? "text-amber-600" : "text-primary";
   return (
     <Card>
       <CardContent className="p-3">
-        <div className={`flex items-center gap-2 text-xs ${toneCls}`}>{icon}<span>{label}</span></div>
+        <div className={`flex items-center gap-2 text-xs ${toneCls}`}>
+          {icon}
+          <span>{label}</span>
+        </div>
         <div className="mt-1 text-xl font-bold">
-          {value}{suffix ? <span className="text-xs font-normal text-muted-foreground mr-1">{suffix}</span> : null}
+          {value}
+          {suffix ? (
+            <span className="text-xs font-normal text-muted-foreground mr-1">{suffix}</span>
+          ) : null}
         </div>
       </CardContent>
     </Card>

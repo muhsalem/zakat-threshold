@@ -1,8 +1,21 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { BookOpen, ShieldAlert, CheckCircle2, FileText, Info } from "lucide-react";
 import { SHARIA_STANDARDS, type SectorId } from "@/lib/shariaStandards";
 
@@ -25,7 +38,8 @@ export function ShariaStandardsCard({ defaultSector = "general" }: Props) {
           المعايير الشرعية حسب النشاط / القطاع
         </CardTitle>
         <p className="text-[11px] text-muted-foreground leading-relaxed">
-          مرجع تأصيلي مستمد من المذاهب الأربعة وقرارات المجامع الفقهية ومعايير AAOIFI — للاسترشاد ولا يُغني عن هيئة رقابة شرعية مؤهَّلة.
+          مرجع تأصيلي مستمد من المذاهب الأربعة وقرارات المجامع الفقهية ومعايير AAOIFI — للاسترشاد
+          ولا يُغني عن هيئة رقابة شرعية مؤهَّلة.
         </p>
       </CardHeader>
 
@@ -59,7 +73,9 @@ export function ShariaStandardsCard({ defaultSector = "general" }: Props) {
                 المعيار ({std.number}) — {std.title}
               </div>
             </div>
-            <Badge variant="outline" className="text-[10px]">مرجع تأصيلي</Badge>
+            <Badge variant="outline" className="text-[10px]">
+              مرجع تأصيلي
+            </Badge>
           </div>
 
           <div className="rounded-md bg-background border p-3 space-y-1">
@@ -124,7 +140,9 @@ export function ShariaStandardsCard({ defaultSector = "general" }: Props) {
           {std.note && (
             <div className="rounded-md border border-amber-500/40 bg-amber-500/5 p-2.5 text-[11px] leading-relaxed flex items-start gap-2">
               <Info className="h-3.5 w-3.5 text-amber-600 mt-0.5 shrink-0" />
-              <span><b>تنبيه — موضع اجتهاد/خلاف:</b> {std.note}</span>
+              <span>
+                <b>تنبيه — موضع اجتهاد/خلاف:</b> {std.note}
+              </span>
             </div>
           )}
         </div>

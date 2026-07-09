@@ -12,7 +12,17 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Input } from "@/components/ui/input";
-import { Search, Home, Calculator, BookOpen, ShieldCheck, Bell, HelpCircle, Sparkles, LayoutDashboard } from "lucide-react";
+import {
+  Search,
+  Home,
+  Calculator,
+  BookOpen,
+  ShieldCheck,
+  Bell,
+  HelpCircle,
+  Sparkles,
+  LayoutDashboard,
+} from "lucide-react";
 import { searchEntries } from "@/lib/searchIndex";
 import { useAuth, type AccountType } from "@/hooks/useAuth";
 
@@ -56,7 +66,6 @@ export function AppSidebar() {
   const navItems = isAccountant ? NAV : NAV.filter((i) => isVisible(i.audience, accountType));
   const calcItems = isAccountant ? CALCS : CALCS.filter((i) => isVisible(i.audience, accountType));
 
-
   return (
     <Sidebar collapsible="icon" side="right">
       <SidebarContent>
@@ -87,7 +96,9 @@ export function AppSidebar() {
                           className="block px-2 py-1.5 hover:bg-muted rounded-sm"
                         >
                           <div className="font-medium text-xs">{r.title}</div>
-                          <div className="text-[10px] text-muted-foreground" dir="ltr">{r.to}</div>
+                          <div className="text-[10px] text-muted-foreground" dir="ltr">
+                            {r.to}
+                          </div>
                         </Link>
                       </li>
                     ))}
@@ -119,7 +130,13 @@ export function AppSidebar() {
         {calcItems.length > 0 && (
           <SidebarGroup>
             <SidebarGroupLabel>
-              {isAccountant ? "كل الحاسبات" : accountType === "company" ? "حاسبات الشركات" : accountType === "institution" ? "حاسبات المؤسسات" : "حاسبات الأفراد"}
+              {isAccountant
+                ? "كل الحاسبات"
+                : accountType === "company"
+                  ? "حاسبات الشركات"
+                  : accountType === "institution"
+                    ? "حاسبات المؤسسات"
+                    : "حاسبات الأفراد"}
             </SidebarGroupLabel>
 
             <SidebarGroupContent>

@@ -51,7 +51,9 @@ export function CropsZakatSection({ currencyName = "ج.م" }: { currencyName?: s
         <CardTitle className="flex items-center gap-2 text-base">
           <Wheat className="h-4 w-4 text-primary" />
           زكاة الزروع والثمار
-          <Badge variant="outline" className="text-[10px] mr-auto">قول الجمهور</Badge>
+          <Badge variant="outline" className="text-[10px] mr-auto">
+            قول الجمهور
+          </Badge>
         </CardTitle>
       </CardHeader>
 
@@ -59,8 +61,8 @@ export function CropsZakatSection({ currencyName = "ج.م" }: { currencyName?: s
         <Alert className="border-primary/20 bg-primary/5">
           <Info className="h-4 w-4" />
           <AlertDescription className="text-xs leading-relaxed">
-            النصاب: <b>{CROPS_NISAB_KG} كجم</b> (5 أوسق) بعد التصفية والتجفيف.
-            تُخرج عند الحصاد ولا يُشترط الحول. المعدّل يعتمد على طبيعة الري.
+            النصاب: <b>{CROPS_NISAB_KG} كجم</b> (5 أوسق) بعد التصفية والتجفيف. تُخرج عند الحصاد ولا
+            يُشترط الحول. المعدّل يعتمد على طبيعة الري.
           </AlertDescription>
         </Alert>
 
@@ -68,19 +70,27 @@ export function CropsZakatSection({ currencyName = "ج.م" }: { currencyName?: s
           <div className="space-y-1">
             <Label className="text-xs">إجمالي المحصول (كجم)</Label>
             <Input
-              type="number" min="0" step="0.01"
+              type="number"
+              min="0"
+              step="0.01"
               value={quantityKg}
               onChange={(e) => setQuantityKg(e.target.value)}
-              dir="ltr" style={{ textAlign: "right" }} placeholder="0"
+              dir="ltr"
+              style={{ textAlign: "right" }}
+              placeholder="0"
             />
           </div>
           <div className="space-y-1">
             <Label className="text-xs">سعر الكيلو ({currencyName}) — اختياري</Label>
             <Input
-              type="number" min="0" step="0.01"
+              type="number"
+              min="0"
+              step="0.01"
               value={pricePerKg}
               onChange={(e) => setPricePerKg(e.target.value)}
-              dir="ltr" style={{ textAlign: "right" }} placeholder="0"
+              dir="ltr"
+              style={{ textAlign: "right" }}
+              placeholder="0"
             />
           </div>
           <div className="space-y-1">
@@ -131,7 +141,8 @@ export function CropsZakatSection({ currencyName = "ج.م" }: { currencyName?: s
           <AlertDescription className="text-[11px] leading-relaxed">
             <b>مرجع:</b> «ليس فيما دون خمسة أوسق صدقة» — متفق عليه. والوسق ستون صاعاً (~130.6 كجم).
             البيوت المحمية والمحاصيل الحديثة كالعادي ما دامت من القوت أو الثمر الذي يُدَّخر.
-            الخضروات والفواكه غير المُدَّخرة محل خلاف — الراجح عند الجمهور: لا زكاة فيها عيناً، وتدخل في عروض التجارة إن أُعِدّت للبيع.
+            الخضروات والفواكه غير المُدَّخرة محل خلاف — الراجح عند الجمهور: لا زكاة فيها عيناً،
+            وتدخل في عروض التجارة إن أُعِدّت للبيع.
           </AlertDescription>
         </Alert>
       </CardContent>

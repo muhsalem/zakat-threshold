@@ -19,19 +19,27 @@ export const Route = createFileRoute("/api/public/calc")({
         try {
           body = await request.json();
         } catch {
-          return new Response(JSON.stringify({ ok: false, error: "invalid_json" }), { status: 400, headers: CORS });
+          return new Response(JSON.stringify({ ok: false, error: "invalid_json" }), {
+            status: 400,
+            headers: CORS,
+          });
         }
         const b = (body ?? {}) as Record<string, unknown>;
         const assets = Number(b.assets ?? 0);
         const liabilities = Number(b.liabilities ?? 0);
         const nisab = Number(b.nisab ?? 0);
-        const calendar = String(b.calendar ?? "hijri").toLowerCase() === "gregorian" ? "gregorian" : "hijri";
+        const calendar =
+          String(b.calendar ?? "hijri").toLowerCase() === "gregorian" ? "gregorian" : "hijri";
         // الندوة السابعة لقضايا الزكاة: يُزاد المعدّل عند احتساب الحول ميلادياً
         const defaultRate = calendar === "gregorian" ? 0.02577 : 0.025;
-        const rate = Number.isFinite(Number(b.rate)) && Number(b.rate) > 0 ? Number(b.rate) : defaultRate;
+        const rate =
+          Number.isFinite(Number(b.rate)) && Number(b.rate) > 0 ? Number(b.rate) : defaultRate;
 
         if (!Number.isFinite(assets) || !Number.isFinite(liabilities) || !Number.isFinite(nisab)) {
-          return new Response(JSON.stringify({ ok: false, error: "invalid_numbers" }), { status: 400, headers: CORS });
+          return new Response(JSON.stringify({ ok: false, error: "invalid_numbers" }), {
+            status: 400,
+            headers: CORS,
+          });
         }
         const net = Math.max(0, assets - liabilities);
         const eligible = net >= nisab;
@@ -45,14 +53,14 @@ export const Route = createFileRoute("/api/public/calc")({
             eligible,
             zakat_due: zakat,
             standard: "AAOIFI 35",
-            note: calendar === "gregorian"
-              ? "تم تطبيق معدّل 2.577% لاحتساب الحول بالتقويم الميلادي وفق توصية الندوة السابعة لقضايا الزكاة."
-              : "تم تطبيق معدّل 2.5% للحول الهجري القمري (354 يوم).",
+            note:
+              calendar === "gregorian"
+                ? "تم تطبيق معدّل 2.577% لاحتساب الحول بالتقويم الميلادي وفق توصية الندوة السابعة لقضايا الزكاة."
+                : "تم تطبيق معدّل 2.5% للحول الهجري القمري (354 يوم).",
             generated_at: new Date().toISOString(),
           }),
-          { headers: CORS }
+          { headers: CORS },
         );
-
       },
     },
   },
