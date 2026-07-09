@@ -41,7 +41,7 @@ import {
   complianceCheck,
   complianceScore,
   COUNTRY_LABELS,
-  MADHAB_LABELS,
+  
   STATUS_LABELS,
   KIND_LABELS,
   type Client,
