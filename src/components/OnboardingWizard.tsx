@@ -188,12 +188,6 @@ export function OnboardingWizard() {
           </div>
         </DialogFooter>
 
-              <Button disabled={!canNext} onClick={finish}>
-                ابدأ الحساب <ArrowLeft className="mr-1 h-4 w-4" />
-              </Button>
-            )}
-          </div>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
