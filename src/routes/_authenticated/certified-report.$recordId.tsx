@@ -287,7 +287,7 @@ const SNAPSHOT_LABELS: { [key: string]: string } = {
   debts: "ديون عليك",
   hijriYear: "السنة الهجرية",
   country: "الدولة",
-  madhab: "المذهب",
+  
   hawlDate: "تاريخ الحول",
   nisab: "قيمة النصاب",
 };
