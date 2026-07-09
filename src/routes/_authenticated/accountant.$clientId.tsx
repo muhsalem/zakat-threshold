@@ -148,9 +148,6 @@ function ClientDetail() {
     }
   };
 
-
-
-
   const issueAndSendReport = async () => {
     if (!client.email) {
       toast.error("لا يوجد بريد إلكتروني للعميل");
