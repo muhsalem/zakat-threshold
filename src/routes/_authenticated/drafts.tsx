@@ -111,10 +111,12 @@ function DraftsPage() {
         .limit(50),
       supabase
         .from("zakat_records")
-        .select("id,record_type,gregorian_date,hijri_year,currency,zakat_base,zakat_due,snapshot,created_at")
+        .select(
+          "id,record_type,gregorian_date,hijri_year,currency,zakat_base,zakat_due,prepaid_zakat,net_due,notes,snapshot,created_at",
+        )
         .eq("user_id", uid)
         .order("created_at", { ascending: false })
-        .limit(50),
+        .limit(200),
     ]);
     if (de) setError(de.message);
     if (re) setError((prev) => prev ?? re.message);
