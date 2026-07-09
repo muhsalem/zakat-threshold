@@ -40,8 +40,6 @@ import {
 import {
   createClient as createAccountantClient,
   type ClientKind,
-  type Madhab,
-  MADHAB_LABELS,
   COUNTRY_LABELS,
 } from "@/lib/accountantStore";
 import { supabase } from "@/integrations/supabase/client";
@@ -70,7 +68,7 @@ type FormState = {
   phone: string;
   kind: ClientKind;
   country: string;
-  madhab: Madhab;
+  madhab: "mixed";
   hawlDate: string;
   // basic
   cash: number;
@@ -190,7 +188,7 @@ function ClientIntakePage() {
   };
 
   const progress = useMemo(() => {
-    const required: Array<keyof FormState> = ["name", "email", "country", "madhab", "hawlDate"];
+    const required: Array<keyof FormState> = ["name", "email", "country", "hawlDate"];
     const requiredDone = required.filter((k) => String(form[k] ?? "").trim().length > 0).length;
     const numericKeys: Array<keyof FormState> = [
       "cash",
@@ -796,20 +794,6 @@ function BasicInfoCard({
             </SelectTrigger>
             <SelectContent>
               {Object.entries(COUNTRY_LABELS).map(([v, l]) => (
-                <SelectItem key={v} value={v}>
-                  {l}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </Field>
-        <Field label="المذهب الفقهي">
-          <Select value={form.madhab} onValueChange={(v) => set("madhab", v as Madhab)}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {(Object.entries(MADHAB_LABELS) as [Madhab, string][]).map(([v, l]) => (
                 <SelectItem key={v} value={v}>
                   {l}
                 </SelectItem>

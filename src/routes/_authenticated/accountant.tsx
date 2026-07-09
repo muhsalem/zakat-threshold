@@ -68,13 +68,11 @@ import {
   complianceCheck,
   complianceScore,
   COUNTRY_LABELS,
-  MADHAB_LABELS,
   STATUS_LABELS,
   KIND_LABELS,
   type Client,
   type ClientKind,
   type ClientStatus,
-  type Madhab,
 } from "@/lib/accountantStore";
 
 export const Route = createFileRoute("/_authenticated/accountant")({
@@ -119,7 +117,6 @@ function AccountantPortal() {
   const [filters, setFilters] = useState({
     kind: "all" as "all" | ClientKind,
     country: "all",
-    madhab: "all" as "all" | Madhab,
     fiscalYear: "all",
     status: "all" as "all" | ClientStatus,
     calculated: "all" as "all" | "yes" | "no",
@@ -191,7 +188,7 @@ function AccountantPortal() {
     return clients
       .filter((c) => filters.kind === "all" || c.kind === filters.kind)
       .filter((c) => filters.country === "all" || c.country === filters.country)
-      .filter((c) => filters.madhab === "all" || c.madhab === filters.madhab)
+      
       .filter((c) => filters.fiscalYear === "all" || String(c.fiscalYear) === filters.fiscalYear)
       .filter((c) => filters.status === "all" || c.status === filters.status)
       .filter(
@@ -264,7 +261,6 @@ function AccountantPortal() {
       "الاسم",
       "النوع",
       "الدولة",
-      "المذهب",
       "السنة",
       "الحالة",
       "الوعاء",
@@ -278,7 +274,6 @@ function AccountantPortal() {
         c.name,
         KIND_LABELS[c.kind],
         COUNTRY_LABELS[c.country] ?? c.country,
-        MADHAB_LABELS[c.madhab],
         c.fiscalYear,
         STATUS_LABELS[c.status],
         Math.round(wealthOf(c)),
@@ -474,15 +469,6 @@ function AccountantPortal() {
                   ]}
                 />
                 <FilterSelect
-                  label="المذهب"
-                  value={filters.madhab}
-                  onChange={(v) => setFilters({ ...filters, madhab: v as any })}
-                  options={[
-                    ["all", "الكل"],
-                    ...(Object.entries(MADHAB_LABELS) as [string, string][]),
-                  ]}
-                />
-                <FilterSelect
                   label="السنة"
                   value={filters.fiscalYear}
                   onChange={(v) => setFilters({ ...filters, fiscalYear: v })}
@@ -613,9 +599,7 @@ function AccountantPortal() {
                           </TableCell>
                           <TableCell className="text-xs">
                             {COUNTRY_LABELS[c.country] ?? c.country}
-                            <div className="text-muted-foreground">
-                              {MADHAB_LABELS[c.madhab]} · {c.fiscalYear}
-                            </div>
+                            <div className="text-muted-foreground">{c.fiscalYear}</div>
                           </TableCell>
                           <TableCell>
                             <StatusBadge status={c.status} />
@@ -842,10 +826,8 @@ async function addClientPrompt(reload: () => Promise<void>) {
   const kind = (prompt("النوع (individual / company / institution)", "individual") ||
     "individual") as ClientKind;
   const country = prompt("رمز الدولة (SA / EG / AE ...)", "SA") || "SA";
-  const madhab = (prompt("المذهب (hanafi / maliki / shafii / hanbali / mixed)", "mixed") ||
-    "mixed") as Madhab;
   try {
-    await createClient({ name, kind, country, madhab, createdVia: "manual" });
+    await createClient({ name, kind, country, madhab: "mixed", createdVia: "manual" });
     await reload();
     toast.success("تمت الإضافة");
   } catch (e) {

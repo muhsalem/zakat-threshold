@@ -23,7 +23,6 @@ import {
 const KEY = "zakat_onboarding_v1";
 
 type Kind = "individual" | "company" | "group";
-type Madhab = "hanafi" | "shafii" | "maliki" | "hanbali" | "jafari";
 type Country = "SA" | "EG" | "AE" | "TR" | "MY" | "US" | "GLOBAL";
 
 const KINDS: {
@@ -60,20 +59,11 @@ const COUNTRIES: { id: Country; label: string }[] = [
   { id: "GLOBAL", label: "دولي / آخر" },
 ];
 
-const MADHABS: { id: Madhab; label: string }[] = [
-  { id: "hanafi", label: "حنفي" },
-  { id: "shafii", label: "شافعي" },
-  { id: "maliki", label: "مالكي" },
-  { id: "hanbali", label: "حنبلي" },
-  { id: "jafari", label: "جعفري" },
-];
-
 export function OnboardingWizard() {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
   const [kind, setKind] = useState<Kind | null>(null);
   const [country, setCountry] = useState<Country | null>(null);
-  const [madhab, setMadhab] = useState<Madhab | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -86,14 +76,14 @@ export function OnboardingWizard() {
 
   function finish() {
     try {
-      window.localStorage.setItem(KEY, JSON.stringify({ kind, country, madhab, at: Date.now() }));
+      window.localStorage.setItem(KEY, JSON.stringify({ kind, country, at: Date.now() }));
     } catch {}
     setOpen(false);
     const target = KINDS.find((k) => k.id === kind)?.to ?? "/";
     navigate({ to: target });
   }
 
-  const canNext = (step === 0 && !!kind) || (step === 1 && !!country) || (step === 2 && !!madhab);
+  const canNext = (step === 0 && !!kind) || (step === 1 && !!country);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -101,21 +91,22 @@ export function OnboardingWizard() {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-primary" />
-            أهلاً بك في نِصاب — لنبدأ بثلاث خطوات
+            أهلاً بك في نِصاب — لنبدأ بخطوتين
           </DialogTitle>
           <DialogDescription>
-            نُخصّص التجربة حسب نوع المستخدم والدولة والمذهب. يمكنك تغيير كل شيء لاحقاً من الإعدادات.
+            نُخصّص التجربة حسب نوع المستخدم والدولة. يمكنك تغيير كل شيء لاحقاً من الإعدادات.
           </DialogDescription>
         </DialogHeader>
 
         <div className="flex items-center justify-center gap-2 py-2">
-          {[0, 1, 2].map((i) => (
+          {[0, 1].map((i) => (
             <div
               key={i}
               className={`h-1.5 w-16 rounded-full transition-colors ${i <= step ? "bg-primary" : "bg-muted"}`}
             />
           ))}
         </div>
+
 
         {step === 0 && (
           <div className="space-y-3">
@@ -167,30 +158,6 @@ export function OnboardingWizard() {
           </div>
         )}
 
-        {step === 2 && (
-          <div className="space-y-3">
-            <div className="text-sm text-muted-foreground">
-              اختر المذهب أو الهيئة الشرعية المرجعية
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {MADHABS.map((m) => (
-                <Button
-                  key={m.id}
-                  variant={madhab === m.id ? "default" : "outline"}
-                  onClick={() => setMadhab(m.id)}
-                  className="justify-start"
-                >
-                  {madhab === m.id && <CheckCircle2 className="ml-2 h-4 w-4" />}
-                  {m.label}
-                </Button>
-              ))}
-            </div>
-            <p className="text-xs text-muted-foreground pt-2">
-              الاختيار يُوجّه الفتاوى الافتراضية فقط، ويمكنك مقارنة المذاهب داخل التطبيق في أي وقت.
-            </p>
-          </div>
-        )}
-
         <DialogFooter className="gap-2 sm:justify-between">
           <Button
             variant="ghost"
@@ -209,7 +176,7 @@ export function OnboardingWizard() {
                 <ArrowRight className="ml-1 h-4 w-4" /> السابق
               </Button>
             )}
-            {step < 2 ? (
+            {step < 1 ? (
               <Button disabled={!canNext} onClick={() => setStep(step + 1)}>
                 التالي <ArrowLeft className="mr-1 h-4 w-4" />
               </Button>
@@ -220,6 +187,7 @@ export function OnboardingWizard() {
             )}
           </div>
         </DialogFooter>
+
       </DialogContent>
     </Dialog>
   );
