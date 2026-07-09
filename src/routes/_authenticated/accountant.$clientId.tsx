@@ -100,7 +100,11 @@ function ClientDetail() {
       const { sig } = await signReport({ data: { id: reportId, hash, issued } });
 
       // احفظ في zakat_records
+      const { data: authData } = await supabase.auth.getUser();
+      const uid = authData?.user?.id;
+      if (!uid) throw new Error("لم يتم التحقق من هوية المستخدم");
       await supabase.from("zakat_records").insert({
+        user_id: uid,
         record_type: client.kind,
         gregorian_date: issued.slice(0, 10),
         currency: client.currency,
@@ -111,7 +115,7 @@ function ClientDetail() {
         prepaid_zakat: 0,
         net_due: zakatAmount,
         notes: `[معتمد] ${client.name} — ${reportId} sig:${sig}`,
-        snapshot: { client, reportId, sig },
+        snapshot: { client, reportId, sig } as never,
       });
 
       // أرسل البريد
