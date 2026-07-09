@@ -64,6 +64,7 @@ function ClientDetail() {
   const { clientId } = Route.useParams();
   const navigate = useNavigate();
   const [client, setClient] = useState<Client | null>(null);
+  const [sendingReport, setSendingReport] = useState(false);
 
   const reload = async () => {
     try {
