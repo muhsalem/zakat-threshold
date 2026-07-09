@@ -34,6 +34,7 @@ import { fmt, COUNTRY_PRICES, GOLD_NISAB_GRAMS, SILVER_NISAB_GRAMS, ZAKAT_RATE }
 import { toast } from "sonner";
 import { SaveToHistoryCard } from "@/components/zakat/SaveToHistoryCard";
 import { useWizardAutosave } from "@/hooks/useWizardAutosave";
+import { useCloudAutosave } from "@/hooks/useCloudAutosave";
 import { ResumeDraftBanner, AutosaveIndicator } from "@/components/wizards/ResumeDraftBanner";
 
 const GOLD_PURITY: Record<string, number> = {
