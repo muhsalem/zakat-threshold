@@ -40,8 +40,6 @@ import {
 import {
   createClient as createAccountantClient,
   type ClientKind,
-  type Madhab,
-  MADHAB_LABELS,
   COUNTRY_LABELS,
 } from "@/lib/accountantStore";
 import { supabase } from "@/integrations/supabase/client";
