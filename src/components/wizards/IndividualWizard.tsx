@@ -371,7 +371,7 @@ export function IndividualWizard() {
             <Icon className="h-5 w-5 text-primary" /> {S.title}
           </CardTitle>
           <div className="flex items-center gap-2">
-            <AutosaveIndicator savedAt={savedAt} />
+            <AutosaveIndicator savedAt={savedAt} cloudSavedAt={cloudSavedAt} cloudStatus={cloudStatus} />
             <Badge variant="outline" className="text-xs">
               {step + 1} / {STEPS.length}
             </Badge>
