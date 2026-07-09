@@ -16,6 +16,7 @@ import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as StatusRouteImport } from './routes/status'
 import { Route as SoftwareRecommendationsRouteImport } from './routes/software-recommendations'
 import { Route as ShowcaseRouteImport } from './routes/showcase'
+import { Route as ShariaChangelogRouteImport } from './routes/sharia-changelog'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PricesHistoryRouteImport } from './routes/prices-history'
@@ -25,6 +26,7 @@ import { Route as NisabAuditRouteImport } from './routes/nisab-audit'
 import { Route as ImpactRouteImport } from './routes/impact'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as GroupZakatRouteImport } from './routes/group-zakat'
+import { Route as GovernanceRouteImport } from './routes/governance'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EvaluationRouteImport } from './routes/evaluation'
 import { Route as EsgRouteImport } from './routes/esg'
@@ -100,6 +102,11 @@ const ShowcaseRoute = ShowcaseRouteImport.update({
   path: '/showcase',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShariaChangelogRoute = ShariaChangelogRouteImport.update({
+  id: '/sharia-changelog',
+  path: '/sharia-changelog',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SecurityRoute = SecurityRouteImport.update({
   id: '/security',
   path: '/security',
@@ -143,6 +150,11 @@ const HistoryRoute = HistoryRouteImport.update({
 const GroupZakatRoute = GroupZakatRouteImport.update({
   id: '/group-zakat',
   path: '/group-zakat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GovernanceRoute = GovernanceRouteImport.update({
+  id: '/governance',
+  path: '/governance',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqRoute = FaqRouteImport.update({
@@ -365,6 +377,7 @@ export interface FileRoutesByFullPath {
   '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
+  '/governance': typeof GovernanceRoute
   '/group-zakat': typeof GroupZakatRoute
   '/history': typeof HistoryRoute
   '/impact': typeof ImpactRoute
@@ -374,6 +387,7 @@ export interface FileRoutesByFullPath {
   '/prices-history': typeof PricesHistoryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
+  '/sharia-changelog': typeof ShariaChangelogRoute
   '/showcase': typeof ShowcaseRoute
   '/software-recommendations': typeof SoftwareRecommendationsRoute
   '/status': typeof StatusRoute
@@ -421,6 +435,7 @@ export interface FileRoutesByTo {
   '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
+  '/governance': typeof GovernanceRoute
   '/group-zakat': typeof GroupZakatRoute
   '/history': typeof HistoryRoute
   '/impact': typeof ImpactRoute
@@ -430,6 +445,7 @@ export interface FileRoutesByTo {
   '/prices-history': typeof PricesHistoryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
+  '/sharia-changelog': typeof ShariaChangelogRoute
   '/showcase': typeof ShowcaseRoute
   '/software-recommendations': typeof SoftwareRecommendationsRoute
   '/status': typeof StatusRoute
@@ -479,6 +495,7 @@ export interface FileRoutesById {
   '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
+  '/governance': typeof GovernanceRoute
   '/group-zakat': typeof GroupZakatRoute
   '/history': typeof HistoryRoute
   '/impact': typeof ImpactRoute
@@ -488,6 +505,7 @@ export interface FileRoutesById {
   '/prices-history': typeof PricesHistoryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
+  '/sharia-changelog': typeof ShariaChangelogRoute
   '/showcase': typeof ShowcaseRoute
   '/software-recommendations': typeof SoftwareRecommendationsRoute
   '/status': typeof StatusRoute
@@ -537,6 +555,7 @@ export interface FileRouteTypes {
     | '/esg'
     | '/evaluation'
     | '/faq'
+    | '/governance'
     | '/group-zakat'
     | '/history'
     | '/impact'
@@ -546,6 +565,7 @@ export interface FileRouteTypes {
     | '/prices-history'
     | '/reset-password'
     | '/security'
+    | '/sharia-changelog'
     | '/showcase'
     | '/software-recommendations'
     | '/status'
@@ -593,6 +613,7 @@ export interface FileRouteTypes {
     | '/esg'
     | '/evaluation'
     | '/faq'
+    | '/governance'
     | '/group-zakat'
     | '/history'
     | '/impact'
@@ -602,6 +623,7 @@ export interface FileRouteTypes {
     | '/prices-history'
     | '/reset-password'
     | '/security'
+    | '/sharia-changelog'
     | '/showcase'
     | '/software-recommendations'
     | '/status'
@@ -650,6 +672,7 @@ export interface FileRouteTypes {
     | '/esg'
     | '/evaluation'
     | '/faq'
+    | '/governance'
     | '/group-zakat'
     | '/history'
     | '/impact'
@@ -659,6 +682,7 @@ export interface FileRouteTypes {
     | '/prices-history'
     | '/reset-password'
     | '/security'
+    | '/sharia-changelog'
     | '/showcase'
     | '/software-recommendations'
     | '/status'
@@ -708,6 +732,7 @@ export interface RootRouteChildren {
   EsgRoute: typeof EsgRoute
   EvaluationRoute: typeof EvaluationRoute
   FaqRoute: typeof FaqRoute
+  GovernanceRoute: typeof GovernanceRoute
   GroupZakatRoute: typeof GroupZakatRoute
   HistoryRoute: typeof HistoryRoute
   ImpactRoute: typeof ImpactRoute
@@ -717,6 +742,7 @@ export interface RootRouteChildren {
   PricesHistoryRoute: typeof PricesHistoryRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SecurityRoute: typeof SecurityRoute
+  ShariaChangelogRoute: typeof ShariaChangelogRoute
   ShowcaseRoute: typeof ShowcaseRoute
   SoftwareRecommendationsRoute: typeof SoftwareRecommendationsRoute
   StatusRoute: typeof StatusRoute
@@ -790,6 +816,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShowcaseRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sharia-changelog': {
+      id: '/sharia-changelog'
+      path: '/sharia-changelog'
+      fullPath: '/sharia-changelog'
+      preLoaderRoute: typeof ShariaChangelogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/security': {
       id: '/security'
       path: '/security'
@@ -851,6 +884,13 @@ declare module '@tanstack/react-router' {
       path: '/group-zakat'
       fullPath: '/group-zakat'
       preLoaderRoute: typeof GroupZakatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/governance': {
+      id: '/governance'
+      path: '/governance'
+      fullPath: '/governance'
+      preLoaderRoute: typeof GovernanceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faq': {
@@ -1186,6 +1226,7 @@ const rootRouteChildren: RootRouteChildren = {
   EsgRoute: EsgRoute,
   EvaluationRoute: EvaluationRoute,
   FaqRoute: FaqRoute,
+  GovernanceRoute: GovernanceRoute,
   GroupZakatRoute: GroupZakatRoute,
   HistoryRoute: HistoryRoute,
   ImpactRoute: ImpactRoute,
@@ -1195,6 +1236,7 @@ const rootRouteChildren: RootRouteChildren = {
   PricesHistoryRoute: PricesHistoryRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SecurityRoute: SecurityRoute,
+  ShariaChangelogRoute: ShariaChangelogRoute,
   ShowcaseRoute: ShowcaseRoute,
   SoftwareRecommendationsRoute: SoftwareRecommendationsRoute,
   StatusRoute: StatusRoute,
@@ -1220,13 +1262,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
