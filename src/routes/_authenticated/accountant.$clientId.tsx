@@ -224,8 +224,8 @@ function ClientDetail() {
           <div>
             <h1 className="text-2xl font-bold">{client.name}</h1>
             <div className="text-xs text-muted-foreground">
-              {KIND_LABELS[client.kind]} · {COUNTRY_LABELS[client.country] ?? client.country} ·{" "}
-              {MADHAB_LABELS[client.madhab]} · السنة {client.fiscalYear}
+              {KIND_LABELS[client.kind]} · {COUNTRY_LABELS[client.country] ?? client.country} ·
+              السنة {client.fiscalYear}
             </div>
           </div>
         </div>
