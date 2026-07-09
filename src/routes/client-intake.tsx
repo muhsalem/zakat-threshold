@@ -803,20 +803,6 @@ function BasicInfoCard({
             </SelectContent>
           </Select>
         </Field>
-        <Field label="المذهب الفقهي">
-          <Select value={form.madhab} onValueChange={(v) => set("madhab", v as Madhab)}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {(Object.entries(MADHAB_LABELS) as [Madhab, string][]).map(([v, l]) => (
-                <SelectItem key={v} value={v}>
-                  {l}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </Field>
       </CardContent>
     </Card>
   );
