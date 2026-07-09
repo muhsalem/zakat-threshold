@@ -58,8 +58,10 @@ export const Route = createFileRoute("/")({
         content: "أدوات حساب + محاسبون معتمدون + تقارير رسمية خلال يومَي عمل. للأفراد والشركات.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:image", content: "/og-image.jpg" },
+      { property: "og:image", content: "https://project--c0035707-4e26-4f8b-ac7b-8485d608f9ce.lovable.app/og-image.jpg" },
+      { property: "og:url", content: "/" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: "https://project--c0035707-4e26-4f8b-ac7b-8485d608f9ce.lovable.app/og-image.jpg" },
     ],
     links: [{ rel: "canonical", href: "/" }],
     scripts: [
