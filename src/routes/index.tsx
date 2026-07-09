@@ -138,31 +138,13 @@ function SiteHeader() {
           <LanguageToggle />
           <FontSizeToggle />
           <ThemeToggle />
-          <HeaderAuth />
         </div>
       </div>
     </header>
   );
 }
 
-function HeaderAuth() {
-  const { user, loading } = useAuth();
-  if (loading) return null;
-  if (user) {
-    return (
-      <Button variant="ghost" size="sm" onClick={() => supabase.auth.signOut()} className="gap-1.5">
-        <LogOut className="h-4 w-4" /> <span className="hidden sm:inline">خروج</span>
-      </Button>
-    );
-  }
-  return (
-    <Link to="/auth">
-      <Button variant="outline" size="sm" className="gap-1.5">
-        <LogIn className="h-4 w-4" /> دخول
-      </Button>
-    </Link>
-  );
-}
+
 
 /* ---------------- Hero ---------------- */
 
