@@ -471,15 +471,6 @@ function AccountantPortal() {
                   ]}
                 />
                 <FilterSelect
-                  label="المذهب"
-                  value={filters.madhab}
-                  onChange={(v) => setFilters({ ...filters, madhab: v as any })}
-                  options={[
-                    ["all", "الكل"],
-                    ...(Object.entries(MADHAB_LABELS) as [string, string][]),
-                  ]}
-                />
-                <FilterSelect
                   label="السنة"
                   value={filters.fiscalYear}
                   onChange={(v) => setFilters({ ...filters, fiscalYear: v })}
