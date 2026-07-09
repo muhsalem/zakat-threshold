@@ -685,6 +685,39 @@ export type Database = {
           },
         ]
       }
+      zakat_drafts: {
+        Row: {
+          created_at: string
+          id: string
+          snapshot: Json
+          step: number
+          title: string
+          updated_at: string
+          user_id: string
+          wizard_kind: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          snapshot?: Json
+          step?: number
+          title?: string
+          updated_at?: string
+          user_id: string
+          wizard_kind?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          snapshot?: Json
+          step?: number
+          title?: string
+          updated_at?: string
+          user_id?: string
+          wizard_kind?: string
+        }
+        Relationships: []
+      }
       zakat_records: {
         Row: {
           created_at: string
