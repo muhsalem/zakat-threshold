@@ -30,6 +30,7 @@ import { Route as GovernanceRouteImport } from './routes/governance'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EvaluationRouteImport } from './routes/evaluation'
 import { Route as EsgRouteImport } from './routes/esg'
+import { Route as EnterprisePricingRouteImport } from './routes/enterprise-pricing'
 import { Route as EnterpriseRouteImport } from './routes/enterprise'
 import { Route as DevelopersRouteImport } from './routes/developers'
 import { Route as DemoRouteImport } from './routes/demo'
@@ -37,6 +38,7 @@ import { Route as CropsRouteImport } from './routes/crops'
 import { Route as ComplianceRouteImport } from './routes/compliance'
 import { Route as ClientIntakeRouteImport } from './routes/client-intake'
 import { Route as CheckoutResultRouteImport } from './routes/checkout-result'
+import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AwardSubmissionRouteImport } from './routes/award-submission'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuditRouteImport } from './routes/audit'
@@ -47,6 +49,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LegalTermsRouteImport } from './routes/legal.terms'
 import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedErpSetupRouteImport } from './routes/_authenticated/erp-setup'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -172,6 +175,11 @@ const EsgRoute = EsgRouteImport.update({
   path: '/esg',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EnterprisePricingRoute = EnterprisePricingRouteImport.update({
+  id: '/enterprise-pricing',
+  path: '/enterprise-pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EnterpriseRoute = EnterpriseRouteImport.update({
   id: '/enterprise',
   path: '/enterprise',
@@ -205,6 +213,11 @@ const ClientIntakeRoute = ClientIntakeRouteImport.update({
 const CheckoutResultRoute = CheckoutResultRouteImport.update({
   id: '/checkout-result',
   path: '/checkout-result',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AwardSubmissionRoute = AwardSubmissionRouteImport.update({
@@ -255,6 +268,11 @@ const LegalPrivacyRoute = LegalPrivacyRouteImport.update({
   id: '/legal/privacy',
   path: '/legal/privacy',
   getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => BlogRoute,
 } as any)
 const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
@@ -367,6 +385,7 @@ export interface FileRoutesByFullPath {
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/award-submission': typeof AwardSubmissionRoute
+  '/blog': typeof BlogRouteWithChildren
   '/checkout-result': typeof CheckoutResultRoute
   '/client-intake': typeof ClientIntakeRoute
   '/compliance': typeof ComplianceRoute
@@ -374,6 +393,7 @@ export interface FileRoutesByFullPath {
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
   '/enterprise': typeof EnterpriseRoute
+  '/enterprise-pricing': typeof EnterprisePricingRoute
   '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
@@ -402,6 +422,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/erp-setup': typeof AuthenticatedErpSetupRoute
   '/api/chat': typeof ApiChatRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
@@ -425,6 +446,7 @@ export interface FileRoutesByTo {
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/award-submission': typeof AwardSubmissionRoute
+  '/blog': typeof BlogRouteWithChildren
   '/checkout-result': typeof CheckoutResultRoute
   '/client-intake': typeof ClientIntakeRoute
   '/compliance': typeof ComplianceRoute
@@ -432,6 +454,7 @@ export interface FileRoutesByTo {
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
   '/enterprise': typeof EnterpriseRoute
+  '/enterprise-pricing': typeof EnterprisePricingRoute
   '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
@@ -460,6 +483,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/erp-setup': typeof AuthenticatedErpSetupRoute
   '/api/chat': typeof ApiChatRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
@@ -485,6 +509,7 @@ export interface FileRoutesById {
   '/audit': typeof AuditRoute
   '/auth': typeof AuthRoute
   '/award-submission': typeof AwardSubmissionRoute
+  '/blog': typeof BlogRouteWithChildren
   '/checkout-result': typeof CheckoutResultRoute
   '/client-intake': typeof ClientIntakeRoute
   '/compliance': typeof ComplianceRoute
@@ -492,6 +517,7 @@ export interface FileRoutesById {
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
   '/enterprise': typeof EnterpriseRoute
+  '/enterprise-pricing': typeof EnterprisePricingRoute
   '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
@@ -520,6 +546,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/erp-setup': typeof AuthenticatedErpSetupRoute
   '/api/chat': typeof ApiChatRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/_authenticated/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
@@ -545,6 +572,7 @@ export interface FileRouteTypes {
     | '/audit'
     | '/auth'
     | '/award-submission'
+    | '/blog'
     | '/checkout-result'
     | '/client-intake'
     | '/compliance'
@@ -552,6 +580,7 @@ export interface FileRouteTypes {
     | '/demo'
     | '/developers'
     | '/enterprise'
+    | '/enterprise-pricing'
     | '/esg'
     | '/evaluation'
     | '/faq'
@@ -580,6 +609,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/erp-setup'
     | '/api/chat'
+    | '/blog/$slug'
     | '/legal/privacy'
     | '/legal/terms'
     | '/accountant/$clientId'
@@ -603,6 +633,7 @@ export interface FileRouteTypes {
     | '/audit'
     | '/auth'
     | '/award-submission'
+    | '/blog'
     | '/checkout-result'
     | '/client-intake'
     | '/compliance'
@@ -610,6 +641,7 @@ export interface FileRouteTypes {
     | '/demo'
     | '/developers'
     | '/enterprise'
+    | '/enterprise-pricing'
     | '/esg'
     | '/evaluation'
     | '/faq'
@@ -638,6 +670,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/erp-setup'
     | '/api/chat'
+    | '/blog/$slug'
     | '/legal/privacy'
     | '/legal/terms'
     | '/accountant/$clientId'
@@ -662,6 +695,7 @@ export interface FileRouteTypes {
     | '/audit'
     | '/auth'
     | '/award-submission'
+    | '/blog'
     | '/checkout-result'
     | '/client-intake'
     | '/compliance'
@@ -669,6 +703,7 @@ export interface FileRouteTypes {
     | '/demo'
     | '/developers'
     | '/enterprise'
+    | '/enterprise-pricing'
     | '/esg'
     | '/evaluation'
     | '/faq'
@@ -697,6 +732,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/erp-setup'
     | '/api/chat'
+    | '/blog/$slug'
     | '/legal/privacy'
     | '/legal/terms'
     | '/_authenticated/accountant/$clientId'
@@ -722,6 +758,7 @@ export interface RootRouteChildren {
   AuditRoute: typeof AuditRoute
   AuthRoute: typeof AuthRoute
   AwardSubmissionRoute: typeof AwardSubmissionRoute
+  BlogRoute: typeof BlogRouteWithChildren
   CheckoutResultRoute: typeof CheckoutResultRoute
   ClientIntakeRoute: typeof ClientIntakeRoute
   ComplianceRoute: typeof ComplianceRoute
@@ -729,6 +766,7 @@ export interface RootRouteChildren {
   DemoRoute: typeof DemoRoute
   DevelopersRoute: typeof DevelopersRoute
   EnterpriseRoute: typeof EnterpriseRoute
+  EnterprisePricingRoute: typeof EnterprisePricingRoute
   EsgRoute: typeof EsgRoute
   EvaluationRoute: typeof EvaluationRoute
   FaqRoute: typeof FaqRoute
@@ -914,6 +952,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EsgRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/enterprise-pricing': {
+      id: '/enterprise-pricing'
+      path: '/enterprise-pricing'
+      fullPath: '/enterprise-pricing'
+      preLoaderRoute: typeof EnterprisePricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/enterprise': {
       id: '/enterprise'
       path: '/enterprise'
@@ -961,6 +1006,13 @@ declare module '@tanstack/react-router' {
       path: '/checkout-result'
       fullPath: '/checkout-result'
       preLoaderRoute: typeof CheckoutResultRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/award-submission': {
@@ -1032,6 +1084,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/legal/privacy'
       preLoaderRoute: typeof LegalPrivacyRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof BlogRoute
     }
     '/api/chat': {
       id: '/api/chat'
@@ -1207,6 +1266,16 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface BlogRouteChildren {
+  BlogSlugRoute: typeof BlogSlugRoute
+}
+
+const BlogRouteChildren: BlogRouteChildren = {
+  BlogSlugRoute: BlogSlugRoute,
+}
+
+const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -1216,6 +1285,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuditRoute: AuditRoute,
   AuthRoute: AuthRoute,
   AwardSubmissionRoute: AwardSubmissionRoute,
+  BlogRoute: BlogRouteWithChildren,
   CheckoutResultRoute: CheckoutResultRoute,
   ClientIntakeRoute: ClientIntakeRoute,
   ComplianceRoute: ComplianceRoute,
@@ -1223,6 +1293,7 @@ const rootRouteChildren: RootRouteChildren = {
   DemoRoute: DemoRoute,
   DevelopersRoute: DevelopersRoute,
   EnterpriseRoute: EnterpriseRoute,
+  EnterprisePricingRoute: EnterprisePricingRoute,
   EsgRoute: EsgRoute,
   EvaluationRoute: EvaluationRoute,
   FaqRoute: FaqRoute,
