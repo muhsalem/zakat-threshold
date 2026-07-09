@@ -35,4 +35,10 @@
   <url><loc>/blog/zakat-fisheries</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>/blog/zakat-animal-production</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>/blog/zakat-intellectual-property</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>/audit</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>/group-zakat</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>/history</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
+  <url><loc>/verify</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>/zakat-gold</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>/zakat-company</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
 </urlset>
