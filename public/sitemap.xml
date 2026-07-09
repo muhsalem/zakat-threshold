@@ -25,4 +25,10 @@
   <url><loc>/legal/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>/governance</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>/sharia-changelog</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>/enterprise-pricing</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>/blog</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>/blog/kayfa-tuhsib-zakat-almal</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>/blog/zakat-alsharikat-aaoifi-35</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>/blog/zakat-alcrypto-wal-tadeen</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>/blog/asnaf-alzakat-althamania</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>

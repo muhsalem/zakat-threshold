@@ -576,6 +576,108 @@ export const FATWA_REGISTRY: FatwaRule[] = [
     basis: ["AAOIFI-35 §2/2/3"],
     evidence: "الذمم المدينة المشكوك في تحصيلها (مُخصَّص Doubtful) تُخصَم من الوعاء الزكوي؛ فإن قُبضت لاحقاً زُكّيت لعام واحد.",
   },
+
+  // ==== أوعية زكوية جديدة ====
+
+  // تعدين العملات الرقمية (Crypto Mining)
+  {
+    id: "crypto-mining-aaoifi-59",
+    topic: "crypto.mining",
+    authority: "aaoifi",
+    ruling: "permissible_with_zakat",
+    rate: 0.025,
+    basis: ["AAOIFI-59", "قياس على عروض التجارة"],
+    evidence: "مخرجات التعدين إن قُصد بها التجارة تُعامل معاملة عروض التجارة (2.5% على القيمة السوقية عند الحول)؛ وإن كانت للاقتناء طويل الأجل فحكمها حكم النقدين إن بلغت النصاب.",
+    effective_from: "2023-06-01",
+    notes: "تُخصم تكاليف الكهرباء والمعدات كمصروفات جارية قبل حساب الوعاء.",
+  },
+  {
+    id: "crypto-defi-staking-aaoifi",
+    topic: "crypto.staking",
+    authority: "aaoifi",
+    ruling: "differed",
+    basis: ["AAOIFI-59", "دراسات المجلس الشرعي"],
+    evidence: "عوائد الـ Staking تحتاج تكييفاً فقهياً: إن كانت أجرة على خدمة تحقّق (Validator) فجائزة وتُزكّى؛ وإن كانت فائدة محضة على إيداع فمنعها الأولى.",
+    effective_from: "2024-01-01",
+  },
+
+  // الثروة السمكية والمزارع المائية
+  {
+    id: "fish-farming-trade-goods",
+    topic: "livestock.fish_farming",
+    authority: "aaoifi",
+    ruling: "permissible_with_zakat",
+    rate: 0.025,
+    basis: ["AAOIFI-35 §5", "قياس على عروض التجارة"],
+    evidence: "الأسماك المستزرعة للبيع تُعدّ عروض تجارة: تُقوَّم بسعر السوق عند الحول ويُخرج 2.5% من صافي الوعاء بعد خصم الديون والمصروفات المستحقة.",
+    effective_from: "2023-01-01",
+    notes: "الأسماك المصطادة من البحر مباحة أصلاً ولا زكاة فيها لعينها، إنما زكاة عائدها المتحقّق نقداً.",
+  },
+  {
+    id: "fish-catch-cash-yield",
+    topic: "livestock.fish_catch",
+    authority: "ifa-oic",
+    ruling: "permissible_with_zakat",
+    rate: 0.025,
+    basis: ["قرار المجمع 143 (2003)"],
+    evidence: "صافي دخل الصيد البحري بعد المصروفات يُضمّ إلى المال ويُزكّى مع حول المال إن بلغ النصاب.",
+    effective_from: "2003-01-01",
+  },
+
+  // الإنتاج الحيواني (ألبان، بيض، عسل، دواجن)
+  {
+    id: "animal-production-poultry-aaoifi",
+    topic: "livestock.poultry_production",
+    authority: "aaoifi",
+    ruling: "permissible_with_zakat",
+    rate: 0.025,
+    basis: ["AAOIFI-35 §5/2"],
+    evidence: "مزارع الدواجن والألبان والبيض للتجارة تُعامل عروضَ تجارة: يُزكَّى الوعاء (المخزون + الذمم + النقد − الديون) بنسبة 2.5% عند الحول.",
+    effective_from: "2023-01-01",
+  },
+  {
+    id: "honey-production-hanafi",
+    topic: "livestock.honey",
+    authority: "aaoifi",
+    madhab: ["hanafi", "hanbali"],
+    ruling: "permissible_with_zakat",
+    rate: 0.10,
+    basis: ["قول الحنفية والحنابلة", "حديث ابن عمر"],
+    evidence: "العسل المستخرَج من أرض عشرية فيه العُشر (10%) عند الحنفية والحنابلة إن بلغ النصاب؛ ولا زكاة فيه عند الشافعية والمالكية إلا إن كان للتجارة فيُزكَّى 2.5%.",
+    effective_from: "2023-01-01",
+  },
+
+  // الملكية الفكرية وحقوق التأليف والبراءات
+  {
+    id: "ip-royalties-cash-yield",
+    topic: "ip.royalties",
+    authority: "aaoifi",
+    ruling: "permissible_with_zakat",
+    rate: 0.025,
+    basis: ["AAOIFI-35 §4", "قياس على المستغلات"],
+    evidence: "لا زكاة على أصل الملكية الفكرية (البراءة، حق النشر، العلامة التجارية)، وإنما تجب الزكاة في صافي عوائدها النقدية (Royalties) بعد ضمّها إلى مال المالك وحلول الحول بنسبة 2.5%.",
+    effective_from: "2023-01-01",
+  },
+  {
+    id: "ip-patent-tradeable-asset",
+    topic: "ip.patent_for_sale",
+    authority: "aaoifi",
+    ruling: "permissible_with_zakat",
+    rate: 0.025,
+    basis: ["AAOIFI-35 §4/1", "قياس على عروض التجارة"],
+    evidence: "إن اقتُنيت البراءة أو حق النشر بنيّة البيع فتُقوَّم بسعر السوق عند الحول وتُزكّى 2.5% كعروض تجارة.",
+    effective_from: "2024-01-01",
+  },
+  {
+    id: "ip-software-licenses",
+    topic: "ip.software_licenses",
+    authority: "aaoifi",
+    ruling: "permissible_with_zakat",
+    rate: 0.025,
+    basis: ["AAOIFI-35 §4"],
+    evidence: "دخل تراخيص البرمجيات (SaaS Subscriptions) يُعامل معاملة الأجرة/المستغلات: تُزكّى العوائد النقدية بعد خصم المصروفات التشغيلية عند حولان الحول.",
+    effective_from: "2024-01-01",
+  },
 ];
 
 // ==== الاستعلامات ====
