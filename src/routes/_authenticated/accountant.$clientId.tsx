@@ -64,6 +64,7 @@ function ClientDetail() {
   const { clientId } = Route.useParams();
   const navigate = useNavigate();
   const [client, setClient] = useState<Client | null>(null);
+  const [sendingReport, setSendingReport] = useState(false);
 
   const reload = async () => {
     try {
@@ -146,8 +147,6 @@ function ClientDetail() {
       toast.error("تعذّر الحذف", { description: (e as Error).message });
     }
   };
-
-  const [sendingReport, setSendingReport] = useState(false);
 
   const issueAndSendReport = async () => {
     if (!client.email) {

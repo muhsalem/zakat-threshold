@@ -15,25 +15,8 @@ export const Route = createFileRoute("/_authenticated/certified-report/$recordId
     ],
   }),
   component: CertifiedReportPage,
-  errorComponent: ({ error, reset }) => {
-    const router = useRouter();
-    return (
-      <main className="container mx-auto max-w-2xl px-4 py-12" dir="rtl">
-        <Alert variant="destructive">
-          <AlertDescription>{error.message}</AlertDescription>
-        </Alert>
-        <Button
-          className="mt-4"
-          onClick={() => {
-            reset();
-            router.invalidate();
-          }}
-        >
-          إعادة المحاولة
-        </Button>
-      </main>
-    );
-  },
+  errorComponent: CertifiedReportError,
+
   notFoundComponent: () => (
     <main className="container mx-auto max-w-2xl px-4 py-12" dir="rtl">
       <Alert>
@@ -42,6 +25,26 @@ export const Route = createFileRoute("/_authenticated/certified-report/$recordId
     </main>
   ),
 });
+
+function CertifiedReportError({ error, reset }: { error: Error; reset: () => void }) {
+  const router = useRouter();
+  return (
+    <main className="container mx-auto max-w-2xl px-4 py-12" dir="rtl">
+      <Alert variant="destructive">
+        <AlertDescription>{error.message}</AlertDescription>
+      </Alert>
+      <Button
+        className="mt-4"
+        onClick={() => {
+          reset();
+          router.invalidate();
+        }}
+      >
+        إعادة المحاولة
+      </Button>
+    </main>
+  );
+}
 
 type Record = {
   id: string;

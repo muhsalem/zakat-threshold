@@ -1154,7 +1154,6 @@ export function CompanyTab() {
     } catch {
       /* ignore */
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const saveLocal = () => {
