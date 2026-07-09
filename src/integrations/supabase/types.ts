@@ -685,6 +685,44 @@ export type Database = {
           },
         ]
       }
+      zakat_draft_versions: {
+        Row: {
+          created_at: string
+          draft_id: string
+          id: string
+          note: string | null
+          snapshot: Json
+          step: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          draft_id: string
+          id?: string
+          note?: string | null
+          snapshot?: Json
+          step?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          draft_id?: string
+          id?: string
+          note?: string | null
+          snapshot?: Json
+          step?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "zakat_draft_versions_draft_id_fkey"
+            columns: ["draft_id"]
+            isOneToOne: false
+            referencedRelation: "zakat_drafts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       zakat_drafts: {
         Row: {
           created_at: string
