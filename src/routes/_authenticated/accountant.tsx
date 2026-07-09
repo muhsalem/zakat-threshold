@@ -119,7 +119,6 @@ function AccountantPortal() {
   const [filters, setFilters] = useState({
     kind: "all" as "all" | ClientKind,
     country: "all",
-    madhab: "all" as "all" | Madhab,
     fiscalYear: "all",
     status: "all" as "all" | ClientStatus,
     calculated: "all" as "all" | "yes" | "no",
