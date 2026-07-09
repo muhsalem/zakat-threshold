@@ -101,6 +101,9 @@ function DashboardPage() {
                     الوضع المتقدم <ArrowLeft className="h-3 w-3" />
                   </Link>
                 </Button>
+                <Button asChild size="sm" variant="ghost" className="h-6 text-xs">
+                  <Link to="/drafts">المسودات والسجل</Link>
+                </Button>
               </div>
             </div>
           </div>
