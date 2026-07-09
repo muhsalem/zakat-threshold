@@ -191,7 +191,7 @@ function AccountantPortal() {
     return clients
       .filter((c) => filters.kind === "all" || c.kind === filters.kind)
       .filter((c) => filters.country === "all" || c.country === filters.country)
-      .filter((c) => filters.madhab === "all" || c.madhab === filters.madhab)
+      
       .filter((c) => filters.fiscalYear === "all" || String(c.fiscalYear) === filters.fiscalYear)
       .filter((c) => filters.status === "all" || c.status === filters.status)
       .filter(
