@@ -1983,7 +1983,8 @@ export function PrintReport({ data }: { data: PrintReportData }) {
           <div style={{ display: "flex", alignItems: "center", gap: "8pt" }}>
             <img
               src={logoUrl}
-              alt=""
+              alt={`شعار ${PLATFORM_NAME_AR}`}
+
               style={{ width: "30pt", height: "30pt", objectFit: "contain" }}
             />
             <div>
