@@ -173,6 +173,7 @@ export function CompanyWizard() {
     snapshot,
     step,
   );
+  const { cloudSavedAt, status: cloudStatus } = useCloudAutosave("company", snapshot, step);
   function restoreDraft() {
     const d = savedDraft?.data;
     if (!d) return;
