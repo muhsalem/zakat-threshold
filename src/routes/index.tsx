@@ -987,8 +987,7 @@ function SiteFooter() {
         <FooterCol
           title="الحساب"
           links={[
-            ["تسجيل دخول", "/auth"],
-            ["بوابات الدخول", "/portal-signin"],
+            ["تسجيل الدخول / إنشاء حساب", "/auth"],
             ["نافذة العميل", "/client-intake"],
             ["السجل", "/history"],
           ]}
