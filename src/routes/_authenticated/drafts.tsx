@@ -26,6 +26,7 @@ import {
   X,
 } from "lucide-react";
 import { toast } from "sonner";
+import { DraftVersionsDialog } from "@/components/wizards/DraftVersionsDialog";
 
 export const Route = createFileRoute("/_authenticated/drafts")({
   head: () => ({
