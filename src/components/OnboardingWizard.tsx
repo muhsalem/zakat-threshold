@@ -76,14 +76,14 @@ export function OnboardingWizard() {
 
   function finish() {
     try {
-      window.localStorage.setItem(KEY, JSON.stringify({ kind, country, madhab, at: Date.now() }));
+      window.localStorage.setItem(KEY, JSON.stringify({ kind, country, at: Date.now() }));
     } catch {}
     setOpen(false);
     const target = KINDS.find((k) => k.id === kind)?.to ?? "/";
     navigate({ to: target });
   }
 
-  const canNext = (step === 0 && !!kind) || (step === 1 && !!country) || (step === 2 && !!madhab);
+  const canNext = (step === 0 && !!kind) || (step === 1 && !!country);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -91,21 +91,22 @@ export function OnboardingWizard() {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-primary" />
-            أهلاً بك في نِصاب — لنبدأ بثلاث خطوات
+            أهلاً بك في نِصاب — لنبدأ بخطوتين
           </DialogTitle>
           <DialogDescription>
-            نُخصّص التجربة حسب نوع المستخدم والدولة والمذهب. يمكنك تغيير كل شيء لاحقاً من الإعدادات.
+            نُخصّص التجربة حسب نوع المستخدم والدولة. يمكنك تغيير كل شيء لاحقاً من الإعدادات.
           </DialogDescription>
         </DialogHeader>
 
         <div className="flex items-center justify-center gap-2 py-2">
-          {[0, 1, 2].map((i) => (
+          {[0, 1].map((i) => (
             <div
               key={i}
               className={`h-1.5 w-16 rounded-full transition-colors ${i <= step ? "bg-primary" : "bg-muted"}`}
             />
           ))}
         </div>
+
 
         {step === 0 && (
           <div className="space-y-3">
