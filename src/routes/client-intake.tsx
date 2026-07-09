@@ -190,7 +190,7 @@ function ClientIntakePage() {
   };
 
   const progress = useMemo(() => {
-    const required: Array<keyof FormState> = ["name", "email", "country", "madhab", "hawlDate"];
+    const required: Array<keyof FormState> = ["name", "email", "country", "hawlDate"];
     const requiredDone = required.filter((k) => String(form[k] ?? "").trim().length > 0).length;
     const numericKeys: Array<keyof FormState> = [
       "cash",
