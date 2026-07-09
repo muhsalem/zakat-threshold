@@ -68,7 +68,7 @@ type FormState = {
   phone: string;
   kind: ClientKind;
   country: string;
-  madhab: Madhab;
+  madhab: "mixed";
   hawlDate: string;
   // basic
   cash: number;
