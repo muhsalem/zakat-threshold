@@ -1,102 +1,74 @@
-## نظرة عامة
+# خارطة طريق World-Class — 4 موجات متتابعة
 
-إعادة تنظيم المنصة حول نوع حساب المستخدم (فرد / شركة / مؤسسة)، مع تشديد صحة مدخلات الشركة، تبسيط شريط الأدوات، ونقل البحث إلى شريط جانبي ثابت، وإضافة بوابة سرية للمحاسب.
+اخترتَ الأربعة محاور معاً. لتجنّب تضخّم غير قابل للمراجعة، سأنفّذها على 4 موجات منفصلة، كل موجة تُغلق قبل بدء التالية. هذه الخطة توصيف الموجة (1) القابلة للتنفيذ فوراً، ثم عرض مختصر للموجات (2–4).
 
 ---
 
-## 1) فحص صارم لمدخلات الشركة (Zod)
+## الموجة 1 — تصليب أمني وامتثال (تنفيذ فوري بعد الموافقة)
 
-ملف جديد: `src/lib/validation/companyInputsSchema.ts` باستخدام `zod` مع رسائل عربية واضحة.
+### 1.1 معالجة تحذيرات linter الحالية
+- **3 دوال SECURITY DEFINER يمكن للمستخدمين المسجّلين تنفيذها**: سحب صلاحية `EXECUTE` من `PUBLIC/anon/authenticated` عن:
+  - `handle_new_user()` — تُستدعى بواسطة trigger مصادقة فقط.
+  - `generate_hawl_reminders()` — تُستدعى من cron/admin فقط.
+  - `capture_zakat_draft_version()` — trigger فقط.
+  (`has_role/has_org_role/is_org_member` يُبقى عليها لأن RLS يستدعيها.)
+- **Extension in Public (`pg_net`)**: نقلها إلى schema `extensions` مع تحديث `cron.job` لاستخدام `extensions.http_post` بدلاً من `net.http_post` — يمنع أي استعلام من ذاكر جدول `net.*` عبر Data API.
 
-القواعد:
+### 1.2 تفعيل حماية كلمات المرور المسرّبة
+تفعيل HIBP Check عبر `configure_auth` بحيث يرفض Supabase Auth أي كلمة مرور موجودة في تسريبات معروفة أثناء التسجيل أو التغيير.
 
-- `totalAssets` ≥ 0، رقم صحيح مالي، إجباري.
-- `totalEquity` ≥ 0، ولا يتجاوز `totalAssets` (رسالة: "حقوق الملكية لا يمكن أن تتجاوز إجمالي الموجودات").
-- `currentAssets` ≤ `totalAssets`.
-- `currentLiabilities` ≥ 0 و ≤ `totalAssets`.
-- `netIncome` ≥ 0 مع سماح بسالب لكن تنبيه.
-- `exemptRatio` بين 0 و 1 (نسبة الملكية المعفاة: أجنبي/حكومي/شرطي).
-- مجموع النسب المعفاة (foreign+gov+conditional+nonMuslim) ≤ 1.
-- إذا `zakatableRatio = 1 - exempt` انتهى للصفر → منع الحساب مع رسالة.
+### 1.3 إعادة تدقيق RLS على الجداول الحسّاسة
+مراجعة جدول-جدول:
+- `zakat_records`, `zakat_drafts`, `zakat_draft_versions`, `zakat_approvals`, `nisab_records` → التأكد أن كل السياسات مرتبطة بـ `auth.uid()`.
+- `notifications`, `sharia_attestations`, `sharia_audit_log`, `accountant_clients`, `accountant_client_history` → السياسات مطابقة للنموذج المتوقّع (المالك أو صلاحية دور).
+- `metal_prices_daily`, `nisab_prices`, `nisab_daily_history` → قراءة عامة فقط (بلا كتابة عبر anon).
 
-التطبيق:
+### 1.4 صفحة `Security & Compliance`
+تحديث `/security` لتعكس الوضع الفعلي: قائمة الضوابط المُفعّلة (RLS، دوال بأذون محدودة، HIBP، مفاتيح مفصولة، rate-limit على الـ hooks العامة) بدون ادعاءات شهادات.
 
-- تعديل `CompanyTab.tsx`: زر "احسب/اعتمد" يمرّ عبر `schema.safeParse`. عند الفشل تُعرض قائمة أخطاء أعلى النموذج (bg-destructive/10) وحقول مميّزة بحد أحمر (`aria-invalid`).
-- تعطيل زر الاعتماد في `MethodsComparison` حتى تنجح الصحة.
-- toast خطأ موحّد.
+**الملفات المتأثرة (الموجة 1)**
+- Migration جديد: revoke على 3 دوال + نقل `pg_net` إلى `extensions` + `insert` تحديث cron commands.
+- `configure_auth` call لتفعيل HIBP.
+- `src/routes/security.tsx` (تحديث محتوى).
 
-## 2) شريط جانبي أيسر ثابت + بحث
+---
 
-- استخدام `SidebarProvider` من `@/components/ui/sidebar` في `__root.tsx`.
-- مكوّن جديد `src/components/AppSidebar.tsx`:
-  - أعلى الشريط: حقل بحث (`Input` + أيقونة) يبحث في: التبويبات، الأدوات، المسارات، الفتاوى، مصطلحات الزكاة (مصدر بيانات محلي `searchIndex.ts`).
-  - قائمة تنقّل مختصرة: الحاسبة، السجل، الإشعارات، الأدوات.
-  - قابل للطي (`collapsible="icon"`).
-- إزالة أي حقل بحث موجود في FloatingDock/Header.
+## الموجة 2 — الأداء والإتاحة (a11y)
+- **Route splitting**: مراجعة `router.tsx` وإضافة `lazy` لطرق الأدوات الثقيلة (تقارير PDF، ERP، admin).
+- **LCP**: مراجعة الصفحة الرئيسية `index.tsx` — preload صورة الهيرو، `fetchpriority=high`، تحويل ثابت إلى AVIF/WebP عبر `vite-imagetools`.
+- **Web Vitals**: إضافة إبلاغ CLS/INP إلى Sentry.
+- **axe-core sweep**: تشغيل فحص وإصلاح: `aria-label` على أزرار أيقونات، `alt` صور، `h-dvh` بدل `h-screen`، contrast للـ dark mode.
+- **44×44 targets** على الشريط السفلي للجوال.
 
-## 3) اختصار "البوابات والأدوات" على "المستشار الذكي"
+## الموجة 3 — جودة وتغطية اختبارات
+- **Vitest**: رفع تغطية `src/lib/**` إلى >85%: إضافة اختبارات لـ `fx.ts`, `zakatTrade.ts` extended cases, `xbrl.ts`, `zatcaTlv.ts`, `fatwaEngine` edge cases.
+- **Playwright**: 6 سيناريوهات E2E حرجة (تسجيل، معالج فرد، معالج شركة، حفظ مسودة → استعادة، تقرير PDF، بوابة المحاسب).
+- **CI Gate**: تحديث `.github/workflows/ci.yml` ليمنع الدمج عند فشل `tsgo` أو `vitest --coverage` (min threshold 80%) أو Playwright.
 
-- تعديل `FloatingDock.tsx` وأي قائمة بوابات: حذف كل الاختصارات عدا "المستشار الذكي" (AI Advisor).
-- إزالة بطاقات الأدوات المتعددة من الصفحة الرئيسية وإبقاء بطاقة واحدة تفتح المستشار.
+## الموجة 4 — توسعة i18n ولغات
+- إضافة `en`, `fr`, `ur`, `id` إلى `src/lib/i18n.tsx` مع مفاتيح الترجمة لكل مكوّنات الواجهة الرئيسية (Navigation, Wizards, Dashboard, Reports).
+- `hreflang` per-route عبر `head()`.
+- نسخ منفصلة للصفحات العامة (`/`, `/faq`, `/blog`) بمسارات `/{locale}/...` أو query param + canonical.
+- تحديث `sitemap.xml` ليضم كل لغة.
 
-## 4) تسجيل دخول أعلى يسار الصفحة + تمييز نوع الحساب
+---
 
-- زر "دخول/تسجيل" ثابت أعلى يسار الهيدر (خارج الشريط الجانبي).
-- صفحة `/auth` تعرض:
-  - تبويبين: دخول / تسجيل جديد.
-  - عند التسجيل: اختيار إجباري لنوع الحساب (radio): فرد / شركة / مؤسسة — يُحفظ مرة واحدة في `profiles.account_type`.
-- Migration: إضافة عمود `account_type` (enum: `individual`, `company`, `institution`) إلى `profiles` مع قيمة افتراضية `individual`.
-- تحديث `handle_new_user` لقراءة `raw_user_meta_data->>'account_type'`.
+## تفاصيل تقنية (للموجة 1 التي ستنفَّذ الآن)
 
-## 5) لوحات مبسّطة موجّهة (Wizard) لكل نوع
+```sql
+-- 1) قفل EXECUTE على الدوال الثلاث
+REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.generate_hawl_reminders() FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.capture_zakat_draft_version() FROM PUBLIC, anon, authenticated;
 
-مسار محمي `/_authenticated/dashboard` يقرأ `account_type` ويعرض المعالج المناسب:
+-- 2) نقل pg_net
+CREATE SCHEMA IF NOT EXISTS extensions;
+ALTER EXTENSION pg_net SET SCHEMA extensions;
+GRANT USAGE ON SCHEMA extensions TO postgres, service_role;
+```
 
-### لوحة الفرد — `IndividualWizard.tsx`
+بعد الـ migration، سأشغّل `insert` لإعادة كتابة أوامر cron.job لتستخدم `extensions.http_post`، ثم `configure_auth` لتفعيل HIBP.
 
-خطوات موجّهة (Stepper):
+**نتيجة الموجة 1 المتوقّعة**: 0 تحذيرات في linter (باستثناء تلك التي تعود لنقاط تصميمية مثل شكل RLS)، حماية إضافية للمصادقة، صفحة أمان دقيقة.
 
-1. النقد والبنوك والدين.
-2. الذهب والفضة.
-3. الأسهم والاستثمارات.
-4. عروض التجارة/التجارة الإلكترونية.
-5. المراجعة → **تقرير PDF جاهز** (تاريخ الحول، النصاب، الوعاء، الزكاة المستحقّة، مصارف مقترحة).
-
-### لوحة الشركة — `CompanyWizard.tsx`
-
-1. البيانات الأساسية (رأس المال، نوع النشاط).
-2. الميزانية المختصرة (موجودات/مطلوبات/حقوق ملكية) — تمرّ عبر فحص §1.
-3. نسب الملكية المعفاة.
-4. اختيار الطريقة من `MethodsComparison`.
-5. المراجعة → تقرير PDF.
-
-### لوحة المؤسسة — `InstitutionWizard.tsx`
-
-مشابهة للشركة لكن مع حقول أوقاف/تبرعات مقيّدة وبند التمييز بين النشاط التجاري والخيري.
-
-كلها تستخدم مكوّنات موجودة (`CashBankSection`, `SecuritiesSection`, ...) داخل خطوات مبسّطة بدلًا من عرض كل التبويبات دفعة واحدة. زر "وضع متقدّم" يفتح اللوحة الحالية الكاملة.
-
-## 6) بوابة المحاسب المخفيّة (لك فقط)
-
-- **مسار سري**: `/_a-console` (غير مذكور في أي قائمة).
-- **آلية**: صفحة تعرض حقل "كلمة المرور الرئيسية" أولًا. تُرسل إلى `createServerFn` تقارن بـ `ACCOUNTANT_MASTER_PASSWORD` (secret) بشكل **timing-safe** (`crypto.timingSafeEqual` على SHA-256).
-- عند النجاح: يُنشئ/يُفعّل دور `accountant` في `user_roles` للمستخدم الحالي (يجب أن يكون مسجّل دخول)، ثم يعيد التوجيه إلى `/accountant`.
-- الوصول إلى `/_authenticated/accountant` يُشترط بـ `has_role(auth.uid(), 'accountant')` عبر `beforeLoad` استدعاء server fn.
-- سيُطلب منك تعيين قيمة السر `ACCOUNTANT_MASTER_PASSWORD` بعد الموافقة على الخطة.
-
-## 7) تفاصيل تقنية
-
-- Migration واحدة تضيف: `account_type` على `profiles` + تحديث تريغر `handle_new_user`.
-- Server fn `verifyAccountantPassword` + `grantAccountantRole` (يحمل `requireSupabaseAuth`).
-- لا مساس بجدول `user_roles` باستثناء INSERT عند نجاح كلمة السر.
-- استخدام `zod` (موجود) + `react-hook-form` (إن غير موجود سيُثبَّت).
-- شريط البحث يستخدم فهرس محلي `src/lib/searchIndex.ts` (بدون شبكة).
-
-## 8) الملفات المتوقّعة
-
-- إنشاء: `src/lib/validation/companyInputsSchema.ts`, `src/components/AppSidebar.tsx`, `src/lib/searchIndex.ts`, `src/routes/_authenticated/dashboard.tsx`, `src/components/wizards/{Individual,Company,Institution}Wizard.tsx`, `src/routes/_a-console.tsx`, `src/lib/accountantGate.functions.ts`, migration جديدة.
-- تعديل: `src/routes/__root.tsx`, `src/components/FloatingDock.tsx`, `src/components/zakat/CompanyTab.tsx`, `src/components/zakat/MethodsComparison.tsx`, `src/routes/auth.tsx` (اختيار نوع الحساب), `src/routes/_authenticated/accountant.tsx` (حماية بدور).
-
-## ملاحظة مهمة
-
-بعد الموافقة سأطلب منك تعيين السر `ACCOUNTANT_MASTER_PASSWORD` كي أستخدمه في البوابة المخفيّة.
+بعد الموافقة على هذه الخارطة، أبدأ الموجة 1 مباشرةً وأعرض عليك النتائج قبل الانتقال للموجة 2.

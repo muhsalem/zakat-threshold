@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ShieldCheck, LogIn, Smartphone, CheckCircle2, Trash2 } from "lucide-react";
+import { ShieldCheck, LogIn, Smartphone, CheckCircle2, Trash2, Lock, KeyRound, Database, Timer, ShieldAlert } from "lucide-react";
 
 export const Route = createFileRoute("/security")({
   component: SecurityPage,
@@ -106,6 +106,27 @@ function SecurityPage() {
         فعِّل التحقق بخطوتين (TOTP) لحماية حسابك. تحتاج إلى تطبيق مصادقة مثل Google Authenticator أو
         Authy.
       </p>
+
+      <Card className="border-primary/20">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <ShieldCheck className="h-4 w-4 text-primary" /> ضوابط الأمان المُفعّلة على المنصّة
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ul className="grid sm:grid-cols-2 gap-y-2 gap-x-4 text-sm">
+            <li className="flex items-start gap-2"><Lock className="h-4 w-4 mt-0.5 text-primary shrink-0" /><span>عزل بيانات كل مستخدم عبر سياسات RLS مربوطة بمعرِّف الحساب.</span></li>
+            <li className="flex items-start gap-2"><KeyRound className="h-4 w-4 mt-0.5 text-primary shrink-0" /><span>رفض كلمات المرور المُسرَّبة تلقائيًا (فحص HIBP).</span></li>
+            <li className="flex items-start gap-2"><ShieldAlert className="h-4 w-4 mt-0.5 text-primary shrink-0" /><span>دوال إدارية داخلية غير قابلة للاستدعاء من الجلسات العادية.</span></li>
+            <li className="flex items-start gap-2"><Database className="h-4 w-4 mt-0.5 text-primary shrink-0" /><span>فصل مفاتيح الخدمة عن مفاتيح المتصفح، وامتدادات النظام خارج المخطط العام.</span></li>
+            <li className="flex items-start gap-2"><Timer className="h-4 w-4 mt-0.5 text-primary shrink-0" /><span>حدّ معدّل على نقاط الاستدعاء العامة (webhooks) لمنع الإساءة.</span></li>
+            <li className="flex items-start gap-2"><Smartphone className="h-4 w-4 mt-0.5 text-primary shrink-0" /><span>دعم التحقّق بخطوتين TOTP لكل مستخدم (أدناه).</span></li>
+          </ul>
+          <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
+            هذه قائمة بالضوابط المُفعّلة داخل التطبيق ولا تُعدّ شهادة امتثال مستقلة. للاستفسار عن سياسات الحماية والخصوصية راسِلنا عبر صفحة الاتصال.
+          </p>
+        </CardContent>
+      </Card>
 
       {!user ? (
         <Card>
