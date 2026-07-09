@@ -35,6 +35,7 @@ import { fmt, COUNTRY_PRICES, ZAKAT_RATE } from "@/lib/zakat";
 import { toast } from "sonner";
 import { SaveToHistoryCard } from "@/components/zakat/SaveToHistoryCard";
 import { useWizardAutosave } from "@/hooks/useWizardAutosave";
+import { useCloudAutosave } from "@/hooks/useCloudAutosave";
 import { ResumeDraftBanner, AutosaveIndicator } from "@/components/wizards/ResumeDraftBanner";
 
 const STEPS = [
@@ -172,6 +173,7 @@ export function CompanyWizard() {
     snapshot,
     step,
   );
+  const { cloudSavedAt, status: cloudStatus } = useCloudAutosave("company", snapshot, step);
   function restoreDraft() {
     const d = savedDraft?.data;
     if (!d) return;
@@ -354,7 +356,7 @@ export function CompanyWizard() {
             <Icon className="h-5 w-5 text-primary" /> {S.title}
           </CardTitle>
           <div className="flex items-center gap-2">
-            <AutosaveIndicator savedAt={savedAt} />
+            <AutosaveIndicator savedAt={savedAt} cloudSavedAt={cloudSavedAt} cloudStatus={cloudStatus} />
             <Badge variant="outline" className="text-xs">
               {step + 1} / {STEPS.length}
             </Badge>

@@ -34,6 +34,7 @@ import { fmt, COUNTRY_PRICES, GOLD_NISAB_GRAMS, SILVER_NISAB_GRAMS, ZAKAT_RATE }
 import { toast } from "sonner";
 import { SaveToHistoryCard } from "@/components/zakat/SaveToHistoryCard";
 import { useWizardAutosave } from "@/hooks/useWizardAutosave";
+import { useCloudAutosave } from "@/hooks/useCloudAutosave";
 import { ResumeDraftBanner, AutosaveIndicator } from "@/components/wizards/ResumeDraftBanner";
 
 const GOLD_PURITY: Record<string, number> = {
@@ -183,6 +184,7 @@ export function IndividualWizard() {
     clear: clearDraft,
     dismissDraft,
   } = useWizardAutosave<typeof snapshot>("wizard:individual:v1", snapshot, step);
+  const { cloudSavedAt, status: cloudStatus } = useCloudAutosave("individual", snapshot, step);
   function restoreDraft() {
     const d = savedDraft?.data;
     if (!d) return;
@@ -369,7 +371,7 @@ export function IndividualWizard() {
             <Icon className="h-5 w-5 text-primary" /> {S.title}
           </CardTitle>
           <div className="flex items-center gap-2">
-            <AutosaveIndicator savedAt={savedAt} />
+            <AutosaveIndicator savedAt={savedAt} cloudSavedAt={cloudSavedAt} cloudStatus={cloudStatus} />
             <Badge variant="outline" className="text-xs">
               {step + 1} / {STEPS.length}
             </Badge>

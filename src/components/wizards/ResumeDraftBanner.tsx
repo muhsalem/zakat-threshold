@@ -32,12 +32,40 @@ export function ResumeDraftBanner({
   );
 }
 
-export function AutosaveIndicator({ savedAt }: { savedAt: string | null }) {
-  if (!savedAt) return null;
-  const time = new Date(savedAt).toLocaleTimeString("ar", { hour: "2-digit", minute: "2-digit" });
+export function AutosaveIndicator({
+  savedAt,
+  cloudSavedAt,
+  cloudStatus,
+}: {
+  savedAt: string | null;
+  cloudSavedAt?: string | null;
+  cloudStatus?: "idle" | "saving" | "saved" | "error" | "offline";
+}) {
+  if (!savedAt && !cloudSavedAt && !cloudStatus) return null;
+  const localTime = savedAt
+    ? new Date(savedAt).toLocaleTimeString("ar", { hour: "2-digit", minute: "2-digit" })
+    : null;
+  const cloudTime = cloudSavedAt
+    ? new Date(cloudSavedAt).toLocaleTimeString("ar", { hour: "2-digit", minute: "2-digit" })
+    : null;
+  const cloudLabel =
+    cloudStatus === "saving"
+      ? "جاري المزامنة السحابية…"
+      : cloudStatus === "error"
+        ? "تعذّرت المزامنة السحابية"
+        : cloudStatus === "offline"
+          ? "بدون مزامنة سحابية (غير مسجّل)"
+          : cloudTime
+            ? `مزامنة سحابية ${cloudTime}`
+            : null;
   return (
-    <span className="inline-flex items-center gap-1 text-[10px] text-muted-foreground">
-      <Save className="h-3 w-3" /> حُفظت المسودّة {time}
+    <span className="inline-flex items-center gap-2 text-[10px] text-muted-foreground flex-wrap">
+      {localTime && (
+        <span className="inline-flex items-center gap-1">
+          <Save className="h-3 w-3" /> حُفظت المسودّة {localTime}
+        </span>
+      )}
+      {cloudLabel && <span className="inline-flex items-center gap-1">· {cloudLabel}</span>}
     </span>
   );
 }
