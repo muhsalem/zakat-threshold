@@ -184,6 +184,7 @@ export function IndividualWizard() {
     clear: clearDraft,
     dismissDraft,
   } = useWizardAutosave<typeof snapshot>("wizard:individual:v1", snapshot, step);
+  const { cloudSavedAt, status: cloudStatus } = useCloudAutosave("individual", snapshot, step);
   function restoreDraft() {
     const d = savedDraft?.data;
     if (!d) return;
