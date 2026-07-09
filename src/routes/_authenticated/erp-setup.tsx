@@ -136,7 +136,7 @@ function ErpSetupPage() {
   };
 
   useEffect(() => {
-    reload().catch(console.error); /* eslint-disable-line */
+    reload().catch(console.error);
   }, []);
 
   const onSubmit = async (e: React.FormEvent) => {

@@ -98,7 +98,7 @@ export function AccountantDashboard() {
         if (a.zakat_record_id) statusMap.set(a.zakat_record_id, a.status);
       }
       const userIds = Array.from(new Set(records.map((r) => r.user_id)));
-      let names = new Map<string, string>();
+      const names = new Map<string, string>();
       if (userIds.length > 0) {
         const { data: profiles } = await supabase
           .from("profiles")
