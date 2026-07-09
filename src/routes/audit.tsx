@@ -8,7 +8,20 @@ import { ShieldCheck, LogIn, FileText, Download, Printer } from "lucide-react";
 
 export const Route = createFileRoute("/audit")({
   component: AuditPage,
-  head: () => ({ meta: [{ title: "سجل التدقيق الشرعي | نِصاب" }] }),
+  head: () => ({
+    meta: [
+      { title: "سجل التدقيق الشرعي | نِصاب" },
+      {
+        name: "description",
+        content:
+          "استعرض سجل التدقيق الشرعي الكامل لحسابات الزكاة: كل قرار، بصمته، ومرجعه الشرعي — بشفافية موثّقة.",
+      },
+      { property: "og:title", content: "سجل التدقيق الشرعي | نِصاب" },
+      { property: "og:description", content: "سجل شفاف للقرارات الشرعية والبصمات لكل عملية زكاة." },
+      { property: "og:url", content: "/audit" },
+    ],
+    links: [{ rel: "canonical", href: "/audit" }],
+  }),
 });
 
 interface AuditRow {

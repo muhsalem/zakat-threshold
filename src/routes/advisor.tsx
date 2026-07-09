@@ -17,7 +17,11 @@ export const Route = createFileRoute("/advisor")({
         content:
           "اسأل مستشار الزكاة الذكي عن أحكام وطرق حساب زكاة المال، الذهب، الأسهم، التجارة، الرواتب وأنواع الزكاة المعاصرة وفق المعايير الشرعية المعتمدة.",
       },
+      { property: "og:title", content: "المستشار الشرعي الذكي — نِصاب" },
+      { property: "og:description", content: "إجابات فورية موثّقة عن أسئلة الزكاة المعاصرة بذكاء اصطناعي مدرَّب على مصادر شرعية معتمدة." },
+      { property: "og:url", content: "/advisor" },
     ],
+    links: [{ rel: "canonical", href: "/advisor" }],
   }),
 });
 

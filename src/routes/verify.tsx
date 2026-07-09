@@ -31,6 +31,20 @@ interface VerifySearch {
 }
 
 export const Route = createFileRoute("/verify")({
+  head: () => ({
+    meta: [
+      { title: "التحقق من صحّة شهادة الزكاة | نِصاب" },
+      {
+        name: "description",
+        content:
+          "تحقّق من أصالة تقرير الزكاة الصادر عن منصّة نِصاب — تحقّق مشفَّر بمعرِّف الشهادة، البصمة، وطريقة الحساب، دون الحاجة لتسجيل الدخول.",
+      },
+      { property: "og:title", content: "التحقق من شهادة الزكاة — نِصاب" },
+      { property: "og:description", content: "أداة تحقق فوري وشفاف من صحّة شهادات الزكاة الصادرة عن نِصاب." },
+      { property: "og:url", content: "/verify" },
+    ],
+    links: [{ rel: "canonical", href: "/verify" }],
+  }),
   validateSearch: (s: Record<string, unknown>): VerifySearch => ({
     id: typeof s.id === "string" ? s.id : undefined,
     hash: typeof s.hash === "string" ? s.hash : undefined,

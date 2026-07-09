@@ -192,7 +192,7 @@ function SecurityPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-center bg-white p-4 rounded-md border">
-                  <img src={enrollQr} alt="QR التحقق بخطوتين" className="w-48 h-48" />
+                  <img src={enrollQr} alt="رمز QR لتفعيل التحقق بخطوتين — امسحه بتطبيق المصادقة" className="w-48 h-48" />
                 </div>
                 {enrollSecret && (
                   <div className="text-xs text-center text-muted-foreground">

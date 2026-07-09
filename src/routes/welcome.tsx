@@ -35,8 +35,8 @@ export const Route = createFileRoute("/welcome")({
           "احسب، دقّق، وأخرج زكاتك بثقة. أداة شاملة بـ 18 موضوعاً زكوياً، مستشار ذكي، وتدقيق شرعي رباعي.",
       },
       { property: "og:url", content: "/welcome" },
-      { property: "og:image", content: "/og-image.jpg" },
-      { name: "twitter:image", content: "/og-image.jpg" },
+      { property: "og:image", content: "https://project--c0035707-4e26-4f8b-ac7b-8485d608f9ce.lovable.app/og-image.jpg" },
+      { name: "twitter:image", content: "https://project--c0035707-4e26-4f8b-ac7b-8485d608f9ce.lovable.app/og-image.jpg" },
     ],
     links: [{ rel: "canonical", href: "/welcome" }],
     scripts: [
