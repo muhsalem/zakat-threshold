@@ -274,6 +274,51 @@ export type Database = {
         }
         Relationships: []
       }
+      nisab_daily_history: {
+        Row: {
+          country_code: string
+          created_at: string
+          currency: string
+          fx_rate_usd: number
+          gold_nisab_value: number
+          gold_price_per_gram: number
+          id: string
+          price_date: string
+          silver_nisab_value: number
+          silver_price_per_gram: number
+          source: string
+          updated_at: string
+        }
+        Insert: {
+          country_code: string
+          created_at?: string
+          currency: string
+          fx_rate_usd?: number
+          gold_nisab_value: number
+          gold_price_per_gram: number
+          id?: string
+          price_date: string
+          silver_nisab_value: number
+          silver_price_per_gram: number
+          source?: string
+          updated_at?: string
+        }
+        Update: {
+          country_code?: string
+          created_at?: string
+          currency?: string
+          fx_rate_usd?: number
+          gold_nisab_value?: number
+          gold_price_per_gram?: number
+          id?: string
+          price_date?: string
+          silver_nisab_value?: number
+          silver_price_per_gram?: number
+          source?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       nisab_prices: {
         Row: {
           country_code: string
