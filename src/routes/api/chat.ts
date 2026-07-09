@@ -51,10 +51,12 @@ export const Route = createFileRoute("/api/chat")({
             );
           }
           const client = new Anthropic({ apiKey: anthropicKey });
-          const userMessages = messages.filter((m) => m.role === "user" || m.role === "assistant").map((m) => ({
-            role: m.role as "user" | "assistant",
-            content: typeof m.content === "string" ? m.content : JSON.stringify(m.content),
-          }));
+          const userMessages = messages.filter((m) => m.role === "user" || m.role === "assistant").map((m) => {
+            const text = Array.isArray(m.parts)
+              ? m.parts.map((p) => (p.type === "text" ? p.text : "")).join("")
+              : "";
+            return { role: m.role as "user" | "assistant", content: text };
+          });
           const stream = await client.messages.create({
             model: "claude-haiku-4-5-20251001",
             max_tokens: 1024,
