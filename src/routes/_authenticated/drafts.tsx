@@ -93,10 +93,13 @@ function DraftsPage() {
   const [records, setRecords] = useState<RecordListItem[]>([]);
   const [recordsTotal, setRecordsTotal] = useState(0);
   const [page, setPage] = useState(0);
-  const [saving, setSaving] = useState(false);
+  const [savingKind, setSavingKind] = useState<DraftListItem["wizard_kind"] | null>(null);
   const [reopening, setReopening] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [recordsRefreshing, setRecordsRefreshing] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const saving = savingKind !== null;
   // Filters for records (applied server-side)
   const [q, setQ] = useState("");
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
