@@ -606,7 +606,7 @@ export type Database = {
           payload: Json | null
           sharia_refs: string[] | null
           user_agent: string | null
-          user_id: string
+          user_id: string | null
           zakat_record_id: string | null
         }
         Insert: {
@@ -618,7 +618,7 @@ export type Database = {
           payload?: Json | null
           sharia_refs?: string[] | null
           user_agent?: string | null
-          user_id: string
+          user_id?: string | null
           zakat_record_id?: string | null
         }
         Update: {
@@ -630,7 +630,7 @@ export type Database = {
           payload?: Json | null
           sharia_refs?: string[] | null
           user_agent?: string | null
-          user_id?: string
+          user_id?: string | null
           zakat_record_id?: string | null
         }
         Relationships: [
