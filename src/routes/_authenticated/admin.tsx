@@ -15,9 +15,10 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminOverview } from "@/components/admin/AdminOverview";
+import { SystemAuditPanel } from "@/components/admin/SystemAuditPanel";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Shield, UserPlus, UserMinus, LayoutDashboard, Users } from "lucide-react";
+import { Shield, UserPlus, UserMinus, LayoutDashboard, Users, ShieldCheck } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   beforeLoad: async () => {
