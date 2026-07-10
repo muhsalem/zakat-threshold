@@ -83,6 +83,17 @@ export const Route = createFileRoute("/api/public/hooks/snapshot-daily-nisab")({
           });
         }
 
+        // Audit: system snapshot event (user_id null → system entry).
+        await supabaseAdmin.from("sharia_audit_log").insert({
+          user_id: null,
+          action: "snapshot_daily_nisab",
+          payload: {
+            date: today,
+            countries: rows.length,
+            source: metals.source,
+          },
+        });
+
         return new Response(
           JSON.stringify({
             ok: true,
