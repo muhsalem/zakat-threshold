@@ -627,7 +627,8 @@ function DraftsPage() {
                           variant="outline"
                           onClick={() => reopenRecord(r)}
                           className="h-8 gap-1"
-                          disabled={reopening === r.id}
+                          disabled={reopening !== null}
+                          aria-busy={reopening === r.id}
                           title="إعادة فتح كمسودة"
                         >
                           {reopening === r.id ? (
@@ -635,7 +636,7 @@ function DraftsPage() {
                           ) : (
                             <Play className="h-3 w-3" />
                           )}
-                          إعادة فتح
+                          {reopening === r.id ? "جاري الفتح…" : "إعادة فتح"}
                         </Button>
                       </div>
                     </li>
