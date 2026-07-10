@@ -218,14 +218,14 @@ export function OrgOverviewPanel({ orgId, orgName, currency }: Props) {
       <Card>
         <CardHeader>
           <CardTitle className="text-sm flex items-center gap-2">
-            <Activity className="size-4 text-primary" /> أحدث سجلّات التدقيق
+            <Activity className="size-4 text-primary" /> أحدث الاعتمادات
           </CardTitle>
         </CardHeader>
         <CardContent>
           {recent.length === 0 ? (
             <Alert>
               <AlertDescription>
-                لا توجد سجلّات تدقيق بعد لهذه المؤسسة.
+                لا توجد اعتمادات بعد لهذه المؤسسة.
               </AlertDescription>
             </Alert>
           ) : (
@@ -233,13 +233,29 @@ export function OrgOverviewPanel({ orgId, orgName, currency }: Props) {
               {recent.map((r) => (
                 <li
                   key={r.id}
-                  className="flex items-center justify-between text-sm border-b border-border/50 pb-2 last:border-0"
+                  className="flex items-center justify-between text-sm border-b border-border/50 pb-2 last:border-0 gap-2"
                 >
-                  <Badge variant="outline" className="text-xs">
-                    {r.action}
-                  </Badge>
-                  <span className="text-xs text-muted-foreground">
-                    {new Date(r.created_at).toLocaleString("ar", {
+                  <div className="flex items-center gap-2 min-w-0">
+                    <Badge
+                      variant={
+                        r.status === "approved"
+                          ? "default"
+                          : r.status === "rejected"
+                            ? "destructive"
+                            : "outline"
+                      }
+                      className="text-xs shrink-0"
+                    >
+                      {r.status === "approved"
+                        ? "معتمَد"
+                        : r.status === "rejected"
+                          ? "مرفوض"
+                          : "معلَّق"}
+                    </Badge>
+                    <span className="truncate">{r.title}</span>
+                  </div>
+                  <span className="text-xs text-muted-foreground shrink-0">
+                    {new Date(r.when).toLocaleString("ar", {
                       dateStyle: "short",
                       timeStyle: "short",
                     })}
