@@ -515,10 +515,15 @@ function DraftsPage() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card aria-busy={recordsRefreshing}>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
             <HistoryIcon className="h-5 w-5 text-primary" /> سجل المحاولات السابقة ({recordsTotal})
+            {recordsRefreshing && (
+              <span className="flex items-center gap-1 text-xs font-normal text-muted-foreground">
+                <Loader2 className="h-3 w-3 animate-spin" /> تحديث…
+              </span>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
