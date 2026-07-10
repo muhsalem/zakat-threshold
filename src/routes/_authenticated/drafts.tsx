@@ -28,6 +28,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 import { DraftVersionsDialog } from "@/components/wizards/DraftVersionsDialog";
 
 export const Route = createFileRoute("/_authenticated/drafts")({
