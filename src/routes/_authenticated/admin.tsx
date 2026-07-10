@@ -92,10 +92,17 @@ function AdminPage() {
           <TabsTrigger value="users" className="gap-1">
             <Users className="h-4 w-4" /> إدارة الأدوار
           </TabsTrigger>
+          <TabsTrigger value="audit" className="gap-1">
+            <ShieldCheck className="h-4 w-4" /> سجل الأحداث
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="mt-4">
           <AdminOverview />
+        </TabsContent>
+
+        <TabsContent value="audit" className="mt-4">
+          <SystemAuditPanel />
         </TabsContent>
 
         <TabsContent value="users" className="mt-4">
