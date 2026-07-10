@@ -60,6 +60,18 @@ export const Route = createFileRoute("/api/public/hooks/snapshot-prices")({
           });
         }
 
+        await supabaseAdmin.from("sharia_audit_log").insert({
+          user_id: null,
+          action: "snapshot_nisab_prices",
+          payload: {
+            year,
+            month,
+            source: res.source,
+            gold: row.gold_price,
+            silver: row.silver_price,
+          },
+        });
+
         return new Response(
           JSON.stringify({
             ok: true,

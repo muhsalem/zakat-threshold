@@ -55,6 +55,12 @@ export const Route = createFileRoute("/api/public/hooks/snapshot-daily-prices")(
           });
         }
 
+        await supabaseAdmin.from("sharia_audit_log").insert({
+          user_id: null,
+          action: "snapshot_daily_prices",
+          payload: { date: today, source: res.source, rows: rows.length },
+        });
+
         return new Response(
           JSON.stringify({ ok: true, date: today, source: res.source, rows: rows.length }),
           { headers: { "Content-Type": "application/json" } },

@@ -15,9 +15,10 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminOverview } from "@/components/admin/AdminOverview";
+import { SystemAuditPanel } from "@/components/admin/SystemAuditPanel";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Shield, UserPlus, UserMinus, LayoutDashboard, Users } from "lucide-react";
+import { Shield, UserPlus, UserMinus, LayoutDashboard, Users, ShieldCheck } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   beforeLoad: async () => {
@@ -91,10 +92,17 @@ function AdminPage() {
           <TabsTrigger value="users" className="gap-1">
             <Users className="h-4 w-4" /> إدارة الأدوار
           </TabsTrigger>
+          <TabsTrigger value="audit" className="gap-1">
+            <ShieldCheck className="h-4 w-4" /> سجل الأحداث
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="mt-4">
           <AdminOverview />
+        </TabsContent>
+
+        <TabsContent value="audit" className="mt-4">
+          <SystemAuditPanel />
         </TabsContent>
 
         <TabsContent value="users" className="mt-4">
