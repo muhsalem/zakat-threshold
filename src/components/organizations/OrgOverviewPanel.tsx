@@ -28,40 +28,37 @@ interface Kpis {
   lastActivity: string | null;
 }
 
-interface AuditRow {
+interface RecentRow {
   id: string;
-  action: string;
-  created_at: string;
-  actor_id: string | null;
+  title: string;
+  status: string;
+  when: string;
 }
 
 export function OrgOverviewPanel({ orgId, orgName, currency }: Props) {
   const [kpis, setKpis] = useState<Kpis | null>(null);
-  const [recent, setRecent] = useState<AuditRow[]>([]);
+  const [recent, setRecent] = useState<RecentRow[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!orgId) return;
     (async () => {
       setLoading(true);
-      const [membersRes, approvalsRes, auditRes] = await Promise.all([
+      const [membersRes, approvalsRes] = await Promise.all([
         supabase
           .from("organization_members")
           .select("id", { count: "exact", head: true })
           .eq("organization_id", orgId),
         supabase
           .from("zakat_approvals")
-          .select("id, status, snapshot, decided_at, submitted_at")
-          .eq("organization_id", orgId),
-        supabase
-          .from("sharia_audit_log")
-          .select("id, action, created_at, actor_id")
+          .select("id, title, status, snapshot, decided_at, submitted_at")
           .eq("organization_id", orgId)
-          .order("created_at", { ascending: false })
-          .limit(6),
+          .order("submitted_at", { ascending: false }),
       ]);
 
       const approvals = (approvalsRes.data ?? []) as Array<{
+        id: string;
+        title: string;
         status: string;
         snapshot: Record<string, unknown> | null;
         decided_at: string | null;
@@ -97,7 +94,14 @@ export function OrgOverviewPanel({ orgId, orgName, currency }: Props) {
         totalZakat,
         lastActivity,
       });
-      setRecent((auditRes.data ?? []) as AuditRow[]);
+      setRecent(
+        approvals.slice(0, 6).map((a) => ({
+          id: a.id,
+          title: a.title,
+          status: a.status,
+          when: a.decided_at ?? a.submitted_at,
+        })),
+      );
       setLoading(false);
     })();
   }, [orgId]);
