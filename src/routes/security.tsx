@@ -29,6 +29,8 @@ function SecurityPage() {
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
+  const otpInputRef = useRef<HTMLInputElement>(null);
+  const enrollButtonRef = useRef<HTMLButtonElement>(null);
 
   async function refresh() {
     const { data } = await supabase.auth.mfa.listFactors();
@@ -37,6 +39,13 @@ function SecurityPage() {
   useEffect(() => {
     if (user) refresh();
   }, [user]);
+
+  // Move focus into the OTP field the moment enrollment starts
+  useEffect(() => {
+    if (enrollQr && otpInputRef.current) {
+      otpInputRef.current.focus();
+    }
+  }, [enrollQr]);
 
   async function startEnroll() {
     setBusy(true);
