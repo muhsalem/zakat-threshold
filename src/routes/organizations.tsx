@@ -23,7 +23,9 @@ import {
   Download,
   Plus,
   ArrowRight,
+  LayoutDashboard,
 } from "lucide-react";
+import { OrgOverviewPanel } from "@/components/organizations/OrgOverviewPanel";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -197,8 +199,11 @@ function OrgsPage() {
             </div>
 
             {activeOrgId && (
-              <Tabs defaultValue="members">
+              <Tabs defaultValue="overview">
                 <TabsList>
+                  <TabsTrigger value="overview">
+                    <LayoutDashboard className="size-4 me-1" /> نظرة عامّة
+                  </TabsTrigger>
                   <TabsTrigger value="members">
                     <Users className="size-4 me-1" /> الأعضاء
                   </TabsTrigger>
@@ -209,6 +214,13 @@ function OrgsPage() {
                     <Download className="size-4 me-1" /> تصدير XBRL
                   </TabsTrigger>
                 </TabsList>
+                <TabsContent value="overview" className="mt-4">
+                  <OrgOverviewPanel
+                    orgId={activeOrgId}
+                    orgName={orgs.find((o) => o.org.id === activeOrgId)!.org.name}
+                    currency={orgs.find((o) => o.org.id === activeOrgId)!.org.currency}
+                  />
+                </TabsContent>
                 <TabsContent value="members" className="mt-4">
                   <MembersPanel
                     orgId={activeOrgId}
