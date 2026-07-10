@@ -210,7 +210,7 @@ function DraftsPage() {
   }, [q, typeFilter, statusFilter, sortKey, fromDate, toDate, page]);
 
   async function saveCurrent(kind: DraftListItem["wizard_kind"]) {
-    setSaving(true);
+    setSavingKind(kind);
     try {
       const raw = typeof window !== "undefined" ? window.localStorage.getItem(WIZARD_KEYS[kind]) : null;
       if (!raw) {
@@ -236,7 +236,7 @@ function DraftsPage() {
     } catch (e: unknown) {
       toast.error((e as Error)?.message ?? "خطأ في الحفظ");
     } finally {
-      setSaving(false);
+      setSavingKind(null);
     }
   }
 
