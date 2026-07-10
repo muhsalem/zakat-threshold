@@ -91,6 +91,20 @@ export function DraftVersionsDialog({
       toast.error(error.message);
       return;
     }
+    // Audit: record the restore for admin review (fire-and-forget).
+    const { data: auth } = await supabase.auth.getUser();
+    if (auth?.user) {
+      void supabase.from("sharia_audit_log").insert({
+        user_id: auth.user.id,
+        action: "restore_draft_version",
+        payload: {
+          draft_id: draftId,
+          version_id: v.id,
+          version_created_at: v.created_at,
+          restored_step: step,
+        },
+      });
+    }
     toast.success("تم الرجوع إلى الإصدار المحدد");
     setOpen(false);
     onRestored?.();
