@@ -415,17 +415,36 @@ function DraftsPage() {
             placeholder="عنوان اختياري (مثال: زكاة 1447 - الفرع الشمالي)"
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
+            disabled={saving}
           />
-          <div className="flex flex-wrap gap-2">
-            <Button size="sm" onClick={() => saveCurrent("individual")} disabled={saving} className="gap-1.5">
-              <Plus className="h-3.5 w-3.5" /> حفظ مسودة (فرد)
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => saveCurrent("company")} disabled={saving} className="gap-1.5">
-              <Plus className="h-3.5 w-3.5" /> حفظ مسودة (شركة)
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => saveCurrent("institution")} disabled={saving} className="gap-1.5">
-              <Plus className="h-3.5 w-3.5" /> حفظ مسودة (مؤسسة)
-            </Button>
+          <div className="flex flex-wrap gap-2" aria-busy={saving}>
+            {(
+              [
+                { kind: "individual" as const, variant: "default" as const, label: "حفظ مسودة (فرد)" },
+                { kind: "company" as const, variant: "outline" as const, label: "حفظ مسودة (شركة)" },
+                { kind: "institution" as const, variant: "outline" as const, label: "حفظ مسودة (مؤسسة)" },
+              ]
+            ).map((b) => {
+              const busy = savingKind === b.kind;
+              return (
+                <Button
+                  key={b.kind}
+                  size="sm"
+                  variant={b.variant}
+                  onClick={() => saveCurrent(b.kind)}
+                  disabled={saving}
+                  aria-busy={busy}
+                  className="gap-1.5"
+                >
+                  {busy ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Plus className="h-3.5 w-3.5" />
+                  )}
+                  {busy ? "جاري الحفظ…" : b.label}
+                </Button>
+              );
+            })}
           </div>
           {error && (
             <Alert variant="destructive"><AlertDescription className="text-xs">{error}</AlertDescription></Alert>
