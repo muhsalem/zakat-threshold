@@ -28,6 +28,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 import { DraftVersionsDialog } from "@/components/wizards/DraftVersionsDialog";
 
 export const Route = createFileRoute("/_authenticated/drafts")({
@@ -92,10 +93,13 @@ function DraftsPage() {
   const [records, setRecords] = useState<RecordListItem[]>([]);
   const [recordsTotal, setRecordsTotal] = useState(0);
   const [page, setPage] = useState(0);
-  const [saving, setSaving] = useState(false);
+  const [savingKind, setSavingKind] = useState<DraftListItem["wizard_kind"] | null>(null);
   const [reopening, setReopening] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [recordsRefreshing, setRecordsRefreshing] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const saving = savingKind !== null;
   // Filters for records (applied server-side)
   const [q, setQ] = useState("");
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
@@ -200,13 +204,18 @@ function DraftsPage() {
       const { data: userData } = await supabase.auth.getUser();
       const uid = userData.user?.id;
       if (!uid) return;
-      await refreshRecords(uid, page);
+      setRecordsRefreshing(true);
+      try {
+        await refreshRecords(uid, page);
+      } finally {
+        setRecordsRefreshing(false);
+      }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q, typeFilter, statusFilter, sortKey, fromDate, toDate, page]);
 
   async function saveCurrent(kind: DraftListItem["wizard_kind"]) {
-    setSaving(true);
+    setSavingKind(kind);
     try {
       const raw = typeof window !== "undefined" ? window.localStorage.getItem(WIZARD_KEYS[kind]) : null;
       if (!raw) {
@@ -232,13 +241,15 @@ function DraftsPage() {
     } catch (e: unknown) {
       toast.error((e as Error)?.message ?? "خطأ في الحفظ");
     } finally {
-      setSaving(false);
+      setSavingKind(null);
     }
   }
 
   async function removeDraft(id: string) {
     if (!confirm("حذف المسودة نهائياً؟")) return;
+    setDeletingId(id);
     const { error: err } = await supabase.from("zakat_drafts" as never).delete().eq("id", id);
+    setDeletingId(null);
     if (err) {
       toast.error(err.message);
       return;
@@ -246,6 +257,7 @@ function DraftsPage() {
     toast.success("تم الحذف");
     setDrafts((prev) => prev.filter((d) => d.id !== id));
   }
+
 
   // Fetch snapshot on demand (list is snapshot-free for perf).
   async function reopenDraft(d: DraftListItem) {
@@ -331,8 +343,58 @@ function DraftsPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      <div className="container mx-auto px-4 py-6 max-w-5xl space-y-6" aria-busy="true" aria-live="polite">
+        <span className="sr-only">جاري تحميل المسودات والسجل…</span>
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-40" />
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Skeleton className="h-3 w-full max-w-md" />
+            <Skeleton className="h-9 w-full" />
+            <div className="flex flex-wrap gap-2">
+              <Skeleton className="h-8 w-32" />
+              <Skeleton className="h-8 w-32" />
+              <Skeleton className="h-8 w-32" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-32" />
+          </CardHeader>
+          <CardContent>
+            <ul className="divide-y">
+              {[0, 1, 2].map((i) => (
+                <li key={i} className="py-3 flex items-center justify-between gap-3">
+                  <div className="space-y-2 flex-1">
+                    <Skeleton className="h-4 w-2/3" />
+                    <Skeleton className="h-3 w-1/3" />
+                  </div>
+                  <Skeleton className="h-8 w-24" />
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-48" />
+          </CardHeader>
+          <CardContent>
+            <ul className="divide-y">
+              {[0, 1, 2, 3].map((i) => (
+                <li key={i} className="py-3 flex items-center justify-between gap-3">
+                  <div className="space-y-2 flex-1">
+                    <Skeleton className="h-4 w-1/2" />
+                    <Skeleton className="h-3 w-1/4" />
+                  </div>
+                  <Skeleton className="h-8 w-24" />
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -353,17 +415,36 @@ function DraftsPage() {
             placeholder="عنوان اختياري (مثال: زكاة 1447 - الفرع الشمالي)"
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
+            disabled={saving}
           />
-          <div className="flex flex-wrap gap-2">
-            <Button size="sm" onClick={() => saveCurrent("individual")} disabled={saving} className="gap-1.5">
-              <Plus className="h-3.5 w-3.5" /> حفظ مسودة (فرد)
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => saveCurrent("company")} disabled={saving} className="gap-1.5">
-              <Plus className="h-3.5 w-3.5" /> حفظ مسودة (شركة)
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => saveCurrent("institution")} disabled={saving} className="gap-1.5">
-              <Plus className="h-3.5 w-3.5" /> حفظ مسودة (مؤسسة)
-            </Button>
+          <div className="flex flex-wrap gap-2" aria-busy={saving}>
+            {(
+              [
+                { kind: "individual" as const, variant: "default" as const, label: "حفظ مسودة (فرد)" },
+                { kind: "company" as const, variant: "outline" as const, label: "حفظ مسودة (شركة)" },
+                { kind: "institution" as const, variant: "outline" as const, label: "حفظ مسودة (مؤسسة)" },
+              ]
+            ).map((b) => {
+              const busy = savingKind === b.kind;
+              return (
+                <Button
+                  key={b.kind}
+                  size="sm"
+                  variant={b.variant}
+                  onClick={() => saveCurrent(b.kind)}
+                  disabled={saving}
+                  aria-busy={busy}
+                  className="gap-1.5"
+                >
+                  {busy ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Plus className="h-3.5 w-3.5" />
+                  )}
+                  {busy ? "جاري الحفظ…" : b.label}
+                </Button>
+              );
+            })}
           </div>
           {error && (
             <Alert variant="destructive"><AlertDescription className="text-xs">{error}</AlertDescription></Alert>
@@ -399,7 +480,8 @@ function DraftsPage() {
                       size="sm"
                       variant="default"
                       onClick={() => reopenDraft(d)}
-                      disabled={reopening === d.id}
+                      disabled={reopening !== null || deletingId === d.id}
+                      aria-busy={reopening === d.id}
                       className="h-8 gap-1"
                     >
                       {reopening === d.id ? (
@@ -407,11 +489,23 @@ function DraftsPage() {
                       ) : (
                         <Play className="h-3 w-3" />
                       )}
-                      فتح
+                      {reopening === d.id ? "جاري الفتح…" : "فتح"}
                     </Button>
                     <DraftVersionsDialog draftId={d.id} draftTitle={d.title} onRestored={refresh} />
-                    <Button size="sm" variant="ghost" onClick={() => removeDraft(d.id)} className="h-8 text-destructive" aria-label={`حذف المسودة ${d.title}`}>
-                      <Trash2 className="h-3 w-3" />
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => removeDraft(d.id)}
+                      disabled={deletingId !== null || reopening === d.id}
+                      aria-busy={deletingId === d.id}
+                      className="h-8 text-destructive"
+                      aria-label={`حذف المسودة ${d.title}`}
+                    >
+                      {deletingId === d.id ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-3 w-3" />
+                      )}
                     </Button>
                   </div>
                 </li>
@@ -421,10 +515,15 @@ function DraftsPage() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card aria-busy={recordsRefreshing}>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
             <HistoryIcon className="h-5 w-5 text-primary" /> سجل المحاولات السابقة ({recordsTotal})
+            {recordsRefreshing && (
+              <span className="flex items-center gap-1 text-xs font-normal text-muted-foreground">
+                <Loader2 className="h-3 w-3 animate-spin" /> تحديث…
+              </span>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -528,7 +627,8 @@ function DraftsPage() {
                           variant="outline"
                           onClick={() => reopenRecord(r)}
                           className="h-8 gap-1"
-                          disabled={reopening === r.id}
+                          disabled={reopening !== null}
+                          aria-busy={reopening === r.id}
                           title="إعادة فتح كمسودة"
                         >
                           {reopening === r.id ? (
@@ -536,7 +636,7 @@ function DraftsPage() {
                           ) : (
                             <Play className="h-3 w-3" />
                           )}
-                          إعادة فتح
+                          {reopening === r.id ? "جاري الفتح…" : "إعادة فتح"}
                         </Button>
                       </div>
                     </li>
