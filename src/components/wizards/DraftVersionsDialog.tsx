@@ -127,46 +127,62 @@ export function DraftVersionsDialog({
             كل تعديل جوهري على المسودة يُحفظ كإصدار تلقائيًا (بحد أقصى 20 إصدارًا لكل مسودة). اختر أيّها للعودة إليه.
           </DialogDescription>
         </DialogHeader>
-        <div className="overflow-y-auto flex-1 -mx-6 px-6">
+        <div className="overflow-y-auto flex-1 -mx-6 px-6" aria-busy={loading || busyId !== null} aria-live="polite">
           {loading ? (
-            <div className="flex justify-center py-6">
-              <Loader2 className="h-5 w-5 animate-spin text-primary" />
-            </div>
+            <ul className="divide-y" aria-hidden="true">
+              {[0, 1, 2].map((i) => (
+                <li key={i} className="py-3 flex items-center justify-between gap-3">
+                  <div className="space-y-2 flex-1">
+                    <div className="flex gap-2">
+                      <Skeleton className="h-4 w-12" />
+                      <Skeleton className="h-4 w-16" />
+                    </div>
+                    <Skeleton className="h-3 w-32" />
+                  </div>
+                  <Skeleton className="h-8 w-20 shrink-0" />
+                </li>
+              ))}
+            </ul>
           ) : versions.length === 0 ? (
             <p className="text-sm text-muted-foreground py-4 text-center">
               لا توجد إصدارات سابقة بعد — ستُحفظ الإصدارات تلقائياً عند التعديل.
             </p>
           ) : (
             <ul className="divide-y">
-              {versions.map((v, i) => (
-                <li key={v.id} className="py-3 flex items-center justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <Badge variant={i === 0 ? "default" : "outline"} className="text-[10px]">
-                        {i === 0 ? "الأحدث" : `إصدار ${versions.length - i}`}
-                      </Badge>
-                      <Badge variant="secondary" className="text-[10px]">خطوة {v.step + 1}</Badge>
+              {versions.map((v, i) => {
+                const busy = busyId === v.id;
+                const anyBusy = busyId !== null;
+                return (
+                  <li key={v.id} className="py-3 flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Badge variant={i === 0 ? "default" : "outline"} className="text-[10px]">
+                          {i === 0 ? "الأحدث" : `إصدار ${versions.length - i}`}
+                        </Badge>
+                        <Badge variant="secondary" className="text-[10px]">خطوة {v.step + 1}</Badge>
+                      </div>
+                      <p className="text-[11px] text-muted-foreground mt-0.5">
+                        {new Date(v.created_at).toLocaleString("ar")}
+                      </p>
                     </div>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">
-                      {new Date(v.created_at).toLocaleString("ar")}
-                    </p>
-                  </div>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => restore(v)}
-                    disabled={busyId === v.id}
-                    className="h-8 gap-1 shrink-0"
-                  >
-                    {busyId === v.id ? (
-                      <Loader2 className="h-3 w-3 animate-spin" />
-                    ) : (
-                      <RotateCcw className="h-3 w-3" />
-                    )}
-                    استعادة
-                  </Button>
-                </li>
-              ))}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => restore(v)}
+                      disabled={anyBusy}
+                      aria-busy={busy}
+                      className="h-8 gap-1 shrink-0"
+                    >
+                      {busy ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <RotateCcw className="h-3 w-3" />
+                      )}
+                      {busy ? "جاري الاستعادة…" : "استعادة"}
+                    </Button>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>
