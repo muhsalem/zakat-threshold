@@ -13,10 +13,11 @@ import {
 import { History, RotateCcw, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-type Version = {
+// Snapshot omitted from list — it is a full wizard-state JSON blob and would
+// bloat the response by 10–50x. We fetch it on-demand when restoring.
+type VersionMeta = {
   id: string;
   step: number;
-  snapshot: Record<string, unknown>;
   created_at: string;
   note: string | null;
 };
@@ -37,7 +38,7 @@ export function DraftVersionsDialog({
 }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [versions, setVersions] = useState<Version[]>([]);
+  const [versions, setVersions] = useState<VersionMeta[]>([]);
   const [busyId, setBusyId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -47,13 +48,13 @@ export function DraftVersionsDialog({
     (async () => {
       const { data, error } = await supabase
         .from("zakat_draft_versions" as never)
-        .select("id,step,snapshot,created_at,note")
+        .select("id,step,created_at,note")
         .eq("draft_id", draftId)
         .order("created_at", { ascending: false })
         .limit(20);
       if (cancelled) return;
       if (error) toast.error(error.message);
-      setVersions(((data as unknown) as Version[]) ?? []);
+      setVersions(((data as unknown) as VersionMeta[]) ?? []);
       setLoading(false);
     })();
     return () => {
@@ -61,14 +62,29 @@ export function DraftVersionsDialog({
     };
   }, [open, draftId]);
 
-  async function restore(v: Version) {
+  async function restore(v: VersionMeta) {
     if (!confirm("استعادة هذا الإصدار سيستبدل المسودة الحالية. سيتم حفظ نسخة احتياطية تلقائياً.")) {
       return;
     }
     setBusyId(v.id);
+    // Fetch the snapshot only now — we intentionally skipped it in the list.
+    const { data: snapRow, error: fetchErr } = await supabase
+      .from("zakat_draft_versions" as never)
+      .select("snapshot,step")
+      .eq("id", v.id)
+      .maybeSingle();
+    if (fetchErr || !snapRow) {
+      setBusyId(null);
+      toast.error(fetchErr?.message ?? "تعذّر جلب الإصدار");
+      return;
+    }
+    const { snapshot, step } = snapRow as unknown as {
+      snapshot: Record<string, unknown>;
+      step: number;
+    };
     const { error } = await supabase
       .from("zakat_drafts" as never)
-      .update({ snapshot: v.snapshot as never, step: v.step } as never)
+      .update({ snapshot: snapshot as never, step } as never)
       .eq("id", draftId);
     setBusyId(null);
     if (error) {
@@ -83,7 +99,7 @@ export function DraftVersionsDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" variant="ghost" className="h-8 gap-1" title="سجل الإصدارات">
+        <Button size="sm" variant="ghost" className="h-8 gap-1" title="سجل الإصدارات" aria-label={`سجل إصدارات ${draftTitle}`}>
           <History className="h-3 w-3" /> الإصدارات
         </Button>
       </DialogTrigger>
