@@ -23,7 +23,9 @@ import {
   Download,
   Plus,
   ArrowRight,
+  LayoutDashboard,
 } from "lucide-react";
+import { OrgOverviewPanel } from "@/components/organizations/OrgOverviewPanel";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
