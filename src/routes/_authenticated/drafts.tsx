@@ -242,7 +242,9 @@ function DraftsPage() {
 
   async function removeDraft(id: string) {
     if (!confirm("حذف المسودة نهائياً؟")) return;
+    setDeletingId(id);
     const { error: err } = await supabase.from("zakat_drafts" as never).delete().eq("id", id);
+    setDeletingId(null);
     if (err) {
       toast.error(err.message);
       return;
@@ -250,6 +252,7 @@ function DraftsPage() {
     toast.success("تم الحذف");
     setDrafts((prev) => prev.filter((d) => d.id !== id));
   }
+
 
   // Fetch snapshot on demand (list is snapshot-free for perf).
   async function reopenDraft(d: DraftListItem) {
