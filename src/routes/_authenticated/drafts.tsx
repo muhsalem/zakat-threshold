@@ -204,7 +204,12 @@ function DraftsPage() {
       const { data: userData } = await supabase.auth.getUser();
       const uid = userData.user?.id;
       if (!uid) return;
-      await refreshRecords(uid, page);
+      setRecordsRefreshing(true);
+      try {
+        await refreshRecords(uid, page);
+      } finally {
+        setRecordsRefreshing(false);
+      }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q, typeFilter, statusFilter, sortKey, fromDate, toDate, page]);
