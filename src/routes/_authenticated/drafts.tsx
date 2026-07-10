@@ -480,7 +480,8 @@ function DraftsPage() {
                       size="sm"
                       variant="default"
                       onClick={() => reopenDraft(d)}
-                      disabled={reopening === d.id}
+                      disabled={reopening !== null || deletingId === d.id}
+                      aria-busy={reopening === d.id}
                       className="h-8 gap-1"
                     >
                       {reopening === d.id ? (
@@ -488,11 +489,23 @@ function DraftsPage() {
                       ) : (
                         <Play className="h-3 w-3" />
                       )}
-                      فتح
+                      {reopening === d.id ? "جاري الفتح…" : "فتح"}
                     </Button>
                     <DraftVersionsDialog draftId={d.id} draftTitle={d.title} onRestored={refresh} />
-                    <Button size="sm" variant="ghost" onClick={() => removeDraft(d.id)} className="h-8 text-destructive" aria-label={`حذف المسودة ${d.title}`}>
-                      <Trash2 className="h-3 w-3" />
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => removeDraft(d.id)}
+                      disabled={deletingId !== null || reopening === d.id}
+                      aria-busy={deletingId === d.id}
+                      className="h-8 text-destructive"
+                      aria-label={`حذف المسودة ${d.title}`}
+                    >
+                      {deletingId === d.id ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-3 w-3" />
+                      )}
                     </Button>
                   </div>
                 </li>
