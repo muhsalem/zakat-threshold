@@ -460,6 +460,14 @@ export function KpiCompliancePanel() {
           )}
         </CardContent>
       </Card>
+
+      <KpiCorrectionDialog
+        open={!!fixTarget}
+        onOpenChange={(v) => !v && setFixTarget(null)}
+        record={fixTarget?.record ?? null}
+        issueCodes={fixTarget?.codes ?? []}
+        onApplied={() => setReloadKey((k) => k + 1)}
+      />
     </div>
   );
 }
