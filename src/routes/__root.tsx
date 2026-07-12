@@ -12,6 +12,7 @@ import {
 import appCss from "../styles.css?url";
 import { initSentry } from "@/lib/sentry";
 import { LanguageProvider } from "@/lib/i18n";
+import { MadhabProvider } from "@/lib/madhabContext";
 import { AdminFloatingLinks } from "@/components/AdminFloatingLinks";
 import { CommandPalette } from "@/components/CommandPalette";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
