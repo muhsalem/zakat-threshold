@@ -154,6 +154,13 @@ jobs:
           PW_BROWSER: ${{ matrix.browser }}
         run: python tests/visual-rtl/run-large.py
 
+      # RTL a11y: ترتيب Tab / Shift+Tab + aria-current + aria-label لكل نمط pagination
+      - name: Run RTL a11y (tab-order + aria) tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-a11y.py
+
+
 
       - name: Upload failure screenshots
         if: failure()
