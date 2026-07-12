@@ -173,13 +173,14 @@ function AdvisorPage() {
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="اكتب سؤالك الشرعي أو المحاسبي عن الزكاة…"
-              disabled={busy}
+              placeholder={user ? "اكتب سؤالك الشرعي أو المحاسبي عن الزكاة…" : "سجّل الدخول لبدء المحادثة"}
+              disabled={busy || !user}
               className="flex-1"
             />
-            <Button type="submit" disabled={busy || !input.trim()} className="gap-1.5">
+            <Button type="submit" disabled={busy || !input.trim() || !user} className="gap-1.5">
               <Send className="h-4 w-4" /> إرسال
             </Button>
+
           </form>
         </CardContent>
       </Card>
