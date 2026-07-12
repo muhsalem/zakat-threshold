@@ -110,47 +110,62 @@ export function ApprovalAttachments({
       toast.error("جلسة الدخول غير متاحة");
       return;
     }
-    if (file.size > MAX_MB * 1024 * 1024) {
-      toast.error(`الحد الأقصى ${MAX_MB} ميجابايت`);
-      return;
-    }
-    setUploading(true);
-    const scopeId = organizationId ?? userId;
-    const parentId = approvalId ?? zakatRecordId ?? "general";
-    const safe = file.name.replace(/[^\w.\-]+/g, "_");
-    const path = `${scopeId}/${parentId}/${crypto.randomUUID()}-${safe}`;
-
-    const up = await supabase.storage.from(BUCKET).upload(path, file, {
-      contentType: file.type || "application/octet-stream",
-      upsert: false,
-    });
-    if (up.error) {
-      toast.error("تعذّر رفع الملف", { description: up.error.message });
-      setUploading(false);
-      return;
-    }
-    const ins = await supabase.from("approval_attachments").insert({
+    const vErr = validateUpload({
+      file: { name: file.name, size: file.size, type: file.type },
+      uploaded_by: userId ?? "",
       approval_id: approvalId ?? null,
       zakat_record_id: zakatRecordId ?? null,
       organization_id: organizationId ?? null,
-      uploaded_by: userId,
-      storage_path: path,
-      file_name: file.name,
-      mime_type: file.type || null,
-      size_bytes: file.size,
-      category,
-      label: label.trim() || null,
     });
-    if (ins.error) {
-      // rollback the storage upload
-      await supabase.storage.from(BUCKET).remove([path]);
-      toast.error("تعذّر تسجيل المرفق", { description: ins.error.message });
-    } else {
-      toast.success("تم رفع المرفق");
-      setLabel("");
-      await load();
+    if (vErr) {
+      toast.error("تعذّر رفع الملف", { description: validationMessage(vErr) ?? undefined });
+      return;
     }
-    setUploading(false);
+    setUploading(true);
+    try {
+      // Safely downscale large images before upload; PDFs pass through unchanged.
+      const prepared = await downscaleImage(file, file.type);
+      const finalMime = prepared.mime;
+      const finalBlob = prepared.blob;
+      const finalSize = finalBlob.size;
+      const scopeId = organizationId ?? userId;
+      const parentId = approvalId ?? zakatRecordId ?? "general";
+      const safe = file.name.replace(/[^\w.\-]+/g, "_");
+      const path = `${scopeId}/${parentId}/${crypto.randomUUID()}-${safe}`;
+
+      const up = await supabase.storage.from(BUCKET).upload(path, finalBlob, {
+        contentType: finalMime,
+        upsert: false,
+      });
+      if (up.error) {
+        toast.error("تعذّر رفع الملف", { description: up.error.message });
+        return;
+      }
+      const ins = await supabase.from("approval_attachments").insert({
+        approval_id: approvalId ?? null,
+        zakat_record_id: zakatRecordId ?? null,
+        organization_id: organizationId ?? null,
+        uploaded_by: userId,
+        storage_path: path,
+        file_name: file.name,
+        mime_type: finalMime,
+        size_bytes: finalSize,
+        category,
+        label: label.trim() || null,
+      });
+      if (ins.error) {
+        await supabase.storage.from(BUCKET).remove([path]);
+        toast.error("تعذّر تسجيل المرفق", { description: ins.error.message });
+      } else {
+        toast.success(
+          prepared.resized ? "تم رفع المرفق بعد تصغير الصورة" : "تم رفع المرفق",
+        );
+        setLabel("");
+        await load();
+      }
+    } finally {
+      setUploading(false);
+    }
   };
 
   const openFile = async (r: Row) => {
@@ -158,6 +173,15 @@ export function ApprovalAttachments({
       .from(BUCKET)
       .createSignedUrl(r.storage_path, 60 * 10);
     if (error || !data) return toast.error("تعذّر إنشاء رابط التنزيل");
+    // Best-effort download logging (RLS gates it server-side).
+    await supabase
+      .from("attachment_download_log")
+      .insert({
+        attachment_id: r.id,
+        downloaded_by: userId!,
+        user_agent: navigator.userAgent,
+      })
+      .then(() => {}, () => {});
     window.open(data.signedUrl, "_blank", "noopener");
   };
 
