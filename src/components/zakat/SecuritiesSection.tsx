@@ -328,6 +328,7 @@ export function SecuritiesSection({
                       }
                     />
                   </div>
+                  <Err msg={errs.price} />
                 </div>
 
                 <div className="space-y-1.5">
