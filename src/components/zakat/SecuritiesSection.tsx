@@ -272,7 +272,9 @@ export function SecuritiesSection({
                     value={r.ticker}
                     onChange={(e) => update(r.id, { ticker: e.target.value })}
                     placeholder="COMI.CA / 2222.SR / AAPL"
+                    maxLength={20}
                   />
+                  <Err msg={errs.ticker} />
                 </div>
 
                 <div className="space-y-1.5">
