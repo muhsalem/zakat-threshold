@@ -72,7 +72,7 @@ export function EsopZakatSection({ currencyName = "", onChange }: Props) {
         <CardTitle className="flex items-center gap-2 text-base">
           <Briefcase className="h-4 w-4 text-primary" />
           زكاة خيارات الأسهم للموظفين (ESOP / RSU)
-          <Badge variant="outline" className="text-[10px] mr-auto">
+          <Badge variant="outline" className="text-[10px] me-auto">
             AAOIFI 35
           </Badge>
         </CardTitle>

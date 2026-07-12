@@ -182,7 +182,7 @@ export function AdminOverview() {
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 placeholder="ابحث بالاسم/السنة/المعرّف…"
-                className="pr-8"
+                className="pe-8"
               />
             </div>
             <Select value={typeFilter} onValueChange={setTypeFilter}>
@@ -212,7 +212,7 @@ export function AdminOverview() {
 
           <div className="overflow-x-auto rounded-md border">
             <table className="w-full text-sm">
-              <thead className="text-right border-b bg-muted/40">
+              <thead className="text-end border-b bg-muted/40">
                 <tr>
                   <th className="py-2 px-2">التاريخ</th>
                   <th className="py-2 px-2">المستخدم</th>
@@ -296,7 +296,7 @@ function Kpi({
         <div className="mt-1 text-xl font-bold">
           {value}
           {suffix ? (
-            <span className="text-xs font-normal text-muted-foreground mr-1">{suffix}</span>
+            <span className="text-xs font-normal text-muted-foreground me-1">{suffix}</span>
           ) : null}
         </div>
       </CardContent>

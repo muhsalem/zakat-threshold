@@ -27,7 +27,7 @@ export function CryptoFatwasCard() {
         <CardTitle className="flex items-center gap-2 text-base">
           <BookOpen className="h-4 w-4 text-primary" />
           فتاوى زكاة العملات المشفرة والـ NFT
-          <Badge variant="outline" className="text-[10px] mr-auto">
+          <Badge variant="outline" className="text-[10px] me-auto">
             8 جهات إفتاء
           </Badge>
         </CardTitle>

@@ -23,7 +23,7 @@ export function NumField({ label, value, onChange, unit, hint, placeholder }: Nu
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder ?? "0"}
-          className="pl-16"
+          className="ps-16"
           dir="ltr"
           style={{ textAlign: "right" }}
         />

@@ -276,7 +276,7 @@ export function KpiCorrectionDialog({
             </AlertDescription>
           </Alert>
         ) : (
-          <div className="space-y-3 max-h-[55vh] overflow-y-auto pr-1">
+          <div className="space-y-3 max-h-[55vh] overflow-y-auto pe-1">
             {suggestions.map((s) => {
               const isSel = selected.has(s.code);
               return (
@@ -350,7 +350,7 @@ export function KpiCorrectionDialog({
           <Button onClick={apply} disabled={!record || chosen.length === 0 || !confirmed || saving}>
             {saving ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin ml-2" /> جارٍ التطبيق…
+                <Loader2 className="h-4 w-4 animate-spin ms-2" /> جارٍ التطبيق…
               </>
             ) : (
               <>تطبيق وإعادة الاحتساب ({chosen.length})</>

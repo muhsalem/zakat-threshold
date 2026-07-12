@@ -154,7 +154,7 @@ function StatusBadge({ s }: { s: string }) {
   if (s === "approved")
     return (
       <Badge className="bg-emerald-500">
-        <CheckCircle2 className="h-3 w-3 ml-1" />
+        <CheckCircle2 className="h-3 w-3 ms-1" />
         معتمد
       </Badge>
     );
@@ -178,7 +178,7 @@ function DemoPage() {
         </div>
         <Button asChild variant="outline">
           <Link to="/showcase">
-            <ArrowLeft className="h-4 w-4 ml-1" />
+            <ArrowLeft className="h-4 w-4 ms-1" />
             العودة لعرض اللجنة
           </Link>
         </Button>
@@ -239,17 +239,17 @@ function DemoPage() {
                     <TableBody>
                       <TableRow>
                         <TableCell>إجمالي الأصول</TableCell>
-                        <TableCell className="text-left">{fmt(totalAssets, p.currency)}</TableCell>
+                        <TableCell className="text-start">{fmt(totalAssets, p.currency)}</TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell>الالتزامات</TableCell>
-                        <TableCell className="text-left text-rose-600">
+                        <TableCell className="text-start text-rose-600">
                           −{fmt(p.liabilities, p.currency)}
                         </TableCell>
                       </TableRow>
                       <TableRow className="font-bold border-t-2">
                         <TableCell>الزكاة المستحقّة</TableCell>
-                        <TableCell className="text-left text-primary text-lg">
+                        <TableCell className="text-start text-primary text-lg">
                           {fmt(p.zakat, p.currency)}
                         </TableCell>
                       </TableRow>
@@ -283,25 +283,25 @@ function DemoPage() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>البند</TableHead>
-                      <TableHead className="text-left">المبلغ</TableHead>
+                      <TableHead className="text-start">المبلغ</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {c.breakdown.map((b, i) => (
                       <TableRow key={i}>
                         <TableCell>{b.item}</TableCell>
-                        <TableCell className={"text-left " + (b.amount < 0 ? "text-rose-600" : "")}>
+                        <TableCell className={"text-start " + (b.amount < 0 ? "text-rose-600" : "")}>
                           {fmt(b.amount, c.currency)}
                         </TableCell>
                       </TableRow>
                     ))}
                     <TableRow className="font-semibold border-t-2">
                       <TableCell>وعاء الزكاة</TableCell>
-                      <TableCell className="text-left">{fmt(c.base, c.currency)}</TableCell>
+                      <TableCell className="text-start">{fmt(c.base, c.currency)}</TableCell>
                     </TableRow>
                     <TableRow className="font-bold bg-primary/5">
                       <TableCell>الزكاة المستحقّة</TableCell>
-                      <TableCell className="text-left text-primary text-lg">
+                      <TableCell className="text-start text-primary text-lg">
                         {fmt(c.zakat, c.currency)}
                       </TableCell>
                     </TableRow>
@@ -324,7 +324,7 @@ function DemoPage() {
                   </div>
                 </div>
                 <Badge className="bg-emerald-500">
-                  <FileCheck className="h-3 w-3 ml-1" />
+                  <FileCheck className="h-3 w-3 ms-1" />
                   موزّعة بالكامل
                 </Badge>
               </div>
@@ -351,16 +351,16 @@ function DemoPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>المصرف الشرعي</TableHead>
-                    <TableHead className="text-left">المبلغ</TableHead>
-                    <TableHead className="text-left">النسبة</TableHead>
+                    <TableHead className="text-start">المبلغ</TableHead>
+                    <TableHead className="text-start">النسبة</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {Object.entries(ORG.distributed).map(([k, v]) => (
                     <TableRow key={k}>
                       <TableCell className="font-medium">{k}</TableCell>
-                      <TableCell className="text-left">{fmt(v, ORG.currency)}</TableCell>
-                      <TableCell className="text-left">
+                      <TableCell className="text-start">{fmt(v, ORG.currency)}</TableCell>
+                      <TableCell className="text-start">
                         {((v / ORG.collected) * 100).toFixed(1)}%
                       </TableCell>
                     </TableRow>

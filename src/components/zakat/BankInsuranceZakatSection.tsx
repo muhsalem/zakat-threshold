@@ -131,7 +131,7 @@ export function BankInsuranceZakatSection({ currencyName = "ج.م" }: { currency
             <Landmark className="h-4 w-4 text-primary" />
           )}
           زكاة البنوك وشركات التأمين
-          <Badge variant="outline" className="text-[10px] mr-auto">
+          <Badge variant="outline" className="text-[10px] me-auto">
             AAOIFI 35 / 9
           </Badge>
         </CardTitle>

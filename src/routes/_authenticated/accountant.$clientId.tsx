@@ -395,7 +395,7 @@ function ClientDetail() {
               {[...client.history].reverse().map((h, i) => (
                 <li
                   key={i}
-                  className="flex items-start gap-2 border-r-2 border-primary/40 pr-3 py-1"
+                  className="flex items-start gap-2 border-e-2 border-primary/40 pe-3 py-1"
                 >
                   <div className="flex-1">
                     <div className="font-medium">{h.action}</div>

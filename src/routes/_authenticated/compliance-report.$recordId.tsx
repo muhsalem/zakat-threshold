@@ -404,7 +404,7 @@ function ComplianceReportPage() {
           </div>
           <div>
             <div className="text-muted-foreground">المصادر الحاكمة للاحتساب</div>
-            <ul className="list-disc pr-5 mt-1 space-y-0.5">
+            <ul className="list-disc pe-5 mt-1 space-y-0.5">
               <li>AAOIFI Standard 35 — الزكاة</li>
               <li>قرارات مجمع الفقه الإسلامي الدولي (جدة)</li>
               <li>ندوات قضايا الزكاة المعاصرة (بيت الزكاة الكويتي)</li>

@@ -199,7 +199,7 @@ function AwardSubmissionPage() {
       {/* Hero */}
       <section className="container mx-auto px-4 pt-10 pb-6 text-center">
         <Badge className="mb-4 bg-amber-500/15 text-amber-700 border-amber-500/30">
-          <Award className="h-3.5 w-3.5 ml-1" /> جائزة الابتكار في الاقتصاد الإسلامي — قطر
+          <Award className="h-3.5 w-3.5 ms-1" /> جائزة الابتكار في الاقتصاد الإسلامي — قطر
         </Badge>
         <h1 className="text-3xl md:text-5xl font-bold mb-3 leading-tight">
           ملف ترشّح متكامل
@@ -272,7 +272,7 @@ function AwardSubmissionPage() {
                 <div className="grid md:grid-cols-2 gap-3">
                   <div className="rounded-md border bg-card p-3">
                     <div className="font-bold text-primary mb-1">المرجعية الشرعية</div>
-                    <ul className="list-disc pr-5 space-y-0.5 text-xs">
+                    <ul className="list-disc pe-5 space-y-0.5 text-xs">
                       <li>AAOIFI · معيار الزكاة (35) ومعيار العملات الرقمية (59)</li>
                       <li>قرارات مجمع الفقه الإسلامي الدولي (جدة)</li>
                       <li>دار الإفتاء المصرية والكويتية والأردنية</li>
@@ -281,7 +281,7 @@ function AwardSubmissionPage() {
                   </div>
                   <div className="rounded-md border bg-card p-3">
                     <div className="font-bold text-primary mb-1">التقنيات المعاصرة الموظّفة</div>
-                    <ul className="list-disc pr-5 space-y-0.5 text-xs">
+                    <ul className="list-disc pe-5 space-y-0.5 text-xs">
                       <li>الذكاء الاصطناعي (Lovable AI Gateway) للمساعد الفقهي</li>
                       <li>QR + Hash للتحقّق المستقل من التقارير</li>
                       <li>XBRL لتكامل التقارير المؤسسية</li>
@@ -356,7 +356,7 @@ function AwardSubmissionPage() {
                     <Badge variant={a.primary ? "default" : "outline"}>المجال {a.code}</Badge>
                     {a.title}
                     {a.primary && (
-                      <Badge variant="secondary" className="mr-auto text-[10px]">
+                      <Badge variant="secondary" className="me-auto text-[10px]">
                         رئيسي
                       </Badge>
                     )}

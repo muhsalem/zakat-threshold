@@ -10,7 +10,7 @@ export function ShariaBoardCard() {
         <CardTitle className="flex items-center gap-2 text-base">
           <ShieldCheck className="h-4 w-4 text-primary" />
           المرجعية الشرعية والاعتماد
-          <Badge variant="outline" className="text-[10px] mr-auto">
+          <Badge variant="outline" className="text-[10px] me-auto">
             Sharia Governance
           </Badge>
         </CardTitle>
@@ -29,7 +29,7 @@ export function ShariaBoardCard() {
         <div className="grid md:grid-cols-2 gap-2">
           <div className="rounded-md border border-primary/15 bg-card p-2.5 space-y-1">
             <div className="font-semibold text-primary">المعايير المرجعية</div>
-            <ul className="list-disc pr-4 space-y-0.5">
+            <ul className="list-disc pe-4 space-y-0.5">
               <li>AAOIFI — معيار الزكاة رقم (35)</li>
               <li>AAOIFI — معيار العملات الرقمية (59)</li>
               <li>مجمع الفقه الإسلامي الدولي (جدة)</li>
@@ -40,7 +40,7 @@ export function ShariaBoardCard() {
           </div>
           <div className="rounded-md border border-primary/15 bg-card p-2.5 space-y-1">
             <div className="font-semibold text-primary">منهجية الحوكمة الشرعية</div>
-            <ul className="list-disc pr-4 space-y-0.5">
+            <ul className="list-disc pe-4 space-y-0.5">
               <li>قابلية الترجيح بين المذاهب الأربعة</li>
               <li>توثيق المرجع الفقهي لكل بند حسابي</li>
               <li>سجل تدقيق شرعي قابل للتصدير (Audit Trail)</li>

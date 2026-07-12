@@ -415,7 +415,7 @@ function AttachmentsReviewPage() {
                 enterKeyHint="search"
                 autoComplete="off"
                 spellCheck={false}
-                className="h-9 pr-8 pl-8"
+                className="h-9 pe-8 ps-8"
               />
               {qInput && (
                 <button
@@ -500,7 +500,7 @@ function AttachmentsReviewPage() {
         <CardContent>
           {loading ? (
             <div className="flex items-center justify-center py-12 text-muted-foreground">
-              <Loader2 className="h-5 w-5 animate-spin ml-2" /> جارٍ التحميل…
+              <Loader2 className="h-5 w-5 animate-spin ms-2" /> جارٍ التحميل…
             </div>
           ) : err ? (
             <Alert variant="destructive">
@@ -632,7 +632,7 @@ function LinkedCell({ a, linked }: { a: Attachment; linked?: LinkedRecord }) {
           const target = linkedNavTarget({ zakat_record_id: linked.id });
           if (target) navigate(target);
         }}
-        className="text-right hover:underline"
+        className="text-end hover:underline"
       >
         <div className="flex items-center gap-1 text-xs">
           <Link2 className="h-3 w-3 text-primary" />
@@ -765,7 +765,7 @@ function AttachmentRow({
               onClick={submit}
               disabled={saving || (open === "rejected" && note.trim().length === 0)}
             >
-              {saving ? <Loader2 className="h-4 w-4 animate-spin ml-2" /> : null} تأكيد
+              {saving ? <Loader2 className="h-4 w-4 animate-spin ms-2" /> : null} تأكيد
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -840,12 +840,12 @@ function AuditHistoryDialog({
         </DialogHeader>
         {loading ? (
           <div className="flex items-center justify-center py-8 text-muted-foreground">
-            <Loader2 className="h-5 w-5 animate-spin ml-2" /> جارٍ تحميل السجل…
+            <Loader2 className="h-5 w-5 animate-spin ms-2" /> جارٍ تحميل السجل…
           </div>
         ) : rows.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-6">لا توجد أحداث مسجّلة.</p>
         ) : (
-          <ol className="relative border-r-2 border-muted pr-4 max-h-[60vh] overflow-y-auto space-y-4">
+          <ol className="relative border-e-2 border-muted pe-4 max-h-[60vh] overflow-y-auto space-y-4">
             {rows.map((r) => (
               <li key={r.id} className="relative">
                 <span className="absolute -right-[10px] top-1.5 h-2.5 w-2.5 rounded-full bg-primary" />

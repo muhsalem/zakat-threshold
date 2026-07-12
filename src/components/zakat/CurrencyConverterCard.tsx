@@ -36,7 +36,7 @@ export function CurrencyConverterCard({ reportCurrency, value, onChange }: Props
         <CardTitle className="flex items-center gap-2 text-base">
           <Languages className="h-4 w-4 text-primary" />
           أسعار الصرف للتحويل التلقائي
-          <Badge variant="outline" className="text-[10px] mr-auto">
+          <Badge variant="outline" className="text-[10px] me-auto">
             قبل التصدير
           </Badge>
         </CardTitle>
@@ -78,7 +78,7 @@ export function CurrencyConverterCard({ reportCurrency, value, onChange }: Props
           </div>
           <div className="col-span-3">
             <Button type="button" className="w-full" onClick={add} disabled={!from || !rate}>
-              <Plus className="h-4 w-4 ml-1" /> إضافة
+              <Plus className="h-4 w-4 ms-1" /> إضافة
             </Button>
           </div>
         </div>
@@ -88,9 +88,9 @@ export function CurrencyConverterCard({ reportCurrency, value, onChange }: Props
             <table className="w-full text-xs">
               <thead className="bg-primary/5">
                 <tr>
-                  <th className="p-2 text-right">العملة</th>
-                  <th className="p-2 text-right">السعر مقابل {reportCurrency}</th>
-                  <th className="p-2 text-right">إجراء</th>
+                  <th className="p-2 text-end">العملة</th>
+                  <th className="p-2 text-end">السعر مقابل {reportCurrency}</th>
+                  <th className="p-2 text-end">إجراء</th>
                 </tr>
               </thead>
               <tbody>

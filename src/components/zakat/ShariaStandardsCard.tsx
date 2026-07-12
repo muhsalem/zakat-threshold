@@ -94,7 +94,7 @@ export function ShariaStandardsCard({ defaultSector = "general" }: Props) {
                 </span>
               </AccordionTrigger>
               <AccordionContent>
-                <ul className="space-y-1.5 text-xs leading-relaxed pr-3">
+                <ul className="space-y-1.5 text-xs leading-relaxed pe-3">
                   {std.rules.map((r, i) => (
                     <li key={i} className="flex items-start gap-2">
                       <span className="text-primary font-bold">•</span>
@@ -113,7 +113,7 @@ export function ShariaStandardsCard({ defaultSector = "general" }: Props) {
                 </span>
               </AccordionTrigger>
               <AccordionContent>
-                <ul className="space-y-1.5 text-xs leading-relaxed pr-3">
+                <ul className="space-y-1.5 text-xs leading-relaxed pe-3">
                   {std.prohibitions.map((p, i) => (
                     <li key={i} className="flex items-start gap-2">
                       <span className="text-destructive font-bold">✗</span>

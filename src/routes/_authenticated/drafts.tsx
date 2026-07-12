@@ -573,7 +573,7 @@ function DraftsPage() {
                       value={q}
                       onChange={(e) => setQ(e.target.value)}
                       placeholder="سنة، عملة، ملاحظة…"
-                      className="pr-8 h-9 text-sm"
+                      className="pe-8 h-9 text-sm"
                     />
                   </div>
                 </div>

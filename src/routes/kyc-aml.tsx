@@ -148,7 +148,7 @@ function KycAml() {
           <CardTitle className="flex items-center gap-2">
             <ShieldCheck className="w-5 h-5 text-primary" />
             فحص KYC / AML المبدئي
-            <Badge variant="secondary" className="mr-auto">
+            <Badge variant="secondary" className="me-auto">
               Compliance
             </Badge>
           </CardTitle>
@@ -252,12 +252,12 @@ function KycAml() {
                 <CheckCircle2 className="w-4 h-4" />
               )}
               <b>القرار: {result.decision}</b>
-              <Badge variant="outline" className="mr-auto bg-white/50">
+              <Badge variant="outline" className="me-auto bg-white/50">
                 Score: {result.score}
               </Badge>
             </div>
             {result.flags.length > 0 && (
-              <ul className="list-disc pr-5 text-xs space-y-0.5">
+              <ul className="list-disc pe-5 text-xs space-y-0.5">
                 {result.flags.map((f) => (
                   <li key={f}>{f}</li>
                 ))}

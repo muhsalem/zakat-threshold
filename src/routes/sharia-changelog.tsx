@@ -166,10 +166,10 @@ function ShariaChangelogPage() {
                     {e.version}
                   </Badge>
                   <Badge className={meta.className}>
-                    <Icon className="h-3 w-3 ml-1" />
+                    <Icon className="h-3 w-3 ms-1" />
                     {meta.label}
                   </Badge>
-                  <span className="text-xs text-muted-foreground mr-auto">{e.date}</span>
+                  <span className="text-xs text-muted-foreground me-auto">{e.date}</span>
                 </div>
                 <CardTitle className="text-base mt-2">{e.title}</CardTitle>
               </CardHeader>
@@ -211,7 +211,7 @@ function ShariaChangelogPage() {
       <div className="flex flex-wrap gap-2 justify-center pt-4">
         <Button asChild variant="outline" size="sm">
           <Link to="/governance">
-            ميثاق الحوكمة <ArrowRight className="h-4 w-4 mr-1" />
+            ميثاق الحوكمة <ArrowRight className="h-4 w-4 me-1" />
           </Link>
         </Button>
         <Button asChild variant="outline" size="sm">

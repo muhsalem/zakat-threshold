@@ -70,7 +70,7 @@ export default function AdvanceMultiYearZakat({ annualZakat = 0, currencyName = 
           </div>
         </div>
 
-        <p className="text-xs text-muted-foreground border-r-2 border-primary/40 pr-3 leading-relaxed">
+        <p className="text-xs text-muted-foreground border-e-2 border-primary/40 pe-3 leading-relaxed">
           <strong>الحكم:</strong> أجاز الجمهور (الحنفية والشافعية والحنابلة) تعجيل الزكاة لسنة أو
           أكثر بشرط ملك النصاب، ويُحتسب من زكاة السنوات القادمة. ويُجبر الفرق إن زاد الواجب الفعلي
           عند الحول. (المغني لابن قدامة، المجموع للنووي).

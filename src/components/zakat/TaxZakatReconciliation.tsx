@@ -57,7 +57,7 @@ export function TaxZakatReconciliation({ currencyName }: Props) {
         <CardTitle className="flex items-center gap-2 text-base">
           <Scale className="h-4 w-4 text-primary" />
           مطابقة الوعاء الزكوي مع الوعاء الضريبي
-          <Badge variant="outline" className="text-[10px] mr-auto">
+          <Badge variant="outline" className="text-[10px] me-auto">
             ZATCA · IFRS · AAOIFI
           </Badge>
         </CardTitle>

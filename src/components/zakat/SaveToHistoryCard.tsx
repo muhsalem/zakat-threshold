@@ -81,7 +81,7 @@ export function SaveToHistoryCard({ payload }: { payload: Payload }) {
               سجّل دخولك لحفظ نتيجة الزكاة وتتبّع تطورها عبر السنوات مع مخططات إحصائية.
               <Link
                 to="/auth"
-                className="inline-flex items-center gap-1 mr-2 text-primary font-bold hover:underline"
+                className="inline-flex items-center gap-1 me-2 text-primary font-bold hover:underline"
               >
                 <LogIn className="h-3 w-3" /> دخول / إنشاء حساب
               </Link>

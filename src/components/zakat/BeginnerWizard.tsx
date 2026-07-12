@@ -78,7 +78,7 @@ export function BeginnerWizard() {
   }
 
   return (
-    <div dir="rtl" className="max-w-2xl mx-auto space-y-4 text-right">
+    <div dir="rtl" className="max-w-2xl mx-auto space-y-4 text-end">
       <div className="space-y-2">
         <div className="flex items-center justify-between text-xs">
           <span className="font-bold text-primary">
@@ -221,7 +221,7 @@ export function BeginnerWizard() {
                   >
                     {result.reachesNisab ? (
                       <>
-                        <CheckCircle2 className="h-3 w-3 ml-1" /> بلغ النصاب
+                        <CheckCircle2 className="h-3 w-3 ms-1" /> بلغ النصاب
                       </>
                     ) : (
                       "أقل من النصاب — لا زكاة"

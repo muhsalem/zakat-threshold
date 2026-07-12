@@ -493,7 +493,7 @@ export function GoldSilverSection(props: GoldSilverSectionProps) {
                     placeholder="0"
                     dir="ltr"
                     style={{ textAlign: "right" }}
-                    className="pl-10"
+                    className="ps-10"
                   />
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
                     جم
@@ -627,7 +627,7 @@ export function GoldSilverSection(props: GoldSilverSectionProps) {
         <AccordionTrigger className="hover:no-underline">
           <span className="flex items-center gap-2 text-base font-semibold">
             <Coins className="h-5 w-5 text-muted-foreground" /> زكاة الفضة
-            <Badge variant="secondary" className="text-[10px] mr-2">
+            <Badge variant="secondary" className="text-[10px] me-2">
               النصاب: {SILVER_NISAB_GRAMS} جم عيار 999
             </Badge>
           </span>
@@ -981,7 +981,7 @@ export function GoldSilverSection(props: GoldSilverSectionProps) {
                 onChange={setSilverPrice}
                 unit={currencyName}
               />
-              <div className="md:col-span-2 text-xs text-muted-foreground bg-muted/40 rounded-md px-3 py-2 text-right">
+              <div className="md:col-span-2 text-xs text-muted-foreground bg-muted/40 rounded-md px-3 py-2 text-end">
                 نصاب الذهب: <b>{cur(calc.goldNisabValue)}</b> — نصاب الفضة:{" "}
                 <b>{cur(calc.silverNisabValue)}</b> — الأنفع للفقراء:{" "}
                 <b>{cur(calc.moneyNisab)}</b>

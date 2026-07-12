@@ -185,7 +185,7 @@ function EnterprisePricing() {
           <table className="w-full text-sm">
             <thead className="bg-muted/50">
               <tr>
-                <th className="text-right p-3">الميزة</th>
+                <th className="text-end p-3">الميزة</th>
                 <th className="p-3">Startup</th>
                 <th className="p-3 bg-primary/5">Business</th>
                 <th className="p-3">Enterprise</th>
@@ -194,7 +194,7 @@ function EnterprisePricing() {
             <tbody>
               {COMPARE.map((r) => (
                 <tr key={r.label} className="border-t">
-                  <td className="p-3 text-right font-medium">{r.label}</td>
+                  <td className="p-3 text-end font-medium">{r.label}</td>
                   <td className="p-3 text-center">
                     <Cell v={r.startup} />
                   </td>

@@ -350,11 +350,11 @@ function ClientIntakePage() {
           <br />
           سيصلك التقرير الرسمي على بريدك <b>خلال يومَي عمل</b> بحد أقصى.
         </p>
-        <div className="rounded-lg border bg-primary/5 p-4 text-sm text-right space-y-2">
+        <div className="rounded-lg border bg-primary/5 p-4 text-sm text-end space-y-2">
           <div className="font-semibold flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-primary" /> ما التالي؟
           </div>
-          <ol className="list-decimal pr-6 space-y-1 text-muted-foreground">
+          <ol className="list-decimal pe-6 space-y-1 text-muted-foreground">
             <li>يستلم المحاسب المعتمد بياناتك خلال دقائق.</li>
             <li>مراجعة وتصنيف الأصول والالتزامات وفق المعايير الشرعية.</li>
             {isComp && (

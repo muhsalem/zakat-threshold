@@ -787,7 +787,7 @@ export function IndividualTab() {
     });
 
   return (
-    <div dir="rtl" className="text-right">
+    <div dir="rtl" className="text-end">
       {/* تقرير الطباعة الاحترافي — يظهر فقط عند الطباعة */}
       <PrintReport
         data={{
@@ -1047,12 +1047,12 @@ export function IndividualTab() {
                       {nisabSaveMsg && <span className="text-xs text-primary">{nisabSaveMsg}</span>}
                     </div>
                     <p className="text-[11px] text-muted-foreground">
-                      <Info className="inline h-3 w-3 ml-1" />
+                      <Info className="inline h-3 w-3 ms-1" />
                       مصدر التحويل: <b>Intl ICU CLDR — تقويم أم القرى</b>. يُؤكَّد التحويل تلقائياً
                       عند إدخال التاريخ الميلادي ويُحفظ في سجل النصاب.
                     </p>
                     <p className="text-xs text-muted-foreground leading-relaxed">
-                      <Info className="inline h-3 w-3 ml-1" />
+                      <Info className="inline h-3 w-3 ms-1" />
                       وفقاً للجمهور (ضم المستفاد إلى ما عنده من جنسه): تاريخ بلوغ النصاب الأول يصبح{" "}
                       <b>المرجع الموحَّد</b> لحَوْل جميع الأصول النقدية (ذهب، فضة، نقد، عروض تجارة،
                       أسهم). الزروع والثمار لا يشترط لها حول.
@@ -1296,7 +1296,7 @@ export function IndividualTab() {
                     <span className="flex items-center gap-2 text-base font-semibold">
                       <TrendingUp className="h-5 w-5 text-gold" /> زكاة العملات الرقمية والمحافظ
                       الاستثمارية
-                      <Badge variant="outline" className="text-[10px] mr-2">
+                      <Badge variant="outline" className="text-[10px] me-2">
                         AAOIFI 35
                       </Badge>
                     </span>
@@ -1375,7 +1375,7 @@ export function IndividualTab() {
                         <>
                           <Alert className="border-primary/20 bg-primary/5">
                             <Info className="h-4 w-4" />
-                            <AlertDescription className="text-xs leading-relaxed text-right">
+                            <AlertDescription className="text-xs leading-relaxed text-end">
                               <b>المتجر الإلكتروني:</b> يُزكَّى بقيمة البضاعة المعروضة للبيع +
                               المنتجات الرقمية + الخدمات الرقمية المُدّخَرة + المستحقات المرجوّة. لا
                               زكاة في الأصول الرقمية المُعدّة للبيع إذا كانت ضمن «العملات الرقمية»
@@ -1390,7 +1390,7 @@ export function IndividualTab() {
                           />
 
                           {ecommerceItems.length > 0 && (
-                            <div className="text-[11px] text-muted-foreground text-right">
+                            <div className="text-[11px] text-muted-foreground text-end">
                               الحقول أدناه مُغذّاة تلقائيًا من سجل البنود. يمكنك تعديلها يدويًا بعد
                               تفريغ السجل.
                             </div>
@@ -1449,7 +1449,7 @@ export function IndividualTab() {
                       </div>
                       <Alert className="border-primary/20 bg-background">
                         <Info className="h-4 w-4" />
-                        <AlertDescription className="text-xs leading-relaxed text-right">
+                        <AlertDescription className="text-xs leading-relaxed text-end">
                           <b>نطاق العقار:</b> يشمل الأرض الفضاء، أو المبنى، أو الأرض والمبنى معاً.
                           <br />
                           <b>عقار السكن الخاص:</b> لا زكاة فيه إجماعًا.
@@ -1709,7 +1709,7 @@ export function IndividualTab() {
                       <>
                         <div className="text-4xl font-black tracking-tight">
                           {fmt(netDue)}
-                          <span className="text-lg font-medium opacity-80 mr-2">
+                          <span className="text-lg font-medium opacity-80 me-2">
                             {currencyName}
                           </span>
                         </div>
@@ -2237,7 +2237,7 @@ export function IndividualTab() {
                           onClick={() => jumpToSection("debts")}
                           className="text-start hover:underline"
                         >
-                          <MinusCircle className="inline h-3.5 w-3.5 ml-1" />② الخصومات والديون
+                          <MinusCircle className="inline h-3.5 w-3.5 ms-1" />② الخصومات والديون
                           والالتزامات
                         </button>
                         <span>
@@ -2588,7 +2588,7 @@ export function IndividualTab() {
                       );
                     }}
                   >
-                    <FileText className="h-4 w-4 ml-2" />
+                    <FileText className="h-4 w-4 ms-2" />
                     تحميل التقرير PDF
                   </Button>
                   <Button
@@ -2607,12 +2607,12 @@ export function IndividualTab() {
                       );
                     }}
                   >
-                    <FileSpreadsheet className="h-4 w-4 ml-2" />
+                    <FileSpreadsheet className="h-4 w-4 ms-2" />
                     تحميل التقرير Excel
                   </Button>
 
                   <Button variant="outline" className="w-full" onClick={() => window.print()}>
-                    <CheckCircle2 className="h-4 w-4 ml-2" />
+                    <CheckCircle2 className="h-4 w-4 ms-2" />
                     طباعة التقرير
                   </Button>
                 </CardContent>

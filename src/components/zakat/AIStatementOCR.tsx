@@ -189,7 +189,7 @@ export default function AIStatementOCR() {
               type="file"
               accept="image/*"
               onChange={onPickImage}
-              className="block w-full text-sm file:mr-3 file:py-2 file:px-3 file:rounded-md file:border-0 file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
+              className="block w-full text-sm file:me-3 file:py-2 file:px-3 file:rounded-md file:border-0 file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
             />
             {imageBase64 && (
               <div className="text-xs text-emerald-600 flex items-center gap-1">
@@ -206,9 +206,9 @@ export default function AIStatementOCR() {
         <div className="flex flex-wrap gap-2">
           <Button onClick={onExtract} disabled={loading}>
             {loading ? (
-              <Loader2 className="w-4 h-4 ml-1 animate-spin" />
+              <Loader2 className="w-4 h-4 ms-1 animate-spin" />
             ) : (
-              <Sparkles className="w-4 h-4 ml-1" />
+              <Sparkles className="w-4 h-4 ms-1" />
             )}
             استخراج وتصنيف
           </Button>
@@ -236,12 +236,12 @@ export default function AIStatementOCR() {
               <table className="w-full text-xs">
                 <thead className="bg-muted/50">
                   <tr>
-                    <th className="text-right p-2">الفئة</th>
-                    <th className="text-right p-2">البند</th>
-                    <th className="text-left p-2">المبلغ</th>
+                    <th className="text-end p-2">الفئة</th>
+                    <th className="text-end p-2">البند</th>
+                    <th className="text-start p-2">المبلغ</th>
                     <th className="text-center p-2">زكوي</th>
                     <th className="text-center p-2">ثقة</th>
-                    <th className="text-right p-2">ملاحظة</th>
+                    <th className="text-end p-2">ملاحظة</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -251,7 +251,7 @@ export default function AIStatementOCR() {
                         {CATEGORY_LABEL[it.category] || it.category}
                       </td>
                       <td className="p-2">{it.label}</td>
-                      <td className="p-2 text-left tabular-nums">{fmt(it.amount)}</td>
+                      <td className="p-2 text-start tabular-nums">{fmt(it.amount)}</td>
                       <td className="p-2 text-center">
                         {it.zakatable ? (
                           <CheckCircle2 className="w-4 h-4 text-emerald-600 inline" />

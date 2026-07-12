@@ -77,7 +77,7 @@ export function LivestockAccordionSection({
                       </TooltipTrigger>
                       <TooltipContent
                         side="bottom"
-                        className="max-w-xs text-right leading-relaxed bg-card text-card-foreground border shadow-lg"
+                        className="max-w-xs text-end leading-relaxed bg-card text-card-foreground border shadow-lg"
                       >
                         <div className="space-y-1.5 text-xs">
                           <p>

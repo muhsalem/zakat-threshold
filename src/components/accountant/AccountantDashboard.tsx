@@ -220,7 +220,7 @@ export function AccountantDashboard() {
 
           {loading && (
             <div className="flex items-center justify-center py-10 text-muted-foreground">
-              <Loader2 className="h-5 w-5 animate-spin ml-2" /> جارٍ التحميل…
+              <Loader2 className="h-5 w-5 animate-spin ms-2" /> جارٍ التحميل…
             </div>
           )}
           {err && (
@@ -263,12 +263,12 @@ export function AccountantDashboard() {
                           <Badge variant="outline">
                             {r.record_type === "individual" ? (
                               <>
-                                <Users className="h-3 w-3 ml-1 inline" />
+                                <Users className="h-3 w-3 ms-1 inline" />
                                 فرد
                               </>
                             ) : (
                               <>
-                                <Building2 className="h-3 w-3 ml-1 inline" />
+                                <Building2 className="h-3 w-3 ms-1 inline" />
                                 شركة
                               </>
                             )}

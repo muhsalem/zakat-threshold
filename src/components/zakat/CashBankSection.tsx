@@ -431,7 +431,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
               onChange={(e) => setCashHome(e.target.value)}
               dir="ltr"
               style={{ textAlign: "right" }}
-              className="pl-14"
+              className="ps-14"
               placeholder="0"
             />
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
@@ -571,7 +571,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
                 onChange={(e) => setCurrBalance(e.target.value)}
                 dir="ltr"
                 style={{ textAlign: "right" }}
-                className="pl-14"
+                className="ps-14"
                 placeholder="0"
               />
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
@@ -669,7 +669,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
                 onChange={(e) => setSavBalance(e.target.value)}
                 dir="ltr"
                 style={{ textAlign: "right" }}
-                className="pl-14"
+                className="ps-14"
                 placeholder="0"
               />
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
@@ -690,7 +690,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
                   onChange={(e) => setSavPurifyPct(e.target.value)}
                   dir="ltr"
                   style={{ textAlign: "right" }}
-                  className="pl-8"
+                  className="ps-8"
                   placeholder="0"
                 />
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
@@ -792,7 +792,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
                 onChange={(e) => setDepPrincipal(e.target.value)}
                 dir="ltr"
                 style={{ textAlign: "right" }}
-                className="pl-14"
+                className="ps-14"
                 placeholder="0"
               />
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
@@ -871,7 +871,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
                 onChange={(e) => setCertPrincipal(e.target.value)}
                 dir="ltr"
                 style={{ textAlign: "right" }}
-                className="pl-14"
+                className="ps-14"
                 placeholder="0"
               />
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
@@ -899,7 +899,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
                 onChange={(e) => setPostSavings(e.target.value)}
                 dir="ltr"
                 style={{ textAlign: "right" }}
-                className="pl-14"
+                className="ps-14"
                 placeholder="0"
               />
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
@@ -918,7 +918,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
                 onChange={(e) => setPostPrincipal(e.target.value)}
                 dir="ltr"
                 style={{ textAlign: "right" }}
-                className="pl-14"
+                className="ps-14"
                 placeholder="0"
               />
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
@@ -955,7 +955,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
                 onChange={(e) => setCardPrepaid(e.target.value)}
                 dir="ltr"
                 style={{ textAlign: "right" }}
-                className="pl-14"
+                className="ps-14"
                 placeholder="0"
               />
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
@@ -1013,7 +1013,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
                   onChange={(e) => setCcDue(e.target.value)}
                   dir="ltr"
                   style={{ textAlign: "right" }}
-                  className="pl-14"
+                  className="ps-14"
                   placeholder="0"
                 />
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
@@ -1087,7 +1087,7 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
                     onChange={(e) => setCcInterestPaid(e.target.value)}
                     dir="ltr"
                     style={{ textAlign: "right" }}
-                    className="pl-14"
+                    className="ps-14"
                     placeholder="0"
                   />
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
@@ -1284,7 +1284,7 @@ function WalletGroup({
                   onChange={(e) => ops.update(w.id, { amount: e.target.value })}
                   dir="ltr"
                   style={{ textAlign: "right" }}
-                  className="pl-12"
+                  className="ps-12"
                   placeholder="0"
                 />
                 <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">

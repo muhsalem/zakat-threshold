@@ -260,7 +260,7 @@ export function KpiCompliancePanel() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-16 text-muted-foreground">
-        <Loader2 className="h-5 w-5 animate-spin ml-2" /> جارٍ تحميل مؤشرات الأداء…
+        <Loader2 className="h-5 w-5 animate-spin ms-2" /> جارٍ تحميل مؤشرات الأداء…
       </div>
     );
   }

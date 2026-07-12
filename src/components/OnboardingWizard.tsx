@@ -149,7 +149,7 @@ export function OnboardingWizard() {
                   onClick={() => setCountry(c.id)}
                   className="justify-start"
                 >
-                  {country === c.id && <CheckCircle2 className="ml-2 h-4 w-4" />}
+                  {country === c.id && <CheckCircle2 className="ms-2 h-4 w-4" />}
                   {c.label}
                 </Button>
               ))}
@@ -172,16 +172,16 @@ export function OnboardingWizard() {
           <div className="flex gap-2">
             {step > 0 && (
               <Button variant="outline" onClick={() => setStep(step - 1)}>
-                <ArrowRight className="ml-1 h-4 w-4" /> السابق
+                <ArrowRight className="ms-1 h-4 w-4" /> السابق
               </Button>
             )}
             {step < 1 ? (
               <Button disabled={!canNext} onClick={() => setStep(step + 1)}>
-                التالي <ArrowLeft className="mr-1 h-4 w-4" />
+                التالي <ArrowLeft className="me-1 h-4 w-4" />
               </Button>
             ) : (
               <Button disabled={!canNext} onClick={finish}>
-                ابدأ الحساب <ArrowLeft className="mr-1 h-4 w-4" />
+                ابدأ الحساب <ArrowLeft className="me-1 h-4 w-4" />
               </Button>
             )}
           </div>

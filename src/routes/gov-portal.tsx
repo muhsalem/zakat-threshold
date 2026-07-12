@@ -52,7 +52,7 @@ function GovPortal() {
           <CardTitle className="flex items-center gap-2">
             <Building2 className="w-5 h-5 text-primary" />
             بوابة الجهات الحكومية
-            <Badge variant="secondary" className="mr-auto">
+            <Badge variant="secondary" className="me-auto">
               Government Portal — Preview
             </Badge>
           </CardTitle>
@@ -83,7 +83,7 @@ function GovPortal() {
               <table className="w-full text-sm">
                 <thead className="bg-muted/50">
                   <tr>
-                    <th className="text-right p-2">الجهة</th>
+                    <th className="text-end p-2">الجهة</th>
                     <th className="text-center p-2">المرحلة</th>
                     <th className="text-center p-2">مرجع</th>
                   </tr>

@@ -119,10 +119,10 @@ export default function SensitivityProjection({
                 <table className="w-full text-sm">
                   <thead className="bg-muted/60">
                     <tr>
-                      <th className="text-right p-2">تغيّر الوعاء</th>
-                      <th className="text-right p-2">الوعاء الجديد</th>
-                      <th className="text-right p-2">الزكاة المتوقعة</th>
-                      <th className="text-right p-2">الفرق عن الحالي</th>
+                      <th className="text-end p-2">تغيّر الوعاء</th>
+                      <th className="text-end p-2">الوعاء الجديد</th>
+                      <th className="text-end p-2">الزكاة المتوقعة</th>
+                      <th className="text-end p-2">الفرق عن الحالي</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -168,10 +168,10 @@ export default function SensitivityProjection({
                 <table className="w-full text-sm">
                   <thead className="bg-muted/60 sticky top-0">
                     <tr>
-                      <th className="text-right p-2">السنة</th>
-                      <th className="text-right p-2">الوعاء المتوقع</th>
-                      <th className="text-right p-2">الزكاة (اسمية)</th>
-                      <th className="text-right p-2">الزكاة (حقيقية بعد التضخم)</th>
+                      <th className="text-end p-2">السنة</th>
+                      <th className="text-end p-2">الوعاء المتوقع</th>
+                      <th className="text-end p-2">الزكاة (اسمية)</th>
+                      <th className="text-end p-2">الزكاة (حقيقية بعد التضخم)</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -211,7 +211,7 @@ export default function SensitivityProjection({
               </div>
             </section>
 
-            <p className="text-xs text-muted-foreground border-r-2 border-primary/40 pr-3 leading-relaxed">
+            <p className="text-xs text-muted-foreground border-e-2 border-primary/40 pe-3 leading-relaxed">
               <strong>ملاحظة:</strong> هذه التوقعات استرشادية فقط لأغراض التخطيط المالي، والزكاة
               الفعلية تُحتسب على الوعاء الحقيقي عند تمام الحول كل سنة. المعدل المعتمد:{" "}
               {(ZAKAT_RATE * 100).toFixed(3)}%.

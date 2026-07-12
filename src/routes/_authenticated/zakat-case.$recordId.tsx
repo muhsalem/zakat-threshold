@@ -259,7 +259,7 @@ function ZakatCaseDetail() {
         </Alert>
         <Button asChild variant="outline" className="mt-4">
           <Link to="/dashboard">
-            <ArrowRight className="w-4 h-4 ml-1" />
+            <ArrowRight className="w-4 h-4 ms-1" />
             العودة
           </Link>
         </Button>
@@ -286,16 +286,16 @@ function ZakatCaseDetail() {
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={() => window.print()}>
-            <Printer className="w-4 h-4 ml-1" /> طباعة
+            <Printer className="w-4 h-4 ms-1" /> طباعة
           </Button>
           <Button asChild variant="outline" size="sm">
             <Link to="/compliance-report/$recordId" params={{ recordId }}>
-              <ClipboardCheck className="w-4 h-4 ml-1" /> تقرير الامتثال
+              <ClipboardCheck className="w-4 h-4 ms-1" /> تقرير الامتثال
             </Link>
           </Button>
           <Button asChild variant="outline" size="sm">
             <Link to="/certified-report/$recordId" params={{ recordId }}>
-              <FileText className="w-4 h-4 ml-1" /> التقرير المعتمد
+              <FileText className="w-4 h-4 ms-1" /> التقرير المعتمد
             </Link>
           </Button>
         </div>
@@ -330,19 +330,19 @@ function ZakatCaseDetail() {
       <Tabs defaultValue="compliance" className="w-full">
         <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="compliance">
-            <ClipboardCheck className="w-4 h-4 ml-1" /> مدقّق الامتثال
+            <ClipboardCheck className="w-4 h-4 ms-1" /> مدقّق الامتثال
           </TabsTrigger>
           <TabsTrigger value="violations">
-            <ShieldAlert className="w-4 h-4 ml-1" /> المخالفات والتصحيح
+            <ShieldAlert className="w-4 h-4 ms-1" /> المخالفات والتصحيح
           </TabsTrigger>
           <TabsTrigger value="history">
-            <History className="w-4 h-4 ml-1" /> سجل التغييرات
+            <History className="w-4 h-4 ms-1" /> سجل التغييرات
           </TabsTrigger>
           <TabsTrigger value="sharia">
-            <ScrollText className="w-4 h-4 ml-1" /> السجل الشرعي
+            <ScrollText className="w-4 h-4 ms-1" /> السجل الشرعي
           </TabsTrigger>
           <TabsTrigger value="attachments">
-            <FileText className="w-4 h-4 ml-1" /> المرفقات ({attachments.length})
+            <FileText className="w-4 h-4 ms-1" /> المرفقات ({attachments.length})
           </TabsTrigger>
         </TabsList>
 
@@ -529,7 +529,7 @@ function ChangeHistoryPanel({ rows }: { rows: OrgAuditRow[] }) {
       <CardContent>
         <div className="space-y-3">
           {rows.map((r) => (
-            <div key={r.id} className="border-l-2 border-primary/40 pr-3 py-1">
+            <div key={r.id} className="border-s-2 border-primary/40 pe-3 py-1">
               <div className="flex items-center gap-2 flex-wrap text-sm">
                 <Badge variant="outline">{ACTION_LABEL[r.action] || r.action}</Badge>
                 <span className="text-xs text-muted-foreground">

@@ -77,7 +77,7 @@ function EnterprisePage() {
                   <Badge variant="secondary" className="text-[10px]">
                     {c.tier}
                   </Badge>
-                  <span className="text-xs text-muted-foreground mr-auto">{c.eta}</span>
+                  <span className="text-xs text-muted-foreground me-auto">{c.eta}</span>
                 </div>
               </div>
             ))}

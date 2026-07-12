@@ -123,7 +123,7 @@ function GovernancePage() {
 
           <div>
             <h3 className="font-semibold mb-2">المصادر الشرعية المعتمدة</h3>
-            <ul className="grid md:grid-cols-2 gap-1 text-xs list-disc pr-4">
+            <ul className="grid md:grid-cols-2 gap-1 text-xs list-disc pe-4">
               <li>AAOIFI — معيار الزكاة (35)</li>
               <li>AAOIFI — معيار العملات الرقمية (59)</li>
               <li>AAOIFI — معيار الأوراق المالية (21)</li>
@@ -139,7 +139,7 @@ function GovernancePage() {
 
           <div>
             <h3 className="font-semibold mb-2">منهجية إضافة الفتاوى</h3>
-            <ol className="text-xs list-decimal pr-4 space-y-1">
+            <ol className="text-xs list-decimal pe-4 space-y-1">
               <li>توثيق الفتوى بمصدرها الأصلي (كتاب، قرار، رقم معيار).</li>
               <li>تصنيفها حسب: الموضوع، الهيئة، المذهب، الولاية القضائية.</li>
               <li>مراجعة من عالم مختصّ قبل النشر.</li>
@@ -167,7 +167,7 @@ function GovernancePage() {
             نرحّب بانضمام العلماء الشرعيين والخبراء المحاسبيين المُعتمَدين إلى هيئتنا الاستشارية.
             التركيبة المستهدفة:
           </p>
-          <ul className="text-xs list-disc pr-4 space-y-1">
+          <ul className="text-xs list-disc pe-4 space-y-1">
             <li>3 علماء شريعة مُتخصّصين في فقه المعاملات (بمذاهب مختلفة).</li>
             <li>2 محاسبين قانونيين خبراء في AAOIFI وIFRS.</li>
             <li>خبير في التمويل الإسلامي والصكوك.</li>
@@ -211,7 +211,7 @@ function GovernancePage() {
       <div className="flex flex-wrap gap-2 justify-center">
         <Button asChild variant="outline" size="sm">
           <Link to="/sharia-changelog">
-            سجل تحديث الفتاوى <ArrowRight className="h-4 w-4 mr-1" />
+            سجل تحديث الفتاوى <ArrowRight className="h-4 w-4 me-1" />
           </Link>
         </Button>
         <Button asChild variant="outline" size="sm">

@@ -108,7 +108,7 @@ function AuthPage() {
           <div className="h-11 w-11 rounded-xl bg-gradient-primary flex items-center justify-center shadow-gold">
             <Moon className="h-5 w-5 text-primary-foreground" />
           </div>
-          <div className="text-right">
+          <div className="text-end">
             <h1 className="text-xl font-bold">حاسبة الزكاة</h1>
             <p className="text-xs text-muted-foreground">سجل زكواتك السنوي</p>
           </div>
