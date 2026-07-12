@@ -110,7 +110,7 @@ import TradeActivityClassification, {
 } from "./TradeActivityClassification";
 
 import { supabase } from "@/integrations/supabase/client";
-import { NumField, SectionResult } from "./individual/shared";
+import { NumField, SectionResult, Row } from "./individual/shared";
 
 
 export function IndividualTab() {
