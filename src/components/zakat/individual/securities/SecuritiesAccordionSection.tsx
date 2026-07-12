@@ -1,12 +1,15 @@
+import type { ComponentProps } from "react";
 import { TrendingUp } from "lucide-react";
 import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { SecuritiesSection } from "@/components/zakat/SecuritiesSection";
 import { EsopZakatSection } from "@/components/zakat/EsopZakatSection";
 
+type EsopOnChange = NonNullable<ComponentProps<typeof EsopZakatSection>["onChange"]>;
+
 export interface SecuritiesAccordionSectionProps {
   currencyName: string;
   onSecuritiesTotalChange: (v: number) => void;
-  onEsopChange: (data: unknown) => void;
+  onEsopChange: EsopOnChange;
 }
 
 /**
