@@ -28,6 +28,7 @@ import { Route as ImpactRouteImport } from './routes/impact'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as GroupZakatRouteImport } from './routes/group-zakat'
 import { Route as GovernanceRouteImport } from './routes/governance'
+import { Route as FatwaCommunityRouteImport } from './routes/fatwa-community'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EvaluationRouteImport } from './routes/evaluation'
 import { Route as EsgRouteImport } from './routes/esg'
@@ -171,6 +172,11 @@ const GroupZakatRoute = GroupZakatRouteImport.update({
 const GovernanceRoute = GovernanceRouteImport.update({
   id: '/governance',
   path: '/governance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FatwaCommunityRoute = FatwaCommunityRouteImport.update({
+  id: '/fatwa-community',
+  path: '/fatwa-community',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqRoute = FaqRouteImport.update({
@@ -450,6 +456,7 @@ export interface FileRoutesByFullPath {
   '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
+  '/fatwa-community': typeof FatwaCommunityRoute
   '/governance': typeof GovernanceRoute
   '/group-zakat': typeof GroupZakatRoute
   '/history': typeof HistoryRoute
@@ -519,6 +526,7 @@ export interface FileRoutesByTo {
   '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
+  '/fatwa-community': typeof FatwaCommunityRoute
   '/governance': typeof GovernanceRoute
   '/group-zakat': typeof GroupZakatRoute
   '/history': typeof HistoryRoute
@@ -590,6 +598,7 @@ export interface FileRoutesById {
   '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
+  '/fatwa-community': typeof FatwaCommunityRoute
   '/governance': typeof GovernanceRoute
   '/group-zakat': typeof GroupZakatRoute
   '/history': typeof HistoryRoute
@@ -661,6 +670,7 @@ export interface FileRouteTypes {
     | '/esg'
     | '/evaluation'
     | '/faq'
+    | '/fatwa-community'
     | '/governance'
     | '/group-zakat'
     | '/history'
@@ -730,6 +740,7 @@ export interface FileRouteTypes {
     | '/esg'
     | '/evaluation'
     | '/faq'
+    | '/fatwa-community'
     | '/governance'
     | '/group-zakat'
     | '/history'
@@ -800,6 +811,7 @@ export interface FileRouteTypes {
     | '/esg'
     | '/evaluation'
     | '/faq'
+    | '/fatwa-community'
     | '/governance'
     | '/group-zakat'
     | '/history'
@@ -871,6 +883,7 @@ export interface RootRouteChildren {
   EsgRoute: typeof EsgRoute
   EvaluationRoute: typeof EvaluationRoute
   FaqRoute: typeof FaqRoute
+  FatwaCommunityRoute: typeof FatwaCommunityRoute
   GovernanceRoute: typeof GovernanceRoute
   GroupZakatRoute: typeof GroupZakatRoute
   HistoryRoute: typeof HistoryRoute
@@ -1040,6 +1053,13 @@ declare module '@tanstack/react-router' {
       path: '/governance'
       fullPath: '/governance'
       preLoaderRoute: typeof GovernanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fatwa-community': {
+      id: '/fatwa-community'
+      path: '/fatwa-community'
+      fullPath: '/fatwa-community'
+      preLoaderRoute: typeof FatwaCommunityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faq': {
@@ -1467,6 +1487,7 @@ const rootRouteChildren: RootRouteChildren = {
   EsgRoute: EsgRoute,
   EvaluationRoute: EvaluationRoute,
   FaqRoute: FaqRoute,
+  FatwaCommunityRoute: FatwaCommunityRoute,
   GovernanceRoute: GovernanceRoute,
   GroupZakatRoute: GroupZakatRoute,
   HistoryRoute: HistoryRoute,
