@@ -176,6 +176,43 @@
         range: document.getElementById("attachments-range"),
         row: (a) => `<tr><td>${a.name}</td><td>${a.type}</td><td dir="ltr">${a.size}</td></tr>`,
       });
+
+      // ---------- numbered (shadcn Pagination) variant ----------
+      (function numbered() {
+        const TOTAL = 12;
+        const state = { page: 1 };
+        const list = document.getElementById("numbered-list");
+        const body = document.getElementById("numbered-body");
+        const chev = (dir) =>
+          `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="${dir === "prev" ? "" : "transform:rotate(180deg)"}"><polyline points="15 18 9 12 15 6"/></svg>`;
+        function render() {
+          body.textContent = `تعرض عناصر الصفحة ${state.page}`;
+          const items = [];
+          items.push(
+            `<li><a data-testid="num-prev" aria-label="الصفحة السابقة" class="btn" ${state.page === 1 ? "aria-disabled='true' disabled" : ""}>${chev("prev")}<span>السابق</span></a></li>`,
+          );
+          for (let p = 1; p <= TOTAL; p++) {
+            const active = p === state.page;
+            items.push(
+              `<li><a data-page="${p}" aria-current="${active ? "page" : "false"}" class="btn" style="${active ? "border-color:#111;font-weight:600" : ""}">${p}</a></li>`,
+            );
+          }
+          items.push(
+            `<li><a data-testid="num-next" aria-label="الصفحة التالية" class="btn" ${state.page === TOTAL ? "aria-disabled='true' disabled" : ""}><span>التالي</span>${chev("next")}</a></li>`,
+          );
+          list.innerHTML = items.join("");
+          list.querySelectorAll("a[data-page]").forEach((a) => {
+            a.addEventListener("click", () => { state.page = +a.dataset.page; render(); });
+          });
+          list.querySelector('[data-testid="num-prev"]').addEventListener("click", () => {
+            if (state.page > 1) { state.page--; render(); }
+          });
+          list.querySelector('[data-testid="num-next"]').addEventListener("click", () => {
+            if (state.page < TOTAL) { state.page++; render(); }
+          });
+        }
+        render();
+      })();
     </script>
   </body>
 </html>
