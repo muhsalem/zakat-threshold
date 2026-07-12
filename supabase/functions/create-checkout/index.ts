@@ -1,9 +1,11 @@
 // Edge Function: إنشاء جلسة Stripe Checkout
 // المتغيرات المطلوبة في Supabase Dashboard:
-//   STRIPE_SECRET_KEY  — مفتاح Stripe السري (sk_live_... أو sk_test_...)
-//   SITE_URL           — رابط الموقع (https://nisab.app)
+//   STRIPE_SECRET_KEY  — مفتاح Stripe السري
+//   SITE_URL           — رابط الموقع
+//   SUPABASE_URL / SUPABASE_ANON_KEY — للتحقق من JWT المستخدم
 
 import Stripe from "https://esm.sh/stripe@14.21.0?target=deno";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -23,19 +25,36 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    // 1) التحقق من هوية المستخدم عبر JWT — لا نقبل userId/email من العميل
+    const authHeader = req.headers.get("Authorization") ?? "";
+    if (!authHeader.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const jwt = authHeader.slice(7);
+    const supaUrl = Deno.env.get("SUPABASE_URL") ?? "";
+    const supaAnon = Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_PUBLISHABLE_KEY") ?? "";
+    const supabase = createClient(supaUrl, supaAnon, {
+      global: { headers: { Authorization: `Bearer ${jwt}` } },
+    });
+    const { data: userData, error: userErr } = await supabase.auth.getUser(jwt);
+    if (userErr || !userData?.user?.id || !userData.user.email) {
+      return new Response(JSON.stringify({ error: "unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const userId = userData.user.id;
+    const email = userData.user.email;
+
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") ?? "", {
       apiVersion: "2024-06-20",
     });
 
-    const {
-      planId,
-      userId,
-      email,
-      returnPath = "/",
-    } = (await req.json()) as {
+    const { planId, returnPath = "/" } = (await req.json()) as {
       planId: PlanId;
-      userId: string;
-      email: string;
       returnPath?: string;
     };
 
@@ -46,18 +65,20 @@ Deno.serve(async (req) => {
       });
     }
 
+    // منع open-redirect: نقبل مسارات نسبية فقط
+    const safeReturn = typeof returnPath === "string" && returnPath.startsWith("/") && !returnPath.startsWith("//")
+      ? returnPath
+      : "/";
+
     const siteUrl = Deno.env.get("SITE_URL") ?? "http://localhost:8080";
     const plan = PLANS[planId];
 
     if (!plan.priceId) {
       return new Response(
         JSON.stringify({
-          error: `لم يتم إعداد Stripe Price ID للخطة (${planId}). يُرجى ضبط متغيّر البيئة المناسب.`,
+          error: `لم يتم إعداد Stripe Price ID للخطة (${planId}).`,
         }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        },
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
 
@@ -67,8 +88,8 @@ Deno.serve(async (req) => {
       customer_email: email,
       line_items: [{ price: plan.priceId, quantity: 1 }],
       metadata: { userId, planId },
-      success_url: `${siteUrl}${returnPath}?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${siteUrl}${returnPath}?checkout=cancelled`,
+      success_url: `${siteUrl}${safeReturn}?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${siteUrl}${safeReturn}?checkout=cancelled`,
       locale: "ar",
       allow_promotion_codes: true,
       billing_address_collection: "auto",

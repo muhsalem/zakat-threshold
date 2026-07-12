@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 
+/**
+ * Pro Mode = تفضيل واجهة (يعرض/يخفي أدوات متقدمة). ليست بوابة أمان.
+ * أي منطق حسّاس يجب فرضه على الخادم عبر أدوار قاعدة البيانات (`user_roles`)
+ * وليس عبر هذا التبديل.
+ */
 const KEY = "zk-pro-mode";
-// Passcode الافتراضي قابل للتجاوز عبر متغير البيئة VITE_PRO_PASSCODE
-// (لا يوضع السر داخل المستودع — للنشر يُحقن من Settings → Environment).
-const FALLBACK_PASSCODE = "1430";
-const ENV_PASSCODE = (import.meta.env.VITE_PRO_PASSCODE as string | undefined)?.trim();
-export const PRO_PASSCODE =
-  ENV_PASSCODE && ENV_PASSCODE.length >= 4 ? ENV_PASSCODE : FALLBACK_PASSCODE;
 
 export function useProMode() {
   const [pro, setPro] = useState<boolean>(false);
@@ -19,23 +18,22 @@ export function useProMode() {
     }
   }, []);
 
-  const unlock = (code: string) => {
-    if (code.trim() === PRO_PASSCODE) {
-      try {
-        localStorage.setItem(KEY, "1");
-      } catch {}
-      setPro(true);
-      return true;
-    }
-    return false;
+  const enable = () => {
+    try {
+      localStorage.setItem(KEY, "1");
+    } catch {}
+    setPro(true);
   };
 
-  const lock = () => {
+  const disable = () => {
     try {
       localStorage.removeItem(KEY);
     } catch {}
     setPro(false);
   };
 
-  return { pro, unlock, lock };
+  const toggle = () => (pro ? disable() : enable());
+
+  // توافق خلفي مع الاستهلاك السابق (unlock/lock)
+  return { pro, enable, disable, toggle, unlock: enable, lock: disable };
 }
