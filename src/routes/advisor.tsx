@@ -39,12 +39,27 @@ const SUGGESTIONS = [
 function AdvisorPage() {
   const [input, setInput] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
+  const { user, loading: authLoading } = useAuth();
 
-  const { messages, sendMessage, status, error } = useChat({
-    transport: new DefaultChatTransport({ api: "/api/chat" }),
-  });
+  const transport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: "/api/chat",
+        fetch: async (url, init) => {
+          const { data } = await supabase.auth.getSession();
+          const token = data.session?.access_token;
+          const headers = new Headers(init?.headers);
+          if (token) headers.set("Authorization", `Bearer ${token}`);
+          return fetch(url, { ...init, headers });
+        },
+      }),
+    [],
+  );
+
+  const { messages, sendMessage, status, error } = useChat({ transport });
 
   const busy = status === "submitted" || status === "streaming";
+
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
