@@ -158,6 +158,12 @@ async def run() -> int:
                 except AssertionError as e:
                     failures.append(f"{name}/{prefix}: {e}")
                     await page.screenshot(path=str(CAPTURE / f"fail_{name}_{prefix}.png"))
+            try:
+                await assert_numbered(page)
+                print(f"ok   {name:<7} numbered")
+            except AssertionError as e:
+                failures.append(f"{name}/numbered: {e}")
+                await page.screenshot(path=str(CAPTURE / f"fail_{name}_numbered.png"))
             await context.close()
         await browser.close()
 
