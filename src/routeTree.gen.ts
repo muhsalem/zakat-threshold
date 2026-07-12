@@ -24,10 +24,13 @@ import { Route as PortalSigninRouteImport } from './routes/portal-signin'
 import { Route as OrganizationsRouteImport } from './routes/organizations'
 import { Route as NisabAuditRouteImport } from './routes/nisab-audit'
 import { Route as LiquidityStressRouteImport } from './routes/liquidity-stress'
+import { Route as KycAmlRouteImport } from './routes/kyc-aml'
+import { Route as InstitutionalEndorsementsRouteImport } from './routes/institutional-endorsements'
 import { Route as ImpactRouteImport } from './routes/impact'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as GroupZakatRouteImport } from './routes/group-zakat'
 import { Route as GovernanceRouteImport } from './routes/governance'
+import { Route as GovPortalRouteImport } from './routes/gov-portal'
 import { Route as FatwaCommunityRouteImport } from './routes/fatwa-community'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EvaluationRouteImport } from './routes/evaluation'
@@ -154,6 +157,17 @@ const LiquidityStressRoute = LiquidityStressRouteImport.update({
   path: '/liquidity-stress',
   getParentRoute: () => rootRouteImport,
 } as any)
+const KycAmlRoute = KycAmlRouteImport.update({
+  id: '/kyc-aml',
+  path: '/kyc-aml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InstitutionalEndorsementsRoute =
+  InstitutionalEndorsementsRouteImport.update({
+    id: '/institutional-endorsements',
+    path: '/institutional-endorsements',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ImpactRoute = ImpactRouteImport.update({
   id: '/impact',
   path: '/impact',
@@ -172,6 +186,11 @@ const GroupZakatRoute = GroupZakatRouteImport.update({
 const GovernanceRoute = GovernanceRouteImport.update({
   id: '/governance',
   path: '/governance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GovPortalRoute = GovPortalRouteImport.update({
+  id: '/gov-portal',
+  path: '/gov-portal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FatwaCommunityRoute = FatwaCommunityRouteImport.update({
@@ -457,10 +476,13 @@ export interface FileRoutesByFullPath {
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
   '/fatwa-community': typeof FatwaCommunityRoute
+  '/gov-portal': typeof GovPortalRoute
   '/governance': typeof GovernanceRoute
   '/group-zakat': typeof GroupZakatRoute
   '/history': typeof HistoryRoute
   '/impact': typeof ImpactRoute
+  '/institutional-endorsements': typeof InstitutionalEndorsementsRoute
+  '/kyc-aml': typeof KycAmlRoute
   '/liquidity-stress': typeof LiquidityStressRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
@@ -527,10 +549,13 @@ export interface FileRoutesByTo {
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
   '/fatwa-community': typeof FatwaCommunityRoute
+  '/gov-portal': typeof GovPortalRoute
   '/governance': typeof GovernanceRoute
   '/group-zakat': typeof GroupZakatRoute
   '/history': typeof HistoryRoute
   '/impact': typeof ImpactRoute
+  '/institutional-endorsements': typeof InstitutionalEndorsementsRoute
+  '/kyc-aml': typeof KycAmlRoute
   '/liquidity-stress': typeof LiquidityStressRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
@@ -599,10 +624,13 @@ export interface FileRoutesById {
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
   '/fatwa-community': typeof FatwaCommunityRoute
+  '/gov-portal': typeof GovPortalRoute
   '/governance': typeof GovernanceRoute
   '/group-zakat': typeof GroupZakatRoute
   '/history': typeof HistoryRoute
   '/impact': typeof ImpactRoute
+  '/institutional-endorsements': typeof InstitutionalEndorsementsRoute
+  '/kyc-aml': typeof KycAmlRoute
   '/liquidity-stress': typeof LiquidityStressRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
@@ -671,10 +699,13 @@ export interface FileRouteTypes {
     | '/evaluation'
     | '/faq'
     | '/fatwa-community'
+    | '/gov-portal'
     | '/governance'
     | '/group-zakat'
     | '/history'
     | '/impact'
+    | '/institutional-endorsements'
+    | '/kyc-aml'
     | '/liquidity-stress'
     | '/nisab-audit'
     | '/organizations'
@@ -741,10 +772,13 @@ export interface FileRouteTypes {
     | '/evaluation'
     | '/faq'
     | '/fatwa-community'
+    | '/gov-portal'
     | '/governance'
     | '/group-zakat'
     | '/history'
     | '/impact'
+    | '/institutional-endorsements'
+    | '/kyc-aml'
     | '/liquidity-stress'
     | '/nisab-audit'
     | '/organizations'
@@ -812,10 +846,13 @@ export interface FileRouteTypes {
     | '/evaluation'
     | '/faq'
     | '/fatwa-community'
+    | '/gov-portal'
     | '/governance'
     | '/group-zakat'
     | '/history'
     | '/impact'
+    | '/institutional-endorsements'
+    | '/kyc-aml'
     | '/liquidity-stress'
     | '/nisab-audit'
     | '/organizations'
@@ -884,10 +921,13 @@ export interface RootRouteChildren {
   EvaluationRoute: typeof EvaluationRoute
   FaqRoute: typeof FaqRoute
   FatwaCommunityRoute: typeof FatwaCommunityRoute
+  GovPortalRoute: typeof GovPortalRoute
   GovernanceRoute: typeof GovernanceRoute
   GroupZakatRoute: typeof GroupZakatRoute
   HistoryRoute: typeof HistoryRoute
   ImpactRoute: typeof ImpactRoute
+  InstitutionalEndorsementsRoute: typeof InstitutionalEndorsementsRoute
+  KycAmlRoute: typeof KycAmlRoute
   LiquidityStressRoute: typeof LiquidityStressRoute
   NisabAuditRoute: typeof NisabAuditRoute
   OrganizationsRoute: typeof OrganizationsRoute
@@ -1027,6 +1067,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LiquidityStressRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/kyc-aml': {
+      id: '/kyc-aml'
+      path: '/kyc-aml'
+      fullPath: '/kyc-aml'
+      preLoaderRoute: typeof KycAmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/institutional-endorsements': {
+      id: '/institutional-endorsements'
+      path: '/institutional-endorsements'
+      fullPath: '/institutional-endorsements'
+      preLoaderRoute: typeof InstitutionalEndorsementsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/impact': {
       id: '/impact'
       path: '/impact'
@@ -1053,6 +1107,13 @@ declare module '@tanstack/react-router' {
       path: '/governance'
       fullPath: '/governance'
       preLoaderRoute: typeof GovernanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gov-portal': {
+      id: '/gov-portal'
+      path: '/gov-portal'
+      fullPath: '/gov-portal'
+      preLoaderRoute: typeof GovPortalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/fatwa-community': {
@@ -1488,10 +1549,13 @@ const rootRouteChildren: RootRouteChildren = {
   EvaluationRoute: EvaluationRoute,
   FaqRoute: FaqRoute,
   FatwaCommunityRoute: FatwaCommunityRoute,
+  GovPortalRoute: GovPortalRoute,
   GovernanceRoute: GovernanceRoute,
   GroupZakatRoute: GroupZakatRoute,
   HistoryRoute: HistoryRoute,
   ImpactRoute: ImpactRoute,
+  InstitutionalEndorsementsRoute: InstitutionalEndorsementsRoute,
+  KycAmlRoute: KycAmlRoute,
   LiquidityStressRoute: LiquidityStressRoute,
   NisabAuditRoute: NisabAuditRoute,
   OrganizationsRoute: OrganizationsRoute,
