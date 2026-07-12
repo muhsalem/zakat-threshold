@@ -22,6 +22,7 @@ import ComplianceChecklist, {
   useComplianceChecks,
   type ComplianceInputs,
 } from "@/components/zakat/ComplianceChecklist";
+import ComplianceAttachmentsSummary from "@/components/attachments/ComplianceAttachmentsSummary";
 import {
   GOLD_NISAB_GRAMS,
   SILVER_NISAB_GRAMS,
