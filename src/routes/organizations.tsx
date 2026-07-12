@@ -26,6 +26,7 @@ import {
   LayoutDashboard,
 } from "lucide-react";
 import { OrgOverviewPanel } from "@/components/organizations/OrgOverviewPanel";
+import { ApprovalAttachments } from "@/components/attachments/ApprovalAttachments";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
