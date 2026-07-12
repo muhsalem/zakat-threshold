@@ -153,6 +153,25 @@ function AttachmentsReviewPage() {
   const [err, setErr] = useState<string | null>(null);
   const [reload, setReload] = useState(0);
   const [historyFor, setHistoryFor] = useState<Attachment | null>(null);
+  const [qInput, setQInput] = useState(search.q);
+  const debouncedQ = useDebouncedValue(qInput, 300);
+
+  // Sync URL when the debounced value diverges (typing).
+  useEffect(() => {
+    if (debouncedQ !== search.q) {
+      navigate({
+        search: (prev) => ({ ...prev, q: debouncedQ, page: 1 }),
+        replace: true,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedQ]);
+
+  // Sync local input if URL changes externally (back/forward, reset).
+  useEffect(() => {
+    setQInput((cur) => (cur === search.q ? cur : search.q));
+  }, [search.q]);
+
 
   useEffect(() => {
     let cancelled = false;
