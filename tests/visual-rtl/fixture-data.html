@@ -1,0 +1,167 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Pagination RTL — data-driven fixture</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body { font-family: system-ui, -apple-system, Segoe UI, sans-serif; background: #fff; }
+      .card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin: 12px; max-width: 960px; }
+      .label { font-size: 12px; color: #6b7280; margin-bottom: 8px; }
+      table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      th, td { padding: 6px 10px; border-bottom: 1px solid #f1f5f9; text-align: start; }
+      th { color: #6b7280; font-weight: 500; background: #f8fafc; }
+      .btn { display: inline-flex; align-items: center; gap: 4px; height: 32px; padding: 0 10px;
+        font-size: 13px; border: 1px solid #e5e7eb; border-radius: 6px; background: #fff; color: #111; cursor: pointer; }
+      .btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+      .select { height: 32px; min-width: 72px; padding: 0 8px; border: 1px solid #e5e7eb;
+        border-radius: 6px; background: #fff; font-size: 13px; }
+      nav.pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+        gap: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb; margin-top: 12px; }
+      .pager-controls { display: flex; align-items: center; gap: 8px; }
+      .counter { font-size: 12px; color: #374151; }
+    </style>
+  </head>
+  <body>
+    <!-- ============================================================
+         RECORDS: 43 fake zakat records — mirrors drafts.tsx pager
+         ============================================================ -->
+    <section id="records-rtl" dir="rtl" lang="ar" class="card">
+      <div class="label">RTL — سجلات وهمية (drafts-style)</div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>العميل</th>
+            <th>السنة</th>
+            <th>الوعاء</th>
+            <th>الزكاة</th>
+          </tr>
+        </thead>
+        <tbody id="records-body"></tbody>
+      </table>
+      <nav class="pager" aria-label="تصفّح السجلات" data-testid="records-pager">
+        <div class="pager-controls">
+          <span class="counter">لكل صفحة</span>
+          <select id="records-per-page" class="select" aria-label="عدد الصفوف في كل صفحة">
+            <option value="10" selected>10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+        <div class="pager-controls">
+          <button id="records-prev" class="btn" aria-label="الصفحة السابقة">السابق</button>
+          <span id="records-counter" class="counter tabular-nums" dir="ltr" data-testid="records-counter">1 / 5</span>
+          <button id="records-next" class="btn" aria-label="الصفحة التالية">التالي</button>
+        </div>
+      </nav>
+    </section>
+
+    <!-- ============================================================
+         ATTACHMENTS: 27 fake attachments — mirrors attachments-review
+         ============================================================ -->
+    <section id="attachments-rtl" dir="rtl" lang="ar" class="card">
+      <div class="label">RTL — مرفقات وهمية (attachments-style)</div>
+      <table>
+        <thead>
+          <tr>
+            <th>الملف</th>
+            <th>النوع</th>
+            <th>الحجم</th>
+          </tr>
+        </thead>
+        <tbody id="attachments-body"></tbody>
+      </table>
+      <nav class="pager" aria-label="تصفّح المرفقات" data-testid="attachments-pager">
+        <div class="counter" id="attachments-range" data-testid="attachments-range">عرض 1–10 من 27</div>
+        <div class="pager-controls">
+          <span class="counter">لكل صفحة</span>
+          <select id="attachments-per-page" class="select" aria-label="عدد الصفوف في كل صفحة">
+            <option value="10" selected>10</option>
+            <option value="20">20</option>
+          </select>
+          <button id="attachments-prev" class="btn">السابق</button>
+          <span id="attachments-counter" class="counter tabular-nums" dir="ltr" data-testid="attachments-counter">1 / 3</span>
+          <button id="attachments-next" class="btn">التالي</button>
+        </div>
+      </nav>
+    </section>
+
+    <script>
+      // ---------- fake data ----------
+      const RECORDS = Array.from({ length: 43 }, (_, i) => ({
+        id: i + 1,
+        client: `عميل رقم ${i + 1}`,
+        year: 1445 + (i % 3),
+        base: (10000 + i * 137).toLocaleString("ar-EG"),
+        zakat: (250 + i * 3).toLocaleString("ar-EG"),
+      }));
+      const ATTACHMENTS = Array.from({ length: 27 }, (_, i) => ({
+        name: `مرفق_${String(i + 1).padStart(2, "0")}.pdf`,
+        type: i % 2 === 0 ? "بنكي" : "تجاري",
+        size: `${100 + i * 7} KB`,
+      }));
+
+      // ---------- generic pager ----------
+      function pager(cfg) {
+        const state = { page: 1, perPage: parseInt(cfg.select.value, 10) };
+        const totalPages = () => Math.max(1, Math.ceil(cfg.data.length / state.perPage));
+        function render() {
+          const tp = totalPages();
+          if (state.page > tp) state.page = tp;
+          const start = (state.page - 1) * state.perPage;
+          const end = Math.min(cfg.data.length, start + state.perPage);
+          cfg.body.innerHTML = cfg.data.slice(start, end).map(cfg.row).join("");
+          cfg.counter.textContent = `${state.page} / ${tp}`;
+          cfg.prev.disabled = state.page <= 1;
+          cfg.next.disabled = state.page >= tp;
+          if (cfg.range) cfg.range.textContent = `عرض ${start + 1}–${end} من ${cfg.data.length}`;
+        }
+        cfg.prev.addEventListener("click", () => { if (state.page > 1) { state.page--; render(); } });
+        cfg.next.addEventListener("click", () => { if (state.page < totalPages()) { state.page++; render(); } });
+        cfg.select.addEventListener("change", () => {
+          state.perPage = parseInt(cfg.select.value, 10);
+          state.page = 1;
+          render();
+        });
+        // RTL-aware keyboard nav on the pager container
+        cfg.container.tabIndex = 0;
+        cfg.container.addEventListener("keydown", (e) => {
+          const isRtl = (cfg.container.closest("[dir]")?.getAttribute("dir") ?? "ltr") === "rtl";
+          const prev = () => { if (state.page > 1) { state.page--; render(); } };
+          const next = () => { if (state.page < totalPages()) { state.page++; render(); } };
+          switch (e.key) {
+            case "ArrowLeft":  e.preventDefault(); isRtl ? next() : prev(); break;
+            case "ArrowRight": e.preventDefault(); isRtl ? prev() : next(); break;
+            case "Home":       e.preventDefault(); state.page = 1; render(); break;
+            case "End":        e.preventDefault(); state.page = totalPages(); render(); break;
+          }
+        });
+        render();
+      }
+
+      pager({
+        data: RECORDS,
+        body: document.getElementById("records-body"),
+        counter: document.getElementById("records-counter"),
+        prev: document.getElementById("records-prev"),
+        next: document.getElementById("records-next"),
+        select: document.getElementById("records-per-page"),
+        container: document.querySelector('[data-testid="records-pager"]'),
+        row: (r) => `<tr><td>${r.id}</td><td>${r.client}</td><td>${r.year}</td><td dir="ltr">${r.base}</td><td dir="ltr">${r.zakat}</td></tr>`,
+      });
+
+      pager({
+        data: ATTACHMENTS,
+        body: document.getElementById("attachments-body"),
+        counter: document.getElementById("attachments-counter"),
+        prev: document.getElementById("attachments-prev"),
+        next: document.getElementById("attachments-next"),
+        select: document.getElementById("attachments-per-page"),
+        container: document.querySelector('[data-testid="attachments-pager"]'),
+        range: document.getElementById("attachments-range"),
+        row: (a) => `<tr><td>${a.name}</td><td>${a.type}</td><td dir="ltr">${a.size}</td></tr>`,
+      });
+    </script>
+  </body>
+</html>
