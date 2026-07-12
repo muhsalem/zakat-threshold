@@ -198,7 +198,13 @@ export interface BaseReportInput {
   opinionType: "adverse" | "clean" | "qualified";
   previousYearZakat: string;
   includeAuditReport: boolean;
-  auditEntries: unknown;
+  auditEntries: Array<{
+    id: string;
+    action: string;
+    fingerprint: string | null;
+    sharia_refs: string[] | null;
+    created_at: string;
+  }>;
 }
 
 /** بيانات التقرير الأساسية المشتركة بين تصدير PDF و Excel. */
