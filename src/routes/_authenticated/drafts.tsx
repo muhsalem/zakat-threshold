@@ -30,6 +30,7 @@ import {
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DraftVersionsDialog } from "@/components/wizards/DraftVersionsDialog";
+import { usePaginationKeys } from "@/hooks/usePaginationKeys";
 
 export const Route = createFileRoute("/_authenticated/drafts")({
   head: () => ({
@@ -343,6 +344,13 @@ function DraftsPage() {
   const displayRecords = useMemo(() => records, [records]);
 
   const totalPages = Math.max(1, Math.ceil(recordsTotal / RECORDS_PAGE_SIZE));
+
+  const onPagerKeyDown = usePaginationKeys({
+    page,
+    totalPages,
+    firstPage: 0,
+    onChange: setPage,
+  });
 
   function resetFilters() {
     setQ("");
@@ -708,7 +716,11 @@ function DraftsPage() {
                 })}
               </ul>
               {totalPages > 1 && (
-                <div className="flex items-center justify-between pt-2 border-t">
+                <nav
+                  aria-label="تصفّح السجلات"
+                  className="flex items-center justify-between pt-2 border-t"
+                  onKeyDown={onPagerKeyDown}
+                >
                   <span className="text-xs text-muted-foreground">
                     صفحة {page + 1} من {totalPages}
                   </span>
@@ -734,7 +746,7 @@ function DraftsPage() {
                       <ChevronLeft className="h-3 w-3" />
                     </Button>
                   </div>
-                </div>
+                </nav>
               )}
             </>
           )}

@@ -4,6 +4,7 @@ import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { usePaginationKeys } from "@/hooks/usePaginationKeys";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -329,6 +330,13 @@ function AttachmentsReviewPage() {
   );
   const pageSize = Math.max(1, search.pageSize);
 
+  const onPagerKeyDown = usePaginationKeys({
+    page: currentPage,
+    totalPages,
+    firstPage: 1,
+    onChange: (next) => setSearch({ page: next }),
+  });
+
   const changeStatus = async (a: Attachment, next: AttachmentStatus, note?: string) => {
     const { data: userRes } = await supabase.auth.getUser();
     const { error } = await (
@@ -539,7 +547,11 @@ function AttachmentsReviewPage() {
             </div>
           )}
           {!loading && !err && filtered.length > 0 && (
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-3">
+            <nav
+              aria-label="تصفّح المرفقات"
+              className="flex flex-wrap items-center justify-between gap-3 pt-3"
+              onKeyDown={onPagerKeyDown}
+            >
               <div className="text-xs text-muted-foreground">
                 عرض {pageStart + 1}–{Math.min(pageStart + pageSize, filtered.length)} من{" "}
                 {filtered.length}
@@ -581,7 +593,7 @@ function AttachmentsReviewPage() {
                   التالي
                 </Button>
               </div>
-            </div>
+            </nav>
           )}
         </CardContent>
       </Card>
