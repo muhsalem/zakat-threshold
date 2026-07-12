@@ -288,12 +288,12 @@ function ZakatCaseDetail() {
             <Printer className="w-4 h-4 ml-1" /> طباعة
           </Button>
           <Button asChild variant="outline" size="sm">
-            <Link to="/_authenticated/compliance-report/$recordId" params={{ recordId }}>
+            <Link to="/compliance-report/$recordId" params={{ recordId }}>
               <ClipboardCheck className="w-4 h-4 ml-1" /> تقرير الامتثال
             </Link>
           </Button>
           <Button asChild variant="outline" size="sm">
-            <Link to="/_authenticated/certified-report/$recordId" params={{ recordId }}>
+            <Link to="/certified-report/$recordId" params={{ recordId }}>
               <FileText className="w-4 h-4 ml-1" /> التقرير المعتمد
             </Link>
           </Button>
