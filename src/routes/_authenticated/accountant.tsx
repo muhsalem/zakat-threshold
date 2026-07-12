@@ -375,6 +375,9 @@ function AccountantPortal() {
           <TabsTrigger value="dashboard" className="gap-1.5">
             <LineChart className="h-3.5 w-3.5" /> لوحة التحكم
           </TabsTrigger>
+          <TabsTrigger value="kpis" className="gap-1.5">
+            <TrendingUp className="h-3.5 w-3.5" /> مؤشرات الأداء والامتثال
+          </TabsTrigger>
           <TabsTrigger value="clients" className="gap-1.5">
             <Users className="h-3.5 w-3.5" /> العملاء والمحفظة
           </TabsTrigger>
@@ -394,6 +397,9 @@ function AccountantPortal() {
 
         <TabsContent value="dashboard" className="mt-0">
           <AccountantDashboard />
+        </TabsContent>
+        <TabsContent value="kpis" className="mt-0">
+          <KpiCompliancePanel />
         </TabsContent>
         <TabsContent value="saved" className="mt-0">
           <SavedRecordsPanel />
