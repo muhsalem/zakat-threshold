@@ -14,6 +14,7 @@ import {
   fmt,
   num,
 } from "@/lib/zakat";
+import { useMadhab } from "@/lib/madhabContext";
 
 /**
  * زكاة الزروع والثمار — وفق الجمهور:
