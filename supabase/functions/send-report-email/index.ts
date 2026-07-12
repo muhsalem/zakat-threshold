@@ -80,8 +80,28 @@ Deno.serve(async (req) => {
 
     const payload: Payload = await req.json();
     const siteUrl = Deno.env.get("SITE_URL") ?? "https://nisab.app";
-    // بريد المستلم يُشتق حصراً من هوية المستخدم المُصادَق — لا يُقبل من العميل
-    const to = u.user.email;
+
+    // تحديد المستلم: افتراضياً بريد المستخدم نفسه. إن مرّر `to` مختلفاً،
+    // نقبله فقط إذا كان بريد أحد عملائه في `accountant_clients` (بوابة المحاسب).
+    let to = u.user.email as string;
+    const requested = (payload.to ?? "").trim().toLowerCase();
+    if (requested && requested !== to.toLowerCase()) {
+      const { data: match } = await supabase
+        .from("accountant_clients")
+        .select("id")
+        .eq("accountant_user_id", u.user.id)
+        .ilike("email", requested)
+        .limit(1)
+        .maybeSingle();
+      if (!match) {
+        return new Response(JSON.stringify({ error: "recipient_not_allowed" }), {
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      to = requested;
+    }
+
     // verify path يجب أن يكون مسار نسبي داخل الموقع
     const path =
       typeof payload.verifyPath === "string" && payload.verifyPath.startsWith("/") && !payload.verifyPath.startsWith("//")
