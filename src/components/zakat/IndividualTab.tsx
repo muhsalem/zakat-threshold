@@ -94,6 +94,10 @@ import { CryptoFatwasCard } from "./CryptoFatwasCard";
 import { useAuditEntries } from "@/hooks/useAuditEntries";
 import { useMadhab } from "@/lib/madhabContext";
 import {
+  buildBaseReportData as buildBaseReportDataShared,
+  buildDeductionsList as buildDeductionsListShared,
+} from "@/lib/zakat/report-builders";
+import {
   EcommerceItemsTable,
   computeEcommerceTotals,
   type EcommerceItem,
