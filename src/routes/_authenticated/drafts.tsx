@@ -716,7 +716,11 @@ function DraftsPage() {
                 })}
               </ul>
               {totalPages > 1 && (
-                <div className="flex items-center justify-between pt-2 border-t">
+                <nav
+                  aria-label="تصفّح السجلات"
+                  className="flex items-center justify-between pt-2 border-t"
+                  onKeyDown={onPagerKeyDown}
+                >
                   <span className="text-xs text-muted-foreground">
                     صفحة {page + 1} من {totalPages}
                   </span>
