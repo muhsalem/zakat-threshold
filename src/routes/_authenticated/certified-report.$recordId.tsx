@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Printer, ShieldCheck, ArrowRight, FileText, BadgeCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { ApprovalAttachments } from "@/components/attachments/ApprovalAttachments";
 
 export const Route = createFileRoute("/_authenticated/certified-report/$recordId")({
   head: () => ({
