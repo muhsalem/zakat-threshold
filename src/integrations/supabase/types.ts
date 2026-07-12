@@ -128,8 +128,13 @@ export type Database = {
           label: string | null
           mime_type: string | null
           organization_id: string | null
+          review_note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
           size_bytes: number | null
+          status: string
           storage_path: string
+          updated_at: string
           uploaded_by: string
           zakat_record_id: string | null
         }
@@ -142,8 +147,13 @@ export type Database = {
           label?: string | null
           mime_type?: string | null
           organization_id?: string | null
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           size_bytes?: number | null
+          status?: string
           storage_path: string
+          updated_at?: string
           uploaded_by: string
           zakat_record_id?: string | null
         }
@@ -156,8 +166,13 @@ export type Database = {
           label?: string | null
           mime_type?: string | null
           organization_id?: string | null
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           size_bytes?: number | null
+          status?: string
           storage_path?: string
+          updated_at?: string
           uploaded_by?: string
           zakat_record_id?: string | null
         }
@@ -184,6 +199,54 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      attachment_audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          after_state: Json | null
+          attachment_id: string
+          before_state: Json | null
+          changed_fields: string[] | null
+          created_at: string
+          id: string
+          note: string | null
+          organization_id: string | null
+          status_after: string | null
+          status_before: string | null
+          zakat_record_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          after_state?: Json | null
+          attachment_id: string
+          before_state?: Json | null
+          changed_fields?: string[] | null
+          created_at?: string
+          id?: string
+          note?: string | null
+          organization_id?: string | null
+          status_after?: string | null
+          status_before?: string | null
+          zakat_record_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          after_state?: Json | null
+          attachment_id?: string
+          before_state?: Json | null
+          changed_fields?: string[] | null
+          created_at?: string
+          id?: string
+          note?: string | null
+          organization_id?: string | null
+          status_after?: string | null
+          status_before?: string | null
+          zakat_record_id?: string | null
+        }
+        Relationships: []
       }
       erp_connections: {
         Row: {
