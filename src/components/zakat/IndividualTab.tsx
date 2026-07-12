@@ -97,6 +97,7 @@ import {
   buildBaseReportData as buildBaseReportDataShared,
   buildDeductionsList as buildDeductionsListShared,
 } from "@/lib/zakat/report-builders";
+import { GoldSilverSection } from "./individual/gold-silver/GoldSilverSection";
 import {
   EcommerceItemsTable,
   computeEcommerceTotals,
