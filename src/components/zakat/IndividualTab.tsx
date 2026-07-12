@@ -100,6 +100,9 @@ import {
 import { GoldSilverSection } from "./individual/gold-silver/GoldSilverSection";
 import { CashBankAccordionSection } from "./individual/cash-bank/CashBankAccordionSection";
 import { TradeGoodsSubsection } from "./individual/trade/TradeGoodsSubsection";
+import { CropsAccordionSection } from "./individual/crops/CropsAccordionSection";
+import { LivestockAccordionSection } from "./individual/livestock/LivestockAccordionSection";
+import { DebtsAccordionSection } from "./individual/debts/DebtsAccordionSection";
 import {
   EcommerceItemsTable,
   computeEcommerceTotals,
@@ -1606,222 +1609,48 @@ export function IndividualTab() {
                 </AccordionItem>
 
                 {/* الزروع */}
-                <AccordionItem
-                  id="section-crops"
-                  value="crops"
-                  className="border rounded-xl shadow-soft bg-card px-4"
-                >
-                  <AccordionTrigger className="hover:no-underline">
-                    <span className="flex items-center gap-2 text-base font-semibold">
-                      <Wheat className="h-5 w-5 text-gold" /> زكاة الزروع والثمار
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent className="space-y-4 pb-4">
-                    <div className="flex items-center justify-between rounded-lg border bg-muted/30 p-3">
-                      <Label className="text-sm font-semibold">هل تملك أرضاً زراعية؟</Label>
-                      <Switch checked={ownsFarmland} onCheckedChange={setOwnsFarmland} />
-                    </div>
-                    {ownsFarmland && (
-                      <>
-                        <div className="grid md:grid-cols-2 gap-4">
-                          <NumField
-                            label="كمية المحصول"
-                            value={cropsKg}
-                            onChange={setCropsKg}
-                            unit="كجم"
-                            hint={`النصاب: ${CROPS_NISAB_KG} كجم (5 أوسق)`}
-                          />
-                          <NumField
-                            label="سعر الكيلوجرام"
-                            value={cropsValuePerKg}
-                            onChange={setCropsValuePerKg}
-                            unit={currencyName}
-                          />
-                        </div>
-                        <div>
-                          <Label className="mb-2 block">طريقة الري</Label>
-                          <RadioGroup
-                            value={cropsIrrigation}
-                            onValueChange={(v) => setCropsIrrigation(v as "rain" | "irrigated")}
-                            className="flex flex-col md:flex-row gap-4"
-                          >
-                            <div className="flex items-center gap-2">
-                              <RadioGroupItem value="rain" id="rain" />
-                              <Label htmlFor="rain">سُقي بلا كلفة (مطر/أنهار) — 10%</Label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <RadioGroupItem value="irrigated" id="irr" />
-                              <Label htmlFor="irr">سُقي بكلفة (آلات/شراء) — 5%</Label>
-                            </div>
-                          </RadioGroup>
-                        </div>
-                        {calc.cropsEligible && (
-                          <div className="rounded-lg bg-muted/50 p-3 text-xs">
-                            قيمة المحصول: <b>{cur(calc.cropsValue)}</b> — النسبة:{" "}
-                            <b>{(calc.cropsRate * 100).toFixed(0)}%</b>
-                          </div>
-                        )}
-                        <p className="text-xs text-muted-foreground">
-                          ملاحظة: الزروع لا تشترط حولًا، وإنما تجب يوم الحصاد.
-                        </p>
-                      </>
-                    )}
+                <CropsAccordionSection
+                  currencyName={currencyName}
+                  ownsFarmland={ownsFarmland}
+                  setOwnsFarmland={setOwnsFarmland}
+                  cropsKg={cropsKg}
+                  setCropsKg={setCropsKg}
+                  cropsValuePerKg={cropsValuePerKg}
+                  setCropsValuePerKg={setCropsValuePerKg}
+                  cropsIrrigation={cropsIrrigation}
+                  setCropsIrrigation={setCropsIrrigation}
+                  cropsCalc={{
+                    cropsEligible: calc.cropsEligible,
+                    cropsValue: calc.cropsValue,
+                    cropsRate: calc.cropsRate,
+                  }}
+                  setAgriTradeBase={setAgriTradeBase}
+                  cur={cur}
+                />
 
-                    {/* تبويب فرعي: العسل + الثروة السمكية + مزارع الدواجن (تُلحق بالزروع والثمار) */}
-                    <div className="pt-4 border-t border-dashed">
-                      <div className="mb-3 text-sm font-semibold text-primary flex items-center gap-2">
-                        <Wheat className="h-4 w-4" /> أنشطة زراعية وحيوانية ملحقة (العسل / الثروة
-                        السمكية / الدواجن)
-                      </div>
-                      <RikazSection
-                        mode="agri-extras"
-                        currency={currencyName}
-                        onTradeBaseChange={setAgriTradeBase}
-                      />
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
 
                 {/* الأنعام */}
-                <AccordionItem
-                  id="section-livestock"
-                  value="livestock"
-                  className="border rounded-xl shadow-soft bg-card px-4"
-                >
-                  <AccordionTrigger className="hover:no-underline">
-                    <span className="flex items-center gap-2 text-base font-semibold">
-                      <Sprout className="h-5 w-5 text-primary" /> زكاة الأنعام (الإبل والبقر والغنم)
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent className="space-y-4 pb-4">
-                    <div className="flex items-center justify-between rounded-lg border bg-muted/30 p-3">
-                      <Label className="text-sm font-semibold">هل تملك مواشي / أنعام سائمة؟</Label>
-                      <Switch checked={ownsLivestock} onCheckedChange={setOwnsLivestock} />
-                    </div>
-                    {ownsLivestock && (
-                      <>
-                        <div className="flex items-center justify-between rounded-lg border bg-gold/5 border-gold/30 p-3">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2">
-                              <Label className="text-sm font-semibold">
-                                هل هذه الأنعام مُعدّة للتجارة (للبيع)؟
-                              </Label>
-                              <TooltipProvider delayDuration={150}>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <button
-                                      type="button"
-                                      className="text-muted-foreground hover:text-primary transition-colors"
-                                      aria-label="متى تُعدّ الأنعام للتجارة؟"
-                                    >
-                                      <HelpCircle className="h-4 w-4" />
-                                    </button>
-                                  </TooltipTrigger>
-                                  <TooltipContent
-                                    side="bottom"
-                                    className="max-w-xs text-right leading-relaxed bg-card text-card-foreground border shadow-lg"
-                                  >
-                                    <div className="space-y-1.5 text-xs">
-                                      <p>
-                                        <b>متى تُعدّ الأنعام للتجارة؟</b>
-                                      </p>
-                                      <p>
-                                        إذا اقتنيتها بنية <b>البيع والربح</b> (تربية تجارية، مزارع
-                                        تسمين، تجارة مواشي) — لا للنسل واللبن والاستهلاك.
-                                      </p>
-                                      <p>
-                                        <b>كيف تُحسب؟</b> تُقوَّم القطيع كاملاً بسعر السوق يوم وجوب
-                                        الزكاة، ثم 2.5% × القيمة السوقية الإجمالية، وتُضمّ النتيجة
-                                        لقاعدة عروض التجارة في الإجمالي.
-                                      </p>
-                                      <p className="text-muted-foreground">
-                                        المرجع: AAOIFI رقم 35 / قرار المجمع الفقهي رقم 28.
-                                      </p>
-                                    </div>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            </div>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              إن نعم، تُعامل معاملة <b>عروض التجارة</b> (2.5% من القيمة السوقية)
-                              وتُضمّ تلقائياً لقاعدة عروض التجارة — ولا تُحسب عيناً منعاً للازدواج.
-                            </p>
-                          </div>
-                          <Switch
-                            checked={livestockForTrade}
-                            onCheckedChange={setLivestockForTrade}
-                          />
-                        </div>
+                <LivestockAccordionSection
+                  currencyName={currencyName}
+                  ownsLivestock={ownsLivestock}
+                  setOwnsLivestock={setOwnsLivestock}
+                  livestockForTrade={livestockForTrade}
+                  setLivestockForTrade={setLivestockForTrade}
+                  livestockTradeValue={livestockTradeValue}
+                  setLivestockTradeValue={setLivestockTradeValue}
+                  camels={camels}
+                  setCamels={setCamels}
+                  cows={cows}
+                  setCows={setCows}
+                  sheep={sheep}
+                  setSheep={setSheep}
+                  livestockCalc={{
+                    camelsN: calc.camelsN,
+                    cowsN: calc.cowsN,
+                    sheepN: calc.sheepN,
+                  }}
+                />
 
-                        {livestockForTrade ? (
-                          <>
-                            <Alert className="border-primary/20 bg-primary/5">
-                              <Info className="h-4 w-4" />
-                              <AlertDescription className="text-xs">
-                                أدخل القيمة السوقية الإجمالية للقطيع (للبيع) — تُحسب 2.5% وتُضمّ
-                                لقاعدة عروض التجارة في الإجمالي.
-                              </AlertDescription>
-                            </Alert>
-                            <NumField
-                              label="القيمة السوقية الإجمالية للأنعام (للتجارة)"
-                              value={livestockTradeValue}
-                              onChange={setLivestockTradeValue}
-                              unit={currencyName}
-                              hint="بسعر السوق يوم وجوب الزكاة"
-                            />
-                          </>
-                        ) : (
-                          <>
-                            <Alert className="border-primary/20 bg-primary/5">
-                              <Info className="h-4 w-4" />
-                              <AlertDescription className="text-xs">
-                                الأنعام السائمة (للنسل واللبن لا للتجارة) تُزكَّى عيناً (لا قيمتها)،
-                                ويُشترط بلوغ النصاب وحولان الحول وسومُها (رعيها) أكثر السنة.
-                              </AlertDescription>
-                            </Alert>
-                            <div className="grid md:grid-cols-3 gap-4">
-                              <NumField
-                                label="عدد الإبل"
-                                value={camels}
-                                onChange={setCamels}
-                                hint="النصاب: 5"
-                              />
-                              <NumField
-                                label="عدد البقر/الجاموس"
-                                value={cows}
-                                onChange={setCows}
-                                hint="النصاب: 30"
-                              />
-                              <NumField
-                                label="عدد الغنم/المعز"
-                                value={sheep}
-                                onChange={setSheep}
-                                hint="النصاب: 40"
-                              />
-                            </div>
-                            <div className="space-y-2 text-sm">
-                              {calc.camelsN > 0 && (
-                                <div className="rounded-md bg-muted/50 p-2">
-                                  <b>الإبل ({calc.camelsN}):</b> {camelZakat(calc.camelsN)}
-                                </div>
-                              )}
-                              {calc.cowsN > 0 && (
-                                <div className="rounded-md bg-muted/50 p-2">
-                                  <b>البقر ({calc.cowsN}):</b> {cowZakat(calc.cowsN)}
-                                </div>
-                              )}
-                              {calc.sheepN > 0 && (
-                                <div className="rounded-md bg-muted/50 p-2">
-                                  <b>الغنم ({calc.sheepN}):</b> {sheepZakat(calc.sheepN)}
-                                </div>
-                              )}
-                            </div>
-                          </>
-                        )}
-                      </>
-                    )}
-                  </AccordionContent>
-                </AccordionItem>
 
                 {/* الركاز والمعادن — تبويب مستقل */}
                 <AccordionItem
@@ -1844,162 +1673,34 @@ export function IndividualTab() {
                 </AccordionItem>
 
                 {/* الديون */}
-                <AccordionItem
-                  id="section-debts"
-                  value="debts"
-                  className="border rounded-xl shadow-soft bg-card px-4"
-                >
-                  <AccordionTrigger className="hover:no-underline">
-                    <span className="flex items-center gap-2 text-base font-semibold">
-                      <MinusCircle className="h-5 w-5 text-destructive" /> الديون والالتزامات
-                      (تُخصم)
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent className="space-y-5 pb-4">
-                    {/* ① الديون الحالة */}
-                    <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 space-y-3">
-                      <div className="text-sm font-semibold text-destructive flex items-center gap-2">
-                        <Badge className="bg-destructive text-destructive-foreground">①</Badge>
-                        الديون الحالة (واجبة السداد الآن) — تُخصم باتفاق الفقهاء
-                      </div>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <NumField
-                          label="قروض شخصية"
-                          value={debtPersonalLoan}
-                          onChange={setDebtPersonalLoan}
-                          unit={currencyName}
-                        />
-                        <NumField
-                          label="ديون مصرفية"
-                          value={debtBankLoan}
-                          onChange={setDebtBankLoan}
-                          unit={currencyName}
-                          hint="أصل الدين دون الفوائد الربوية"
-                        />
-                        <NumField
-                          label="تمويل استهلاكي"
-                          value={debtConsumerFinance}
-                          onChange={setDebtConsumerFinance}
-                          unit={currencyName}
-                          hint="مرابحة / تورق / تقسيط حلال — الأصل المستحق"
-                        />
-                        <NumField
-                          label="أقساط سيارات أو سلع حالَّة"
-                          value={debtCarInstall}
-                          onChange={setDebtCarInstall}
-                          unit={currencyName}
-                        />
-                        <NumField
-                          label="ديون تجارية مستحقة"
-                          value={debtTradePayable}
-                          onChange={setDebtTradePayable}
-                          unit={currencyName}
-                        />
-                        <NumField
-                          label="أثمان مشتريات لم تُسدد"
-                          value={debtPurchases}
-                          onChange={setDebtPurchases}
-                          unit={currencyName}
-                        />
-                      </div>
-                    </div>
+                <DebtsAccordionSection
+                  currencyName={currencyName}
+                  debtPersonalLoan={debtPersonalLoan}
+                  setDebtPersonalLoan={setDebtPersonalLoan}
+                  debtBankLoan={debtBankLoan}
+                  setDebtBankLoan={setDebtBankLoan}
+                  debtConsumerFinance={debtConsumerFinance}
+                  setDebtConsumerFinance={setDebtConsumerFinance}
+                  debtCarInstall={debtCarInstall}
+                  setDebtCarInstall={setDebtCarInstall}
+                  debtTradePayable={debtTradePayable}
+                  setDebtTradePayable={setDebtTradePayable}
+                  debtPurchases={debtPurchases}
+                  setDebtPurchases={setDebtPurchases}
+                  debtDeferredPolicy={debtDeferredPolicy}
+                  setDebtDeferredPolicy={setDebtDeferredPolicy}
+                  debtMortgage={debtMortgage}
+                  setDebtMortgage={setDebtMortgage}
+                  debtMahr={debtMahr}
+                  setDebtMahr={setDebtMahr}
+                  debtDeferredYearly={debtDeferredYearly}
+                  setDebtDeferredYearly={setDebtDeferredYearly}
+                  debtAlimony={debtAlimony}
+                  setDebtAlimony={setDebtAlimony}
+                  expenses={expenses}
+                  setExpenses={setExpenses}
+                />
 
-                    {/* ② الديون المؤجلة */}
-                    <div className="rounded-lg border border-amber-500/40 bg-amber-50/40 dark:bg-amber-950/20 p-4 space-y-3">
-                      <div className="text-sm font-semibold text-amber-700 dark:text-amber-400 flex items-center gap-2">
-                        <Badge className="bg-amber-500 text-white">②</Badge>
-                        الديون المؤجلة (طويلة الأجل) — على خلاف بين العلماء
-                      </div>
-                      <Alert className="border-amber-500/30 bg-background">
-                        <Info className="h-4 w-4" />
-                        <AlertDescription className="text-xs leading-relaxed">
-                          <b>الجمهور:</b> يُخصم كل الدين حالًّا ومؤجلًا. <b>الأحوط:</b> يُخصم قسط
-                          السنة فقط. <b>الشافعية (قول قوي):</b> لا يُخصم الدين المؤجل أصلًا. والعمل
-                          المعاصر: إن لم يكن لديك مال زائد عن الحاجة فيجوز الخصم، والأحوط خصم قسط
-                          السنة فقط.
-                        </AlertDescription>
-                      </Alert>
-                      <div>
-                        <Label className="mb-2 block text-xs">السياسة المختارة لخصم المؤجل</Label>
-                        <RadioGroup
-                          value={debtDeferredPolicy}
-                          onValueChange={(v) =>
-                            setDebtDeferredPolicy(v as "yearly" | "full" | "none")
-                          }
-                          className="flex flex-wrap gap-3"
-                        >
-                          <div className="flex items-center gap-2 border rounded-md px-3 py-1.5">
-                            <RadioGroupItem value="yearly" id="dp-y" />
-                            <Label htmlFor="dp-y" className="text-xs cursor-pointer">
-                              قسط السنة فقط (الأحوط)
-                            </Label>
-                          </div>
-                          <div className="flex items-center gap-2 border rounded-md px-3 py-1.5">
-                            <RadioGroupItem value="full" id="dp-f" />
-                            <Label htmlFor="dp-f" className="text-xs cursor-pointer">
-                              خصم كامل الدين (الجمهور)
-                            </Label>
-                          </div>
-                          <div className="flex items-center gap-2 border rounded-md px-3 py-1.5">
-                            <RadioGroupItem value="none" id="dp-n" />
-                            <Label htmlFor="dp-n" className="text-xs cursor-pointer">
-                              لا يُخصم (الشافعية)
-                            </Label>
-                          </div>
-                        </RadioGroup>
-                      </div>
-                      <div className="grid md:grid-cols-3 gap-4">
-                        <NumField
-                          label="أقساط تمويل عقاري (إجمالي متبقي)"
-                          value={debtMortgage}
-                          onChange={setDebtMortgage}
-                          unit={currencyName}
-                        />
-                        <NumField
-                          label="مهر الزوجة المؤجل"
-                          value={debtMahr}
-                          onChange={setDebtMahr}
-                          unit={currencyName}
-                        />
-                        <NumField
-                          label="قسط السنة فقط من الديون المؤجلة"
-                          value={debtDeferredYearly}
-                          onChange={setDebtDeferredYearly}
-                          unit={currencyName}
-                          hint="يُستخدم مع سياسة «قسط السنة»"
-                        />
-                      </div>
-                    </div>
-
-                    {/* ③ النفقة الواجبة */}
-                    <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 space-y-3">
-                      <div className="text-sm font-semibold text-primary flex items-center gap-2">
-                        <Badge className="bg-primary">③</Badge>
-                        النفقة الواجبة إذا صارت دينًا — تُخصم
-                      </div>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
-                        نفقة الزوجة أو الأولاد بحكم قضاء أو اتفاق، ونفقة الأقارب الواجبة شرعاً متى
-                        ثبتت في الذمة كَدَين.
-                      </p>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <NumField
-                          label="نفقة واجبة مستحقة (زوجة/أولاد/أقارب)"
-                          value={debtAlimony}
-                          onChange={setDebtAlimony}
-                          unit={currencyName}
-                          hint="بحكم قضاء أو اتفاق"
-                        />
-                        <NumField
-                          label="نفقات ضرورية مستحقة"
-                          value={expenses}
-                          onChange={setExpenses}
-                          unit={currencyName}
-                          hint="فواتير وإيجارات مستحقة"
-                        />
-                      </div>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
               </Accordion>
             </div>
 
