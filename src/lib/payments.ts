@@ -38,14 +38,34 @@ export async function startCheckout(
   return { ok: true };
 }
 
-/** تحقق من حالة الدفع بعد العودة (stub — لا يوجد جدول payments بعد) */
+/** يتحقّق من حالة جلسة Checkout مقابل جدول `payments` الذي يُحدّثه webhook Stripe. */
 export async function verifyCheckoutSession(
-  _sessionId: string,
+  sessionId: string,
 ): Promise<"paid" | "pending" | "error"> {
+  if (!sessionId) return "error";
+  const { data, error } = await supabase
+    .from("payments")
+    .select("status")
+    .eq("stripe_session_id", sessionId)
+    .maybeSingle();
+  if (error) return "error";
+  if (!data) return "pending"; // webhook لم يصل بعد
+  const s = String(data.status ?? "").toLowerCase();
+  if (s === "paid" || s === "active" || s === "succeeded") return "paid";
+  if (s === "failed" || s === "canceled" || s === "cancelled") return "error";
   return "pending";
 }
 
-/** خطة المستخدم الحالية (stub — يُضاف لاحقاً بعد إنشاء أعمدة plan) */
+/** خطة المستخدم الحالية من جدول `profiles`. */
 export async function getUserPlan(): Promise<string> {
-  return "free";
+  const { data: authData } = await supabase.auth.getUser();
+  const uid = authData?.user?.id;
+  if (!uid) return "free";
+  const { data } = await supabase
+    .from("profiles")
+    .select("plan")
+    .eq("user_id", uid)
+    .maybeSingle();
+  return ((data as { plan?: string } | null)?.plan ?? "free") || "free";
 }
+
