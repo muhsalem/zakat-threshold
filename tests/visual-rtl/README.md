@@ -25,6 +25,7 @@ drift.
 python tests/visual-rtl/run.py            # visual snapshots vs baselines
 python tests/visual-rtl/run.py --update   # (re)generate baselines
 python tests/visual-rtl/run-data.py       # behavioral test with fake data
+python tests/visual-rtl/run-live-keys.py  # Tab/Shift+Tab/Arrow keys on live /drafts + /attachments-review
 ```
 
 `run-data.py` drives `fixture-data.html` (43 fake records + 27 attachments
@@ -33,6 +34,22 @@ across mobile / tablet / desktop viewports and asserts: counter format,
 disabled state on first/last page, RTL button ordering (prev right of next),
 `ArrowLeft` advances in RTL, `Home`/`End` jump, per-page recomputes total
 pages, and no horizontal overflow.
+
+`run-live-keys.py` opens the real `/drafts` and `/attachments-review` routes
+in an authenticated session and mocks Supabase REST responses (60 fake
+records, 60 fake attachments — enough for 3 pages each). It asserts, across
+mobile / tablet / desktop:
+
+- initial counter format (`صفحة 1 من 3`, `1 / 3`)
+- `dir="rtl"` inherited on the pager `<nav>`
+- Prev disabled on first page, next disabled on last page
+- Tab / Shift+Tab move focus in DOM order (Select trigger ↔ next when prev
+  is disabled; Select ↔ prev ↔ next when prev is enabled)
+- ArrowLeft advances one page in RTL, ArrowRight goes back
+- Home / End jump to first / last page
+
+The mock exposes `Content-Range` via `Access-Control-Expose-Headers` so
+supabase-js's `count: "exact"` parsing works on the intercepted responses.
 
 Baselines live in `baselines/`. Failures write the actual capture and a
 red-highlighted diff into `diffs/` and exit non-zero.
