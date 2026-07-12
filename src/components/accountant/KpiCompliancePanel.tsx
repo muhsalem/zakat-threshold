@@ -107,6 +107,7 @@ export function KpiCompliancePanel() {
   const [err, setErr] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
   const [fixTarget, setFixTarget] = useState<{ record: CorrectionRecord; codes: IssueCode[] } | null>(null);
+  const [period, setPeriod] = useState<"all" | "30d" | "90d" | "year">("all");
 
   useEffect(() => {
     let cancelled = false;
