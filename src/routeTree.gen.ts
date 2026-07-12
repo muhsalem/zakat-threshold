@@ -62,6 +62,7 @@ import { Route as ApiPublicOpenapiRouteImport } from './routes/api/public/openap
 import { Route as ApiPublicNisabRouteImport } from './routes/api/public/nisab'
 import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
 import { Route as ApiPublicCalcRouteImport } from './routes/api/public/calc'
+import { Route as AuthenticatedComplianceReportRecordIdRouteImport } from './routes/_authenticated/compliance-report.$recordId'
 import { Route as AuthenticatedCertifiedReportRecordIdRouteImport } from './routes/_authenticated/certified-report.$recordId'
 import { Route as AuthenticatedAccountantClientIdRouteImport } from './routes/_authenticated/accountant.$clientId'
 import { Route as ApiPublicPricesHistoryRouteImport } from './routes/api/public/prices/history'
@@ -338,6 +339,12 @@ const ApiPublicCalcRoute = ApiPublicCalcRouteImport.update({
   path: '/api/public/calc',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedComplianceReportRecordIdRoute =
+  AuthenticatedComplianceReportRecordIdRouteImport.update({
+    id: '/compliance-report/$recordId',
+    path: '/compliance-report/$recordId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedCertifiedReportRecordIdRoute =
   AuthenticatedCertifiedReportRecordIdRouteImport.update({
     id: '/certified-report/$recordId',
@@ -441,6 +448,7 @@ export interface FileRoutesByFullPath {
   '/legal/terms': typeof LegalTermsRoute
   '/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
   '/certified-report/$recordId': typeof AuthenticatedCertifiedReportRecordIdRoute
+  '/compliance-report/$recordId': typeof AuthenticatedComplianceReportRecordIdRoute
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
@@ -504,6 +512,7 @@ export interface FileRoutesByTo {
   '/legal/terms': typeof LegalTermsRoute
   '/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
   '/certified-report/$recordId': typeof AuthenticatedCertifiedReportRecordIdRoute
+  '/compliance-report/$recordId': typeof AuthenticatedComplianceReportRecordIdRoute
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
@@ -569,6 +578,7 @@ export interface FileRoutesById {
   '/legal/terms': typeof LegalTermsRoute
   '/_authenticated/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
   '/_authenticated/certified-report/$recordId': typeof AuthenticatedCertifiedReportRecordIdRoute
+  '/_authenticated/compliance-report/$recordId': typeof AuthenticatedComplianceReportRecordIdRoute
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
@@ -634,6 +644,7 @@ export interface FileRouteTypes {
     | '/legal/terms'
     | '/accountant/$clientId'
     | '/certified-report/$recordId'
+    | '/compliance-report/$recordId'
     | '/api/public/calc'
     | '/api/public/health'
     | '/api/public/nisab'
@@ -697,6 +708,7 @@ export interface FileRouteTypes {
     | '/legal/terms'
     | '/accountant/$clientId'
     | '/certified-report/$recordId'
+    | '/compliance-report/$recordId'
     | '/api/public/calc'
     | '/api/public/health'
     | '/api/public/nisab'
@@ -761,6 +773,7 @@ export interface FileRouteTypes {
     | '/legal/terms'
     | '/_authenticated/accountant/$clientId'
     | '/_authenticated/certified-report/$recordId'
+    | '/_authenticated/compliance-report/$recordId'
     | '/api/public/calc'
     | '/api/public/health'
     | '/api/public/nisab'
@@ -1202,6 +1215,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCalcRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/compliance-report/$recordId': {
+      id: '/_authenticated/compliance-report/$recordId'
+      path: '/compliance-report/$recordId'
+      fullPath: '/compliance-report/$recordId'
+      preLoaderRoute: typeof AuthenticatedComplianceReportRecordIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/certified-report/$recordId': {
       id: '/_authenticated/certified-report/$recordId'
       path: '/certified-report/$recordId'
@@ -1291,6 +1311,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDraftsRoute: typeof AuthenticatedDraftsRoute
   AuthenticatedErpSetupRoute: typeof AuthenticatedErpSetupRoute
   AuthenticatedCertifiedReportRecordIdRoute: typeof AuthenticatedCertifiedReportRecordIdRoute
+  AuthenticatedComplianceReportRecordIdRoute: typeof AuthenticatedComplianceReportRecordIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -1303,6 +1324,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedErpSetupRoute: AuthenticatedErpSetupRoute,
   AuthenticatedCertifiedReportRecordIdRoute:
     AuthenticatedCertifiedReportRecordIdRoute,
+  AuthenticatedComplianceReportRecordIdRoute:
+    AuthenticatedComplianceReportRecordIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
