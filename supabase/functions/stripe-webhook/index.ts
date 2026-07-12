@@ -114,7 +114,7 @@ Deno.serve(async (req) => {
         await supabase
           .from("profiles")
           .update({ plan: "free", plan_expires_at: null })
-          .eq("id", userId);
+          .eq("user_id", userId);
       }
       break;
     }
