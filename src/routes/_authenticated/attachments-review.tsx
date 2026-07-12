@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
+import { zodValidator, fallback } from "@tanstack/zod-adapter";
+import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
@@ -39,6 +42,9 @@ import {
   FileEdit,
   XCircle,
   RotateCw,
+  Search,
+  X,
+  Link2,
 } from "lucide-react";
 
 type AttachmentStatus = "draft" | "pending" | "approved" | "rejected";
@@ -61,6 +67,16 @@ type Attachment = {
   approval_id: string | null;
   created_at: string;
   updated_at: string;
+};
+
+type LinkedRecord = {
+  id: string;
+  record_type: string;
+  zakat_due: number;
+  net_due: number;
+  currency: string;
+  hijri_year: string | null;
+  gregorian_date: string;
 };
 
 type AuditRow = {
@@ -89,25 +105,54 @@ const ACTION_LABEL: Record<AuditRow["action"], string> = {
   deleted: "حذف",
 };
 
+const CATEGORY_LABELS: Record<string, string> = {
+  council_decision: "قرار مجمع فقهي",
+  financial_statement: "قوائم مالية",
+  fatwa: "فتوى / رأي شرعي",
+  audit: "تدقيق / مراجعة",
+  other: "أخرى",
+};
+
+const RECORD_TYPE_LABELS: Record<string, string> = {
+  individual: "فرد",
+  company: "شركة",
+  trade: "عروض تجارة",
+  agriculture: "زروع وثمار",
+  livestock: "أنعام",
+  investment: "استثمار",
+};
+
+const searchSchema = z.object({
+  q: fallback(z.string(), "").default(""),
+  status: fallback(z.string(), "all").default("all"),
+  category: fallback(z.string(), "all").default("all"),
+  from: fallback(z.string(), "").default(""),
+  to: fallback(z.string(), "").default(""),
+  link: fallback(z.string(), "all").default("all"),
+});
+
 export const Route = createFileRoute("/_authenticated/attachments-review")({
+  validateSearch: zodValidator(searchSchema),
   component: AttachmentsReviewPage,
 });
 
 function AttachmentsReviewPage() {
+  const search = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+  const router = useRouter();
   const [rows, setRows] = useState<Attachment[]>([]);
+  const [linked, setLinked] = useState<Record<string, LinkedRecord>>({});
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
-  const [statusFilter, setStatusFilter] = useState<"all" | AttachmentStatus>("all");
   const [reload, setReload] = useState(0);
   const [historyFor, setHistoryFor] = useState<Attachment | null>(null);
-  const router = useRouter();
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       setLoading(true);
       setErr(null);
-      const { data, error } = await (supabase as any)
+      const { data, error } = await (supabase as unknown as { from: (t: string) => { select: (c: string) => { order: (c: string, o: { ascending: boolean }) => { limit: (n: number) => Promise<{ data: Attachment[] | null; error: { message: string } | null }> } } } })
         .from("approval_attachments")
         .select(
           "id,file_name,mime_type,size_bytes,category,label,status,review_note,reviewed_by,reviewed_at,storage_path,uploaded_by,zakat_record_id,organization_id,approval_id,created_at,updated_at",
@@ -115,8 +160,26 @@ function AttachmentsReviewPage() {
         .order("updated_at", { ascending: false })
         .limit(300);
       if (cancelled) return;
-      if (error) setErr(error.message);
-      else setRows((data ?? []) as Attachment[]);
+      if (error) {
+        setErr(error.message);
+        setLoading(false);
+        return;
+      }
+      const list = (data ?? []) as Attachment[];
+      setRows(list);
+      // Batch-fetch linked zakat records for the "المرتبط بـ" column
+      const ids = Array.from(new Set(list.map((r) => r.zakat_record_id).filter(Boolean))) as string[];
+      if (ids.length > 0) {
+        const { data: recs } = await supabase
+          .from("zakat_records")
+          .select("id,record_type,zakat_due,net_due,currency,hijri_year,gregorian_date")
+          .in("id", ids);
+        if (!cancelled) {
+          const map: Record<string, LinkedRecord> = {};
+          for (const r of (recs ?? []) as LinkedRecord[]) map[r.id] = r;
+          setLinked(map);
+        }
+      }
       setLoading(false);
     })();
     return () => {
@@ -130,14 +193,64 @@ function AttachmentsReviewPage() {
     return c;
   }, [rows]);
 
-  const filtered = useMemo(
-    () => (statusFilter === "all" ? rows : rows.filter((r) => r.status === statusFilter)),
-    [rows, statusFilter],
-  );
+  const categoryOptions = useMemo(() => {
+    const set = new Set<string>();
+    for (const r of rows) set.add(r.category);
+    return Array.from(set);
+  }, [rows]);
+
+  const filtered = useMemo(() => {
+    const q = search.q.trim().toLowerCase();
+    const fromTs = search.from ? new Date(search.from).getTime() : null;
+    const toTs = search.to ? new Date(search.to).getTime() + 24 * 3600 * 1000 - 1 : null;
+    return rows.filter((r) => {
+      if (search.status !== "all" && r.status !== search.status) return false;
+      if (search.category !== "all" && r.category !== search.category) return false;
+      if (search.link === "zakat" && !r.zakat_record_id) return false;
+      if (search.link === "approval" && !r.approval_id) return false;
+      if (search.link === "org" && !r.organization_id) return false;
+      const t = new Date(r.created_at).getTime();
+      if (fromTs != null && t < fromTs) return false;
+      if (toTs != null && t > toTs) return false;
+      if (q) {
+        const hay = [
+          r.file_name,
+          r.label ?? "",
+          r.category,
+          r.review_note ?? "",
+          r.zakat_record_id ?? "",
+          r.approval_id ?? "",
+          linked[r.zakat_record_id ?? ""]?.record_type ?? "",
+        ]
+          .join(" ")
+          .toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [rows, linked, search]);
+
+  type SearchState = z.infer<typeof searchSchema>;
+  const setSearch = (patch: Partial<SearchState>) =>
+    navigate({ search: (prev: SearchState) => ({ ...prev, ...patch }), replace: true });
+
+  const resetFilters = () =>
+    navigate({
+      search: { q: "", status: "all", category: "all", from: "", to: "", link: "all" },
+      replace: true,
+    });
+
+  const activeFilterCount =
+    (search.q ? 1 : 0) +
+    (search.status !== "all" ? 1 : 0) +
+    (search.category !== "all" ? 1 : 0) +
+    (search.from ? 1 : 0) +
+    (search.to ? 1 : 0) +
+    (search.link !== "all" ? 1 : 0);
 
   const changeStatus = async (a: Attachment, next: AttachmentStatus, note?: string) => {
     const { data: userRes } = await supabase.auth.getUser();
-    const { error } = await (supabase as any)
+    const { error } = await (supabase as unknown as { from: (t: string) => { update: (v: Record<string, unknown>) => { eq: (c: string, v: string) => Promise<{ error: { message: string } | null }> } } })
       .from("approval_attachments")
       .update({
         status: next,
@@ -176,13 +289,43 @@ function AttachmentsReviewPage() {
       </div>
 
       <Card>
-        <CardHeader className="pb-3 flex-row items-center justify-between gap-3">
-          <CardTitle className="text-base">المرفقات ({filtered.length})</CardTitle>
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">تصفية</span>
-            <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as any)}>
-              <SelectTrigger className="h-8 w-40">
-                <SelectValue />
+        <CardHeader className="pb-3 space-y-3">
+          <div className="flex items-center justify-between gap-3">
+            <CardTitle className="text-base">
+              المرفقات ({filtered.length} من {rows.length})
+            </CardTitle>
+            {activeFilterCount > 0 && (
+              <Button size="sm" variant="ghost" onClick={resetFilters} className="gap-1 text-xs">
+                <X className="h-3.5 w-3.5" /> مسح الفلاتر ({activeFilterCount})
+              </Button>
+            )}
+          </div>
+          <div className="grid gap-2 md:grid-cols-6">
+            <div className="relative md:col-span-2">
+              <Search className="absolute right-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <Input
+                value={search.q}
+                onChange={(e) => setSearch({ q: e.target.value })}
+                placeholder="ابحث في اسم الملف، الملاحظات، أو معرّف الحالة…"
+                className="h-9 pr-8"
+              />
+            </div>
+            <Select value={search.category} onValueChange={(v) => setSearch({ category: v })}>
+              <SelectTrigger className="h-9">
+                <SelectValue placeholder="التصنيف" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">كل التصنيفات</SelectItem>
+                {categoryOptions.map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {CATEGORY_LABELS[c] ?? c}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={search.status} onValueChange={(v) => setSearch({ status: v })}>
+              <SelectTrigger className="h-9">
+                <SelectValue placeholder="الحالة" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">كل الحالات</SelectItem>
@@ -192,6 +335,33 @@ function AttachmentsReviewPage() {
                 <SelectItem value="rejected">مرفوض</SelectItem>
               </SelectContent>
             </Select>
+            <Select value={search.link} onValueChange={(v) => setSearch({ link: v })}>
+              <SelectTrigger className="h-9">
+                <SelectValue placeholder="الارتباط" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">كل الارتباطات</SelectItem>
+                <SelectItem value="zakat">مرتبط بإقرار زكاة</SelectItem>
+                <SelectItem value="approval">مرتبط بطلب اعتماد</SelectItem>
+                <SelectItem value="org">مرتبط بمؤسسة</SelectItem>
+              </SelectContent>
+            </Select>
+            <div className="flex gap-1 md:col-span-6 lg:col-span-1">
+              <Input
+                type="date"
+                value={search.from}
+                onChange={(e) => setSearch({ from: e.target.value })}
+                className="h-9"
+                aria-label="من تاريخ"
+              />
+              <Input
+                type="date"
+                value={search.to}
+                onChange={(e) => setSearch({ to: e.target.value })}
+                className="h-9"
+                aria-label="إلى تاريخ"
+              />
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -204,7 +374,9 @@ function AttachmentsReviewPage() {
               <AlertDescription>{err}</AlertDescription>
             </Alert>
           ) : filtered.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-8">لا توجد مرفقات ضمن هذه التصفية.</p>
+            <p className="text-sm text-muted-foreground text-center py-8">
+              لا توجد مرفقات مطابقة للتصفية الحالية.
+            </p>
           ) : (
             <div className="border rounded-lg overflow-x-auto">
               <Table>
@@ -213,7 +385,8 @@ function AttachmentsReviewPage() {
                     <TableHead>الملف</TableHead>
                     <TableHead>الفئة</TableHead>
                     <TableHead>الحالة</TableHead>
-                    <TableHead>آخر تحديث</TableHead>
+                    <TableHead>المرتبط بـ</TableHead>
+                    <TableHead>تاريخ الرفع</TableHead>
                     <TableHead>ملاحظة</TableHead>
                     <TableHead className="text-end">إجراءات</TableHead>
                   </TableRow>
@@ -223,6 +396,7 @@ function AttachmentsReviewPage() {
                     <AttachmentRow
                       key={a.id}
                       a={a}
+                      linked={a.zakat_record_id ? linked[a.zakat_record_id] : undefined}
                       onChange={changeStatus}
                       onHistory={() => setHistoryFor(a)}
                     />
@@ -240,7 +414,6 @@ function AttachmentsReviewPage() {
         attachment={historyFor}
       />
 
-      {/* استخدام router لمنع تحذير */}
       <span className="hidden" data-router={router.state.location.pathname} />
     </div>
   );
@@ -261,12 +434,52 @@ function StatCard({ label, value, status }: { label: string; value: number; stat
   );
 }
 
+function LinkedCell({ a, linked }: { a: Attachment; linked?: LinkedRecord }) {
+  const navigate = useNavigate();
+  if (linked) {
+    return (
+      <button
+        type="button"
+        onClick={() =>
+          navigate({ to: "/zakat-case/$recordId", params: { recordId: linked.id } })
+        }
+        className="text-right hover:underline"
+      >
+        <div className="flex items-center gap-1 text-xs">
+          <Link2 className="h-3 w-3 text-primary" />
+          <Badge variant="outline" className="text-[10px]">
+            {RECORD_TYPE_LABELS[linked.record_type] ?? linked.record_type}
+          </Badge>
+        </div>
+        <div className="text-[11px] text-muted-foreground tabular-nums">
+          {linked.hijri_year ?? linked.gregorian_date} • مستحق:{" "}
+          {Number(linked.zakat_due).toLocaleString("ar-EG")} {linked.currency}
+        </div>
+      </button>
+    );
+  }
+  if (a.approval_id) {
+    return (
+      <div className="text-[11px] text-muted-foreground">
+        <Badge variant="outline" className="text-[10px]">طلب اعتماد</Badge>
+        <div className="font-mono truncate max-w-[160px]">{a.approval_id.slice(0, 8)}…</div>
+      </div>
+    );
+  }
+  if (a.organization_id) {
+    return <Badge variant="outline" className="text-[10px]">مؤسسة</Badge>;
+  }
+  return <span className="text-xs text-muted-foreground">—</span>;
+}
+
 function AttachmentRow({
   a,
+  linked,
   onChange,
   onHistory,
 }: {
   a: Attachment;
+  linked?: LinkedRecord;
   onChange: (a: Attachment, s: AttachmentStatus, note?: string) => Promise<boolean>;
   onHistory: () => void;
 }) {
@@ -289,18 +502,19 @@ function AttachmentRow({
   return (
     <>
       <TableRow>
-        <TableCell className="max-w-[260px]">
+        <TableCell className="max-w-[240px]">
           <div className="text-sm font-medium truncate">{a.file_name}</div>
           {a.label && <div className="text-xs text-muted-foreground truncate">{a.label}</div>}
         </TableCell>
-        <TableCell className="text-xs">{a.category}</TableCell>
+        <TableCell className="text-xs">{CATEGORY_LABELS[a.category] ?? a.category}</TableCell>
         <TableCell>
           <Badge variant="outline" className={`gap-1 ${m.cls}`}>{m.icon} {m.label}</Badge>
         </TableCell>
+        <TableCell><LinkedCell a={a} linked={linked} /></TableCell>
         <TableCell className="text-xs whitespace-nowrap">
-          {new Date(a.updated_at).toLocaleString("ar-EG")}
+          {new Date(a.created_at).toLocaleDateString("ar-EG")}
         </TableCell>
-        <TableCell className="text-xs max-w-[220px] truncate" title={a.review_note ?? ""}>
+        <TableCell className="text-xs max-w-[200px] truncate" title={a.review_note ?? ""}>
           {a.review_note || "—"}
         </TableCell>
         <TableCell className="text-end">
@@ -380,7 +594,7 @@ function AuditHistoryDialog({
     let cancelled = false;
     (async () => {
       setLoading(true);
-      const { data, error } = await (supabase as any)
+      const { data, error } = await (supabase as unknown as { from: (t: string) => { select: (c: string) => { eq: (c: string, v: string) => { order: (c: string, o: { ascending: boolean }) => { limit: (n: number) => Promise<{ data: AuditRow[] | null; error: { message: string } | null }> } } } } })
         .from("attachment_audit_log")
         .select("id,attachment_id,action,status_before,status_after,changed_fields,actor_id,note,created_at")
         .eq("attachment_id", attachment.id)
