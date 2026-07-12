@@ -106,15 +106,30 @@ def main() -> int:
         ratio, diff = pixel_diff_ratio(Image.open(baseline), Image.open(path))
         if ratio > DIFF_TOLERANCE:
             actual_dst = DIFFS / f"{stem}.actual.png"
+            baseline_dst = DIFFS / f"{stem}.baseline.png"
             diff_dst = DIFFS / f"{stem}.diff.png"
+            side_dst = DIFFS / f"{stem}.side-by-side.png"
             actual_dst.write_bytes(path.read_bytes())
+            baseline_dst.write_bytes(baseline.read_bytes())
             diff.save(diff_dst)
+            # مركّب أفقي: baseline | actual | diff — يُبسّط المراجعة في artifact CI
+            b_img = Image.open(baseline).convert("RGB")
+            a_img = Image.open(path).convert("RGB")
+            d_img = diff.convert("RGB")
+            w = max(b_img.width, a_img.width, d_img.width)
+            h = max(b_img.height, a_img.height, d_img.height)
+            composite = Image.new("RGB", (w * 3 + 20, h + 24), (245, 245, 245))
+            composite.paste(b_img, (0, 24))
+            composite.paste(a_img, (w + 10, 24))
+            composite.paste(d_img, (w * 2 + 20, 24))
+            composite.save(side_dst)
             failures.append(
                 f"{stem}: {ratio:.4%} of pixels changed (> {DIFF_TOLERANCE:.2%}); "
-                f"see {diff_dst.relative_to(ROOT)}"
+                f"see {side_dst.relative_to(ROOT)}"
             )
         else:
             print(f"ok   {stem}  ({ratio:.4%})")
+
 
     if failures:
         print("\nVisual regressions detected:")
