@@ -164,7 +164,7 @@ export function KpiCompliancePanel() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [reloadKey]);
 
   const enriched = useMemo(
     () => rows.map((r) => ({ r, issues: detectIssues(r), level: complianceLevel(detectIssues(r)) })),
