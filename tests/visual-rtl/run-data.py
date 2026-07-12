@@ -153,9 +153,14 @@ async def run() -> int:
         for name, (w, h) in VIEWPORTS.items():
             context = await browser.new_context(viewport={"width": w, "height": h})
             page = await context.new_page()
+            # اقطع تحميل Tailwind CDN — يعطّل WebKit عبر file:// ولا يُغيّر السلوك المُختبَر
+            await page.route("**/cdn.tailwindcss.com/**", lambda r: r.abort())
+            await page.route("https://cdn.tailwindcss.com/**", lambda r: r.abort())
+            await page.route("https://cdn.tailwindcss.com", lambda r: r.abort())
             await page.goto(FIXTURE.resolve().as_uri(), wait_until="domcontentloaded")
             await page.locator('[data-testid="records-counter"]').wait_for(state="attached", timeout=30000)
             await page.wait_for_timeout(200)
+
 
             for prefix, total, has_range in (
                 ("records", RECORDS_TOTAL, False),
