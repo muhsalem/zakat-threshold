@@ -106,6 +106,38 @@
       </nav>
     </section>
 
+    <!-- ============================================================
+         LTR mirror of RECORDS — يضمن أن نفس منطق الترقيم/الكيبورد
+         يعمل بشكل معكوس في LTR (ArrowRight = التالي)
+         ============================================================ -->
+    <section id="records-ltr" dir="ltr" lang="en" class="card">
+      <div class="label">LTR — mirror records (keyboard parity)</div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Client</th><th>Year</th><th>Base</th><th>Zakat</th>
+          </tr>
+        </thead>
+        <tbody id="records-ltr-body"></tbody>
+      </table>
+      <nav class="pager" aria-label="Records pagination" data-testid="records-ltr-pager">
+        <div class="pager-controls">
+          <span class="counter">Rows</span>
+          <select id="records-ltr-per-page" class="select" aria-label="Rows per page">
+            <option value="10" selected>10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+        <div class="pager-controls">
+          <button id="records-ltr-prev" class="btn" aria-label="Previous page">Prev</button>
+          <span id="records-ltr-counter" class="counter tabular-nums" data-testid="records-ltr-counter">1 / 5</span>
+          <button id="records-ltr-next" class="btn" aria-label="Next page">Next</button>
+        </div>
+      </nav>
+    </section>
+
+
     <script>
       // ---------- fake data ----------
       const RECORDS = Array.from({ length: 43 }, (_, i) => ({
