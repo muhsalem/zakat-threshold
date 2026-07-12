@@ -264,6 +264,7 @@ export function SecuritiesSection({
                       needsCompany ? "مطلوب — لتوثيق الفتوى" : "مثال: CIB / Aramco / Apple"
                     }
                   />
+                  <Err msg={errs.company} />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs">الرمز (Ticker)</Label>
