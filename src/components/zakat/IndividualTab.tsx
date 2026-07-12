@@ -98,6 +98,7 @@ import {
   buildDeductionsList as buildDeductionsListShared,
 } from "@/lib/zakat/report-builders";
 import { GoldSilverSection } from "./individual/gold-silver/GoldSilverSection";
+import { CashBankAccordionSection } from "./individual/cash-bank/CashBankAccordionSection";
 import {
   EcommerceItemsTable,
   computeEcommerceTotals,
