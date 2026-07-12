@@ -20,7 +20,12 @@
         gap: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb; margin-top: 12px; }
       .pager-controls { display: flex; align-items: center; gap: 8px; }
       .counter { font-size: 12px; color: #374151; }
+      /* حلقة تركيز مرئية موحّدة — تُفحص في run-keyboard.py */
+      .btn:focus-visible, .select:focus-visible, nav.pager:focus-visible {
+        outline: 2px solid #2563eb; outline-offset: 2px; border-color: #2563eb;
+      }
     </style>
+
   </head>
   <body>
     <!-- ============================================================
