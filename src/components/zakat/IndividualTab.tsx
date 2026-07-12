@@ -111,6 +111,7 @@ import TradeActivityClassification, {
 
 import { supabase } from "@/integrations/supabase/client";
 import { NumField, SectionResult, Row } from "./individual/shared";
+import { IndividualAuditTab } from "./individual/audit/IndividualAuditTab";
 
 
 export function IndividualTab() {
