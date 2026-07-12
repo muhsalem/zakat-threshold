@@ -419,11 +419,38 @@ export function KpiCompliancePanel() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Button asChild size="sm" variant="outline" className="gap-1">
-                          <Link to="/certified-report/$recordId" params={{ recordId: r.id }}>
-                            <ExternalLink className="h-3.5 w-3.5" /> فتح
-                          </Link>
-                        </Button>
+                        <div className="flex gap-1.5">
+                          <Button asChild size="sm" variant="outline" className="gap-1">
+                            <Link to="/certified-report/$recordId" params={{ recordId: r.id }}>
+                              <ExternalLink className="h-3.5 w-3.5" /> فتح
+                            </Link>
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            className="gap-1"
+                            onClick={() =>
+                              setFixTarget({
+                                record: {
+                                  id: r.id,
+                                  record_type: r.record_type,
+                                  hijri_year: r.hijri_year,
+                                  gregorian_date: r.gregorian_date,
+                                  currency: r.currency,
+                                  total_assets: r.total_assets,
+                                  total_liabilities: r.total_liabilities,
+                                  zakat_base: r.zakat_base,
+                                  zakat_due: r.zakat_due,
+                                  net_due: r.net_due,
+                                  updated_at: r.updated_at,
+                                },
+                                codes: issues.map((i) => i.code as IssueCode),
+                              })
+                            }
+                          >
+                            <Wand2 className="h-3.5 w-3.5" /> تصحيح
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
