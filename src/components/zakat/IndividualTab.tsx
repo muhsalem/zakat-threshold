@@ -296,6 +296,12 @@ export function IndividualTab() {
   const [jwStoneGrams, setJwStoneGrams] = useState("");
   const [jewelryPurpose, setJewelryPurpose] = useState<"storage" | "wear">("wear");
   const [jewelryOpinion, setJewelryOpinion] = useState<"majority" | "hanafi">("majority");
+  // R1: مزامنة رأي الحلي مع المرجعية الفقهية العامة (Madhab Selector)
+  const { rules: madhabRules, madhab } = useMadhab();
+  useEffect(() => {
+    setJewelryOpinion(madhabRules.jewelryWornZakatable ? "hanafi" : "majority");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [madhab]);
   // شروط إعفاء حلي الزينة عند رأي الجمهور
   const [jwHaal, setJwHaal] = useState(true); // حال غير مؤجل (مستعمل فعلاً)
   const [jwModeration, setJwModeration] = useState(true); // في حدود القصد والاعتدال
