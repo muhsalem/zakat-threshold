@@ -55,6 +55,7 @@ const FitrCalculator = lazy(() =>
 );
 import { fmt } from "@/lib/zakat";
 import { AccountantDashboard } from "@/components/accountant/AccountantDashboard";
+import { KpiCompliancePanel } from "@/components/accountant/KpiCompliancePanel";
 
 import { supabase } from "@/integrations/supabase/client";
 import {
