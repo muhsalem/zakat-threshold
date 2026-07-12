@@ -258,7 +258,7 @@ export function KpiCompliancePanel() {
       </Alert>
     );
   }
-  if (stats.total === 0) {
+  if (rows.length === 0) {
     return (
       <Alert>
         <AlertDescription>لا توجد إقرارات بعد لعرض مؤشرات الأداء.</AlertDescription>
