@@ -23,6 +23,7 @@ import { Route as PricesHistoryRouteImport } from './routes/prices-history'
 import { Route as PortalSigninRouteImport } from './routes/portal-signin'
 import { Route as OrganizationsRouteImport } from './routes/organizations'
 import { Route as NisabAuditRouteImport } from './routes/nisab-audit'
+import { Route as LiquidityStressRouteImport } from './routes/liquidity-stress'
 import { Route as ImpactRouteImport } from './routes/impact'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as GroupZakatRouteImport } from './routes/group-zakat'
@@ -145,6 +146,11 @@ const OrganizationsRoute = OrganizationsRouteImport.update({
 const NisabAuditRoute = NisabAuditRouteImport.update({
   id: '/nisab-audit',
   path: '/nisab-audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LiquidityStressRoute = LiquidityStressRouteImport.update({
+  id: '/liquidity-stress',
+  path: '/liquidity-stress',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ImpactRoute = ImpactRouteImport.update({
@@ -448,6 +454,7 @@ export interface FileRoutesByFullPath {
   '/group-zakat': typeof GroupZakatRoute
   '/history': typeof HistoryRoute
   '/impact': typeof ImpactRoute
+  '/liquidity-stress': typeof LiquidityStressRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
   '/portal-signin': typeof PortalSigninRoute
@@ -516,6 +523,7 @@ export interface FileRoutesByTo {
   '/group-zakat': typeof GroupZakatRoute
   '/history': typeof HistoryRoute
   '/impact': typeof ImpactRoute
+  '/liquidity-stress': typeof LiquidityStressRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
   '/portal-signin': typeof PortalSigninRoute
@@ -586,6 +594,7 @@ export interface FileRoutesById {
   '/group-zakat': typeof GroupZakatRoute
   '/history': typeof HistoryRoute
   '/impact': typeof ImpactRoute
+  '/liquidity-stress': typeof LiquidityStressRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
   '/portal-signin': typeof PortalSigninRoute
@@ -656,6 +665,7 @@ export interface FileRouteTypes {
     | '/group-zakat'
     | '/history'
     | '/impact'
+    | '/liquidity-stress'
     | '/nisab-audit'
     | '/organizations'
     | '/portal-signin'
@@ -724,6 +734,7 @@ export interface FileRouteTypes {
     | '/group-zakat'
     | '/history'
     | '/impact'
+    | '/liquidity-stress'
     | '/nisab-audit'
     | '/organizations'
     | '/portal-signin'
@@ -793,6 +804,7 @@ export interface FileRouteTypes {
     | '/group-zakat'
     | '/history'
     | '/impact'
+    | '/liquidity-stress'
     | '/nisab-audit'
     | '/organizations'
     | '/portal-signin'
@@ -863,6 +875,7 @@ export interface RootRouteChildren {
   GroupZakatRoute: typeof GroupZakatRoute
   HistoryRoute: typeof HistoryRoute
   ImpactRoute: typeof ImpactRoute
+  LiquidityStressRoute: typeof LiquidityStressRoute
   NisabAuditRoute: typeof NisabAuditRoute
   OrganizationsRoute: typeof OrganizationsRoute
   PortalSigninRoute: typeof PortalSigninRoute
@@ -992,6 +1005,13 @@ declare module '@tanstack/react-router' {
       path: '/nisab-audit'
       fullPath: '/nisab-audit'
       preLoaderRoute: typeof NisabAuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/liquidity-stress': {
+      id: '/liquidity-stress'
+      path: '/liquidity-stress'
+      fullPath: '/liquidity-stress'
+      preLoaderRoute: typeof LiquidityStressRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/impact': {
@@ -1451,6 +1471,7 @@ const rootRouteChildren: RootRouteChildren = {
   GroupZakatRoute: GroupZakatRoute,
   HistoryRoute: HistoryRoute,
   ImpactRoute: ImpactRoute,
+  LiquidityStressRoute: LiquidityStressRoute,
   NisabAuditRoute: NisabAuditRoute,
   OrganizationsRoute: OrganizationsRoute,
   PortalSigninRoute: PortalSigninRoute,
