@@ -303,6 +303,76 @@ export function checkHawl(startDateISO: string, today = new Date()): HawlStatus 
   };
 }
 
+// ============ جدول الحول التنازلي/التصاعدي متعدد السنوات ============
+export interface HawlCycle {
+  index: number; // 0 = الحول الحالي، سالب = ماضٍ، موجب = مستقبل
+  startISO: string;
+  endISO: string;
+  hijriStart: HijriDate;
+  hijriEnd: HijriDate;
+  status: "past" | "current" | "future";
+  daysPassed: number;
+  daysRemaining: number;
+  progressPct: number;
+  label: string;
+}
+
+/**
+ * يولّد جدول دورات الحول (تنازلي للماضي وتصاعدي للمستقبل) انطلاقاً من
+ * تاريخ بلوغ النصاب. طول الدورة = 354 يوماً هجرياً أو 365 يوماً ميلادياً.
+ */
+export function generateHawlSchedule(
+  startDateISO: string,
+  opts: { pastCycles?: number; futureCycles?: number; basis?: "hijri" | "gregorian"; today?: Date } = {},
+): HawlCycle[] {
+  if (!startDateISO) return [];
+  const start = new Date(startDateISO);
+  if (isNaN(start.getTime())) return [];
+  const past = Math.max(0, opts.pastCycles ?? 2);
+  const future = Math.max(0, opts.futureCycles ?? 2);
+  const cycleDays = opts.basis === "gregorian" ? 365 : HAWL_DAYS_HIJRI;
+  const today = opts.today ?? new Date();
+  const todayMs = today.getTime();
+  const startMs = start.getTime();
+
+  // تحديد فهرس الدورة الحالية بالنسبة لتاريخ البداية
+  const elapsedDays = Math.floor((todayMs - startMs) / 86400000);
+  const currentIndex = Math.floor(elapsedDays / cycleDays);
+
+  const cycles: HawlCycle[] = [];
+  for (let i = currentIndex - past; i <= currentIndex + future; i++) {
+    const cStart = new Date(startMs + i * cycleDays * 86400000);
+    const cEnd = new Date(startMs + (i + 1) * cycleDays * 86400000 - 86400000);
+    const hijriStart = gregorianToHijri(cStart.getFullYear(), cStart.getMonth() + 1, cStart.getDate());
+    const hijriEnd = gregorianToHijri(cEnd.getFullYear(), cEnd.getMonth() + 1, cEnd.getDate());
+    const inCycleDays = Math.floor((todayMs - cStart.getTime()) / 86400000);
+    const status: HawlCycle["status"] =
+      i < currentIndex ? "past" : i > currentIndex ? "future" : "current";
+    const daysPassed = status === "past" ? cycleDays : status === "future" ? 0 : Math.max(0, Math.min(cycleDays, inCycleDays));
+    const daysRemaining = Math.max(0, cycleDays - daysPassed);
+    const progressPct = Math.round((daysPassed / cycleDays) * 100);
+    const label =
+      i === 0
+        ? "الحول الأساس (بلوغ النصاب)"
+        : i > 0
+          ? `الحول +${i}`
+          : `الحول ${i}`;
+    cycles.push({
+      index: i,
+      startISO: cStart.toISOString().slice(0, 10),
+      endISO: cEnd.toISOString().slice(0, 10),
+      hijriStart,
+      hijriEnd,
+      status,
+      daysPassed,
+      daysRemaining,
+      progressPct,
+      label,
+    });
+  }
+  return cycles;
+}
+
 // ============ مصارف الزكاة الثمانية (التوبة: 60) ============
 export interface ZakatRecipient {
   name: string;
