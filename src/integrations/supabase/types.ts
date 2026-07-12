@@ -740,12 +740,56 @@ export type Database = {
         }
         Relationships: []
       }
+      payments: {
+        Row: {
+          amount_paid: number | null
+          created_at: string
+          currency: string | null
+          id: string
+          plan_id: string | null
+          status: string
+          stripe_customer_id: string | null
+          stripe_session_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          amount_paid?: number | null
+          created_at?: string
+          currency?: string | null
+          id?: string
+          plan_id?: string | null
+          status: string
+          stripe_customer_id?: string | null
+          stripe_session_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount_paid?: number | null
+          created_at?: string
+          currency?: string | null
+          id?: string
+          plan_id?: string | null
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_session_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           account_type: Database["public"]["Enums"]["account_type"]
           created_at: string
           display_name: string | null
           id: string
+          plan: string
+          plan_expires_at: string | null
           updated_at: string
           user_id: string
         }
@@ -754,6 +798,8 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+          plan?: string
+          plan_expires_at?: string | null
           updated_at?: string
           user_id: string
         }
@@ -762,6 +808,8 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+          plan?: string
+          plan_expires_at?: string | null
           updated_at?: string
           user_id?: string
         }

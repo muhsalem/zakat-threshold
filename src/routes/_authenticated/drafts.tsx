@@ -160,6 +160,17 @@ function DraftsPage() {
       );
     }
 
+    // Status filter mirrors `statusOf()` server-side so pagination and total
+    // counts stay accurate. `net_due` is populated by the writer; when it is
+    // null we treat the row as "due" (matches client fallback below).
+    if (statusFilter === "zero") {
+      query = query.lte("zakat_due", 0);
+    } else if (statusFilter === "paid") {
+      query = query.gt("zakat_due", 0).lte("net_due", 0);
+    } else if (statusFilter === "due") {
+      query = query.gt("zakat_due", 0).gt("net_due", 0);
+    }
+
     const from = pageIdx * RECORDS_PAGE_SIZE;
     const to = from + RECORDS_PAGE_SIZE - 1;
     const {
@@ -174,13 +185,10 @@ function DraftsPage() {
       has_snapshot: true,
     }));
 
-    // Status filter runs client-side because it's derived from prepaid/net_due.
-    const filtered =
-      statusFilter === "all" ? rows : rows.filter((r) => statusOf(r) === statusFilter);
-
-    setRecords(filtered);
+    setRecords(rows);
     setRecordsTotal(count ?? 0);
   }
+
 
   async function refresh() {
     setError(null);

@@ -85,7 +85,7 @@ Deno.serve(async (req) => {
             plan_expires_at:
               planId === "vip_annual" ? new Date(Date.now() + 365 * 864e5).toISOString() : null,
           })
-          .eq("id", userId);
+          .eq("user_id", userId);
       }
       break;
     }
@@ -114,7 +114,7 @@ Deno.serve(async (req) => {
         await supabase
           .from("profiles")
           .update({ plan: "free", plan_expires_at: null })
-          .eq("id", userId);
+          .eq("user_id", userId);
       }
       break;
     }
