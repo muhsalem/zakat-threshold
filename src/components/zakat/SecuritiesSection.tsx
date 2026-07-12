@@ -356,7 +356,9 @@ export function SecuritiesSection({
                       value={r.shariaIndex}
                       onChange={(e) => update(r.id, { shariaIndex: e.target.value })}
                       placeholder="S&P Sharia / Dow Jones Islamic / TASI Sharia"
+                      maxLength={120}
                     />
+                    <Err msg={errs.shariaIndex} />
                   </div>
                 )}
                 <div className="space-y-1.5">
@@ -372,6 +374,7 @@ export function SecuritiesSection({
                     style={{ textAlign: "right" }}
                     placeholder="0"
                   />
+                  <Err msg={errs.purifyPct} />
                 </div>
 
                 {r.kind === "stock_invest" && (
@@ -390,6 +393,7 @@ export function SecuritiesSection({
                       style={{ textAlign: "right" }}
                       placeholder="افتراضي 30% — من القوائم المالية"
                     />
+                    <Err msg={errs.zakatableAssetsPct} />
                   </div>
                 )}
 
