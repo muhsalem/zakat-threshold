@@ -240,6 +240,10 @@ export function ApprovalAttachments({
               رفع مرفق
             </Button>
           </div>
+          <p className="text-[11px] text-muted-foreground sm:col-span-3">
+            الملفات المسموحة: PDF أو صور (PNG/JPG/WebP) — الحد الأقصى {MAX_MB} ميجابايت.
+            الصور الكبيرة تُصغَّر تلقائياً قبل الرفع.
+          </p>
         </div>
       )}
 
