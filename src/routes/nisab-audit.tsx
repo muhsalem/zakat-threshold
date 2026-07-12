@@ -328,7 +328,7 @@ function NisabAuditPage() {
             </CardHeader>
             <CardContent className="max-h-[600px] overflow-auto">
               <Table>
-                <TableHeader className="sticky top-0 bg-background">
+                <TableHeader className="sticky top-0 z-10 bg-background [&_th]:bg-background [&_th]:shadow-[inset_0_-1px_0_hsl(var(--border))]">
                   <TableRow>
                     <TableHead>الدولة</TableHead>
                     <TableHead>السنة</TableHead>
