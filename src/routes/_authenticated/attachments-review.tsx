@@ -47,6 +47,7 @@ import {
   Link2,
 } from "lucide-react";
 import { filterAttachments, paginate, linkedNavTarget } from "@/lib/attachmentsFilter";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
 type AttachmentStatus = "draft" | "pending" | "approved" | "rejected";
 
