@@ -118,9 +118,16 @@ function CertifiedReportPage() {
             <ArrowRight className="h-4 w-4" /> السجل
           </Link>
         </Button>
-        <Button onClick={() => window.print()} className="gap-1.5">
-          <Printer className="h-4 w-4" /> طباعة / PDF
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button asChild variant="outline" size="sm" className="gap-1.5">
+            <Link to="/compliance-report/$recordId" params={{ recordId }}>
+              <FileText className="h-4 w-4" /> تقرير الامتثال الشرعي
+            </Link>
+          </Button>
+          <Button onClick={() => window.print()} className="gap-1.5">
+            <Printer className="h-4 w-4" /> طباعة / PDF
+          </Button>
+        </div>
       </div>
 
       <Card className="border-2 border-primary/30 shadow-lg print:shadow-none print:border-primary">
