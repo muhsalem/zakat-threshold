@@ -241,6 +241,9 @@ function OrgsPage() {
                     org={orgs.find((o) => o.org.id === activeOrgId)!.org}
                   />
                 </TabsContent>
+                <TabsContent value="audit" className="mt-4">
+                  <OrgAuditLogPanel orgId={activeOrgId} />
+                </TabsContent>
                 <TabsContent value="export" className="mt-4">
                   <XbrlPanel org={orgs.find((o) => o.org.id === activeOrgId)!.org} />
                 </TabsContent>
