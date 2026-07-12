@@ -229,7 +229,7 @@ export function ApprovalAttachments({
               type="file"
               className="hidden"
               onChange={onFile}
-              accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.webp,.txt"
+              accept={ACCEPT_ATTR}
             />
             <Button onClick={onPick} disabled={uploading} className="gap-1.5 w-full sm:w-auto">
               {uploading ? (
