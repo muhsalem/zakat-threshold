@@ -284,6 +284,7 @@ export function SecuritiesSection({
                     value={r.purchaseDate}
                     onChange={(e) => update(r.id, { purchaseDate: e.target.value })}
                   />
+                  <Err msg={errs.purchaseDate} />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs">الكمية</Label>
@@ -297,6 +298,7 @@ export function SecuritiesSection({
                     style={{ textAlign: "right" }}
                     placeholder="0"
                   />
+                  <Err msg={errs.qty} />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs">سعر الوحدة الحالي ({currencyName})</Label>
