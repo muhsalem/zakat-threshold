@@ -248,6 +248,41 @@ export type Database = {
         }
         Relationships: []
       }
+      attachment_download_log: {
+        Row: {
+          attachment_id: string
+          downloaded_at: string
+          downloaded_by: string
+          id: string
+          ip: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          attachment_id: string
+          downloaded_at?: string
+          downloaded_by: string
+          id?: string
+          ip?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          attachment_id?: string
+          downloaded_at?: string
+          downloaded_by?: string
+          id?: string
+          ip?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attachment_download_log_attachment_id_fkey"
+            columns: ["attachment_id"]
+            isOneToOne: false
+            referencedRelation: "approval_attachments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       erp_connections: {
         Row: {
           api_key: string
