@@ -714,104 +714,20 @@ export function IndividualTab() {
   const fitrContribution = fitrEnabled && fitrAuto.active ? fitrAuto.total : 0;
 
   /** بناء بيان الخصومات والمبرّرات الشرعية لإثبات سبب الاحتساب أو الاستبعاد. */
-  const buildDeductionsList = () => {
-    const items: Array<{
-      label: string;
-      amount: number;
-      included: boolean;
-      reason: string;
-      ref?: string;
-    }> = [];
-    const add = (label: string, raw: string, included: boolean, reason: string, ref?: string) => {
-      const amount = num(raw);
-      if (amount > 0) items.push({ label, amount, included, reason, ref });
-    };
-    // الديون الحالّة — تُخصم بإجماع الفقهاء
-    add(
-      "قروض شخصية حالّة",
+  const buildDeductionsList = () =>
+    buildDeductionsListShared({
       debtPersonalLoan,
-      true,
-      "دين حالّ مستحق السداد الآن — يُخصم من الوعاء الزكوي",
-      "AAOIFI 35 / إجماع الفقهاء",
-    );
-    add(
-      "ديون مصرفية حالّة",
       debtBankLoan,
-      true,
-      "أصل الدين دون الفوائد الربوية — يُخصم",
-      "AAOIFI 35",
-    );
-    add(
-      "تمويل استهلاكي حالّ",
       debtConsumerFinance,
-      true,
-      "تمويل إسلامي مستحق — يُخصم",
-      "مجمع الفقه الإسلامي",
-    );
-    add(
-      "أقساط سيارات/سلع حالّة",
       debtCarInstall,
-      true,
-      "قسط مستحق خلال الحول — يُخصم",
-      "AAOIFI 35",
-    );
-    add(
-      "ديون تجارية مستحقة",
       debtTradePayable,
-      true,
-      "دين للموردين مستحق الآن — يُخصم",
-      "AAOIFI 35",
-    );
-    add("أثمان مشتريات لم تُسدد", debtPurchases, true, "دين تجاري حالّ — يُخصم", "AAOIFI 35");
-    add(
-      "نفقة واجبة مستحقة",
+      debtPurchases,
       debtAlimony,
-      true,
-      "نفقة بحكم قضاء/اتفاق — تُخصم باعتبارها ديناً حالاً",
-      "قول الجمهور",
-    );
-    // الديون المؤجلة — السياسة تحدد القبول
-    const longTermLabel =
-      debtDeferredPolicy === "yearly"
-        ? "قسط السنة فقط (سياسة الأنفع للفقراء)"
-        : debtDeferredPolicy === "full"
-          ? "كامل الدين المؤجل (الأحوط للمزكّي)"
-          : "بدون خصم (الأنفع للفقراء التام)";
-    if (debtDeferredPolicy !== "none") {
-      add(
-        "قسط السنة من الديون المؤجلة",
-        debtDeferredYearly,
-        true,
-        `يُخصم وفق سياسة: ${longTermLabel}`,
-        "AAOIFI 35 / فتاوى معاصرة",
-      );
-    } else {
-      add(
-        "قسط السنة من الديون المؤجلة",
-        debtDeferredYearly,
-        false,
-        "مستبعد — السياسة المختارة لا تخصم الديون المؤجلة (الأنفع للفقراء)",
-        "ابن باز / ابن عثيمين",
-      );
-    }
-    add(
-      "تمويل عقاري (إجمالي متبقي)",
+      debtDeferredYearly,
       debtMortgage,
-      debtDeferredPolicy === "full",
-      debtDeferredPolicy === "full"
-        ? "السياسة الأحوط: خصم كامل الدين المؤجل"
-        : "مستبعد — التمويل العقاري المؤجل لا يُخصم بالكامل عند جمهور المعاصرين",
-      "ندوات البركة",
-    );
-    add(
-      "مهر مؤجل",
       debtMahr,
-      false,
-      "مستبعد — المهر المؤجل لا يُعتبر ديناً حالّاً ما لم يُطلب",
-      "قول الجمهور",
-    );
-    return items;
-  };
+      debtDeferredPolicy,
+    });
 
   /** بناء بيانات FX لإدراجها في PDF/Excel. */
   const buildFxPayload = () => {
@@ -831,92 +747,35 @@ export function IndividualTab() {
   };
 
   /** بيانات التقرير الأساسية المشتركة بين تصدير PDF و Excel. */
-  const buildBaseReportData = () => ({
-    name,
-    profession,
-    countryCode,
-    currencyName,
-    calendarBasis,
-    effectiveRate,
-    rows: [
-      {
-        label: "زكاة الذهب",
-        gross: calc.totalGoldValue,
-        nisab: calc.goldNisabValue,
-        eligible: calc.goldEligible,
-        zakat: calc.goldZakat,
-      },
-      {
-        label: "زكاة الفضة",
-        gross: calc.silverValue,
-        nisab: calc.silverNisabValue,
-        eligible: calc.silverEligible,
-        zakat: calc.silverZakat,
-      },
-      {
-        label: "زكاة الأوراق النقدية والحسابات البنكية والمحافظ الرقمية",
-        gross: calc.cashTotal,
-        eligible: true,
-        zakat: 0,
-      },
-      {
-        label: "زكاة الأوراق المالية ووثائق التأمين",
-        gross: calc.securitiesTotal,
-        eligible: true,
-        zakat: 0,
-      },
-      {
-        label: "زكاة الأوراق التجارية (الكمبيالات وأوراق القبض)",
-        gross: calc.billsTotal,
-        eligible: true,
-        zakat: 0,
-      },
-      {
-        label: "زكاة الدخل وعروض التجارة والمستغلات",
-        gross: calc.tradeTotal + calc.realEstateZakatable + incomeUsufructTotal,
-        eligible: true,
-        zakat: 0,
-      },
-      {
-        label: "زكاة الزروع والثمار",
-        gross: calc.cropsValue,
-        eligible: calc.cropsEligible,
-        zakat: calc.cropsZakat,
-      },
-      {
-        label: "زكاة الركاز والمعادن",
-        gross: rikazTotal,
-        eligible: rikazTotal > 0,
-        zakat: rikazTotal,
-      },
-    ],
-    livestock: {
-      camels: calc.camelsN,
-      cows: calc.cowsN,
-      sheep: calc.sheepN,
-      show: ownsLivestock,
-      mode: livestockForTrade ? ("trade" as const) : ("grazing" as const),
-      tradeValue: livestockForTrade ? num(livestockTradeValue) : 0,
-    },
-    esop: esopData,
-    rikazTotal,
-    monetaryGross: calc.monetaryGross,
-    debts: calc.debts,
-    monetaryBase: calc.monetaryBase,
-    moneyNisab: calc.moneyNisab,
-    totalZakat: calc.total,
-    hawlComplete: hawl ? hawl.hawlComplete : null,
-    hawlDate: nisabStartDate,
-    goldPricePerGram: num(goldPrice),
-    silverPricePerGram: num(silverPrice),
-    accountantName,
-    accountantLicense,
-    accountantPreamble,
-    accountantOpinion,
-    opinionType,
-    previousYearZakat,
-    auditEntries: includeAuditReport ? auditEntries : undefined,
-  });
+  const buildBaseReportData = () =>
+    buildBaseReportDataShared({
+      name,
+      profession,
+      countryCode,
+      currencyName,
+      calendarBasis,
+      effectiveRate,
+      calc,
+      incomeUsufructTotal,
+      rikazTotal,
+      ownsLivestock,
+      livestockForTrade,
+      livestockTradeValue,
+      esopData,
+      hawl,
+      nisabStartDate,
+      goldPrice,
+      silverPrice,
+      accountantName,
+      accountantLicense,
+      accountantPreamble,
+      accountantOpinion,
+      opinionType,
+      previousYearZakat,
+      includeAuditReport,
+      auditEntries,
+    });
+
 
   return (
     <div dir="rtl" className="text-right">
