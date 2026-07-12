@@ -100,6 +100,9 @@ import {
 import { GoldSilverSection } from "./individual/gold-silver/GoldSilverSection";
 import { CashBankAccordionSection } from "./individual/cash-bank/CashBankAccordionSection";
 import { TradeGoodsSubsection } from "./individual/trade/TradeGoodsSubsection";
+import { CropsAccordionSection } from "./individual/crops/CropsAccordionSection";
+import { LivestockAccordionSection } from "./individual/livestock/LivestockAccordionSection";
+import { DebtsAccordionSection } from "./individual/debts/DebtsAccordionSection";
 import {
   EcommerceItemsTable,
   computeEcommerceTotals,
