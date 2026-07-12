@@ -13,9 +13,17 @@ import {
 } from "@/components/ui/select";
 import { Paperclip, Upload, Trash2, Download, Loader2, FileText } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  ATTACHMENT_BUCKET as BUCKET,
+  MAX_FILE_BYTES,
+  ALLOWED_EXT,
+  downscaleImage,
+  validateUpload,
+  validationMessage,
+} from "@/lib/attachments";
 
-const BUCKET = "approval-attachments";
-const MAX_MB = 15;
+const MAX_MB = Math.round(MAX_FILE_BYTES / (1024 * 1024));
+const ACCEPT_ATTR = ALLOWED_EXT.join(",");
 
 export type AttachmentCategory =
   | "council_decision"
