@@ -547,7 +547,11 @@ function AttachmentsReviewPage() {
             </div>
           )}
           {!loading && !err && filtered.length > 0 && (
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-3">
+            <nav
+              aria-label="تصفّح المرفقات"
+              className="flex flex-wrap items-center justify-between gap-3 pt-3"
+              onKeyDown={onPagerKeyDown}
+            >
               <div className="text-xs text-muted-foreground">
                 عرض {pageStart + 1}–{Math.min(pageStart + pageSize, filtered.length)} من{" "}
                 {filtered.length}
