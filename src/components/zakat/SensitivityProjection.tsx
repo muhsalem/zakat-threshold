@@ -166,7 +166,7 @@ export default function SensitivityProjection({
               </h3>
               <div className="rounded-lg border overflow-x-auto max-h-72 overflow-y-auto">
                 <table className="w-full text-sm">
-                  <thead className="sticky top-0 z-10 bg-muted/95 backdrop-blur supports-[backdrop-filter]:bg-muted/60 [&_th]:bg-inherit [&_th]:shadow-[inset_0_-1px_0_hsl(var(--border))]">
+                  <thead className="[&_th]:sticky [&_th]:top-0 [&_th]:z-10 [&_th]:bg-muted [&_th]:shadow-[inset_0_-1px_0_hsl(var(--border))]">
                     <tr>
                       <th className="text-end p-2">السنة</th>
                       <th className="text-end p-2">الوعاء المتوقع</th>

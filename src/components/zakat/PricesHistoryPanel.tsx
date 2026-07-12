@@ -230,7 +230,7 @@ export function PricesHistoryPanel({ compact = false }: { compact?: boolean }) {
               <Table
                 wrapperClassName={compact ? "max-h-[400px] overflow-auto" : "max-h-[600px] overflow-auto"}
               >
-                <TableHeader className="sticky top-0 z-10 bg-background [&_th]:bg-background [&_th]:shadow-[inset_0_-1px_0_hsl(var(--border))]">
+                <TableHeader className="[&_th]:sticky [&_th]:top-0 [&_th]:z-10 [&_th]:bg-background [&_th]:shadow-[inset_0_-1px_0_hsl(var(--border))]">
                   <TableRow>
                     <TableHead>التاريخ</TableHead>
                     <TableHead>ذهب USD/جم</TableHead>
