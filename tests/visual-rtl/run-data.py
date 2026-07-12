@@ -102,6 +102,43 @@ async def assert_pager(page, prefix: str, total: int, has_range: bool):
         assert "من" in rng and "27" in rng, f"{prefix}: range label malformed: {rng!r}"
 
 
+async def assert_numbered(page):
+    """shadcn <Pagination> pattern: numbered links + prev/next with mirrored chevrons."""
+    pager = page.locator('[data-testid="numbered-pager"]')
+    prev = page.locator('[data-testid="num-prev"]')
+    nxt = page.locator('[data-testid="num-next"]')
+
+    # RTL: prev button (السابق) must render visually to the right of page 1 link
+    prev_box = await prev.bounding_box()
+    p1_box = await page.locator('a[data-page="1"]').bounding_box()
+    p_last_box = await page.locator('a[data-page="5"]').bounding_box()
+    nxt_box = await nxt.bounding_box()
+    assert prev_box["x"] > p1_box["x"] > p_last_box["x"] > nxt_box["x"], \
+        f"numbered: RTL order broken (prev={prev_box['x']}, p1={p1_box['x']}, " \
+        f"p_last={p_last_box['x']}, next={nxt_box['x']})"
+
+    # initial state: page 1, prev disabled
+    assert await prev.get_attribute("disabled") is not None
+    assert await page.locator('a[data-page="1"]').get_attribute("aria-current") == "page"
+
+    # click page 3 → aria-current moves, next still enabled
+    await page.locator('a[data-page="3"]').click()
+    assert await page.locator('a[data-page="3"]').get_attribute("aria-current") == "page"
+    assert await prev.get_attribute("disabled") is None
+
+    # click next → page 4
+    await nxt.click()
+    assert await page.locator('a[data-page="4"]').get_attribute("aria-current") == "page"
+
+    # jump to last → next disabled
+    await page.locator('a[data-page="5"]').click()
+    assert await nxt.get_attribute("disabled") is not None
+
+    # no overflow at current viewport
+    ovf = await pager.evaluate("el => el.scrollWidth - el.clientWidth")
+    assert ovf <= 1, f"numbered: pager overflows horizontally by {ovf}px"
+
+
 async def run() -> int:
     failures: list[str] = []
     async with async_playwright() as p:
@@ -121,6 +158,12 @@ async def run() -> int:
                 except AssertionError as e:
                     failures.append(f"{name}/{prefix}: {e}")
                     await page.screenshot(path=str(CAPTURE / f"fail_{name}_{prefix}.png"))
+            try:
+                await assert_numbered(page)
+                print(f"ok   {name:<7} numbered")
+            except AssertionError as e:
+                failures.append(f"{name}/numbered: {e}")
+                await page.screenshot(path=str(CAPTURE / f"fail_{name}_numbered.png"))
             await context.close()
         await browser.close()
 
