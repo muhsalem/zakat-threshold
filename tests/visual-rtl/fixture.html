@@ -1,0 +1,152 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Pagination RTL fixture</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          sans-serif;
+        background: #fff;
+      }
+      .card {
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 16px;
+        margin: 12px;
+        max-width: 720px;
+      }
+      .label {
+        font-size: 12px;
+        color: #6b7280;
+        margin-bottom: 8px;
+      }
+      /* Simulated shadcn button */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        height: 32px;
+        padding: 0 10px;
+        font-size: 13px;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        background: #fff;
+        color: #111;
+      }
+      .btn[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .chev {
+        width: 12px;
+        height: 12px;
+      }
+      /* rtl:rotate-180 emulation */
+      [dir="rtl"] .rtl-flip {
+        transform: rotate(180deg);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- RTL variant matching the drafts pager -->
+    <section id="pager-rtl" dir="rtl" lang="ar" class="card">
+      <div class="label">RTL — drafts-style pager</div>
+      <nav
+        aria-label="تصفّح السجلات"
+        class="flex items-center justify-between pt-2 border-t"
+        style="border-color: #e5e7eb; padding-top: 8px"
+      >
+        <span class="text-xs" style="color: #6b7280">صفحة 2 من 7</span>
+        <div class="flex" style="gap: 4px">
+          <button class="btn" aria-label="الصفحة السابقة">
+            <svg
+              class="chev"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+          <button class="btn" aria-label="الصفحة التالية">
+            <svg
+              class="chev"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+        </div>
+      </nav>
+    </section>
+
+    <!-- RTL variant matching attachments-review pager (counter + labeled buttons) -->
+    <section id="pager-rtl-labeled" dir="rtl" lang="ar" class="card">
+      <div class="label">RTL — attachments-review labeled pager</div>
+      <nav
+        aria-label="تصفّح المرفقات"
+        class="flex flex-wrap items-center justify-between gap-3 pt-3"
+      >
+        <div class="text-xs" style="color: #6b7280">عرض 11–20 من 43</div>
+        <div class="flex items-center" style="gap: 8px">
+          <span class="text-xs" style="color: #6b7280">لكل صفحة</span>
+          <button class="btn" style="height: 32px; width: 64px; justify-content: space-between">
+            <span>10</span>
+            <svg
+              class="chev"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              style="opacity: 0.5"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+          <button class="btn">السابق</button>
+          <span class="text-xs tabular-nums" dir="ltr">2 / 5</span>
+          <button class="btn">التالي</button>
+        </div>
+      </nav>
+    </section>
+
+    <!-- LTR counterpart for regression coverage -->
+    <section id="pager-ltr" dir="ltr" lang="en" class="card">
+      <div class="label">LTR — labeled pager</div>
+      <nav
+        aria-label="Pagination"
+        class="flex flex-wrap items-center justify-between gap-3 pt-3"
+      >
+        <div class="text-xs" style="color: #6b7280">Showing 11–20 of 43</div>
+        <div class="flex items-center" style="gap: 8px">
+          <span class="text-xs" style="color: #6b7280">per page</span>
+          <button class="btn" style="width: 64px; justify-content: space-between">
+            <span>10</span>
+            <svg
+              class="chev"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              style="opacity: 0.5"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+          <button class="btn">Prev</button>
+          <span class="text-xs tabular-nums">2 / 5</span>
+          <button class="btn">Next</button>
+        </div>
+      </nav>
+    </section>
+  </body>
+</html>
