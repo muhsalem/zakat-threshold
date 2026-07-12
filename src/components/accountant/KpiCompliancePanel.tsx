@@ -25,10 +25,20 @@ import {
   XCircle,
   Gauge,
   Wand2,
+  FileSpreadsheet,
+  Printer,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { ZAKAT_RATE, fmt } from "@/lib/zakat";
 import { KpiCorrectionDialog, type IssueCode, type CorrectionRecord } from "./KpiCorrectionDialog";
+import { exportKpiExcel, exportKpiPdf, type ExportRow } from "./kpiExport";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type Record = {
   id: string;
@@ -107,6 +117,7 @@ export function KpiCompliancePanel() {
   const [err, setErr] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
   const [fixTarget, setFixTarget] = useState<{ record: CorrectionRecord; codes: IssueCode[] } | null>(null);
+  const [period, setPeriod] = useState<"all" | "30d" | "90d" | "year">("all");
 
   useEffect(() => {
     let cancelled = false;
@@ -166,22 +177,32 @@ export function KpiCompliancePanel() {
     };
   }, [reloadKey]);
 
+  const filteredRows = useMemo(() => {
+    if (period === "all") return rows;
+    const now = Date.now();
+    let cutoff = 0;
+    if (period === "30d") cutoff = now - 30 * 86_400_000;
+    else if (period === "90d") cutoff = now - 90 * 86_400_000;
+    else if (period === "year") cutoff = new Date(new Date().getFullYear(), 0, 1).getTime();
+    return rows.filter((r) => new Date(r.created_at).getTime() >= cutoff);
+  }, [rows, period]);
+
   const enriched = useMemo(
-    () => rows.map((r) => ({ r, issues: detectIssues(r), level: complianceLevel(detectIssues(r)) })),
-    [rows],
+    () => filteredRows.map((r) => ({ r, issues: detectIssues(r), level: complianceLevel(detectIssues(r)) })),
+    [filteredRows],
   );
 
   const stats = useMemo(() => {
-    const total = rows.length;
+    const total = filteredRows.length;
     const byStatus = { draft: 0, pending: 0, approved: 0, rejected: 0 };
-    for (const r of rows) byStatus[(r.approval_status ?? "draft") as keyof typeof byStatus]++;
+    for (const r of filteredRows) byStatus[(r.approval_status ?? "draft") as keyof typeof byStatus]++;
     const compliance = { ok: 0, warn: 0, err: 0 };
     for (const e of enriched) compliance[e.level]++;
     const approvalRate = total ? Math.round((byStatus.approved / total) * 100) : 0;
     const complianceRate = total ? Math.round((compliance.ok / total) * 100) : 0;
 
     // متوسط زمن الاعتماد بالساعات
-    const decided = rows.filter(
+    const decided = filteredRows.filter(
       (r) => r.approval_status === "approved" && r.submitted_at && r.decided_at,
     );
     const avgApprovalH =
@@ -211,7 +232,7 @@ export function KpiCompliancePanel() {
       .slice(0, 6);
 
     return { total, byStatus, compliance, approvalRate, complianceRate, avgApprovalH, topErrors };
-  }, [rows, enriched]);
+  }, [filteredRows, enriched]);
 
   const attentionRows = useMemo(
     () =>
@@ -236,7 +257,7 @@ export function KpiCompliancePanel() {
       </Alert>
     );
   }
-  if (stats.total === 0) {
+  if (rows.length === 0) {
     return (
       <Alert>
         <AlertDescription>لا توجد إقرارات بعد لعرض مؤشرات الأداء.</AlertDescription>
@@ -244,8 +265,95 @@ export function KpiCompliancePanel() {
     );
   }
 
+  const buildExportPayload = () => {
+    const attn: ExportRow[] = enriched
+      .filter((e) => e.level !== "ok")
+      .sort((a, b) => (a.level === "err" ? -1 : 1) - (b.level === "err" ? -1 : 1))
+      .map((e) => ({
+        id: e.r.id,
+        record_type: e.r.record_type,
+        hijri_year: e.r.hijri_year,
+        gregorian_date: e.r.gregorian_date,
+        currency: e.r.currency,
+        total_assets: e.r.total_assets,
+        total_liabilities: e.r.total_liabilities,
+        zakat_base: e.r.zakat_base,
+        zakat_due: e.r.zakat_due,
+        net_due: e.r.net_due,
+        approval_status: e.r.approval_status ?? null,
+        level: e.level,
+        issues: e.issues,
+      }));
+    const allRows: ExportRow[] = enriched.map((e) => ({
+      id: e.r.id,
+      record_type: e.r.record_type,
+      hijri_year: e.r.hijri_year,
+      gregorian_date: e.r.gregorian_date,
+      currency: e.r.currency,
+      total_assets: e.r.total_assets,
+      total_liabilities: e.r.total_liabilities,
+      zakat_base: e.r.zakat_base,
+      zakat_due: e.r.zakat_due,
+      net_due: e.r.net_due,
+      approval_status: e.r.approval_status ?? null,
+      level: e.level,
+      issues: e.issues,
+    }));
+    return { attn, allRows };
+  };
+
   return (
     <div className="space-y-5">
+      {/* شريط الأدوات: الفترة + التصدير */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground">الفترة</span>
+          <Select value={period} onValueChange={(v) => setPeriod(v as typeof period)}>
+            <SelectTrigger className="h-8 w-40">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">كل الفترات</SelectItem>
+              <SelectItem value="30d">آخر 30 يوماً</SelectItem>
+              <SelectItem value="90d">آخر 90 يوماً</SelectItem>
+              <SelectItem value="year">السنة الحالية</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-1"
+            disabled={stats.total === 0}
+            onClick={() => {
+              const { attn, allRows } = buildExportPayload();
+              exportKpiExcel({ stats, rows: allRows, attention: attn, period });
+            }}
+          >
+            <FileSpreadsheet className="h-4 w-4" /> تصدير Excel
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-1"
+            disabled={stats.total === 0}
+            onClick={() => {
+              const { attn } = buildExportPayload();
+              exportKpiPdf({ stats, attention: attn, period });
+            }}
+          >
+            <Printer className="h-4 w-4" /> تصدير PDF
+          </Button>
+        </div>
+      </div>
+
+      {stats.total === 0 && (
+        <Alert>
+          <AlertDescription>لا توجد إقرارات ضمن الفترة المختارة.</AlertDescription>
+        </Alert>
+      )}
+
       {/* بطاقات KPI */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <KpiCard
