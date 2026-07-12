@@ -10,6 +10,7 @@ const corsHeaders = {
 };
 
 type Payload = {
+  to?: string; // اختياري — يُقبل فقط إن كان بريد المستخدم نفسه أو بريد أحد عملائه (accountant)
   clientName: string;
   zakatDue: number;
   currency: string;
@@ -19,6 +20,7 @@ type Payload = {
   accountantName?: string;
   verifyPath?: string; // مسار نسبي فقط
 };
+
 
 function esc(s: string): string {
   return String(s ?? "")
