@@ -593,7 +593,7 @@ function AttachmentsReviewPage() {
                   التالي
                 </Button>
               </div>
-            </div>
+            </nav>
           )}
         </CardContent>
       </Card>
