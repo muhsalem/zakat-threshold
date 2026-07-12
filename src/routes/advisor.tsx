@@ -91,6 +91,18 @@ function AdvisorPage() {
         تُغني عن مفتٍ معتمد.
       </p>
 
+      {!authLoading && !user && (
+        <Card className="border-amber-500/40 bg-amber-500/5">
+          <CardContent className="flex items-center justify-between gap-3 py-4">
+            <p className="text-sm">يلزم تسجيل الدخول لاستخدام المستشار (لحماية استهلاك الذكاء الاصطناعي).</p>
+            <Link to="/auth">
+              <Button size="sm" className="gap-1"><LogIn className="h-4 w-4" /> تسجيل الدخول</Button>
+            </Link>
+          </CardContent>
+        </Card>
+      )}
+
+
       <Card className="border-primary/30">
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
