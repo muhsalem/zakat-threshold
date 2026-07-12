@@ -875,14 +875,6 @@ export type Database = {
     }
     Functions: {
       generate_hawl_reminders: { Args: never; Returns: number }
-      has_org_role: {
-        Args: {
-          _org: string
-          _roles: Database["public"]["Enums"]["org_role"][]
-          _user: string
-        }
-        Returns: boolean
-      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -890,7 +882,6 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_org_member: { Args: { _org: string; _user: string }; Returns: boolean }
     }
     Enums: {
       account_type: "individual" | "company" | "institution" | "admin"
