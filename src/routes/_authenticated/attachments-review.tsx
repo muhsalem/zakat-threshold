@@ -122,6 +122,9 @@ const RECORD_TYPE_LABELS: Record<string, string> = {
   investment: "استثمار",
 };
 
+const PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
+const DEFAULT_PAGE_SIZE = 25;
+
 const searchSchema = z.object({
   q: fallback(z.string(), "").default(""),
   status: fallback(z.string(), "all").default("all"),
@@ -129,6 +132,8 @@ const searchSchema = z.object({
   from: fallback(z.string(), "").default(""),
   to: fallback(z.string(), "").default(""),
   link: fallback(z.string(), "all").default("all"),
+  page: fallback(z.number().int(), 1).default(1),
+  pageSize: fallback(z.number().int(), DEFAULT_PAGE_SIZE).default(DEFAULT_PAGE_SIZE),
 });
 
 export const Route = createFileRoute("/_authenticated/attachments-review")({
