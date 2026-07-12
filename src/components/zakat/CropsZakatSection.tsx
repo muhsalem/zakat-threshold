@@ -32,6 +32,7 @@ export function CropsZakatSection({ currencyName = "ج.م" }: { currencyName?: s
   const [quantityKg, setQuantityKg] = useState("0");
   const [pricePerKg, setPricePerKg] = useState("0");
   const [irrigation, setIrrigation] = useState<Irrigation>("natural");
+  const { rules } = useMadhab();
 
   const qty = num(quantityKg);
   const price = num(pricePerKg);
@@ -42,7 +43,8 @@ export function CropsZakatSection({ currencyName = "ج.م" }: { currencyName?: s
     return CROPS_RATE_MIXED;
   }, [irrigation]);
 
-  const reached = qty >= CROPS_NISAB_KG;
+  // المذهب الحنفي: لا يشترط النصاب في الزروع — تجب الزكاة في القليل والكثير.
+  const reached = rules.cropsRequireNisab ? qty >= CROPS_NISAB_KG : qty > 0;
   const zakatKg = reached ? qty * rate : 0;
   const zakatValue = zakatKg * price;
 
