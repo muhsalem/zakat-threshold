@@ -46,6 +46,7 @@ import {
   X,
   Link2,
 } from "lucide-react";
+import { filterAttachments, paginate, linkedNavTarget } from "@/lib/attachmentsFilter";
 
 type AttachmentStatus = "draft" | "pending" | "approved" | "rejected";
 
@@ -204,36 +205,8 @@ function AttachmentsReviewPage() {
     return Array.from(set);
   }, [rows]);
 
-  const filtered = useMemo(() => {
-    const q = search.q.trim().toLowerCase();
-    const fromTs = search.from ? new Date(search.from).getTime() : null;
-    const toTs = search.to ? new Date(search.to).getTime() + 24 * 3600 * 1000 - 1 : null;
-    return rows.filter((r) => {
-      if (search.status !== "all" && r.status !== search.status) return false;
-      if (search.category !== "all" && r.category !== search.category) return false;
-      if (search.link === "zakat" && !r.zakat_record_id) return false;
-      if (search.link === "approval" && !r.approval_id) return false;
-      if (search.link === "org" && !r.organization_id) return false;
-      const t = new Date(r.created_at).getTime();
-      if (fromTs != null && t < fromTs) return false;
-      if (toTs != null && t > toTs) return false;
-      if (q) {
-        const hay = [
-          r.file_name,
-          r.label ?? "",
-          r.category,
-          r.review_note ?? "",
-          r.zakat_record_id ?? "",
-          r.approval_id ?? "",
-          linked[r.zakat_record_id ?? ""]?.record_type ?? "",
-        ]
-          .join(" ")
-          .toLowerCase();
-        if (!hay.includes(q)) return false;
-      }
-      return true;
-    });
-  }, [rows, linked, search]);
+  const filtered = useMemo(() => filterAttachments(rows, linked, search), [rows, linked, search]);
+
 
   type SearchState = z.infer<typeof searchSchema>;
   const FILTER_KEYS: Array<keyof SearchState> = ["q", "status", "category", "from", "to", "link"];
@@ -259,11 +232,8 @@ function AttachmentsReviewPage() {
     (search.to ? 1 : 0) +
     (search.link !== "all" ? 1 : 0);
 
+  const { pageRows, totalPages, currentPage, pageStart } = paginate(filtered, search.page, search.pageSize);
   const pageSize = Math.max(1, search.pageSize);
-  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
-  const currentPage = Math.min(Math.max(1, search.page), totalPages);
-  const pageStart = (currentPage - 1) * pageSize;
-  const pageRows = filtered.slice(pageStart, pageStart + pageSize);
 
   const changeStatus = async (a: Attachment, next: AttachmentStatus, note?: string) => {
     const { data: userRes } = await supabase.auth.getUser();
@@ -499,9 +469,10 @@ function LinkedCell({ a, linked }: { a: Attachment; linked?: LinkedRecord }) {
     return (
       <button
         type="button"
-        onClick={() =>
-          navigate({ to: "/zakat-case/$recordId", params: { recordId: linked.id } })
-        }
+        onClick={() => {
+          const target = linkedNavTarget({ zakat_record_id: linked.id });
+          if (target) navigate(target);
+        }}
         className="text-right hover:underline"
       >
         <div className="flex items-center gap-1 text-xs">
