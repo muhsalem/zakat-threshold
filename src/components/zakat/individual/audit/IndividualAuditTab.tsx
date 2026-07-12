@@ -22,13 +22,10 @@ import SensitivityProjection from "../../SensitivityProjection";
 import InflationAdjusterCard from "../../InflationAdjusterCard";
 import ZakatStatsDashboard from "../../ZakatStatsDashboard";
 import { Row } from "../shared";
+import type { AuditEntry } from "@/hooks/useAuditEntries";
 
 export type OpinionType = "clean" | "qualified" | "adverse";
-
-export interface AuditEntry {
-  id?: string;
-  [key: string]: unknown;
-}
+export type { AuditEntry };
 
 export interface IndividualAuditTabProps {
   // accountant metadata
