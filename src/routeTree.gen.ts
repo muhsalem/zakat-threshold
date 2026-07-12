@@ -58,6 +58,7 @@ import { Route as AuthenticatedDraftsRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAuditReviewRouteImport } from './routes/_authenticated/audit-review'
 import { Route as AuthenticatedAttestationsRouteImport } from './routes/_authenticated/attestations'
+import { Route as AuthenticatedAttachmentsReviewRouteImport } from './routes/_authenticated/attachments-review'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAccountantRouteImport } from './routes/_authenticated/accountant'
 import { Route as ApiPublicOpenapiRouteImport } from './routes/api/public/openapi'
@@ -322,6 +323,12 @@ const AuthenticatedAttestationsRoute =
     path: '/attestations',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAttachmentsReviewRoute =
+  AuthenticatedAttachmentsReviewRouteImport.update({
+    id: '/attachments-review',
+    path: '/attachments-review',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -457,6 +464,7 @@ export interface FileRoutesByFullPath {
   '/zakat-gold': typeof ZakatGoldRoute
   '/accountant': typeof AuthenticatedAccountantRouteWithChildren
   '/admin': typeof AuthenticatedAdminRoute
+  '/attachments-review': typeof AuthenticatedAttachmentsReviewRoute
   '/attestations': typeof AuthenticatedAttestationsRoute
   '/audit-review': typeof AuthenticatedAuditReviewRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -524,6 +532,7 @@ export interface FileRoutesByTo {
   '/zakat-gold': typeof ZakatGoldRoute
   '/accountant': typeof AuthenticatedAccountantRouteWithChildren
   '/admin': typeof AuthenticatedAdminRoute
+  '/attachments-review': typeof AuthenticatedAttachmentsReviewRoute
   '/attestations': typeof AuthenticatedAttestationsRoute
   '/audit-review': typeof AuthenticatedAuditReviewRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -593,6 +602,7 @@ export interface FileRoutesById {
   '/zakat-gold': typeof ZakatGoldRoute
   '/_authenticated/accountant': typeof AuthenticatedAccountantRouteWithChildren
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/attachments-review': typeof AuthenticatedAttachmentsReviewRoute
   '/_authenticated/attestations': typeof AuthenticatedAttestationsRoute
   '/_authenticated/audit-review': typeof AuthenticatedAuditReviewRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -662,6 +672,7 @@ export interface FileRouteTypes {
     | '/zakat-gold'
     | '/accountant'
     | '/admin'
+    | '/attachments-review'
     | '/attestations'
     | '/audit-review'
     | '/dashboard'
@@ -729,6 +740,7 @@ export interface FileRouteTypes {
     | '/zakat-gold'
     | '/accountant'
     | '/admin'
+    | '/attachments-review'
     | '/attestations'
     | '/audit-review'
     | '/dashboard'
@@ -797,6 +809,7 @@ export interface FileRouteTypes {
     | '/zakat-gold'
     | '/_authenticated/accountant'
     | '/_authenticated/admin'
+    | '/_authenticated/attachments-review'
     | '/_authenticated/attestations'
     | '/_authenticated/audit-review'
     | '/_authenticated/dashboard'
@@ -1226,6 +1239,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAttestationsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/attachments-review': {
+      id: '/_authenticated/attachments-review'
+      path: '/attachments-review'
+      fullPath: '/attachments-review'
+      preLoaderRoute: typeof AuthenticatedAttachmentsReviewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -1365,6 +1385,7 @@ const AuthenticatedAccountantRouteWithChildren =
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccountantRoute: typeof AuthenticatedAccountantRouteWithChildren
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedAttachmentsReviewRoute: typeof AuthenticatedAttachmentsReviewRoute
   AuthenticatedAttestationsRoute: typeof AuthenticatedAttestationsRoute
   AuthenticatedAuditReviewRoute: typeof AuthenticatedAuditReviewRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
@@ -1378,6 +1399,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAccountantRoute: AuthenticatedAccountantRouteWithChildren,
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedAttachmentsReviewRoute: AuthenticatedAttachmentsReviewRoute,
   AuthenticatedAttestationsRoute: AuthenticatedAttestationsRoute,
   AuthenticatedAuditReviewRoute: AuthenticatedAuditReviewRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,

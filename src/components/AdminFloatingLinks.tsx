@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Shield } from "lucide-react";
+import { Shield, Paperclip } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
 
 /** زر عائم لا يظهر إلا للمدراء والمدقّقين. */
@@ -39,6 +39,14 @@ export function AdminFloatingLinks() {
           <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
         </svg>
         المراجعة
+      </Link>
+      <Link
+        to="/attachments-review"
+        aria-label="مراجعة المرفقات"
+        className="print:hidden fixed bottom-64 left-4 z-40 inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-card/95 backdrop-blur px-3.5 py-2 text-xs font-semibold text-primary shadow-lg hover:bg-primary hover:text-primary-foreground transition-colors"
+      >
+        <Paperclip className="h-3.5 w-3.5" />
+        المرفقات
       </Link>
     </>
   );
