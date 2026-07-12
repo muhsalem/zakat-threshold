@@ -178,7 +178,7 @@ export interface BaseReportInput {
   profession: string;
   countryCode: string;
   currencyName: string;
-  calendarBasis: string;
+  calendarBasis: "gregorian" | "hijri";
   effectiveRate: number;
   calc: BaseReportCalc;
   incomeUsufructTotal: number;
