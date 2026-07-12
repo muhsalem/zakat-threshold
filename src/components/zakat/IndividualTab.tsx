@@ -1295,6 +1295,14 @@ export function IndividualTab() {
                     </div>
                   )}
 
+                  {nisabStartDate && (
+                    <div className="md:col-span-2">
+                      <HawlSchedule startDateISO={nisabStartDate} basis={calendarBasis} />
+                    </div>
+                  )}
+
+
+
                   {calendarBasis === "gregorian" && (
                     <div className="md:col-span-2">
                       <Alert className="border-gold/30 bg-gold/5">
