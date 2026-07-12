@@ -86,6 +86,7 @@ import { downloadZakatPdf } from "./ReactPdfReport";
 import { downloadReportExcel } from "@/lib/exportExcel";
 import { CurrencyConverterCard } from "./CurrencyConverterCard";
 import type { FxRate } from "@/lib/fx";
+import { HawlSchedule } from "./HawlSchedule";
 
 import { FileSpreadsheet } from "lucide-react";
 import { IncomeUsufructSection } from "./IncomeUsufructSection";
