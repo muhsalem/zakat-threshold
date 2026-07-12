@@ -233,7 +233,8 @@
         const list = document.getElementById("numbered-list");
         const body = document.getElementById("numbered-body");
         const chev = (dir) =>
-          `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="${dir === "prev" ? "" : "transform:rotate(180deg)"}"><polyline points="15 18 9 12 15 6"/></svg>`;
+          `<svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="${dir === "prev" ? "" : "transform:rotate(180deg)"}"><polyline points="15 18 9 12 15 6"/></svg>`;
+
         function render() {
           body.textContent = `تعرض عناصر الصفحة ${state.page}`;
           const items = [];
