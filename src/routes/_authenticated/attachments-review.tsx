@@ -75,7 +75,7 @@ type AuditRow = {
   created_at: string;
 };
 
-const STATUS_META: Record<AttachmentStatus, { label: string; cls: string; icon: JSX.Element }> = {
+const STATUS_META: Record<AttachmentStatus, { label: string; cls: string; icon: React.ReactNode }> = {
   draft: { label: "مسودّة", cls: "bg-slate-500/15 text-slate-700 border-slate-500/30", icon: <FileEdit className="h-3 w-3" /> },
   pending: { label: "قيد المراجعة", cls: "bg-amber-500/15 text-amber-700 border-amber-500/30", icon: <Clock className="h-3 w-3" /> },
   approved: { label: "معتمد", cls: "bg-emerald-500/15 text-emerald-700 border-emerald-500/30", icon: <CheckCircle2 className="h-3 w-3" /> },
