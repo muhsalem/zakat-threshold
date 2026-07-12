@@ -203,7 +203,7 @@ export function KpiCorrectionDialog({
     if (!record || chosen.length === 0) return;
     setSaving(true);
     try {
-      const patch: Record<string, unknown> = {};
+      const patch: Record<string, any> = {};
       const changed: string[] = [];
       for (const s of chosen) {
         if (!s.patch) continue;
@@ -212,14 +212,14 @@ export function KpiCorrectionDialog({
           if (!changed.includes(k)) changed.push(k);
         }
       }
-      patch["updated_at"] = new Date().toISOString();
+      patch.updated_at = new Date().toISOString();
 
-      const before: Record<string, unknown> = {};
+      const before: Record<string, any> = {};
       for (const k of changed) before[k] = (record as any)[k];
 
       const { error } = await supabase
         .from("zakat_records")
-        .update(patch)
+        .update(patch as any)
         .eq("id", record.id);
       if (error) throw error;
 
