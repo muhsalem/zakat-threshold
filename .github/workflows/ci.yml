@@ -108,3 +108,40 @@ jobs:
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           exit-code: "1"
+
+  rtl-pagination:
+    name: RTL pagination · ${{ matrix.browser }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Playwright (Python)
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install playwright
+          python -m playwright install --with-deps ${{ matrix.browser }}
+
+      # نفس matrix للأحجام (mobile/tablet/desktop) داخل السكربت — نغيّر المتصفح فقط
+      - name: Run RTL pagination behavioral tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-data.py
+
+      - name: Upload failure screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rtl-pagination-failures-${{ matrix.browser }}
+          path: tests/visual-rtl/_capture/fail_*.png
+          if-no-files-found: ignore
+          retention-days: 7
+
