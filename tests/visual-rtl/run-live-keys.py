@@ -151,7 +151,8 @@ async def restore_session(context, page):
         await context.add_cookies(cookies)
     await page.goto(BASE_URL)
     await page.evaluate(
-        f"window.localStorage.setItem({json.dumps(storage_key)}, {json.dumps(session_json)})"
+        f"window.localStorage.setItem({json.dumps(storage_key)}, {json.dumps(session_json)});"
+        "window.localStorage.setItem('zakat_onboarding_v1', 'skipped');"
     )
 
 
