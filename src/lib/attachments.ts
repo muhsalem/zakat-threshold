@@ -59,6 +59,7 @@ export function validateUpload(input: UploadInput): ValidationError | null {
   if (!ALLOWED_MIME.includes(input.file.type as AllowedMime)) return "bad_mime";
   if (!ALLOWED_EXT.includes(extOf(input.file.name) as (typeof ALLOWED_EXT)[number]))
     return "bad_ext";
+  // eslint-disable-next-line no-control-regex -- منع أحرف التحكم في أسماء الملفات (فحص أمني مقصود)
   if (!input.file.name || input.file.name.length > 255 || /[\\/\x00-\x1f]/.test(input.file.name))
     return "bad_name";
   if (!input.approval_id && !input.zakat_record_id) return "no_link";
