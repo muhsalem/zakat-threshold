@@ -98,6 +98,7 @@ import { ShariaAuditTrail } from "./ShariaAuditTrail";
 import { DigitalAssetsSection } from "./DigitalAssetsSection";
 import { CryptoFatwasCard } from "./CryptoFatwasCard";
 import { useAuditEntries } from "@/hooks/useAuditEntries";
+import { useMadhab } from "@/lib/madhabContext";
 import {
   EcommerceItemsTable,
   computeEcommerceTotals,
