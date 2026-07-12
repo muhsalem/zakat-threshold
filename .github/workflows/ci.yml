@@ -149,7 +149,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: rtl-pagination-failures-${{ matrix.browser }}
-          path: tests/visual-rtl/_capture/fail_*.png tests/visual-rtl/_capture/fail_kb_*.png
+          path: tests/visual-rtl/_capture/fail_*.png
           if-no-files-found: ignore
           retention-days: 7
 
