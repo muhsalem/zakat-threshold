@@ -118,6 +118,73 @@ export type Database = {
         }
         Relationships: []
       }
+      approval_attachments: {
+        Row: {
+          approval_id: string | null
+          category: string
+          created_at: string
+          file_name: string
+          id: string
+          label: string | null
+          mime_type: string | null
+          organization_id: string | null
+          size_bytes: number | null
+          storage_path: string
+          uploaded_by: string
+          zakat_record_id: string | null
+        }
+        Insert: {
+          approval_id?: string | null
+          category?: string
+          created_at?: string
+          file_name: string
+          id?: string
+          label?: string | null
+          mime_type?: string | null
+          organization_id?: string | null
+          size_bytes?: number | null
+          storage_path: string
+          uploaded_by: string
+          zakat_record_id?: string | null
+        }
+        Update: {
+          approval_id?: string | null
+          category?: string
+          created_at?: string
+          file_name?: string
+          id?: string
+          label?: string | null
+          mime_type?: string | null
+          organization_id?: string | null
+          size_bytes?: number | null
+          storage_path?: string
+          uploaded_by?: string
+          zakat_record_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approval_attachments_approval_id_fkey"
+            columns: ["approval_id"]
+            isOneToOne: false
+            referencedRelation: "zakat_approvals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approval_attachments_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approval_attachments_zakat_record_id_fkey"
+            columns: ["zakat_record_id"]
+            isOneToOne: false
+            referencedRelation: "zakat_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       erp_connections: {
         Row: {
           api_key: string
