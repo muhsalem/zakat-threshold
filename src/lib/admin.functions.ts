@@ -1,15 +1,18 @@
 import { createServerFn } from "@tanstack/react-start";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { Database } from "@/integrations/supabase/types";
 
 type Role = "admin" | "moderator" | "user";
+type AuthCtx = { supabase: SupabaseClient<Database>; userId: string };
 
-async function assertAdmin(ctx: { supabase: any; userId: string }) {
+async function assertAdmin(ctx: AuthCtx) {
   const { data, error } = await ctx.supabase.rpc("has_role", {
     _user_id: ctx.userId,
     _role: "admin",
   });
-  if (error) throw new Error("authorization check failed");
-  if (!data) throw new Error("Forbidden: admin only");
+  if (error) throw new Error("AUTHZ_CHECK_FAILED");
+  if (!data) throw new Error("FORBIDDEN_ADMIN_ONLY");
 }
 
 /** يعرض كل المستخدمين مع أدوارهم (للمدراء فقط). */
