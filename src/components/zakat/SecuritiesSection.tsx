@@ -215,6 +215,9 @@ export function SecuritiesSection({
       <div className="space-y-3">
         {rows.map((r) => {
           const t = rowZakatable(r);
+          const errs = errorsByRow.get(r.id) ?? {};
+          const Err = ({ msg }: { msg?: string }) =>
+            msg ? <p className="text-[11px] text-destructive">{msg}</p> : null;
           const needsCompany = r.shariaCompliant === "no" || r.shariaCompliant === "unknown";
           return (
             <div key={r.id} className="rounded-lg border bg-card p-4 space-y-3">
