@@ -99,6 +99,7 @@ import {
 } from "@/lib/zakat/report-builders";
 import { GoldSilverSection } from "./individual/gold-silver/GoldSilverSection";
 import { CashBankAccordionSection } from "./individual/cash-bank/CashBankAccordionSection";
+import { TradeGoodsSubsection } from "./individual/trade/TradeGoodsSubsection";
 import {
   EcommerceItemsTable,
   computeEcommerceTotals,
