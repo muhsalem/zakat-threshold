@@ -215,6 +215,8 @@ function CertifiedReportPage() {
           </footer>
         </CardContent>
       </Card>
+
+      <ApprovalAttachments zakatRecordId={recordId} />
     </main>
   );
 }
