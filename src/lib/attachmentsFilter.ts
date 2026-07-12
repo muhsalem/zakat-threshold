@@ -11,7 +11,30 @@ export type AttachmentFilterRow = {
   created_at: string;
 };
 
-export type AttachmentLinkedInfo = { record_type?: string };
+export type AttachmentLinkedInfo = { record_type?: string; zakat_due?: number };
+
+export type AttachmentsSort = "newest" | "oldest" | "amount_desc" | "amount_asc";
+
+export function sortAttachments<T extends AttachmentFilterRow>(
+  rows: T[],
+  linked: Record<string, AttachmentLinkedInfo>,
+  sort: AttachmentsSort,
+): T[] {
+  const amount = (r: T) => Number(linked[r.zakat_record_id ?? ""]?.zakat_due ?? 0);
+  const ts = (r: T) => new Date(r.created_at).getTime();
+  const copy = rows.slice();
+  switch (sort) {
+    case "oldest":
+      return copy.sort((a, b) => ts(a) - ts(b));
+    case "amount_desc":
+      return copy.sort((a, b) => amount(b) - amount(a) || ts(b) - ts(a));
+    case "amount_asc":
+      return copy.sort((a, b) => amount(a) - amount(b) || ts(b) - ts(a));
+    case "newest":
+    default:
+      return copy.sort((a, b) => ts(b) - ts(a));
+  }
+}
 
 export type AttachmentFilterState = {
   q: string;
