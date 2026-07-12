@@ -183,41 +183,41 @@ async def assert_keys_on_drafts(page):
     )
     assert dir_ == "rtl", f"drafts: pager dir = {dir_!r}"
 
-    # Tab order: focus first pager control (prev button) via keyboard.
-    await prev_btn.focus()  # anchor; prev is disabled → skip via Tab
-    # Tabbing from focused prev must land on next (DOM order), regardless of visual RTL flip.
+    # Tab order — focus the next button (prev is disabled and unfocusable at page 1).
     await next_btn.focus()
     focused_label = await page.evaluate("() => document.activeElement?.getAttribute('aria-label')")
     assert focused_label == "الصفحة التالية"
 
-    # Shift+Tab must move back to prev button (or previous focusable) in DOM order,
-    # NOT jump forward visually. Since prev is disabled, focus goes to the last
-    # focusable before the pager — assert it is NOT the next button.
+    # Shift+Tab must move focus OUT of the pager in DOM order (up-tree),
+    # not visually forward. Assert focus is no longer on the next button.
     await page.keyboard.press("Shift+Tab")
     still_next = await page.evaluate(
         "() => document.activeElement?.getAttribute('aria-label') === 'الصفحة التالية'"
     )
     assert not still_next, "drafts: Shift+Tab kept focus on next button"
 
-    # Focus the pager container itself and drive arrow keys.
-    await pager.focus()
-    # ArrowLeft in RTL → advance one page
-    await page.keyboard.press("ArrowLeft")
+    # Focus a focusable child (next button) and drive arrow keys — keydown
+    # bubbles to the nav's onPagerKeyDown handler.
+    await next_btn.focus()
+    await page.keyboard.press("ArrowLeft")   # RTL → advance
     txt = (await counter.inner_text()).strip()
     assert txt == "صفحة 2 من 3", f"drafts: ArrowLeft did not advance (got {txt!r})"
 
-    # ArrowRight in RTL → go back
-    await page.keyboard.press("ArrowRight")
+    # After advancing, prev is enabled — focus it and go back with ArrowRight.
+    await prev_btn.focus()
+    await page.keyboard.press("ArrowRight")  # RTL → back
     txt = (await counter.inner_text()).strip()
     assert txt == "صفحة 1 من 3", f"drafts: ArrowRight did not go back (got {txt!r})"
 
     # End → last page
+    await next_btn.focus()
     await page.keyboard.press("End")
     txt = (await counter.inner_text()).strip()
     assert txt == "صفحة 3 من 3", f"drafts: End did not jump to last (got {txt!r})"
     assert await next_btn.is_disabled(), "drafts: next must be disabled on last page"
 
-    # Home → first page
+    # Home → first page (focus prev which is enabled on last page)
+    await prev_btn.focus()
     await page.keyboard.press("Home")
     txt = (await counter.inner_text()).strip()
     assert txt == "صفحة 1 من 3", f"drafts: Home did not return to first (got {txt!r})"
