@@ -111,11 +111,11 @@ async def assert_numbered(page):
     # RTL: prev button (السابق) must render visually to the right of page 1 link
     prev_box = await prev.bounding_box()
     p1_box = await page.locator('a[data-page="1"]').bounding_box()
-    p12_box = await page.locator('a[data-page="12"]').bounding_box()
+    p_last_box = await page.locator('a[data-page="5"]').bounding_box()
     nxt_box = await nxt.bounding_box()
-    assert prev_box["x"] > p1_box["x"] > p12_box["x"] > nxt_box["x"], \
+    assert prev_box["x"] > p1_box["x"] > p_last_box["x"] > nxt_box["x"], \
         f"numbered: RTL order broken (prev={prev_box['x']}, p1={p1_box['x']}, " \
-        f"p12={p12_box['x']}, next={nxt_box['x']})"
+        f"p_last={p_last_box['x']}, next={nxt_box['x']})"
 
     # initial state: page 1, prev disabled
     assert await prev.get_attribute("disabled") is not None
@@ -131,7 +131,7 @@ async def assert_numbered(page):
     assert await page.locator('a[data-page="6"]').get_attribute("aria-current") == "page"
 
     # jump to last → next disabled
-    await page.locator('a[data-page="12"]').click()
+    await page.locator('a[data-page="5"]').click()
     assert await nxt.get_attribute("disabled") is not None
 
     # no overflow at current viewport
