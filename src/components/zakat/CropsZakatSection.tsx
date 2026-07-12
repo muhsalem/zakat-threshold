@@ -54,7 +54,7 @@ export function CropsZakatSection({ currencyName = "ج.م" }: { currencyName?: s
         <CardTitle className="flex items-center gap-2 text-base">
           <Wheat className="h-4 w-4 text-primary" />
           زكاة الزروع والثمار
-          <Badge variant="outline" className="text-[10px] mr-auto">
+          <Badge variant="outline" className="text-[10px] me-auto">
             {rules.cropsRequireNisab ? "قول الجمهور" : "المذهب الحنفي"}
           </Badge>
         </CardTitle>

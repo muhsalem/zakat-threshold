@@ -146,7 +146,7 @@ export function SystemAuditPanel() {
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="text-right border-b bg-muted/40">
+              <thead className="text-end border-b bg-muted/40">
                 <tr>
                   <th className="py-2 px-3">التاريخ</th>
                   <th className="py-2 px-3">الحدث</th>

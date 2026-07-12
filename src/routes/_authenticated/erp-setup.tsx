@@ -335,7 +335,7 @@ function ErpSetupPage() {
                       onClick={() => runTest(c.id)}
                       disabled={busy === `test:${c.id}`}
                     >
-                      <RefreshCw className="h-3.5 w-3.5 mr-1" />
+                      <RefreshCw className="h-3.5 w-3.5 me-1" />
                       اختبار
                     </Button>
                     <Button size="sm" variant="ghost" onClick={() => runDelete(c.id)}>
@@ -376,7 +376,7 @@ function ErpSetupPage() {
                           onClick={() => runPush(c.id, r.id)}
                           disabled={busy === `push:${r.id}`}
                         >
-                          <Send className="h-3 w-3 mr-1" /> دفع
+                          <Send className="h-3 w-3 me-1" /> دفع
                         </Button>
                       </div>
                     ))}

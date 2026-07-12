@@ -54,7 +54,7 @@ function NumField({ label, value, onChange, unit, hint }: NumFieldProps) {
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="0"
-          className="pl-16"
+          className="ps-16"
           dir="ltr"
           style={{ textAlign: "right" }}
         />
@@ -186,7 +186,7 @@ export function RikazSection({
   const cur = (n: number) => currency(n, activeCurrency);
 
   return (
-    <div dir="rtl" className="grid lg:grid-cols-3 gap-6 text-right">
+    <div dir="rtl" className="grid lg:grid-cols-3 gap-6 text-end">
       <div className="lg:col-span-2 space-y-6">
         <Card className="shadow-soft">
           <CardHeader>
@@ -292,7 +292,7 @@ export function RikazSection({
 
                 <div className="rounded-lg border bg-muted/30 p-3 space-y-2 text-xs leading-relaxed">
                   <div className="font-semibold text-primary">أسئلة استرشادية قبل الإقرار:</div>
-                  <ol className="list-decimal pr-5 space-y-1">
+                  <ol className="list-decimal pe-5 space-y-1">
                     <li>
                       هل وجدتَ الكنز في <b>أرض مملوكة لك</b> أم في أرضٍ <b>موات</b> (لا مالك لها)؟ —
                       الركاز في الأرض المملوكة للغير يُرجع لمالكها.
@@ -348,7 +348,7 @@ export function RikazSection({
                   <div className="font-semibold text-primary">
                     أسئلة استرشادية للفرد المُستخرِج:
                   </div>
-                  <ol className="list-decimal pr-5 space-y-1">
+                  <ol className="list-decimal pe-5 space-y-1">
                     <li>
                       هل استخراجك <b>فردي عرضي</b> (مثلاً غسل ذهب من نهر) أم <b>مشروع تجاري قائم</b>
                       ؟ النشاط التجاري يدخل في تبويب الشركات.
@@ -587,7 +587,7 @@ export function RikazSection({
                   (showFish ? calc.fishZakat : 0) +
                   (showPoultry ? calc.poultryZakat : 0),
               )}
-              <span className="text-lg font-medium opacity-80 mr-2">{activeCurrency}</span>
+              <span className="text-lg font-medium opacity-80 me-2">{activeCurrency}</span>
             </div>
             <p className="text-xs opacity-80 mt-2">
               {mode === "rikaz-metals"

@@ -665,7 +665,7 @@ function Pricing() {
         <div className="mb-10">
           <div className="text-center mb-6">
             <Badge variant="outline" className="text-sm py-1.5 px-3">
-              <Users className="h-4 w-4 ml-1" /> خطط الأفراد
+              <Users className="h-4 w-4 ms-1" /> خطط الأفراد
             </Badge>
           </div>
           <div className="grid md:grid-cols-3 gap-4 max-w-5xl mx-auto">
@@ -726,7 +726,7 @@ function Pricing() {
         <div>
           <div className="text-center mb-6">
             <Badge variant="outline" className="text-sm py-1.5 px-3">
-              <Building2 className="h-4 w-4 ml-1" /> خطط الشركات والمؤسسات
+              <Building2 className="h-4 w-4 ms-1" /> خطط الشركات والمؤسسات
             </Badge>
           </div>
           <div className="grid md:grid-cols-3 gap-4 max-w-5xl mx-auto">
@@ -912,7 +912,7 @@ function FAQ() {
             <div className="font-semibold mb-2 flex items-start gap-2">
               <BookOpen className="h-4 w-4 text-primary mt-1 shrink-0" /> {qa.q}
             </div>
-            <p className="text-sm text-muted-foreground leading-relaxed pr-6">{qa.a}</p>
+            <p className="text-sm text-muted-foreground leading-relaxed pe-6">{qa.a}</p>
           </div>
         ))}
       </div>
@@ -979,7 +979,7 @@ function SiteFooter() {
             <Star className="h-3.5 w-3.5 fill-current" />
             <Star className="h-3.5 w-3.5 fill-current" />
             <Star className="h-3.5 w-3.5 fill-current" />
-            <span className="text-muted-foreground mr-1">4.9/5 من 2,300+ مستخدم</span>
+            <span className="text-muted-foreground me-1">4.9/5 من 2,300+ مستخدم</span>
           </div>
         </div>
         <FooterCol

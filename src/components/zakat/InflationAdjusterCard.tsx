@@ -64,7 +64,7 @@ export default function InflationAdjusterCard({ currencyName = "ج.م" }: Props)
             </div>
           </div>
         </div>
-        <p className="text-xs text-muted-foreground border-r-2 border-primary/40 pr-3">
+        <p className="text-xs text-muted-foreground border-e-2 border-primary/40 pe-3">
           المرجع: ندوة قضايا الزكاة المعاصرة — يُعتبر تقدير النصاب بالأنفع للفقراء؛ في الدول ذات
           التضخم العالي يُوصى بتحديث قيمة النصاب الذهبية/الفضية دوريًا.
         </p>

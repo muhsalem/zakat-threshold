@@ -21,7 +21,7 @@ function TermsPage() {
           <h1 className="text-lg font-bold">شروط الاستخدام</h1>
         </div>
       </header>
-      <main className="container mx-auto px-4 py-10 max-w-3xl text-right leading-loose">
+      <main className="container mx-auto px-4 py-10 max-w-3xl text-end leading-loose">
         <h2 className="text-2xl font-bold mb-4 text-primary">شروط الاستخدام وإخلاء المسؤولية</h2>
         <p className="text-muted-foreground text-xs mb-6">
           آخر تحديث: {new Date().toLocaleDateString("ar-EG")}
@@ -39,7 +39,7 @@ function TermsPage() {
           </div>
           <div>
             <h3 className="font-bold text-base mb-1">٢. حدود المسؤولية</h3>
-            <ul className="list-disc pr-6 space-y-1">
+            <ul className="list-disc pe-6 space-y-1">
               <li>المسؤولية الشرعية والمالية الكاملة تقع على عاتق المُزكِّي.</li>
               <li>
                 لا تتحمل المنصة أي مسؤولية عن أي خسارة أو ضرر مباشر أو غير مباشر ناتج عن الاعتماد

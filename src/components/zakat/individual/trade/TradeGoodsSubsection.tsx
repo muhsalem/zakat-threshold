@@ -137,7 +137,7 @@ export function TradeGoodsSubsection({
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
               >
-                <Landmark className="h-3.5 w-3.5 ml-1" />
+                <Landmark className="h-3.5 w-3.5 ms-1" />
                 فتح تبويب «زكاة الشركات» لحساب الوعاء
               </Button>
             </div>

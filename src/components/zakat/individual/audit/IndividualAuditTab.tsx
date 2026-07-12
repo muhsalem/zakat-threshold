@@ -218,7 +218,7 @@ export function IndividualAuditTab({
             </div>
 
             <p className="text-[11px] text-muted-foreground">
-              <Info className="inline h-3 w-3 ml-1" />
+              <Info className="inline h-3 w-3 ms-1" />
               تظهر النتيجة الشرعية التقديرية والمقارنة في التقرير المطبوع، إضافةً إلى رقم تسلسلي
               وبصمة SHA‑256 ورابط تحقق إلكتروني.
             </p>

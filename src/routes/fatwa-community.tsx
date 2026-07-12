@@ -52,7 +52,7 @@ function FatwaCommunity() {
           <CardTitle className="flex items-center gap-2">
             <Users className="w-5 h-5 text-primary" />
             مجتمع الفتاوى الزكوية
-            <Badge variant="secondary" className="mr-auto">
+            <Badge variant="secondary" className="me-auto">
               Beta
             </Badge>
           </CardTitle>

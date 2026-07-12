@@ -262,13 +262,13 @@ function FaqPage() {
                   value={`s${idx}-q${i}`}
                   className="border rounded-lg px-4 bg-muted/30"
                 >
-                  <AccordionTrigger className="text-right hover:no-underline font-semibold py-3">
+                  <AccordionTrigger className="text-end hover:no-underline font-semibold py-3">
                     {qa.q}
                   </AccordionTrigger>
                   <AccordionContent className="text-sm md:text-base leading-relaxed space-y-2 pb-4">
                     <p>{qa.a}</p>
                     {qa.ref && (
-                      <p className="text-xs text-muted-foreground border-r-2 border-primary/40 pr-3 italic">
+                      <p className="text-xs text-muted-foreground border-e-2 border-primary/40 pe-3 italic">
                         المرجع: {qa.ref}
                       </p>
                     )}

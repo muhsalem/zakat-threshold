@@ -49,7 +49,7 @@ export function EightChannelsDistribution({ netDue, currencyName = "ج.م" }: Pr
         <CardTitle className="flex items-center gap-2 text-base">
           <HandHeart className="h-4 w-4 text-primary" />
           خطة توزيع الزكاة على المصارف الشرعية الثمانية
-          <Badge variant="outline" className="text-[10px] mr-auto">
+          <Badge variant="outline" className="text-[10px] me-auto">
             التوبة: 60
           </Badge>
         </CardTitle>
@@ -79,10 +79,10 @@ export function EightChannelsDistribution({ netDue, currencyName = "ج.م" }: Pr
           <table className="w-full text-sm border rounded-md overflow-hidden">
             <thead className="bg-muted/50 text-xs">
               <tr>
-                <th className="text-right p-2">المصرف</th>
-                <th className="text-right p-2 w-24">النسبة %</th>
-                <th className="text-right p-2">المبلغ المخصَّص</th>
-                <th className="text-right p-2 hidden md:table-cell">الوصف الشرعي</th>
+                <th className="text-end p-2">المصرف</th>
+                <th className="text-end p-2 w-24">النسبة %</th>
+                <th className="text-end p-2">المبلغ المخصَّص</th>
+                <th className="text-end p-2 hidden md:table-cell">الوصف الشرعي</th>
               </tr>
             </thead>
             <tbody>

@@ -428,7 +428,7 @@ function EvaluationPage() {
 
       <Card className="border-primary/40 bg-gradient-to-br from-primary/5 to-transparent">
         <CardContent className="pt-6 grid md:grid-cols-3 gap-6 items-center">
-          <div className="text-center md:text-right">
+          <div className="text-center md:text-end">
             <div className="text-6xl font-bold text-primary">
               {TOTAL_SCORE}
               <span className="text-2xl text-muted-foreground">/{TOTAL_MAX}</span>

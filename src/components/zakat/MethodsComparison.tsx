@@ -161,7 +161,7 @@ export function MethodsComparison({
                   )}
                 </div>
 
-                <p className="text-[11px] text-muted-foreground leading-relaxed border-r-2 border-primary/30 pr-2">
+                <p className="text-[11px] text-muted-foreground leading-relaxed border-e-2 border-primary/30 pe-2">
                   {METHOD_FORMULA[it.id]}
                 </p>
 

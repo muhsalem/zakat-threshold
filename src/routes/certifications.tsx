@@ -54,7 +54,7 @@ function CertificationsPage() {
         </div>
         <Button asChild variant="ghost" size="sm">
           <Link to="/">
-            <ArrowLeft className="w-4 h-4 ml-1" />
+            <ArrowLeft className="w-4 h-4 ms-1" />
             الرئيسية
           </Link>
         </Button>
@@ -119,7 +119,7 @@ function CertificationsPage() {
                     {c.url && (
                       <Button asChild variant="outline" size="sm" className="mt-2">
                         <a href={c.url} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="w-3.5 h-3.5 ml-1" />
+                          <ExternalLink className="w-3.5 h-3.5 ms-1" />
                           الموقع الرسمي
                         </a>
                       </Button>

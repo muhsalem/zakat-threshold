@@ -199,7 +199,7 @@ export default function CompanyTradeClassification({
 
       <Alert className="border-primary/15 bg-background">
         <Globe2 className="h-4 w-4" />
-        <AlertDescription className="text-xs leading-relaxed text-right">
+        <AlertDescription className="text-xs leading-relaxed text-end">
           المعيار المعتمد لدولة <b>{countryName ?? countryCode}</b> هو:{" "}
           <b>{STANDARD_LABELS[standard]}</b> — يُطبَّق <b>تلقائياً</b> عند تغيير دولة الشركة،
           وتُصفَّى الأنشطة وفق <b>قطاع النشاط</b>
@@ -215,7 +215,7 @@ export default function CompanyTradeClassification({
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="ابحث باسم النشاط أو الكود…"
-            className="pr-9"
+            className="pe-9"
           />
         </div>
         <Select value={filter} onValueChange={(v) => setFilter(v as TradeActivityGroup | "all")}>
@@ -250,11 +250,11 @@ export default function CompanyTradeClassification({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="text-right">النشاط</TableHead>
-              <TableHead className="text-right">
+              <TableHead className="text-end">النشاط</TableHead>
+              <TableHead className="text-end">
                 كود {standard === "CAPMAS" ? "مصر (CAPMAS)" : standard}
               </TableHead>
-              <TableHead className="text-right">إجراء</TableHead>
+              <TableHead className="text-end">إجراء</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

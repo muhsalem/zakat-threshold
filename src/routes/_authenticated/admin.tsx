@@ -118,7 +118,7 @@ function AdminPage() {
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
-                    <thead className="text-right border-b">
+                    <thead className="text-end border-b">
                       <tr>
                         <th className="py-2 px-2">البريد</th>
                         <th className="py-2 px-2">الأدوار</th>

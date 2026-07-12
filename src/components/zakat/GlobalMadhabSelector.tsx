@@ -58,7 +58,7 @@ export default function GlobalMadhabSelector({ compact = false }: Props) {
         <CardTitle className="flex items-center gap-2 text-base">
           <Scale className="w-5 h-5 text-primary" />
           المرجعية الفقهية للحساب
-          <Badge variant="secondary" className="mr-auto">
+          <Badge variant="secondary" className="me-auto">
             {rules.label}
           </Badge>
         </CardTitle>

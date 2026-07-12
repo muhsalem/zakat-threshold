@@ -47,7 +47,7 @@ export function TakafulSection({ currencyName, onZakatChange }: Props) {
         <CardTitle className="flex items-center gap-2 text-base">
           <Shield className="h-4 w-4 text-primary" />
           زكاة شركات التأمين التكافلي
-          <Badge variant="outline" className="text-[10px] mr-auto">
+          <Badge variant="outline" className="text-[10px] me-auto">
             AAOIFI FAS 26
           </Badge>
         </CardTitle>

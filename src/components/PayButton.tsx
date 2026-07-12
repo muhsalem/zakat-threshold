@@ -34,9 +34,9 @@ export function PayButton({
   return (
     <Button variant={variant} className={className} onClick={handlePay} disabled={loading}>
       {loading ? (
-        <Loader2 className="h-4 w-4 animate-spin ml-2" />
+        <Loader2 className="h-4 w-4 animate-spin ms-2" />
       ) : (
-        <CreditCard className="h-4 w-4 ml-2" />
+        <CreditCard className="h-4 w-4 ms-2" />
       )}
       {label}
     </Button>

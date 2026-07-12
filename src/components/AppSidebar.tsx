@@ -77,7 +77,7 @@ export function AppSidebar() {
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 placeholder="ابحث في المنصة…"
-                className="pr-8 h-9 text-sm"
+                className="pe-8 h-9 text-sm"
                 dir="rtl"
                 aria-label="بحث"
               />

@@ -58,7 +58,7 @@ function LiquidityStress() {
           <CardTitle className="flex items-center gap-2">
             <Activity className="w-5 h-5 text-primary" />
             اختبار الإجهاد للسيولة الزكوية
-            <Badge variant="secondary" className="mr-auto">
+            <Badge variant="secondary" className="me-auto">
               Liquidity Stress Test
             </Badge>
           </CardTitle>
@@ -101,10 +101,10 @@ function LiquidityStress() {
             <table className="w-full text-sm">
               <thead className="bg-muted/50">
                 <tr>
-                  <th className="text-right p-2">السيناريو</th>
-                  <th className="text-left p-2">النقد بعد الزكاة</th>
-                  <th className="text-left p-2">Opex معدَّل</th>
-                  <th className="text-left p-2">مدرج (شهور)</th>
+                  <th className="text-end p-2">السيناريو</th>
+                  <th className="text-start p-2">النقد بعد الزكاة</th>
+                  <th className="text-start p-2">Opex معدَّل</th>
+                  <th className="text-start p-2">مدرج (شهور)</th>
                   <th className="text-center p-2">الحكم</th>
                 </tr>
               </thead>
@@ -112,9 +112,9 @@ function LiquidityStress() {
                 {s.scenarios.map((x) => (
                   <tr key={x.name} className="border-t">
                     <td className="p-2 font-medium">{x.name}</td>
-                    <td className="p-2 text-left tabular-nums">{fmt(x.cashAfter)}</td>
-                    <td className="p-2 text-left tabular-nums">{fmt(x.opexAdj)}</td>
-                    <td className="p-2 text-left tabular-nums">{x.runway.toFixed(1)}</td>
+                    <td className="p-2 text-start tabular-nums">{fmt(x.cashAfter)}</td>
+                    <td className="p-2 text-start tabular-nums">{fmt(x.opexAdj)}</td>
+                    <td className="p-2 text-start tabular-nums">{x.runway.toFixed(1)}</td>
                     <td className="p-2 text-center">
                       {x.safe ? (
                         <span className="inline-flex items-center gap-1 text-emerald-700 text-xs">

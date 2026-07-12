@@ -174,7 +174,7 @@ export function TrialBalanceImport({ onMapped }: Props) {
         <CardTitle className="flex items-center gap-2 text-base">
           <FileSpreadsheet className="h-4 w-4 text-primary" />
           استيراد ميزان المراجعة (CSV) لتغذية الوعاء الزكوي تلقائيًا
-          <Badge variant="outline" className="text-[10px] mr-auto">
+          <Badge variant="outline" className="text-[10px] me-auto">
             Beta
           </Badge>
         </CardTitle>

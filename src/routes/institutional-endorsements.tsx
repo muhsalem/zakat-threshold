@@ -91,7 +91,7 @@ function Endorsements() {
           <CardTitle className="flex items-center gap-2">
             <Award className="w-5 h-5 text-primary" />
             الاعتمادات المؤسسية والحوكمة
-            <Badge variant="secondary" className="mr-auto">
+            <Badge variant="secondary" className="me-auto">
               Institutional Endorsements
             </Badge>
           </CardTitle>
@@ -109,8 +109,8 @@ function Endorsements() {
             <table className="w-full text-sm">
               <thead className="bg-muted/50">
                 <tr>
-                  <th className="text-right p-2">الجهة</th>
-                  <th className="text-right p-2">النطاق</th>
+                  <th className="text-end p-2">الجهة</th>
+                  <th className="text-end p-2">النطاق</th>
                   <th className="text-center p-2">الحالة</th>
                   <th className="text-center p-2">منذ</th>
                 </tr>

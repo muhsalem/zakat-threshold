@@ -96,7 +96,7 @@ export function PartnerDistribution({ currency = "USD" }: { currency?: string })
               onChange={(e) => setPoolZakatable(Number(e.target.value) || 0)}
               dir="ltr"
               style={{ textAlign: "right" }}
-              className="pl-12"
+              className="ps-12"
             />
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">
               {currency}

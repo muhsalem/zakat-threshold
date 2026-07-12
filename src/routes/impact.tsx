@@ -119,7 +119,7 @@ function ImpactPage() {
     <main className="container mx-auto max-w-5xl px-4 py-10">
       <div className="flex flex-wrap items-center gap-2 mb-2">
         <h1 className="text-3xl font-bold">الأثر الاجتماعي SROI</h1>
-        <Badge variant="secondary" className="mr-auto">
+        <Badge variant="secondary" className="me-auto">
           أرقام حيّة
         </Badge>
       </div>

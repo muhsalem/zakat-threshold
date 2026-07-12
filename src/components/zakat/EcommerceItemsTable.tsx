@@ -122,7 +122,7 @@ export function EcommerceItemsTable({
 
       <Alert className="border-primary/20 bg-primary/5">
         <Info className="h-4 w-4" />
-        <AlertDescription className="text-xs leading-relaxed text-right">
+        <AlertDescription className="text-xs leading-relaxed text-end">
           أدخل كل منتج/خدمة بقيمته السوقية يوم وجوب الزكاة. يُعتدّ بالكمية المتبقّية للبيع وسعر
           البيع لكل وحدة. يُغذّى الإجمالي تلقائيًا حسب التصنيف (مادي/رقمي/خدمة/مستحقات).
           {dueDateHint ? (
@@ -143,14 +143,14 @@ export function EcommerceItemsTable({
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="text-right min-w-[160px]">المنتج/الخدمة</TableHead>
-                <TableHead className="text-right min-w-[130px]">التصنيف</TableHead>
-                <TableHead className="text-right w-[90px]">الكمية</TableHead>
-                <TableHead className="text-right min-w-[120px]">
+                <TableHead className="text-end min-w-[160px]">المنتج/الخدمة</TableHead>
+                <TableHead className="text-end min-w-[130px]">التصنيف</TableHead>
+                <TableHead className="text-end w-[90px]">الكمية</TableHead>
+                <TableHead className="text-end min-w-[120px]">
                   سعر البيع للوحدة ({currencyName})
                 </TableHead>
-                <TableHead className="text-right min-w-[150px]">تاريخ البيع / يوم الوجوب</TableHead>
-                <TableHead className="text-right min-w-[110px]">الإجمالي</TableHead>
+                <TableHead className="text-end min-w-[150px]">تاريخ البيع / يوم الوجوب</TableHead>
+                <TableHead className="text-end min-w-[110px]">الإجمالي</TableHead>
                 <TableHead className="w-[40px]" />
               </TableRow>
             </TableHeader>

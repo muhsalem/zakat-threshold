@@ -208,7 +208,7 @@ export function DigitalAssetsSection({ currencyName, onTotalChange }: Props) {
               setCryptos((rows) => [...rows, { id: rid(), name: "", qty: "", price: "" }])
             }
           >
-            <Plus className="h-3 w-3 ml-1" /> إضافة عملة
+            <Plus className="h-3 w-3 ms-1" /> إضافة عملة
           </Button>
         </div>
         <div className="text-xs text-muted-foreground border-t pt-2">
@@ -272,7 +272,7 @@ export function DigitalAssetsSection({ currencyName, onTotalChange }: Props) {
               setStocksTrade((rows) => [...rows, { id: rid(), name: "", marketValue: "" }])
             }
           >
-            <Plus className="h-3 w-3 ml-1" /> إضافة سهم
+            <Plus className="h-3 w-3 ms-1" /> إضافة سهم
           </Button>
         </div>
         <div className="text-xs text-muted-foreground border-t pt-2">
@@ -336,7 +336,7 @@ export function DigitalAssetsSection({ currencyName, onTotalChange }: Props) {
               setStocksInvest((rows) => [...rows, { id: rid(), name: "", marketValue: "" }])
             }
           >
-            <Plus className="h-3 w-3 ml-1" /> إضافة سهم
+            <Plus className="h-3 w-3 ms-1" /> إضافة سهم
           </Button>
         </div>
         <div className="text-xs text-muted-foreground border-t pt-2 space-y-1">
@@ -506,7 +506,7 @@ export function DigitalAssetsSection({ currencyName, onTotalChange }: Props) {
             ])
           }
         >
-          <Plus className="h-3 w-3 ml-1" /> إضافة صندوق
+          <Plus className="h-3 w-3 ms-1" /> إضافة صندوق
         </Button>
         <div className="text-xs border-t pt-2">
           الوعاء الزكوي للصناديق:{" "}
@@ -592,7 +592,7 @@ export function DigitalAssetsSection({ currencyName, onTotalChange }: Props) {
             ])
           }
         >
-          <Plus className="h-3 w-3 ml-1" /> إضافة ريت
+          <Plus className="h-3 w-3 ms-1" /> إضافة ريت
         </Button>
         <p className="text-[11px] text-muted-foreground">
           العقار المؤجَّر لا تجب الزكاة في عينه، بل في الأجرة والنقد المحتفظ به (تقريباً 10% من قيمة

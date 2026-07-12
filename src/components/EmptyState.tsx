@@ -47,7 +47,7 @@ export function ErrorState({
           <p className="text-sm text-muted-foreground mt-1">{description}</p>
           {onRetry && (
             <Button size="sm" variant="outline" className="mt-3" onClick={onRetry}>
-              <RotateCcw className="ml-1 h-4 w-4" /> إعادة المحاولة
+              <RotateCcw className="ms-1 h-4 w-4" /> إعادة المحاولة
             </Button>
           )}
         </div>
