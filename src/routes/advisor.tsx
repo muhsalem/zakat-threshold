@@ -121,8 +121,9 @@ function AdvisorPage() {
                     <button
                       key={s}
                       onClick={() => submit(s)}
-                      disabled={busy}
+                      disabled={busy || !user}
                       className="text-xs rounded-full border border-primary/30 bg-card px-3 py-1.5 hover:bg-primary hover:text-primary-foreground transition-colors disabled:opacity-50"
+
                     >
                       {s}
                     </button>
