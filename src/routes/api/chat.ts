@@ -76,6 +76,11 @@ export const Route = createFileRoute("/api/chat")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        const auth = await requireUser(request);
+        if (auth instanceof Response) return auth;
+        const rl = rateLimit(request, { key: `chat:${auth.userId}`, limit: 20, windowMs: 60_000 });
+        if (!rl.ok) return rateLimitResponse(rl.retryAfter);
+
         const { messages } = (await request.json()) as { messages?: UIMessage[] };
         if (!Array.isArray(messages)) return new Response("Messages required", { status: 400 });
 
