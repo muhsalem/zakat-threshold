@@ -30,6 +30,7 @@ import {
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DraftVersionsDialog } from "@/components/wizards/DraftVersionsDialog";
+import { usePaginationKeys } from "@/hooks/usePaginationKeys";
 
 export const Route = createFileRoute("/_authenticated/drafts")({
   head: () => ({
