@@ -146,6 +146,23 @@ async def mock_supabase(route: Route):
 # ---------------------------------------------------------------------------
 # Assertions
 # ---------------------------------------------------------------------------
+async def expect_text(loc, expected: str, *, timeout: int = 3000):
+    """Poll a locator's inner_text until it equals `expected` or timeout."""
+    import time
+    deadline = time.monotonic() + timeout / 1000
+    last = ""
+    while time.monotonic() < deadline:
+        try:
+            last = (await loc.inner_text()).strip()
+        except Exception:
+            last = "<error>"
+        if last == expected:
+            return
+        await loc.page.wait_for_timeout(50)
+    raise AssertionError(f"expected {expected!r}, last saw {last!r}")
+
+
+
 async def restore_session(context, page):
     storage_key = os.environ["LOVABLE_BROWSER_SUPABASE_STORAGE_KEY"]
     session_json = os.environ["LOVABLE_BROWSER_SUPABASE_SESSION_JSON"]
