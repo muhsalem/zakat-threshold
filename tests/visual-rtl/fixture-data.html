@@ -139,19 +139,23 @@
 
 
     <script>
-      // ---------- fake data ----------
-      const RECORDS = Array.from({ length: 43 }, (_, i) => ({
+      // ---------- fake data (حجم قابل للتحكم عبر ?records=N&attachments=M) ----------
+      const params = new URLSearchParams(location.search);
+      const RECORDS_N = Math.max(1, parseInt(params.get("records") || "43", 10));
+      const ATTACHMENTS_N = Math.max(1, parseInt(params.get("attachments") || "27", 10));
+      const RECORDS = Array.from({ length: RECORDS_N }, (_, i) => ({
         id: i + 1,
         client: `عميل رقم ${i + 1}`,
         year: 1445 + (i % 3),
         base: (10000 + i * 137).toLocaleString("ar-EG"),
         zakat: (250 + i * 3).toLocaleString("ar-EG"),
       }));
-      const ATTACHMENTS = Array.from({ length: 27 }, (_, i) => ({
+      const ATTACHMENTS = Array.from({ length: ATTACHMENTS_N }, (_, i) => ({
         name: `مرفق_${String(i + 1).padStart(2, "0")}.pdf`,
         type: i % 2 === 0 ? "بنكي" : "تجاري",
         size: `${100 + i * 7} KB`,
       }));
+
 
       // ---------- generic pager ----------
       function pager(cfg) {
