@@ -141,23 +141,36 @@ async def assert_numbered(page):
 
 async def run() -> int:
     import os
+    import threading
+    import http.server
+    import socketserver
+    import functools
+
     browser_name = os.environ.get("PW_BROWSER", "chromium").lower()
     if browser_name not in ("chromium", "firefox", "webkit"):
         print(f"Unknown PW_BROWSER={browser_name}; falling back to chromium.")
         browser_name = "chromium"
+
+    # WebKit لا يعمل مع file:// عند وجود <script> خارجي (Tailwind CDN)،
+    # لذا نقدّم الفكتشر عبر HTTP محلي حتى يعمل نفس السكربت لكل المتصفحات.
+    Handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(ROOT))
+    httpd = socketserver.TCPServer(("127.0.0.1", 0), Handler)
+    port = httpd.server_address[1]
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
+    fixture_url = f"http://127.0.0.1:{port}/fixture-data.html"
+
     failures: list[str] = []
     async with async_playwright() as p:
         launcher = getattr(p, browser_name)
         browser = await launcher.launch(headless=True)
-        print(f"# browser: {browser_name}")
+        print(f"# browser: {browser_name}  fixture: {fixture_url}")
         for name, (w, h) in VIEWPORTS.items():
             context = await browser.new_context(viewport={"width": w, "height": h})
             page = await context.new_page()
-            # اقطع تحميل Tailwind CDN — يعطّل WebKit عبر file:// ولا يُغيّر السلوك المُختبَر
-            await page.route("**/cdn.tailwindcss.com/**", lambda r: r.abort())
-            await page.route("https://cdn.tailwindcss.com/**", lambda r: r.abort())
-            await page.route("https://cdn.tailwindcss.com", lambda r: r.abort())
-            await page.goto(FIXTURE.resolve().as_uri(), wait_until="domcontentloaded")
+            await page.goto(fixture_url, wait_until="domcontentloaded")
+            await page.locator('[data-testid="records-counter"]').wait_for(state="attached", timeout=30000)
+            await page.wait_for_timeout(300)
+
             await page.locator('[data-testid="records-counter"]').wait_for(state="attached", timeout=30000)
             await page.wait_for_timeout(200)
 
