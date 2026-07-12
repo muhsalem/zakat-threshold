@@ -326,9 +326,9 @@ function NisabAuditPage() {
             <CardHeader>
               <CardTitle>جدول كامل: نصاب وزكاة كل سنة</CardTitle>
             </CardHeader>
-            <CardContent className="max-h-[600px] overflow-auto">
-              <Table>
-                <TableHeader className="sticky top-0 bg-background">
+            <CardContent className="p-0">
+              <Table wrapperClassName="max-h-[600px] overflow-auto">
+                <TableHeader className="[&_th]:sticky [&_th]:top-0 [&_th]:z-10 [&_th]:bg-background [&_th]:shadow-[inset_0_-1px_0_hsl(var(--border))]">
                   <TableRow>
                     <TableHead>الدولة</TableHead>
                     <TableHead>السنة</TableHead>

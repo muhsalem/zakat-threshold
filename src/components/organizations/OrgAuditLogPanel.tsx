@@ -238,7 +238,7 @@ export function OrgAuditLogPanel({ orgId }: { orgId: string }) {
           <div className="rounded-lg border overflow-hidden">
             <div className="max-h-[520px] overflow-auto">
               <table className="w-full text-sm">
-                <thead className="bg-muted/40 sticky top-0">
+                <thead className="[&_th]:sticky [&_th]:top-0 [&_th]:z-10 [&_th]:bg-muted [&_th]:shadow-[inset_0_-1px_0_hsl(var(--border))]">
                   <tr>
                     <th className="text-start px-2 py-2 font-semibold">التاريخ</th>
                     <th className="text-start px-2 py-2 font-semibold">الإجراء</th>
