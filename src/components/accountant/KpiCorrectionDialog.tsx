@@ -238,8 +238,8 @@ export function KpiCorrectionDialog({
           entity_id: record.id,
           action: "auto_correction",
           changed_fields: changed,
-          before_state: before,
-          after_state: patch,
+          before_state: before as any,
+          after_state: patch as any,
           note: `تصحيح تلقائي: ${chosen.map((c) => c.title).join(" | ")}`,
         });
       } catch {
