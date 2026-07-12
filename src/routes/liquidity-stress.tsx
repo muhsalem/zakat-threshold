@@ -12,7 +12,10 @@ export const Route = createFileRoute("/liquidity-stress")({
   head: () => ({
     meta: [
       { title: "اختبار الإجهاد للسيولة الزكوية | نصاب" },
-      { name: "description", content: "محاكاة أثر صرف الزكاة على سيولة المؤسسة وفق سيناريوهات أساس/متوسط/حاد." },
+      {
+        name: "description",
+        content: "محاكاة أثر صرف الزكاة على سيولة المؤسسة وفق سيناريوهات أساس/متوسط/حاد.",
+      },
     ],
   }),
   component: LiquidityStress,
@@ -55,24 +58,38 @@ function LiquidityStress() {
           <CardTitle className="flex items-center gap-2">
             <Activity className="w-5 h-5 text-primary" />
             اختبار الإجهاد للسيولة الزكوية
-            <Badge variant="secondary" className="mr-auto">Liquidity Stress Test</Badge>
+            <Badge variant="secondary" className="mr-auto">
+              Liquidity Stress Test
+            </Badge>
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <Alert>
             <Info className="w-4 h-4" />
             <AlertDescription className="text-xs">
-              محاكاة أثر إخراج الزكاة على مدرج السيولة (Runway) عبر ثلاثة سيناريوهات: أساس، متوسط، حاد.
-              يساعد المؤسسات على التخطيط لصرف الزكاة دون الإخلال بالتشغيل.
+              محاكاة أثر إخراج الزكاة على مدرج السيولة (Runway) عبر ثلاثة سيناريوهات: أساس، متوسط،
+              حاد. يساعد المؤسسات على التخطيط لصرف الزكاة دون الإخلال بالتشغيل.
             </AlertDescription>
           </Alert>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             <Field label="الوعاء الزكوي" value={zakatBase} setter={setZakatBase} />
             <Field label="النقد المتاح" value={cash} setter={setCash} />
-            <Field label="المصروفات التشغيلية الشهرية" value={monthlyOpex} setter={setMonthlyOpex} />
-            <Field label="% انخفاض التدفقات (Stress)" value={inflowStress} setter={setInflowStress} />
-            <Field label="مدرج السيولة المستهدف (شهور)" value={runwayTarget} setter={setRunwayTarget} />
+            <Field
+              label="المصروفات التشغيلية الشهرية"
+              value={monthlyOpex}
+              setter={setMonthlyOpex}
+            />
+            <Field
+              label="% انخفاض التدفقات (Stress)"
+              value={inflowStress}
+              setter={setInflowStress}
+            />
+            <Field
+              label="مدرج السيولة المستهدف (شهور)"
+              value={runwayTarget}
+              setter={setRunwayTarget}
+            />
           </div>
 
           <div className="rounded border p-3 bg-primary/5">
@@ -116,8 +133,8 @@ function LiquidityStress() {
           </div>
 
           <p className="text-[11px] text-muted-foreground">
-            التوصية الشرعية: يجوز تقسيط إخراج الزكاة إذا خُشي على المؤسسة الإخلال بالسيولة التشغيلية،
-            على أن يكتمل الصرف قبل حلول الحول التالي. راجع فتوى AAOIFI SS 35 §3/2.
+            التوصية الشرعية: يجوز تقسيط إخراج الزكاة إذا خُشي على المؤسسة الإخلال بالسيولة
+            التشغيلية، على أن يكتمل الصرف قبل حلول الحول التالي. راجع فتوى AAOIFI SS 35 §3/2.
           </p>
         </CardContent>
       </Card>
@@ -125,11 +142,24 @@ function LiquidityStress() {
   );
 }
 
-function Field({ label, value, setter }: { label: string; value: string; setter: (v: string) => void }) {
+function Field({
+  label,
+  value,
+  setter,
+}: {
+  label: string;
+  value: string;
+  setter: (v: string) => void;
+}) {
   return (
     <div className="space-y-1">
       <Label className="text-xs">{label}</Label>
-      <Input type="number" value={value} onChange={(e) => setter(e.target.value)} inputMode="decimal" />
+      <Input
+        type="number"
+        value={value}
+        onChange={(e) => setter(e.target.value)}
+        inputMode="decimal"
+      />
     </div>
   );
 }

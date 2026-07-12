@@ -594,7 +594,6 @@ export function PrintReport({ data }: { data: PrintReportData }) {
             <img
               src={qrSrc}
               alt="رمز استجابة سريعة (QR) للتحقق من صحّة شهادة الزكاة"
-
               style={{
                 width: "110pt",
                 height: "110pt",
@@ -696,7 +695,6 @@ export function PrintReport({ data }: { data: PrintReportData }) {
           <img
             src={logoUrl}
             alt={`شعار ${PLATFORM_NAME_AR}`}
-
             style={{
               width: "26pt",
               height: "26pt",
@@ -1984,7 +1982,6 @@ export function PrintReport({ data }: { data: PrintReportData }) {
             <img
               src={logoUrl}
               alt={`شعار ${PLATFORM_NAME_AR}`}
-
               style={{ width: "30pt", height: "30pt", objectFit: "contain" }}
             />
             <div>

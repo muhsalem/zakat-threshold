@@ -40,7 +40,10 @@ export const Route = createFileRoute("/verify")({
           "تحقّق من أصالة تقرير الزكاة الصادر عن منصّة نِصاب — تحقّق مشفَّر بمعرِّف الشهادة، البصمة، وطريقة الحساب، دون الحاجة لتسجيل الدخول.",
       },
       { property: "og:title", content: "التحقق من شهادة الزكاة — نِصاب" },
-      { property: "og:description", content: "أداة تحقق فوري وشفاف من صحّة شهادات الزكاة الصادرة عن نِصاب." },
+      {
+        property: "og:description",
+        content: "أداة تحقق فوري وشفاف من صحّة شهادات الزكاة الصادرة عن نِصاب.",
+      },
       { property: "og:url", content: "/verify" },
     ],
     links: [{ rel: "canonical", href: "/verify" }],

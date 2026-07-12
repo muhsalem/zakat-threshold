@@ -35,7 +35,8 @@ Deno.serve(async (req) => {
     }
     const jwt = authHeader.slice(7);
     const supaUrl = Deno.env.get("SUPABASE_URL") ?? "";
-    const supaAnon = Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_PUBLISHABLE_KEY") ?? "";
+    const supaAnon =
+      Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_PUBLISHABLE_KEY") ?? "";
     const supabase = createClient(supaUrl, supaAnon, {
       global: { headers: { Authorization: `Bearer ${jwt}` } },
     });
@@ -66,9 +67,10 @@ Deno.serve(async (req) => {
     }
 
     // منع open-redirect: نقبل مسارات نسبية فقط
-    const safeReturn = typeof returnPath === "string" && returnPath.startsWith("/") && !returnPath.startsWith("//")
-      ? returnPath
-      : "/";
+    const safeReturn =
+      typeof returnPath === "string" && returnPath.startsWith("/") && !returnPath.startsWith("//")
+        ? returnPath
+        : "/";
 
     const siteUrl = Deno.env.get("SITE_URL") ?? "http://localhost:8080";
     const plan = PLANS[planId];

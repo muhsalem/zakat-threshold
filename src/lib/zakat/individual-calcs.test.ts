@@ -83,9 +83,7 @@ describe("goldGrams24", () => {
   it("مدخلات فارغة أو أصفار → 0", () => {
     expect(goldGrams24({ includeJewelry: false })).toBe(0);
     expect(goldGrams24({ savings: [], includeJewelry: false })).toBe(0);
-    expect(
-      goldGrams24({ savings: [{ grams: 0, karat: 24 }], includeJewelry: false }),
-    ).toBe(0);
+    expect(goldGrams24({ savings: [{ grams: 0, karat: 24 }], includeJewelry: false })).toBe(0);
   });
 });
 
@@ -202,16 +200,16 @@ describe("debtDeductionAmount", () => {
 
   it("المؤجّل: قسط 12 شهراً من رصيد كبير — 60 شهر × قسط 1000 → يُخصم 12000 فقط", () => {
     // amount=60000, remainingMonths=60 → monthly=1000 → 12*1000 = 12000
-    expect(
-      debtDeductionAmount({ amount: 60_000, kind: "installment", remainingMonths: 60 }),
-    ).toBe(12_000);
+    expect(debtDeductionAmount({ amount: 60_000, kind: "installment", remainingMonths: 60 })).toBe(
+      12_000,
+    );
   });
 
   it("المؤجّل بأقل من 12 شهراً → يُخصم كامل الرصيد المتبقّي", () => {
     // amount=6000, remainingMonths=6 → monthly=1000 → 12000, لكن capped بـ 6000
-    expect(
-      debtDeductionAmount({ amount: 6_000, kind: "installment", remainingMonths: 6 }),
-    ).toBe(6_000);
+    expect(debtDeductionAmount({ amount: 6_000, kind: "installment", remainingMonths: 6 })).toBe(
+      6_000,
+    );
   });
 
   it("المؤجّل بدون remainingMonths يفترض 12 شهر → يُخصم كامل الرصيد", () => {

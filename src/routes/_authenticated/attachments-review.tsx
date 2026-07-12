@@ -46,7 +46,13 @@ import {
   X,
   Link2,
 } from "lucide-react";
-import { filterAttachments, paginate, linkedNavTarget, sortAttachments, type AttachmentsSort } from "@/lib/attachmentsFilter";
+import {
+  filterAttachments,
+  paginate,
+  linkedNavTarget,
+  sortAttachments,
+  type AttachmentsSort,
+} from "@/lib/attachmentsFilter";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
 type AttachmentStatus = "draft" | "pending" | "approved" | "rejected";
@@ -93,12 +99,29 @@ type AuditRow = {
   created_at: string;
 };
 
-const STATUS_META: Record<AttachmentStatus, { label: string; cls: string; icon: React.ReactNode }> = {
-  draft: { label: "مسودّة", cls: "bg-slate-500/15 text-slate-700 border-slate-500/30", icon: <FileEdit className="h-3 w-3" /> },
-  pending: { label: "قيد المراجعة", cls: "bg-amber-500/15 text-amber-700 border-amber-500/30", icon: <Clock className="h-3 w-3" /> },
-  approved: { label: "معتمد", cls: "bg-emerald-500/15 text-emerald-700 border-emerald-500/30", icon: <CheckCircle2 className="h-3 w-3" /> },
-  rejected: { label: "مرفوض", cls: "bg-red-500/15 text-red-700 border-red-500/30", icon: <XCircle className="h-3 w-3" /> },
-};
+const STATUS_META: Record<AttachmentStatus, { label: string; cls: string; icon: React.ReactNode }> =
+  {
+    draft: {
+      label: "مسودّة",
+      cls: "bg-slate-500/15 text-slate-700 border-slate-500/30",
+      icon: <FileEdit className="h-3 w-3" />,
+    },
+    pending: {
+      label: "قيد المراجعة",
+      cls: "bg-amber-500/15 text-amber-700 border-amber-500/30",
+      icon: <Clock className="h-3 w-3" />,
+    },
+    approved: {
+      label: "معتمد",
+      cls: "bg-emerald-500/15 text-emerald-700 border-emerald-500/30",
+      icon: <CheckCircle2 className="h-3 w-3" />,
+    },
+    rejected: {
+      label: "مرفوض",
+      cls: "bg-red-500/15 text-red-700 border-red-500/30",
+      icon: <XCircle className="h-3 w-3" />,
+    },
+  };
 
 const ACTION_LABEL: Record<AuditRow["action"], string> = {
   created: "إنشاء",
@@ -181,15 +204,27 @@ function AttachmentsReviewPage() {
     setQInput((cur: string) => (cur === search.q ? cur : search.q));
   }, [search.q]);
 
-
-
-
   useEffect(() => {
     let cancelled = false;
     (async () => {
       setLoading(true);
       setErr(null);
-      const { data, error } = await (supabase as unknown as { from: (t: string) => { select: (c: string) => { order: (c: string, o: { ascending: boolean }) => { limit: (n: number) => Promise<{ data: Attachment[] | null; error: { message: string } | null }> } } } })
+      const { data, error } = await (
+        supabase as unknown as {
+          from: (t: string) => {
+            select: (c: string) => {
+              order: (
+                c: string,
+                o: { ascending: boolean },
+              ) => {
+                limit: (
+                  n: number,
+                ) => Promise<{ data: Attachment[] | null; error: { message: string } | null }>;
+              };
+            };
+          };
+        }
+      )
         .from("approval_attachments")
         .select(
           "id,file_name,mime_type,size_bytes,category,label,status,review_note,reviewed_by,reviewed_at,storage_path,uploaded_by,zakat_record_id,organization_id,approval_id,created_at,updated_at",
@@ -205,7 +240,9 @@ function AttachmentsReviewPage() {
       const list = (data ?? []) as Attachment[];
       setRows(list);
       // Batch-fetch linked zakat records for the "المرتبط بـ" column
-      const ids = Array.from(new Set(list.map((r) => r.zakat_record_id).filter(Boolean))) as string[];
+      const ids = Array.from(
+        new Set(list.map((r) => r.zakat_record_id).filter(Boolean)),
+      ) as string[];
       if (ids.length > 0) {
         const { data: recs } = await supabase
           .from("zakat_records")
@@ -238,10 +275,19 @@ function AttachmentsReviewPage() {
 
   const filtered = useMemo(() => filterAttachments(rows, linked, search), [rows, linked, search]);
 
-
-  const FILTER_KEYS: Array<keyof SearchState> = ["q", "status", "category", "from", "to", "link", "sort"];
+  const FILTER_KEYS: Array<keyof SearchState> = [
+    "q",
+    "status",
+    "category",
+    "from",
+    "to",
+    "link",
+    "sort",
+  ];
   const setSearch = (patch: Partial<SearchState>) => {
-    const touchesFilter = Object.keys(patch).some((k) => FILTER_KEYS.includes(k as keyof SearchState));
+    const touchesFilter = Object.keys(patch).some((k) =>
+      FILTER_KEYS.includes(k as keyof SearchState),
+    );
     navigate({
       search: (prev: SearchState) => ({ ...prev, ...patch, ...(touchesFilter ? { page: 1 } : {}) }),
       replace: true,
@@ -250,7 +296,17 @@ function AttachmentsReviewPage() {
 
   const resetFilters = () =>
     navigate({
-      search: { q: "", status: "all", category: "all", from: "", to: "", link: "all", sort: "newest", page: 1, pageSize: search.pageSize },
+      search: {
+        q: "",
+        status: "all",
+        category: "all",
+        from: "",
+        to: "",
+        link: "all",
+        sort: "newest",
+        page: 1,
+        pageSize: search.pageSize,
+      },
       replace: true,
     });
 
@@ -266,12 +322,24 @@ function AttachmentsReviewPage() {
     () => sortAttachments(filtered, linked, (search.sort as AttachmentsSort) ?? "newest"),
     [filtered, linked, search.sort],
   );
-  const { pageRows, totalPages, currentPage, pageStart } = paginate(sorted, search.page, search.pageSize);
+  const { pageRows, totalPages, currentPage, pageStart } = paginate(
+    sorted,
+    search.page,
+    search.pageSize,
+  );
   const pageSize = Math.max(1, search.pageSize);
 
   const changeStatus = async (a: Attachment, next: AttachmentStatus, note?: string) => {
     const { data: userRes } = await supabase.auth.getUser();
-    const { error } = await (supabase as unknown as { from: (t: string) => { update: (v: Record<string, unknown>) => { eq: (c: string, v: string) => Promise<{ error: { message: string } | null }> } } })
+    const { error } = await (
+      supabase as unknown as {
+        from: (t: string) => {
+          update: (v: Record<string, unknown>) => {
+            eq: (c: string, v: string) => Promise<{ error: { message: string } | null }>;
+          };
+        };
+      }
+    )
       .from("approval_attachments")
       .update({
         status: next,
@@ -296,7 +364,12 @@ function AttachmentsReviewPage() {
           <Paperclip className="h-5 w-5 text-primary" /> مراجعة المرفقات
         </h1>
         <div className="flex items-center gap-2">
-          <Button size="sm" variant="outline" className="gap-1" onClick={() => setReload((k) => k + 1)}>
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-1"
+            onClick={() => setReload((k) => k + 1)}
+          >
             <RotateCw className="h-3.5 w-3.5" /> تحديث
           </Button>
         </div>
@@ -400,7 +473,9 @@ function AttachmentsReviewPage() {
               </SelectTrigger>
               <SelectContent>
                 {SORT_OPTIONS.map((o) => (
-                  <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                  <SelectItem key={o.value} value={o.value}>
+                    {o.label}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -466,7 +541,8 @@ function AttachmentsReviewPage() {
           {!loading && !err && filtered.length > 0 && (
             <div className="flex flex-wrap items-center justify-between gap-3 pt-3">
               <div className="text-xs text-muted-foreground">
-                عرض {pageStart + 1}–{Math.min(pageStart + pageSize, filtered.length)} من {filtered.length}
+                عرض {pageStart + 1}–{Math.min(pageStart + pageSize, filtered.length)} من{" "}
+                {filtered.length}
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xs text-muted-foreground">لكل صفحة</span>
@@ -479,7 +555,9 @@ function AttachmentsReviewPage() {
                   </SelectTrigger>
                   <SelectContent>
                     {PAGE_SIZE_OPTIONS.map((n) => (
-                      <SelectItem key={n} value={String(n)}>{n}</SelectItem>
+                      <SelectItem key={n} value={String(n)}>
+                        {n}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -519,7 +597,15 @@ function AttachmentsReviewPage() {
   );
 }
 
-function StatCard({ label, value, status }: { label: string; value: number; status: AttachmentStatus }) {
+function StatCard({
+  label,
+  value,
+  status,
+}: {
+  label: string;
+  value: number;
+  status: AttachmentStatus;
+}) {
   const m = STATUS_META[status];
   return (
     <Card>
@@ -528,7 +614,9 @@ function StatCard({ label, value, status }: { label: string; value: number; stat
           <div className="text-xs text-muted-foreground">{label}</div>
           <div className="text-2xl font-bold">{value}</div>
         </div>
-        <Badge variant="outline" className={`gap-1 ${m.cls}`}>{m.icon} {m.label}</Badge>
+        <Badge variant="outline" className={`gap-1 ${m.cls}`}>
+          {m.icon} {m.label}
+        </Badge>
       </CardContent>
     </Card>
   );
@@ -562,13 +650,19 @@ function LinkedCell({ a, linked }: { a: Attachment; linked?: LinkedRecord }) {
   if (a.approval_id) {
     return (
       <div className="text-[11px] text-muted-foreground">
-        <Badge variant="outline" className="text-[10px]">طلب اعتماد</Badge>
+        <Badge variant="outline" className="text-[10px]">
+          طلب اعتماد
+        </Badge>
         <div className="font-mono truncate max-w-[160px]">{a.approval_id.slice(0, 8)}…</div>
       </div>
     );
   }
   if (a.organization_id) {
-    return <Badge variant="outline" className="text-[10px]">مؤسسة</Badge>;
+    return (
+      <Badge variant="outline" className="text-[10px]">
+        مؤسسة
+      </Badge>
+    );
   }
   return <span className="text-xs text-muted-foreground">—</span>;
 }
@@ -609,9 +703,13 @@ function AttachmentRow({
         </TableCell>
         <TableCell className="text-xs">{CATEGORY_LABELS[a.category] ?? a.category}</TableCell>
         <TableCell>
-          <Badge variant="outline" className={`gap-1 ${m.cls}`}>{m.icon} {m.label}</Badge>
+          <Badge variant="outline" className={`gap-1 ${m.cls}`}>
+            {m.icon} {m.label}
+          </Badge>
         </TableCell>
-        <TableCell><LinkedCell a={a} linked={linked} /></TableCell>
+        <TableCell>
+          <LinkedCell a={a} linked={linked} />
+        </TableCell>
         <TableCell className="text-xs whitespace-nowrap">
           {new Date(a.created_at).toLocaleDateString("ar-EG")}
         </TableCell>
@@ -645,9 +743,7 @@ function AttachmentRow({
       <Dialog open={!!open} onOpenChange={(v) => !v && setOpen(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>
-              تغيير الحالة إلى {open ? STATUS_META[open].label : ""}
-            </DialogTitle>
+            <DialogTitle>تغيير الحالة إلى {open ? STATUS_META[open].label : ""}</DialogTitle>
             <DialogDescription>{a.file_name}</DialogDescription>
           </DialogHeader>
           <div className="space-y-2">
@@ -695,9 +791,31 @@ function AuditHistoryDialog({
     let cancelled = false;
     (async () => {
       setLoading(true);
-      const { data, error } = await (supabase as unknown as { from: (t: string) => { select: (c: string) => { eq: (c: string, v: string) => { order: (c: string, o: { ascending: boolean }) => { limit: (n: number) => Promise<{ data: AuditRow[] | null; error: { message: string } | null }> } } } } })
+      const { data, error } = await (
+        supabase as unknown as {
+          from: (t: string) => {
+            select: (c: string) => {
+              eq: (
+                c: string,
+                v: string,
+              ) => {
+                order: (
+                  c: string,
+                  o: { ascending: boolean },
+                ) => {
+                  limit: (
+                    n: number,
+                  ) => Promise<{ data: AuditRow[] | null; error: { message: string } | null }>;
+                };
+              };
+            };
+          };
+        }
+      )
         .from("attachment_audit_log")
-        .select("id,attachment_id,action,status_before,status_after,changed_fields,actor_id,note,created_at")
+        .select(
+          "id,attachment_id,action,status_before,status_after,changed_fields,actor_id,note,created_at",
+        )
         .eq("attachment_id", attachment.id)
         .order("created_at", { ascending: false })
         .limit(100);
@@ -735,11 +853,17 @@ function AuditHistoryDialog({
                   <span className="text-sm font-medium">{ACTION_LABEL[r.action]}</span>
                   {r.status_before && r.status_after && r.action === "status_changed" && (
                     <span className="text-xs text-muted-foreground">
-                      <Badge variant="outline" className={STATUS_META[r.status_before as AttachmentStatus]?.cls}>
+                      <Badge
+                        variant="outline"
+                        className={STATUS_META[r.status_before as AttachmentStatus]?.cls}
+                      >
                         {STATUS_META[r.status_before as AttachmentStatus]?.label ?? r.status_before}
                       </Badge>
                       <span className="mx-1">→</span>
-                      <Badge variant="outline" className={STATUS_META[r.status_after as AttachmentStatus]?.cls}>
+                      <Badge
+                        variant="outline"
+                        className={STATUS_META[r.status_after as AttachmentStatus]?.cls}
+                      >
                         {STATUS_META[r.status_after as AttachmentStatus]?.label ?? r.status_after}
                       </Badge>
                     </span>
@@ -748,14 +872,14 @@ function AuditHistoryDialog({
                     {new Date(r.created_at).toLocaleString("ar-EG")}
                   </span>
                 </div>
-                {r.changed_fields && r.changed_fields.length > 0 && r.action !== "status_changed" && (
-                  <div className="text-xs text-muted-foreground mt-1">
-                    الحقول المعدّلة: {r.changed_fields.join(", ")}
-                  </div>
-                )}
-                {r.note && (
-                  <div className="text-xs bg-muted/50 rounded p-2 mt-1">{r.note}</div>
-                )}
+                {r.changed_fields &&
+                  r.changed_fields.length > 0 &&
+                  r.action !== "status_changed" && (
+                    <div className="text-xs text-muted-foreground mt-1">
+                      الحقول المعدّلة: {r.changed_fields.join(", ")}
+                    </div>
+                  )}
+                {r.note && <div className="text-xs bg-muted/50 rounded p-2 mt-1">{r.note}</div>}
               </li>
             ))}
           </ol>

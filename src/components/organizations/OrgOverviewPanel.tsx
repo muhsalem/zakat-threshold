@@ -145,9 +145,7 @@ export function OrgOverviewPanel({ orgId, orgName, currency }: Props) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-amber-600">
-              {kpis.approvalsPending}
-            </div>
+            <div className="text-2xl font-bold text-amber-600">{kpis.approvalsPending}</div>
           </CardContent>
         </Card>
 
@@ -158,9 +156,7 @@ export function OrgOverviewPanel({ orgId, orgName, currency }: Props) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-emerald-600">
-              {kpis.approvalsApproved}
-            </div>
+            <div className="text-2xl font-bold text-emerald-600">{kpis.approvalsApproved}</div>
           </CardContent>
         </Card>
 
@@ -171,9 +167,7 @@ export function OrgOverviewPanel({ orgId, orgName, currency }: Props) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-destructive">
-              {kpis.approvalsRejected}
-            </div>
+            <div className="text-2xl font-bold text-destructive">{kpis.approvalsRejected}</div>
           </CardContent>
         </Card>
       </div>
@@ -190,9 +184,7 @@ export function OrgOverviewPanel({ orgId, orgName, currency }: Props) {
             <div className="text-3xl font-bold text-primary">
               {fmtMoney.format(kpis.totalZakat)}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              من {kpis.approvalsApproved} اعتماد
-            </p>
+            <p className="text-xs text-muted-foreground mt-1">من {kpis.approvalsApproved} اعتماد</p>
           </CardContent>
         </Card>
 
@@ -224,9 +216,7 @@ export function OrgOverviewPanel({ orgId, orgName, currency }: Props) {
         <CardContent>
           {recent.length === 0 ? (
             <Alert>
-              <AlertDescription>
-                لا توجد اعتمادات بعد لهذه المؤسسة.
-              </AlertDescription>
+              <AlertDescription>لا توجد اعتمادات بعد لهذه المؤسسة.</AlertDescription>
             </Alert>
           ) : (
             <ul className="space-y-2">

@@ -112,7 +112,8 @@ export default function AIStatementOCR() {
   const totals = items.reduce(
     (acc, it) => {
       if (it.zakatable) acc.zakatable += it.amount;
-      else if (it.category === "current_payables" || it.category === "doubtful_provision") acc.deductions += it.amount;
+      else if (it.category === "current_payables" || it.category === "doubtful_provision")
+        acc.deductions += it.amount;
       else acc.excluded += it.amount;
       return acc;
     },
@@ -159,8 +160,9 @@ export default function AIStatementOCR() {
         <Alert>
           <Info className="w-4 h-4" />
           <AlertDescription className="text-xs">
-            ألصق نص قائمة المركز المالي، أو ارفع صورة/سكرين شوت للقائمة، وسيقوم الذكاء الاصطناعي بتصنيف كل بند تلقائياً إلى
-            فئات زكوية / مستبعَدة / خصومات وفق AAOIFI 35. راجع النتيجة قبل اعتمادها.
+            ألصق نص قائمة المركز المالي، أو ارفع صورة/سكرين شوت للقائمة، وسيقوم الذكاء الاصطناعي
+            بتصنيف كل بند تلقائياً إلى فئات زكوية / مستبعَدة / خصومات وفق AAOIFI 35. راجع النتيجة
+            قبل اعتمادها.
           </AlertDescription>
         </Alert>
 
@@ -191,16 +193,23 @@ export default function AIStatementOCR() {
             />
             {imageBase64 && (
               <div className="text-xs text-emerald-600 flex items-center gap-1">
-                <CheckCircle2 className="w-3.5 h-3.5" /> جاهزة للإرسال ({Math.round((imageBase64.length * 3) / 4 / 1024)}KB)
+                <CheckCircle2 className="w-3.5 h-3.5" /> جاهزة للإرسال (
+                {Math.round((imageBase64.length * 3) / 4 / 1024)}KB)
               </div>
             )}
-            <p className="text-[11px] text-muted-foreground">حد أقصى 5MB. يمكن الجمع بين النص والصورة.</p>
+            <p className="text-[11px] text-muted-foreground">
+              حد أقصى 5MB. يمكن الجمع بين النص والصورة.
+            </p>
           </div>
         </div>
 
         <div className="flex flex-wrap gap-2">
           <Button onClick={onExtract} disabled={loading}>
-            {loading ? <Loader2 className="w-4 h-4 ml-1 animate-spin" /> : <Sparkles className="w-4 h-4 ml-1" />}
+            {loading ? (
+              <Loader2 className="w-4 h-4 ml-1 animate-spin" />
+            ) : (
+              <Sparkles className="w-4 h-4 ml-1" />
+            )}
             استخراج وتصنيف
           </Button>
           {items.length > 0 && (
@@ -216,7 +225,11 @@ export default function AIStatementOCR() {
               <Metric label="زكوي" value={fmt(totals.zakatable)} tone="ok" />
               <Metric label="خصومات" value={fmt(totals.deductions)} tone="warn" />
               <Metric label="مستبعَد" value={fmt(totals.excluded)} tone="mute" />
-              <Metric label={`الزكاة (${(ZAKAT_RATE * 100).toFixed(1)}%)`} value={fmt(zakat)} tone="primary" />
+              <Metric
+                label={`الزكاة (${(ZAKAT_RATE * 100).toFixed(1)}%)`}
+                value={fmt(zakat)}
+                tone="primary"
+              />
             </div>
 
             <div className="overflow-x-auto rounded border">
@@ -234,7 +247,9 @@ export default function AIStatementOCR() {
                 <tbody>
                   {items.map((it, i) => (
                     <tr key={i} className="border-t">
-                      <td className="p-2 whitespace-nowrap">{CATEGORY_LABEL[it.category] || it.category}</td>
+                      <td className="p-2 whitespace-nowrap">
+                        {CATEGORY_LABEL[it.category] || it.category}
+                      </td>
                       <td className="p-2">{it.label}</td>
                       <td className="p-2 text-left tabular-nums">{fmt(it.amount)}</td>
                       <td className="p-2 text-center">
@@ -245,7 +260,10 @@ export default function AIStatementOCR() {
                         )}
                       </td>
                       <td className="p-2 text-center">
-                        <Badge variant={it.confidence >= 0.8 ? "default" : "secondary"} className="text-[10px]">
+                        <Badge
+                          variant={it.confidence >= 0.8 ? "default" : "secondary"}
+                          className="text-[10px]"
+                        >
                           {Math.round(it.confidence * 100)}%
                         </Badge>
                       </td>
@@ -265,7 +283,15 @@ export default function AIStatementOCR() {
   );
 }
 
-function Metric({ label, value, tone }: { label: string; value: string; tone: "ok" | "warn" | "mute" | "primary" }) {
+function Metric({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string;
+  tone: "ok" | "warn" | "mute" | "primary";
+}) {
   const cls =
     tone === "ok"
       ? "bg-emerald-50 border-emerald-200 text-emerald-800"

@@ -4,11 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { CheckCircle2, XCircle, AlertCircle, Paperclip, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  CATEGORY_LABEL_AR,
-  computeCoverage,
-  type CoverageRow,
-} from "@/lib/attachmentRequirements";
+import { CATEGORY_LABEL_AR, computeCoverage, type CoverageRow } from "@/lib/attachmentRequirements";
 import type { AttachmentCategory } from "@/components/attachments/ApprovalAttachments";
 
 interface AttachmentLite {
@@ -47,12 +43,8 @@ export default function ComplianceAttachmentsSummary({
     if (!zakatRecordId && !approvalId) return;
     let alive = true;
     setLoading(true);
-    let q = supabase
-      .from("approval_attachments")
-      .select("id, file_name, category, label, status");
-    q = zakatRecordId
-      ? q.eq("zakat_record_id", zakatRecordId)
-      : q.eq("approval_id", approvalId!);
+    let q = supabase.from("approval_attachments").select("id, file_name, category, label, status");
+    q = zakatRecordId ? q.eq("zakat_record_id", zakatRecordId) : q.eq("approval_id", approvalId!);
     q.then(({ data }) => {
       if (!alive) return;
       setRows((data ?? []) as AttachmentLite[]);
@@ -90,15 +82,12 @@ export default function ComplianceAttachmentsSummary({
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
-          <div className={`text-sm font-medium ${overallStatus.color}`}>
-            {overallStatus.label}
-          </div>
+          <div className={`text-sm font-medium ${overallStatus.color}`}>{overallStatus.label}</div>
           <Progress value={coverage.score} className="mt-2 h-2" />
           <div className="text-[11px] text-muted-foreground mt-1">
             {coverage.total - coverage.rows.filter((r) => r.status !== "covered").length} من{" "}
             {coverage.total} مستندات مكتملة
-            {coverage.missingRequired > 0 &&
-              ` — ${coverage.missingRequired} مستند إلزامي مفقود`}
+            {coverage.missingRequired > 0 && ` — ${coverage.missingRequired} مستند إلزامي مفقود`}
           </div>
         </div>
 
@@ -148,10 +137,7 @@ function CoverageItem({ row, items }: { row: CoverageRow; items: AttachmentLite[
       <div className="flex items-center gap-2">
         {icon}
         <div className="text-sm font-medium">{CATEGORY_LABEL_AR[row.category]}</div>
-        <Badge
-          variant={row.required ? "destructive" : "outline"}
-          className="text-[10px] ms-auto"
-        >
+        <Badge variant={row.required ? "destructive" : "outline"} className="text-[10px] ms-auto">
           {row.required ? "إلزامي" : "موصى به"}
         </Badge>
         {row.count > 0 && (
@@ -167,9 +153,7 @@ function CoverageItem({ row, items }: { row: CoverageRow; items: AttachmentLite[
             <li key={a.id} className="text-[11px] flex items-center gap-1.5 truncate">
               <span className="text-primary">•</span>
               <span className="truncate">{a.file_name}</span>
-              {a.label && (
-                <span className="text-muted-foreground truncate">— {a.label}</span>
-              )}
+              {a.label && <span className="text-muted-foreground truncate">— {a.label}</span>}
               {a.status && a.status !== "approved" && (
                 <Badge variant="outline" className="text-[9px]">
                   {a.status === "pending"

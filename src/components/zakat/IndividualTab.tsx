@@ -111,7 +111,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { NumField, SectionResult, Row } from "./individual/shared";
 import { IndividualAuditTab } from "./individual/audit/IndividualAuditTab";
 
-
 export function IndividualTab() {
   // بيانات المزكي
   const [name, setName] = useState("");
@@ -780,7 +779,6 @@ export function IndividualTab() {
       auditEntries,
     });
 
-
   return (
     <div dir="rtl" className="text-right">
       {/* تقرير الطباعة الاحترافي — يظهر فقط عند الطباعة */}
@@ -1132,8 +1130,6 @@ export function IndividualTab() {
                       }}
                     />
                   </div>
-
-
 
                   {calendarBasis === "gregorian" && (
                     <div className="md:col-span-2">

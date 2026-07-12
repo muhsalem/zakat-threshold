@@ -116,7 +116,10 @@ export function KpiCompliancePanel() {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
-  const [fixTarget, setFixTarget] = useState<{ record: CorrectionRecord; codes: IssueCode[] } | null>(null);
+  const [fixTarget, setFixTarget] = useState<{
+    record: CorrectionRecord;
+    codes: IssueCode[];
+  } | null>(null);
   const [period, setPeriod] = useState<"all" | "30d" | "90d" | "year">("all");
 
   useEffect(() => {
@@ -144,7 +147,11 @@ export function KpiCompliancePanel() {
       }
       const apprMap = new Map<
         string,
-        { status: "pending" | "approved" | "rejected"; submitted_at: string | null; decided_at: string | null }
+        {
+          status: "pending" | "approved" | "rejected";
+          submitted_at: string | null;
+          decided_at: string | null;
+        }
       >();
       for (const a of (apprRes.data ?? []) as any[]) {
         if (a.zakat_record_id)
@@ -188,14 +195,20 @@ export function KpiCompliancePanel() {
   }, [rows, period]);
 
   const enriched = useMemo(
-    () => filteredRows.map((r) => ({ r, issues: detectIssues(r), level: complianceLevel(detectIssues(r)) })),
+    () =>
+      filteredRows.map((r) => ({
+        r,
+        issues: detectIssues(r),
+        level: complianceLevel(detectIssues(r)),
+      })),
     [filteredRows],
   );
 
   const stats = useMemo(() => {
     const total = filteredRows.length;
     const byStatus = { draft: 0, pending: 0, approved: 0, rejected: 0 };
-    for (const r of filteredRows) byStatus[(r.approval_status ?? "draft") as keyof typeof byStatus]++;
+    for (const r of filteredRows)
+      byStatus[(r.approval_status ?? "draft") as keyof typeof byStatus]++;
     const compliance = { ok: 0, warn: 0, err: 0 };
     for (const e of enriched) compliance[e.level]++;
     const approvalRate = total ? Math.round((byStatus.approved / total) * 100) : 0;
@@ -212,7 +225,8 @@ export function KpiCompliancePanel() {
             decided.reduce(
               (s, r) =>
                 s +
-                (new Date(r.decided_at!).getTime() - new Date(r.submitted_at!).getTime()) / 3_600_000,
+                (new Date(r.decided_at!).getTime() - new Date(r.submitted_at!).getTime()) /
+                  3_600_000,
               0,
             ) / decided.length,
           );
@@ -418,8 +432,8 @@ export function KpiCompliancePanel() {
         <CardContent>
           {stats.topErrors.length === 0 ? (
             <p className="text-sm text-muted-foreground flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" /> لا توجد أخطاء متكررة — كل السجلات
-              ضمن معايير الامتثال.
+              <CheckCircle2 className="h-4 w-4 text-emerald-600" /> لا توجد أخطاء متكررة — كل
+              السجلات ضمن معايير الامتثال.
             </p>
           ) : (
             <ul className="grid gap-2 sm:grid-cols-2">
@@ -520,9 +534,7 @@ export function KpiCompliancePanel() {
                             </span>
                           ))}
                           {issues.length > 3 && (
-                            <span className="text-muted-foreground">
-                              +{issues.length - 3}
-                            </span>
+                            <span className="text-muted-foreground">+{issues.length - 3}</span>
                           )}
                         </div>
                       </TableCell>

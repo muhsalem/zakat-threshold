@@ -100,8 +100,7 @@ export function IndividualAuditTab({
         <Card className="shadow-soft border-primary/20">
           <CardHeader className="pb-3">
             <CardTitle className="text-base flex items-center gap-2">
-              <ClipboardCheck className="h-4 w-4 text-primary" /> أدوات المراجعة والتخطيط
-              المتقدمة
+              <ClipboardCheck className="h-4 w-4 text-primary" /> أدوات المراجعة والتخطيط المتقدمة
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -177,8 +176,8 @@ export function IndividualAuditTab({
               >
                 <RadioGroupItem value="qualified" id="op-qual" className="mt-0.5" />
                 <div className="text-xs leading-relaxed">
-                  <b>خلاصة الفحص الزكوي</b> — توجد بنود تحتاج إلى مراجعة فقهية أو محاسبية تخصصية
-                  قبل اعتماد النتيجة.
+                  <b>خلاصة الفحص الزكوي</b> — توجد بنود تحتاج إلى مراجعة فقهية أو محاسبية تخصصية قبل
+                  اعتماد النتيجة.
                 </div>
               </label>
               <label

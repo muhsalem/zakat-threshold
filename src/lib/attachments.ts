@@ -8,12 +8,7 @@ export const MAX_FILE_BYTES = 15 * 1024 * 1024; // 15MB
 export const MAX_IMAGE_DIM = 2000; // px — longest edge after downscaling
 export const IMAGE_QUALITY = 0.85; // JPEG/WebP quality when re-encoding
 
-export const ALLOWED_MIME = [
-  "application/pdf",
-  "image/png",
-  "image/jpeg",
-  "image/webp",
-] as const;
+export const ALLOWED_MIME = ["application/pdf", "image/png", "image/jpeg", "image/webp"] as const;
 export type AllowedMime = (typeof ALLOWED_MIME)[number];
 
 export const ALLOWED_EXT = [".pdf", ".png", ".jpg", ".jpeg", ".webp"] as const;
@@ -45,9 +40,7 @@ export type ValidationError =
 export const VALIDATION_MESSAGES: Record<ValidationError, string> = {
   no_user: "يجب تسجيل الدخول قبل رفع المرفق.",
   empty_file: "الملف فارغ أو غير قابل للقراءة.",
-  too_large: `حجم الملف يتجاوز الحد الأقصى ${Math.round(
-    MAX_FILE_BYTES / (1024 * 1024),
-  )} ميجابايت.`,
+  too_large: `حجم الملف يتجاوز الحد الأقصى ${Math.round(MAX_FILE_BYTES / (1024 * 1024))} ميجابايت.`,
   bad_mime: "نوع الملف غير مدعوم. يُسمح فقط بـ PDF أو صور (PNG/JPG/WebP).",
   bad_ext: "امتداد الملف غير مسموح. استخدم .pdf أو .png أو .jpg أو .webp.",
   no_link: "يجب ربط المرفق بإقرار زكاة أو طلب اعتماد.",
@@ -66,6 +59,7 @@ export function validateUpload(input: UploadInput): ValidationError | null {
   if (!ALLOWED_MIME.includes(input.file.type as AllowedMime)) return "bad_mime";
   if (!ALLOWED_EXT.includes(extOf(input.file.name) as (typeof ALLOWED_EXT)[number]))
     return "bad_ext";
+  // eslint-disable-next-line no-control-regex -- منع أحرف التحكم في أسماء الملفات (فحص أمني مقصود)
   if (!input.file.name || input.file.name.length > 255 || /[\\/\x00-\x1f]/.test(input.file.name))
     return "bad_name";
   if (!input.approval_id && !input.zakat_record_id) return "no_link";
@@ -163,7 +157,10 @@ export async function uploadAttachment(
     .single();
 
   if (error || !data) {
-    await supabase.storage.from(ATTACHMENT_BUCKET).remove([storage_path]).catch(() => {});
+    await supabase.storage
+      .from(ATTACHMENT_BUCKET)
+      .remove([storage_path])
+      .catch(() => {});
     throw error ?? new Error("insert_failed");
   }
   return data as { id: string; storage_path: string };
@@ -176,9 +173,7 @@ export async function downloadAttachment(
   userId: string,
   meta: { user_agent?: string; ip?: string } = {},
 ): Promise<{ url: string }> {
-  const signed = await supabase.storage
-    .from(ATTACHMENT_BUCKET)
-    .createSignedUrl(storage_path, 60);
+  const signed = await supabase.storage.from(ATTACHMENT_BUCKET).createSignedUrl(storage_path, 60);
   if (signed.error || !signed.data?.signedUrl) throw signed.error ?? new Error("sign_failed");
 
   const { error } = await supabase.from("attachment_download_log").insert({

@@ -157,9 +157,7 @@ export function ApprovalAttachments({
         await supabase.storage.from(BUCKET).remove([path]);
         toast.error("تعذّر تسجيل المرفق", { description: ins.error.message });
       } else {
-        toast.success(
-          prepared.resized ? "تم رفع المرفق بعد تصغير الصورة" : "تم رفع المرفق",
-        );
+        toast.success(prepared.resized ? "تم رفع المرفق بعد تصغير الصورة" : "تم رفع المرفق");
         setLabel("");
         await load();
       }
@@ -181,7 +179,10 @@ export function ApprovalAttachments({
         downloaded_by: userId!,
         user_agent: navigator.userAgent,
       })
-      .then(() => {}, () => {});
+      .then(
+        () => {},
+        () => {},
+      );
     window.open(data.signedUrl, "_blank", "noopener");
   };
 
@@ -214,9 +215,7 @@ export function ApprovalAttachments({
             </Select>
           </div>
           <div>
-            <label className="text-[11px] text-muted-foreground">
-              وصف/مرجع (اختياري)
-            </label>
+            <label className="text-[11px] text-muted-foreground">وصف/مرجع (اختياري)</label>
             <Input
               value={label}
               onChange={(e) => setLabel(e.target.value)}
@@ -241,8 +240,8 @@ export function ApprovalAttachments({
             </Button>
           </div>
           <p className="text-[11px] text-muted-foreground sm:col-span-3">
-            الملفات المسموحة: PDF أو صور (PNG/JPG/WebP) — الحد الأقصى {MAX_MB} ميجابايت.
-            الصور الكبيرة تُصغَّر تلقائياً قبل الرفع.
+            الملفات المسموحة: PDF أو صور (PNG/JPG/WebP) — الحد الأقصى {MAX_MB} ميجابايت. الصور
+            الكبيرة تُصغَّر تلقائياً قبل الرفع.
           </p>
         </div>
       )}

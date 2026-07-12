@@ -44,7 +44,11 @@ export const Route = createFileRoute("/organizations")({
           "إدارة مؤسسات الزكاة، الأدوار، سير عمل الإعداد والاعتماد (Maker-Checker)، وتصدير iXBRL/XBRL.",
       },
       { property: "og:title", content: "منصّة الزكاة للمؤسسات — Maker/Checker وتقارير iXBRL" },
-      { property: "og:description", content: "بيئة متعدّدة المستأجرين لإدارة مؤسسات الزكاة: أدوار متكاملة، سير عمل اعتماد، وتصدير معايير." },
+      {
+        property: "og:description",
+        content:
+          "بيئة متعدّدة المستأجرين لإدارة مؤسسات الزكاة: أدوار متكاملة، سير عمل اعتماد، وتصدير معايير.",
+      },
       { property: "og:url", content: "/organizations" },
     ],
     links: [{ rel: "canonical", href: "/organizations" }],

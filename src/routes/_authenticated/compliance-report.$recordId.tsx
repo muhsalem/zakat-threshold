@@ -14,7 +14,11 @@ import {
   Landmark,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { SHARIA_REFERENCES, RULING_LEVEL_LABELS, type ShariaReference } from "@/lib/shariaReferences";
+import {
+  SHARIA_REFERENCES,
+  RULING_LEVEL_LABELS,
+  type ShariaReference,
+} from "@/lib/shariaReferences";
 
 export const Route = createFileRoute("/_authenticated/compliance-report/$recordId")({
   head: () => ({
@@ -29,6 +33,7 @@ export const Route = createFileRoute("/_authenticated/compliance-report/$recordI
   }),
   component: ComplianceReportPage,
   errorComponent: ({ error, reset }) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks -- TanStack يستدعي errorComponent كمكون React فعلي
     const router = useRouter();
     return (
       <main className="container mx-auto max-w-2xl px-4 py-12" dir="rtl">
@@ -232,11 +237,7 @@ const CATEGORIES: Category[] = [
     title: "معالجة الديون المدينة والدائنة",
     icon: "⚖️",
     fields: ["receivables", "debts"],
-    topics: [
-      "خصم الديون الحالَّة",
-      "خصم الديون المؤجلة",
-      "الديون المتعذرة (على معسر/جاحد)",
-    ],
+    topics: ["خصم الديون الحالَّة", "خصم الديون المؤجلة", "الديون المتعذرة (على معسر/جاحد)"],
     intro:
       "الديون المستحقة لك على مليء تُزكَّى، وعلى معسر تُؤجَّل. الديون التي عليك تُخصم من الوعاء بضوابطها.",
   },
@@ -301,8 +302,7 @@ function ComplianceReportPage() {
       </main>
     );
 
-  const fmt = (n: number) =>
-    new Intl.NumberFormat("ar-EG", { maximumFractionDigits: 2 }).format(n);
+  const fmt = (n: number) => new Intl.NumberFormat("ar-EG", { maximumFractionDigits: 2 }).format(n);
 
   return (
     <main className="container mx-auto max-w-5xl px-4 py-8 space-y-4" dir="rtl">
@@ -498,10 +498,7 @@ function CategorySection({
                 <div key={i} className="rounded-md border p-2.5 bg-muted/10">
                   <div className="flex items-start justify-between gap-2 flex-wrap">
                     <div className="font-semibold text-sm">{r.topic}</div>
-                    <Badge
-                      variant="outline"
-                      className={`text-[10px] ${LEVEL_STYLE[r.level]}`}
-                    >
+                    <Badge variant="outline" className={`text-[10px] ${LEVEL_STYLE[r.level]}`}>
                       {RULING_LEVEL_LABELS[r.level]}
                     </Badge>
                   </div>

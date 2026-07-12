@@ -85,7 +85,12 @@ export function paginate<T>(rows: T[], page: number, pageSize: number) {
   const totalPages = Math.max(1, Math.ceil(rows.length / size));
   const current = Math.min(Math.max(1, page), totalPages);
   const start = (current - 1) * size;
-  return { pageRows: rows.slice(start, start + size), totalPages, currentPage: current, pageStart: start };
+  return {
+    pageRows: rows.slice(start, start + size),
+    totalPages,
+    currentPage: current,
+    pageStart: start,
+  };
 }
 
 /** Route target for the "linked" column click. */
