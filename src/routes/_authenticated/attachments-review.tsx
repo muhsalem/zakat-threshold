@@ -569,7 +569,7 @@ function AttachmentsReviewPage() {
                 >
                   السابق
                 </Button>
-                <span className="text-xs tabular-nums">
+                <span className="text-xs tabular-nums" dir="ltr">
                   {currentPage} / {totalPages}
                 </span>
                 <Button
