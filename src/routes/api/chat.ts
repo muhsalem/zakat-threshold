@@ -3,6 +3,39 @@ import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { Anthropic } from "@anthropic-ai/sdk";
+import { createClient } from "@supabase/supabase-js";
+import { rateLimit, rateLimitResponse } from "@/lib/rate-limit.server";
+
+async function requireUser(request: Request): Promise<{ userId: string } | Response> {
+  const authHeader = request.headers.get("authorization") || "";
+  if (!authHeader.startsWith("Bearer ")) {
+    return new Response(JSON.stringify({ error: "unauthorized" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+  const token = authHeader.slice(7).trim();
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_PUBLISHABLE_KEY;
+  if (!url || !key || !token) {
+    return new Response(JSON.stringify({ error: "unauthorized" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+  const supa = createClient(url, key, {
+    auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
+  });
+  const { data, error } = await supa.auth.getClaims(token);
+  if (error || !data?.claims?.sub) {
+    return new Response(JSON.stringify({ error: "unauthorized" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+  return { userId: data.claims.sub as string };
+}
+
 
 const SYSTEM_PROMPT = `أنت "مستشار نِصاب" — مساعد متخصص في فقه ومحاسبة الزكاة وفق المعايير الشرعية المعتمدة (خاصةً المعيار الشرعي 35 من AAOIFI، وفتاوى المجامع الفقهية الكبرى).
 
