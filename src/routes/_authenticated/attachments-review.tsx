@@ -231,7 +231,6 @@ function AttachmentsReviewPage() {
   const filtered = useMemo(() => filterAttachments(rows, linked, search), [rows, linked, search]);
 
 
-  type SearchState = z.infer<typeof searchSchema>;
   const FILTER_KEYS: Array<keyof SearchState> = ["q", "status", "category", "from", "to", "link"];
   const setSearch = (patch: Partial<SearchState>) => {
     const touchesFilter = Object.keys(patch).some((k) => FILTER_KEYS.includes(k as keyof SearchState));
