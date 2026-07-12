@@ -262,7 +262,11 @@ function AttachmentsReviewPage() {
     (search.to ? 1 : 0) +
     (search.link !== "all" ? 1 : 0);
 
-  const { pageRows, totalPages, currentPage, pageStart } = paginate(filtered, search.page, search.pageSize);
+  const sorted = useMemo(
+    () => sortAttachments(filtered, linked, (search.sort as AttachmentsSort) ?? "newest"),
+    [filtered, linked, search.sort],
+  );
+  const { pageRows, totalPages, currentPage, pageStart } = paginate(sorted, search.page, search.pageSize);
   const pageSize = Math.max(1, search.pageSize);
 
   const changeStatus = async (a: Attachment, next: AttachmentStatus, note?: string) => {
