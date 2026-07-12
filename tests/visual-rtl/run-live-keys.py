@@ -238,33 +238,47 @@ async def assert_keys_on_attachments(page):
     assert txt == "1 / 3", f"attachments: initial counter = {txt!r}"
     assert await prev_btn.is_disabled()
 
-    # Tab from prev → per-page Select trigger → next (DOM order).
-    await prev_btn.focus()
+    # DOM order inside the controls group: [per-page label] [Select] [prev] [counter] [next]
+    # On page 1, prev is disabled → Tab from the Select trigger should land on next.
+    select_trigger = pager.get_by_label("عدد الصفوف في كل صفحة")
+    await select_trigger.focus()
     await page.keyboard.press("Tab")
-    role = await page.evaluate("() => document.activeElement?.getAttribute('aria-label')")
-    # Focus lands on the per-page SelectTrigger (aria-label set in the route)
-    assert role == "عدد الصفوف في كل صفحة", f"attachments: Tab landed on {role!r}, expected select trigger"
+    txt_active = await page.evaluate("() => document.activeElement?.textContent?.trim()")
+    assert txt_active == "التالي", \
+        f"attachments: Tab from select must reach next button, landed on {txt_active!r}"
 
-    await page.keyboard.press("Tab")
-    role = await page.evaluate("() => document.activeElement?.textContent?.trim()")
-    assert role == "التالي", f"attachments: second Tab did not reach next button (got {role!r})"
-
-    # Shift+Tab returns to select trigger
+    # Shift+Tab goes back to the select trigger (skipping disabled prev)
     await page.keyboard.press("Shift+Tab")
     role = await page.evaluate("() => document.activeElement?.getAttribute('aria-label')")
-    assert role == "عدد الصفوف في كل صفحة", f"attachments: Shift+Tab off next → {role!r}"
+    assert role == "عدد الصفوف في كل صفحة", \
+        f"attachments: Shift+Tab off next should reach select, got {role!r}"
 
-    # Arrow keys on the pager container
-    await pager.focus()
-    await page.keyboard.press("ArrowLeft")   # RTL advance
+    # Arrow keys — focus a focusable child so keydown bubbles to nav.onKeyDown
+    await next_btn.focus()
+    await page.keyboard.press("ArrowLeft")   # RTL → advance
     txt = (await counter.inner_text()).strip()
     assert txt == "2 / 3", f"attachments: ArrowLeft did not advance (got {txt!r})"
 
+    # Now prev is enabled — Tab order becomes [Select] [prev] [counter] [next].
+    # Verify Tab from select lands on prev this time.
+    await select_trigger.focus()
+    await page.keyboard.press("Tab")
+    txt_active = await page.evaluate("() => document.activeElement?.textContent?.trim()")
+    assert txt_active == "السابق", \
+        f"attachments: with prev enabled, Tab from select must land on prev, got {txt_active!r}"
+
+    # ArrowRight in RTL → back one page
+    await page.keyboard.press("ArrowRight")
+    txt = (await counter.inner_text()).strip()
+    assert txt == "1 / 3", f"attachments: ArrowRight did not go back (got {txt!r})"
+
+    await next_btn.focus()
     await page.keyboard.press("End")
     txt = (await counter.inner_text()).strip()
     assert txt == "3 / 3"
     assert await next_btn.is_disabled()
 
+    await prev_btn.focus()
     await page.keyboard.press("Home")
     txt = (await counter.inner_text()).strip()
     assert txt == "1 / 3"
