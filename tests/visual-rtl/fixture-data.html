@@ -56,7 +56,7 @@
         </div>
         <div class="pager-controls">
           <button id="records-prev" class="btn" aria-label="الصفحة السابقة">السابق</button>
-          <span id="records-counter" class="counter tabular-nums" dir="ltr" data-testid="records-counter">1 / 5</span>
+          <span id="records-counter" class="counter tabular-nums" dir="ltr" role="status" aria-live="polite" aria-atomic="true" aria-label="رقم الصفحة الحالي" data-testid="records-counter">1 / 5</span>
           <button id="records-next" class="btn" aria-label="الصفحة التالية">التالي</button>
         </div>
       </nav>
@@ -78,7 +78,7 @@
         <tbody id="attachments-body"></tbody>
       </table>
       <nav class="pager" aria-label="تصفّح المرفقات" data-testid="attachments-pager">
-        <div class="counter" id="attachments-range" data-testid="attachments-range">عرض 1–10 من 27</div>
+        <div class="counter" id="attachments-range" role="status" aria-live="polite" aria-atomic="true" data-testid="attachments-range">عرض 1–10 من 27</div>
         <div class="pager-controls">
           <span class="counter">لكل صفحة</span>
           <select id="attachments-per-page" class="select" aria-label="عدد الصفوف في كل صفحة">
@@ -86,7 +86,7 @@
             <option value="20">20</option>
           </select>
           <button id="attachments-prev" class="btn">السابق</button>
-          <span id="attachments-counter" class="counter tabular-nums" dir="ltr" data-testid="attachments-counter">1 / 3</span>
+          <span id="attachments-counter" class="counter tabular-nums" dir="ltr" role="status" aria-live="polite" aria-atomic="true" aria-label="رقم الصفحة الحالي" data-testid="attachments-counter">1 / 3</span>
           <button id="attachments-next" class="btn">التالي</button>
         </div>
       </nav>
@@ -131,7 +131,7 @@
         </div>
         <div class="pager-controls">
           <button id="records-ltr-prev" class="btn" aria-label="Previous page">Prev</button>
-          <span id="records-ltr-counter" class="counter tabular-nums" data-testid="records-ltr-counter">1 / 5</span>
+          <span id="records-ltr-counter" class="counter tabular-nums" role="status" aria-live="polite" aria-atomic="true" aria-label="Current page number" data-testid="records-ltr-counter">1 / 5</span>
           <button id="records-ltr-next" class="btn" aria-label="Next page">Next</button>
         </div>
       </nav>
