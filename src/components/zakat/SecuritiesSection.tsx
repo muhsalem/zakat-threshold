@@ -129,12 +129,39 @@ export function SecuritiesSection({
   const update = (id: number, patch: Partial<Row>) =>
     setRows((rs) => rs.map((r) => (r.id === id ? { ...r, ...patch } : r)));
 
+  const errorsByRow = useMemo(() => {
+    const map = new Map<number, SecurityRowErrors>();
+    for (const r of rows) {
+      map.set(
+        r.id,
+        validateSecurityRow({
+          kind: r.kind,
+          company: r.company,
+          ticker: r.ticker,
+          purchaseDate: r.purchaseDate,
+          qty: r.qty,
+          price: r.price,
+          shariaCompliant: r.shariaCompliant,
+          shariaIndex: r.shariaIndex,
+          purifyPct: r.purifyPct,
+          zakatableAssetsPct: r.zakatableAssetsPct,
+          auditor: r.auditor,
+          notes: r.notes,
+        }),
+      );
+    }
+    return map;
+  }, [rows]);
+
   const totals = useMemo(() => {
     let mv = 0,
       zakatable = 0,
       purify = 0;
     const byKind: Record<string, number> = {};
     for (const r of rows) {
+      const errs = errorsByRow.get(r.id) ?? {};
+      // استبعاد الصفوف التي بها أخطاء تؤثر على الحساب
+      if (errs.qty || errs.price || errs.purifyPct || errs.zakatableAssetsPct) continue;
       const t = rowZakatable(r);
       mv += t.mv;
       zakatable += t.zakatable;
@@ -142,7 +169,7 @@ export function SecuritiesSection({
       byKind[r.kind] = (byKind[r.kind] ?? 0) + t.zakatable;
     }
     return { mv, zakatable, purify, byKind };
-  }, [rows]);
+  }, [rows, errorsByRow]);
 
   useEffect(() => {
     onTotalChange(totals.zakatable);
