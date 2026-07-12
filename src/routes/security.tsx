@@ -6,7 +6,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ShieldCheck, LogIn, Smartphone, CheckCircle2, Trash2, Lock, KeyRound, Database, Timer, ShieldAlert, Loader2 } from "lucide-react";
+import {
+  ShieldCheck,
+  LogIn,
+  Smartphone,
+  CheckCircle2,
+  Trash2,
+  Lock,
+  KeyRound,
+  Database,
+  Timer,
+  ShieldAlert,
+  Loader2,
+} from "lucide-react";
 
 export const Route = createFileRoute("/security")({
   component: SecurityPage,
@@ -117,7 +129,11 @@ function SecurityPage() {
   }
 
   return (
-    <main className="container max-w-2xl py-8 space-y-6" dir="rtl" aria-labelledby="security-heading">
+    <main
+      className="container max-w-2xl py-8 space-y-6"
+      dir="rtl"
+      aria-labelledby="security-heading"
+    >
       <header className="flex items-center gap-2">
         <ShieldCheck className="h-6 w-6 text-primary" aria-hidden="true" />
         <h1 id="security-heading" className="text-2xl font-bold">
@@ -139,27 +155,43 @@ function SecurityPage() {
           </CardHeader>
           <CardContent>
             <ul className="grid sm:grid-cols-2 gap-y-2 gap-x-4 text-sm">
-              <li className="flex items-start gap-2"><Lock className="h-4 w-4 mt-0.5 text-primary shrink-0" aria-hidden="true" /><span>عزل بيانات كل مستخدم عبر سياسات RLS مربوطة بمعرِّف الحساب.</span></li>
-              <li className="flex items-start gap-2"><KeyRound className="h-4 w-4 mt-0.5 text-primary shrink-0" aria-hidden="true" /><span>رفض كلمات المرور المُسرَّبة تلقائيًا (فحص HIBP).</span></li>
-              <li className="flex items-start gap-2"><ShieldAlert className="h-4 w-4 mt-0.5 text-primary shrink-0" aria-hidden="true" /><span>دوال إدارية داخلية غير قابلة للاستدعاء من الجلسات العادية.</span></li>
-              <li className="flex items-start gap-2"><Database className="h-4 w-4 mt-0.5 text-primary shrink-0" aria-hidden="true" /><span>فصل مفاتيح الخدمة عن مفاتيح المتصفح، وامتدادات النظام خارج المخطط العام.</span></li>
-              <li className="flex items-start gap-2"><Timer className="h-4 w-4 mt-0.5 text-primary shrink-0" aria-hidden="true" /><span>حدّ معدّل على نقاط الاستدعاء العامة (webhooks) لمنع الإساءة.</span></li>
-              <li className="flex items-start gap-2"><Smartphone className="h-4 w-4 mt-0.5 text-primary shrink-0" aria-hidden="true" /><span>دعم التحقّق بخطوتين TOTP لكل مستخدم (أدناه).</span></li>
+              <li className="flex items-start gap-2">
+                <Lock className="h-4 w-4 mt-0.5 text-primary shrink-0" aria-hidden="true" />
+                <span>عزل بيانات كل مستخدم عبر سياسات RLS مربوطة بمعرِّف الحساب.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <KeyRound className="h-4 w-4 mt-0.5 text-primary shrink-0" aria-hidden="true" />
+                <span>رفض كلمات المرور المُسرَّبة تلقائيًا (فحص HIBP).</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <ShieldAlert className="h-4 w-4 mt-0.5 text-primary shrink-0" aria-hidden="true" />
+                <span>دوال إدارية داخلية غير قابلة للاستدعاء من الجلسات العادية.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Database className="h-4 w-4 mt-0.5 text-primary shrink-0" aria-hidden="true" />
+                <span>
+                  فصل مفاتيح الخدمة عن مفاتيح المتصفح، وامتدادات النظام خارج المخطط العام.
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Timer className="h-4 w-4 mt-0.5 text-primary shrink-0" aria-hidden="true" />
+                <span>حدّ معدّل على نقاط الاستدعاء العامة (webhooks) لمنع الإساءة.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Smartphone className="h-4 w-4 mt-0.5 text-primary shrink-0" aria-hidden="true" />
+                <span>دعم التحقّق بخطوتين TOTP لكل مستخدم (أدناه).</span>
+              </li>
             </ul>
             <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
-              هذه قائمة بالضوابط المُفعّلة داخل التطبيق ولا تُعدّ شهادة امتثال مستقلة. للاستفسار عن سياسات الحماية والخصوصية راسِلنا عبر صفحة الاتصال.
+              هذه قائمة بالضوابط المُفعّلة داخل التطبيق ولا تُعدّ شهادة امتثال مستقلة. للاستفسار عن
+              سياسات الحماية والخصوصية راسِلنا عبر صفحة الاتصال.
             </p>
           </CardContent>
         </Card>
       </section>
 
       {/* Live region for status/error announcements — always mounted so SR picks up updates */}
-      <div
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-        className="sr-only"
-      >
+      <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
         {msg?.text ?? ""}
       </div>
 
@@ -185,7 +217,10 @@ function SecurityPage() {
           <section aria-labelledby="registered-factors-heading">
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle id="registered-factors-heading" className="text-base flex items-center gap-2">
+                <CardTitle
+                  id="registered-factors-heading"
+                  className="text-base flex items-center gap-2"
+                >
                   <Smartphone className="h-4 w-4" aria-hidden="true" /> العوامل المُسجَّلة
                 </CardTitle>
               </CardHeader>
@@ -255,7 +290,10 @@ function SecurityPage() {
                   {enrollSecret && (
                     <div className="text-xs text-center text-muted-foreground">
                       أو أدخل المفتاح يدويًا:{" "}
-                      <code className="font-mono text-foreground" aria-label={`المفتاح السري: ${enrollSecret}`}>
+                      <code
+                        className="font-mono text-foreground"
+                        aria-label={`المفتاح السري: ${enrollSecret}`}
+                      >
                         {enrollSecret}
                       </code>
                     </div>

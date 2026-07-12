@@ -6,12 +6,7 @@
 //   - nisab   = الحد الأدنى الشرعي (85 جم ذهب أو 595 جم فضة)
 //   - hawl    = حَوْل (اكتمال السنة القمرية)
 
-import {
-  ZAKAT_RATE,
-  GOLD_NISAB_GRAMS,
-  SILVER_NISAB_GRAMS,
-  karatToPure24,
-} from "@/lib/zakat";
+import { ZAKAT_RATE, GOLD_NISAB_GRAMS, SILVER_NISAB_GRAMS, karatToPure24 } from "@/lib/zakat";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // الذهب
@@ -61,10 +56,13 @@ export function goldNisabValue(pricePerGram24: number): number {
 }
 
 /** يحسب زكاة الذهب على أساس القيمة النقدية للذهب المُقاس بعيار 24. */
-export function goldZakat(params: {
-  holdings: GoldHoldings;
-  pricePerGram24: number;
-}): { grams24: number; value: number; nisabValue: number; eligible: boolean; zakat: number } {
+export function goldZakat(params: { holdings: GoldHoldings; pricePerGram24: number }): {
+  grams24: number;
+  value: number;
+  nisabValue: number;
+  eligible: boolean;
+  zakat: number;
+} {
   const grams24 = goldGrams24(params.holdings);
   const value = grams24 * params.pricePerGram24;
   const nisabValue = goldNisabValue(params.pricePerGram24);
@@ -91,13 +89,19 @@ export function silverToPure(grams: number, purity: number): number {
 
 /** إجمالي الفضة النقية. */
 export function silverGramsPure(pieces: SilverPiece[]): number {
-  return round(pieces.reduce((s, p) => s + silverToPure(p.grams, p.purity), 0), 6);
+  return round(
+    pieces.reduce((s, p) => s + silverToPure(p.grams, p.purity), 0),
+    6,
+  );
 }
 
-export function silverZakat(params: {
-  pieces: SilverPiece[];
-  pricePerGramPure: number;
-}): { grams: number; value: number; nisabValue: number; eligible: boolean; zakat: number } {
+export function silverZakat(params: { pieces: SilverPiece[]; pricePerGramPure: number }): {
+  grams: number;
+  value: number;
+  nisabValue: number;
+  eligible: boolean;
+  zakat: number;
+} {
   const grams = silverGramsPure(params.pieces);
   const value = grams * params.pricePerGramPure;
   const nisabValue = SILVER_NISAB_GRAMS * params.pricePerGramPure;
@@ -142,7 +146,10 @@ export function debtDeductionAmount(d: DebtItem): number {
 
 /** إجمالي كل الخصومات القابلة للحسم من الوعاء. */
 export function totalDeductions(items: DebtItem[]): number {
-  return round(items.reduce((s, d) => s + debtDeductionAmount(d), 0), 2);
+  return round(
+    items.reduce((s, d) => s + debtDeductionAmount(d), 0),
+    2,
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

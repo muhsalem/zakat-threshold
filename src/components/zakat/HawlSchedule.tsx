@@ -76,21 +76,41 @@ export function HawlSchedule({
         <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
           <div className="flex items-center gap-1">
             <span className="text-muted-foreground">دورات سابقة:</span>
-            <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => setPast((p) => Math.max(0, p - 1))}>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-6 w-6"
+              onClick={() => setPast((p) => Math.max(0, p - 1))}
+            >
               <ChevronLeft className="h-3 w-3" />
             </Button>
             <span className="w-4 text-center font-semibold">{past}</span>
-            <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => setPast((p) => Math.min(10, p + 1))}>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-6 w-6"
+              onClick={() => setPast((p) => Math.min(10, p + 1))}
+            >
               <ChevronRight className="h-3 w-3" />
             </Button>
           </div>
           <div className="flex items-center gap-1">
             <span className="text-muted-foreground">دورات مستقبلية:</span>
-            <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => setFuture((f) => Math.max(0, f - 1))}>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-6 w-6"
+              onClick={() => setFuture((f) => Math.max(0, f - 1))}
+            >
               <ChevronLeft className="h-3 w-3" />
             </Button>
             <span className="w-4 text-center font-semibold">{future}</span>
-            <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => setFuture((f) => Math.min(10, f + 1))}>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-6 w-6"
+              onClick={() => setFuture((f) => Math.min(10, f + 1))}
+            >
               <ChevronRight className="h-3 w-3" />
             </Button>
           </div>
@@ -119,8 +139,7 @@ export function HawlSchedule({
 
             <div className="mt-2 grid gap-1 text-xs md:grid-cols-2">
               <div>
-                <span className="text-muted-foreground">البداية:</span>{" "}
-                <b>{fmtGreg(c.startISO)}</b>{" "}
+                <span className="text-muted-foreground">البداية:</span> <b>{fmtGreg(c.startISO)}</b>{" "}
                 <span className="text-muted-foreground">({formatHijri(c.hijriStart)})</span>
               </div>
               <div>

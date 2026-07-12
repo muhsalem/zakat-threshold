@@ -21,7 +21,6 @@ type Payload = {
   verifyPath?: string; // مسار نسبي فقط
 };
 
-
 function esc(s: string): string {
   return String(s ?? "")
     .replace(/&/g, "&amp;")
@@ -58,7 +57,8 @@ Deno.serve(async (req) => {
     }
     const jwt = authHeader.slice(7);
     const supaUrl = Deno.env.get("SUPABASE_URL") ?? "";
-    const supaAnon = Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_PUBLISHABLE_KEY") ?? "";
+    const supaAnon =
+      Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_PUBLISHABLE_KEY") ?? "";
     const supabase = createClient(supaUrl, supaAnon);
     const { data: u, error: uErr } = await supabase.auth.getUser(jwt);
     if (uErr || !u?.user?.id || !u.user.email) {
@@ -104,7 +104,9 @@ Deno.serve(async (req) => {
 
     // verify path يجب أن يكون مسار نسبي داخل الموقع
     const path =
-      typeof payload.verifyPath === "string" && payload.verifyPath.startsWith("/") && !payload.verifyPath.startsWith("//")
+      typeof payload.verifyPath === "string" &&
+      payload.verifyPath.startsWith("/") &&
+      !payload.verifyPath.startsWith("//")
         ? payload.verifyPath
         : `/verify?id=${encodeURIComponent(payload.reportId ?? "")}`;
     const verifyUrl = `${siteUrl}${path}`;
@@ -135,12 +137,14 @@ Deno.serve(async (req) => {
         <div style="color:#2d6a52;font-size:32px;font-weight:bold">${esc(zakatFormatted)}</div>
         <div style="color:#9ca3af;font-size:12px;margin-top:4px">${esc(payload.hijriDate ?? "")} — ${esc(payload.gregorianDate)}</div>
       </div>
-      ${payload.accountantName
-        ? `<div style="background:#fffbeb;border:1px solid #fbbf24;border-radius:8px;padding:16px;margin-bottom:20px">
+      ${
+        payload.accountantName
+          ? `<div style="background:#fffbeb;border:1px solid #fbbf24;border-radius:8px;padding:16px;margin-bottom:20px">
              <div style="font-weight:bold;color:#92400e">مراجعة معتمدة</div>
              <div style="color:#78350f;font-size:13px">راجعه وأجازه: ${esc(payload.accountantName)}</div>
            </div>`
-        : ""}
+          : ""
+      }
       <div style="margin:24px 0">
         <a href="${esc(verifyUrl)}"
            style="display:block;text-align:center;background:#2d6a52;color:#fff;padding:14px 24px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:15px">

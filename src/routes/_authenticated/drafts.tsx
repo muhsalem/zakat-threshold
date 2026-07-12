@@ -35,7 +35,10 @@ export const Route = createFileRoute("/_authenticated/drafts")({
   head: () => ({
     meta: [
       { title: "المسودات والسجل — حاسبة الزكاة" },
-      { name: "description", content: "احفظ مسودات حسابك، وتصفّح المحاولات السابقة، وأعد فتح أيّها." },
+      {
+        name: "description",
+        content: "احفظ مسودات حسابك، وتصفّح المحاولات السابقة، وأعد فتح أيّها.",
+      },
     ],
   }),
   component: DraftsPage,
@@ -117,7 +120,7 @@ function DraftsPage() {
       .order("updated_at", { ascending: false })
       .limit(50);
     if (de) setError(de.message);
-    setDrafts(((data as unknown) as DraftListItem[]) ?? []);
+    setDrafts((data as unknown as DraftListItem[]) ?? []);
   }
 
   // Fetch a single page of records with server-side filters, sort, count.
@@ -159,21 +162,21 @@ function DraftsPage() {
 
     const from = pageIdx * RECORDS_PAGE_SIZE;
     const to = from + RECORDS_PAGE_SIZE - 1;
-    const { data, error: re, count } = await query
-      .order(col, { ascending: asc, nullsFirst: false })
-      .range(from, to);
+    const {
+      data,
+      error: re,
+      count,
+    } = await query.order(col, { ascending: asc, nullsFirst: false }).range(from, to);
 
     if (re) setError((prev) => prev ?? re.message);
-    const rows =
-      ((data as unknown as Omit<RecordListItem, "has_snapshot">[]) ?? []).map(
-        (r) => ({ ...r, has_snapshot: true }),
-      );
+    const rows = ((data as unknown as Omit<RecordListItem, "has_snapshot">[]) ?? []).map((r) => ({
+      ...r,
+      has_snapshot: true,
+    }));
 
     // Status filter runs client-side because it's derived from prepaid/net_due.
     const filtered =
-      statusFilter === "all"
-        ? rows
-        : rows.filter((r) => statusOf(r) === statusFilter);
+      statusFilter === "all" ? rows : rows.filter((r) => statusOf(r) === statusFilter);
 
     setRecords(filtered);
     setRecordsTotal(count ?? 0);
@@ -217,7 +220,8 @@ function DraftsPage() {
   async function saveCurrent(kind: DraftListItem["wizard_kind"]) {
     setSavingKind(kind);
     try {
-      const raw = typeof window !== "undefined" ? window.localStorage.getItem(WIZARD_KEYS[kind]) : null;
+      const raw =
+        typeof window !== "undefined" ? window.localStorage.getItem(WIZARD_KEYS[kind]) : null;
       if (!raw) {
         toast.error(`لا توجد مسودة نشطة للنوع (${KIND_LABEL[kind]}). ابدأ الحساب أولاً.`);
         return;
@@ -248,7 +252,10 @@ function DraftsPage() {
   async function removeDraft(id: string) {
     if (!confirm("حذف المسودة نهائياً؟")) return;
     setDeletingId(id);
-    const { error: err } = await supabase.from("zakat_drafts" as never).delete().eq("id", id);
+    const { error: err } = await supabase
+      .from("zakat_drafts" as never)
+      .delete()
+      .eq("id", id);
     setDeletingId(null);
     if (err) {
       toast.error(err.message);
@@ -257,7 +264,6 @@ function DraftsPage() {
     toast.success("تم الحذف");
     setDrafts((prev) => prev.filter((d) => d.id !== id));
   }
-
 
   // Fetch snapshot on demand (list is snapshot-free for perf).
   async function reopenDraft(d: DraftListItem) {
@@ -291,7 +297,8 @@ function DraftsPage() {
       toast.error(err.message);
       return;
     }
-    const snapshot = (data as unknown as { snapshot: Record<string, unknown> | null } | null)?.snapshot;
+    const snapshot = (data as unknown as { snapshot: Record<string, unknown> | null } | null)
+      ?.snapshot;
     if (!snapshot) {
       toast.error("هذه المحاولة لا تحمل بيانات مصدر قابلة لإعادة الفتح");
       return;
@@ -308,9 +315,12 @@ function DraftsPage() {
     navigate({ to: "/dashboard" });
   }
 
-  function statusOf(r: Pick<RecordListItem, "zakat_due" | "net_due" | "prepaid_zakat">): "due" | "paid" | "zero" {
+  function statusOf(
+    r: Pick<RecordListItem, "zakat_due" | "net_due" | "prepaid_zakat">,
+  ): "due" | "paid" | "zero" {
     if ((Number(r.zakat_due) || 0) <= 0) return "zero";
-    const net = r.net_due != null ? Number(r.net_due) : Number(r.zakat_due) - Number(r.prepaid_zakat ?? 0);
+    const net =
+      r.net_due != null ? Number(r.net_due) : Number(r.zakat_due) - Number(r.prepaid_zakat ?? 0);
     return net <= 0 ? "paid" : "due";
   }
 
@@ -343,7 +353,11 @@ function DraftsPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-6 max-w-5xl space-y-6" aria-busy="true" aria-live="polite">
+      <div
+        className="container mx-auto px-4 py-6 max-w-5xl space-y-6"
+        aria-busy="true"
+        aria-live="polite"
+      >
         <span className="sr-only">جاري تحميل المسودات والسجل…</span>
         <Card>
           <CardHeader>
@@ -409,7 +423,8 @@ function DraftsPage() {
         </CardHeader>
         <CardContent className="space-y-3">
           <p className="text-xs text-muted-foreground">
-            يحفظ الحالة الحالية للمعالج النشط في لوحتك بسحابتك الآمنة، ويصبح متاحاً لإعادة الفتح لاحقاً من أي جهاز.
+            يحفظ الحالة الحالية للمعالج النشط في لوحتك بسحابتك الآمنة، ويصبح متاحاً لإعادة الفتح
+            لاحقاً من أي جهاز.
           </p>
           <Input
             placeholder="عنوان اختياري (مثال: زكاة 1447 - الفرع الشمالي)"
@@ -418,13 +433,19 @@ function DraftsPage() {
             disabled={saving}
           />
           <div className="flex flex-wrap gap-2" aria-busy={saving}>
-            {(
-              [
-                { kind: "individual" as const, variant: "default" as const, label: "حفظ مسودة (فرد)" },
-                { kind: "company" as const, variant: "outline" as const, label: "حفظ مسودة (شركة)" },
-                { kind: "institution" as const, variant: "outline" as const, label: "حفظ مسودة (مؤسسة)" },
-              ]
-            ).map((b) => {
+            {[
+              {
+                kind: "individual" as const,
+                variant: "default" as const,
+                label: "حفظ مسودة (فرد)",
+              },
+              { kind: "company" as const, variant: "outline" as const, label: "حفظ مسودة (شركة)" },
+              {
+                kind: "institution" as const,
+                variant: "outline" as const,
+                label: "حفظ مسودة (مؤسسة)",
+              },
+            ].map((b) => {
               const busy = savingKind === b.kind;
               return (
                 <Button
@@ -447,7 +468,9 @@ function DraftsPage() {
             })}
           </div>
           {error && (
-            <Alert variant="destructive"><AlertDescription className="text-xs">{error}</AlertDescription></Alert>
+            <Alert variant="destructive">
+              <AlertDescription className="text-xs">{error}</AlertDescription>
+            </Alert>
           )}
         </CardContent>
       </Card>
@@ -468,8 +491,12 @@ function DraftsPage() {
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="font-medium truncate">{d.title}</span>
-                      <Badge variant="outline" className="text-[10px]">{KIND_LABEL[d.wizard_kind]}</Badge>
-                      <Badge variant="secondary" className="text-[10px]">خطوة {d.step + 1}</Badge>
+                      <Badge variant="outline" className="text-[10px]">
+                        {KIND_LABEL[d.wizard_kind]}
+                      </Badge>
+                      <Badge variant="secondary" className="text-[10px]">
+                        خطوة {d.step + 1}
+                      </Badge>
                     </div>
                     <p className="text-[11px] text-muted-foreground mt-0.5">
                       آخر تحديث: {new Date(d.updated_at).toLocaleString("ar")}
@@ -545,7 +572,9 @@ function DraftsPage() {
                 <div className="space-y-1.5">
                   <Label className="text-xs">النوع</Label>
                   <Select value={typeFilter} onValueChange={(v) => setTypeFilter(v as TypeFilter)}>
-                    <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">الكل</SelectItem>
                       <SelectItem value="individual">فرد</SelectItem>
@@ -556,8 +585,13 @@ function DraftsPage() {
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs">الحالة</Label>
-                  <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as StatusFilter)}>
-                    <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
+                  <Select
+                    value={statusFilter}
+                    onValueChange={(v) => setStatusFilter(v as StatusFilter)}
+                  >
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">الكل</SelectItem>
                       <SelectItem value="due">مستحقة</SelectItem>
@@ -568,16 +602,28 @@ function DraftsPage() {
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs">من تاريخ</Label>
-                  <Input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} className="h-9 text-sm" />
+                  <Input
+                    type="date"
+                    value={fromDate}
+                    onChange={(e) => setFromDate(e.target.value)}
+                    className="h-9 text-sm"
+                  />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs">إلى تاريخ</Label>
-                  <Input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} className="h-9 text-sm" />
+                  <Input
+                    type="date"
+                    value={toDate}
+                    onChange={(e) => setToDate(e.target.value)}
+                    className="h-9 text-sm"
+                  />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs">فرز</Label>
                   <Select value={sortKey} onValueChange={(v) => setSortKey(v as SortKey)}>
-                    <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="h-9 text-sm">
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="date_desc">التاريخ ↓</SelectItem>
                       <SelectItem value="date_asc">التاريخ ↑</SelectItem>
@@ -588,7 +634,12 @@ function DraftsPage() {
                 </div>
               </div>
               <div className="flex justify-end">
-                <Button variant="ghost" size="sm" onClick={resetFilters} className="h-7 gap-1 text-xs">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={resetFilters}
+                  className="h-7 gap-1 text-xs"
+                >
                   <X className="h-3 w-3" /> إعادة تعيين
                 </Button>
               </div>
@@ -603,16 +654,21 @@ function DraftsPage() {
               <ul className="divide-y">
                 {displayRecords.map((r) => {
                   const st = statusOf(r);
-                  const stVariant = st === "paid" ? "secondary" : st === "due" ? "default" : "outline";
+                  const stVariant =
+                    st === "paid" ? "secondary" : st === "due" ? "default" : "outline";
                   return (
                     <li key={r.id} className="py-3 flex items-center justify-between gap-3">
                       <div className="min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="font-medium">{r.hijri_year ?? r.gregorian_date}</span>
                           <Badge variant="outline" className="text-[10px]">
-                            {KIND_LABEL[(r.record_type as DraftListItem["wizard_kind"]) ?? "individual"] ?? r.record_type}
+                            {KIND_LABEL[
+                              (r.record_type as DraftListItem["wizard_kind"]) ?? "individual"
+                            ] ?? r.record_type}
                           </Badge>
-                          <Badge variant={stVariant} className="text-[10px]">{STATUS_LABEL[st]}</Badge>
+                          <Badge variant={stVariant} className="text-[10px]">
+                            {STATUS_LABEL[st]}
+                          </Badge>
                           <span className="text-xs text-muted-foreground">
                             الزكاة: {Number(r.zakat_due).toLocaleString()} {r.currency}
                           </span>

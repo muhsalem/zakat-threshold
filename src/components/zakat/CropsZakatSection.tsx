@@ -66,8 +66,8 @@ export function CropsZakatSection({ currencyName = "ج.م" }: { currencyName?: s
           <AlertDescription className="text-xs leading-relaxed">
             {rules.cropsRequireNisab ? (
               <>
-                النصاب: <b>{CROPS_NISAB_KG} كجم</b> (5 أوسق) بعد التصفية والتجفيف. تُخرج عند الحصاد ولا
-                يُشترط الحول. المعدّل يعتمد على طبيعة الري.
+                النصاب: <b>{CROPS_NISAB_KG} كجم</b> (5 أوسق) بعد التصفية والتجفيف. تُخرج عند الحصاد
+                ولا يُشترط الحول. المعدّل يعتمد على طبيعة الري.
               </>
             ) : (
               <>

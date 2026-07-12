@@ -30,7 +30,6 @@ export async function startCheckout(
     body: { planId, returnPath },
   });
 
-
   if (error || !data?.url) {
     return { ok: false, error: error?.message ?? "فشل إنشاء جلسة الدفع" };
   }

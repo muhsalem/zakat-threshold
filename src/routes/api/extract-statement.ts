@@ -72,7 +72,11 @@ export const Route = createFileRoute("/api/extract-statement")({
       POST: async ({ request }) => {
         const auth = await requireUser(request);
         if (auth instanceof Response) return auth;
-        const rl = rateLimit(request, { key: `extract:${auth.userId}`, limit: 10, windowMs: 60_000 });
+        const rl = rateLimit(request, {
+          key: `extract:${auth.userId}`,
+          limit: 10,
+          windowMs: 60_000,
+        });
         if (!rl.ok) return rateLimitResponse(rl.retryAfter);
 
         const body = (await request.json()) as {
@@ -95,7 +99,10 @@ export const Route = createFileRoute("/api/extract-statement")({
 
         const userContent: unknown[] = [];
         if (body.text) {
-          userContent.push({ type: "text", text: `قائمة المركز المالي:\n\n${body.text.slice(0, 20_000)}` });
+          userContent.push({
+            type: "text",
+            text: `قائمة المركز المالي:\n\n${body.text.slice(0, 20_000)}`,
+          });
         }
         if (body.imageBase64) {
           const mime = body.imageType || "image/png";
@@ -149,10 +156,13 @@ export const Route = createFileRoute("/api/extract-statement")({
           }
         }
 
-        return new Response(JSON.stringify({ items: Array.isArray(parsed.items) ? parsed.items : [] }), {
-          status: 200,
-          headers: { "Content-Type": "application/json" },
-        });
+        return new Response(
+          JSON.stringify({ items: Array.isArray(parsed.items) ? parsed.items : [] }),
+          {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          },
+        );
       },
     },
   },

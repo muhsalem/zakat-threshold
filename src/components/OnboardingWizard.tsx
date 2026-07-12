@@ -107,7 +107,6 @@ export function OnboardingWizard() {
           ))}
         </div>
 
-
         {step === 0 && (
           <div className="space-y-3">
             <div className="text-sm text-muted-foreground">من أنت؟</div>
@@ -187,7 +186,6 @@ export function OnboardingWizard() {
             )}
           </div>
         </DialogFooter>
-
       </DialogContent>
     </Dialog>
   );

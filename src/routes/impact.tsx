@@ -119,12 +119,14 @@ function ImpactPage() {
     <main className="container mx-auto max-w-5xl px-4 py-10">
       <div className="flex flex-wrap items-center gap-2 mb-2">
         <h1 className="text-3xl font-bold">الأثر الاجتماعي SROI</h1>
-        <Badge variant="secondary" className="mr-auto">أرقام حيّة</Badge>
+        <Badge variant="secondary" className="mr-auto">
+          أرقام حيّة
+        </Badge>
       </div>
       <p className="text-muted-foreground mb-8">
         قياس الأثر الاجتماعي والتنموي للزكاة المُحتسبة عبر المنصة، وفق منهجية Social Return on
-        Investment، ومحاذاة أهداف التنمية المستدامة (SDGs). الأرقام أدناه مُشتقّة مباشرة من
-        قاعدة بيانات المنصة.
+        Investment، ومحاذاة أهداف التنمية المستدامة (SDGs). الأرقام أدناه مُشتقّة مباشرة من قاعدة
+        بيانات المنصة.
       </p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
@@ -141,10 +143,7 @@ function ImpactPage() {
           hint="بمجموع العملات المُدخَلة (تقريبي)"
           tone="primary"
         />
-        <Stat
-          label="متوسط الزكاة لكل حساب"
-          value={fmtNum(data?.zakat_avg ?? 0)}
-        />
+        <Stat label="متوسط الزكاة لكل حساب" value={fmtNum(data?.zakat_avg ?? 0)} />
         <Stat
           label={`القيمة الاجتماعية (SROI ${data?.sroi_ratio ?? 4.2}×)`}
           value={fmtNum(data?.social_value ?? 0)}
@@ -166,8 +165,8 @@ function ImpactPage() {
             ))}
           </div>
           <p className="text-xs text-muted-foreground mt-3">
-            القضاء على الفقر (1)، القضاء التام على الجوع (2)، العمل اللائق ونمو الاقتصاد (8)،
-            الحدّ من أوجه عدم المساواة (10).
+            القضاء على الفقر (1)، القضاء التام على الجوع (2)، العمل اللائق ونمو الاقتصاد (8)، الحدّ
+            من أوجه عدم المساواة (10).
           </p>
         </CardContent>
       </Card>
@@ -179,20 +178,20 @@ function ImpactPage() {
         <CardContent className="prose prose-sm max-w-none">
           <ul className="space-y-2 text-sm">
             <li>
-              <strong>المُدخلات:</strong> دقة الحساب وفق AAOIFI 35، تخصيص وفق المصارف الثمانية،
-              مسار توثيق كامل.
+              <strong>المُدخلات:</strong> دقة الحساب وفق AAOIFI 35، تخصيص وفق المصارف الثمانية، مسار
+              توثيق كامل.
             </li>
             <li>
-              <strong>المخرجات:</strong> حسابات موثقة، تقارير قابلة للتحقق رقمياً (HMAC)، توزيع
-              شفاف على المستحقّين.
+              <strong>المخرجات:</strong> حسابات موثقة، تقارير قابلة للتحقق رقمياً (HMAC)، توزيع شفاف
+              على المستحقّين.
             </li>
             <li>
               <strong>النتائج:</strong> رفع المستحقين، تمكين اقتصادي، تقليل الفجوات المجتمعية.
             </li>
             <li>
-              <strong>الأثر (SROI 4.2×):</strong> مُشتقّ من دراسات Islamic Development Bank و
-              UNDP للزكاة الموجَّهة؛ لكل وحدة نقدية زكاة موزَّعة بدقّة تُقدَّر القيمة الاجتماعية
-              الناتجة بـ 4.2 وحدة.
+              <strong>الأثر (SROI 4.2×):</strong> مُشتقّ من دراسات Islamic Development Bank و UNDP
+              للزكاة الموجَّهة؛ لكل وحدة نقدية زكاة موزَّعة بدقّة تُقدَّر القيمة الاجتماعية الناتجة
+              بـ 4.2 وحدة.
             </li>
           </ul>
         </CardContent>

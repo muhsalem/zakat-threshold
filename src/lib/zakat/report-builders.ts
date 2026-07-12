@@ -42,13 +42,7 @@ export interface DeductionItem {
 /** بناء بيان الخصومات والمبرّرات الشرعية لإثبات سبب الاحتساب أو الاستبعاد. */
 export function buildDeductionsList(input: DeductionsInput): DeductionItem[] {
   const items: DeductionItem[] = [];
-  const add = (
-    label: string,
-    raw: string,
-    included: boolean,
-    reason: string,
-    ref?: string,
-  ) => {
+  const add = (label: string, raw: string, included: boolean, reason: string, ref?: string) => {
     const amount = num(raw);
     if (amount > 0) items.push({ label, amount, included, reason, ref });
   };

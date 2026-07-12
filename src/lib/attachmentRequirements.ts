@@ -49,7 +49,8 @@ const RULES: Record<string, Requirement[]> = {
     {
       category: "council_decision",
       required: true,
-      reason: "قرار المجمع الفقهي المعتمد لأسلوب حساب زكاة الشركات (صافي الموجودات / رأس المال العامل).",
+      reason:
+        "قرار المجمع الفقهي المعتمد لأسلوب حساب زكاة الشركات (صافي الموجودات / رأس المال العامل).",
     },
     {
       category: "fatwa",

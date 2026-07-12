@@ -323,7 +323,12 @@ export interface HawlCycle {
  */
 export function generateHawlSchedule(
   startDateISO: string,
-  opts: { pastCycles?: number; futureCycles?: number; basis?: "hijri" | "gregorian"; today?: Date } = {},
+  opts: {
+    pastCycles?: number;
+    futureCycles?: number;
+    basis?: "hijri" | "gregorian";
+    today?: Date;
+  } = {},
 ): HawlCycle[] {
   if (!startDateISO) return [];
   const start = new Date(startDateISO);
@@ -343,20 +348,24 @@ export function generateHawlSchedule(
   for (let i = currentIndex - past; i <= currentIndex + future; i++) {
     const cStart = new Date(startMs + i * cycleDays * 86400000);
     const cEnd = new Date(startMs + (i + 1) * cycleDays * 86400000 - 86400000);
-    const hijriStart = gregorianToHijri(cStart.getFullYear(), cStart.getMonth() + 1, cStart.getDate());
+    const hijriStart = gregorianToHijri(
+      cStart.getFullYear(),
+      cStart.getMonth() + 1,
+      cStart.getDate(),
+    );
     const hijriEnd = gregorianToHijri(cEnd.getFullYear(), cEnd.getMonth() + 1, cEnd.getDate());
     const inCycleDays = Math.floor((todayMs - cStart.getTime()) / 86400000);
     const status: HawlCycle["status"] =
       i < currentIndex ? "past" : i > currentIndex ? "future" : "current";
-    const daysPassed = status === "past" ? cycleDays : status === "future" ? 0 : Math.max(0, Math.min(cycleDays, inCycleDays));
+    const daysPassed =
+      status === "past"
+        ? cycleDays
+        : status === "future"
+          ? 0
+          : Math.max(0, Math.min(cycleDays, inCycleDays));
     const daysRemaining = Math.max(0, cycleDays - daysPassed);
     const progressPct = Math.round((daysPassed / cycleDays) * 100);
-    const label =
-      i === 0
-        ? "الحول الأساس (بلوغ النصاب)"
-        : i > 0
-          ? `الحول +${i}`
-          : `الحول ${i}`;
+    const label = i === 0 ? "الحول الأساس (بلوغ النصاب)" : i > 0 ? `الحول +${i}` : `الحول ${i}`;
     cycles.push({
       index: i,
       startISO: cStart.toISOString().slice(0, 10),

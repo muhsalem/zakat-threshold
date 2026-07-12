@@ -78,7 +78,10 @@ export const Route = createFileRoute("/history")({
         content: "اعرض سجل زكواتك السنوية مع مخططات إحصائية لتتبّع تطور أموالك وزكواتك.",
       },
       { property: "og:title", content: "سجل الزكاة الشخصي — نِصاب" },
-      { property: "og:description", content: "تتبّع كل حساباتك الزكوية عبر السنين برسوم بيانية وسجل قابل للتحقق." },
+      {
+        property: "og:description",
+        content: "تتبّع كل حساباتك الزكوية عبر السنين برسوم بيانية وسجل قابل للتحقق.",
+      },
       { property: "og:url", content: "/history" },
     ],
     links: [{ rel: "canonical", href: "/history" }],
