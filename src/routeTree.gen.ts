@@ -24,6 +24,7 @@ import { Route as PortalSigninRouteImport } from './routes/portal-signin'
 import { Route as OrganizationsRouteImport } from './routes/organizations'
 import { Route as NisabAuditRouteImport } from './routes/nisab-audit'
 import { Route as LiquidityStressRouteImport } from './routes/liquidity-stress'
+import { Route as KycAmlRouteImport } from './routes/kyc-aml'
 import { Route as InstitutionalEndorsementsRouteImport } from './routes/institutional-endorsements'
 import { Route as ImpactRouteImport } from './routes/impact'
 import { Route as HistoryRouteImport } from './routes/history'
@@ -153,6 +154,11 @@ const NisabAuditRoute = NisabAuditRouteImport.update({
 const LiquidityStressRoute = LiquidityStressRouteImport.update({
   id: '/liquidity-stress',
   path: '/liquidity-stress',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KycAmlRoute = KycAmlRouteImport.update({
+  id: '/kyc-aml',
+  path: '/kyc-aml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InstitutionalEndorsementsRoute =
@@ -469,6 +475,7 @@ export interface FileRoutesByFullPath {
   '/history': typeof HistoryRoute
   '/impact': typeof ImpactRoute
   '/institutional-endorsements': typeof InstitutionalEndorsementsRoute
+  '/kyc-aml': typeof KycAmlRoute
   '/liquidity-stress': typeof LiquidityStressRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
@@ -540,6 +547,7 @@ export interface FileRoutesByTo {
   '/history': typeof HistoryRoute
   '/impact': typeof ImpactRoute
   '/institutional-endorsements': typeof InstitutionalEndorsementsRoute
+  '/kyc-aml': typeof KycAmlRoute
   '/liquidity-stress': typeof LiquidityStressRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
@@ -613,6 +621,7 @@ export interface FileRoutesById {
   '/history': typeof HistoryRoute
   '/impact': typeof ImpactRoute
   '/institutional-endorsements': typeof InstitutionalEndorsementsRoute
+  '/kyc-aml': typeof KycAmlRoute
   '/liquidity-stress': typeof LiquidityStressRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
@@ -686,6 +695,7 @@ export interface FileRouteTypes {
     | '/history'
     | '/impact'
     | '/institutional-endorsements'
+    | '/kyc-aml'
     | '/liquidity-stress'
     | '/nisab-audit'
     | '/organizations'
@@ -757,6 +767,7 @@ export interface FileRouteTypes {
     | '/history'
     | '/impact'
     | '/institutional-endorsements'
+    | '/kyc-aml'
     | '/liquidity-stress'
     | '/nisab-audit'
     | '/organizations'
@@ -829,6 +840,7 @@ export interface FileRouteTypes {
     | '/history'
     | '/impact'
     | '/institutional-endorsements'
+    | '/kyc-aml'
     | '/liquidity-stress'
     | '/nisab-audit'
     | '/organizations'
@@ -902,6 +914,7 @@ export interface RootRouteChildren {
   HistoryRoute: typeof HistoryRoute
   ImpactRoute: typeof ImpactRoute
   InstitutionalEndorsementsRoute: typeof InstitutionalEndorsementsRoute
+  KycAmlRoute: typeof KycAmlRoute
   LiquidityStressRoute: typeof LiquidityStressRoute
   NisabAuditRoute: typeof NisabAuditRoute
   OrganizationsRoute: typeof OrganizationsRoute
@@ -1039,6 +1052,13 @@ declare module '@tanstack/react-router' {
       path: '/liquidity-stress'
       fullPath: '/liquidity-stress'
       preLoaderRoute: typeof LiquidityStressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kyc-aml': {
+      id: '/kyc-aml'
+      path: '/kyc-aml'
+      fullPath: '/kyc-aml'
+      preLoaderRoute: typeof KycAmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/institutional-endorsements': {
@@ -1514,6 +1534,7 @@ const rootRouteChildren: RootRouteChildren = {
   HistoryRoute: HistoryRoute,
   ImpactRoute: ImpactRoute,
   InstitutionalEndorsementsRoute: InstitutionalEndorsementsRoute,
+  KycAmlRoute: KycAmlRoute,
   LiquidityStressRoute: LiquidityStressRoute,
   NisabAuditRoute: NisabAuditRoute,
   OrganizationsRoute: OrganizationsRoute,
