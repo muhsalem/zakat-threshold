@@ -25,6 +25,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/useAuth";
 
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
+import { DirectionProvider } from "@radix-ui/react-direction";
 
 function NotFoundComponent() {
   return (
