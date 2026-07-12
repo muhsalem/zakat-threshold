@@ -345,6 +345,13 @@ function DraftsPage() {
 
   const totalPages = Math.max(1, Math.ceil(recordsTotal / RECORDS_PAGE_SIZE));
 
+  const onPagerKeyDown = usePaginationKeys({
+    page,
+    totalPages,
+    firstPage: 0,
+    onChange: setPage,
+  });
+
   function resetFilters() {
     setQ("");
     setTypeFilter("all");
