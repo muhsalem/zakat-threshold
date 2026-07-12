@@ -236,12 +236,18 @@ function AttachmentsReviewPage() {
   }, [rows, linked, search]);
 
   type SearchState = z.infer<typeof searchSchema>;
-  const setSearch = (patch: Partial<SearchState>) =>
-    navigate({ search: (prev: SearchState) => ({ ...prev, ...patch }), replace: true });
+  const FILTER_KEYS: Array<keyof SearchState> = ["q", "status", "category", "from", "to", "link"];
+  const setSearch = (patch: Partial<SearchState>) => {
+    const touchesFilter = Object.keys(patch).some((k) => FILTER_KEYS.includes(k as keyof SearchState));
+    navigate({
+      search: (prev: SearchState) => ({ ...prev, ...patch, ...(touchesFilter ? { page: 1 } : {}) }),
+      replace: true,
+    });
+  };
 
   const resetFilters = () =>
     navigate({
-      search: { q: "", status: "all", category: "all", from: "", to: "", link: "all" },
+      search: { q: "", status: "all", category: "all", from: "", to: "", link: "all", page: 1, pageSize: search.pageSize },
       replace: true,
     });
 
@@ -252,6 +258,12 @@ function AttachmentsReviewPage() {
     (search.from ? 1 : 0) +
     (search.to ? 1 : 0) +
     (search.link !== "all" ? 1 : 0);
+
+  const pageSize = Math.max(1, search.pageSize);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const currentPage = Math.min(Math.max(1, search.page), totalPages);
+  const pageStart = (currentPage - 1) * pageSize;
+  const pageRows = filtered.slice(pageStart, pageStart + pageSize);
 
   const changeStatus = async (a: Attachment, next: AttachmentStatus, note?: string) => {
     const { data: userRes } = await supabase.auth.getUser();
