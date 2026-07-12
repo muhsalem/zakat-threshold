@@ -26,6 +26,7 @@ import {
   LayoutDashboard,
 } from "lucide-react";
 import { OrgOverviewPanel } from "@/components/organizations/OrgOverviewPanel";
+import { ApprovalAttachments } from "@/components/attachments/ApprovalAttachments";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -682,6 +683,14 @@ function ApprovalsPanel({
                     </AlertDescription>
                   </Alert>
                 )}
+                <div className="pt-2 border-t">
+                  <ApprovalAttachments
+                    approvalId={a.id}
+                    organizationId={orgId}
+                    canWrite={isMaker || isChecker}
+                    compact
+                  />
+                </div>
               </div>
             );
           })}
