@@ -26,8 +26,8 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Coins, Info } from "lucide-react";
-import HijriDateField from "../HijriDateField";
-import { NumField } from "./shared";
+import HijriDateField from "../../HijriDateField";
+import { NumField } from "../shared";
 import { GOLD_NISAB_GRAMS, SILVER_NISAB_GRAMS, num, fmt } from "@/lib/zakat";
 
 type Setter<T> = (v: T) => void;
