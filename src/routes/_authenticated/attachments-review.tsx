@@ -127,7 +127,6 @@ const RECORD_TYPE_LABELS: Record<string, string> = {
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
 const DEFAULT_PAGE_SIZE = 25;
 
-export type AttachmentsSort = "newest" | "oldest" | "amount_desc" | "amount_asc";
 const SORT_OPTIONS: { value: AttachmentsSort; label: string }[] = [
   { value: "newest", label: "الأحدث أولاً" },
   { value: "oldest", label: "الأقدم أولاً" },
