@@ -23,10 +23,12 @@ import { Route as PricesHistoryRouteImport } from './routes/prices-history'
 import { Route as PortalSigninRouteImport } from './routes/portal-signin'
 import { Route as OrganizationsRouteImport } from './routes/organizations'
 import { Route as NisabAuditRouteImport } from './routes/nisab-audit'
+import { Route as LiquidityStressRouteImport } from './routes/liquidity-stress'
 import { Route as ImpactRouteImport } from './routes/impact'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as GroupZakatRouteImport } from './routes/group-zakat'
 import { Route as GovernanceRouteImport } from './routes/governance'
+import { Route as FatwaCommunityRouteImport } from './routes/fatwa-community'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EvaluationRouteImport } from './routes/evaluation'
 import { Route as EsgRouteImport } from './routes/esg'
@@ -147,6 +149,11 @@ const NisabAuditRoute = NisabAuditRouteImport.update({
   path: '/nisab-audit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LiquidityStressRoute = LiquidityStressRouteImport.update({
+  id: '/liquidity-stress',
+  path: '/liquidity-stress',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImpactRoute = ImpactRouteImport.update({
   id: '/impact',
   path: '/impact',
@@ -165,6 +172,11 @@ const GroupZakatRoute = GroupZakatRouteImport.update({
 const GovernanceRoute = GovernanceRouteImport.update({
   id: '/governance',
   path: '/governance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FatwaCommunityRoute = FatwaCommunityRouteImport.update({
+  id: '/fatwa-community',
+  path: '/fatwa-community',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqRoute = FaqRouteImport.update({
@@ -444,10 +456,12 @@ export interface FileRoutesByFullPath {
   '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
+  '/fatwa-community': typeof FatwaCommunityRoute
   '/governance': typeof GovernanceRoute
   '/group-zakat': typeof GroupZakatRoute
   '/history': typeof HistoryRoute
   '/impact': typeof ImpactRoute
+  '/liquidity-stress': typeof LiquidityStressRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
   '/portal-signin': typeof PortalSigninRoute
@@ -512,10 +526,12 @@ export interface FileRoutesByTo {
   '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
+  '/fatwa-community': typeof FatwaCommunityRoute
   '/governance': typeof GovernanceRoute
   '/group-zakat': typeof GroupZakatRoute
   '/history': typeof HistoryRoute
   '/impact': typeof ImpactRoute
+  '/liquidity-stress': typeof LiquidityStressRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
   '/portal-signin': typeof PortalSigninRoute
@@ -582,10 +598,12 @@ export interface FileRoutesById {
   '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
+  '/fatwa-community': typeof FatwaCommunityRoute
   '/governance': typeof GovernanceRoute
   '/group-zakat': typeof GroupZakatRoute
   '/history': typeof HistoryRoute
   '/impact': typeof ImpactRoute
+  '/liquidity-stress': typeof LiquidityStressRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
   '/portal-signin': typeof PortalSigninRoute
@@ -652,10 +670,12 @@ export interface FileRouteTypes {
     | '/esg'
     | '/evaluation'
     | '/faq'
+    | '/fatwa-community'
     | '/governance'
     | '/group-zakat'
     | '/history'
     | '/impact'
+    | '/liquidity-stress'
     | '/nisab-audit'
     | '/organizations'
     | '/portal-signin'
@@ -720,10 +740,12 @@ export interface FileRouteTypes {
     | '/esg'
     | '/evaluation'
     | '/faq'
+    | '/fatwa-community'
     | '/governance'
     | '/group-zakat'
     | '/history'
     | '/impact'
+    | '/liquidity-stress'
     | '/nisab-audit'
     | '/organizations'
     | '/portal-signin'
@@ -789,10 +811,12 @@ export interface FileRouteTypes {
     | '/esg'
     | '/evaluation'
     | '/faq'
+    | '/fatwa-community'
     | '/governance'
     | '/group-zakat'
     | '/history'
     | '/impact'
+    | '/liquidity-stress'
     | '/nisab-audit'
     | '/organizations'
     | '/portal-signin'
@@ -859,10 +883,12 @@ export interface RootRouteChildren {
   EsgRoute: typeof EsgRoute
   EvaluationRoute: typeof EvaluationRoute
   FaqRoute: typeof FaqRoute
+  FatwaCommunityRoute: typeof FatwaCommunityRoute
   GovernanceRoute: typeof GovernanceRoute
   GroupZakatRoute: typeof GroupZakatRoute
   HistoryRoute: typeof HistoryRoute
   ImpactRoute: typeof ImpactRoute
+  LiquidityStressRoute: typeof LiquidityStressRoute
   NisabAuditRoute: typeof NisabAuditRoute
   OrganizationsRoute: typeof OrganizationsRoute
   PortalSigninRoute: typeof PortalSigninRoute
@@ -994,6 +1020,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NisabAuditRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/liquidity-stress': {
+      id: '/liquidity-stress'
+      path: '/liquidity-stress'
+      fullPath: '/liquidity-stress'
+      preLoaderRoute: typeof LiquidityStressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/impact': {
       id: '/impact'
       path: '/impact'
@@ -1020,6 +1053,13 @@ declare module '@tanstack/react-router' {
       path: '/governance'
       fullPath: '/governance'
       preLoaderRoute: typeof GovernanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fatwa-community': {
+      id: '/fatwa-community'
+      path: '/fatwa-community'
+      fullPath: '/fatwa-community'
+      preLoaderRoute: typeof FatwaCommunityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faq': {
@@ -1447,10 +1487,12 @@ const rootRouteChildren: RootRouteChildren = {
   EsgRoute: EsgRoute,
   EvaluationRoute: EvaluationRoute,
   FaqRoute: FaqRoute,
+  FatwaCommunityRoute: FatwaCommunityRoute,
   GovernanceRoute: GovernanceRoute,
   GroupZakatRoute: GroupZakatRoute,
   HistoryRoute: HistoryRoute,
   ImpactRoute: ImpactRoute,
+  LiquidityStressRoute: LiquidityStressRoute,
   NisabAuditRoute: NisabAuditRoute,
   OrganizationsRoute: OrganizationsRoute,
   PortalSigninRoute: PortalSigninRoute,

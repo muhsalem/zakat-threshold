@@ -37,6 +37,9 @@ export default function IslamicBankModelFull() {
   const [fixedAssetsForUse, setFixedAssetsForUse] = useState("");
   const [doubtfulDebtsProvision, setDoubtfulDebtsProvision] = useState("");
   const [currentPayables, setCurrentPayables] = useState("");
+  // تعديلات إعادة العرض (Misrepresentation adjustments) + المشاركة الكاملة
+  const [misrepAdjustment, setMisrepAdjustment] = useState(""); // ± تعديل بنود سوء العرض المحاسبي
+  const [fullParticipationAdj, setFullParticipationAdj] = useState(""); // إضافة حصص المشاركة الكاملة غير المدرجة
 
   const num = (v: string) => (v.trim() === "" ? 0 : Math.max(0, parseFloat(v) || 0));
 
@@ -53,6 +56,7 @@ export default function IslamicBankModelFull() {
       num(mudarabaShare),
       num(musharakaShare),
       num(goldSilverInventory),
+      num(fullParticipationAdj),
     ].reduce((a, b) => a + b, 0);
 
     const deductions =
@@ -62,14 +66,16 @@ export default function IslamicBankModelFull() {
       num(fixedAssetsForUse) +
       num(currentPayables);
 
-    const base = Math.max(0, assets - deductions);
-    const zakat = base * ZAKAT_RATE; // 2.5% أساس هجري (البنوك عادة تعتمد سنة قمرية)
-    return { assets, deductions, base, zakat };
+    // تعديل إعادة العرض يمكن أن يكون سالباً (نصّاً) — يُطرح إن كان موجباً كتصحيح تصنيف
+    const misrep = parseFloat(misrepAdjustment) || 0;
+    const base = Math.max(0, assets - deductions + misrep);
+    const zakat = base * ZAKAT_RATE;
+    return { assets, deductions, base, zakat, misrep };
   }, [
     cashLiquid, murabahaReceivables, ijaraReceivables, istisnaReceivables, salamGoods,
     tradingInventory, sukukTrading, equityInvestments, mudarabaShare, musharakaShare,
     goldSilverInventory, psia, restrictedInvestments, takafulParticipantsFund,
-    fixedAssetsForUse, doubtfulDebtsProvision, currentPayables,
+    fixedAssetsForUse, doubtfulDebtsProvision, currentPayables, misrepAdjustment, fullParticipationAdj,
   ]);
 
   const fmt = (n: number) => new Intl.NumberFormat("ar-SA", { maximumFractionDigits: 2 }).format(n);
@@ -126,6 +132,24 @@ export default function IslamicBankModelFull() {
             <Field label="أصول ثابتة للاستخدام (مبانٍ/أجهزة)" value={fixedAssetsForUse} onChange={setFixedAssetsForUse} />
             <Field label="مخصّص الديون المشكوك في تحصيلها" value={doubtfulDebtsProvision} onChange={setDoubtfulDebtsProvision} />
             <Field label="التزامات مستحقة الدفع خلال السنة" value={currentPayables} onChange={setCurrentPayables} hint="المُقتطع من رأس المال العامل" />
+          </div>
+        </section>
+
+        <section className="space-y-3">
+          <h3 className="font-semibold text-sm">تعديلات AAOIFI 35 المتقدّمة</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <Field
+              label="تعديل إعادة العرض (Misrepresentation ±)"
+              value={misrepAdjustment}
+              onChange={setMisrepAdjustment}
+              hint="قيمة قد تكون موجبة (إضافة بند مُغفل) أو سالبة (تصحيح مبالغة). يُطبَّق مباشرة على الوعاء."
+            />
+            <Field
+              label="حصص المشاركة الكاملة غير المدرجة"
+              value={fullParticipationAdj}
+              onChange={setFullParticipationAdj}
+              hint="إضافة حصص المضاربة/المشاركة المعروضة خارج الميزانية على الوعاء الزكوي"
+            />
           </div>
         </section>
 
