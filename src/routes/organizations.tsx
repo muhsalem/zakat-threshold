@@ -24,8 +24,10 @@ import {
   Plus,
   ArrowRight,
   LayoutDashboard,
+  ScrollText,
 } from "lucide-react";
 import { OrgOverviewPanel } from "@/components/organizations/OrgOverviewPanel";
+import { OrgAuditLogPanel } from "@/components/organizations/OrgAuditLogPanel";
 import { ApprovalAttachments } from "@/components/attachments/ApprovalAttachments";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -211,6 +213,9 @@ function OrgsPage() {
                   <TabsTrigger value="approvals">
                     <ShieldCheck className="size-4 me-1" /> الاعتمادات
                   </TabsTrigger>
+                  <TabsTrigger value="audit">
+                    <ScrollText className="size-4 me-1" /> سجل التدقيق
+                  </TabsTrigger>
                   <TabsTrigger value="export">
                     <Download className="size-4 me-1" /> تصدير XBRL
                   </TabsTrigger>
@@ -235,6 +240,9 @@ function OrgsPage() {
                     userId={user.id}
                     org={orgs.find((o) => o.org.id === activeOrgId)!.org}
                   />
+                </TabsContent>
+                <TabsContent value="audit" className="mt-4">
+                  <OrgAuditLogPanel orgId={activeOrgId} />
                 </TabsContent>
                 <TabsContent value="export" className="mt-4">
                   <XbrlPanel org={orgs.find((o) => o.org.id === activeOrgId)!.org} />
