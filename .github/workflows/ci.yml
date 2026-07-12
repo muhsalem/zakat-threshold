@@ -142,6 +142,14 @@ jobs:
           PW_BROWSER: ${{ matrix.browser }}
         run: python tests/visual-rtl/run-keyboard.py
 
+      # ARIA / semantics: role, aria-label, aria-live, aria-current, aria-disabled
+      - name: Run ARIA / semantics tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-aria.py
+
+
+
 
 
       - name: Upload failure screenshots
