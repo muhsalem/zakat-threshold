@@ -24,8 +24,10 @@ import {
   Plus,
   ArrowRight,
   LayoutDashboard,
+  ScrollText,
 } from "lucide-react";
 import { OrgOverviewPanel } from "@/components/organizations/OrgOverviewPanel";
+import { OrgAuditLogPanel } from "@/components/organizations/OrgAuditLogPanel";
 import { ApprovalAttachments } from "@/components/attachments/ApprovalAttachments";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
