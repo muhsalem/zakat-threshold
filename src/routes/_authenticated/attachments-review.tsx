@@ -205,36 +205,8 @@ function AttachmentsReviewPage() {
     return Array.from(set);
   }, [rows]);
 
-  const filtered = useMemo(() => {
-    const q = search.q.trim().toLowerCase();
-    const fromTs = search.from ? new Date(search.from).getTime() : null;
-    const toTs = search.to ? new Date(search.to).getTime() + 24 * 3600 * 1000 - 1 : null;
-    return rows.filter((r) => {
-      if (search.status !== "all" && r.status !== search.status) return false;
-      if (search.category !== "all" && r.category !== search.category) return false;
-      if (search.link === "zakat" && !r.zakat_record_id) return false;
-      if (search.link === "approval" && !r.approval_id) return false;
-      if (search.link === "org" && !r.organization_id) return false;
-      const t = new Date(r.created_at).getTime();
-      if (fromTs != null && t < fromTs) return false;
-      if (toTs != null && t > toTs) return false;
-      if (q) {
-        const hay = [
-          r.file_name,
-          r.label ?? "",
-          r.category,
-          r.review_note ?? "",
-          r.zakat_record_id ?? "",
-          r.approval_id ?? "",
-          linked[r.zakat_record_id ?? ""]?.record_type ?? "",
-        ]
-          .join(" ")
-          .toLowerCase();
-        if (!hay.includes(q)) return false;
-      }
-      return true;
-    });
-  }, [rows, linked, search]);
+  const filtered = useMemo(() => filterAttachments(rows, linked, search), [rows, linked, search]);
+
 
   type SearchState = z.infer<typeof searchSchema>;
   const FILTER_KEYS: Array<keyof SearchState> = ["q", "status", "category", "from", "to", "link"];
