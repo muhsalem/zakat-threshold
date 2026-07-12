@@ -155,13 +155,6 @@ jobs:
         run: python tests/visual-rtl/run-large.py
 
 
-
-
-
-
-
-
-
       - name: Upload failure screenshots
         if: failure()
         uses: actions/upload-artifact@v4
