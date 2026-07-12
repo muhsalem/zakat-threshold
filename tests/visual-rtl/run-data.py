@@ -121,14 +121,14 @@ async def assert_numbered(page):
     assert await prev.get_attribute("disabled") is not None
     assert await page.locator('a[data-page="1"]').get_attribute("aria-current") == "page"
 
-    # click page 5 → aria-current moves, next still enabled
-    await page.locator('a[data-page="5"]').click()
-    assert await page.locator('a[data-page="5"]').get_attribute("aria-current") == "page"
+    # click page 3 → aria-current moves, next still enabled
+    await page.locator('a[data-page="3"]').click()
+    assert await page.locator('a[data-page="3"]').get_attribute("aria-current") == "page"
     assert await prev.get_attribute("disabled") is None
 
-    # click next → page 6
+    # click next → page 4
     await nxt.click()
-    assert await page.locator('a[data-page="6"]').get_attribute("aria-current") == "page"
+    assert await page.locator('a[data-page="4"]').get_attribute("aria-current") == "page"
 
     # jump to last → next disabled
     await page.locator('a[data-page="5"]').click()
