@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Shield } from "lucide-react";
+import { Shield, Paperclip } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
 
 /** زر عائم لا يظهر إلا للمدراء والمدقّقين. */
