@@ -153,6 +153,7 @@ function AttachmentsReviewPage() {
   const [err, setErr] = useState<string | null>(null);
   const [reload, setReload] = useState(0);
   const [historyFor, setHistoryFor] = useState<Attachment | null>(null);
+  type SearchState = z.infer<typeof searchSchema>;
   const [qInput, setQInput] = useState(search.q);
   const debouncedQ = useDebouncedValue(qInput, 300);
 
@@ -160,7 +161,7 @@ function AttachmentsReviewPage() {
   useEffect(() => {
     if (debouncedQ !== search.q) {
       navigate({
-        search: (prev) => ({ ...prev, q: debouncedQ, page: 1 }),
+        search: (prev: SearchState) => ({ ...prev, q: debouncedQ, page: 1 }),
         replace: true,
       });
     }
@@ -169,8 +170,10 @@ function AttachmentsReviewPage() {
 
   // Sync local input if URL changes externally (back/forward, reset).
   useEffect(() => {
-    setQInput((cur) => (cur === search.q ? cur : search.q));
+    setQInput((cur: string) => (cur === search.q ? cur : search.q));
   }, [search.q]);
+
+
 
 
   useEffect(() => {
