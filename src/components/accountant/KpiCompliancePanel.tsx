@@ -167,22 +167,32 @@ export function KpiCompliancePanel() {
     };
   }, [reloadKey]);
 
+  const filteredRows = useMemo(() => {
+    if (period === "all") return rows;
+    const now = Date.now();
+    let cutoff = 0;
+    if (period === "30d") cutoff = now - 30 * 86_400_000;
+    else if (period === "90d") cutoff = now - 90 * 86_400_000;
+    else if (period === "year") cutoff = new Date(new Date().getFullYear(), 0, 1).getTime();
+    return rows.filter((r) => new Date(r.created_at).getTime() >= cutoff);
+  }, [rows, period]);
+
   const enriched = useMemo(
-    () => rows.map((r) => ({ r, issues: detectIssues(r), level: complianceLevel(detectIssues(r)) })),
-    [rows],
+    () => filteredRows.map((r) => ({ r, issues: detectIssues(r), level: complianceLevel(detectIssues(r)) })),
+    [filteredRows],
   );
 
   const stats = useMemo(() => {
-    const total = rows.length;
+    const total = filteredRows.length;
     const byStatus = { draft: 0, pending: 0, approved: 0, rejected: 0 };
-    for (const r of rows) byStatus[(r.approval_status ?? "draft") as keyof typeof byStatus]++;
+    for (const r of filteredRows) byStatus[(r.approval_status ?? "draft") as keyof typeof byStatus]++;
     const compliance = { ok: 0, warn: 0, err: 0 };
     for (const e of enriched) compliance[e.level]++;
     const approvalRate = total ? Math.round((byStatus.approved / total) * 100) : 0;
     const complianceRate = total ? Math.round((compliance.ok / total) * 100) : 0;
 
     // متوسط زمن الاعتماد بالساعات
-    const decided = rows.filter(
+    const decided = filteredRows.filter(
       (r) => r.approval_status === "approved" && r.submitted_at && r.decided_at,
     );
     const avgApprovalH =
@@ -212,7 +222,7 @@ export function KpiCompliancePanel() {
       .slice(0, 6);
 
     return { total, byStatus, compliance, approvalRate, complianceRate, avgApprovalH, topErrors };
-  }, [rows, enriched]);
+  }, [filteredRows, enriched]);
 
   const attentionRows = useMemo(
     () =>
