@@ -46,7 +46,7 @@ import {
   X,
   Link2,
 } from "lucide-react";
-import { filterAttachments, paginate, linkedNavTarget } from "@/lib/attachmentsFilter";
+import { filterAttachments, paginate, linkedNavTarget, sortAttachments, type AttachmentsSort } from "@/lib/attachmentsFilter";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
 type AttachmentStatus = "draft" | "pending" | "approved" | "rejected";
@@ -127,6 +127,13 @@ const RECORD_TYPE_LABELS: Record<string, string> = {
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
 const DEFAULT_PAGE_SIZE = 25;
 
+const SORT_OPTIONS: { value: AttachmentsSort; label: string }[] = [
+  { value: "newest", label: "الأحدث أولاً" },
+  { value: "oldest", label: "الأقدم أولاً" },
+  { value: "amount_desc", label: "المبلغ: الأعلى أولاً" },
+  { value: "amount_asc", label: "المبلغ: الأقل أولاً" },
+];
+
 const searchSchema = z.object({
   q: fallback(z.string(), "").default(""),
   status: fallback(z.string(), "all").default("all"),
@@ -134,6 +141,7 @@ const searchSchema = z.object({
   from: fallback(z.string(), "").default(""),
   to: fallback(z.string(), "").default(""),
   link: fallback(z.string(), "all").default("all"),
+  sort: fallback(z.string(), "newest").default("newest"),
   page: fallback(z.number().int(), 1).default(1),
   pageSize: fallback(z.number().int(), DEFAULT_PAGE_SIZE).default(DEFAULT_PAGE_SIZE),
 });
@@ -231,7 +239,7 @@ function AttachmentsReviewPage() {
   const filtered = useMemo(() => filterAttachments(rows, linked, search), [rows, linked, search]);
 
 
-  const FILTER_KEYS: Array<keyof SearchState> = ["q", "status", "category", "from", "to", "link"];
+  const FILTER_KEYS: Array<keyof SearchState> = ["q", "status", "category", "from", "to", "link", "sort"];
   const setSearch = (patch: Partial<SearchState>) => {
     const touchesFilter = Object.keys(patch).some((k) => FILTER_KEYS.includes(k as keyof SearchState));
     navigate({
@@ -242,7 +250,7 @@ function AttachmentsReviewPage() {
 
   const resetFilters = () =>
     navigate({
-      search: { q: "", status: "all", category: "all", from: "", to: "", link: "all", page: 1, pageSize: search.pageSize },
+      search: { q: "", status: "all", category: "all", from: "", to: "", link: "all", sort: "newest", page: 1, pageSize: search.pageSize },
       replace: true,
     });
 
@@ -254,7 +262,11 @@ function AttachmentsReviewPage() {
     (search.to ? 1 : 0) +
     (search.link !== "all" ? 1 : 0);
 
-  const { pageRows, totalPages, currentPage, pageStart } = paginate(filtered, search.page, search.pageSize);
+  const sorted = useMemo(
+    () => sortAttachments(filtered, linked, (search.sort as AttachmentsSort) ?? "newest"),
+    [filtered, linked, search.sort],
+  );
+  const { pageRows, totalPages, currentPage, pageStart } = paginate(sorted, search.page, search.pageSize);
   const pageSize = Math.max(1, search.pageSize);
 
   const changeStatus = async (a: Attachment, next: AttachmentStatus, note?: string) => {
@@ -380,6 +392,16 @@ function AttachmentsReviewPage() {
                 <SelectItem value="zakat">مرتبط بإقرار زكاة</SelectItem>
                 <SelectItem value="approval">مرتبط بطلب اعتماد</SelectItem>
                 <SelectItem value="org">مرتبط بمؤسسة</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={search.sort} onValueChange={(v) => setSearch({ sort: v })}>
+              <SelectTrigger className="h-9" aria-label="الفرز">
+                <SelectValue placeholder="الفرز" />
+              </SelectTrigger>
+              <SelectContent>
+                {SORT_OPTIONS.map((o) => (
+                  <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <div className="flex gap-1 md:col-span-6 lg:col-span-1">
