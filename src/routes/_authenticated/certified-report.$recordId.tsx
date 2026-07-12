@@ -120,6 +120,11 @@ function CertifiedReportPage() {
         </Button>
         <div className="flex items-center gap-2">
           <Button asChild variant="outline" size="sm" className="gap-1.5">
+            <Link to="/zakat-case/$recordId" params={{ recordId }}>
+              <FileText className="h-4 w-4" /> تفاصيل الحالة
+            </Link>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="gap-1.5">
             <Link to="/compliance-report/$recordId" params={{ recordId }}>
               <FileText className="h-4 w-4" /> تقرير الامتثال الشرعي
             </Link>
