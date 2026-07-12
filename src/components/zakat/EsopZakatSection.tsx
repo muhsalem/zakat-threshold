@@ -5,8 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { Briefcase, Info } from "lucide-react";
+import { Briefcase, Info, AlertTriangle } from "lucide-react";
 import { ZAKAT_RATE } from "@/lib/zakat";
+import { validateEsop } from "@/components/zakat/individual/securities/validation";
 
 export type EsopReportData = {
   show: boolean;
@@ -29,6 +30,12 @@ export function EsopZakatSection({ currencyName = "", onChange }: Props) {
   const [rsuValue, setRsuValue] = useState("");
   const [intentTrade, setIntentTrade] = useState(true);
 
+  const errors = useMemo(
+    () => validateEsop({ vestedShares, price, strike, rsuValue }),
+    [vestedShares, price, strike, rsuValue],
+  );
+  const hasBlockingErrors = !!(errors.vestedShares || errors.price || errors.rsuValue);
+
   const n = (v: string) => {
     const x = parseFloat(v);
     return Number.isFinite(x) ? x : 0;
@@ -38,7 +45,7 @@ export function EsopZakatSection({ currencyName = "", onChange }: Props) {
     () => Math.max(0, n(vestedShares) * Math.max(0, n(price) - n(strike))),
     [vestedShares, price, strike],
   );
-  const base = optionsIntrinsic + n(rsuValue);
+  const base = hasBlockingErrors ? 0 : optionsIntrinsic + n(rsuValue);
   const zakat = intentTrade ? base * ZAKAT_RATE : 0;
 
   useEffect(() => {
@@ -54,7 +61,10 @@ export function EsopZakatSection({ currencyName = "", onChange }: Props) {
       zakat,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vestedShares, price, strike, rsuValue, intentTrade]);
+  }, [vestedShares, price, strike, rsuValue, intentTrade, hasBlockingErrors]);
+
+  const Err = ({ msg }: { msg?: string }) =>
+    msg ? <p className="text-[11px] text-destructive">{msg}</p> : null;
 
   return (
     <Card className="shadow-soft border-primary/20">
@@ -88,6 +98,15 @@ export function EsopZakatSection({ currencyName = "", onChange }: Props) {
           </AlertDescription>
         </Alert>
 
+        {hasBlockingErrors && (
+          <Alert variant="destructive" className="py-2">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription className="text-xs">
+              يوجد مدخلات غير صالحة — الزكاة معلّقة حتى تصحيحها.
+            </AlertDescription>
+          </Alert>
+        )}
+
         <div className="grid md:grid-cols-3 gap-3">
           <div className="space-y-1.5">
             <Label className="text-xs">عدد الخيارات المستحقّة (Vested)</Label>
@@ -96,7 +115,9 @@ export function EsopZakatSection({ currencyName = "", onChange }: Props) {
               value={vestedShares}
               onChange={(e) => setVestedShares(e.target.value)}
               placeholder="0"
+              aria-invalid={!!errors.vestedShares}
             />
+            <Err msg={errors.vestedShares} />
           </div>
           <div className="space-y-1.5">
             <Label className="text-xs">سعر السهم الحالي</Label>
@@ -105,7 +126,9 @@ export function EsopZakatSection({ currencyName = "", onChange }: Props) {
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               placeholder="0"
+              aria-invalid={!!errors.price}
             />
+            <Err msg={errors.price} />
           </div>
           <div className="space-y-1.5">
             <Label className="text-xs">سعر التنفيذ (Strike)</Label>
@@ -114,7 +137,9 @@ export function EsopZakatSection({ currencyName = "", onChange }: Props) {
               value={strike}
               onChange={(e) => setStrike(e.target.value)}
               placeholder="0"
+              aria-invalid={!!errors.strike}
             />
+            <Err msg={errors.strike} />
           </div>
           <div className="space-y-1.5 md:col-span-2">
             <Label className="text-xs">قيمة RSUs المستحقّة بسعر السوق</Label>
@@ -123,7 +148,9 @@ export function EsopZakatSection({ currencyName = "", onChange }: Props) {
               value={rsuValue}
               onChange={(e) => setRsuValue(e.target.value)}
               placeholder="0"
+              aria-invalid={!!errors.rsuValue}
             />
+            <Err msg={errors.rsuValue} />
           </div>
           <div className="flex items-center gap-2">
             <Switch checked={intentTrade} onCheckedChange={setIntentTrade} id="esop-intent" />
