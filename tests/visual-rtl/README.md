@@ -22,10 +22,17 @@ drift.
 ## Run
 
 ```bash
-python tests/visual-rtl/run.py            # compare against baselines
-python tests/visual-rtl/run.py --update   # (re)generate baselines after
-                                          # an intentional visual change
+python tests/visual-rtl/run.py            # visual snapshots vs baselines
+python tests/visual-rtl/run.py --update   # (re)generate baselines
+python tests/visual-rtl/run-data.py       # behavioral test with fake data
 ```
+
+`run-data.py` drives `fixture-data.html` (43 fake records + 27 attachments
+with working prev/next, per-page select, counter "2 / 5", RTL arrow keys)
+across mobile / tablet / desktop viewports and asserts: counter format,
+disabled state on first/last page, RTL button ordering (prev right of next),
+`ArrowLeft` advances in RTL, `Home`/`End` jump, per-page recomputes total
+pages, and no horizontal overflow.
 
 Baselines live in `baselines/`. Failures write the actual capture and a
 red-highlighted diff into `diffs/` and exit non-zero.
