@@ -330,6 +330,13 @@ function AttachmentsReviewPage() {
   );
   const pageSize = Math.max(1, search.pageSize);
 
+  const onPagerKeyDown = usePaginationKeys({
+    page: currentPage,
+    totalPages,
+    firstPage: 1,
+    onChange: (next) => setSearch({ page: next }),
+  });
+
   const changeStatus = async (a: Attachment, next: AttachmentStatus, note?: string) => {
     const { data: userRes } = await supabase.auth.getUser();
     const { error } = await (
