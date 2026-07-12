@@ -129,7 +129,7 @@ function CertificationsPage() {
             نوفّر: وثائق الخوارزميات، سجل تدقيق كامل، ونسخة تجريبية معزولة للمراجعة.
           </p>
           <Button asChild>
-            <Link to="/contact">تواصل معنا للاعتماد</Link>
+            <a href="mailto:certifications@nisab.app">تواصل معنا للاعتماد</a>
           </Button>
         </CardContent>
       </Card>
