@@ -193,6 +193,8 @@ async def run() -> int:
                 await page.screenshot(path=str(CAPTURE / f"fail_{browser_name}_{name}_numbered.png"))
             await context.close()
         await browser.close()
+    httpd.shutdown()
+
 
 
     if failures:
