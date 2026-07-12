@@ -20,7 +20,12 @@
         gap: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb; margin-top: 12px; }
       .pager-controls { display: flex; align-items: center; gap: 8px; }
       .counter { font-size: 12px; color: #374151; }
+      /* حلقة تركيز مرئية موحّدة — تُفحص في run-keyboard.py */
+      .btn:focus-visible, .select:focus-visible, nav.pager:focus-visible {
+        outline: 2px solid #2563eb; outline-offset: 2px; border-color: #2563eb;
+      }
     </style>
+
   </head>
   <body>
     <!-- ============================================================
@@ -101,6 +106,38 @@
       </nav>
     </section>
 
+    <!-- ============================================================
+         LTR mirror of RECORDS — يضمن أن نفس منطق الترقيم/الكيبورد
+         يعمل بشكل معكوس في LTR (ArrowRight = التالي)
+         ============================================================ -->
+    <section id="records-ltr" dir="ltr" lang="en" class="card">
+      <div class="label">LTR — mirror records (keyboard parity)</div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Client</th><th>Year</th><th>Base</th><th>Zakat</th>
+          </tr>
+        </thead>
+        <tbody id="records-ltr-body"></tbody>
+      </table>
+      <nav class="pager" aria-label="Records pagination" data-testid="records-ltr-pager">
+        <div class="pager-controls">
+          <span class="counter">Rows</span>
+          <select id="records-ltr-per-page" class="select" aria-label="Rows per page">
+            <option value="10" selected>10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+        <div class="pager-controls">
+          <button id="records-ltr-prev" class="btn" aria-label="Previous page">Prev</button>
+          <span id="records-ltr-counter" class="counter tabular-nums" data-testid="records-ltr-counter">1 / 5</span>
+          <button id="records-ltr-next" class="btn" aria-label="Next page">Next</button>
+        </div>
+      </nav>
+    </section>
+
+
     <script>
       // ---------- fake data ----------
       const RECORDS = Array.from({ length: 43 }, (_, i) => ({
@@ -176,6 +213,18 @@
         range: document.getElementById("attachments-range"),
         row: (a) => `<tr><td>${a.name}</td><td>${a.type}</td><td dir="ltr">${a.size}</td></tr>`,
       });
+
+      pager({
+        data: RECORDS,
+        body: document.getElementById("records-ltr-body"),
+        counter: document.getElementById("records-ltr-counter"),
+        prev: document.getElementById("records-ltr-prev"),
+        next: document.getElementById("records-ltr-next"),
+        select: document.getElementById("records-ltr-per-page"),
+        container: document.querySelector('[data-testid="records-ltr-pager"]'),
+        row: (r) => `<tr><td>${r.id}</td><td>${r.client}</td><td>${r.year}</td><td>${r.base}</td><td>${r.zakat}</td></tr>`,
+      });
+
 
       // ---------- numbered (shadcn Pagination) variant ----------
       (function numbered() {
