@@ -37,6 +37,9 @@ export default function IslamicBankModelFull() {
   const [fixedAssetsForUse, setFixedAssetsForUse] = useState("");
   const [doubtfulDebtsProvision, setDoubtfulDebtsProvision] = useState("");
   const [currentPayables, setCurrentPayables] = useState("");
+  // تعديلات إعادة العرض (Misrepresentation adjustments) + المشاركة الكاملة
+  const [misrepAdjustment, setMisrepAdjustment] = useState(""); // ± تعديل بنود سوء العرض المحاسبي
+  const [fullParticipationAdj, setFullParticipationAdj] = useState(""); // إضافة حصص المشاركة الكاملة غير المدرجة
 
   const num = (v: string) => (v.trim() === "" ? 0 : Math.max(0, parseFloat(v) || 0));
 
