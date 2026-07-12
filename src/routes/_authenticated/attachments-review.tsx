@@ -469,9 +469,10 @@ function LinkedCell({ a, linked }: { a: Attachment; linked?: LinkedRecord }) {
     return (
       <button
         type="button"
-        onClick={() =>
-          navigate({ to: "/zakat-case/$recordId", params: { recordId: linked.id } })
-        }
+        onClick={() => {
+          const target = linkedNavTarget({ zakat_record_id: linked.id });
+          if (target) navigate(target);
+        }}
         className="text-right hover:underline"
       >
         <div className="flex items-center gap-1 text-xs">
