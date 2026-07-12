@@ -250,7 +250,7 @@ function AttachmentsReviewPage() {
 
   const resetFilters = () =>
     navigate({
-      search: { q: "", status: "all", category: "all", from: "", to: "", link: "all", page: 1, pageSize: search.pageSize },
+      search: { q: "", status: "all", category: "all", from: "", to: "", link: "all", sort: "newest", page: 1, pageSize: search.pageSize },
       replace: true,
     });
 
