@@ -122,6 +122,9 @@ const RECORD_TYPE_LABELS: Record<string, string> = {
   investment: "استثمار",
 };
 
+const PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
+const DEFAULT_PAGE_SIZE = 25;
+
 const searchSchema = z.object({
   q: fallback(z.string(), "").default(""),
   status: fallback(z.string(), "all").default("all"),
@@ -129,6 +132,8 @@ const searchSchema = z.object({
   from: fallback(z.string(), "").default(""),
   to: fallback(z.string(), "").default(""),
   link: fallback(z.string(), "all").default("all"),
+  page: fallback(z.number().int(), 1).default(1),
+  pageSize: fallback(z.number().int(), DEFAULT_PAGE_SIZE).default(DEFAULT_PAGE_SIZE),
 });
 
 export const Route = createFileRoute("/_authenticated/attachments-review")({
@@ -231,12 +236,18 @@ function AttachmentsReviewPage() {
   }, [rows, linked, search]);
 
   type SearchState = z.infer<typeof searchSchema>;
-  const setSearch = (patch: Partial<SearchState>) =>
-    navigate({ search: (prev: SearchState) => ({ ...prev, ...patch }), replace: true });
+  const FILTER_KEYS: Array<keyof SearchState> = ["q", "status", "category", "from", "to", "link"];
+  const setSearch = (patch: Partial<SearchState>) => {
+    const touchesFilter = Object.keys(patch).some((k) => FILTER_KEYS.includes(k as keyof SearchState));
+    navigate({
+      search: (prev: SearchState) => ({ ...prev, ...patch, ...(touchesFilter ? { page: 1 } : {}) }),
+      replace: true,
+    });
+  };
 
   const resetFilters = () =>
     navigate({
-      search: { q: "", status: "all", category: "all", from: "", to: "", link: "all" },
+      search: { q: "", status: "all", category: "all", from: "", to: "", link: "all", page: 1, pageSize: search.pageSize },
       replace: true,
     });
 
@@ -247,6 +258,12 @@ function AttachmentsReviewPage() {
     (search.from ? 1 : 0) +
     (search.to ? 1 : 0) +
     (search.link !== "all" ? 1 : 0);
+
+  const pageSize = Math.max(1, search.pageSize);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const currentPage = Math.min(Math.max(1, search.page), totalPages);
+  const pageStart = (currentPage - 1) * pageSize;
+  const pageRows = filtered.slice(pageStart, pageStart + pageSize);
 
   const changeStatus = async (a: Attachment, next: AttachmentStatus, note?: string) => {
     const { data: userRes } = await supabase.auth.getUser();
@@ -392,7 +409,7 @@ function AttachmentsReviewPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filtered.map((a) => (
+                  {pageRows.map((a) => (
                     <AttachmentRow
                       key={a.id}
                       a={a}
@@ -403,6 +420,48 @@ function AttachmentsReviewPage() {
                   ))}
                 </TableBody>
               </Table>
+            </div>
+          )}
+          {!loading && !err && filtered.length > 0 && (
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-3">
+              <div className="text-xs text-muted-foreground">
+                عرض {pageStart + 1}–{Math.min(pageStart + pageSize, filtered.length)} من {filtered.length}
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">لكل صفحة</span>
+                <Select
+                  value={String(pageSize)}
+                  onValueChange={(v) => setSearch({ pageSize: Number(v), page: 1 })}
+                >
+                  <SelectTrigger className="h-8 w-20">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PAGE_SIZE_OPTIONS.map((n) => (
+                      <SelectItem key={n} value={String(n)}>{n}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={currentPage <= 1}
+                  onClick={() => setSearch({ page: currentPage - 1 })}
+                >
+                  السابق
+                </Button>
+                <span className="text-xs tabular-nums">
+                  {currentPage} / {totalPages}
+                </span>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={currentPage >= totalPages}
+                  onClick={() => setSearch({ page: currentPage + 1 })}
+                >
+                  التالي
+                </Button>
+              </div>
             </div>
           )}
         </CardContent>
