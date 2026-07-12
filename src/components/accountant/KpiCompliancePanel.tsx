@@ -25,10 +25,21 @@ import {
   XCircle,
   Gauge,
   Wand2,
+  Download,
+  FileSpreadsheet,
+  Printer,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { ZAKAT_RATE, fmt } from "@/lib/zakat";
 import { KpiCorrectionDialog, type IssueCode, type CorrectionRecord } from "./KpiCorrectionDialog";
+import { exportKpiExcel, exportKpiPdf, type ExportRow } from "./kpiExport";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type Record = {
   id: string;
