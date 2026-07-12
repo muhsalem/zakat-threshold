@@ -16,6 +16,7 @@ import {
 import { TrendingUp, Info, ShieldCheck, AlertTriangle } from "lucide-react";
 import { currency as fmtCurrency, num } from "@/lib/zakat";
 import { MarketQuoteButton } from "@/components/zakat/MarketQuoteButton";
+import { validateSecurityRow, type SecurityRowErrors } from "@/components/zakat/individual/securities/validation";
 
 type SecurityKind =
   | "stock_trade" // أسهم متاجرة
