@@ -25,7 +25,6 @@ import {
   XCircle,
   Gauge,
   Wand2,
-  Download,
   FileSpreadsheet,
   Printer,
 } from "lucide-react";
