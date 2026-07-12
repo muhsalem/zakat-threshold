@@ -311,13 +311,40 @@ function AttachmentsReviewPage() {
           </div>
           <div className="grid gap-2 md:grid-cols-6">
             <div className="relative md:col-span-2">
-              <Search className="absolute right-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <Search className="absolute right-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
               <Input
-                value={search.q}
-                onChange={(e) => setSearch({ q: e.target.value })}
-                placeholder="ابحث في اسم الملف، الملاحظات، أو معرّف الحالة…"
-                className="h-9 pr-8"
+                value={qInput}
+                onChange={(e) => setQInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    setSearch({ q: qInput });
+                  } else if (e.key === "Escape" && qInput) {
+                    e.preventDefault();
+                    setQInput("");
+                    setSearch({ q: "" });
+                  }
+                }}
+                placeholder="ابحث في اسم الملف، الملاحظات، أو معرّف الحالة… (Enter للتنفيذ، Esc للمسح)"
+                aria-label="بحث في المرفقات"
+                enterKeyHint="search"
+                autoComplete="off"
+                spellCheck={false}
+                className="h-9 pr-8 pl-8"
               />
+              {qInput && (
+                <button
+                  type="button"
+                  aria-label="مسح البحث"
+                  onClick={() => {
+                    setQInput("");
+                    setSearch({ q: "" });
+                  }}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 rounded p-0.5 text-muted-foreground hover:text-foreground"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
             </div>
             <Select value={search.category} onValueChange={(v) => setSearch({ category: v })}>
               <SelectTrigger className="h-9">
