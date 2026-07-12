@@ -24,9 +24,11 @@ import {
   ShieldCheck,
   XCircle,
   Gauge,
+  Wand2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { ZAKAT_RATE, fmt } from "@/lib/zakat";
+import { KpiCorrectionDialog, type IssueCode, type CorrectionRecord } from "./KpiCorrectionDialog";
 
 type Record = {
   id: string;
