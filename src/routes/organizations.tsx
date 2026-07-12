@@ -683,6 +683,14 @@ function ApprovalsPanel({
                     </AlertDescription>
                   </Alert>
                 )}
+                <div className="pt-2 border-t">
+                  <ApprovalAttachments
+                    approvalId={a.id}
+                    organizationId={orgId}
+                    canWrite={isMaker || isChecker}
+                    compact
+                  />
+                </div>
               </div>
             );
           })}
