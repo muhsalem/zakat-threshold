@@ -64,6 +64,7 @@ import { Route as ApiPublicOpenapiRouteImport } from './routes/api/public/openap
 import { Route as ApiPublicNisabRouteImport } from './routes/api/public/nisab'
 import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
 import { Route as ApiPublicCalcRouteImport } from './routes/api/public/calc'
+import { Route as AuthenticatedZakatCaseRecordIdRouteImport } from './routes/_authenticated/zakat-case.$recordId'
 import { Route as AuthenticatedComplianceReportRecordIdRouteImport } from './routes/_authenticated/compliance-report.$recordId'
 import { Route as AuthenticatedCertifiedReportRecordIdRouteImport } from './routes/_authenticated/certified-report.$recordId'
 import { Route as AuthenticatedAccountantClientIdRouteImport } from './routes/_authenticated/accountant.$clientId'
@@ -351,6 +352,12 @@ const ApiPublicCalcRoute = ApiPublicCalcRouteImport.update({
   path: '/api/public/calc',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedZakatCaseRecordIdRoute =
+  AuthenticatedZakatCaseRecordIdRouteImport.update({
+    id: '/zakat-case/$recordId',
+    path: '/zakat-case/$recordId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedComplianceReportRecordIdRoute =
   AuthenticatedComplianceReportRecordIdRouteImport.update({
     id: '/compliance-report/$recordId',
@@ -463,6 +470,7 @@ export interface FileRoutesByFullPath {
   '/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
   '/certified-report/$recordId': typeof AuthenticatedCertifiedReportRecordIdRoute
   '/compliance-report/$recordId': typeof AuthenticatedComplianceReportRecordIdRoute
+  '/zakat-case/$recordId': typeof AuthenticatedZakatCaseRecordIdRoute
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
@@ -529,6 +537,7 @@ export interface FileRoutesByTo {
   '/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
   '/certified-report/$recordId': typeof AuthenticatedCertifiedReportRecordIdRoute
   '/compliance-report/$recordId': typeof AuthenticatedComplianceReportRecordIdRoute
+  '/zakat-case/$recordId': typeof AuthenticatedZakatCaseRecordIdRoute
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
@@ -597,6 +606,7 @@ export interface FileRoutesById {
   '/_authenticated/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
   '/_authenticated/certified-report/$recordId': typeof AuthenticatedCertifiedReportRecordIdRoute
   '/_authenticated/compliance-report/$recordId': typeof AuthenticatedComplianceReportRecordIdRoute
+  '/_authenticated/zakat-case/$recordId': typeof AuthenticatedZakatCaseRecordIdRoute
   '/api/public/calc': typeof ApiPublicCalcRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
@@ -665,6 +675,7 @@ export interface FileRouteTypes {
     | '/accountant/$clientId'
     | '/certified-report/$recordId'
     | '/compliance-report/$recordId'
+    | '/zakat-case/$recordId'
     | '/api/public/calc'
     | '/api/public/health'
     | '/api/public/nisab'
@@ -731,6 +742,7 @@ export interface FileRouteTypes {
     | '/accountant/$clientId'
     | '/certified-report/$recordId'
     | '/compliance-report/$recordId'
+    | '/zakat-case/$recordId'
     | '/api/public/calc'
     | '/api/public/health'
     | '/api/public/nisab'
@@ -798,6 +810,7 @@ export interface FileRouteTypes {
     | '/_authenticated/accountant/$clientId'
     | '/_authenticated/certified-report/$recordId'
     | '/_authenticated/compliance-report/$recordId'
+    | '/_authenticated/zakat-case/$recordId'
     | '/api/public/calc'
     | '/api/public/health'
     | '/api/public/nisab'
@@ -1255,6 +1268,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCalcRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/zakat-case/$recordId': {
+      id: '/_authenticated/zakat-case/$recordId'
+      path: '/zakat-case/$recordId'
+      fullPath: '/zakat-case/$recordId'
+      preLoaderRoute: typeof AuthenticatedZakatCaseRecordIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/compliance-report/$recordId': {
       id: '/_authenticated/compliance-report/$recordId'
       path: '/compliance-report/$recordId'
@@ -1352,6 +1372,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedErpSetupRoute: typeof AuthenticatedErpSetupRoute
   AuthenticatedCertifiedReportRecordIdRoute: typeof AuthenticatedCertifiedReportRecordIdRoute
   AuthenticatedComplianceReportRecordIdRoute: typeof AuthenticatedComplianceReportRecordIdRoute
+  AuthenticatedZakatCaseRecordIdRoute: typeof AuthenticatedZakatCaseRecordIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -1366,6 +1387,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
     AuthenticatedCertifiedReportRecordIdRoute,
   AuthenticatedComplianceReportRecordIdRoute:
     AuthenticatedComplianceReportRecordIdRoute,
+  AuthenticatedZakatCaseRecordIdRoute: AuthenticatedZakatCaseRecordIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
