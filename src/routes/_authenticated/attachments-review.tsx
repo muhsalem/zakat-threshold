@@ -230,8 +230,9 @@ function AttachmentsReviewPage() {
     });
   }, [rows, linked, search]);
 
-  const setSearch = (patch: Partial<z.infer<typeof searchSchema>>) =>
-    navigate({ search: (prev) => ({ ...prev, ...patch }), replace: true });
+  type SearchState = z.infer<typeof searchSchema>;
+  const setSearch = (patch: Partial<SearchState>) =>
+    navigate({ search: (prev: SearchState) => ({ ...prev, ...patch }), replace: true });
 
   const resetFilters = () =>
     navigate({
