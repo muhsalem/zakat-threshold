@@ -108,6 +108,9 @@ async def mock_supabase(route: Route):
         headers = {
             "Content-Type": "application/json",
             "Content-Range": f"{r_from}-{last}/{RECORDS_TOTAL}",
+            # CORS: Content-Range isn't a safelisted response header, so the
+            # browser hides it from JS unless the server exposes it explicitly.
+            "Access-Control-Expose-Headers": "Content-Range",
         }
         # PostgREST returns 206 when the requested range is a subset of total.
         status = 206 if (last - r_from + 1) < RECORDS_TOTAL else 200
