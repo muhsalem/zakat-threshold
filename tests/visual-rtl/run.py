@@ -72,7 +72,7 @@ def pixel_diff_ratio(a: Image.Image, b: Image.Image) -> tuple[float, Image.Image
     if not bbox:
         return 0.0, diff
     # Count pixels that differ by any channel.
-    changed = sum(1 for px in diff.getdata() if px != (0, 0, 0))
+    changed = sum(1 for px in diff.getdata() if px != (0, 0, 0))  # noqa: keep simple, avoids numpy dep
     ratio = changed / (a.width * a.height)
     return ratio, diff
 
