@@ -135,6 +135,24 @@ export default function IslamicBankModelFull() {
           </div>
         </section>
 
+        <section className="space-y-3">
+          <h3 className="font-semibold text-sm">تعديلات AAOIFI 35 المتقدّمة</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <Field
+              label="تعديل إعادة العرض (Misrepresentation ±)"
+              value={misrepAdjustment}
+              onChange={setMisrepAdjustment}
+              hint="قيمة قد تكون موجبة (إضافة بند مُغفل) أو سالبة (تصحيح مبالغة). يُطبَّق مباشرة على الوعاء."
+            />
+            <Field
+              label="حصص المشاركة الكاملة غير المدرجة"
+              value={fullParticipationAdj}
+              onChange={setFullParticipationAdj}
+              hint="إضافة حصص المضاربة/المشاركة المعروضة خارج الميزانية على الوعاء الزكوي"
+            />
+          </div>
+        </section>
+
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3 pt-4 border-t">
           <SummaryCard label="مجموع الموجودات الزكوية" value={fmt(calc.assets)} />
           <SummaryCard label="مجموع المستبعَدات" value={fmt(calc.deductions)} />
