@@ -104,11 +104,14 @@ async def mock_supabase(route: Route):
 
     if path.endswith("/rest/v1/zakat_records"):
         body = fake_records(r_from, limit)
+        last = min(RECORDS_TOTAL - 1, r_from + limit - 1)
         headers = {
-            "content-type": "application/json",
-            "content-range": f"{r_from}-{min(RECORDS_TOTAL - 1, r_from + limit - 1)}/{RECORDS_TOTAL}",
+            "Content-Type": "application/json",
+            "Content-Range": f"{r_from}-{last}/{RECORDS_TOTAL}",
         }
-        await route.fulfill(status=200, headers=headers, body=json.dumps(body))
+        # PostgREST returns 206 when the requested range is a subset of total.
+        status = 206 if (last - r_from + 1) < RECORDS_TOTAL else 200
+        await route.fulfill(status=status, headers=headers, body=json.dumps(body))
         return
 
     if path.endswith("/rest/v1/approval_attachments"):
