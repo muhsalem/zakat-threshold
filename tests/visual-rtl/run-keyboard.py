@@ -121,9 +121,14 @@ async def assert_pager_keyboard(page: Page, prefix: str, direction: str, total: 
     await page.keyboard.press("Home")  # reset for the next section
 
     # ---- Tab reaches every focusable pager control with a visible ring ------------
-    # Focus the select directly (Tab order across the whole document isn't stable
-    # enough to walk from container → controls in one hop across all browsers).
+    # الزر «السابق» يكون disabled في الصفحة 1، لذا ننقل الحالة للصفحة 2 قبل فحص تركيزه.
+    await pager.focus()
+    await page.keyboard.press(forward)
+    assert (await counter_text(page, prefix)) == f"2 / {total}"
     for control in (f"#{prefix}-per-page", f"#{prefix}-prev", f"#{prefix}-next"):
+        await page.locator(control).focus()
+        await assert_focus_ring(page, control, f"{prefix} {control}")
+
         await page.locator(control).focus()
         await assert_focus_ring(page, control, f"{prefix} {control}")
 
