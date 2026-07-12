@@ -98,6 +98,7 @@ import {
   buildDeductionsList as buildDeductionsListShared,
 } from "@/lib/zakat/report-builders";
 import { GoldSilverSection } from "./individual/gold-silver/GoldSilverSection";
+import { CashBankAccordionSection } from "./individual/cash-bank/CashBankAccordionSection";
 import {
   EcommerceItemsTable,
   computeEcommerceTotals,
@@ -1243,31 +1244,12 @@ export function IndividualTab() {
 
 
                 {/* النقد */}
-                <AccordionItem
-                  id="section-cash"
-                  value="cash"
-                  className="border rounded-xl shadow-soft bg-card px-4"
-                >
-                  <AccordionTrigger className="hover:no-underline">
-                    <span className="flex items-center gap-2 text-base font-semibold">
-                      <Landmark className="h-5 w-5 text-primary" /> زكاة الأوراق النقدية والحسابات
-                      والبطاقات والمحافظ البنكية
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent className="space-y-4 pb-4">
-                    <CashBankSection
-                      countryCode={countryCode}
-                      currencyName={currencyName}
-                      onTotalChange={setCashTotalFromSection}
-                    />
-                    <div className="pt-3 border-t border-dashed">
-                      <div className="mb-2 text-sm font-semibold text-primary">
-                        حاسبة تطهير الفوائد الربوية (تُلحق بالنقد والبنوك)
-                      </div>
-                      <RibaPurificationCalc currencyName={currencyName} />
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
+                <CashBankAccordionSection
+                  countryCode={countryCode}
+                  currencyName={currencyName}
+                  onCashTotalChange={setCashTotalFromSection}
+                />
+
 
                 {/* الأوراق المالية */}
                 <AccordionItem
