@@ -218,9 +218,10 @@ async def assert_keys_on_drafts(page):
 
 
 async def assert_keys_on_attachments(page):
-    await page.goto(f"{BASE_URL}/attachments-review", wait_until="networkidle")
+    await page.goto(f"{BASE_URL}/attachments-review", wait_until="domcontentloaded")
     pager = page.locator('nav[aria-label="تصفّح المرفقات"]')
-    await pager.wait_for(timeout=15_000)
+    await pager.wait_for(state="attached", timeout=20_000)
+    await pager.scroll_into_view_if_needed()
 
     prev_btn = pager.get_by_role("button", name="السابق")
     next_btn = pager.get_by_role("button", name="التالي")
