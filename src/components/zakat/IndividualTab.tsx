@@ -110,67 +110,8 @@ import TradeActivityClassification, {
 } from "./TradeActivityClassification";
 
 import { supabase } from "@/integrations/supabase/client";
+import { NumField, SectionResult, Row } from "./individual/shared";
 
-interface NumFieldProps {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  unit?: string;
-  hint?: string;
-  placeholder?: string;
-}
-function NumField({ label, value, onChange, unit, hint, placeholder }: NumFieldProps) {
-  return (
-    <div className="space-y-1.5">
-      <Label className="text-sm font-medium">{label}</Label>
-      <div className="relative">
-        <Input
-          type="number"
-          inputMode="decimal"
-          min="0"
-          step="0.01"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder ?? "0"}
-          className="pl-16"
-          dir="ltr"
-          style={{ textAlign: "right" }}
-        />
-        {unit && (
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
-            {unit}
-          </span>
-        )}
-      </div>
-      {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
-    </div>
-  );
-}
-
-function SectionResult({
-  label,
-  value,
-  eligible = true,
-  format,
-}: {
-  label: string;
-  value: number;
-  eligible?: boolean;
-  format: (n: number) => string;
-}) {
-  return (
-    <div
-      className={`flex items-center justify-between rounded-lg border px-4 py-3 ${eligible && value > 0 ? "border-primary/30 bg-primary/5" : "border-border bg-muted/40"}`}
-    >
-      <span className="text-sm font-medium">{label}</span>
-      <span
-        className={`font-bold ${eligible && value > 0 ? "text-primary" : "text-muted-foreground"}`}
-      >
-        {format(value)}
-      </span>
-    </div>
-  );
-}
 
 export function IndividualTab() {
   // بيانات المزكي
@@ -4235,17 +4176,6 @@ export function IndividualTab() {
           </div>
         </TabsContent>
       </Tabs>
-    </div>
-  );
-}
-
-function Row({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
-  return (
-    <div
-      className={`flex items-center justify-between rounded-md px-2.5 py-1.5 ${highlight ? "bg-primary/10 font-bold text-primary" : ""}`}
-    >
-      <span>{label}</span>
-      <span dir="ltr">{value}</span>
     </div>
   );
 }
