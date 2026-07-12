@@ -87,6 +87,20 @@
       </nav>
     </section>
 
+    <!-- ============================================================
+         NUMBERED PAGER: shadcn <Pagination> pattern (page links + ellipsis)
+         Guarded even though no route uses it today — future adoption
+         must preserve RTL button order + chevron mirroring.
+         ============================================================ -->
+    <section id="numbered-rtl" dir="rtl" lang="ar" class="card">
+      <div class="label">RTL — pager مرقّم (shadcn Pagination)</div>
+      <div id="numbered-body" style="min-height: 40px; font-size: 13px; color: #374151;"></div>
+      <nav class="pager" aria-label="ترقيم" data-testid="numbered-pager"
+           style="justify-content: center;">
+        <ul id="numbered-list" style="display: flex; align-items: center; gap: 4px; list-style: none; padding: 0; margin: 0;"></ul>
+      </nav>
+    </section>
+
     <script>
       // ---------- fake data ----------
       const RECORDS = Array.from({ length: 43 }, (_, i) => ({
