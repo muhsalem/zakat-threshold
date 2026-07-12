@@ -56,6 +56,7 @@ export default function IslamicBankModelFull() {
       num(mudarabaShare),
       num(musharakaShare),
       num(goldSilverInventory),
+      num(fullParticipationAdj),
     ].reduce((a, b) => a + b, 0);
 
     const deductions =
@@ -65,14 +66,16 @@ export default function IslamicBankModelFull() {
       num(fixedAssetsForUse) +
       num(currentPayables);
 
-    const base = Math.max(0, assets - deductions);
-    const zakat = base * ZAKAT_RATE; // 2.5% أساس هجري (البنوك عادة تعتمد سنة قمرية)
-    return { assets, deductions, base, zakat };
+    // تعديل إعادة العرض يمكن أن يكون سالباً (نصّاً) — يُطرح إن كان موجباً كتصحيح تصنيف
+    const misrep = parseFloat(misrepAdjustment) || 0;
+    const base = Math.max(0, assets - deductions + misrep);
+    const zakat = base * ZAKAT_RATE;
+    return { assets, deductions, base, zakat, misrep };
   }, [
     cashLiquid, murabahaReceivables, ijaraReceivables, istisnaReceivables, salamGoods,
     tradingInventory, sukukTrading, equityInvestments, mudarabaShare, musharakaShare,
     goldSilverInventory, psia, restrictedInvestments, takafulParticipantsFund,
-    fixedAssetsForUse, doubtfulDebtsProvision, currentPayables,
+    fixedAssetsForUse, doubtfulDebtsProvision, currentPayables, misrepAdjustment, fullParticipationAdj,
   ]);
 
   const fmt = (n: number) => new Intl.NumberFormat("ar-SA", { maximumFractionDigits: 2 }).format(n);
