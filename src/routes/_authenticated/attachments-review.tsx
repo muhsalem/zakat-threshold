@@ -232,11 +232,8 @@ function AttachmentsReviewPage() {
     (search.to ? 1 : 0) +
     (search.link !== "all" ? 1 : 0);
 
+  const { pageRows, totalPages, currentPage, pageStart } = paginate(filtered, search.page, search.pageSize);
   const pageSize = Math.max(1, search.pageSize);
-  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
-  const currentPage = Math.min(Math.max(1, search.page), totalPages);
-  const pageStart = (currentPage - 1) * pageSize;
-  const pageRows = filtered.slice(pageStart, pageStart + pageSize);
 
   const changeStatus = async (a: Attachment, next: AttachmentStatus, note?: string) => {
     const { data: userRes } = await supabase.auth.getUser();
