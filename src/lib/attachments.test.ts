@@ -44,20 +44,59 @@ describe("validateUpload", () => {
     ).toBe("too_large");
   });
 
-  it("يرفض نوع MIME غير مسموح", () => {
+  it("يرفض نوع MIME غير مسموح (exe)", () => {
     expect(
       validateUpload({
-        file: file({ type: "application/x-msdownload" }),
+        file: file({ type: "application/x-msdownload", name: "x.exe" }),
         uploaded_by: USER,
         zakat_record_id: REC,
       }),
     ).toBe("bad_mime");
   });
 
+  it("يرفض مستندات Office (DOCX/XLSX)", () => {
+    expect(
+      validateUpload({
+        file: file({
+          type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          name: "a.docx",
+        }),
+        uploaded_by: USER,
+        zakat_record_id: REC,
+      }),
+    ).toBe("bad_mime");
+  });
+
+  it("يرفض عدم تطابق الامتداد مع النوع", () => {
+    expect(
+      validateUpload({
+        file: file({ type: "application/pdf", name: "report.txt" }),
+        uploaded_by: USER,
+        zakat_record_id: REC,
+      }),
+    ).toBe("bad_ext");
+  });
+
+  it("يقبل صور PNG وJPEG وWebP", () => {
+    for (const [t, n] of [
+      ["image/png", "a.png"],
+      ["image/jpeg", "a.jpg"],
+      ["image/webp", "a.webp"],
+    ] as const) {
+      expect(
+        validateUpload({
+          file: file({ type: t, name: n }),
+          uploaded_by: USER,
+          zakat_record_id: REC,
+        }),
+      ).toBeNull();
+    }
+  });
+
   it("يرفض اسم ملف يحوي مسارات", () => {
     expect(
       validateUpload({
-        file: file({ name: "../etc/passwd" }),
+        file: file({ name: "../report.pdf" }),
         uploaded_by: USER,
         zakat_record_id: REC,
       }),
@@ -66,6 +105,32 @@ describe("validateUpload", () => {
 
   it("يشترط ربط المرفق بـ approval_id أو zakat_record_id", () => {
     expect(validateUpload({ file: file(), uploaded_by: USER })).toBe("no_link");
+  });
+
+  it("رسائل الخطأ العربية واضحة", async () => {
+    const { validationMessage } = await import("./attachments");
+    expect(validationMessage("too_large")).toMatch(/ميجابايت/);
+    expect(validationMessage("bad_mime")).toMatch(/PDF|صور/);
+    expect(validationMessage(null)).toBeNull();
+  });
+});
+
+describe("downscaleImage", () => {
+  it("يُبقي الملف كما هو خارج المتصفح (بيئة الاختبار)", async () => {
+    const { downscaleImage } = await import("./attachments");
+    const blob = new Blob([new Uint8Array([1, 2, 3])], { type: "image/png" });
+    const out = await downscaleImage(blob, "image/png");
+    expect(out.resized).toBe(false);
+    expect(out.mime).toBe("image/png");
+    expect(out.blob).toBe(blob);
+  });
+
+  it("يتجاوز الملفات غير الصورية", async () => {
+    const { downscaleImage } = await import("./attachments");
+    const blob = new Blob([new Uint8Array([1])], { type: "application/pdf" });
+    const out = await downscaleImage(blob, "application/pdf");
+    expect(out.resized).toBe(false);
+    expect(out.blob).toBe(blob);
   });
 });
 
