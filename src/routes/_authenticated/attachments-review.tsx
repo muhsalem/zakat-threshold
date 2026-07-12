@@ -47,6 +47,7 @@ import {
   Link2,
 } from "lucide-react";
 import { filterAttachments, paginate, linkedNavTarget } from "@/lib/attachmentsFilter";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
 type AttachmentStatus = "draft" | "pending" | "approved" | "rejected";
 
@@ -152,6 +153,28 @@ function AttachmentsReviewPage() {
   const [err, setErr] = useState<string | null>(null);
   const [reload, setReload] = useState(0);
   const [historyFor, setHistoryFor] = useState<Attachment | null>(null);
+  type SearchState = z.infer<typeof searchSchema>;
+  const [qInput, setQInput] = useState(search.q);
+  const debouncedQ = useDebouncedValue(qInput, 300);
+
+  // Sync URL when the debounced value diverges (typing).
+  useEffect(() => {
+    if (debouncedQ !== search.q) {
+      navigate({
+        search: (prev: SearchState) => ({ ...prev, q: debouncedQ, page: 1 }),
+        replace: true,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedQ]);
+
+  // Sync local input if URL changes externally (back/forward, reset).
+  useEffect(() => {
+    setQInput((cur: string) => (cur === search.q ? cur : search.q));
+  }, [search.q]);
+
+
+
 
   useEffect(() => {
     let cancelled = false;
@@ -208,7 +231,6 @@ function AttachmentsReviewPage() {
   const filtered = useMemo(() => filterAttachments(rows, linked, search), [rows, linked, search]);
 
 
-  type SearchState = z.infer<typeof searchSchema>;
   const FILTER_KEYS: Array<keyof SearchState> = ["q", "status", "category", "from", "to", "link"];
   const setSearch = (patch: Partial<SearchState>) => {
     const touchesFilter = Object.keys(patch).some((k) => FILTER_KEYS.includes(k as keyof SearchState));
@@ -289,13 +311,40 @@ function AttachmentsReviewPage() {
           </div>
           <div className="grid gap-2 md:grid-cols-6">
             <div className="relative md:col-span-2">
-              <Search className="absolute right-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <Search className="absolute right-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
               <Input
-                value={search.q}
-                onChange={(e) => setSearch({ q: e.target.value })}
-                placeholder="ابحث في اسم الملف، الملاحظات، أو معرّف الحالة…"
-                className="h-9 pr-8"
+                value={qInput}
+                onChange={(e) => setQInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    setSearch({ q: qInput });
+                  } else if (e.key === "Escape" && qInput) {
+                    e.preventDefault();
+                    setQInput("");
+                    setSearch({ q: "" });
+                  }
+                }}
+                placeholder="ابحث في اسم الملف، الملاحظات، أو معرّف الحالة… (Enter للتنفيذ، Esc للمسح)"
+                aria-label="بحث في المرفقات"
+                enterKeyHint="search"
+                autoComplete="off"
+                spellCheck={false}
+                className="h-9 pr-8 pl-8"
               />
+              {qInput && (
+                <button
+                  type="button"
+                  aria-label="مسح البحث"
+                  onClick={() => {
+                    setQInput("");
+                    setSearch({ q: "" });
+                  }}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 rounded p-0.5 text-muted-foreground hover:text-foreground"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
             </div>
             <Select value={search.category} onValueChange={(v) => setSearch({ category: v })}>
               <SelectTrigger className="h-9">
