@@ -213,6 +213,9 @@ function OrgsPage() {
                   <TabsTrigger value="approvals">
                     <ShieldCheck className="size-4 me-1" /> الاعتمادات
                   </TabsTrigger>
+                  <TabsTrigger value="audit">
+                    <ScrollText className="size-4 me-1" /> سجل التدقيق
+                  </TabsTrigger>
                   <TabsTrigger value="export">
                     <Download className="size-4 me-1" /> تصدير XBRL
                   </TabsTrigger>
