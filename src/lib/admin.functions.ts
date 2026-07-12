@@ -19,7 +19,7 @@ async function assertAdmin(ctx: AuthCtx) {
 export const listUsersWithRoles = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdmincontext as AuthCtx;
+    await assertAdmin(context as AuthCtx);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: users, error: e1 } = await supabaseAdmin.auth.admin.listUsers({ perPage: 200 });
     if (e1) throw new Error(e1.message);
@@ -52,14 +52,14 @@ export const grantRole = createServerFn({ method: "POST" })
     return d;
   })
   .handler(async ({ data, context }) => {
-    await assertAdmincontext as AuthCtx;
+    await assertAdmin(context as AuthCtx);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin
       .from("user_roles")
       .upsert({ user_id: data.userId, role: data.role }, { onConflict: "user_id,role" });
     if (error) throw new Error(error.message);
     await supabaseAdmin.from("sharia_audit_log").insert({
-      user_id: context as AuthCtx.userId,
+      user_id: (context as AuthCtx).userId,
       action: "role_granted",
       fingerprint: `${data.userId}:${data.role}`,
       sharia_refs: ["RBAC: grant role"],
@@ -77,7 +77,7 @@ export const revokeRole = createServerFn({ method: "POST" })
     return d;
   })
   .handler(async ({ data, context }) => {
-    await assertAdmincontext as AuthCtx;
+    await assertAdmin(context as AuthCtx);
     // امنع إلغاء آخر مدير في النظام
     if (data.role === "admin") {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
