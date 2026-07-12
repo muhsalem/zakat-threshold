@@ -372,7 +372,7 @@ export function KpiCompliancePanel() {
                     <TableHead className="text-end">الزكاة</TableHead>
                     <TableHead>الحالة</TableHead>
                     <TableHead>الملاحظات</TableHead>
-                    <TableHead>فتح</TableHead>
+                    <TableHead>إجراءات</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
