@@ -266,8 +266,95 @@ export function KpiCompliancePanel() {
     );
   }
 
+  const buildExportPayload = () => {
+    const attn: ExportRow[] = enriched
+      .filter((e) => e.level !== "ok")
+      .sort((a, b) => (a.level === "err" ? -1 : 1) - (b.level === "err" ? -1 : 1))
+      .map((e) => ({
+        id: e.r.id,
+        record_type: e.r.record_type,
+        hijri_year: e.r.hijri_year,
+        gregorian_date: e.r.gregorian_date,
+        currency: e.r.currency,
+        total_assets: e.r.total_assets,
+        total_liabilities: e.r.total_liabilities,
+        zakat_base: e.r.zakat_base,
+        zakat_due: e.r.zakat_due,
+        net_due: e.r.net_due,
+        approval_status: e.r.approval_status ?? null,
+        level: e.level,
+        issues: e.issues,
+      }));
+    const allRows: ExportRow[] = enriched.map((e) => ({
+      id: e.r.id,
+      record_type: e.r.record_type,
+      hijri_year: e.r.hijri_year,
+      gregorian_date: e.r.gregorian_date,
+      currency: e.r.currency,
+      total_assets: e.r.total_assets,
+      total_liabilities: e.r.total_liabilities,
+      zakat_base: e.r.zakat_base,
+      zakat_due: e.r.zakat_due,
+      net_due: e.r.net_due,
+      approval_status: e.r.approval_status ?? null,
+      level: e.level,
+      issues: e.issues,
+    }));
+    return { attn, allRows };
+  };
+
   return (
     <div className="space-y-5">
+      {/* شريط الأدوات: الفترة + التصدير */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground">الفترة</span>
+          <Select value={period} onValueChange={(v) => setPeriod(v as typeof period)}>
+            <SelectTrigger className="h-8 w-40">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">كل الفترات</SelectItem>
+              <SelectItem value="30d">آخر 30 يوماً</SelectItem>
+              <SelectItem value="90d">آخر 90 يوماً</SelectItem>
+              <SelectItem value="year">السنة الحالية</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-1"
+            disabled={stats.total === 0}
+            onClick={() => {
+              const { attn, allRows } = buildExportPayload();
+              exportKpiExcel({ stats, rows: allRows, attention: attn, period });
+            }}
+          >
+            <FileSpreadsheet className="h-4 w-4" /> تصدير Excel
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-1"
+            disabled={stats.total === 0}
+            onClick={() => {
+              const { attn } = buildExportPayload();
+              exportKpiPdf({ stats, attention: attn, period });
+            }}
+          >
+            <Printer className="h-4 w-4" /> تصدير PDF
+          </Button>
+        </div>
+      </div>
+
+      {stats.total === 0 && (
+        <Alert>
+          <AlertDescription>لا توجد إقرارات ضمن الفترة المختارة.</AlertDescription>
+        </Alert>
+      )}
+
       {/* بطاقات KPI */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <KpiCard
