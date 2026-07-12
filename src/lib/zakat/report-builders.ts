@@ -186,7 +186,19 @@ export interface BaseReportInput {
   ownsLivestock: boolean;
   livestockForTrade: boolean;
   livestockTradeValue: string;
-  esopData: unknown;
+  esopData:
+    | {
+        show: boolean;
+        vestedShares: number;
+        price: number;
+        strike: number;
+        intrinsic: number;
+        rsuValue: number;
+        base: number;
+        intentTrade: boolean;
+        zakat: number;
+      }
+    | undefined;
   hawl: { hawlComplete: boolean } | null;
   nisabStartDate: string;
   goldPrice: string;
