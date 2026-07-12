@@ -157,9 +157,10 @@ async def restore_session(context, page):
 
 
 async def assert_keys_on_drafts(page):
-    await page.goto(f"{BASE_URL}/drafts", wait_until="networkidle")
+    await page.goto(f"{BASE_URL}/drafts", wait_until="domcontentloaded")
     pager = page.locator('nav[aria-label="تصفّح السجلات"]')
-    await pager.wait_for(timeout=15_000)
+    await pager.wait_for(state="attached", timeout=20_000)
+    await pager.scroll_into_view_if_needed()
 
     prev_btn = pager.get_by_role("button", name="الصفحة السابقة")
     next_btn = pager.get_by_role("button", name="الصفحة التالية")
