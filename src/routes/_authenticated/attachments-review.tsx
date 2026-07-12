@@ -239,7 +239,7 @@ function AttachmentsReviewPage() {
   const filtered = useMemo(() => filterAttachments(rows, linked, search), [rows, linked, search]);
 
 
-  const FILTER_KEYS: Array<keyof SearchState> = ["q", "status", "category", "from", "to", "link"];
+  const FILTER_KEYS: Array<keyof SearchState> = ["q", "status", "category", "from", "to", "link", "sort"];
   const setSearch = (patch: Partial<SearchState>) => {
     const touchesFilter = Object.keys(patch).some((k) => FILTER_KEYS.includes(k as keyof SearchState));
     navigate({
