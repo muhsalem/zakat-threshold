@@ -409,7 +409,7 @@ function AttachmentsReviewPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filtered.map((a) => (
+                  {pageRows.map((a) => (
                     <AttachmentRow
                       key={a.id}
                       a={a}
@@ -420,6 +420,48 @@ function AttachmentsReviewPage() {
                   ))}
                 </TableBody>
               </Table>
+            </div>
+          )}
+          {!loading && !err && filtered.length > 0 && (
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-3">
+              <div className="text-xs text-muted-foreground">
+                عرض {pageStart + 1}–{Math.min(pageStart + pageSize, filtered.length)} من {filtered.length}
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">لكل صفحة</span>
+                <Select
+                  value={String(pageSize)}
+                  onValueChange={(v) => setSearch({ pageSize: Number(v), page: 1 })}
+                >
+                  <SelectTrigger className="h-8 w-20">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PAGE_SIZE_OPTIONS.map((n) => (
+                      <SelectItem key={n} value={String(n)}>{n}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={currentPage <= 1}
+                  onClick={() => setSearch({ page: currentPage - 1 })}
+                >
+                  السابق
+                </Button>
+                <span className="text-xs tabular-nums">
+                  {currentPage} / {totalPages}
+                </span>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={currentPage >= totalPages}
+                  onClick={() => setSearch({ page: currentPage + 1 })}
+                >
+                  التالي
+                </Button>
+              </div>
             </div>
           )}
         </CardContent>
