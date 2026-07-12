@@ -746,7 +746,7 @@ function DraftsPage() {
                       <ChevronLeft className="h-3 w-3" />
                     </Button>
                   </div>
-                </div>
+                </nav>
               )}
             </>
           )}
