@@ -1,22 +1,25 @@
 import { createServerFn } from "@tanstack/react-start";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { Database } from "@/integrations/supabase/types";
 
 type Role = "admin" | "moderator" | "user";
+type AuthCtx = { supabase: SupabaseClient<Database>; userId: string };
 
-async function assertAdmin(ctx: { supabase: any; userId: string }) {
+async function assertAdmin(ctx: AuthCtx) {
   const { data, error } = await ctx.supabase.rpc("has_role", {
     _user_id: ctx.userId,
     _role: "admin",
   });
-  if (error) throw new Error("authorization check failed");
-  if (!data) throw new Error("Forbidden: admin only");
+  if (error) throw new Error("AUTHZ_CHECK_FAILED");
+  if (!data) throw new Error("FORBIDDEN_ADMIN_ONLY");
 }
 
 /** يعرض كل المستخدمين مع أدوارهم (للمدراء فقط). */
 export const listUsersWithRoles = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdmin(context as any);
+    await assertAdmin(context as AuthCtx);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: users, error: e1 } = await supabaseAdmin.auth.admin.listUsers({ perPage: 200 });
     if (e1) throw new Error(e1.message);
@@ -49,14 +52,14 @@ export const grantRole = createServerFn({ method: "POST" })
     return d;
   })
   .handler(async ({ data, context }) => {
-    await assertAdmin(context as any);
+    await assertAdmin(context as AuthCtx);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin
       .from("user_roles")
       .upsert({ user_id: data.userId, role: data.role }, { onConflict: "user_id,role" });
     if (error) throw new Error(error.message);
     await supabaseAdmin.from("sharia_audit_log").insert({
-      user_id: (context as any).userId,
+      user_id: (context as AuthCtx).userId,
       action: "role_granted",
       fingerprint: `${data.userId}:${data.role}`,
       sharia_refs: ["RBAC: grant role"],
@@ -74,7 +77,7 @@ export const revokeRole = createServerFn({ method: "POST" })
     return d;
   })
   .handler(async ({ data, context }) => {
-    await assertAdmin(context as any);
+    await assertAdmin(context as AuthCtx);
     // امنع إلغاء آخر مدير في النظام
     if (data.role === "admin") {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -82,7 +85,7 @@ export const revokeRole = createServerFn({ method: "POST" })
         .from("user_roles")
         .select("user_id", { count: "exact", head: true })
         .eq("role", "admin");
-      if ((count ?? 0) <= 1) throw new Error("لا يمكن إلغاء دور آخر مدير في النظام");
+      if ((count ?? 0) <= 1) throw new Error("CANNOT_REVOKE_LAST_ADMIN");
       const { error } = await supabaseAdmin
         .from("user_roles")
         .delete()
@@ -98,7 +101,7 @@ export const revokeRole = createServerFn({ method: "POST" })
         .eq("role", data.role);
       if (error) throw new Error(error.message);
     }
-    await supabaseAdmin_log(context as any, data);
+    await supabaseAdmin_log(context as AuthCtx, data);
     return { ok: true };
   });
 
@@ -119,7 +122,7 @@ async function supabaseAdmin_log(
 export const listPendingApprovals = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const ctx = context as any;
+    const ctx = context as AuthCtx;
     // المدقّق في أي منظّمة OR مدير عام
     const { data: isAdmin } = await ctx.supabase.rpc("has_role", {
       _user_id: ctx.userId,
@@ -145,7 +148,7 @@ export const decideApproval = createServerFn({ method: "POST" })
     return d;
   })
   .handler(async ({ data, context }) => {
-    const ctx = context as any;
+    const ctx = context as AuthCtx;
     const { error } = await ctx.supabase
       .from("zakat_approvals")
       .update({

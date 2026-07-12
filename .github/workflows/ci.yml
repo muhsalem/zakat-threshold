@@ -14,7 +14,7 @@ jobs:
         with: { bun-version: latest }
       - run: bun install --frozen-lockfile
       - name: Type-check
-        run: bunx tsgo --noEmit || true
+        run: bunx tsgo --noEmit
       - name: Unit & property tests
         run: bunx vitest run --reporter=verbose
       - name: Build
@@ -33,7 +33,7 @@ jobs:
       - name: Wait for server
         run: npx wait-on http://localhost:4173 -t 60000
       - name: Axe accessibility scan
-        run: npx @axe-core/cli http://localhost:4173 --exit || true
+        run: npx @axe-core/cli http://localhost:4173 --exit
 
   security:
     runs-on: ubuntu-latest
