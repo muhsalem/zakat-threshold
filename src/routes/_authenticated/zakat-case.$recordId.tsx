@@ -345,7 +345,23 @@ function ZakatCaseDetail() {
           <ShariaLogPanel rows={sharia} />
         </TabsContent>
 
-        <TabsContent value="attachments" className="mt-4">
+        <TabsContent value="attachments" className="mt-4 space-y-4">
+          <ComplianceAttachmentsSummary
+            recordType={record.record_type}
+            attachments={attachments.map((a) => ({
+              id: a.id,
+              file_name: a.file_name,
+              category: (a.category ?? "other") as never,
+              label: (a as { label?: string | null }).label ?? null,
+              status: (a as { status?: string | null }).status ?? null,
+            }))}
+            calcSummary={[
+              { label: "الوعاء الزكوي", value: fmt(Number(record.zakat_base), record.currency) },
+              { label: "الزكاة المستحقة", value: fmt(Number(record.zakat_due), record.currency) },
+              { label: "الصافي المستحق", value: fmt(Number(record.net_due), record.currency) },
+              { label: "نوع الإقرار", value: record.record_type },
+            ]}
+          />
           <AttachmentsPanel rows={attachments} />
         </TabsContent>
       </Tabs>
