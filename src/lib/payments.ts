@@ -27,8 +27,9 @@ export async function startCheckout(
   if (!user) return { ok: false, error: "يجب تسجيل الدخول أولاً" };
 
   const { data, error } = await supabase.functions.invoke("create-checkout", {
-    body: { planId, userId: user.id, email: user.email ?? "", returnPath },
+    body: { planId, returnPath },
   });
+
 
   if (error || !data?.url) {
     return { ok: false, error: error?.message ?? "فشل إنشاء جلسة الدفع" };
