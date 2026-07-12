@@ -556,18 +556,21 @@ function AttachmentsReviewPage() {
                 عرض {pageStart + 1}–{Math.min(pageStart + pageSize, filtered.length)} من{" "}
                 {filtered.length}
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-muted-foreground">لكل صفحة</span>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="shrink-0 text-xs text-muted-foreground">لكل صفحة</span>
                 <Select
                   value={String(pageSize)}
                   onValueChange={(v) => setSearch({ pageSize: Number(v), page: 1 })}
                 >
-                  <SelectTrigger className="h-8 w-20">
+                  <SelectTrigger
+                    aria-label="عدد الصفوف في كل صفحة"
+                    className="h-8 w-auto min-w-[4.5rem] shrink-0 gap-1 tabular-nums"
+                  >
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent align="end" className="min-w-[4.5rem]">
                     {PAGE_SIZE_OPTIONS.map((n) => (
-                      <SelectItem key={n} value={String(n)}>
+                      <SelectItem key={n} value={String(n)} className="tabular-nums">
                         {n}
                       </SelectItem>
                     ))}
