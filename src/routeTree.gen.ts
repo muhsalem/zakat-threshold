@@ -24,6 +24,7 @@ import { Route as PortalSigninRouteImport } from './routes/portal-signin'
 import { Route as OrganizationsRouteImport } from './routes/organizations'
 import { Route as NisabAuditRouteImport } from './routes/nisab-audit'
 import { Route as LiquidityStressRouteImport } from './routes/liquidity-stress'
+import { Route as InstitutionalEndorsementsRouteImport } from './routes/institutional-endorsements'
 import { Route as ImpactRouteImport } from './routes/impact'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as GroupZakatRouteImport } from './routes/group-zakat'
@@ -154,6 +155,12 @@ const LiquidityStressRoute = LiquidityStressRouteImport.update({
   path: '/liquidity-stress',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InstitutionalEndorsementsRoute =
+  InstitutionalEndorsementsRouteImport.update({
+    id: '/institutional-endorsements',
+    path: '/institutional-endorsements',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ImpactRoute = ImpactRouteImport.update({
   id: '/impact',
   path: '/impact',
@@ -461,6 +468,7 @@ export interface FileRoutesByFullPath {
   '/group-zakat': typeof GroupZakatRoute
   '/history': typeof HistoryRoute
   '/impact': typeof ImpactRoute
+  '/institutional-endorsements': typeof InstitutionalEndorsementsRoute
   '/liquidity-stress': typeof LiquidityStressRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
@@ -531,6 +539,7 @@ export interface FileRoutesByTo {
   '/group-zakat': typeof GroupZakatRoute
   '/history': typeof HistoryRoute
   '/impact': typeof ImpactRoute
+  '/institutional-endorsements': typeof InstitutionalEndorsementsRoute
   '/liquidity-stress': typeof LiquidityStressRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
@@ -603,6 +612,7 @@ export interface FileRoutesById {
   '/group-zakat': typeof GroupZakatRoute
   '/history': typeof HistoryRoute
   '/impact': typeof ImpactRoute
+  '/institutional-endorsements': typeof InstitutionalEndorsementsRoute
   '/liquidity-stress': typeof LiquidityStressRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
@@ -675,6 +685,7 @@ export interface FileRouteTypes {
     | '/group-zakat'
     | '/history'
     | '/impact'
+    | '/institutional-endorsements'
     | '/liquidity-stress'
     | '/nisab-audit'
     | '/organizations'
@@ -745,6 +756,7 @@ export interface FileRouteTypes {
     | '/group-zakat'
     | '/history'
     | '/impact'
+    | '/institutional-endorsements'
     | '/liquidity-stress'
     | '/nisab-audit'
     | '/organizations'
@@ -816,6 +828,7 @@ export interface FileRouteTypes {
     | '/group-zakat'
     | '/history'
     | '/impact'
+    | '/institutional-endorsements'
     | '/liquidity-stress'
     | '/nisab-audit'
     | '/organizations'
@@ -888,6 +901,7 @@ export interface RootRouteChildren {
   GroupZakatRoute: typeof GroupZakatRoute
   HistoryRoute: typeof HistoryRoute
   ImpactRoute: typeof ImpactRoute
+  InstitutionalEndorsementsRoute: typeof InstitutionalEndorsementsRoute
   LiquidityStressRoute: typeof LiquidityStressRoute
   NisabAuditRoute: typeof NisabAuditRoute
   OrganizationsRoute: typeof OrganizationsRoute
@@ -1025,6 +1039,13 @@ declare module '@tanstack/react-router' {
       path: '/liquidity-stress'
       fullPath: '/liquidity-stress'
       preLoaderRoute: typeof LiquidityStressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/institutional-endorsements': {
+      id: '/institutional-endorsements'
+      path: '/institutional-endorsements'
+      fullPath: '/institutional-endorsements'
+      preLoaderRoute: typeof InstitutionalEndorsementsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/impact': {
@@ -1492,6 +1513,7 @@ const rootRouteChildren: RootRouteChildren = {
   GroupZakatRoute: GroupZakatRoute,
   HistoryRoute: HistoryRoute,
   ImpactRoute: ImpactRoute,
+  InstitutionalEndorsementsRoute: InstitutionalEndorsementsRoute,
   LiquidityStressRoute: LiquidityStressRoute,
   NisabAuditRoute: NisabAuditRoute,
   OrganizationsRoute: OrganizationsRoute,
