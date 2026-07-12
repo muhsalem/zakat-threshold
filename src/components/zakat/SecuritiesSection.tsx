@@ -219,11 +219,21 @@ export function SecuritiesSection({
           const Err = ({ msg }: { msg?: string }) =>
             msg ? <p className="text-[11px] text-destructive">{msg}</p> : null;
           const needsCompany = r.shariaCompliant === "no" || r.shariaCompliant === "unknown";
+          const hasErrors = Object.keys(errs).length > 0;
+          const excludedFromTotal = !!(errs.qty || errs.price || errs.purifyPct || errs.zakatableAssetsPct);
           return (
-            <div key={r.id} className="rounded-lg border bg-card p-4 space-y-3">
+            <div
+              key={r.id}
+              className={`rounded-lg border p-4 space-y-3 ${hasErrors ? "border-destructive/60 bg-destructive/5" : "bg-card"}`}
+            >
               <div className="flex items-center justify-between gap-2 flex-wrap">
                 <div className="flex items-center gap-2 text-sm font-semibold text-primary">
                   <TrendingUp className="h-4 w-4" /> {KIND_LABEL[r.kind]}
+                  {excludedFromTotal && (
+                    <Badge variant="destructive" className="text-[10px]">
+                      مستبعد من الإجمالي
+                    </Badge>
+                  )}
                 </div>
                 <Button
                   type="button"
