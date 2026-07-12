@@ -87,6 +87,7 @@ import { downloadReportExcel } from "@/lib/exportExcel";
 import { CurrencyConverterCard } from "./CurrencyConverterCard";
 import type { FxRate } from "@/lib/fx";
 import { HawlSchedule } from "./HawlSchedule";
+import ComplianceChecklist from "./ComplianceChecklist";
 
 import { FileSpreadsheet } from "lucide-react";
 import { IncomeUsufructSection } from "./IncomeUsufructSection";
@@ -1301,6 +1302,30 @@ export function IndividualTab() {
                       <HawlSchedule startDateISO={nisabStartDate} basis={calendarBasis} />
                     </div>
                   )}
+
+                  <div className="md:col-span-2">
+                    <ComplianceChecklist
+                      inputs={{
+                        goldGrams24: calc.totalGold24,
+                        silverGrams: calc.silverGrams,
+                        monetaryBase: calc.monetaryBase,
+                        moneyNisab: calc.moneyNisab,
+                        debts: calc.debts,
+                        hawlComplete: hawl ? hawl.hawlComplete : null,
+                        hawlDaysRemaining: hawl?.daysRemaining,
+                        hawlDaysPassed: hawl?.daysPassed,
+                        jewelryWornGrams: jewelryPurpose === "wear" ? calc.jewelryGrams24Raw : 0,
+                        jewelryOpinion,
+                        jewelryPurpose,
+                        cropsKg: calc.cropsValue > 0 ? calc.cropsValue : 0,
+                        camelsN: calc.camelsN,
+                        cowsN: calc.cowsN,
+                        sheepN: calc.sheepN,
+                        fullOwnership: true,
+                        moneyIsGrowth: true,
+                      }}
+                    />
+                  </div>
 
 
 
