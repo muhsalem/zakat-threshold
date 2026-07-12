@@ -195,7 +195,7 @@ export interface BaseReportInput {
   accountantLicense: string;
   accountantPreamble: string;
   accountantOpinion: string;
-  opinionType: string;
+  opinionType: "adverse" | "clean" | "qualified";
   previousYearZakat: string | number;
   includeAuditReport: boolean;
   auditEntries: unknown;
