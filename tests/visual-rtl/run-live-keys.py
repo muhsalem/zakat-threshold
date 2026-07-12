@@ -217,27 +217,23 @@ async def assert_keys_on_drafts(page):
     # bubbles to the nav's onPagerKeyDown handler.
     await next_btn.focus()
     await page.keyboard.press("ArrowLeft")   # RTL → advance
-    txt = (await counter.inner_text()).strip()
-    assert txt == "صفحة 2 من 3", f"drafts: ArrowLeft did not advance (got {txt!r})"
+    await expect_text(counter, "صفحة 2 من 3"), description=f"drafts: ArrowLeft did not advance (got {txt!r})"
 
     # After advancing, prev is enabled — focus it and go back with ArrowRight.
     await prev_btn.focus()
     await page.keyboard.press("ArrowRight")  # RTL → back
-    txt = (await counter.inner_text()).strip()
-    assert txt == "صفحة 1 من 3", f"drafts: ArrowRight did not go back (got {txt!r})"
+    await expect_text(counter, "صفحة 1 من 3"), description=f"drafts: ArrowRight did not go back (got {txt!r})"
 
     # End → last page
     await next_btn.focus()
     await page.keyboard.press("End")
-    txt = (await counter.inner_text()).strip()
-    assert txt == "صفحة 3 من 3", f"drafts: End did not jump to last (got {txt!r})"
+    await expect_text(counter, "صفحة 3 من 3"), description=f"drafts: End did not jump to last (got {txt!r})"
     assert await next_btn.is_disabled(), "drafts: next must be disabled on last page"
 
     # Home → first page (focus prev which is enabled on last page)
     await prev_btn.focus()
     await page.keyboard.press("Home")
-    txt = (await counter.inner_text()).strip()
-    assert txt == "صفحة 1 من 3", f"drafts: Home did not return to first (got {txt!r})"
+    await expect_text(counter, "صفحة 1 من 3"), description=f"drafts: Home did not return to first (got {txt!r})"
 
 
 async def assert_keys_on_attachments(page):
@@ -259,27 +255,23 @@ async def assert_keys_on_attachments(page):
     # Focus a focusable child so keydown bubbles to nav.onKeyDown.
     await next_btn.focus()
     await page.keyboard.press("ArrowLeft")   # RTL → advance
-    txt = (await counter.inner_text()).strip()
-    assert txt == "2 / 3", f"attachments: ArrowLeft did not advance (got {txt!r})"
+    await expect_text(counter, "2 / 3"), description=f"attachments: ArrowLeft did not advance (got {txt!r})"
 
     # ArrowRight in RTL → back one page (prev now enabled, focus it)
     await prev_btn.focus()
     await page.keyboard.press("ArrowRight")
-    txt = (await counter.inner_text()).strip()
-    assert txt == "1 / 3", f"attachments: ArrowRight did not go back (got {txt!r})"
+    await expect_text(counter, "1 / 3"), description=f"attachments: ArrowRight did not go back (got {txt!r})"
 
     # End → last page
     await next_btn.focus()
     await page.keyboard.press("End")
-    txt = (await counter.inner_text()).strip()
-    assert txt == "3 / 3"
+    await expect_text(counter, "3 / 3")
     assert await next_btn.is_disabled()
 
     # Home → first page
     await prev_btn.focus()
     await page.keyboard.press("Home")
-    txt = (await counter.inner_text()).strip()
-    assert txt == "1 / 3"
+    await expect_text(counter, "1 / 3")
 
     # ---- Tab-order assertions ----
     # DOM order inside the controls group: [per-page label] [Select] [prev] [counter] [next]
