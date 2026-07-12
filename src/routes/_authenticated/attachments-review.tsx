@@ -127,6 +127,14 @@ const RECORD_TYPE_LABELS: Record<string, string> = {
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
 const DEFAULT_PAGE_SIZE = 25;
 
+export type AttachmentsSort = "newest" | "oldest" | "amount_desc" | "amount_asc";
+const SORT_OPTIONS: { value: AttachmentsSort; label: string }[] = [
+  { value: "newest", label: "الأحدث أولاً" },
+  { value: "oldest", label: "الأقدم أولاً" },
+  { value: "amount_desc", label: "المبلغ: الأعلى أولاً" },
+  { value: "amount_asc", label: "المبلغ: الأقل أولاً" },
+];
+
 const searchSchema = z.object({
   q: fallback(z.string(), "").default(""),
   status: fallback(z.string(), "all").default("all"),
@@ -134,6 +142,7 @@ const searchSchema = z.object({
   from: fallback(z.string(), "").default(""),
   to: fallback(z.string(), "").default(""),
   link: fallback(z.string(), "all").default("all"),
+  sort: fallback(z.string(), "newest").default("newest"),
   page: fallback(z.number().int(), 1).default(1),
   pageSize: fallback(z.number().int(), DEFAULT_PAGE_SIZE).default(DEFAULT_PAGE_SIZE),
 });
