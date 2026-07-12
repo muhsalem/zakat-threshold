@@ -48,6 +48,9 @@ import {
   ZAKAT_RECIPIENTS,
 } from "@/lib/zakat";
 import { SectoralModels } from "./SectoralModels";
+import GlobalMadhabSelector from "./GlobalMadhabSelector";
+import IslamicBankModelFull from "./IslamicBankModelFull";
+import AIStatementOCR from "./AIStatementOCR";
 import { PurificationCalculator } from "./PurificationCalculator";
 import { RikazSection } from "./RikazSection";
 import { TakafulSection } from "./TakafulSection";
@@ -2800,6 +2803,9 @@ export function CompanyTab() {
 
             {/* المرجعية الشرعية والاعتماد نُقلت إلى تبويب المراجعة والتدقيق الشرعي */}
 
+            {/* ====== المرجعية الفقهية العالمية ====== */}
+            <GlobalMadhabSelector />
+
             {/* ====== زكاة البنوك وشركات التأمين ====== */}
             {(sector.id === "bank" ||
               sector.id === "insurance" ||
@@ -2807,8 +2813,14 @@ export function CompanyTab() {
               sector.label?.includes("بنك") ||
               sector.label?.includes("تأمين") ||
               sector.label?.includes("تكافل")) && (
-              <BankInsuranceZakatSection currencyName={currencyName} />
+              <>
+                <BankInsuranceZakatSection currencyName={currencyName} />
+                <IslamicBankModelFull />
+              </>
             )}
+
+            {/* ====== استخراج الوعاء الزكوي بالذكاء الاصطناعي ====== */}
+            <AIStatementOCR />
 
             {/* ====== مطابقة الوعاء الزكوي مع الضريبي ====== */}
             <TaxZakatReconciliation currencyName={currencyName} />

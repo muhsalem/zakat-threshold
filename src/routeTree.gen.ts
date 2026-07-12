@@ -38,6 +38,7 @@ import { Route as CropsRouteImport } from './routes/crops'
 import { Route as ComplianceRouteImport } from './routes/compliance'
 import { Route as ClientIntakeRouteImport } from './routes/client-intake'
 import { Route as CheckoutResultRouteImport } from './routes/checkout-result'
+import { Route as CertificationsRouteImport } from './routes/certifications'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AwardSubmissionRouteImport } from './routes/award-submission'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -50,6 +51,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as LegalTermsRouteImport } from './routes/legal.terms'
 import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as ApiExtractStatementRouteImport } from './routes/api/extract-statement'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedErpSetupRouteImport } from './routes/_authenticated/erp-setup'
 import { Route as AuthenticatedDraftsRouteImport } from './routes/_authenticated/drafts'
@@ -218,6 +220,11 @@ const CheckoutResultRoute = CheckoutResultRouteImport.update({
   path: '/checkout-result',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CertificationsRoute = CertificationsRouteImport.update({
+  id: '/certifications',
+  path: '/certifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogRoute = BlogRouteImport.update({
   id: '/blog',
   path: '/blog',
@@ -276,6 +283,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => BlogRoute,
+} as any)
+const ApiExtractStatementRoute = ApiExtractStatementRouteImport.update({
+  id: '/api/extract-statement',
+  path: '/api/extract-statement',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
@@ -406,6 +418,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/award-submission': typeof AwardSubmissionRoute
   '/blog': typeof BlogRouteWithChildren
+  '/certifications': typeof CertificationsRoute
   '/checkout-result': typeof CheckoutResultRoute
   '/client-intake': typeof ClientIntakeRoute
   '/compliance': typeof ComplianceRoute
@@ -443,6 +456,7 @@ export interface FileRoutesByFullPath {
   '/drafts': typeof AuthenticatedDraftsRoute
   '/erp-setup': typeof AuthenticatedErpSetupRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/extract-statement': typeof ApiExtractStatementRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
@@ -470,6 +484,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/award-submission': typeof AwardSubmissionRoute
   '/blog': typeof BlogRouteWithChildren
+  '/certifications': typeof CertificationsRoute
   '/checkout-result': typeof CheckoutResultRoute
   '/client-intake': typeof ClientIntakeRoute
   '/compliance': typeof ComplianceRoute
@@ -507,6 +522,7 @@ export interface FileRoutesByTo {
   '/drafts': typeof AuthenticatedDraftsRoute
   '/erp-setup': typeof AuthenticatedErpSetupRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/extract-statement': typeof ApiExtractStatementRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
@@ -536,6 +552,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/award-submission': typeof AwardSubmissionRoute
   '/blog': typeof BlogRouteWithChildren
+  '/certifications': typeof CertificationsRoute
   '/checkout-result': typeof CheckoutResultRoute
   '/client-intake': typeof ClientIntakeRoute
   '/compliance': typeof ComplianceRoute
@@ -573,6 +590,7 @@ export interface FileRoutesById {
   '/_authenticated/drafts': typeof AuthenticatedDraftsRoute
   '/_authenticated/erp-setup': typeof AuthenticatedErpSetupRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/extract-statement': typeof ApiExtractStatementRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
@@ -602,6 +620,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/award-submission'
     | '/blog'
+    | '/certifications'
     | '/checkout-result'
     | '/client-intake'
     | '/compliance'
@@ -639,6 +658,7 @@ export interface FileRouteTypes {
     | '/drafts'
     | '/erp-setup'
     | '/api/chat'
+    | '/api/extract-statement'
     | '/blog/$slug'
     | '/legal/privacy'
     | '/legal/terms'
@@ -666,6 +686,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/award-submission'
     | '/blog'
+    | '/certifications'
     | '/checkout-result'
     | '/client-intake'
     | '/compliance'
@@ -703,6 +724,7 @@ export interface FileRouteTypes {
     | '/drafts'
     | '/erp-setup'
     | '/api/chat'
+    | '/api/extract-statement'
     | '/blog/$slug'
     | '/legal/privacy'
     | '/legal/terms'
@@ -731,6 +753,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/award-submission'
     | '/blog'
+    | '/certifications'
     | '/checkout-result'
     | '/client-intake'
     | '/compliance'
@@ -768,6 +791,7 @@ export interface FileRouteTypes {
     | '/_authenticated/drafts'
     | '/_authenticated/erp-setup'
     | '/api/chat'
+    | '/api/extract-statement'
     | '/blog/$slug'
     | '/legal/privacy'
     | '/legal/terms'
@@ -797,6 +821,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   AwardSubmissionRoute: typeof AwardSubmissionRoute
   BlogRoute: typeof BlogRouteWithChildren
+  CertificationsRoute: typeof CertificationsRoute
   CheckoutResultRoute: typeof CheckoutResultRoute
   ClientIntakeRoute: typeof ClientIntakeRoute
   ComplianceRoute: typeof ComplianceRoute
@@ -827,6 +852,7 @@ export interface RootRouteChildren {
   ZakatCompanyRoute: typeof ZakatCompanyRoute
   ZakatGoldRoute: typeof ZakatGoldRoute
   ApiChatRoute: typeof ApiChatRoute
+  ApiExtractStatementRoute: typeof ApiExtractStatementRoute
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   LegalTermsRoute: typeof LegalTermsRoute
   ApiPublicCalcRoute: typeof ApiPublicCalcRoute
@@ -1047,6 +1073,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CheckoutResultRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/certifications': {
+      id: '/certifications'
+      path: '/certifications'
+      fullPath: '/certifications'
+      preLoaderRoute: typeof CertificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog': {
       id: '/blog'
       path: '/blog'
@@ -1130,6 +1163,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/blog/$slug'
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof BlogRoute
+    }
+    '/api/extract-statement': {
+      id: '/api/extract-statement'
+      path: '/api/extract-statement'
+      fullPath: '/api/extract-statement'
+      preLoaderRoute: typeof ApiExtractStatementRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/chat': {
       id: '/api/chat'
@@ -1351,6 +1391,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   AwardSubmissionRoute: AwardSubmissionRoute,
   BlogRoute: BlogRouteWithChildren,
+  CertificationsRoute: CertificationsRoute,
   CheckoutResultRoute: CheckoutResultRoute,
   ClientIntakeRoute: ClientIntakeRoute,
   ComplianceRoute: ComplianceRoute,
@@ -1381,6 +1422,7 @@ const rootRouteChildren: RootRouteChildren = {
   ZakatCompanyRoute: ZakatCompanyRoute,
   ZakatGoldRoute: ZakatGoldRoute,
   ApiChatRoute: ApiChatRoute,
+  ApiExtractStatementRoute: ApiExtractStatementRoute,
   LegalPrivacyRoute: LegalPrivacyRoute,
   LegalTermsRoute: LegalTermsRoute,
   ApiPublicCalcRoute: ApiPublicCalcRoute,
