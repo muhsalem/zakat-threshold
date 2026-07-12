@@ -26,9 +26,9 @@ jobs:
       - name: Type-check (strict)
         run: bunx tsgo --noEmit
 
-      # ESLint — الأخطاء تفشل CI؛ التحذيرات مسموحة
+      # ESLint — الأخطاء تفشل CI؛ التحذيرات مسموحة (لا تعطيل للأخطاء)
       - name: Lint
-        run: bunx eslint . --max-warnings=0
+        run: bunx eslint .
 
       # اختبارات الوحدات والخصائص — بدون تجاوز
       - name: Unit & property tests
