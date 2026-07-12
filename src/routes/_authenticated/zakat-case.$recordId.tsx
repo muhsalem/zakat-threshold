@@ -38,6 +38,7 @@ export const Route = createFileRoute("/_authenticated/zakat-case/$recordId")({
   }),
   component: ZakatCaseDetail,
   errorComponent: ({ error, reset }) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks -- TanStack يستدعي errorComponent كمكون React فعلي
     const router = useRouter();
     return (
       <main className="container mx-auto max-w-2xl px-4 py-12" dir="rtl">
