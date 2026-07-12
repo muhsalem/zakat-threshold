@@ -394,6 +394,16 @@ function AttachmentsReviewPage() {
                 <SelectItem value="org">مرتبط بمؤسسة</SelectItem>
               </SelectContent>
             </Select>
+            <Select value={search.sort} onValueChange={(v) => setSearch({ sort: v })}>
+              <SelectTrigger className="h-9" aria-label="الفرز">
+                <SelectValue placeholder="الفرز" />
+              </SelectTrigger>
+              <SelectContent>
+                {SORT_OPTIONS.map((o) => (
+                  <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <div className="flex gap-1 md:col-span-6 lg:col-span-1">
               <Input
                 type="date"
