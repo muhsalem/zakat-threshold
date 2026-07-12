@@ -112,7 +112,8 @@ export const Route = createFileRoute("/api/extract-statement")({
             "Lovable-API-Key": apiKey,
           },
           body: JSON.stringify({
-            model: "google/gemini-2.0-flash-lite",
+            // نموذج مدعوم في بوابة Lovable AI ويدعم Vision + JSON
+            model: "google/gemini-2.5-flash",
             messages: [
               { role: "system", content: SYSTEM },
               { role: "user", content: userContent },

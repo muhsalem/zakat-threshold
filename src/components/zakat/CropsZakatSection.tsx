@@ -14,6 +14,7 @@ import {
   fmt,
   num,
 } from "@/lib/zakat";
+import { useMadhab } from "@/lib/madhabContext";
 
 /**
  * زكاة الزروع والثمار — وفق الجمهور:
@@ -31,6 +32,7 @@ export function CropsZakatSection({ currencyName = "ج.م" }: { currencyName?: s
   const [quantityKg, setQuantityKg] = useState("0");
   const [pricePerKg, setPricePerKg] = useState("0");
   const [irrigation, setIrrigation] = useState<Irrigation>("natural");
+  const { rules } = useMadhab();
 
   const qty = num(quantityKg);
   const price = num(pricePerKg);
@@ -41,7 +43,8 @@ export function CropsZakatSection({ currencyName = "ج.م" }: { currencyName?: s
     return CROPS_RATE_MIXED;
   }, [irrigation]);
 
-  const reached = qty >= CROPS_NISAB_KG;
+  // المذهب الحنفي: لا يشترط النصاب في الزروع — تجب الزكاة في القليل والكثير.
+  const reached = rules.cropsRequireNisab ? qty >= CROPS_NISAB_KG : qty > 0;
   const zakatKg = reached ? qty * rate : 0;
   const zakatValue = zakatKg * price;
 
@@ -52,7 +55,7 @@ export function CropsZakatSection({ currencyName = "ج.م" }: { currencyName?: s
           <Wheat className="h-4 w-4 text-primary" />
           زكاة الزروع والثمار
           <Badge variant="outline" className="text-[10px] mr-auto">
-            قول الجمهور
+            {rules.cropsRequireNisab ? "قول الجمهور" : "المذهب الحنفي"}
           </Badge>
         </CardTitle>
       </CardHeader>
@@ -61,8 +64,17 @@ export function CropsZakatSection({ currencyName = "ج.م" }: { currencyName?: s
         <Alert className="border-primary/20 bg-primary/5">
           <Info className="h-4 w-4" />
           <AlertDescription className="text-xs leading-relaxed">
-            النصاب: <b>{CROPS_NISAB_KG} كجم</b> (5 أوسق) بعد التصفية والتجفيف. تُخرج عند الحصاد ولا
-            يُشترط الحول. المعدّل يعتمد على طبيعة الري.
+            {rules.cropsRequireNisab ? (
+              <>
+                النصاب: <b>{CROPS_NISAB_KG} كجم</b> (5 أوسق) بعد التصفية والتجفيف. تُخرج عند الحصاد ولا
+                يُشترط الحول. المعدّل يعتمد على طبيعة الري.
+              </>
+            ) : (
+              <>
+                على <b>مذهب الحنفية</b>: تجب الزكاة في القليل والكثير ممّا يخرج من الأرض بلا اشتراط
+                نصاب. تُخرج عند الحصاد ولا يُشترط الحول. المعدّل يعتمد على طبيعة الري.
+              </>
+            )}
           </AlertDescription>
         </Alert>
 

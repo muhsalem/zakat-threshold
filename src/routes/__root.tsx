@@ -88,6 +88,33 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      // R6: تشديد رؤوس الأمان عبر meta http-equiv (المدعومة في المتصفح)
+      {
+        httpEquiv: "Content-Security-Policy",
+        content: [
+          "default-src 'self'",
+          // Vite HMR وscripts داخلية — نُبقي unsafe-inline لتوافق shadcn/toaster
+          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.gpteng.co",
+          "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+          "font-src 'self' data: https://fonts.gstatic.com",
+          "img-src 'self' data: blob: https:",
+          "media-src 'self' blob: data: https:",
+          "connect-src 'self' https: wss: data: blob:",
+          "worker-src 'self' blob:",
+          "manifest-src 'self'",
+          "object-src 'none'",
+          "base-uri 'self'",
+          "form-action 'self'",
+          "frame-ancestors 'none'",
+          "upgrade-insecure-requests",
+        ].join("; "),
+      },
+      { httpEquiv: "X-Content-Type-Options", content: "nosniff" },
+      { name: "referrer", content: "strict-origin-when-cross-origin" },
+      {
+        httpEquiv: "Permissions-Policy",
+        content: "geolocation=(), microphone=(), camera=(), payment=(self), usb=()",
+      },
       { title: "حاسبة الزكاة — للأفراد والشركات" },
       {
         name: "description",
