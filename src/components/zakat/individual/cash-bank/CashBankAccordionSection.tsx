@@ -1,6 +1,6 @@
 import { Landmark } from "lucide-react";
 import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import CashBankSection from "@/components/zakat/CashBankSection";
+import { CashBankSection } from "@/components/zakat/CashBankSection";
 import RibaPurificationCalc from "@/components/zakat/RibaPurificationCalc";
 
 export interface CashBankAccordionSectionProps {
