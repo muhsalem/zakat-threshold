@@ -100,27 +100,37 @@ def _stable_key_js() -> str:
 
 async def expected_focusables(page: Page, nav_selector: str) -> list[str]:
     return await page.evaluate(
-        f"""(sel) => {{
-            {_stable_key_js()}
+        """(sel) => {
+            function keyOf(el) {
+                if (!el) return null;
+                if (el.id) return `#${el.id}`;
+                const t = el.getAttribute && el.getAttribute('data-testid');
+                if (t) return `[data-testid=${t}]`;
+                const p = el.dataset && el.dataset.page;
+                if (p) return `[data-page=${p}]`;
+                const s = el.dataset && el.dataset.sentinel;
+                if (s) return `[sentinel=${s}]`;
+                return el.tagName;
+            }
             const nav = document.querySelector(sel);
             if (!nav) return [];
             const cand = nav.querySelectorAll('a, button, select, input, [tabindex]');
             const out = [];
-            // The nav container itself may carry tabindex="0" (records pager).
             const navTi = nav.getAttribute('tabindex');
             if (navTi !== null && parseInt(navTi, 10) >= 0) out.push(keyOf(nav));
-            for (const el of cand) {{
+            for (const el of cand) {
                 if (el === nav) continue;
                 if (el.hasAttribute && el.hasAttribute('disabled')) continue;
                 if (el.getAttribute && el.getAttribute('aria-disabled') === 'true') continue;
                 const ti = el.getAttribute && el.getAttribute('tabindex');
                 if (ti !== null && parseInt(ti, 10) < 0) continue;
                 out.push(keyOf(el));
-            }}
+            }
             return out;
-        }}""",
+        }""",
         nav_selector,
     )
+
 
 
 async def active_desc(page: Page) -> dict:
