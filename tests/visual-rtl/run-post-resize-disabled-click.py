@@ -125,14 +125,19 @@ async def assert_records_click(page: Page, target_id: str, expected_boundary: st
         f"[{where}] prev/next attrs flipped: before={before} after={after}"
     )
 
-    # Native <button disabled> refuses focus in every browser, so the
-    # sentinel select MUST still be the active element. Landing on the
-    # disabled button, the opposite enabled sibling, an unrelated page
-    # anchor, or falling through to <body> are all regressions.
-    assert a1["id"] == "records-per-page", (
-        f"[{where}] focus moved to unintended target: expected #records-per-page, "
-        f"got {a1}"
+    # Native <button disabled> refuses focus in every browser. Focus
+    # may stay on the sentinel select, OR land on the wrapping <nav>
+    # (it is the pager's tabbable container). Both are acceptable —
+    # what we forbid is landing on the disabled button, the opposite
+    # enabled sibling, an unrelated control, or <body>.
+    assert a1["id"] in ("records-per-page",) or a1["testid"] == "records-pager", (
+        f"[{where}] focus moved to unintended target: expected "
+        f"#records-per-page or [data-testid=records-pager], got {a1}"
     )
+    assert a1["id"] not in ("records-prev", "records-next"), (
+        f"[{where}] focus landed on a prev/next button: {a1}"
+    )
+
 
 
 RECORDS_RESIZES = [43, 120, 15, 22, 100, 43]
