@@ -82,20 +82,8 @@ INSTALL_SENTINELS = """() => {
 }"""
 
 
-def _stable_key_js() -> str:
-    return """
-        function keyOf(el) {
-            if (!el) return null;
-            if (el.id) return `#${el.id}`;
-            const t = el.getAttribute && el.getAttribute('data-testid');
-            if (t) return `[data-testid=${t}]`;
-            const p = el.dataset && el.dataset.page;
-            if (p) return `[data-page=${p}]`;
-            const s = el.dataset && el.dataset.sentinel;
-            if (s) return `[sentinel=${s}]`;
-            return el.tagName;
-        }
-    """
+
+
 
 
 async def expected_focusables(page: Page, nav_selector: str) -> list[str]:
