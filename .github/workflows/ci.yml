@@ -220,6 +220,13 @@ jobs:
           PW_BROWSER: ${{ matrix.browser }}
         run: python tests/visual-rtl/run-disabled-click-noop.py
 
+      # التركيز يعود لنفس عنصر التحكم بعد resize أو نقر رقم صفحة (بدون قفز)
+      - name: Run focus-return after resize/click tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-focus-return.py
+
+
 
 
 

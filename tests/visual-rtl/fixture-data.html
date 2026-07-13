@@ -316,6 +316,22 @@
           if (state.page > state.total) state.page = state.total;
           if (state.page < 1) state.page = 1;
           body.textContent = `تعرض عناصر الصفحة ${state.page}`;
+
+          // Preserve focus across the innerHTML swap: record which logical
+          // control was focused BEFORE we blow the list away, then re-focus
+          // the equivalent control after re-render. Ensures a click on a
+          // page number (or a live total-resize) does not leak focus to
+          // <body>. If the previously-focused control is now disabled
+          // (prev/next at boundary), fall back to the current page anchor
+          // so focus never lands on an aria-disabled element.
+          const active = document.activeElement;
+          let focusKey = null;
+          if (active && list.contains(active)) {
+            if (active.dataset && active.dataset.page) focusKey = { type: "page", page: active.dataset.page };
+            else if (active.getAttribute && active.getAttribute("data-testid") === "num-prev") focusKey = { type: "prev" };
+            else if (active.getAttribute && active.getAttribute("data-testid") === "num-next") focusKey = { type: "next" };
+          }
+
           const items = [];
           items.push(
             `<li><a role="button" tabindex="${state.page === 1 ? -1 : 0}" data-testid="num-prev" aria-label="الصفحة السابقة" class="btn" ${state.page === 1 ? "aria-disabled='true' disabled" : ""}>${chev("prev")}<span>السابق</span></a></li>`,
@@ -340,7 +356,27 @@
           list.querySelector('[data-testid="num-next"]').addEventListener("click", () => {
             if (state.page < state.total) { state.page++; render(); }
           });
+
+          if (focusKey) {
+            let target = null;
+            if (focusKey.type === "page") {
+              target = list.querySelector(`a[data-page="${focusKey.page}"]`)
+                    || list.querySelector(`a[data-page="${state.page}"]`);
+            } else if (focusKey.type === "prev") {
+              target = list.querySelector('[data-testid="num-prev"]');
+              if (target && target.getAttribute("aria-disabled") === "true") {
+                target = list.querySelector(`a[data-page="${state.page}"]`);
+              }
+            } else if (focusKey.type === "next") {
+              target = list.querySelector('[data-testid="num-next"]');
+              if (target && target.getAttribute("aria-disabled") === "true") {
+                target = list.querySelector(`a[data-page="${state.page}"]`);
+              }
+            }
+            if (target) target.focus();
+          }
         }
+
         // Test hook: change TOTAL while keeping state.page (render clamps).
         window.__resizeNumbered = function (total) {
           state.total = Math.max(1, total | 0);
