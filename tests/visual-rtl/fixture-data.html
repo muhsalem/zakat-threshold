@@ -304,27 +304,30 @@
 
       // ---------- numbered (shadcn Pagination) variant ----------
       (function numbered() {
-        const TOTAL = 5;
-        const state = { page: 1 };
+        // TOTAL is mutable so tests can grow/shrink the page range while the
+        // UI stays on the same page — see window.__resizeNumbered below.
+        const state = { page: 1, total: 5 };
         const list = document.getElementById("numbered-list");
         const body = document.getElementById("numbered-body");
         const chev = (dir) =>
           `<svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="${dir === "prev" ? "" : "transform:rotate(180deg)"}"><polyline points="15 18 9 12 15 6"/></svg>`;
 
         function render() {
+          if (state.page > state.total) state.page = state.total;
+          if (state.page < 1) state.page = 1;
           body.textContent = `تعرض عناصر الصفحة ${state.page}`;
           const items = [];
           items.push(
             `<li><a role="button" tabindex="${state.page === 1 ? -1 : 0}" data-testid="num-prev" aria-label="الصفحة السابقة" class="btn" ${state.page === 1 ? "aria-disabled='true' disabled" : ""}>${chev("prev")}<span>السابق</span></a></li>`,
           );
-          for (let p = 1; p <= TOTAL; p++) {
+          for (let p = 1; p <= state.total; p++) {
             const active = p === state.page;
             items.push(
               `<li><a role="link" tabindex="0" data-page="${p}" aria-label="الصفحة ${p}" aria-current="${active ? "page" : "false"}" class="btn" style="${active ? "border-color:#111;font-weight:600" : ""}">${p}</a></li>`,
             );
           }
           items.push(
-            `<li><a role="button" tabindex="${state.page === TOTAL ? -1 : 0}" data-testid="num-next" aria-label="الصفحة التالية" class="btn" ${state.page === TOTAL ? "aria-disabled='true' disabled" : ""}><span>التالي</span>${chev("next")}</a></li>`,
+            `<li><a role="button" tabindex="${state.page === state.total ? -1 : 0}" data-testid="num-next" aria-label="الصفحة التالية" class="btn" ${state.page === state.total ? "aria-disabled='true' disabled" : ""}><span>التالي</span>${chev("next")}</a></li>`,
           );
 
           list.innerHTML = items.join("");
@@ -335,11 +338,18 @@
             if (state.page > 1) { state.page--; render(); }
           });
           list.querySelector('[data-testid="num-next"]').addEventListener("click", () => {
-            if (state.page < TOTAL) { state.page++; render(); }
+            if (state.page < state.total) { state.page++; render(); }
           });
         }
+        // Test hook: change TOTAL while keeping state.page (render clamps).
+        window.__resizeNumbered = function (total) {
+          state.total = Math.max(1, total | 0);
+          render();
+          return { total: state.total, page: state.page };
+        };
         render();
       })();
+
     </script>
   </body>
 </html>

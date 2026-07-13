@@ -208,6 +208,14 @@ jobs:
           PW_BROWSER: ${{ matrix.browser }}
         run: python tests/visual-rtl/run-restore-after-refresh.py
 
+      # aria-label + aria-current + aria-disabled يتحدّثان فورًا مع تغيّر total
+      - name: Run aria-on-resize tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-aria-on-resize.py
+
+
+
 
 
 
