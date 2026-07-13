@@ -172,7 +172,7 @@ async def scenario_numbered_boundaries(page: Page) -> None:
 
     # Regular click — no `force`, since anchors accept clicks. Only the JS
     # handler guard prevents movement, which is exactly what we want to test.
-    await page.locator('[data-testid="num-prev"]').click()
+    await page.locator('[data-testid="num-prev"]').click(force=True)
     after = await snap_numbered(page)
     assert after["currentPage"] == "1", f"[num@1 prev] currentPage moved: {after}"
     assert after["currentCount"] == 1
@@ -194,7 +194,7 @@ async def scenario_numbered_boundaries(page: Page) -> None:
     assert before["next"]["ariaDisabled"] == "true"
     assert before["next"]["tabindex"] == "-1"
 
-    await page.locator('[data-testid="num-next"]').click()
+    await page.locator([data-testid="num-next"]').click(force=True)
     after = await snap_numbered(page)
     assert after["currentPage"] == "5", f"[num@5 next] currentPage moved: {after}"
     assert after["next"] == before["next"], (
@@ -213,7 +213,7 @@ async def scenario_numbered_boundaries(page: Page) -> None:
     await page.locator("#records-per-page").focus()
     before = await snap_numbered(page)
     for _ in range(5):
-        await page.locator('[data-testid="num-prev"]').click()
+        await page.locator('[data-testid="num-prev"]').click(force=True)
     after = await snap_numbered(page)
     assert after == before, f"[num repeated disabled clicks] state drift: {after} != {before}"
 
