@@ -125,8 +125,18 @@ async def expected_focusables(page: Page, nav_selector: str) -> list[str]:
 
 async def active_desc(page: Page) -> dict:
     return await page.evaluate(
-        _stable_key_js() + """
-        () => {
+        """() => {
+            function keyOf(el) {
+                if (!el) return null;
+                if (el.id) return `#${el.id}`;
+                const t = el.getAttribute && el.getAttribute('data-testid');
+                if (t) return `[data-testid=${t}]`;
+                const p = el.dataset && el.dataset.page;
+                if (p) return `[data-page=${p}]`;
+                const s = el.dataset && el.dataset.sentinel;
+                if (s) return `[sentinel=${s}]`;
+                return el.tagName;
+            }
             const a = document.activeElement;
             if (!a || a === document.body) return { key: null, tag: 'BODY', ariaDisabled: null, disabled: false, inNav: null };
             const nav = a.closest && a.closest('nav.pager, [data-testid$="pager"]');
@@ -137,9 +147,9 @@ async def active_desc(page: Page) -> dict:
                 disabled: a.hasAttribute && a.hasAttribute('disabled'),
                 inNav: nav ? (nav.getAttribute('data-testid') || 'pager') : null,
             };
-        }
-        """
+        }"""
     )
+
 
 
 async def walk_tab(page: Page, nav_testid: str, direction: str, max_steps: int = 60) -> list[dict]:
