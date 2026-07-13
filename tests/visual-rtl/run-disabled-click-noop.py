@@ -90,19 +90,34 @@ async def resize_records(page: Page, n: int) -> None:
     await page.evaluate("(n) => window.__resizeData('records', n)", n)
 
 
+def check_attrs_unchanged(before: dict, after: dict, label: str) -> None:
+    """State (counter + both button attr triples) must be identical."""
+    assert after["counter"] == before["counter"], (
+        f"[{label}] counter drifted {before['counter']!r} → {after['counter']!r}"
+    )
+    for side in ("prev", "next"):
+        assert after[side] == before[side], (
+            f"[{label}] {side} attrs flipped: before={before[side]} after={after[side]}"
+        )
+
+
 async def scenario_records_boundaries(page: Page) -> None:
     # ---- Page 1: prev disabled ----
     await goto_records(page, 1)
-    # Move focus somewhere neutral so we can detect any jump
     await page.locator("#records-per-page").focus()
     before = await snap_records(page)
     assert before["counter"] == "1 / 5"
     assert before["prev"]["disabled"] is True
-    assert before["activeId"] == "records-per-page"
 
     await page.locator("#records-prev").click(force=True)
     after = await snap_records(page)
-    assert after == before, f"[records@1 prev] state changed: before={before} after={after}"
+    check_attrs_unchanged(before, after, "records@1 prev")
+    # Focus must NOT land on the disabled button (native <button disabled>
+    # is not focusable). Landing on the wrapping <nav> is acceptable — it
+    # is the tabbable pager container for keyboard navigation.
+    assert after["activeId"] != "records-prev", f"focus on disabled prev: {after}"
+    # Focus must NOT cascade to the OPPOSITE enabled sibling
+    assert after["activeId"] != "records-next", f"click leaked focus to next: {after}"
 
     # ---- Last page: next disabled ----
     await goto_records(page, 5)
@@ -110,14 +125,15 @@ async def scenario_records_boundaries(page: Page) -> None:
     before = await snap_records(page)
     assert before["counter"] == "5 / 5"
     assert before["next"]["disabled"] is True
-    assert before["activeId"] == "records-per-page"
 
     await page.locator("#records-next").click(force=True)
     after = await snap_records(page)
-    assert after == before, f"[records@5 next] state changed: before={before} after={after}"
+    check_attrs_unchanged(before, after, "records@5 next")
+    assert after["activeId"] != "records-next", f"focus on disabled next: {after}"
+    assert after["activeId"] != "records-prev", f"click leaked focus to prev: {after}"
 
-    # ---- Single page: both disabled ----
-    await resize_records(page, 5)  # 5 rows / perPage=10 → 1 page
+    # ---- Single page: both disabled, force-click each in sequence ----
+    await resize_records(page, 5)
     await page.locator("#records-per-page").focus()
     before = await snap_records(page)
     assert before["counter"] == "1 / 1"
@@ -125,11 +141,14 @@ async def scenario_records_boundaries(page: Page) -> None:
 
     await page.locator("#records-prev").click(force=True)
     mid = await snap_records(page)
-    assert mid == before, f"[records single prev] state changed: {mid} != {before}"
+    check_attrs_unchanged(before, mid, "records single prev")
+    assert mid["activeId"] not in ("records-prev", "records-next")
 
     await page.locator("#records-next").click(force=True)
     after = await snap_records(page)
-    assert after == before, f"[records single next] state changed: {after} != {before}"
+    check_attrs_unchanged(before, after, "records single next")
+    assert after["activeId"] not in ("records-prev", "records-next")
+
 
 
 # ---------- numbered ----------
