@@ -202,6 +202,14 @@ jobs:
           PW_BROWSER: ${{ matrix.browser }}
         run: python tests/visual-rtl/run-clamp-on-resize.py
 
+      # استعادة الحالة بعد refresh وإعادة الفتح (sessionStorage + URL params)
+      - name: Run restore-after-refresh tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-restore-after-refresh.py
+
+
+
 
 
 

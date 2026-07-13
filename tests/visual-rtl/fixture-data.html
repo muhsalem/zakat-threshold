@@ -161,11 +161,46 @@
 
       // ---------- generic pager ----------
       function pager(cfg) {
-        const state = { page: 1, perPage: parseInt(cfg.select.value, 10) };
+        // Restore state: URL params (?<key>Page=&<key>PerPage=) win over
+        // sessionStorage. If neither present, defaults apply. State persistence
+        // only activates when cfg.storageKey is provided — keeps LTR/attachments
+        // pagers behavior-identical to before unless opted in.
+        const storageKey = cfg.storageKey ? `pager:${cfg.storageKey}` : null;
+        let restoredPage = null, restoredPerPage = null;
+        if (cfg.storageKey) {
+          const p = params.get(`${cfg.storageKey}Page`);
+          const pp = params.get(`${cfg.storageKey}PerPage`);
+          if (pp != null) restoredPerPage = Math.max(1, parseInt(pp, 10) || 0) || null;
+          if (p != null) restoredPage = Math.max(1, parseInt(p, 10) || 0) || null;
+          if (restoredPage == null || restoredPerPage == null) {
+            try {
+              const raw = sessionStorage.getItem(storageKey);
+              if (raw) {
+                const saved = JSON.parse(raw);
+                if (restoredPage == null && Number.isInteger(saved.page) && saved.page >= 1) restoredPage = saved.page;
+                if (restoredPerPage == null && Number.isInteger(saved.perPage) && saved.perPage >= 1) restoredPerPage = saved.perPage;
+              }
+            } catch { /* ignore */ }
+          }
+        }
+        if (restoredPerPage != null) {
+          // Ensure the select reflects the restored perPage (only if the option exists).
+          const opt = Array.from(cfg.select.options).find((o) => parseInt(o.value, 10) === restoredPerPage);
+          if (opt) cfg.select.value = opt.value;
+        }
+        const state = {
+          page: restoredPage ?? 1,
+          perPage: parseInt(cfg.select.value, 10),
+        };
         const totalPages = () => Math.max(1, Math.ceil(cfg.data.length / state.perPage));
+        function persist() {
+          if (!storageKey) return;
+          try { sessionStorage.setItem(storageKey, JSON.stringify({ page: state.page, perPage: state.perPage })); } catch { /* ignore */ }
+        }
         function render() {
           const tp = totalPages();
           if (state.page > tp) state.page = tp;
+          if (state.page < 1) state.page = 1;
           const start = (state.page - 1) * state.perPage;
           const end = Math.min(cfg.data.length, start + state.perPage);
           cfg.body.innerHTML = cfg.data.slice(start, end).map(cfg.row).join("");
@@ -173,6 +208,7 @@
           cfg.prev.disabled = state.page <= 1;
           cfg.next.disabled = state.page >= tp;
           if (cfg.range) cfg.range.textContent = `عرض ${start + 1}–${end} من ${cfg.data.length}`;
+          persist();
         }
         cfg.prev.addEventListener("click", () => { if (state.page > 1) { state.page--; render(); } });
         cfg.next.addEventListener("click", () => { if (state.page < totalPages()) { state.page++; render(); } });
@@ -199,6 +235,7 @@
       }
 
 
+
       const recordsPager = pager({
         data: RECORDS,
         body: document.getElementById("records-body"),
@@ -207,8 +244,10 @@
         next: document.getElementById("records-next"),
         select: document.getElementById("records-per-page"),
         container: document.querySelector('[data-testid="records-pager"]'),
+        storageKey: "records",
         row: (r) => `<tr><td>${r.id}</td><td>${r.client}</td><td>${r.year}</td><td dir="ltr">${r.base}</td><td dir="ltr">${r.zakat}</td></tr>`,
       });
+
 
       const attachmentsPager = pager({
         data: ATTACHMENTS,
