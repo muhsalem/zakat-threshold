@@ -21,10 +21,10 @@ We test both pager flavors, because they use different "disabled" mechanics:
     `<a aria-disabled="true" disabled>` — the disabled attr is inert on
     anchors, only the JS guard prevents movement, so this is where a
     regression is most likely to slip in.
-    * Page 1 → num-prev disabled: click it (no force needed) → aria-current
-      stays on page 1, tabindex on prev stays -1, focus does NOT jump onto
-      the anchor.
+    * Page 1 → num-prev disabled: force-click it → aria-current stays on
+      page 1, tabindex on prev stays -1, focus does NOT jump onto the anchor.
     * Page 5 → num-next disabled: same, mirrored.
+
 
 Every scenario captures a "before" snapshot (activeElement + tabindex +
 aria-disabled + counter/current) and re-captures "after", then asserts
