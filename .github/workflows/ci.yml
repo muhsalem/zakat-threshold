@@ -214,6 +214,14 @@ jobs:
           PW_BROWSER: ${{ matrix.browser }}
         run: python tests/visual-rtl/run-aria-on-resize.py
 
+      # النقر على prev/next المعطّل لا يبدّل aria/tabindex/state ولا يسرّب التركيز
+      - name: Run disabled-click no-op tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-disabled-click-noop.py
+
+
+
 
 
 
