@@ -194,7 +194,7 @@ async def scenario_numbered_boundaries(page: Page) -> None:
     assert before["next"]["ariaDisabled"] == "true"
     assert before["next"]["tabindex"] == "-1"
 
-    await page.locator([data-testid="num-next"]').click(force=True)
+    await page.locator('[data-testid="num-next"]').click(force=True)
     after = await snap_numbered(page)
     assert after["currentPage"] == "5", f"[num@5 next] currentPage moved: {after}"
     assert after["next"] == before["next"], (
