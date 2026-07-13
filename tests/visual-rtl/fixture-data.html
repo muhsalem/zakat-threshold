@@ -199,7 +199,7 @@
       }
 
 
-      pager({
+      const recordsPager = pager({
         data: RECORDS,
         body: document.getElementById("records-body"),
         counter: document.getElementById("records-counter"),
@@ -210,7 +210,7 @@
         row: (r) => `<tr><td>${r.id}</td><td>${r.client}</td><td>${r.year}</td><td dir="ltr">${r.base}</td><td dir="ltr">${r.zakat}</td></tr>`,
       });
 
-      pager({
+      const attachmentsPager = pager({
         data: ATTACHMENTS,
         body: document.getElementById("attachments-body"),
         counter: document.getElementById("attachments-counter"),
@@ -232,6 +232,35 @@
         container: document.querySelector('[data-testid="records-ltr-pager"]'),
         row: (r) => `<tr><td>${r.id}</td><td>${r.client}</td><td>${r.year}</td><td>${r.base}</td><td>${r.zakat}</td></tr>`,
       });
+
+      // Test hook: live dataset resize WITHOUT reload — mutates arrays in place
+      // and re-renders the affected pager(s). Preserves state.page (pager itself
+      // clamps to totalPages if it now overflows). Used by run-live-resize.py.
+      window.__resizeData = function (name, n) {
+        n = Math.max(0, n | 0);
+        if (name === "records") {
+          RECORDS.length = 0;
+          for (let i = 0; i < n; i++) RECORDS.push({
+            id: i + 1, client: `عميل رقم ${i + 1}`,
+            year: 1445 + (i % 3),
+            base: (10000 + i * 137).toLocaleString("ar-EG"),
+            zakat: (250 + i * 3).toLocaleString("ar-EG"),
+          });
+          recordsPager.render();
+        } else if (name === "attachments") {
+          ATTACHMENTS.length = 0;
+          for (let i = 0; i < n; i++) ATTACHMENTS.push({
+            name: `مرفق_${String(i + 1).padStart(2, "0")}.pdf`,
+            type: i % 2 === 0 ? "بنكي" : "تجاري",
+            size: `${100 + i * 7} KB`,
+          });
+          attachmentsPager.render();
+        } else {
+          throw new Error("unknown dataset: " + name);
+        }
+        return { total: n };
+      };
+
 
 
       // ---------- numbered (shadcn Pagination) variant ----------
