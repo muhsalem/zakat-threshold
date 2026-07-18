@@ -11,7 +11,8 @@ import { Slider } from "@/components/ui/slider";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Trash2, Plus, HeartHandshake, Download, CalendarIcon } from "lucide-react";
+import { Trash2, Plus, HeartHandshake, Download, CalendarIcon, FileDown } from "lucide-react";
+import { exportHtmlToPdf, pdfWrap } from "@/lib/export/pdf";
 
 export const Route = createFileRoute("/_authenticated/distribution-plan")({
   head: () => ({
