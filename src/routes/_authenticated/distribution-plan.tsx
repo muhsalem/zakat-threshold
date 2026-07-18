@@ -140,24 +140,78 @@ function DistributionPlanPage() {
   const updateR = (id: string, patch: Partial<Recipient>) =>
     setRecipients((prev) => prev.map((x) => (x.id === id ? { ...x, ...patch } : x)));
 
-  const exportPlan = () => {
-    const html = `<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><title>خطة توزيع الزكاة</title>
-      <style>body{font-family:system-ui;padding:24px;color:#111}table{border-collapse:collapse;width:100%;margin-top:12px}td,th{border:1px solid #ddd;padding:8px;text-align:right}h2{margin-top:24px}</style>
-      </head><body><h1>خطة توزيع الزكاة</h1>
-      <p>الإجمالي: <b>${total.toLocaleString()}</b> — الموزَّع: <b>${distributed.toLocaleString()}</b> — المتبقي: <b>${remaining.toLocaleString()}</b></p>
-      <h2>النسب حسب المصارف</h2>
-      <table><tr><th>المصرف</th><th>النسبة</th><th>المخصَّص</th><th>المصروف</th><th>المتبقي</th></tr>
-      ${CHANNELS.map((c) => `<tr><td>${c.label}</td><td>${pct[c.id]}%</td><td>${perChannel[c.id].toLocaleString()}</td><td>${channelSummary[c.id].spent.toLocaleString()}</td><td>${channelSummary[c.id].remaining.toLocaleString()}</td></tr>`).join("")}
+  const buildReportHtml = () => `
+    <div style="font-size:12px">
+      <h2 style="font-size:14px;color:#0d766e;margin:0 0 6px">ملخص عام</h2>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:12px">
+        <tr>
+          <td style="border:1px solid #ddd;padding:6px;background:#f6f8f7;width:33%">الإجمالي</td>
+          <td style="border:1px solid #ddd;padding:6px;background:#f6f8f7;width:33%">الموزَّع</td>
+          <td style="border:1px solid #ddd;padding:6px;background:#f6f8f7">المتبقي</td>
+        </tr>
+        <tr>
+          <td style="border:1px solid #ddd;padding:8px"><b>${total.toLocaleString("ar-EG")}</b></td>
+          <td style="border:1px solid #ddd;padding:8px"><b>${distributed.toLocaleString("ar-EG")}</b></td>
+          <td style="border:1px solid #ddd;padding:8px"><b>${remaining.toLocaleString("ar-EG")}</b></td>
+        </tr>
       </table>
-      <h2>المستفيدون</h2>
-      <table><tr><th>الاسم</th><th>المصرف</th><th>النسبة/المبلغ</th><th>المبلغ الفعلي</th><th>تاريخ الصرف</th><th>ملاحظة</th></tr>
-      ${recipients.map((r) => `<tr><td>${r.name || "—"}</td><td>${CHANNELS.find((c) => c.id === r.channel)?.label}</td><td>${r.mode === "percent" ? r.sharePct + "% من المصرف" : "مبلغ ثابت"}</td><td>${effectiveAmount(r).toLocaleString()}</td><td>${r.disburseDate ?? "—"}</td><td>${r.note ?? ""}</td></tr>`).join("")}
-      </table></body></html>`;
+      <h2 style="font-size:14px;color:#0d766e;margin:0 0 6px">النِّسب حسب المصارف الثمانية</h2>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:12px">
+        <tr style="background:#f6f8f7">
+          <th style="border:1px solid #ddd;padding:6px;text-align:right">المصرف</th>
+          <th style="border:1px solid #ddd;padding:6px">النسبة</th>
+          <th style="border:1px solid #ddd;padding:6px">المخصَّص</th>
+          <th style="border:1px solid #ddd;padding:6px">المصروف</th>
+          <th style="border:1px solid #ddd;padding:6px">المتبقي</th>
+        </tr>
+        ${CHANNELS.map((c) => `<tr>
+          <td style="border:1px solid #ddd;padding:6px">${c.label}</td>
+          <td style="border:1px solid #ddd;padding:6px;text-align:center">${pct[c.id]}%</td>
+          <td style="border:1px solid #ddd;padding:6px;text-align:center">${perChannel[c.id].toLocaleString("ar-EG")}</td>
+          <td style="border:1px solid #ddd;padding:6px;text-align:center">${channelSummary[c.id].spent.toLocaleString("ar-EG")}</td>
+          <td style="border:1px solid #ddd;padding:6px;text-align:center ${channelSummary[c.id].over ? ";color:#b91c1c" : ""}">${channelSummary[c.id].remaining.toLocaleString("ar-EG")}</td>
+        </tr>`).join("")}
+      </table>
+      <h2 style="font-size:14px;color:#0d766e;margin:0 0 6px">المستفيدون (${recipients.length})</h2>
+      <table style="width:100%;border-collapse:collapse">
+        <tr style="background:#f6f8f7">
+          <th style="border:1px solid #ddd;padding:6px;text-align:right">الاسم</th>
+          <th style="border:1px solid #ddd;padding:6px">المصرف</th>
+          <th style="border:1px solid #ddd;padding:6px">النوع</th>
+          <th style="border:1px solid #ddd;padding:6px">المبلغ</th>
+          <th style="border:1px solid #ddd;padding:6px">تاريخ الصرف</th>
+          <th style="border:1px solid #ddd;padding:6px;text-align:right">ملاحظة</th>
+        </tr>
+        ${recipients.map((r) => `<tr>
+          <td style="border:1px solid #ddd;padding:6px">${r.name || "—"}</td>
+          <td style="border:1px solid #ddd;padding:6px">${CHANNELS.find((c) => c.id === r.channel)?.label}</td>
+          <td style="border:1px solid #ddd;padding:6px;text-align:center">${r.mode === "percent" ? r.sharePct + "٪ من المصرف" : "مبلغ ثابت"}</td>
+          <td style="border:1px solid #ddd;padding:6px;text-align:center">${effectiveAmount(r).toLocaleString("ar-EG")}</td>
+          <td style="border:1px solid #ddd;padding:6px;text-align:center">${r.disburseDate ?? "—"}</td>
+          <td style="border:1px solid #ddd;padding:6px">${r.note ?? ""}</td>
+        </tr>`).join("")}
+      </table>
+    </div>`;
+
+  const exportPlan = () => {
+    const html = `<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><title>خطة توزيع الزكاة</title></head><body>${pdfWrap("خطة توزيع الزكاة", buildReportHtml())}</body></html>`;
     const blob = new Blob([html], { type: "text/html;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const w = window.open(url, "_blank");
     if (w) setTimeout(() => w.print(), 500);
     toast.success("جاهز للطباعة");
+  };
+
+  const exportPdf = async () => {
+    try {
+      await exportHtmlToPdf(
+        pdfWrap("خطة توزيع الزكاة", buildReportHtml()),
+        `distribution-plan-${new Date().toISOString().slice(0, 10)}.pdf`,
+      );
+      toast.success("تم تصدير PDF");
+    } catch {
+      toast.error("تعذّر تصدير PDF");
+    }
   };
 
   return (
