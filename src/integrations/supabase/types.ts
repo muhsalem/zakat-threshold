@@ -63,6 +63,7 @@ export type Database = {
           fiscal_year: number
           hawl_date: string | null
           id: string
+          intake_details: Json | null
           kind: string
           last_calc_amount: number | null
           last_calc_at: string | null
@@ -84,6 +85,7 @@ export type Database = {
           fiscal_year?: number
           hawl_date?: string | null
           id?: string
+          intake_details?: Json | null
           kind?: string
           last_calc_amount?: number | null
           last_calc_at?: string | null
@@ -105,6 +107,7 @@ export type Database = {
           fiscal_year?: number
           hawl_date?: string | null
           id?: string
+          intake_details?: Json | null
           kind?: string
           last_calc_amount?: number | null
           last_calc_at?: string | null
