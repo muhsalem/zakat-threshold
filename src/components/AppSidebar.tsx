@@ -22,6 +22,7 @@ import {
   HelpCircle,
   Sparkles,
   LayoutDashboard,
+  Settings,
 } from "lucide-react";
 import { searchEntries } from "@/lib/searchIndex";
 import { useAuth, type AccountType } from "@/hooks/useAuth";
