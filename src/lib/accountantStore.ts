@@ -78,6 +78,7 @@ type ClientRow = {
   created_via: string;
   last_calc_at: string | null;
   last_calc_amount: number | string | null;
+  intake_details: unknown;
 };
 
 type HistoryRow = {
