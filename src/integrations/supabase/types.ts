@@ -785,6 +785,7 @@ export type Database = {
       profiles: {
         Row: {
           account_type: Database["public"]["Enums"]["account_type"]
+          country: string | null
           created_at: string
           display_name: string | null
           id: string
@@ -795,6 +796,7 @@ export type Database = {
         }
         Insert: {
           account_type?: Database["public"]["Enums"]["account_type"]
+          country?: string | null
           created_at?: string
           display_name?: string | null
           id?: string
@@ -805,6 +807,7 @@ export type Database = {
         }
         Update: {
           account_type?: Database["public"]["Enums"]["account_type"]
+          country?: string | null
           created_at?: string
           display_name?: string | null
           id?: string
