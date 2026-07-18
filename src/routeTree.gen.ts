@@ -65,6 +65,7 @@ import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedErpSetupRouteImport } from './routes/_authenticated/erp-setup'
 import { Route as AuthenticatedDraftsRouteImport } from './routes/_authenticated/drafts'
+import { Route as AuthenticatedDistributionPlanRouteImport } from './routes/_authenticated/distribution-plan'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCoaMappingRouteImport } from './routes/_authenticated/coa-mapping'
 import { Route as AuthenticatedBulkClientsRouteImport } from './routes/_authenticated/bulk-clients'
@@ -370,6 +371,12 @@ const AuthenticatedDraftsRoute = AuthenticatedDraftsRouteImport.update({
   path: '/drafts',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDistributionPlanRoute =
+  AuthenticatedDistributionPlanRouteImport.update({
+    id: '/distribution-plan',
+    path: '/distribution-plan',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -559,6 +566,7 @@ export interface FileRoutesByFullPath {
   '/bulk-clients': typeof AuthenticatedBulkClientsRoute
   '/coa-mapping': typeof AuthenticatedCoaMappingRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/distribution-plan': typeof AuthenticatedDistributionPlanRoute
   '/drafts': typeof AuthenticatedDraftsRoute
   '/erp-setup': typeof AuthenticatedErpSetupRoute
   '/settings': typeof AuthenticatedSettingsRoute
@@ -640,6 +648,7 @@ export interface FileRoutesByTo {
   '/bulk-clients': typeof AuthenticatedBulkClientsRoute
   '/coa-mapping': typeof AuthenticatedCoaMappingRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/distribution-plan': typeof AuthenticatedDistributionPlanRoute
   '/drafts': typeof AuthenticatedDraftsRoute
   '/erp-setup': typeof AuthenticatedErpSetupRoute
   '/settings': typeof AuthenticatedSettingsRoute
@@ -723,6 +732,7 @@ export interface FileRoutesById {
   '/_authenticated/bulk-clients': typeof AuthenticatedBulkClientsRoute
   '/_authenticated/coa-mapping': typeof AuthenticatedCoaMappingRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/distribution-plan': typeof AuthenticatedDistributionPlanRoute
   '/_authenticated/drafts': typeof AuthenticatedDraftsRoute
   '/_authenticated/erp-setup': typeof AuthenticatedErpSetupRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
@@ -806,6 +816,7 @@ export interface FileRouteTypes {
     | '/bulk-clients'
     | '/coa-mapping'
     | '/dashboard'
+    | '/distribution-plan'
     | '/drafts'
     | '/erp-setup'
     | '/settings'
@@ -887,6 +898,7 @@ export interface FileRouteTypes {
     | '/bulk-clients'
     | '/coa-mapping'
     | '/dashboard'
+    | '/distribution-plan'
     | '/drafts'
     | '/erp-setup'
     | '/settings'
@@ -969,6 +981,7 @@ export interface FileRouteTypes {
     | '/_authenticated/bulk-clients'
     | '/_authenticated/coa-mapping'
     | '/_authenticated/dashboard'
+    | '/_authenticated/distribution-plan'
     | '/_authenticated/drafts'
     | '/_authenticated/erp-setup'
     | '/_authenticated/settings'
@@ -1456,6 +1469,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDraftsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/distribution-plan': {
+      id: '/_authenticated/distribution-plan'
+      path: '/distribution-plan'
+      fullPath: '/distribution-plan'
+      preLoaderRoute: typeof AuthenticatedDistributionPlanRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -1650,6 +1670,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedBulkClientsRoute: typeof AuthenticatedBulkClientsRoute
   AuthenticatedCoaMappingRoute: typeof AuthenticatedCoaMappingRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDistributionPlanRoute: typeof AuthenticatedDistributionPlanRoute
   AuthenticatedDraftsRoute: typeof AuthenticatedDraftsRoute
   AuthenticatedErpSetupRoute: typeof AuthenticatedErpSetupRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
@@ -1667,6 +1688,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedBulkClientsRoute: AuthenticatedBulkClientsRoute,
   AuthenticatedCoaMappingRoute: AuthenticatedCoaMappingRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDistributionPlanRoute: AuthenticatedDistributionPlanRoute,
   AuthenticatedDraftsRoute: AuthenticatedDraftsRoute,
   AuthenticatedErpSetupRoute: AuthenticatedErpSetupRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
