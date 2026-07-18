@@ -23,6 +23,9 @@ import {
   Sparkles,
   LayoutDashboard,
   Settings,
+  MapPin,
+  Users,
+  HeartHandshake,
 } from "lucide-react";
 import { searchEntries } from "@/lib/searchIndex";
 import { useAuth, type AccountType } from "@/hooks/useAuth";
