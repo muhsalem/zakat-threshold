@@ -13,13 +13,13 @@ import { useGeoPricing } from "@/hooks/useGeoPricing";
 export const Route = createFileRoute("/pricing")({
   head: () => ({
     meta: [
-      { title: "الأسعار — نِصاب | تسعير عادل حسب دولتك" },
+      { title: "الاشتراكات والخطط — نِصاب | تسعير عادل حسب دولتك" },
       {
         name: "description",
         content:
-          "خطط نِصاب للأفراد والشركات بأسعار محلية تراعي القوة الشرائية لبلدك — من مصر والخليج إلى العالم.",
+          "اشتراكات وخطط نِصاب للأفراد والشركات بأسعار محلية تراعي القوة الشرائية لبلدك — من مصر والخليج إلى العالم.",
       },
-      { property: "og:title", content: "الأسعار — نِصاب" },
+      { property: "og:title", content: "الاشتراكات والخطط — نِصاب" },
       { property: "og:description", content: "تسعير عادل عالمياً (PPP) — أفراد وشركات." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -143,7 +143,7 @@ function PricingPage() {
         <div className="flex items-start gap-3">
           <Info className="h-5 w-5 text-primary shrink-0 mt-0.5" />
           <div className="space-y-2 text-sm">
-            <p className="font-semibold">كيف نحدّد الأسعار؟</p>
+            <p className="font-semibold">كيف نحدّد أسعار الاشتراكات؟</p>
             <p className="text-muted-foreground leading-relaxed">
               نصنّف الدول إلى 4 مناطق مستوحاة من البنك الدولي — دول عالية الدخل
               (T1) تدفع السعر الكامل، دول متوسطة الدخل الأعلى (T2) 60%، دول
