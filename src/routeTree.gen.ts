@@ -13,6 +13,7 @@ import { Route as ZakatGoldRouteImport } from './routes/zakat-gold'
 import { Route as ZakatCompanyRouteImport } from './routes/zakat-company'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as VerifyRouteImport } from './routes/verify'
+import { Route as SubscriptionConfirmationRouteImport } from './routes/subscription-confirmation'
 import { Route as StatusRouteImport } from './routes/status'
 import { Route as SoftwareRecommendationsRouteImport } from './routes/software-recommendations'
 import { Route as ShowcaseRouteImport } from './routes/showcase'
@@ -112,6 +113,12 @@ const VerifyRoute = VerifyRouteImport.update({
   path: '/verify',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SubscriptionConfirmationRoute =
+  SubscriptionConfirmationRouteImport.update({
+    id: '/subscription-confirmation',
+    path: '/subscription-confirmation',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const StatusRoute = StatusRouteImport.update({
   id: '/status',
   path: '/status',
@@ -561,6 +568,7 @@ export interface FileRoutesByFullPath {
   '/showcase': typeof ShowcaseRoute
   '/software-recommendations': typeof SoftwareRecommendationsRoute
   '/status': typeof StatusRoute
+  '/subscription-confirmation': typeof SubscriptionConfirmationRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
   '/zakat-company': typeof ZakatCompanyRoute
@@ -644,6 +652,7 @@ export interface FileRoutesByTo {
   '/showcase': typeof ShowcaseRoute
   '/software-recommendations': typeof SoftwareRecommendationsRoute
   '/status': typeof StatusRoute
+  '/subscription-confirmation': typeof SubscriptionConfirmationRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
   '/zakat-company': typeof ZakatCompanyRoute
@@ -729,6 +738,7 @@ export interface FileRoutesById {
   '/showcase': typeof ShowcaseRoute
   '/software-recommendations': typeof SoftwareRecommendationsRoute
   '/status': typeof StatusRoute
+  '/subscription-confirmation': typeof SubscriptionConfirmationRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
   '/zakat-company': typeof ZakatCompanyRoute
@@ -814,6 +824,7 @@ export interface FileRouteTypes {
     | '/showcase'
     | '/software-recommendations'
     | '/status'
+    | '/subscription-confirmation'
     | '/verify'
     | '/welcome'
     | '/zakat-company'
@@ -897,6 +908,7 @@ export interface FileRouteTypes {
     | '/showcase'
     | '/software-recommendations'
     | '/status'
+    | '/subscription-confirmation'
     | '/verify'
     | '/welcome'
     | '/zakat-company'
@@ -981,6 +993,7 @@ export interface FileRouteTypes {
     | '/showcase'
     | '/software-recommendations'
     | '/status'
+    | '/subscription-confirmation'
     | '/verify'
     | '/welcome'
     | '/zakat-company'
@@ -1066,6 +1079,7 @@ export interface RootRouteChildren {
   ShowcaseRoute: typeof ShowcaseRoute
   SoftwareRecommendationsRoute: typeof SoftwareRecommendationsRoute
   StatusRoute: typeof StatusRoute
+  SubscriptionConfirmationRoute: typeof SubscriptionConfirmationRoute
   VerifyRoute: typeof VerifyRoute
   WelcomeRoute: typeof WelcomeRoute
   ZakatCompanyRoute: typeof ZakatCompanyRoute
@@ -1116,6 +1130,13 @@ declare module '@tanstack/react-router' {
       path: '/verify'
       fullPath: '/verify'
       preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subscription-confirmation': {
+      id: '/subscription-confirmation'
+      path: '/subscription-confirmation'
+      fullPath: '/subscription-confirmation'
+      preLoaderRoute: typeof SubscriptionConfirmationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/status': {
@@ -1779,6 +1800,7 @@ const rootRouteChildren: RootRouteChildren = {
   ShowcaseRoute: ShowcaseRoute,
   SoftwareRecommendationsRoute: SoftwareRecommendationsRoute,
   StatusRoute: StatusRoute,
+  SubscriptionConfirmationRoute: SubscriptionConfirmationRoute,
   VerifyRoute: VerifyRoute,
   WelcomeRoute: WelcomeRoute,
   ZakatCompanyRoute: ZakatCompanyRoute,

@@ -17,7 +17,7 @@ interface Props {
 export function PayButton({
   planId,
   label = "اشترِ الآن",
-  returnPath = "/",
+  returnPath = "/subscription-confirmation",
   variant = "default",
   className,
   discount,
