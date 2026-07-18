@@ -209,6 +209,21 @@ function ZakatFitrPage() {
                 placeholder="USD / SAR / EGP..."
               />
             </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="year">السنة الميلادية</Label>
+              <Input
+                id="year"
+                type="number"
+                min={1900}
+                max={2100}
+                value={year}
+                onChange={(e) => setYear(Number(e.target.value) || new Date().getFullYear())}
+              />
+              <p className="text-xs text-muted-foreground">
+                تُستخدم لأرشفة الحساب ومقارنته بالسنوات السابقة.
+              </p>
+            </div>
           </div>
 
           <div className="grid gap-3 md:grid-cols-2">
