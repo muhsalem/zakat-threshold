@@ -66,6 +66,7 @@ import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedErpSetupRouteImport } from './routes/_authenticated/erp-setup'
 import { Route as AuthenticatedDraftsRouteImport } from './routes/_authenticated/drafts'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedCoaMappingRouteImport } from './routes/_authenticated/coa-mapping'
 import { Route as AuthenticatedAuditReviewRouteImport } from './routes/_authenticated/audit-review'
 import { Route as AuthenticatedAttestationsRouteImport } from './routes/_authenticated/attestations'
 import { Route as AuthenticatedAttachmentsReviewRouteImport } from './routes/_authenticated/attachments-review'
@@ -373,6 +374,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedCoaMappingRoute = AuthenticatedCoaMappingRouteImport.update({
+  id: '/coa-mapping',
+  path: '/coa-mapping',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAuditReviewRoute =
   AuthenticatedAuditReviewRouteImport.update({
     id: '/audit-review',
@@ -543,6 +549,7 @@ export interface FileRoutesByFullPath {
   '/attachments-review': typeof AuthenticatedAttachmentsReviewRoute
   '/attestations': typeof AuthenticatedAttestationsRoute
   '/audit-review': typeof AuthenticatedAuditReviewRoute
+  '/coa-mapping': typeof AuthenticatedCoaMappingRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/drafts': typeof AuthenticatedDraftsRoute
   '/erp-setup': typeof AuthenticatedErpSetupRoute
@@ -622,6 +629,7 @@ export interface FileRoutesByTo {
   '/attachments-review': typeof AuthenticatedAttachmentsReviewRoute
   '/attestations': typeof AuthenticatedAttestationsRoute
   '/audit-review': typeof AuthenticatedAuditReviewRoute
+  '/coa-mapping': typeof AuthenticatedCoaMappingRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/drafts': typeof AuthenticatedDraftsRoute
   '/erp-setup': typeof AuthenticatedErpSetupRoute
@@ -703,6 +711,7 @@ export interface FileRoutesById {
   '/_authenticated/attachments-review': typeof AuthenticatedAttachmentsReviewRoute
   '/_authenticated/attestations': typeof AuthenticatedAttestationsRoute
   '/_authenticated/audit-review': typeof AuthenticatedAuditReviewRoute
+  '/_authenticated/coa-mapping': typeof AuthenticatedCoaMappingRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/drafts': typeof AuthenticatedDraftsRoute
   '/_authenticated/erp-setup': typeof AuthenticatedErpSetupRoute
@@ -784,6 +793,7 @@ export interface FileRouteTypes {
     | '/attachments-review'
     | '/attestations'
     | '/audit-review'
+    | '/coa-mapping'
     | '/dashboard'
     | '/drafts'
     | '/erp-setup'
@@ -863,6 +873,7 @@ export interface FileRouteTypes {
     | '/attachments-review'
     | '/attestations'
     | '/audit-review'
+    | '/coa-mapping'
     | '/dashboard'
     | '/drafts'
     | '/erp-setup'
@@ -943,6 +954,7 @@ export interface FileRouteTypes {
     | '/_authenticated/attachments-review'
     | '/_authenticated/attestations'
     | '/_authenticated/audit-review'
+    | '/_authenticated/coa-mapping'
     | '/_authenticated/dashboard'
     | '/_authenticated/drafts'
     | '/_authenticated/erp-setup'
@@ -1438,6 +1450,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/coa-mapping': {
+      id: '/_authenticated/coa-mapping'
+      path: '/coa-mapping'
+      fullPath: '/coa-mapping'
+      preLoaderRoute: typeof AuthenticatedCoaMappingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/audit-review': {
       id: '/_authenticated/audit-review'
       path: '/audit-review'
@@ -1608,6 +1627,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAttachmentsReviewRoute: typeof AuthenticatedAttachmentsReviewRoute
   AuthenticatedAttestationsRoute: typeof AuthenticatedAttestationsRoute
   AuthenticatedAuditReviewRoute: typeof AuthenticatedAuditReviewRoute
+  AuthenticatedCoaMappingRoute: typeof AuthenticatedCoaMappingRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDraftsRoute: typeof AuthenticatedDraftsRoute
   AuthenticatedErpSetupRoute: typeof AuthenticatedErpSetupRoute
@@ -1623,6 +1643,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAttachmentsReviewRoute: AuthenticatedAttachmentsReviewRoute,
   AuthenticatedAttestationsRoute: AuthenticatedAttestationsRoute,
   AuthenticatedAuditReviewRoute: AuthenticatedAuditReviewRoute,
+  AuthenticatedCoaMappingRoute: AuthenticatedCoaMappingRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDraftsRoute: AuthenticatedDraftsRoute,
   AuthenticatedErpSetupRoute: AuthenticatedErpSetupRoute,
