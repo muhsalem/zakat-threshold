@@ -59,6 +59,7 @@ import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as ApiExtractStatementRouteImport } from './routes/api/extract-statement'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedErpSetupRouteImport } from './routes/_authenticated/erp-setup'
 import { Route as AuthenticatedDraftsRouteImport } from './routes/_authenticated/drafts'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -334,6 +335,11 @@ const ApiChatRoute = ApiChatRouteImport.update({
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedErpSetupRoute = AuthenticatedErpSetupRouteImport.update({
   id: '/erp-setup',
   path: '/erp-setup',
@@ -519,6 +525,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/drafts': typeof AuthenticatedDraftsRoute
   '/erp-setup': typeof AuthenticatedErpSetupRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/api/chat': typeof ApiChatRoute
   '/api/extract-statement': typeof ApiExtractStatementRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -594,6 +601,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/drafts': typeof AuthenticatedDraftsRoute
   '/erp-setup': typeof AuthenticatedErpSetupRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/api/chat': typeof ApiChatRoute
   '/api/extract-statement': typeof ApiExtractStatementRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -671,6 +679,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/drafts': typeof AuthenticatedDraftsRoute
   '/_authenticated/erp-setup': typeof AuthenticatedErpSetupRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/api/chat': typeof ApiChatRoute
   '/api/extract-statement': typeof ApiExtractStatementRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -748,6 +757,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/drafts'
     | '/erp-setup'
+    | '/settings'
     | '/api/chat'
     | '/api/extract-statement'
     | '/blog/$slug'
@@ -823,6 +833,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/drafts'
     | '/erp-setup'
+    | '/settings'
     | '/api/chat'
     | '/api/extract-statement'
     | '/blog/$slug'
@@ -899,6 +910,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/drafts'
     | '/_authenticated/erp-setup'
+    | '/_authenticated/settings'
     | '/api/chat'
     | '/api/extract-statement'
     | '/blog/$slug'
@@ -1338,6 +1350,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/erp-setup': {
       id: '/_authenticated/erp-setup'
       path: '/erp-setup'
@@ -1532,6 +1551,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDraftsRoute: typeof AuthenticatedDraftsRoute
   AuthenticatedErpSetupRoute: typeof AuthenticatedErpSetupRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedCertifiedReportRecordIdRoute: typeof AuthenticatedCertifiedReportRecordIdRoute
   AuthenticatedComplianceReportRecordIdRoute: typeof AuthenticatedComplianceReportRecordIdRoute
   AuthenticatedZakatCaseRecordIdRoute: typeof AuthenticatedZakatCaseRecordIdRoute
@@ -1546,6 +1566,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDraftsRoute: AuthenticatedDraftsRoute,
   AuthenticatedErpSetupRoute: AuthenticatedErpSetupRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedCertifiedReportRecordIdRoute:
     AuthenticatedCertifiedReportRecordIdRoute,
   AuthenticatedComplianceReportRecordIdRoute:
@@ -1633,13 +1654,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -22,6 +22,7 @@ import {
   HelpCircle,
   Sparkles,
   LayoutDashboard,
+  Settings,
 } from "lucide-react";
 import { searchEntries } from "@/lib/searchIndex";
 import { useAuth, type AccountType } from "@/hooks/useAuth";
@@ -35,6 +36,7 @@ const NAV: NavItem[] = [
   { title: "السجل", url: "/history", icon: BookOpen, audience: ["all"] },
   { title: "التحقق من تقرير", url: "/verify", icon: ShieldCheck, audience: ["all"] },
   { title: "الإشعارات", url: "/analytics", icon: Bell, audience: ["all"] },
+  { title: "الإعدادات", url: "/settings", icon: Settings, audience: ["all"] },
   { title: "الأسئلة الشائعة", url: "/faq", icon: HelpCircle, audience: ["all"] },
 ];
 
