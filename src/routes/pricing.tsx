@@ -47,10 +47,12 @@ function PlanCard({ plan, countryCode }: { plan: Plan; countryCode: string | nul
           <CardTitle>{plan.name}</CardTitle>
         </div>
         <PriceTag
-          usdMonthly={plan.usdMonthly}
+          usdPrice={plan.usdPrice}
           countryCode={countryCode}
-          period={plan.usdMonthly === null ? "سنوي" : "/ شهر"}
+          billing={plan.billing}
+          anchorLabel={plan.priceAnchorLabel}
         />
+
         <p className="text-sm text-muted-foreground">{plan.tagline}</p>
       </CardHeader>
       <CardContent className="space-y-4 flex-1 flex flex-col">
@@ -68,7 +70,7 @@ function PlanCard({ plan, countryCode }: { plan: Plan; countryCode: string | nul
               className="w-full"
               variant={plan.highlight ? "default" : "outline"}
             >
-              {plan.usdMonthly === 0 ? "ابدأ مجاناً" : `اختر ${plan.name}`}
+              {plan.usdPrice === 0 ? "ابدأ مجاناً" : `اختر ${plan.name}`}
             </Button>
           </Link>
         ) : (

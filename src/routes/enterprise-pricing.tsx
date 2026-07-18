@@ -86,10 +86,12 @@ function EnterprisePricing() {
                   <CardTitle>{t.name}</CardTitle>
                 </div>
                 <PriceTag
-                  usdMonthly={t.usdMonthly}
+                  usdPrice={t.usdPrice}
                   countryCode={code}
-                  period={t.usdMonthly === null ? "سنوي" : "/ شهر"}
+                  billing={t.billing}
+                  anchorLabel={t.priceAnchorLabel}
                 />
+
                 <p className="text-sm text-muted-foreground">{t.tagline}</p>
               </CardHeader>
               <CardContent className="space-y-4 flex-1 flex flex-col">

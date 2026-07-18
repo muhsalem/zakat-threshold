@@ -3,11 +3,12 @@
 
 export type PPPTier = "T1" | "T2" | "T3" | "T4";
 
+// ملاحظة: معاملات معتدلة لتقليل شعور T1 بالاستغلال، مع الحفاظ على خصم واضح لـ T3/T4.
 export const TIER_MULTIPLIER: Record<PPPTier, number> = {
   T1: 1.0,
-  T2: 0.6,
-  T3: 0.35,
-  T4: 0.2,
+  T2: 0.7,
+  T3: 0.45,
+  T4: 0.25,
 };
 
 export type CountryInfo = {
