@@ -1,0 +1,1 @@
+ALTER TABLE public.accountant_clients ADD COLUMN IF NOT EXISTS intake_details jsonb;
