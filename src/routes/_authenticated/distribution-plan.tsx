@@ -308,8 +308,11 @@ function DistributionPlanPage() {
             <Button size="sm" variant="outline" onClick={() => addRecipient()}>
               <Plus className="h-4 w-4 ml-1" /> إضافة مستفيد
             </Button>
-            <Button size="sm" onClick={exportPlan}>
-              <Download className="h-4 w-4 ml-1" /> طباعة الخطة
+            <Button size="sm" variant="outline" onClick={exportPlan}>
+              <Download className="h-4 w-4 ml-1" /> طباعة
+            </Button>
+            <Button size="sm" onClick={exportPdf}>
+              <FileDown className="h-4 w-4 ml-1" /> تصدير PDF
             </Button>
           </div>
         </CardHeader>
