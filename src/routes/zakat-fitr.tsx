@@ -289,12 +289,97 @@ function ZakatFitrPage() {
             >
               <FileDown className="h-4 w-4" /> تصدير PDF
             </Button>
+            <Button variant="secondary" className="gap-1.5" onClick={archiveCurrent}>
+              <Save className="h-4 w-4" /> أرشفة نتيجة {year}
+            </Button>
             <Button asChild variant="outline">
               <Link to="/advisor">اسأل المستشار الشرعي</Link>
             </Button>
           </div>
         </CardContent>
       </Card>
+
+      {archive.length > 0 && (
+        <Card>
+          <CardHeader className="flex-row items-center justify-between space-y-0">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Archive className="h-5 w-5 text-primary" /> الأرشيف ({archive.length})
+            </CardTitle>
+            <Button variant="ghost" size="sm" className="gap-1 text-destructive" onClick={clearArchive}>
+              <Trash2 className="h-4 w-4" /> حذف الكل
+            </Button>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {Object.entries(comparison).map(([cur, entries]) => {
+              const first = entries[0];
+              const last = entries[entries.length - 1];
+              const diff = entries.length > 1 ? last.totalCash - first.totalCash : 0;
+              const pct = entries.length > 1 && first.totalCash > 0
+                ? (diff / first.totalCash) * 100 : 0;
+              return (
+                <div key={cur} className="space-y-2">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <div className="font-semibold flex items-center gap-2">
+                      <BarChart3 className="h-4 w-4 text-primary" />
+                      مقارنة السنوات — {cur}
+                    </div>
+                    {entries.length > 1 && (
+                      <Badge variant={diff >= 0 ? "default" : "secondary"} className="text-xs">
+                        {diff >= 0 ? "▲" : "▼"} {Math.abs(pct).toFixed(1)}% من {first.year} إلى {last.year}
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm border-collapse">
+                      <thead>
+                        <tr className="bg-muted/50 text-xs">
+                          <th className="border p-2 text-start">السنة</th>
+                          <th className="border p-2 text-start">الأفراد</th>
+                          <th className="border p-2 text-start">القوت</th>
+                          <th className="border p-2 text-start">سعر/كجم</th>
+                          <th className="border p-2 text-start">الوزن (كجم)</th>
+                          <th className="border p-2 text-start">القيمة ({cur})</th>
+                          <th className="border p-2 text-start">التغيّر</th>
+                          <th className="border p-2 w-8"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {entries.map((e, i) => {
+                          const prev = i > 0 ? entries[i - 1] : null;
+                          const d = prev ? e.totalCash - prev.totalCash : 0;
+                          const p = prev && prev.totalCash > 0 ? (d / prev.totalCash) * 100 : 0;
+                          return (
+                            <tr key={e.id} className="hover:bg-muted/30">
+                              <td className="border p-2 font-semibold">{e.year}</td>
+                              <td className="border p-2">{e.peopleCount}</td>
+                              <td className="border p-2">{e.stapleLabel}</td>
+                              <td className="border p-2">{e.pricePerKg}</td>
+                              <td className="border p-2">{e.totalKg.toLocaleString("ar-EG", { maximumFractionDigits: 2 })}</td>
+                              <td className="border p-2 font-bold">{e.totalCash.toLocaleString("ar-EG", { maximumFractionDigits: 2 })}</td>
+                              <td className={`border p-2 text-xs ${d > 0 ? "text-emerald-600" : d < 0 ? "text-destructive" : "text-muted-foreground"}`}>
+                                {prev ? `${d >= 0 ? "+" : ""}${p.toFixed(1)}%` : "—"}
+                              </td>
+                              <td className="border p-1 text-center">
+                                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => removeEntry(e.id)}>
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </Button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              );
+            })}
+            <p className="text-xs text-muted-foreground border-e-2 border-primary/40 pe-3">
+              الأرشيف محفوظ محلياً في هذا المتصفح. للحفظ السحابي المتزامن استخدم حساب نِصاب المدفوع.
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
 
       <section className="grid md:grid-cols-2 gap-4">
         <InfoBlock
