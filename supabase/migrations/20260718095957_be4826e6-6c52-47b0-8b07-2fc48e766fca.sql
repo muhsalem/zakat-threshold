@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.enforce_sod_on_approval() FROM PUBLIC, anon, authenticated;
