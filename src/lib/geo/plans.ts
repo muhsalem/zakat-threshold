@@ -7,7 +7,7 @@ import type { LucideIcon } from "lucide-react";
 import {
   Sparkles,
   FileCheck2,
-  Star,
+  
   Users as UsersIcon,
   Infinity as InfinityIcon,
   Rocket,
