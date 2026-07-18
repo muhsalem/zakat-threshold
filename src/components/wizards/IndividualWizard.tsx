@@ -723,10 +723,10 @@ export function IndividualWizard() {
             />
             <Alert className="sm:col-span-2">
               <AlertDescription className="text-[11px]">
-                الأنعام تُزكَّى بعدد الرؤوس عادةً؛ نستخدم القيمة تقديراً مبسّطاً. للتفصيل استخدم
-                "الوضع المتقدم".
+                الأنعام تُزكَّى بعدد الرؤوس عادةً؛ نستخدم القيمة تقديراً مبسّطاً.
               </AlertDescription>
             </Alert>
+
           </div>
         )}
 
