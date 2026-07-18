@@ -19,6 +19,7 @@ import { Route as ShowcaseRouteImport } from './routes/showcase'
 import { Route as ShariaChangelogRouteImport } from './routes/sharia-changelog'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PricesHistoryRouteImport } from './routes/prices-history'
 import { Route as PortalSigninRouteImport } from './routes/portal-signin'
 import { Route as OrganizationsRouteImport } from './routes/organizations'
@@ -131,6 +132,11 @@ const SecurityRoute = SecurityRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PricesHistoryRoute = PricesHistoryRouteImport.update({
@@ -494,6 +500,7 @@ export interface FileRoutesByFullPath {
   '/organizations': typeof OrganizationsRoute
   '/portal-signin': typeof PortalSigninRoute
   '/prices-history': typeof PricesHistoryRoute
+  '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/sharia-changelog': typeof ShariaChangelogRoute
@@ -568,6 +575,7 @@ export interface FileRoutesByTo {
   '/organizations': typeof OrganizationsRoute
   '/portal-signin': typeof PortalSigninRoute
   '/prices-history': typeof PricesHistoryRoute
+  '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/sharia-changelog': typeof ShariaChangelogRoute
@@ -644,6 +652,7 @@ export interface FileRoutesById {
   '/organizations': typeof OrganizationsRoute
   '/portal-signin': typeof PortalSigninRoute
   '/prices-history': typeof PricesHistoryRoute
+  '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/sharia-changelog': typeof ShariaChangelogRoute
@@ -720,6 +729,7 @@ export interface FileRouteTypes {
     | '/organizations'
     | '/portal-signin'
     | '/prices-history'
+    | '/pricing'
     | '/reset-password'
     | '/security'
     | '/sharia-changelog'
@@ -794,6 +804,7 @@ export interface FileRouteTypes {
     | '/organizations'
     | '/portal-signin'
     | '/prices-history'
+    | '/pricing'
     | '/reset-password'
     | '/security'
     | '/sharia-changelog'
@@ -869,6 +880,7 @@ export interface FileRouteTypes {
     | '/organizations'
     | '/portal-signin'
     | '/prices-history'
+    | '/pricing'
     | '/reset-password'
     | '/security'
     | '/sharia-changelog'
@@ -945,6 +957,7 @@ export interface RootRouteChildren {
   OrganizationsRoute: typeof OrganizationsRoute
   PortalSigninRoute: typeof PortalSigninRoute
   PricesHistoryRoute: typeof PricesHistoryRoute
+  PricingRoute: typeof PricingRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SecurityRoute: typeof SecurityRoute
   ShariaChangelogRoute: typeof ShariaChangelogRoute
@@ -1043,6 +1056,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/prices-history': {
@@ -1581,6 +1601,7 @@ const rootRouteChildren: RootRouteChildren = {
   OrganizationsRoute: OrganizationsRoute,
   PortalSigninRoute: PortalSigninRoute,
   PricesHistoryRoute: PricesHistoryRoute,
+  PricingRoute: PricingRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SecurityRoute: SecurityRoute,
   ShariaChangelogRoute: ShariaChangelogRoute,
