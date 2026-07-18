@@ -166,6 +166,26 @@ export function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
         )}
+
+        {isAccountant && (
+          <SidebarGroup>
+            <SidebarGroupLabel>أدوات المحاسب</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {PRO_TOOLS.map((i) => (
+                  <SidebarMenuItem key={i.url}>
+                    <SidebarMenuButton asChild isActive={isActive(i.url)}>
+                      <Link to={i.url} className="flex items-center gap-2">
+                        <i.icon className="h-4 w-4" />
+                        {!collapsed && <span>{i.title}</span>}
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
     </Sidebar>
   );
