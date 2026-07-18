@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,9 +8,36 @@ import { Label } from "@/components/ui/label";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Wheat, Calculator, BookOpen, ShieldCheck, ArrowLeft, Users, FileDown } from "lucide-react";
+import { Wheat, Calculator, BookOpen, ShieldCheck, ArrowLeft, Users, FileDown, Archive, Trash2, BarChart3, Save } from "lucide-react";
 import { exportHtmlToPdf, pdfWrap } from "@/lib/export/pdf";
 import { toast } from "sonner";
+
+type FitrArchiveEntry = {
+  id: string;
+  year: number;
+  savedAt: string;
+  peopleCount: number;
+  stapleId: string;
+  stapleLabel: string;
+  kgPerSaa: number;
+  pricePerKg: number;
+  currency: string;
+  totalKg: number;
+  totalCash: number;
+};
+
+const ARCHIVE_KEY = "zakat-fitr-archive-v1";
+
+function loadArchive(): FitrArchiveEntry[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(ARCHIVE_KEY);
+    return raw ? (JSON.parse(raw) as FitrArchiveEntry[]) : [];
+  } catch { return []; }
+}
+function saveArchive(list: FitrArchiveEntry[]) {
+  try { window.localStorage.setItem(ARCHIVE_KEY, JSON.stringify(list)); } catch { /* ignore */ }
+}
 
 export const Route = createFileRoute("/zakat-fitr")({
   head: () => ({
@@ -44,6 +71,10 @@ function ZakatFitrPage() {
   const [staple, setStaple] = useState<StapleId>("wheat");
   const [pricePerKg, setPricePerKg] = useState<number>(1.2);
   const [currency, setCurrency] = useState<string>("USD");
+  const [year, setYear] = useState<number>(new Date().getFullYear());
+  const [archive, setArchive] = useState<FitrArchiveEntry[]>([]);
+
+  useEffect(() => { setArchive(loadArchive()); }, []);
 
   const active = STAPLES.find((s) => s.id === staple)!;
   const totalKg = useMemo(() => peopleCount * active.kgPerSaa, [peopleCount, active.kgPerSaa]);
@@ -55,7 +86,50 @@ function ZakatFitrPage() {
     setPricePerKg(s.suggestedPricePerKg);
   }
 
+  function archiveCurrent() {
+    const entry: FitrArchiveEntry = {
+      id: `${year}-${Date.now()}`,
+      year,
+      savedAt: new Date().toISOString(),
+      peopleCount,
+      stapleId: active.id,
+      stapleLabel: active.label,
+      kgPerSaa: active.kgPerSaa,
+      pricePerKg,
+      currency,
+      totalKg,
+      totalCash,
+    };
+    // Replace previous entry for same year+currency to keep comparison clean
+    const next = [entry, ...archive.filter((e) => !(e.year === year && e.currency === currency))]
+      .sort((a, b) => b.year - a.year);
+    setArchive(next);
+    saveArchive(next);
+    toast.success(`تم حفظ زكاة الفطر لسنة ${year}`);
+  }
+
+  function removeEntry(id: string) {
+    const next = archive.filter((e) => e.id !== id);
+    setArchive(next);
+    saveArchive(next);
+  }
+
+  function clearArchive() {
+    if (!confirm("حذف كل السجلات المؤرشفة؟")) return;
+    setArchive([]);
+    saveArchive([]);
+  }
+
+  const comparison = useMemo(() => {
+    // group by currency, sort by year asc
+    const groups: Record<string, FitrArchiveEntry[]> = {};
+    for (const e of archive) (groups[e.currency] ||= []).push(e);
+    for (const k of Object.keys(groups)) groups[k].sort((a, b) => a.year - b.year);
+    return groups;
+  }, [archive]);
+
   return (
+
     <main className="container mx-auto max-w-4xl px-4 py-8 space-y-6" dir="rtl">
       <nav className="text-xs text-muted-foreground">
         <Link to="/" className="hover:text-primary">الرئيسية</Link>{" "}· <span>زكاة الفطر</span>
@@ -135,6 +209,21 @@ function ZakatFitrPage() {
                 placeholder="USD / SAR / EGP..."
               />
             </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="year">السنة الميلادية</Label>
+              <Input
+                id="year"
+                type="number"
+                min={1900}
+                max={2100}
+                value={year}
+                onChange={(e) => setYear(Number(e.target.value) || new Date().getFullYear())}
+              />
+              <p className="text-xs text-muted-foreground">
+                تُستخدم لأرشفة الحساب ومقارنته بالسنوات السابقة.
+              </p>
+            </div>
           </div>
 
           <div className="grid gap-3 md:grid-cols-2">
@@ -200,12 +289,97 @@ function ZakatFitrPage() {
             >
               <FileDown className="h-4 w-4" /> تصدير PDF
             </Button>
+            <Button variant="secondary" className="gap-1.5" onClick={archiveCurrent}>
+              <Save className="h-4 w-4" /> أرشفة نتيجة {year}
+            </Button>
             <Button asChild variant="outline">
               <Link to="/advisor">اسأل المستشار الشرعي</Link>
             </Button>
           </div>
         </CardContent>
       </Card>
+
+      {archive.length > 0 && (
+        <Card>
+          <CardHeader className="flex-row items-center justify-between space-y-0">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Archive className="h-5 w-5 text-primary" /> الأرشيف ({archive.length})
+            </CardTitle>
+            <Button variant="ghost" size="sm" className="gap-1 text-destructive" onClick={clearArchive}>
+              <Trash2 className="h-4 w-4" /> حذف الكل
+            </Button>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {Object.entries(comparison).map(([cur, entries]) => {
+              const first = entries[0];
+              const last = entries[entries.length - 1];
+              const diff = entries.length > 1 ? last.totalCash - first.totalCash : 0;
+              const pct = entries.length > 1 && first.totalCash > 0
+                ? (diff / first.totalCash) * 100 : 0;
+              return (
+                <div key={cur} className="space-y-2">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <div className="font-semibold flex items-center gap-2">
+                      <BarChart3 className="h-4 w-4 text-primary" />
+                      مقارنة السنوات — {cur}
+                    </div>
+                    {entries.length > 1 && (
+                      <Badge variant={diff >= 0 ? "default" : "secondary"} className="text-xs">
+                        {diff >= 0 ? "▲" : "▼"} {Math.abs(pct).toFixed(1)}% من {first.year} إلى {last.year}
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm border-collapse">
+                      <thead>
+                        <tr className="bg-muted/50 text-xs">
+                          <th className="border p-2 text-start">السنة</th>
+                          <th className="border p-2 text-start">الأفراد</th>
+                          <th className="border p-2 text-start">القوت</th>
+                          <th className="border p-2 text-start">سعر/كجم</th>
+                          <th className="border p-2 text-start">الوزن (كجم)</th>
+                          <th className="border p-2 text-start">القيمة ({cur})</th>
+                          <th className="border p-2 text-start">التغيّر</th>
+                          <th className="border p-2 w-8"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {entries.map((e, i) => {
+                          const prev = i > 0 ? entries[i - 1] : null;
+                          const d = prev ? e.totalCash - prev.totalCash : 0;
+                          const p = prev && prev.totalCash > 0 ? (d / prev.totalCash) * 100 : 0;
+                          return (
+                            <tr key={e.id} className="hover:bg-muted/30">
+                              <td className="border p-2 font-semibold">{e.year}</td>
+                              <td className="border p-2">{e.peopleCount}</td>
+                              <td className="border p-2">{e.stapleLabel}</td>
+                              <td className="border p-2">{e.pricePerKg}</td>
+                              <td className="border p-2">{e.totalKg.toLocaleString("ar-EG", { maximumFractionDigits: 2 })}</td>
+                              <td className="border p-2 font-bold">{e.totalCash.toLocaleString("ar-EG", { maximumFractionDigits: 2 })}</td>
+                              <td className={`border p-2 text-xs ${d > 0 ? "text-emerald-600" : d < 0 ? "text-destructive" : "text-muted-foreground"}`}>
+                                {prev ? `${d >= 0 ? "+" : ""}${p.toFixed(1)}%` : "—"}
+                              </td>
+                              <td className="border p-1 text-center">
+                                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => removeEntry(e.id)}>
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </Button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              );
+            })}
+            <p className="text-xs text-muted-foreground border-e-2 border-primary/40 pe-3">
+              الأرشيف محفوظ محلياً في هذا المتصفح. للحفظ السحابي المتزامن استخدم حساب نِصاب المدفوع.
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
 
       <section className="grid md:grid-cols-2 gap-4">
         <InfoBlock
