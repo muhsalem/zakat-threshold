@@ -42,6 +42,7 @@ import {
 import nisabLogo from "@/assets/nisab-logo.png.asset.json";
 import { PayButton } from "@/components/PayButton";
 import type { PlanId } from "@/lib/payments";
+import { PLANS as PLANS_CATALOG, type Plan as CatalogPlan } from "@/lib/geo/plans";
 
 export const Route = createFileRoute("/")({
   head: () => ({
