@@ -263,6 +263,7 @@ export async function createClient(input: {
   notes?: string;
   createdVia?: "manual" | "intake";
   status?: ClientStatus;
+  intakeDetails?: Record<string, unknown> | null;
 }): Promise<Client> {
   const ownerId = await getOwnerId();
   if (!ownerId) throw new Error("يجب تسجيل الدخول أولاً");
@@ -281,6 +282,7 @@ export async function createClient(input: {
     breakdown: { ...emptyBreakdown(), ...(input.breakdown ?? {}) },
     notes: input.notes ?? null,
     created_via: input.createdVia ?? "manual",
+    intake_details: input.intakeDetails ?? null,
   };
   const { data, error } = await supabase
     .from("accountant_clients")
