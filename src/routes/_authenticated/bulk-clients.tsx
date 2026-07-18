@@ -95,7 +95,7 @@ function BulkClientsPage() {
         if (net < r.nisab) {
           update(r.id, { status: "below_nisab", zakat_due: 0, net });
         } else {
-          const zakat = calcZakatDue(net);
+          const zakat = +(net * ZAKAT_RATE).toFixed(2);
           update(r.id, { status: "done", zakat_due: zakat, net });
         }
       }
