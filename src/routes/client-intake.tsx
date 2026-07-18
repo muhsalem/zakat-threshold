@@ -88,6 +88,9 @@ type FormState = {
   stocksLongTerm: number;
   mutualFunds: number;
   sukuk: number;
+  esopVestedValue: number;
+  bills: number;
+  rikazMetals: number;
   realEstateTrading: number;
   realEstateRental: number;
   rentalIncomeAnnual: number;
@@ -100,6 +103,7 @@ type FormState = {
   endOfServiceBenefits: number;
   businessAssets: number;
   businessLiabilities: number;
+  receivablesDoubtful: number;
   notes: string;
 };
 
@@ -127,6 +131,9 @@ const emptyForm: FormState = {
   stocksLongTerm: 0,
   mutualFunds: 0,
   sukuk: 0,
+  esopVestedValue: 0,
+  bills: 0,
+  rikazMetals: 0,
   realEstateTrading: 0,
   realEstateRental: 0,
   rentalIncomeAnnual: 0,
@@ -139,6 +146,7 @@ const emptyForm: FormState = {
   endOfServiceBenefits: 0,
   businessAssets: 0,
   businessLiabilities: 0,
+  receivablesDoubtful: 0,
   notes: "",
 };
 
@@ -254,18 +262,25 @@ function ClientIntakePage() {
       form.stocksLongTerm +
       form.mutualFunds +
       form.sukuk +
+      form.esopVestedValue +
+      form.bills +
       form.realEstateTrading +
       form.rentalIncomeAnnual;
-    const aggInventory = form.inventory + form.businessAssets + form.agricultureValue;
+    const aggInventory =
+      form.inventory + form.businessAssets + form.agricultureValue + form.rikazMetals;
     const aggDebts = form.debts + form.businessLiabilities;
     const notesExtras =
       mode === "comprehensive"
         ? [
             `ذهب: ${form.goldGrams} جم — فضة: ${form.silverGrams} جم — حلي شخصي: ${form.jewelryPersonal}`,
+            `أوراق تجارية (كمبيالات/شيكات): ${form.bills}`,
+            `ESOP (خيارات أسهم مستحقة): ${form.esopVestedValue}`,
+            `ركاز/معادن مكتشفة: ${form.rikazMetals}`,
             `عقار إيجاري: ${form.realEstateRental} — دخل إيجاري سنوي: ${form.rentalIncomeAnnual}`,
             `زراعة: ${form.agricultureType} بقيمة ${form.agricultureValue}`,
             `أنعام — إبل: ${form.livestockCamels} · بقر: ${form.livestockCattle} · غنم: ${form.livestockSheep}`,
             `راتب شهري: ${form.salaryMonthly} — مكافأة نهاية خدمة: ${form.endOfServiceBenefits}`,
+            `ديون مشكوك في تحصيلها: ${form.receivablesDoubtful}`,
             form.notes,
           ]
             .filter(Boolean)
