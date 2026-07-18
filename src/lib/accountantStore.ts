@@ -239,6 +239,7 @@ function patchToRow(p: ClientPatch): Record<string, unknown> {
   if (p.createdVia !== undefined) out.created_via = p.createdVia;
   if (p.lastCalcAt !== undefined) out.last_calc_at = p.lastCalcAt || null;
   if (p.lastCalcAmount !== undefined) out.last_calc_amount = p.lastCalcAmount ?? null;
+  if (p.intakeDetails !== undefined) out.intake_details = p.intakeDetails ?? null;
   return out;
 }
 
