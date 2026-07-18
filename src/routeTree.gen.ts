@@ -67,6 +67,7 @@ import { Route as AuthenticatedErpSetupRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedDraftsRouteImport } from './routes/_authenticated/drafts'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCoaMappingRouteImport } from './routes/_authenticated/coa-mapping'
+import { Route as AuthenticatedBulkClientsRouteImport } from './routes/_authenticated/bulk-clients'
 import { Route as AuthenticatedAuditReviewRouteImport } from './routes/_authenticated/audit-review'
 import { Route as AuthenticatedAttestationsRouteImport } from './routes/_authenticated/attestations'
 import { Route as AuthenticatedAttachmentsReviewRouteImport } from './routes/_authenticated/attachments-review'
@@ -379,6 +380,12 @@ const AuthenticatedCoaMappingRoute = AuthenticatedCoaMappingRouteImport.update({
   path: '/coa-mapping',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedBulkClientsRoute =
+  AuthenticatedBulkClientsRouteImport.update({
+    id: '/bulk-clients',
+    path: '/bulk-clients',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAuditReviewRoute =
   AuthenticatedAuditReviewRouteImport.update({
     id: '/audit-review',
@@ -549,6 +556,7 @@ export interface FileRoutesByFullPath {
   '/attachments-review': typeof AuthenticatedAttachmentsReviewRoute
   '/attestations': typeof AuthenticatedAttestationsRoute
   '/audit-review': typeof AuthenticatedAuditReviewRoute
+  '/bulk-clients': typeof AuthenticatedBulkClientsRoute
   '/coa-mapping': typeof AuthenticatedCoaMappingRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/drafts': typeof AuthenticatedDraftsRoute
@@ -629,6 +637,7 @@ export interface FileRoutesByTo {
   '/attachments-review': typeof AuthenticatedAttachmentsReviewRoute
   '/attestations': typeof AuthenticatedAttestationsRoute
   '/audit-review': typeof AuthenticatedAuditReviewRoute
+  '/bulk-clients': typeof AuthenticatedBulkClientsRoute
   '/coa-mapping': typeof AuthenticatedCoaMappingRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/drafts': typeof AuthenticatedDraftsRoute
@@ -711,6 +720,7 @@ export interface FileRoutesById {
   '/_authenticated/attachments-review': typeof AuthenticatedAttachmentsReviewRoute
   '/_authenticated/attestations': typeof AuthenticatedAttestationsRoute
   '/_authenticated/audit-review': typeof AuthenticatedAuditReviewRoute
+  '/_authenticated/bulk-clients': typeof AuthenticatedBulkClientsRoute
   '/_authenticated/coa-mapping': typeof AuthenticatedCoaMappingRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/drafts': typeof AuthenticatedDraftsRoute
@@ -793,6 +803,7 @@ export interface FileRouteTypes {
     | '/attachments-review'
     | '/attestations'
     | '/audit-review'
+    | '/bulk-clients'
     | '/coa-mapping'
     | '/dashboard'
     | '/drafts'
@@ -873,6 +884,7 @@ export interface FileRouteTypes {
     | '/attachments-review'
     | '/attestations'
     | '/audit-review'
+    | '/bulk-clients'
     | '/coa-mapping'
     | '/dashboard'
     | '/drafts'
@@ -954,6 +966,7 @@ export interface FileRouteTypes {
     | '/_authenticated/attachments-review'
     | '/_authenticated/attestations'
     | '/_authenticated/audit-review'
+    | '/_authenticated/bulk-clients'
     | '/_authenticated/coa-mapping'
     | '/_authenticated/dashboard'
     | '/_authenticated/drafts'
@@ -1457,6 +1470,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCoaMappingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/bulk-clients': {
+      id: '/_authenticated/bulk-clients'
+      path: '/bulk-clients'
+      fullPath: '/bulk-clients'
+      preLoaderRoute: typeof AuthenticatedBulkClientsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/audit-review': {
       id: '/_authenticated/audit-review'
       path: '/audit-review'
@@ -1627,6 +1647,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAttachmentsReviewRoute: typeof AuthenticatedAttachmentsReviewRoute
   AuthenticatedAttestationsRoute: typeof AuthenticatedAttestationsRoute
   AuthenticatedAuditReviewRoute: typeof AuthenticatedAuditReviewRoute
+  AuthenticatedBulkClientsRoute: typeof AuthenticatedBulkClientsRoute
   AuthenticatedCoaMappingRoute: typeof AuthenticatedCoaMappingRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDraftsRoute: typeof AuthenticatedDraftsRoute
@@ -1643,6 +1664,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAttachmentsReviewRoute: AuthenticatedAttachmentsReviewRoute,
   AuthenticatedAttestationsRoute: AuthenticatedAttestationsRoute,
   AuthenticatedAuditReviewRoute: AuthenticatedAuditReviewRoute,
+  AuthenticatedBulkClientsRoute: AuthenticatedBulkClientsRoute,
   AuthenticatedCoaMappingRoute: AuthenticatedCoaMappingRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDraftsRoute: AuthenticatedDraftsRoute,
