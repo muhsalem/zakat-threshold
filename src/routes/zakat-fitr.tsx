@@ -71,6 +71,10 @@ function ZakatFitrPage() {
   const [staple, setStaple] = useState<StapleId>("wheat");
   const [pricePerKg, setPricePerKg] = useState<number>(1.2);
   const [currency, setCurrency] = useState<string>("USD");
+  const [year, setYear] = useState<number>(new Date().getFullYear());
+  const [archive, setArchive] = useState<FitrArchiveEntry[]>([]);
+
+  useEffect(() => { setArchive(loadArchive()); }, []);
 
   const active = STAPLES.find((s) => s.id === staple)!;
   const totalKg = useMemo(() => peopleCount * active.kgPerSaa, [peopleCount, active.kgPerSaa]);
@@ -82,7 +86,49 @@ function ZakatFitrPage() {
     setPricePerKg(s.suggestedPricePerKg);
   }
 
-  return (
+  function archiveCurrent() {
+    const entry: FitrArchiveEntry = {
+      id: `${year}-${Date.now()}`,
+      year,
+      savedAt: new Date().toISOString(),
+      peopleCount,
+      stapleId: active.id,
+      stapleLabel: active.label,
+      kgPerSaa: active.kgPerSaa,
+      pricePerKg,
+      currency,
+      totalKg,
+      totalCash,
+    };
+    // Replace previous entry for same year+currency to keep comparison clean
+    const next = [entry, ...archive.filter((e) => !(e.year === year && e.currency === currency))]
+      .sort((a, b) => b.year - a.year);
+    setArchive(next);
+    saveArchive(next);
+    toast.success(`تم حفظ زكاة الفطر لسنة ${year}`);
+  }
+
+  function removeEntry(id: string) {
+    const next = archive.filter((e) => e.id !== id);
+    setArchive(next);
+    saveArchive(next);
+  }
+
+  function clearArchive() {
+    if (!confirm("حذف كل السجلات المؤرشفة؟")) return;
+    setArchive([]);
+    saveArchive([]);
+  }
+
+  const comparison = useMemo(() => {
+    // group by currency, sort by year asc
+    const groups: Record<string, FitrArchiveEntry[]> = {};
+    for (const e of archive) (groups[e.currency] ||= []).push(e);
+    for (const k of Object.keys(groups)) groups[k].sort((a, b) => a.year - b.year);
+    return groups;
+  }, [archive]);
+
+
     <main className="container mx-auto max-w-4xl px-4 py-8 space-y-6" dir="rtl">
       <nav className="text-xs text-muted-foreground">
         <Link to="/" className="hover:text-primary">الرئيسية</Link>{" "}· <span>زكاة الفطر</span>
