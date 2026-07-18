@@ -1,21 +1,31 @@
 // تعريف الباقات المركزي — الأسعار بالـ USD (سعر T1)، يُحسب المحلي عبر PPP.
+// هيكل مُحسّن (توصيات خبير التسعير):
+//  • Personal One-Time لسدّ الفجوة بين المجاني والاشتراك.
+//  • Personal / Family بفوترة سنوية (الزكاة سنوية بطبيعتها).
+//  • Growth كطبقة B2B وسيطة بين Startup و Business.
+//  • Enterprise بسعر ابتدائي (anchor) لتسريع دورة البيع.
 import type { LucideIcon } from "lucide-react";
 import {
   Sparkles,
+  FileCheck2,
   Star,
   Users as UsersIcon,
   Rocket,
+  TrendingUp,
   Building2,
   Crown,
 } from "lucide-react";
 
 export type Audience = "individual" | "business";
+export type BillingPeriod = "one_time" | "monthly" | "yearly" | "custom";
 
 export type PlanId =
   | "free"
-  | "personal-pro"
-  | "family"
+  | "personal-one-time"
+  | "personal-annual"
+  | "family-annual"
   | "startup"
+  | "growth"
   | "business"
   | "enterprise";
 
@@ -24,7 +34,12 @@ export type Plan = {
   audience: Audience;
   name: string;
   tagline: string;
-  usdMonthly: number | null; // null = حسب الطلب
+  /** السعر المرجعي بالدولار الأمريكي (T1). null = حسب الطلب. */
+  usdPrice: number | null;
+  /** طريقة الفوترة — تُستخدم في العرض والحسابات. */
+  billing: BillingPeriod;
+  /** نص مخصص للـ anchor في Enterprise (مثل "يبدأ من"). */
+  priceAnchorLabel?: string;
   icon: LucideIcon;
   features: string[];
   highlight?: boolean;
@@ -40,7 +55,8 @@ export const PLANS: Plan[] = [
     audience: "individual",
     name: "مجاني",
     tagline: "ابدأ فوراً — للاستخدام الشخصي البسيط",
-    usdMonthly: 0,
+    usdPrice: 0,
+    billing: "one_time",
     icon: Sparkles,
     features: [
       "حاسبة زكاة كاملة (نقد، ذهب، فضة، أسهم)",
@@ -51,35 +67,55 @@ export const PLANS: Plan[] = [
     ctaTo: "/auth",
   },
   {
-    id: "personal-pro",
+    id: "personal-one-time",
     audience: "individual",
-    name: "Personal Pro",
-    tagline: "للفرد الذي يريد توثيقاً رسمياً وتنبيهات الحول",
-    usdMonthly: 9.99,
-    icon: Star,
-    highlight: true,
-    badge: "الأكثر شعبية",
+    name: "تقرير واحد",
+    tagline: "ادفع مرّة واحدة — احصل على تقرير معتمد فوراً",
+    usdPrice: 19,
+    billing: "one_time",
+    icon: FileCheck2,
+    badge: "الأنسب لمن يزكّي مرة/سنة",
     features: [
-      "كل ما في الباقة المجانية",
       "تقرير PDF رسمي بختم شرعي إلكتروني",
-      "أرشيف كامل للسنوات السابقة",
-      "تنبيهات موعد الحول (7 و1 و0 يوم)",
+      "صالح مدى الحياة — بلا اشتراك",
+      "أرشفة تلقائية في حسابك",
       "تصدير Excel/CSV",
-      "دعم بريدي خلال 24 ساعة",
     ],
     ctaTo: "/auth",
   },
   {
-    id: "family",
+    id: "personal-annual",
+    audience: "individual",
+    name: "Personal",
+    tagline: "للفرد الذي يريد توثيقاً رسمياً وتنبيهات الحول",
+    usdPrice: 29,
+    billing: "yearly",
+    icon: Star,
+    highlight: true,
+    badge: "الأكثر شعبية",
+    features: [
+      "تقارير PDF غير محدودة بختم شرعي",
+      "تنبيهات موعد الحول (7/1/0 يوم)",
+      "أرشيف كامل للسنوات السابقة",
+      "تصدير Excel/CSV",
+      "دعم بريدي خلال 24 ساعة",
+      "توفير ~17% مقارنة بالتقرير المفرد",
+    ],
+    ctaTo: "/auth",
+  },
+  {
+    id: "family-annual",
     audience: "individual",
     name: "Family",
     tagline: "للعائلات — زكاة مجمّعة لكل أفراد الأسرة",
-    usdMonthly: 19.99,
+    usdPrice: 79,
+    billing: "yearly",
     icon: UsersIcon,
     features: [
-      "كل ما في Personal Pro",
+      "كل ما في Personal",
       "حتى 5 أفراد من العائلة",
-      "زكاة العائلة المجمّعة",
+      "زكاة العائلة المجمّعة + توزيع على 8 مصارف",
+      "خزنة مستندات عائلية مشتركة",
       "استشارة شرعية سنوية (30 دقيقة)",
       "لوحة تحكم عائلية موحّدة",
     ],
@@ -92,7 +128,8 @@ export const PLANS: Plan[] = [
     audience: "business",
     name: "Startup",
     tagline: "للشركات الناشئة حتى 50 موظف",
-    usdMonthly: 149,
+    usdPrice: 149,
+    billing: "monthly",
     icon: Rocket,
     features: [
       "حساب زكاة الشركة (AAOIFI-35)",
@@ -105,19 +142,40 @@ export const PLANS: Plan[] = [
     ctaTo: "/auth",
   },
   {
+    id: "growth",
+    audience: "business",
+    name: "Growth",
+    tagline: "للشركات النامية التي تخطّت مرحلة البداية",
+    usdPrice: 249,
+    billing: "monthly",
+    icon: TrendingUp,
+    badge: "جديد",
+    features: [
+      "كل ما في Startup",
+      "حتى 10 مستخدمين بأدوار",
+      "زكاة المجموعة الأساسية (شركة أم + فرعين)",
+      "تسويات ضريبية أولية (Tax-Zakat)",
+      "استشارة شرعية (ساعة/شهر)",
+      "دعم أولوية خلال 24 ساعة",
+      "API أساسي (2K req/day)",
+    ],
+    ctaTo: "/auth",
+  },
+  {
     id: "business",
     audience: "business",
     name: "Business",
     tagline: "للشركات المتوسطة والمجموعات",
-    usdMonthly: 499,
+    usdPrice: 499,
+    billing: "monthly",
     icon: Building2,
     highlight: true,
     badge: "الأكثر طلباً",
     features: [
-      "كل ما في Startup",
-      "زكاة المجموعة (Group Consolidation)",
+      "كل ما في Growth",
+      "زكاة المجموعة الكاملة (Group Consolidation)",
       "موصّلات ERP: QuickBooks / Xero / Odoo / SAP",
-      "تسويات ضريبية (Tax-Zakat Reconciliation)",
+      "تسويات ضريبية متقدمة",
       "حتى 25 مستخدم بأدوار (RBAC)",
       "استشارة شرعية (ساعتان/شهر)",
       "دعم أولوية خلال 8 ساعات",
@@ -130,7 +188,9 @@ export const PLANS: Plan[] = [
     audience: "business",
     name: "Enterprise",
     tagline: "للبنوك الإسلامية والصناديق الوقفية",
-    usdMonthly: null,
+    usdPrice: 2500,
+    billing: "custom",
+    priceAnchorLabel: "يبدأ من",
     icon: Crown,
     features: [
       "كل ما في Business",
@@ -148,3 +208,17 @@ export const PLANS: Plan[] = [
 
 export const INDIVIDUAL_PLANS = PLANS.filter((p) => p.audience === "individual");
 export const BUSINESS_PLANS = PLANS.filter((p) => p.audience === "business");
+
+/** نص الفترة المعروض بجانب السعر. */
+export function billingPeriodLabel(billing: BillingPeriod): string {
+  switch (billing) {
+    case "one_time":
+      return "دفعة واحدة";
+    case "monthly":
+      return "/ شهر";
+    case "yearly":
+      return "/ سنة";
+    case "custom":
+      return "حسب الاتفاق";
+  }
+}
