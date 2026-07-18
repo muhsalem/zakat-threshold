@@ -41,6 +41,7 @@ export type Client = {
   history: HistoryEntry[];
   email?: string;
   createdVia?: "manual" | "intake";
+  intakeDetails?: Record<string, unknown> | null;
 };
 
 function emptyBreakdown(): ZakatBreakdown {
