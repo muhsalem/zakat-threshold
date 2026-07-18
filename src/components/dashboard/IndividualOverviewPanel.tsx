@@ -13,6 +13,7 @@ import {
   FileCheck2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { HawlReminderCard } from "@/components/zakat/HawlReminderCard";
 
 interface Row {
   hijri_year: string | null;
