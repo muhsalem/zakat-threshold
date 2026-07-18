@@ -678,7 +678,7 @@ function Pricing() {
   );
 }
 
-function PlanCardHome({ plan }: { plan: (typeof PLANS_CATALOG)[number] }) {
+function PlanCardHome({ plan }: { plan: CatalogPlan }) {
   const Icon = plan.icon;
   const priceLabel =
     plan.usdPrice === null
