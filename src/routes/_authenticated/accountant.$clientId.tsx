@@ -328,6 +328,9 @@ function ClientDetail() {
         </CardContent>
       </Card>
 
+      {/* بيانات العميل كما أرسلها من نافذة الاستلام — بدون إعادة إدخال */}
+      {client.intakeDetails && <IntakeDetailsPanel details={client.intakeDetails} currency={client.currency} />}
+
       {/* تفصيل الأصول */}
       <Card>
         <CardHeader>
