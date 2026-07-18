@@ -390,7 +390,14 @@ function HistoryPage() {
             </Card>
           </>
         )}
+          </TabsContent>
+
+          <TabsContent value="verify" className="mt-6">
+            <VerifyReportPanel />
+          </TabsContent>
+        </Tabs>
       </main>
+
     </div>
   );
 }
