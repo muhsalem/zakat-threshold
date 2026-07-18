@@ -70,7 +70,7 @@ function PlanCard({ plan, countryCode }: { plan: Plan; countryCode: string | nul
               className="w-full"
               variant={plan.highlight ? "default" : "outline"}
             >
-              {plan.usdMonthly === 0 ? "ابدأ مجاناً" : `اختر ${plan.name}`}
+              {plan.usdPrice === 0 ? "ابدأ مجاناً" : `اختر ${plan.name}`}
             </Button>
           </Link>
         ) : (
