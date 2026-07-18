@@ -624,38 +624,41 @@ function formatPrice(usd: number, ccyCode: string): string {
 }
 
 function Pricing() {
-  const [tab, setTab] = useState<"individual" | "business">("individual");
-  const individual = PLANS_CATALOG.filter((p) => p.audience === "individual");
-  const business = PLANS_CATALOG.filter((p) => p.audience === "business");
-  const list = tab === "individual" ? individual : business;
+  const [tab, setTab] = useState<"individual" | "business" | "accountant">("individual");
+  const list = PLANS_CATALOG.filter((p) => p.audience === tab);
   const gridCols =
     tab === "individual"
       ? "md:grid-cols-2 lg:grid-cols-3"
-      : "md:grid-cols-2 lg:grid-cols-4";
+      : tab === "business"
+        ? "md:grid-cols-2 lg:grid-cols-4"
+        : "md:grid-cols-3";
+
+  const tabs: Array<{ id: typeof tab; label: string; Icon: typeof Users }> = [
+    { id: "individual", label: "للأفراد", Icon: Users },
+    { id: "business", label: "للشركات", Icon: Building2 },
+    { id: "accountant", label: "للمحاسبين", Icon: Briefcase },
+  ];
 
   return (
     <section id="pricing" className="bg-muted/30 border-y" dir="rtl">
       <div className="container mx-auto px-4 py-20">
         <SectionHeader
-          eyebrow="الاشتراكات والخطط"
-          title="الزكاة سنوية — فادفع مرة في السنة فقط"
-          subtitle="خطط مصمَّمة حول يوم الحول: تقرير لمرة واحدة، اشتراك سنوي، أو Lifetime للأفراد — وتدرّج سنوي حسب الأصول الزكوية للشركات."
+          eyebrow="Freemium + إدارة زكاة على مدار السنة"
+          title="الحاسبة مجانية للأبد — تدفع فقط مقابل الإدارة والتقارير"
+          subtitle="خطط مصمَّمة لدورة استخدامك: تقرير واحد، اشتراك سنوي بقيمة مستمرة، أو Lifetime — للأفراد والشركات والمحاسبين."
         />
 
         <div className="flex justify-center mb-8">
           <div className="inline-flex rounded-lg border bg-background p-1">
-            <button
-              onClick={() => setTab("individual")}
-              className={`px-4 py-1.5 text-sm rounded-md transition ${tab === "individual" ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}
-            >
-              <Users className="inline h-4 w-4 ms-1" /> للأفراد
-            </button>
-            <button
-              onClick={() => setTab("business")}
-              className={`px-4 py-1.5 text-sm rounded-md transition ${tab === "business" ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}
-            >
-              <Building2 className="inline h-4 w-4 ms-1" /> للشركات
-            </button>
+            {tabs.map(({ id, label, Icon }) => (
+              <button
+                key={id}
+                onClick={() => setTab(id)}
+                className={`px-4 py-1.5 text-sm rounded-md transition ${tab === id ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}
+              >
+                <Icon className="inline h-4 w-4 ms-1" /> {label}
+              </button>
+            ))}
           </div>
         </div>
 

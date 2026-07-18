@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Check, Mail, Sparkles, Info } from "lucide-react";
-import { INDIVIDUAL_PLANS, BUSINESS_PLANS, type Plan } from "@/lib/geo/plans";
+import { INDIVIDUAL_PLANS, BUSINESS_PLANS, ACCOUNTANT_PLANS, type Plan } from "@/lib/geo/plans";
 import { PriceTag } from "@/components/pricing/PriceTag";
 import { CountrySwitcher } from "@/components/pricing/CountrySwitcher";
 import { useGeoPricing } from "@/hooks/useGeoPricing";
@@ -96,20 +96,20 @@ function PlanCard({ plan, countryCode }: { plan: Plan; countryCode: string | nul
 
 function PricingPage() {
   const { code, info } = useGeoPricing();
-  const [tab, setTab] = useState<"individual" | "business">("individual");
+  const [tab, setTab] = useState<"individual" | "business" | "accountant">("individual");
 
   return (
     <div className="container max-w-6xl py-10 space-y-8" dir="rtl">
       <header className="text-center space-y-4">
         <Badge variant="secondary" className="gap-1">
-          <Sparkles className="h-3.5 w-3.5" /> تسعير عادل عالمياً
+          <Sparkles className="h-3.5 w-3.5" /> Freemium + إدارة زكاة على مدار السنة
         </Badge>
         <h1 className="text-3xl md:text-4xl font-bold">
-          أسعار مصمَّمة لبلدك
+          أسعار مصمَّمة لدورة استخدامك — لا لمجرد نقرة حساب
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          نطبّق مبدأ <b>Purchasing Power Parity</b> — كل منطقة تدفع بحسب قوتها
-          الشرائية. عرضك الحالي مبني على{" "}
+          الحاسبة الأساسية مجانية للأبد. تدفع فقط مقابل الإدارة المستمرة والتقارير المعتمدة.
+          الأسعار محلية عبر <b>PPP</b> — عرضك مبني على{" "}
           <span className="font-semibold">
             {info.flag} {info.nameAr}
           </span>
@@ -120,10 +120,11 @@ function PricingPage() {
         </div>
       </header>
 
-      <Tabs value={tab} onValueChange={(v) => setTab(v as "individual" | "business")}>
-        <TabsList className="mx-auto grid w-full max-w-md grid-cols-2">
+      <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
+        <TabsList className="mx-auto grid w-full max-w-2xl grid-cols-3">
           <TabsTrigger value="individual">للأفراد</TabsTrigger>
           <TabsTrigger value="business">للشركات</TabsTrigger>
+          <TabsTrigger value="accountant">للمحاسبين</TabsTrigger>
         </TabsList>
 
         <TabsContent value="individual" className="mt-6">
@@ -145,6 +146,17 @@ function PricingPage() {
               عرض المقارنة التفصيلية للشركات ←
             </Link>
           </div>
+        </TabsContent>
+
+        <TabsContent value="accountant" className="mt-6 space-y-4">
+          <div className="grid md:grid-cols-3 gap-5">
+            {ACCOUNTANT_PLANS.map((p) => (
+              <PlanCard key={p.id} plan={p} countryCode={code} />
+            ))}
+          </div>
+          <p className="text-center text-xs text-muted-foreground">
+            كل الخطط تشمل: لوحة عملاء موحّدة، استيراد جماعي، ربط COA، وتقارير بختم مكتبك.
+          </p>
         </TabsContent>
       </Tabs>
 
