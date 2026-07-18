@@ -109,6 +109,7 @@ function rowToClient(r: ClientRow, history: HistoryEntry[] = []): Client {
     createdVia: (r.created_via as "manual" | "intake") || "manual",
     lastCalcAt: r.last_calc_at ?? undefined,
     lastCalcAmount: r.last_calc_amount != null ? Number(r.last_calc_amount) : undefined,
+    intakeDetails: (r.intake_details as Record<string, unknown> | null) ?? null,
     history,
   };
 }
