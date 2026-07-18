@@ -136,7 +136,7 @@ function SiteHeader() {
             كيف تعمل
           </a>
           <a href="#pricing" className="hover:text-primary">
-            الأسعار
+            الاشتراكات والخطط
           </a>
           <a href="#faq" className="hover:text-primary">
             الأسئلة
@@ -633,7 +633,7 @@ function Pricing() {
     <section id="pricing" className="bg-muted/30 border-y" dir="rtl">
       <div className="container mx-auto px-4 py-20">
         <SectionHeader
-          eyebrow="خطط الأسعار"
+          eyebrow="الاشتراكات والخطط السعرية"
           title="ادفع مقابل ما تحتاجه فقط"
           subtitle="أسعار شفافة بلا رسوم خفية. جميع الخطط تشمل التحديثات ودعم عربي."
         />
@@ -982,7 +982,7 @@ function SiteFooter() {
         <FooterCol
           title="المنتج"
           links={[
-            ["الأسعار", "#pricing"],
+            ["الاشتراكات والخطط", "#pricing"],
             ["كيف تعمل", "#how"],
             ["للمؤسسات", "/enterprise"],
           ]}
