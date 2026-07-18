@@ -290,7 +290,7 @@ function ClientIntakePage() {
       notes: `[${mode === "comprehensive" ? "تقرير شامل معتمد" : "حساب سريع"}] ${notesExtras}`,
       createdVia: "intake" as const,
       // نسخة كاملة من كل حقول النموذج ليطّلع عليها المحاسب بلا إعادة إدخال
-      intakeDetails: { mode, phone: form.phone, ...form },
+      intakeDetails: { mode, ...form },
     };
 
     // إذا كان المستخدم مسجّل الدخول: احفظ في Lovable Cloud مباشرة
