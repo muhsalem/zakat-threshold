@@ -19,6 +19,7 @@ import { Route as ShowcaseRouteImport } from './routes/showcase'
 import { Route as ShariaChangelogRouteImport } from './routes/sharia-changelog'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PricesHistoryRouteImport } from './routes/prices-history'
 import { Route as PortalSigninRouteImport } from './routes/portal-signin'
 import { Route as OrganizationsRouteImport } from './routes/organizations'
@@ -69,6 +70,7 @@ import { Route as AuthenticatedAccountantRouteImport } from './routes/_authentic
 import { Route as ApiPublicOpenapiRouteImport } from './routes/api/public/openapi'
 import { Route as ApiPublicNisabRouteImport } from './routes/api/public/nisab'
 import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
+import { Route as ApiPublicGeoRouteImport } from './routes/api/public/geo'
 import { Route as ApiPublicCalcRouteImport } from './routes/api/public/calc'
 import { Route as AuthenticatedZakatCaseRecordIdRouteImport } from './routes/_authenticated/zakat-case.$recordId'
 import { Route as AuthenticatedComplianceReportRecordIdRouteImport } from './routes/_authenticated/compliance-report.$recordId'
@@ -130,6 +132,11 @@ const SecurityRoute = SecurityRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PricesHistoryRoute = PricesHistoryRouteImport.update({
@@ -385,6 +392,11 @@ const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
   path: '/api/public/health',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicGeoRoute = ApiPublicGeoRouteImport.update({
+  id: '/api/public/geo',
+  path: '/api/public/geo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicCalcRoute = ApiPublicCalcRouteImport.update({
   id: '/api/public/calc',
   path: '/api/public/calc',
@@ -488,6 +500,7 @@ export interface FileRoutesByFullPath {
   '/organizations': typeof OrganizationsRoute
   '/portal-signin': typeof PortalSigninRoute
   '/prices-history': typeof PricesHistoryRoute
+  '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/sharia-changelog': typeof ShariaChangelogRoute
@@ -516,6 +529,7 @@ export interface FileRoutesByFullPath {
   '/compliance-report/$recordId': typeof AuthenticatedComplianceReportRecordIdRoute
   '/zakat-case/$recordId': typeof AuthenticatedZakatCaseRecordIdRoute
   '/api/public/calc': typeof ApiPublicCalcRoute
+  '/api/public/geo': typeof ApiPublicGeoRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
   '/api/public/openapi': typeof ApiPublicOpenapiRoute
@@ -561,6 +575,7 @@ export interface FileRoutesByTo {
   '/organizations': typeof OrganizationsRoute
   '/portal-signin': typeof PortalSigninRoute
   '/prices-history': typeof PricesHistoryRoute
+  '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/sharia-changelog': typeof ShariaChangelogRoute
@@ -589,6 +604,7 @@ export interface FileRoutesByTo {
   '/compliance-report/$recordId': typeof AuthenticatedComplianceReportRecordIdRoute
   '/zakat-case/$recordId': typeof AuthenticatedZakatCaseRecordIdRoute
   '/api/public/calc': typeof ApiPublicCalcRoute
+  '/api/public/geo': typeof ApiPublicGeoRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
   '/api/public/openapi': typeof ApiPublicOpenapiRoute
@@ -636,6 +652,7 @@ export interface FileRoutesById {
   '/organizations': typeof OrganizationsRoute
   '/portal-signin': typeof PortalSigninRoute
   '/prices-history': typeof PricesHistoryRoute
+  '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/security': typeof SecurityRoute
   '/sharia-changelog': typeof ShariaChangelogRoute
@@ -664,6 +681,7 @@ export interface FileRoutesById {
   '/_authenticated/compliance-report/$recordId': typeof AuthenticatedComplianceReportRecordIdRoute
   '/_authenticated/zakat-case/$recordId': typeof AuthenticatedZakatCaseRecordIdRoute
   '/api/public/calc': typeof ApiPublicCalcRoute
+  '/api/public/geo': typeof ApiPublicGeoRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
   '/api/public/openapi': typeof ApiPublicOpenapiRoute
@@ -711,6 +729,7 @@ export interface FileRouteTypes {
     | '/organizations'
     | '/portal-signin'
     | '/prices-history'
+    | '/pricing'
     | '/reset-password'
     | '/security'
     | '/sharia-changelog'
@@ -739,6 +758,7 @@ export interface FileRouteTypes {
     | '/compliance-report/$recordId'
     | '/zakat-case/$recordId'
     | '/api/public/calc'
+    | '/api/public/geo'
     | '/api/public/health'
     | '/api/public/nisab'
     | '/api/public/openapi'
@@ -784,6 +804,7 @@ export interface FileRouteTypes {
     | '/organizations'
     | '/portal-signin'
     | '/prices-history'
+    | '/pricing'
     | '/reset-password'
     | '/security'
     | '/sharia-changelog'
@@ -812,6 +833,7 @@ export interface FileRouteTypes {
     | '/compliance-report/$recordId'
     | '/zakat-case/$recordId'
     | '/api/public/calc'
+    | '/api/public/geo'
     | '/api/public/health'
     | '/api/public/nisab'
     | '/api/public/openapi'
@@ -858,6 +880,7 @@ export interface FileRouteTypes {
     | '/organizations'
     | '/portal-signin'
     | '/prices-history'
+    | '/pricing'
     | '/reset-password'
     | '/security'
     | '/sharia-changelog'
@@ -886,6 +909,7 @@ export interface FileRouteTypes {
     | '/_authenticated/compliance-report/$recordId'
     | '/_authenticated/zakat-case/$recordId'
     | '/api/public/calc'
+    | '/api/public/geo'
     | '/api/public/health'
     | '/api/public/nisab'
     | '/api/public/openapi'
@@ -933,6 +957,7 @@ export interface RootRouteChildren {
   OrganizationsRoute: typeof OrganizationsRoute
   PortalSigninRoute: typeof PortalSigninRoute
   PricesHistoryRoute: typeof PricesHistoryRoute
+  PricingRoute: typeof PricingRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SecurityRoute: typeof SecurityRoute
   ShariaChangelogRoute: typeof ShariaChangelogRoute
@@ -948,6 +973,7 @@ export interface RootRouteChildren {
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   LegalTermsRoute: typeof LegalTermsRoute
   ApiPublicCalcRoute: typeof ApiPublicCalcRoute
+  ApiPublicGeoRoute: typeof ApiPublicGeoRoute
   ApiPublicHealthRoute: typeof ApiPublicHealthRoute
   ApiPublicNisabRoute: typeof ApiPublicNisabRoute
   ApiPublicOpenapiRoute: typeof ApiPublicOpenapiRoute
@@ -1030,6 +1056,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/prices-history': {
@@ -1382,6 +1415,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/geo': {
+      id: '/api/public/geo'
+      path: '/api/public/geo'
+      fullPath: '/api/public/geo'
+      preLoaderRoute: typeof ApiPublicGeoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/calc': {
       id: '/api/public/calc'
       path: '/api/public/calc'
@@ -1561,6 +1601,7 @@ const rootRouteChildren: RootRouteChildren = {
   OrganizationsRoute: OrganizationsRoute,
   PortalSigninRoute: PortalSigninRoute,
   PricesHistoryRoute: PricesHistoryRoute,
+  PricingRoute: PricingRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SecurityRoute: SecurityRoute,
   ShariaChangelogRoute: ShariaChangelogRoute,
@@ -1576,6 +1617,7 @@ const rootRouteChildren: RootRouteChildren = {
   LegalPrivacyRoute: LegalPrivacyRoute,
   LegalTermsRoute: LegalTermsRoute,
   ApiPublicCalcRoute: ApiPublicCalcRoute,
+  ApiPublicGeoRoute: ApiPublicGeoRoute,
   ApiPublicHealthRoute: ApiPublicHealthRoute,
   ApiPublicNisabRoute: ApiPublicNisabRoute,
   ApiPublicOpenapiRoute: ApiPublicOpenapiRoute,
