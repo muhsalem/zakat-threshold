@@ -17,17 +17,20 @@ export const PLANS: PlanMeta[] = [
   { id: "business", name: "Business", priceUSD: 499, period: "/ شهر", audience: "company" },
 ];
 
+import type { DiscountOptions } from "@/lib/pricing/discounts";
+
 /** يفتح جلسة Checkout في نفس النافذة. */
 export async function startCheckout(
   planId: PlanId,
   returnPath = "/checkout-result",
+  discount?: DiscountOptions,
 ): Promise<{ ok: boolean; error?: string }> {
   const { data: authData } = await supabase.auth.getUser();
   const user = authData?.user;
   if (!user) return { ok: false, error: "يجب تسجيل الدخول أولاً" };
 
   const { data, error } = await supabase.functions.invoke("create-checkout", {
-    body: { planId, returnPath },
+    body: { planId, returnPath, discount },
   });
 
   if (error || !data?.url) {
