@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Check, Mail, Sparkles, Info } from "lucide-react";
-import { INDIVIDUAL_PLANS, BUSINESS_PLANS, type Plan } from "@/lib/geo/plans";
+import { INDIVIDUAL_PLANS, BUSINESS_PLANS, ACCOUNTANT_PLANS, type Plan } from "@/lib/geo/plans";
 import { PriceTag } from "@/components/pricing/PriceTag";
 import { CountrySwitcher } from "@/components/pricing/CountrySwitcher";
 import { useGeoPricing } from "@/hooks/useGeoPricing";
