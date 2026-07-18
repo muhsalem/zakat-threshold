@@ -117,6 +117,7 @@ import TradeActivityClassification, {
 import { supabase } from "@/integrations/supabase/client";
 import { NumField, SectionResult, Row } from "./individual/shared";
 import { IndividualAuditTab } from "./individual/audit/IndividualAuditTab";
+import { DemoScenariosGuide } from "./individual/DemoScenariosGuide";
 
 export function IndividualTab() {
   // بيانات المزكي
