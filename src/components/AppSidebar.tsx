@@ -47,6 +47,9 @@ const NAV: NavItem[] = [
 type CalcItem = { title: string; url: string; audience: Array<AccountType | "all"> };
 
 const CALCS: CalcItem[] = [
+  { title: "زكاة الذهب والفضة", url: "/zakat-gold", audience: ["individual"] },
+  { title: "زكاة الفطر", url: "/zakat-fitr", audience: ["individual"] },
+  { title: "زكاة الراتب", url: "/salary-zakat", audience: ["individual"] },
   { title: "زكاة الشركات", url: "/zakat-company", audience: ["company"] },
   { title: "زكاة المؤسسات", url: "/enterprise", audience: ["institution"] },
   { title: "خطة توزيع الزكاة", url: "/distribution-plan", audience: ["individual"] },
