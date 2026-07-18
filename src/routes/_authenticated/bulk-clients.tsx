@@ -14,7 +14,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Users, Play, Download, Plus, Trash2 } from "lucide-react";
-import { calcZakatDue } from "@/lib/zakat";
+import { ZAKAT_RATE } from "@/lib/zakat";
 
 export const Route = createFileRoute("/_authenticated/bulk-clients")({
   head: () => ({
