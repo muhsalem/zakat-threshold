@@ -655,7 +655,7 @@ function ClientIntakePage() {
             />
           </SectionCard>
 
-          <SectionCard title="5) الزروع والثمار" icon={<Wheat className="h-4 w-4" />}>
+          <SectionCard title="6) الزروع والثمار" icon={<Wheat className="h-4 w-4" />}>
             <Field label="نوع الري">
               <Select
                 value={form.agricultureType}
@@ -678,13 +678,21 @@ function ClientIntakePage() {
             />
           </SectionCard>
 
-          <SectionCard title="6) الأنعام (بالعدد)" icon={<Landmark className="h-4 w-4" />}>
+          <SectionCard title="7) الأنعام (بالعدد)" icon={<Landmark className="h-4 w-4" />}>
             <NumField label="إبل" v={form.livestockCamels} on={(v) => set("livestockCamels", v)} />
             <NumField label="بقر" v={form.livestockCattle} on={(v) => set("livestockCattle", v)} />
             <NumField label="غنم" v={form.livestockSheep} on={(v) => set("livestockSheep", v)} />
           </SectionCard>
 
-          <SectionCard title="7) الرواتب والمكافآت" icon={<Briefcase className="h-4 w-4" />}>
+          <SectionCard title="8) الركاز والمعادن المكتشفة" icon={<Coins className="h-4 w-4" />}>
+            <NumField
+              label="قيمة الركاز/المعادن (الزكاة 20% أو حسب رأي المحاسب)"
+              v={form.rikazMetals}
+              on={(v) => set("rikazMetals", v)}
+            />
+          </SectionCard>
+
+          <SectionCard title="9) الرواتب والمكافآت" icon={<Briefcase className="h-4 w-4" />}>
             <NumField
               label="راتب شهري"
               v={form.salaryMonthly}
@@ -697,7 +705,7 @@ function ClientIntakePage() {
             />
           </SectionCard>
 
-          <SectionCard title="8) نشاط تجاري/مؤسسة" icon={<Building2 className="h-4 w-4" />}>
+          <SectionCard title="10) نشاط تجاري/مؤسسة" icon={<Building2 className="h-4 w-4" />}>
             <NumField label="عروض تجارة/مخزون" v={form.inventory} on={(v) => set("inventory", v)} />
             <NumField
               label="أصول تشغيلية زكوية"
@@ -711,11 +719,16 @@ function ClientIntakePage() {
             />
           </SectionCard>
 
-          <SectionCard title="9) الديون" icon={<Scale className="h-4 w-4" />}>
+          <SectionCard title="11) الديون" icon={<Scale className="h-4 w-4" />}>
             <NumField
               label="ديون مستحقة لك (مرجوّة)"
               v={form.receivables}
               on={(v) => set("receivables", v)}
+            />
+            <NumField
+              label="ديون مشكوك في تحصيلها (تُزكَّى عند القبض)"
+              v={form.receivablesDoubtful}
+              on={(v) => set("receivablesDoubtful", v)}
             />
             <NumField label="ديون عليك (قصيرة الأجل)" v={form.debts} on={(v) => set("debts", v)} />
           </SectionCard>
