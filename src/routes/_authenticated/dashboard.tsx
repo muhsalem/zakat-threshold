@@ -97,24 +97,29 @@ function DashboardPage() {
                 <Badge variant="outline" className="text-xs">
                   نوع الحساب: {label}
                 </Badge>
-                <Button asChild size="sm" variant="ghost" className="h-6 text-xs">
-                  <Link to="/">
-                    الوضع المتقدم <ArrowLeft className="h-3 w-3" />
-                  </Link>
-                </Button>
+                {type !== "individual" && (
+                  <Button asChild size="sm" variant="ghost" className="h-6 text-xs">
+                    <Link to="/">
+                      الوضع المتقدم <ArrowLeft className="h-3 w-3" />
+                    </Link>
+                  </Button>
+                )}
                 <Button asChild size="sm" variant="ghost" className="h-6 text-xs">
                   <Link to="/drafts">المسودات والسجل</Link>
                 </Button>
+
               </div>
             </div>
           </div>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            هذه لوحة موجّهة خطوة‑بخطوة تجمع أهم مدخلاتك وتصدر تقريراً جاهزاً. للوصول إلى كل
-            التبويبات التفصيلية استخدم زر "الوضع المتقدم" أعلاه.
+            {type === "individual"
+              ? "هذه لوحة موجّهة خطوة‑بخطوة تجمع أهم مدخلاتك وتصدر تقريراً جاهزاً."
+              : 'هذه لوحة موجّهة خطوة‑بخطوة تجمع أهم مدخلاتك وتصدر تقريراً جاهزاً. للوصول إلى كل التبويبات التفصيلية استخدم زر "الوضع المتقدم" أعلاه.'}
           </p>
         </CardContent>
+
       </Card>
 
       {type === "individual" && (
