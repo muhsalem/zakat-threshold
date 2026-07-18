@@ -286,7 +286,7 @@ export async function createClient(input: {
   };
   const { data, error } = await supabase
     .from("accountant_clients")
-    .insert(row)
+    .insert(row as never)
     .select("*")
     .single();
   if (error) throw error;
