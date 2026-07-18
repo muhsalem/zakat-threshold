@@ -8,7 +8,9 @@ import { Label } from "@/components/ui/label";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Wheat, Calculator, BookOpen, ShieldCheck, ArrowLeft, Users } from "lucide-react";
+import { Wheat, Calculator, BookOpen, ShieldCheck, ArrowLeft, Users, FileDown } from "lucide-react";
+import { exportHtmlToPdf, pdfWrap } from "@/lib/export/pdf";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/zakat-fitr")({
   head: () => ({
@@ -162,6 +164,41 @@ function ZakatFitrPage() {
               <Link to="/distribution-plan">
                 <Calculator className="h-4 w-4" /> خطة توزيع الزكاة
               </Link>
+            </Button>
+            <Button
+              variant="outline"
+              className="gap-1.5"
+              onClick={async () => {
+                try {
+                  const body = `
+                    <h2 style="font-size:15px;margin:0 0 8px;color:#0d766e">ملخص الإدخال</h2>
+                    <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px">
+                      <tr><td style="border:1px solid #ddd;padding:6px;background:#f6f8f7;width:40%">عدد أفراد الأسرة</td><td style="border:1px solid #ddd;padding:6px"><b>${peopleCount}</b></td></tr>
+                      <tr><td style="border:1px solid #ddd;padding:6px;background:#f6f8f7">نوع القوت</td><td style="border:1px solid #ddd;padding:6px">${active.label} — ${active.kgPerSaa} كجم لكل صاع</td></tr>
+                      <tr><td style="border:1px solid #ddd;padding:6px;background:#f6f8f7">سعر الكيلو</td><td style="border:1px solid #ddd;padding:6px">${pricePerKg} ${currency}</td></tr>
+                    </table>
+                    <h2 style="font-size:15px;margin:0 0 8px;color:#0d766e">النتيجة</h2>
+                    <table style="width:100%;border-collapse:collapse;font-size:13px">
+                      <tr>
+                        <td style="border:1px solid #ddd;padding:10px;width:50%">إخراجها طعاماً<br/><b style="font-size:18px">${totalKg.toLocaleString("ar-EG",{maximumFractionDigits:2})} كجم</b></td>
+                        <td style="border:1px solid #ddd;padding:10px">إخراجها نقداً<br/><b style="font-size:18px">${totalCash.toLocaleString("ar-EG",{maximumFractionDigits:2})} ${currency}</b></td>
+                      </tr>
+                    </table>
+                    <p style="font-size:11px;color:#666;margin-top:10px">
+                      = ${peopleCount} صاع × ${active.kgPerSaa} كجم = ${totalKg.toLocaleString("ar-EG",{maximumFractionDigits:2})} كجم
+                      × ${pricePerKg} ${currency}/كجم = ${totalCash.toLocaleString("ar-EG",{maximumFractionDigits:2})} ${currency}
+                    </p>`;
+                  await exportHtmlToPdf(
+                    pdfWrap("تقرير زكاة الفطر", body),
+                    `zakat-fitr-${new Date().toISOString().slice(0, 10)}.pdf`,
+                  );
+                  toast.success("تم تصدير PDF");
+                } catch {
+                  toast.error("تعذّر تصدير PDF");
+                }
+              }}
+            >
+              <FileDown className="h-4 w-4" /> تصدير PDF
             </Button>
             <Button asChild variant="outline">
               <Link to="/advisor">اسأل المستشار الشرعي</Link>
