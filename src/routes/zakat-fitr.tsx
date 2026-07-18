@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,9 +8,36 @@ import { Label } from "@/components/ui/label";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Wheat, Calculator, BookOpen, ShieldCheck, ArrowLeft, Users, FileDown } from "lucide-react";
+import { Wheat, Calculator, BookOpen, ShieldCheck, ArrowLeft, Users, FileDown, Archive, Trash2, BarChart3, Save } from "lucide-react";
 import { exportHtmlToPdf, pdfWrap } from "@/lib/export/pdf";
 import { toast } from "sonner";
+
+type FitrArchiveEntry = {
+  id: string;
+  year: number;
+  savedAt: string;
+  peopleCount: number;
+  stapleId: string;
+  stapleLabel: string;
+  kgPerSaa: number;
+  pricePerKg: number;
+  currency: string;
+  totalKg: number;
+  totalCash: number;
+};
+
+const ARCHIVE_KEY = "zakat-fitr-archive-v1";
+
+function loadArchive(): FitrArchiveEntry[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(ARCHIVE_KEY);
+    return raw ? (JSON.parse(raw) as FitrArchiveEntry[]) : [];
+  } catch { return []; }
+}
+function saveArchive(list: FitrArchiveEntry[]) {
+  try { window.localStorage.setItem(ARCHIVE_KEY, JSON.stringify(list)); } catch { /* ignore */ }
+}
 
 export const Route = createFileRoute("/zakat-fitr")({
   head: () => ({
