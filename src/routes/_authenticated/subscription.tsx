@@ -63,7 +63,20 @@ function fmtDate(iso: string | null) {
 }
 
 function planTier(id: string): number {
-  const order: PlanId[] = ["free", "personal-one-time", "personal-annual", "family-annual", "personal-lifetime", "startup", "growth", "business", "enterprise"];
+  const order: PlanId[] = [
+    "free",
+    "personal-one-time",
+    "personal-annual",
+    "family-annual",
+    "personal-lifetime",
+    "startup",
+    "growth",
+    "business",
+    "enterprise",
+    "accountant-solo",
+    "accountant-firm",
+    "accountant-unlimited",
+  ];
   const i = order.indexOf(id as PlanId);
   return i === -1 ? 0 : i;
 }
