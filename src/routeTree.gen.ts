@@ -62,6 +62,7 @@ import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as ApiExtractStatementRouteImport } from './routes/api/extract-statement'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as AuthenticatedSubscriptionRouteImport } from './routes/_authenticated/subscription'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedErpSetupRouteImport } from './routes/_authenticated/erp-setup'
 import { Route as AuthenticatedDraftsRouteImport } from './routes/_authenticated/drafts'
@@ -356,6 +357,12 @@ const ApiChatRoute = ApiChatRouteImport.update({
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedSubscriptionRoute =
+  AuthenticatedSubscriptionRouteImport.update({
+    id: '/subscription',
+    path: '/subscription',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -570,6 +577,7 @@ export interface FileRoutesByFullPath {
   '/drafts': typeof AuthenticatedDraftsRoute
   '/erp-setup': typeof AuthenticatedErpSetupRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/subscription': typeof AuthenticatedSubscriptionRoute
   '/api/chat': typeof ApiChatRoute
   '/api/extract-statement': typeof ApiExtractStatementRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -652,6 +660,7 @@ export interface FileRoutesByTo {
   '/drafts': typeof AuthenticatedDraftsRoute
   '/erp-setup': typeof AuthenticatedErpSetupRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/subscription': typeof AuthenticatedSubscriptionRoute
   '/api/chat': typeof ApiChatRoute
   '/api/extract-statement': typeof ApiExtractStatementRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -736,6 +745,7 @@ export interface FileRoutesById {
   '/_authenticated/drafts': typeof AuthenticatedDraftsRoute
   '/_authenticated/erp-setup': typeof AuthenticatedErpSetupRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/subscription': typeof AuthenticatedSubscriptionRoute
   '/api/chat': typeof ApiChatRoute
   '/api/extract-statement': typeof ApiExtractStatementRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -820,6 +830,7 @@ export interface FileRouteTypes {
     | '/drafts'
     | '/erp-setup'
     | '/settings'
+    | '/subscription'
     | '/api/chat'
     | '/api/extract-statement'
     | '/blog/$slug'
@@ -902,6 +913,7 @@ export interface FileRouteTypes {
     | '/drafts'
     | '/erp-setup'
     | '/settings'
+    | '/subscription'
     | '/api/chat'
     | '/api/extract-statement'
     | '/blog/$slug'
@@ -985,6 +997,7 @@ export interface FileRouteTypes {
     | '/_authenticated/drafts'
     | '/_authenticated/erp-setup'
     | '/_authenticated/settings'
+    | '/_authenticated/subscription'
     | '/api/chat'
     | '/api/extract-statement'
     | '/blog/$slug'
@@ -1448,6 +1461,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/subscription': {
+      id: '/_authenticated/subscription'
+      path: '/subscription'
+      fullPath: '/subscription'
+      preLoaderRoute: typeof AuthenticatedSubscriptionRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
       path: '/settings'
@@ -1674,6 +1694,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDraftsRoute: typeof AuthenticatedDraftsRoute
   AuthenticatedErpSetupRoute: typeof AuthenticatedErpSetupRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedSubscriptionRoute: typeof AuthenticatedSubscriptionRoute
   AuthenticatedCertifiedReportRecordIdRoute: typeof AuthenticatedCertifiedReportRecordIdRoute
   AuthenticatedComplianceReportRecordIdRoute: typeof AuthenticatedComplianceReportRecordIdRoute
   AuthenticatedZakatCaseRecordIdRoute: typeof AuthenticatedZakatCaseRecordIdRoute
@@ -1692,6 +1713,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDraftsRoute: AuthenticatedDraftsRoute,
   AuthenticatedErpSetupRoute: AuthenticatedErpSetupRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedSubscriptionRoute: AuthenticatedSubscriptionRoute,
   AuthenticatedCertifiedReportRecordIdRoute:
     AuthenticatedCertifiedReportRecordIdRoute,
   AuthenticatedComplianceReportRecordIdRoute:
