@@ -9,6 +9,8 @@ import { IndividualWizard } from "@/components/wizards/IndividualWizard";
 import { CompanyWizard } from "@/components/wizards/CompanyWizard";
 import { InstitutionWizard } from "@/components/wizards/InstitutionWizard";
 import { RestoreLastDraftBanner } from "@/components/wizards/RestoreLastDraftBanner";
+import { IndividualOverviewPanel } from "@/components/dashboard/IndividualOverviewPanel";
+import { CompanyOverviewPanel } from "@/components/dashboard/CompanyOverviewPanel";
 
 type AccountType = "individual" | "company" | "institution" | "admin";
 
@@ -124,18 +126,21 @@ function DashboardPage() {
 
       {type === "individual" && (
         <>
+          <IndividualOverviewPanel />
           <RestoreLastDraftBanner kind="individual" />
           <IndividualWizard />
         </>
       )}
       {type === "company" && (
         <>
+          <CompanyOverviewPanel />
           <RestoreLastDraftBanner kind="company" />
           <CompanyWizard />
         </>
       )}
       {type === "institution" && (
         <>
+          <CompanyOverviewPanel />
           <RestoreLastDraftBanner kind="institution" />
           <InstitutionWizard />
         </>
