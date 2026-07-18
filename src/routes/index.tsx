@@ -173,9 +173,11 @@ function Hero() {
             </span>
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed max-w-xl">
-            نجمع بين حاسبة ذكية مبنية على معايير <b>AAOIFI 35</b> و
-            <b>الاتحاد الدولي لعلماء المسلمين</b>، وبين شبكة محاسبين معتمدين يراجعون بياناتك ويرسلون
-            التقرير النهائي إلى بريدك.
+            حاسبة ذكية مبنية على معايير <b>AAOIFI 35</b> و
+            <b>الاتحاد الدولي لعلماء المسلمين</b> تُصدر لك تقريراً تفصيلياً جاهزاً للاعتماد.
+            <span className="block text-xs mt-1 text-primary/80">
+              قريباً: مراجعة بشرية من شبكة محاسبين قانونيين مرخّصين قبل الإصدار.
+            </span>
           </p>
           <div className="flex flex-wrap gap-3">
             <Link to="/client-intake">
