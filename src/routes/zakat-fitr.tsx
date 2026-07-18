@@ -8,7 +8,9 @@ import { Label } from "@/components/ui/label";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Wheat, Calculator, BookOpen, ShieldCheck, ArrowLeft, Users } from "lucide-react";
+import { Wheat, Calculator, BookOpen, ShieldCheck, ArrowLeft, Users, FileDown } from "lucide-react";
+import { exportHtmlToPdf, pdfWrap } from "@/lib/export/pdf";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/zakat-fitr")({
   head: () => ({
