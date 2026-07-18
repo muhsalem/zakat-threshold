@@ -18,6 +18,7 @@ import { Route as SoftwareRecommendationsRouteImport } from './routes/software-r
 import { Route as ShowcaseRouteImport } from './routes/showcase'
 import { Route as ShariaChangelogRouteImport } from './routes/sharia-changelog'
 import { Route as SecurityRouteImport } from './routes/security'
+import { Route as SalaryZakatRouteImport } from './routes/salary-zakat'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PricesHistoryRouteImport } from './routes/prices-history'
@@ -36,8 +37,10 @@ import { Route as FatwaCommunityRouteImport } from './routes/fatwa-community'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EvaluationRouteImport } from './routes/evaluation'
 import { Route as EsgRouteImport } from './routes/esg'
+import { Route as ErpConnectorsRouteImport } from './routes/erp-connectors'
 import { Route as EnterprisePricingRouteImport } from './routes/enterprise-pricing'
 import { Route as EnterpriseRouteImport } from './routes/enterprise'
+import { Route as EightChannelsRouteImport } from './routes/eight-channels'
 import { Route as DevelopersRouteImport } from './routes/developers'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as CropsRouteImport } from './routes/crops'
@@ -128,6 +131,11 @@ const ShariaChangelogRoute = ShariaChangelogRouteImport.update({
 const SecurityRoute = SecurityRouteImport.update({
   id: '/security',
   path: '/security',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SalaryZakatRoute = SalaryZakatRouteImport.update({
+  id: '/salary-zakat',
+  path: '/salary-zakat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -221,6 +229,11 @@ const EsgRoute = EsgRouteImport.update({
   path: '/esg',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ErpConnectorsRoute = ErpConnectorsRouteImport.update({
+  id: '/erp-connectors',
+  path: '/erp-connectors',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EnterprisePricingRoute = EnterprisePricingRouteImport.update({
   id: '/enterprise-pricing',
   path: '/enterprise-pricing',
@@ -229,6 +242,11 @@ const EnterprisePricingRoute = EnterprisePricingRouteImport.update({
 const EnterpriseRoute = EnterpriseRouteImport.update({
   id: '/enterprise',
   path: '/enterprise',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EightChannelsRoute = EightChannelsRouteImport.update({
+  id: '/eight-channels',
+  path: '/eight-channels',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DevelopersRoute = DevelopersRouteImport.update({
@@ -488,8 +506,10 @@ export interface FileRoutesByFullPath {
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
+  '/eight-channels': typeof EightChannelsRoute
   '/enterprise': typeof EnterpriseRoute
   '/enterprise-pricing': typeof EnterprisePricingRoute
+  '/erp-connectors': typeof ErpConnectorsRoute
   '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
@@ -508,6 +528,7 @@ export interface FileRoutesByFullPath {
   '/prices-history': typeof PricesHistoryRoute
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/salary-zakat': typeof SalaryZakatRoute
   '/security': typeof SecurityRoute
   '/sharia-changelog': typeof ShariaChangelogRoute
   '/showcase': typeof ShowcaseRoute
@@ -564,8 +585,10 @@ export interface FileRoutesByTo {
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
+  '/eight-channels': typeof EightChannelsRoute
   '/enterprise': typeof EnterpriseRoute
   '/enterprise-pricing': typeof EnterprisePricingRoute
+  '/erp-connectors': typeof ErpConnectorsRoute
   '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
@@ -584,6 +607,7 @@ export interface FileRoutesByTo {
   '/prices-history': typeof PricesHistoryRoute
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/salary-zakat': typeof SalaryZakatRoute
   '/security': typeof SecurityRoute
   '/sharia-changelog': typeof ShariaChangelogRoute
   '/showcase': typeof ShowcaseRoute
@@ -642,8 +666,10 @@ export interface FileRoutesById {
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
+  '/eight-channels': typeof EightChannelsRoute
   '/enterprise': typeof EnterpriseRoute
   '/enterprise-pricing': typeof EnterprisePricingRoute
+  '/erp-connectors': typeof ErpConnectorsRoute
   '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
@@ -662,6 +688,7 @@ export interface FileRoutesById {
   '/prices-history': typeof PricesHistoryRoute
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/salary-zakat': typeof SalaryZakatRoute
   '/security': typeof SecurityRoute
   '/sharia-changelog': typeof ShariaChangelogRoute
   '/showcase': typeof ShowcaseRoute
@@ -720,8 +747,10 @@ export interface FileRouteTypes {
     | '/crops'
     | '/demo'
     | '/developers'
+    | '/eight-channels'
     | '/enterprise'
     | '/enterprise-pricing'
+    | '/erp-connectors'
     | '/esg'
     | '/evaluation'
     | '/faq'
@@ -740,6 +769,7 @@ export interface FileRouteTypes {
     | '/prices-history'
     | '/pricing'
     | '/reset-password'
+    | '/salary-zakat'
     | '/security'
     | '/sharia-changelog'
     | '/showcase'
@@ -796,8 +826,10 @@ export interface FileRouteTypes {
     | '/crops'
     | '/demo'
     | '/developers'
+    | '/eight-channels'
     | '/enterprise'
     | '/enterprise-pricing'
+    | '/erp-connectors'
     | '/esg'
     | '/evaluation'
     | '/faq'
@@ -816,6 +848,7 @@ export interface FileRouteTypes {
     | '/prices-history'
     | '/pricing'
     | '/reset-password'
+    | '/salary-zakat'
     | '/security'
     | '/sharia-changelog'
     | '/showcase'
@@ -873,8 +906,10 @@ export interface FileRouteTypes {
     | '/crops'
     | '/demo'
     | '/developers'
+    | '/eight-channels'
     | '/enterprise'
     | '/enterprise-pricing'
+    | '/erp-connectors'
     | '/esg'
     | '/evaluation'
     | '/faq'
@@ -893,6 +928,7 @@ export interface FileRouteTypes {
     | '/prices-history'
     | '/pricing'
     | '/reset-password'
+    | '/salary-zakat'
     | '/security'
     | '/sharia-changelog'
     | '/showcase'
@@ -951,8 +987,10 @@ export interface RootRouteChildren {
   CropsRoute: typeof CropsRoute
   DemoRoute: typeof DemoRoute
   DevelopersRoute: typeof DevelopersRoute
+  EightChannelsRoute: typeof EightChannelsRoute
   EnterpriseRoute: typeof EnterpriseRoute
   EnterprisePricingRoute: typeof EnterprisePricingRoute
+  ErpConnectorsRoute: typeof ErpConnectorsRoute
   EsgRoute: typeof EsgRoute
   EvaluationRoute: typeof EvaluationRoute
   FaqRoute: typeof FaqRoute
@@ -971,6 +1009,7 @@ export interface RootRouteChildren {
   PricesHistoryRoute: typeof PricesHistoryRoute
   PricingRoute: typeof PricingRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SalaryZakatRoute: typeof SalaryZakatRoute
   SecurityRoute: typeof SecurityRoute
   ShariaChangelogRoute: typeof ShariaChangelogRoute
   ShowcaseRoute: typeof ShowcaseRoute
@@ -1061,6 +1100,13 @@ declare module '@tanstack/react-router' {
       path: '/security'
       fullPath: '/security'
       preLoaderRoute: typeof SecurityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/salary-zakat': {
+      id: '/salary-zakat'
+      path: '/salary-zakat'
+      fullPath: '/salary-zakat'
+      preLoaderRoute: typeof SalaryZakatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reset-password': {
@@ -1189,6 +1235,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EsgRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/erp-connectors': {
+      id: '/erp-connectors'
+      path: '/erp-connectors'
+      fullPath: '/erp-connectors'
+      preLoaderRoute: typeof ErpConnectorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/enterprise-pricing': {
       id: '/enterprise-pricing'
       path: '/enterprise-pricing'
@@ -1201,6 +1254,13 @@ declare module '@tanstack/react-router' {
       path: '/enterprise'
       fullPath: '/enterprise'
       preLoaderRoute: typeof EnterpriseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/eight-channels': {
+      id: '/eight-channels'
+      path: '/eight-channels'
+      fullPath: '/eight-channels'
+      preLoaderRoute: typeof EightChannelsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/developers': {
@@ -1604,8 +1664,10 @@ const rootRouteChildren: RootRouteChildren = {
   CropsRoute: CropsRoute,
   DemoRoute: DemoRoute,
   DevelopersRoute: DevelopersRoute,
+  EightChannelsRoute: EightChannelsRoute,
   EnterpriseRoute: EnterpriseRoute,
   EnterprisePricingRoute: EnterprisePricingRoute,
+  ErpConnectorsRoute: ErpConnectorsRoute,
   EsgRoute: EsgRoute,
   EvaluationRoute: EvaluationRoute,
   FaqRoute: FaqRoute,
@@ -1624,6 +1686,7 @@ const rootRouteChildren: RootRouteChildren = {
   PricesHistoryRoute: PricesHistoryRoute,
   PricingRoute: PricingRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SalaryZakatRoute: SalaryZakatRoute,
   SecurityRoute: SecurityRoute,
   ShariaChangelogRoute: ShariaChangelogRoute,
   ShowcaseRoute: ShowcaseRoute,

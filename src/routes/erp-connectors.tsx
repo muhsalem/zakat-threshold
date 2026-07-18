@@ -129,7 +129,7 @@ function ErpConnectorsPage() {
         <AlertDescription className="text-xs leading-6">
           <strong>Odoo وSAP</strong> مفعّلان بالكامل — يمكنك إعداد الاتصال الآن من
           {" "}
-          <Link to="/_authenticated/erp-setup" className="font-semibold text-primary hover:underline">
+          <Link to="/erp-setup" className="font-semibold text-primary hover:underline">
             صفحة إعداد ERP
           </Link>
           . <strong>Zoho Books وWave</strong> متوفران عبر Standard Connectors في لوحة الإعدادات.
@@ -152,7 +152,7 @@ function ErpConnectorsPage() {
               <p className="text-xs leading-6 text-muted-foreground">{p.desc}</p>
               {p.status === "live" && (
                 <Button asChild size="sm" variant="outline" className="mt-3">
-                  <Link to="/_authenticated/erp-setup">
+                  <Link to="/erp-setup">
                     إعداد الاتصال <ArrowRight className="mr-1 h-3 w-3" />
                   </Link>
                 </Button>
@@ -168,7 +168,7 @@ function ErpConnectorsPage() {
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground">
           ندعم أي نظام محاسبي عبر API عام أو تصدير CSV/Excel لميزان المراجعة.
-          استخدم <Link to="/_authenticated/erp-setup" className="text-primary hover:underline">
+          استخدم <Link to="/erp-setup" className="text-primary hover:underline">
           إعداد ERP</Link> لرفع ملف يدوياً، أو <Link to="/enterprise" className="text-primary hover:underline">
           تواصل معنا</Link> لتكامل مخصّص.
         </CardContent>
