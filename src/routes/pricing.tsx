@@ -146,12 +146,6 @@ function PricingPage() {
             </Link>
           </div>
         </TabsContent>
-          <div className="text-center">
-            <Link to="/enterprise-pricing" className="text-sm text-primary hover:underline">
-              عرض المقارنة التفصيلية للشركات ←
-            </Link>
-          </div>
-        </TabsContent>
       </Tabs>
 
       <section className="bg-muted/30 rounded-lg p-6 space-y-3 border">
