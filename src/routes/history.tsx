@@ -4,7 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Moon, ArrowRight, Trash2, TrendingUp, History, LogOut, Info } from "lucide-react";
+import { Moon, ArrowRight, Trash2, TrendingUp, History, LogOut, Info, ShieldCheck } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { VerifyReportPanel } from "@/components/verify/VerifyReportPanel";
+
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { fmt } from "@/lib/zakat";
