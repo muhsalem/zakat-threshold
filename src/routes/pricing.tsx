@@ -52,8 +52,17 @@ function PlanCard({ plan, countryCode }: { plan: Plan; countryCode: string | nul
           billing={plan.billing}
           anchorLabel={plan.priceAnchorLabel}
         />
-
+        {plan.assetTier && (
+          <div className="text-xs text-primary/80 bg-primary/5 border border-primary/15 rounded px-2 py-1 inline-block">
+            {plan.assetTier}
+          </div>
+        )}
         <p className="text-sm text-muted-foreground">{plan.tagline}</p>
+        {plan.ribbon && (
+          <div className="text-xs font-medium text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 rounded px-2 py-1">
+            ★ {plan.ribbon}
+          </div>
+        )}
       </CardHeader>
       <CardContent className="space-y-4 flex-1 flex flex-col">
         <ul className="space-y-2 text-sm flex-1">
@@ -118,7 +127,7 @@ function PricingPage() {
         </TabsList>
 
         <TabsContent value="individual" className="mt-6">
-          <div className="grid md:grid-cols-3 gap-5">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {INDIVIDUAL_PLANS.map((p) => (
               <PlanCard key={p.id} plan={p} countryCode={code} />
             ))}
@@ -126,7 +135,7 @@ function PricingPage() {
         </TabsContent>
 
         <TabsContent value="business" className="mt-6 space-y-4">
-          <div className="grid md:grid-cols-3 gap-5">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {BUSINESS_PLANS.map((p) => (
               <PlanCard key={p.id} plan={p} countryCode={code} />
             ))}
