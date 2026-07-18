@@ -619,9 +619,25 @@ function ClientIntakePage() {
               on={(v) => set("mutualFunds", v)}
             />
             <NumField label="صكوك" v={form.sukuk} on={(v) => set("sukuk", v)} />
+            <NumField
+              label="خيارات أسهم موظفين (ESOP) — الوَجَبات المستحقة"
+              v={form.esopVestedValue}
+              on={(v) => set("esopVestedValue", v)}
+            />
           </SectionCard>
 
-          <SectionCard title="4) العقارات" icon={<Home className="h-4 w-4" />}>
+          <SectionCard
+            title="4) الأوراق التجارية (كمبيالات وشيكات)"
+            icon={<FileCheck2 className="h-4 w-4" />}
+          >
+            <NumField
+              label="كمبيالات/شيكات/أوراق قبض محققة الأداء"
+              v={form.bills}
+              on={(v) => set("bills", v)}
+            />
+          </SectionCard>
+
+          <SectionCard title="5) العقارات" icon={<Home className="h-4 w-4" />}>
             <NumField
               label="عقار للمتاجرة"
               v={form.realEstateTrading}
