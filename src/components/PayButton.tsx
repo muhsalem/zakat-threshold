@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, CreditCard } from "lucide-react";
 import { startCheckout, type PlanId } from "@/lib/payments";
 import { toast } from "sonner";
+import type { DiscountOptions } from "@/lib/pricing/discounts";
 
 interface Props {
   planId: PlanId;
@@ -10,6 +11,7 @@ interface Props {
   returnPath?: string;
   variant?: "default" | "outline";
   className?: string;
+  discount?: DiscountOptions;
 }
 
 export function PayButton({
@@ -18,12 +20,13 @@ export function PayButton({
   returnPath = "/",
   variant = "default",
   className,
+  discount,
 }: Props) {
   const [loading, setLoading] = useState(false);
 
   async function handlePay() {
     setLoading(true);
-    const result = await startCheckout(planId, returnPath);
+    const result = await startCheckout(planId, returnPath, discount);
     if (!result.ok) {
       toast.error(result.error ?? "حدث خطأ أثناء الدفع");
       setLoading(false);
