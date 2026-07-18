@@ -13,6 +13,7 @@ import {
   FileCheck2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { HawlReminderCard } from "@/components/zakat/HawlReminderCard";
 
 interface Row {
   hijri_year: string | null;
@@ -126,6 +127,16 @@ export function IndividualOverviewPanel() {
             وضع الفرد — واجهة مبسّطة
           </Badge>
         </div>
+        {last && (
+          <div className="mt-4">
+            <HawlReminderCard
+              lastDate={last.gregorian_date}
+              zakatDue={Number(last.net_due || last.zakat_due || 0)}
+              currency={last.currency}
+            />
+          </div>
+        )}
+
       </CardContent>
     </Card>
   );
