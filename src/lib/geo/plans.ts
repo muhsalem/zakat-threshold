@@ -1,6 +1,6 @@
 // تعريف الباقات المركزي — الأسعار بالـ USD (سعر T1)، يُحسب المحلي عبر PPP.
 // استراتيجية التسعير (Freemium + إدارة زكاة على مدار العام):
-//  • أفراد: Free → One-Report ($9) → Personal ($19/سنة) → Family ($29/سنة) → Lifetime ($79).
+//  • أفراد: Free (ذهب/فضة/نقود + زكاة فطر + توزيع) → One-Report ($19 — شامل كل البنود + أرشفة + إشعارات) → Family ($29/سنة) → Lifetime ($79).
 //  • شركات (سنوي): Startup ($99) → Growth ($299) → Business ($999) → Enterprise (custom).
 //  • محاسبون/مستشارون (سنوي حسب عدد العملاء): Solo ($299 حتى 50) → Firm ($999 حتى 250) → Unlimited ($1,999).
 import type { LucideIcon } from "lucide-react";
