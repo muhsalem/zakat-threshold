@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ZakatGoldRouteImport } from './routes/zakat-gold'
+import { Route as ZakatFitrRouteImport } from './routes/zakat-fitr'
 import { Route as ZakatCompanyRouteImport } from './routes/zakat-company'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as VerifyRouteImport } from './routes/verify'
@@ -96,6 +97,11 @@ import { Route as ApiPublicErpJournalRouteImport } from './routes/api/public/erp
 const ZakatGoldRoute = ZakatGoldRouteImport.update({
   id: '/zakat-gold',
   path: '/zakat-gold',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ZakatFitrRoute = ZakatFitrRouteImport.update({
+  id: '/zakat-fitr',
+  path: '/zakat-fitr',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ZakatCompanyRoute = ZakatCompanyRouteImport.update({
@@ -572,6 +578,7 @@ export interface FileRoutesByFullPath {
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
   '/zakat-company': typeof ZakatCompanyRoute
+  '/zakat-fitr': typeof ZakatFitrRoute
   '/zakat-gold': typeof ZakatGoldRoute
   '/accountant': typeof AuthenticatedAccountantRouteWithChildren
   '/admin': typeof AuthenticatedAdminRoute
@@ -656,6 +663,7 @@ export interface FileRoutesByTo {
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
   '/zakat-company': typeof ZakatCompanyRoute
+  '/zakat-fitr': typeof ZakatFitrRoute
   '/zakat-gold': typeof ZakatGoldRoute
   '/accountant': typeof AuthenticatedAccountantRouteWithChildren
   '/admin': typeof AuthenticatedAdminRoute
@@ -742,6 +750,7 @@ export interface FileRoutesById {
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
   '/zakat-company': typeof ZakatCompanyRoute
+  '/zakat-fitr': typeof ZakatFitrRoute
   '/zakat-gold': typeof ZakatGoldRoute
   '/_authenticated/accountant': typeof AuthenticatedAccountantRouteWithChildren
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
@@ -828,6 +837,7 @@ export interface FileRouteTypes {
     | '/verify'
     | '/welcome'
     | '/zakat-company'
+    | '/zakat-fitr'
     | '/zakat-gold'
     | '/accountant'
     | '/admin'
@@ -912,6 +922,7 @@ export interface FileRouteTypes {
     | '/verify'
     | '/welcome'
     | '/zakat-company'
+    | '/zakat-fitr'
     | '/zakat-gold'
     | '/accountant'
     | '/admin'
@@ -997,6 +1008,7 @@ export interface FileRouteTypes {
     | '/verify'
     | '/welcome'
     | '/zakat-company'
+    | '/zakat-fitr'
     | '/zakat-gold'
     | '/_authenticated/accountant'
     | '/_authenticated/admin'
@@ -1083,6 +1095,7 @@ export interface RootRouteChildren {
   VerifyRoute: typeof VerifyRoute
   WelcomeRoute: typeof WelcomeRoute
   ZakatCompanyRoute: typeof ZakatCompanyRoute
+  ZakatFitrRoute: typeof ZakatFitrRoute
   ZakatGoldRoute: typeof ZakatGoldRoute
   ApiChatRoute: typeof ApiChatRoute
   ApiExtractStatementRoute: typeof ApiExtractStatementRoute
@@ -1109,6 +1122,13 @@ declare module '@tanstack/react-router' {
       path: '/zakat-gold'
       fullPath: '/zakat-gold'
       preLoaderRoute: typeof ZakatGoldRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/zakat-fitr': {
+      id: '/zakat-fitr'
+      path: '/zakat-fitr'
+      fullPath: '/zakat-fitr'
+      preLoaderRoute: typeof ZakatFitrRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/zakat-company': {
@@ -1804,6 +1824,7 @@ const rootRouteChildren: RootRouteChildren = {
   VerifyRoute: VerifyRoute,
   WelcomeRoute: WelcomeRoute,
   ZakatCompanyRoute: ZakatCompanyRoute,
+  ZakatFitrRoute: ZakatFitrRoute,
   ZakatGoldRoute: ZakatGoldRoute,
   ApiChatRoute: ApiChatRoute,
   ApiExtractStatementRoute: ApiExtractStatementRoute,
