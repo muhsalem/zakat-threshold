@@ -48,6 +48,14 @@ type CalcItem = { title: string; url: string; audience: Array<AccountType | "all
 const CALCS: CalcItem[] = [
   { title: "زكاة الشركات", url: "/zakat-company", audience: ["company"] },
   { title: "زكاة المؤسسات", url: "/enterprise", audience: ["institution"] },
+  { title: "خطة توزيع الزكاة", url: "/distribution-plan", audience: ["individual"] },
+];
+
+type ProItem = { title: string; url: string; icon: any };
+const PRO_TOOLS: ProItem[] = [
+  { title: "ربط دليل الحسابات", url: "/coa-mapping", icon: MapPin },
+  { title: "معالجة عملاء دفعة", url: "/bulk-clients", icon: Users },
+  { title: "خطة التوزيع", url: "/distribution-plan", icon: HeartHandshake },
 ];
 
 function isVisible(audience: Array<AccountType | "all">, type: AccountType | null) {
