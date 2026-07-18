@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { CalendarClock, BellRing, CheckCircle2 } from "lucide-react";
+import { CalendarClock, BellRing, CheckCircle2, Info } from "lucide-react";
 import { HAWL_DAYS_HIJRI } from "@/lib/zakat";
 
 /**
