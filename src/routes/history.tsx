@@ -186,7 +186,19 @@ function HistoryPage() {
       </header>
 
       <main className="container mx-auto px-4 py-8 space-y-6">
+        <Tabs defaultValue="records" dir="rtl" className="w-full">
+          <TabsList className="grid w-full sm:w-auto grid-cols-2 sm:inline-flex">
+            <TabsTrigger value="records" className="gap-2">
+              <History className="h-4 w-4" /> السجل
+            </TabsTrigger>
+            <TabsTrigger value="verify" className="gap-2">
+              <ShieldCheck className="h-4 w-4" /> التحقق من تقرير
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="records" className="mt-6 space-y-6">
         <section className="grid sm:grid-cols-3 gap-4">
+
           <Card className="bg-gradient-primary text-primary-foreground border-0 shadow-gold">
             <CardContent className="p-5">
               <div className="text-xs opacity-80">إجمالي ما زكّيت طوال السنوات</div>
