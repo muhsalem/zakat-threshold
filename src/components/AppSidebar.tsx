@@ -57,10 +57,12 @@ const CALCS: CalcItem[] = [
 type ProItem = { title: string; url: string; icon: any };
 const PRO_TOOLS: ProItem[] = [
   { title: "الحاسبة الشاملة", url: "/client-intake", icon: Calculator },
-  { title: "ربط دليل الحسابات", url: "/coa-mapping", icon: MapPin },
-  { title: "السجل", url: "/history", icon: BookOpen },
   { title: "معالجة عملاء دفعة", url: "/bulk-clients", icon: Users },
-  
+];
+
+const PRO_RECORDS: ProItem[] = [
+  { title: "السجل", url: "/history", icon: BookOpen },
+  { title: "ربط دليل الحسابات", url: "/coa-mapping", icon: MapPin },
 ];
 
 const PRO_REFERENCES: ProItem[] = [
