@@ -188,9 +188,12 @@ function HistoryPage() {
 
       <main className="container mx-auto px-4 py-8 space-y-6">
         <Tabs defaultValue="records" dir="rtl" className="w-full">
-          <TabsList className="grid w-full sm:w-auto grid-cols-2 sm:inline-flex">
+          <TabsList className="grid w-full sm:w-auto grid-cols-3 sm:inline-flex">
             <TabsTrigger value="records" className="gap-2">
               <History className="h-4 w-4" /> السجل
+            </TabsTrigger>
+            <TabsTrigger value="compare" className="gap-2">
+              <BarChart3 className="h-4 w-4" /> مقارنة السنوات
             </TabsTrigger>
             <TabsTrigger value="verify" className="gap-2">
               <ShieldCheck className="h-4 w-4" /> التحقق من تقرير
