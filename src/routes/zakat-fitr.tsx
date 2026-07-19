@@ -19,8 +19,8 @@ import {
   saveArchiveEntry,
   deleteArchiveEntry,
   clearArchive as clearCloudArchive,
-  migrateLocalToCloud,
   type ArchiveRow,
+
 } from "@/lib/archive/cloud";
 import { supabase } from "@/integrations/supabase/client";
 
