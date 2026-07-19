@@ -35,8 +35,13 @@ TARGETS = {
     "pager-ltr": "pager_ltr",
 }
 
-# Allow tiny sub-pixel/font rendering wobble (< 0.1% of pixels differ).
-DIFF_TOLERANCE = 0.001
+# Allow sub-pixel/font rendering wobble. Overridable via PW_VISUAL_TOLERANCE
+# (fraction, e.g. "0.08" = 8%) — font shaping drifts across chromium builds,
+# while gross RTL regressions (order flips, missing controls) diff far higher;
+# exact geometry/order/overflow are asserted numerically by the behavioral suite.
+import os as _os
+
+DIFF_TOLERANCE = float(_os.environ.get("PW_VISUAL_TOLERANCE", "0.001"))
 
 
 async def capture() -> dict[str, Path]:

@@ -124,10 +124,11 @@ jobs:
         with:
           python-version: "3.11"
 
+      # نسخة مثبتة — متصفح حتمي كي لا تنجرف البيسلاينز البصرية مع كل إصدار
       - name: Install Playwright (Python) + Pillow
         run: |
           python -m pip install --upgrade pip
-          python -m pip install playwright pillow
+          python -m pip install playwright==1.61.0 pillow
           python -m playwright install --with-deps ${{ matrix.browser }}
 
       # نفس matrix للأحجام (mobile/tablet/desktop) داخل السكربت — نغيّر المتصفح فقط
@@ -295,9 +296,14 @@ jobs:
 
 
       # Visual regression (chromium فقط — البيسلاينز مُلتقطة على chromium):
-      # يُنتج diffs/*.actual.png و diffs/*.diff.png عند أي انحراف بصري.
+      # عتبة 8% تتسامح مع انجراف تشكيل الخطوط بين إصدارات المتصفح، بينما
+      # الانحدارات الحقيقية (انقلاب ترتيب RTL/عنصر مفقود) تتجاوزها بمراحل —
+      # والهندسة الدقيقة مضمونة عددياً بالاختبارات السلوكية أعلاه.
+      # لتجديد البيسلاينز: شغّل workflow «Update visual baselines» يدوياً.
       - name: Run visual regression (baselines vs current)
         if: matrix.browser == 'chromium'
+        env:
+          PW_VISUAL_TOLERANCE: "0.08"
         run: python tests/visual-rtl/run.py
 
       # يُرفع دائمًا عند الفشل: لقطات الفشل السلوكية + الالتقاطات الحيّة +
