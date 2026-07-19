@@ -26,32 +26,34 @@ export const Route = createFileRoute("/r/$token")({
     ],
   }),
   component: SharedReportView,
-  errorComponent: ({ error, reset }) => {
-    const router = useRouter();
-    return (
-      <div className="container max-w-2xl py-10">
-        <Card>
-          <CardContent className="pt-6 text-center space-y-3">
-            <AlertCircle className="h-10 w-10 text-destructive mx-auto" />
-            <div className="font-semibold">تعذّر تحميل التقرير</div>
-            <p className="text-sm text-muted-foreground">{String(error?.message || error)}</p>
-            <Button
-              onClick={() => {
-                reset();
-                router.invalidate();
-              }}
-            >
-              حاول مجدداً
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  },
+  errorComponent: SharedReportError,
   notFoundComponent: () => (
     <div className="container max-w-2xl py-10 text-center">لم يتم العثور على التقرير.</div>
   ),
 });
+
+function SharedReportError({ error, reset }: { error: Error; reset: () => void }) {
+  const router = useRouter();
+  return (
+    <div className="container max-w-2xl py-10">
+      <Card>
+        <CardContent className="pt-6 text-center space-y-3">
+          <AlertCircle className="h-10 w-10 text-destructive mx-auto" />
+          <div className="font-semibold">تعذّر تحميل التقرير</div>
+          <p className="text-sm text-muted-foreground">{String(error?.message || error)}</p>
+          <Button
+            onClick={() => {
+              reset();
+              router.invalidate();
+            }}
+          >
+            حاول مجدداً
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
 
 function SharedReportView() {
   const { token } = Route.useParams();
