@@ -382,9 +382,6 @@ function AccountantPortal() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button asChild variant="outline">
-            <Link to="/client-intake">نافذة العميل التسويقية</Link>
-          </Button>
           <Button asChild>
             <Link to="/portal-signin">تسجيل دخول موحّد</Link>
           </Button>
