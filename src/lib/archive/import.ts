@@ -71,10 +71,12 @@ export async function parseFitrFile(file: File): Promise<ImportResult> {
     const kgPerSaa = toNumber(mapped.kgPerSaa, 2.5) || 2.5;
     const peopleCount = Math.max(0, Math.round(toNumber(mapped.peopleCount, 0)));
     const pricePerKg = toNumber(mapped.pricePerKg, 0);
-    const totalKg = mapped.totalKg != null && mapped.totalKg !== ""
-      ? toNumber(mapped.totalKg, 0) : peopleCount * kgPerSaa;
-    const totalCash = mapped.totalCash != null && mapped.totalCash !== ""
-      ? toNumber(mapped.totalCash, 0) : totalKg * pricePerKg;
+    const rawTotalKg = (mapped as Record<string, unknown>).totalKg;
+    const rawTotalCash = (mapped as Record<string, unknown>).totalCash;
+    const totalKg = rawTotalKg != null && rawTotalKg !== ""
+      ? toNumber(rawTotalKg, 0) : peopleCount * kgPerSaa;
+    const totalCash = rawTotalCash != null && rawTotalCash !== ""
+      ? toNumber(rawTotalCash, 0) : totalKg * pricePerKg;
 
     rows.push({
       year,
