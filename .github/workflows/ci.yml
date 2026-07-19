@@ -22,9 +22,9 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      # فحص أنواع صارم — أي خطأ TS يوقف CI
+      # فحص أنواع صارم — أي خطأ TS يوقف CI (tsc الرسمي من devDependencies)
       - name: Type-check (strict)
-        run: bunx tsgo --noEmit
+        run: bunx tsc --noEmit
 
       # ESLint — الأخطاء تفشل CI؛ التحذيرات مسموحة (لا تعطيل للأخطاء)
       - name: Lint
