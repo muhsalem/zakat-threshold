@@ -14,72 +14,21 @@ import {
 import { Input } from "@/components/ui/input";
 import {
   Search,
-  Home,
   Calculator,
-  BookOpen,
-  Bell,
   HelpCircle,
-  Sparkles,
-  LayoutDashboard,
-  Settings,
-  MapPin,
-  Users,
   HeartHandshake,
-  LineChart,
-  Landmark,
-  ShieldCheck,
 } from "lucide-react";
-
 import { searchEntries } from "@/lib/searchIndex";
 import { useAuth, type AccountType } from "@/hooks/useAuth";
+import {
+  NAV,
+  CALCS,
+  PRO_TOOLS,
+  PRO_RECORDS,
+  PRO_REFERENCES,
+  isVisible,
+} from "@/lib/navigation/sidebarLinks";
 
-type NavItem = { title: string; url: string; icon: any; audience: Array<AccountType | "all"> };
-
-const NAV: NavItem[] = [
-  { title: "الرئيسية", url: "/", icon: Home, audience: ["all"] },
-  { title: "لوحتي", url: "/dashboard", icon: LayoutDashboard, audience: ["all"] },
-  { title: "المستشار الذكي", url: "/advisor", icon: Sparkles, audience: ["all"] },
-  { title: "السجل", url: "/history", icon: BookOpen, audience: ["all"] },
-
-  { title: "الإشعارات", url: "/analytics", icon: Bell, audience: ["all"] },
-  { title: "اشتراكي", url: "/subscription", icon: Sparkles, audience: ["all"] },
-  { title: "الإعدادات", url: "/settings", icon: Settings, audience: ["all"] },
-];
-
-
-type CalcItem = { title: string; url: string; audience: Array<AccountType | "all"> };
-
-const CALCS: CalcItem[] = [
-  { title: "زكاة الفطر", url: "/zakat-fitr", audience: ["individual"] },
-  { title: "زكاة الشركات", url: "/zakat-company", audience: ["company"] },
-  { title: "زكاة المؤسسات", url: "/enterprise", audience: ["institution"] },
-  { title: "خطة توزيع الزكاة", url: "/distribution-plan", audience: ["individual"] },
-];
-
-type ProItem = { title: string; url: string; icon: any };
-const PRO_TOOLS: ProItem[] = [
-  { title: "الحاسبة الشاملة", url: "/client-intake", icon: Calculator },
-  { title: "معالجة عملاء دفعة", url: "/bulk-clients", icon: Users },
-];
-
-const PRO_RECORDS: ProItem[] = [
-  { title: "السجل", url: "/history", icon: BookOpen },
-  { title: "ربط دليل الحسابات", url: "/coa-mapping", icon: MapPin },
-];
-
-const PRO_REFERENCES: ProItem[] = [
-  { title: "الأنصبة", url: "/nisab-audit", icon: Landmark },
-  { title: "سجل الأسعار", url: "/prices-history", icon: LineChart },
-  { title: "تدقيق سحب الأسعار", url: "/prices-audit", icon: ShieldCheck },
-];
-
-
-
-function isVisible(audience: Array<AccountType | "all">, type: AccountType | null) {
-  if (audience.includes("all")) return true;
-  if (!type) return false;
-  return audience.includes(type);
-}
 
 export function AppSidebar() {
   const { state } = useSidebar();
