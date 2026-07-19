@@ -39,7 +39,11 @@ function baseDetails(overrides: Partial<IntakeDetails> = {}): IntakeDetails {
     businessAssets: 15000,
     businessLiabilities: 7000,
     receivables: 11000,
+    receivablesDoubtful: 0,
     debts: 9000,
+    esopVestedValue: 0,
+    bills: 0,
+    rikazMetals: 0,
     notes: "ملاحظة العميل",
     ...overrides,
   };
