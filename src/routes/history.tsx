@@ -396,6 +396,10 @@ function HistoryPage() {
         )}
           </TabsContent>
 
+          <TabsContent value="compare" className="mt-6">
+            <YearlyComparison />
+          </TabsContent>
+
           <TabsContent value="verify" className="mt-6">
             <VerifyReportPanel />
           </TabsContent>
