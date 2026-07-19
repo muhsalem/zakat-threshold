@@ -26,6 +26,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { DirectionProvider } from "@radix-ui/react-direction";
+import { ArchiveMigrationDialog } from "@/components/archive/ArchiveMigrationDialog";
 
 function NotFoundComponent() {
   return (
