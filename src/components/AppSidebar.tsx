@@ -37,7 +37,7 @@ const NAV: NavItem[] = [
   { title: "لوحتي", url: "/dashboard", icon: LayoutDashboard, audience: ["all"] },
   { title: "المستشار الذكي", url: "/advisor", icon: Sparkles, audience: ["all"] },
   { title: "السجل", url: "/history", icon: BookOpen, audience: ["all"] },
-  { title: "التحقق من تقرير", url: "/verify", icon: ShieldCheck, audience: ["all"] },
+  
   { title: "الإشعارات", url: "/analytics", icon: Bell, audience: ["all"] },
   { title: "اشتراكي", url: "/subscription", icon: Sparkles, audience: ["all"] },
   { title: "الإعدادات", url: "/settings", icon: Settings, audience: ["all"] },
