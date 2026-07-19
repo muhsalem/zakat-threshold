@@ -472,6 +472,34 @@ function ZakatFitrPage() {
         </CardContent>
       </Card>
 
+      <Card>
+        <CardContent className="pt-4 flex flex-wrap items-center justify-between gap-2">
+          <div className="text-sm text-muted-foreground flex items-center gap-2">
+            <FileSpreadsheet className="h-4 w-4 text-primary" />
+            استيراد سجلات سابقة من ملف Excel/CSV لاستعادة الحسابات بسرعة.
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" className="gap-1.5" onClick={downloadTemplate}>
+              <FileDown className="h-4 w-4" /> قالب Excel
+            </Button>
+            <label className={`inline-flex items-center gap-1.5 rounded-md border px-3 h-9 text-sm cursor-pointer hover:bg-accent ${busy ? "opacity-60 pointer-events-none" : ""}`}>
+              <Upload className="h-4 w-4" />
+              استيراد ملف
+              <input
+                type="file"
+                accept=".xlsx,.xls,.csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv"
+                className="hidden"
+                onChange={async (e) => {
+                  const f = e.target.files?.[0];
+                  e.target.value = "";
+                  if (f) await importFile(f);
+                }}
+              />
+            </label>
+          </div>
+        </CardContent>
+      </Card>
+
       {archive.length > 0 && (
         <Card>
           <CardHeader className="flex-row items-center justify-between space-y-0">
