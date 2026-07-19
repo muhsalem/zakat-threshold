@@ -4,9 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Moon, ArrowRight, Trash2, TrendingUp, History, LogOut, Info, ShieldCheck } from "lucide-react";
+import { Moon, ArrowRight, Trash2, TrendingUp, History, LogOut, Info, ShieldCheck, BarChart3 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { VerifyReportPanel } from "@/components/verify/VerifyReportPanel";
+import { YearlyComparison } from "@/components/history/YearlyComparison";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -187,9 +188,12 @@ function HistoryPage() {
 
       <main className="container mx-auto px-4 py-8 space-y-6">
         <Tabs defaultValue="records" dir="rtl" className="w-full">
-          <TabsList className="grid w-full sm:w-auto grid-cols-2 sm:inline-flex">
+          <TabsList className="grid w-full sm:w-auto grid-cols-3 sm:inline-flex">
             <TabsTrigger value="records" className="gap-2">
               <History className="h-4 w-4" /> السجل
+            </TabsTrigger>
+            <TabsTrigger value="compare" className="gap-2">
+              <BarChart3 className="h-4 w-4" /> مقارنة السنوات
             </TabsTrigger>
             <TabsTrigger value="verify" className="gap-2">
               <ShieldCheck className="h-4 w-4" /> التحقق من تقرير
@@ -390,6 +394,10 @@ function HistoryPage() {
             </Card>
           </>
         )}
+          </TabsContent>
+
+          <TabsContent value="compare" className="mt-6">
+            <YearlyComparison />
           </TabsContent>
 
           <TabsContent value="verify" className="mt-6">
