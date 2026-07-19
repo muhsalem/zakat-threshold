@@ -1,0 +1,391 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Pagination RTL — data-driven fixture</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body { font-family: system-ui, -apple-system, Segoe UI, sans-serif; background: #fff; }
+      .card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin: 12px; max-width: 960px; }
+      .label { font-size: 12px; color: #6b7280; margin-bottom: 8px; }
+      table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      th, td { padding: 6px 10px; border-bottom: 1px solid #f1f5f9; text-align: start; }
+      th { color: #6b7280; font-weight: 500; background: #f8fafc; }
+      .btn { display: inline-flex; align-items: center; gap: 4px; height: 32px; padding: 0 10px;
+        font-size: 13px; border: 1px solid #e5e7eb; border-radius: 6px; background: #fff; color: #111; cursor: pointer; }
+      .btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+      .select { height: 32px; min-width: 72px; padding: 0 8px; border: 1px solid #e5e7eb;
+        border-radius: 6px; background: #fff; font-size: 13px; }
+      nav.pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+        gap: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb; margin-top: 12px; }
+      .pager-controls { display: flex; align-items: center; gap: 8px; }
+      .counter { font-size: 12px; color: #374151; }
+      /* حلقة تركيز مرئية موحّدة — تُفحص في run-keyboard.py */
+      .btn:focus-visible, .select:focus-visible, nav.pager:focus-visible {
+        outline: 2px solid #2563eb; outline-offset: 2px; border-color: #2563eb;
+      }
+    </style>
+
+  </head>
+  <body>
+    <!-- ============================================================
+         RECORDS: 43 fake zakat records — mirrors drafts.tsx pager
+         ============================================================ -->
+    <section id="records-rtl" dir="rtl" lang="ar" class="card">
+      <div class="label">RTL — سجلات وهمية (drafts-style)</div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>العميل</th>
+            <th>السنة</th>
+            <th>الوعاء</th>
+            <th>الزكاة</th>
+          </tr>
+        </thead>
+        <tbody id="records-body"></tbody>
+      </table>
+      <nav class="pager" aria-label="تصفّح السجلات" data-testid="records-pager">
+        <div class="pager-controls">
+          <span class="counter">لكل صفحة</span>
+          <select id="records-per-page" class="select" aria-label="عدد الصفوف في كل صفحة">
+            <option value="10" selected>10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+        <div class="pager-controls">
+          <button id="records-prev" class="btn" aria-label="الصفحة السابقة">السابق</button>
+          <span id="records-counter" class="counter tabular-nums" dir="ltr" role="status" aria-live="polite" aria-atomic="true" aria-label="رقم الصفحة الحالي" data-testid="records-counter">1 / 5</span>
+          <button id="records-next" class="btn" aria-label="الصفحة التالية">التالي</button>
+        </div>
+      </nav>
+    </section>
+
+    <!-- ============================================================
+         ATTACHMENTS: 27 fake attachments — mirrors attachments-review
+         ============================================================ -->
+    <section id="attachments-rtl" dir="rtl" lang="ar" class="card">
+      <div class="label">RTL — مرفقات وهمية (attachments-style)</div>
+      <table>
+        <thead>
+          <tr>
+            <th>الملف</th>
+            <th>النوع</th>
+            <th>الحجم</th>
+          </tr>
+        </thead>
+        <tbody id="attachments-body"></tbody>
+      </table>
+      <nav class="pager" aria-label="تصفّح المرفقات" data-testid="attachments-pager">
+        <div class="counter" id="attachments-range" role="status" aria-live="polite" aria-atomic="true" data-testid="attachments-range">عرض 1–10 من 27</div>
+        <div class="pager-controls">
+          <span class="counter">لكل صفحة</span>
+          <select id="attachments-per-page" class="select" aria-label="عدد الصفوف في كل صفحة">
+            <option value="10" selected>10</option>
+            <option value="20">20</option>
+          </select>
+          <button id="attachments-prev" class="btn" aria-label="الصفحة السابقة">السابق</button>
+          <span id="attachments-counter" class="counter tabular-nums" dir="ltr" role="status" aria-live="polite" aria-atomic="true" aria-label="رقم الصفحة الحالي" data-testid="attachments-counter">1 / 3</span>
+          <button id="attachments-next" class="btn" aria-label="الصفحة التالية">التالي</button>
+
+        </div>
+      </nav>
+    </section>
+
+    <!-- ============================================================
+         NUMBERED PAGER: shadcn <Pagination> pattern (page links + ellipsis)
+         Guarded even though no route uses it today — future adoption
+         must preserve RTL button order + chevron mirroring.
+         ============================================================ -->
+    <section id="numbered-rtl" dir="rtl" lang="ar" class="card">
+      <div class="label">RTL — pager مرقّم (shadcn Pagination)</div>
+      <div id="numbered-body" style="min-height: 40px; font-size: 13px; color: #374151;"></div>
+      <nav class="pager" aria-label="ترقيم" data-testid="numbered-pager"
+           style="justify-content: center;">
+        <ul id="numbered-list" style="display: flex; align-items: center; gap: 4px; list-style: none; padding: 0; margin: 0;"></ul>
+      </nav>
+    </section>
+
+    <!-- ============================================================
+         LTR mirror of RECORDS — يضمن أن نفس منطق الترقيم/الكيبورد
+         يعمل بشكل معكوس في LTR (ArrowRight = التالي)
+         ============================================================ -->
+    <section id="records-ltr" dir="ltr" lang="en" class="card">
+      <div class="label">LTR — mirror records (keyboard parity)</div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Client</th><th>Year</th><th>Base</th><th>Zakat</th>
+          </tr>
+        </thead>
+        <tbody id="records-ltr-body"></tbody>
+      </table>
+      <nav class="pager" aria-label="Records pagination" data-testid="records-ltr-pager">
+        <div class="pager-controls">
+          <span class="counter">Rows</span>
+          <select id="records-ltr-per-page" class="select" aria-label="Rows per page">
+            <option value="10" selected>10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+        <div class="pager-controls">
+          <button id="records-ltr-prev" class="btn" aria-label="Previous page">Prev</button>
+          <span id="records-ltr-counter" class="counter tabular-nums" role="status" aria-live="polite" aria-atomic="true" aria-label="Current page number" data-testid="records-ltr-counter">1 / 5</span>
+          <button id="records-ltr-next" class="btn" aria-label="Next page">Next</button>
+        </div>
+      </nav>
+    </section>
+
+
+    <script>
+      // ---------- fake data (حجم قابل للتحكم عبر ?records=N&attachments=M) ----------
+      const params = new URLSearchParams(location.search);
+      const RECORDS_N = Math.max(0, parseInt(params.get("records") ?? "43", 10) || 0);
+      const ATTACHMENTS_N = Math.max(0, parseInt(params.get("attachments") ?? "27", 10) || 0);
+
+      const RECORDS = Array.from({ length: RECORDS_N }, (_, i) => ({
+        id: i + 1,
+        client: `عميل رقم ${i + 1}`,
+        year: 1445 + (i % 3),
+        base: (10000 + i * 137).toLocaleString("ar-EG"),
+        zakat: (250 + i * 3).toLocaleString("ar-EG"),
+      }));
+      const ATTACHMENTS = Array.from({ length: ATTACHMENTS_N }, (_, i) => ({
+        name: `مرفق_${String(i + 1).padStart(2, "0")}.pdf`,
+        type: i % 2 === 0 ? "بنكي" : "تجاري",
+        size: `${100 + i * 7} KB`,
+      }));
+
+
+      // ---------- generic pager ----------
+      function pager(cfg) {
+        // Restore state: URL params (?<key>Page=&<key>PerPage=) win over
+        // sessionStorage. If neither present, defaults apply. State persistence
+        // only activates when cfg.storageKey is provided — keeps LTR/attachments
+        // pagers behavior-identical to before unless opted in.
+        const storageKey = cfg.storageKey ? `pager:${cfg.storageKey}` : null;
+        let restoredPage = null, restoredPerPage = null;
+        if (cfg.storageKey) {
+          const p = params.get(`${cfg.storageKey}Page`);
+          const pp = params.get(`${cfg.storageKey}PerPage`);
+          if (pp != null) restoredPerPage = Math.max(1, parseInt(pp, 10) || 0) || null;
+          if (p != null) restoredPage = Math.max(1, parseInt(p, 10) || 0) || null;
+          if (restoredPage == null || restoredPerPage == null) {
+            try {
+              const raw = sessionStorage.getItem(storageKey);
+              if (raw) {
+                const saved = JSON.parse(raw);
+                if (restoredPage == null && Number.isInteger(saved.page) && saved.page >= 1) restoredPage = saved.page;
+                if (restoredPerPage == null && Number.isInteger(saved.perPage) && saved.perPage >= 1) restoredPerPage = saved.perPage;
+              }
+            } catch { /* ignore */ }
+          }
+        }
+        if (restoredPerPage != null) {
+          // Ensure the select reflects the restored perPage (only if the option exists).
+          const opt = Array.from(cfg.select.options).find((o) => parseInt(o.value, 10) === restoredPerPage);
+          if (opt) cfg.select.value = opt.value;
+        }
+        const state = {
+          page: restoredPage ?? 1,
+          perPage: parseInt(cfg.select.value, 10),
+        };
+        const totalPages = () => Math.max(1, Math.ceil(cfg.data.length / state.perPage));
+        function persist() {
+          if (!storageKey) return;
+          try { sessionStorage.setItem(storageKey, JSON.stringify({ page: state.page, perPage: state.perPage })); } catch { /* ignore */ }
+        }
+        function render() {
+          const tp = totalPages();
+          if (state.page > tp) state.page = tp;
+          if (state.page < 1) state.page = 1;
+          const start = (state.page - 1) * state.perPage;
+          const end = Math.min(cfg.data.length, start + state.perPage);
+          cfg.body.innerHTML = cfg.data.slice(start, end).map(cfg.row).join("");
+          cfg.counter.textContent = `${state.page} / ${tp}`;
+          cfg.prev.disabled = state.page <= 1;
+          cfg.next.disabled = state.page >= tp;
+          if (cfg.range) cfg.range.textContent = `عرض ${start + 1}–${end} من ${cfg.data.length}`;
+          persist();
+        }
+        cfg.prev.addEventListener("click", () => { if (state.page > 1) { state.page--; render(); } });
+        cfg.next.addEventListener("click", () => { if (state.page < totalPages()) { state.page++; render(); } });
+        cfg.select.addEventListener("change", () => {
+          state.perPage = parseInt(cfg.select.value, 10);
+          state.page = 1;
+          render();
+        });
+        // RTL-aware keyboard nav on the pager container
+        cfg.container.tabIndex = 0;
+        cfg.container.addEventListener("keydown", (e) => {
+          const isRtl = (cfg.container.closest("[dir]")?.getAttribute("dir") ?? "ltr") === "rtl";
+          const prev = () => { if (state.page > 1) { state.page--; render(); } };
+          const next = () => { if (state.page < totalPages()) { state.page++; render(); } };
+          switch (e.key) {
+            case "ArrowLeft":  e.preventDefault(); isRtl ? next() : prev(); break;
+            case "ArrowRight": e.preventDefault(); isRtl ? prev() : next(); break;
+            case "Home":       e.preventDefault(); state.page = 1; render(); break;
+            case "End":        e.preventDefault(); state.page = totalPages(); render(); break;
+          }
+        });
+        render();
+        return { render, state };
+      }
+
+
+
+      const recordsPager = pager({
+        data: RECORDS,
+        body: document.getElementById("records-body"),
+        counter: document.getElementById("records-counter"),
+        prev: document.getElementById("records-prev"),
+        next: document.getElementById("records-next"),
+        select: document.getElementById("records-per-page"),
+        container: document.querySelector('[data-testid="records-pager"]'),
+        storageKey: "records",
+        row: (r) => `<tr><td>${r.id}</td><td>${r.client}</td><td>${r.year}</td><td dir="ltr">${r.base}</td><td dir="ltr">${r.zakat}</td></tr>`,
+      });
+
+
+      const attachmentsPager = pager({
+        data: ATTACHMENTS,
+        body: document.getElementById("attachments-body"),
+        counter: document.getElementById("attachments-counter"),
+        prev: document.getElementById("attachments-prev"),
+        next: document.getElementById("attachments-next"),
+        select: document.getElementById("attachments-per-page"),
+        container: document.querySelector('[data-testid="attachments-pager"]'),
+        range: document.getElementById("attachments-range"),
+        row: (a) => `<tr><td>${a.name}</td><td>${a.type}</td><td dir="ltr">${a.size}</td></tr>`,
+      });
+
+      pager({
+        data: RECORDS,
+        body: document.getElementById("records-ltr-body"),
+        counter: document.getElementById("records-ltr-counter"),
+        prev: document.getElementById("records-ltr-prev"),
+        next: document.getElementById("records-ltr-next"),
+        select: document.getElementById("records-ltr-per-page"),
+        container: document.querySelector('[data-testid="records-ltr-pager"]'),
+        row: (r) => `<tr><td>${r.id}</td><td>${r.client}</td><td>${r.year}</td><td>${r.base}</td><td>${r.zakat}</td></tr>`,
+      });
+
+      // Test hook: live dataset resize WITHOUT reload — mutates arrays in place
+      // and re-renders the affected pager(s). Preserves state.page (pager itself
+      // clamps to totalPages if it now overflows). Used by run-live-resize.py.
+      window.__resizeData = function (name, n) {
+        n = Math.max(0, n | 0);
+        if (name === "records") {
+          RECORDS.length = 0;
+          for (let i = 0; i < n; i++) RECORDS.push({
+            id: i + 1, client: `عميل رقم ${i + 1}`,
+            year: 1445 + (i % 3),
+            base: (10000 + i * 137).toLocaleString("ar-EG"),
+            zakat: (250 + i * 3).toLocaleString("ar-EG"),
+          });
+          recordsPager.render();
+        } else if (name === "attachments") {
+          ATTACHMENTS.length = 0;
+          for (let i = 0; i < n; i++) ATTACHMENTS.push({
+            name: `مرفق_${String(i + 1).padStart(2, "0")}.pdf`,
+            type: i % 2 === 0 ? "بنكي" : "تجاري",
+            size: `${100 + i * 7} KB`,
+          });
+          attachmentsPager.render();
+        } else {
+          throw new Error("unknown dataset: " + name);
+        }
+        return { total: n };
+      };
+
+
+
+      // ---------- numbered (shadcn Pagination) variant ----------
+      (function numbered() {
+        // TOTAL is mutable so tests can grow/shrink the page range while the
+        // UI stays on the same page — see window.__resizeNumbered below.
+        const state = { page: 1, total: 5 };
+        const list = document.getElementById("numbered-list");
+        const body = document.getElementById("numbered-body");
+        const chev = (dir) =>
+          `<svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="${dir === "prev" ? "" : "transform:rotate(180deg)"}"><polyline points="15 18 9 12 15 6"/></svg>`;
+
+        function render() {
+          if (state.page > state.total) state.page = state.total;
+          if (state.page < 1) state.page = 1;
+          body.textContent = `تعرض عناصر الصفحة ${state.page}`;
+
+          // Preserve focus across the innerHTML swap: record which logical
+          // control was focused BEFORE we blow the list away, then re-focus
+          // the equivalent control after re-render. Ensures a click on a
+          // page number (or a live total-resize) does not leak focus to
+          // <body>. If the previously-focused control is now disabled
+          // (prev/next at boundary), fall back to the current page anchor
+          // so focus never lands on an aria-disabled element.
+          const active = document.activeElement;
+          let focusKey = null;
+          if (active && list.contains(active)) {
+            if (active.dataset && active.dataset.page) focusKey = { type: "page", page: active.dataset.page };
+            else if (active.getAttribute && active.getAttribute("data-testid") === "num-prev") focusKey = { type: "prev" };
+            else if (active.getAttribute && active.getAttribute("data-testid") === "num-next") focusKey = { type: "next" };
+          }
+
+          const items = [];
+          items.push(
+            `<li><a role="button" tabindex="${state.page === 1 ? -1 : 0}" data-testid="num-prev" aria-label="الصفحة السابقة" class="btn" ${state.page === 1 ? "aria-disabled='true' disabled" : ""}>${chev("prev")}<span>السابق</span></a></li>`,
+          );
+          for (let p = 1; p <= state.total; p++) {
+            const active = p === state.page;
+            items.push(
+              `<li><a role="link" tabindex="0" data-page="${p}" aria-label="الصفحة ${p}" aria-current="${active ? "page" : "false"}" class="btn" style="${active ? "border-color:#111;font-weight:600" : ""}">${p}</a></li>`,
+            );
+          }
+          items.push(
+            `<li><a role="button" tabindex="${state.page === state.total ? -1 : 0}" data-testid="num-next" aria-label="الصفحة التالية" class="btn" ${state.page === state.total ? "aria-disabled='true' disabled" : ""}><span>التالي</span>${chev("next")}</a></li>`,
+          );
+
+          list.innerHTML = items.join("");
+          list.querySelectorAll("a[data-page]").forEach((a) => {
+            a.addEventListener("click", () => { state.page = +a.dataset.page; render(); });
+          });
+          list.querySelector('[data-testid="num-prev"]').addEventListener("click", () => {
+            if (state.page > 1) { state.page--; render(); }
+          });
+          list.querySelector('[data-testid="num-next"]').addEventListener("click", () => {
+            if (state.page < state.total) { state.page++; render(); }
+          });
+
+          if (focusKey) {
+            let target = null;
+            if (focusKey.type === "page") {
+              target = list.querySelector(`a[data-page="${focusKey.page}"]`)
+                    || list.querySelector(`a[data-page="${state.page}"]`);
+            } else if (focusKey.type === "prev") {
+              target = list.querySelector('[data-testid="num-prev"]');
+              if (target && target.getAttribute("aria-disabled") === "true") {
+                target = list.querySelector(`a[data-page="${state.page}"]`);
+              }
+            } else if (focusKey.type === "next") {
+              target = list.querySelector('[data-testid="num-next"]');
+              if (target && target.getAttribute("aria-disabled") === "true") {
+                target = list.querySelector(`a[data-page="${state.page}"]`);
+              }
+            }
+            if (target) target.focus();
+          }
+        }
+
+        // Test hook: change TOTAL while keeping state.page (render clamps).
+        window.__resizeNumbered = function (total) {
+          state.total = Math.max(1, total | 0);
+          render();
+          return { total: state.total, page: state.page };
+        };
+        render();
+      })();
+
+    </script>
+  </body>
+</html>

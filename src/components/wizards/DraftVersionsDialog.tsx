@@ -55,7 +55,7 @@ export function DraftVersionsDialog({
         .limit(20);
       if (cancelled) return;
       if (error) toast.error(error.message);
-      setVersions(((data as unknown) as VersionMeta[]) ?? []);
+      setVersions((data as unknown as VersionMeta[]) ?? []);
       setLoading(false);
     })();
     return () => {
@@ -114,7 +114,13 @@ export function DraftVersionsDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" variant="ghost" className="h-8 gap-1" title="سجل الإصدارات" aria-label={`سجل إصدارات ${draftTitle}`}>
+        <Button
+          size="sm"
+          variant="ghost"
+          className="h-8 gap-1"
+          title="سجل الإصدارات"
+          aria-label={`سجل إصدارات ${draftTitle}`}
+        >
           <History className="h-3 w-3" /> الإصدارات
         </Button>
       </DialogTrigger>
@@ -124,10 +130,15 @@ export function DraftVersionsDialog({
             <History className="h-4 w-4 text-primary" /> إصدارات: {draftTitle}
           </DialogTitle>
           <DialogDescription className="text-xs">
-            كل تعديل جوهري على المسودة يُحفظ كإصدار تلقائيًا (بحد أقصى 20 إصدارًا لكل مسودة). اختر أيّها للعودة إليه.
+            كل تعديل جوهري على المسودة يُحفظ كإصدار تلقائيًا (بحد أقصى 20 إصدارًا لكل مسودة). اختر
+            أيّها للعودة إليه.
           </DialogDescription>
         </DialogHeader>
-        <div className="overflow-y-auto flex-1 -mx-6 px-6" aria-busy={loading || busyId !== null} aria-live="polite">
+        <div
+          className="overflow-y-auto flex-1 -mx-6 px-6"
+          aria-busy={loading || busyId !== null}
+          aria-live="polite"
+        >
           {loading ? (
             <ul className="divide-y" aria-hidden="true">
               {[0, 1, 2].map((i) => (
@@ -159,7 +170,9 @@ export function DraftVersionsDialog({
                         <Badge variant={i === 0 ? "default" : "outline"} className="text-[10px]">
                           {i === 0 ? "الأحدث" : `إصدار ${versions.length - i}`}
                         </Badge>
-                        <Badge variant="secondary" className="text-[10px]">خطوة {v.step + 1}</Badge>
+                        <Badge variant="secondary" className="text-[10px]">
+                          خطوة {v.step + 1}
+                        </Badge>
                       </div>
                       <p className="text-[11px] text-muted-foreground mt-0.5">
                         {new Date(v.created_at).toLocaleString("ar")}

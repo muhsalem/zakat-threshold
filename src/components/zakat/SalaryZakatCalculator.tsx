@@ -140,7 +140,7 @@ export default function SalaryZakatCalculator({ currencyName = "ج.م", nisabVal
           </div>
         )}
 
-        <p className="text-xs text-muted-foreground leading-relaxed border-r-2 border-primary/40 pr-3">
+        <p className="text-xs text-muted-foreground leading-relaxed border-e-2 border-primary/40 pe-3">
           <strong>المرجع:</strong> اختلف العلماء؛ الجمهور: لا زكاة إلا بعد الحول على المال المدّخر
           بعد بلوغه النصاب. القرضاوي: قياسًا على المستغلات؛ زكاة شهرية 2.5%. الأحوط: التعامل مع
           المُدّخر السنوي بعد الحول.

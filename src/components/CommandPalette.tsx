@@ -123,7 +123,7 @@ export function CommandPalette() {
       >
         <Coins className="h-3.5 w-3.5" />
         <span>ابحث أو انتقل…</span>
-        <kbd className="pointer-events-none ml-1 hidden md:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium">
+        <kbd className="pointer-events-none ms-1 hidden md:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium">
           <span className="text-xs">⌘</span>K
         </kbd>
       </button>
@@ -147,7 +147,7 @@ export function CommandPalette() {
                         navigate({ to: c.to });
                       }}
                     >
-                      <Icon className="mr-2 h-4 w-4" />
+                      <Icon className="me-2 h-4 w-4" />
                       <span>{c.label}</span>
                     </CommandItem>
                   );
@@ -163,7 +163,7 @@ export function CommandPalette() {
                 navigate({ to: "/" });
               }}
             >
-              <Home className="mr-2 h-4 w-4" /> ابدأ حساب زكاة جديدة
+              <Home className="me-2 h-4 w-4" /> ابدأ حساب زكاة جديدة
               <CommandShortcut>G H</CommandShortcut>
             </CommandItem>
             <CommandItem
@@ -172,7 +172,7 @@ export function CommandPalette() {
                 navigate({ to: "/advisor" });
               }}
             >
-              <Bot className="mr-2 h-4 w-4" /> اسأل المستشار الشرعي
+              <Bot className="me-2 h-4 w-4" /> اسأل المستشار الشرعي
               <CommandShortcut>G A</CommandShortcut>
             </CommandItem>
           </CommandGroup>

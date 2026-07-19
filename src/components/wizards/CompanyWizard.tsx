@@ -356,7 +356,11 @@ export function CompanyWizard() {
             <Icon className="h-5 w-5 text-primary" /> {S.title}
           </CardTitle>
           <div className="flex items-center gap-2">
-            <AutosaveIndicator savedAt={savedAt} cloudSavedAt={cloudSavedAt} cloudStatus={cloudStatus} />
+            <AutosaveIndicator
+              savedAt={savedAt}
+              cloudSavedAt={cloudSavedAt}
+              cloudStatus={cloudStatus}
+            />
             <Badge variant="outline" className="text-xs">
               {step + 1} / {STEPS.length}
             </Badge>
@@ -904,7 +908,7 @@ function Field({
           value={v}
           onChange={(e) => set(e.target.value)}
           dir="ltr"
-          className={currency ? "pl-14" : ""}
+          className={currency ? "ps-14" : ""}
         />
         {currency && (
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground pointer-events-none">

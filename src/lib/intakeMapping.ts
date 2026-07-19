@@ -53,7 +53,11 @@ export interface IntakeDetails {
   businessAssets: number;
   businessLiabilities: number;
   receivables: number;
+  receivablesDoubtful: number;
   debts: number;
+  esopVestedValue: number;
+  bills: number;
+  rikazMetals: number;
   notes: string;
 }
 
@@ -80,7 +84,13 @@ export function aggregateIntake(d: IntakeDetails): AggregationResult {
   const cash = n(d.cash) + n(d.bankAccounts) + n(d.savingsBonds) + n(d.cryptoValue);
   const gold = n(d.gold);
   const investments =
-    n(d.investments) + n(d.stocksTrading) + n(d.mutualFunds) + n(d.sukuk) + n(d.realEstateTrading);
+    n(d.investments) +
+    n(d.stocksTrading) +
+    n(d.mutualFunds) +
+    n(d.sukuk) +
+    n(d.realEstateTrading) +
+    n(d.esopVestedValue) +
+    n(d.bills);
   const inventory = n(d.inventory) + n(d.businessAssets);
   const receivables = n(d.receivables);
   const debts = n(d.debts) + n(d.businessLiabilities);
@@ -118,6 +128,14 @@ export function aggregateIntake(d: IntakeDetails): AggregationResult {
   if (n(d.salaryMonthly) > 0 || n(d.endOfServiceBenefits) > 0)
     flags.push(
       `راتب/مكافأة نهاية خدمة: تدفقات — يدخل المدّخر منها ضمن النقد عند الحول، ولا تُجمع كبند مستقل.`,
+    );
+  if (n(d.rikazMetals) > 0)
+    flags.push(
+      `ركاز ومعادن مكتشفة (${d.rikazMetals}): نسبة زكاتها 20% (الخُمس) لا 2.5% — استُبعدت من التجميع وتُعالج بشكل منفصل.`,
+    );
+  if (n(d.receivablesDoubtful) > 0)
+    flags.push(
+      `ديون مشكوك في تحصيلها (${d.receivablesDoubtful}): لا تجب زكاتها فوراً بل تُزكّى لعام واحد عند قبضها. استُبعدت من التجميع.`,
     );
 
   return {
@@ -200,6 +218,10 @@ export function buildIndividualPrefill(client: {
     if (n(d.jewelryPersonal)) manual.push(`حلي شخصي بالقيمة: ${d.jewelryPersonal}`);
     if (n(d.salaryMonthly)) manual.push(`راتب شهري: ${d.salaryMonthly}`);
     if (n(d.endOfServiceBenefits)) manual.push(`نهاية خدمة: ${d.endOfServiceBenefits}`);
+    if (n(d.esopVestedValue)) manual.push(`ESOP: ${d.esopVestedValue}`);
+    if (n(d.bills)) manual.push(`أوراق تجارية/قبض: ${d.bills}`);
+    if (n(d.rikazMetals)) manual.push(`ركاز/معادن: ${d.rikazMetals}`);
+    if (n(d.receivablesDoubtful)) manual.push(`ديون مشكوك فيها: ${d.receivablesDoubtful}`);
     if (manual.length) noteLines.push(`تفاصيل للإدخال في أقسام الحاسبة: ${manual.join(" · ")}`);
     if (d.notes) noteLines.push(`ملاحظات العميل: ${d.notes}`);
   }

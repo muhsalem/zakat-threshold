@@ -64,7 +64,7 @@ const ROWS: Row[] = [
 
 export function MadhabsComparison() {
   return (
-    <div dir="rtl" className="space-y-4 text-right">
+    <div dir="rtl" className="space-y-4 text-end">
       <Card className="shadow-soft border-primary/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -72,7 +72,7 @@ export function MadhabsComparison() {
             مقارنة المذاهب الأربعة في المسائل الزكوية الخلافية
           </CardTitle>
           <p className="text-xs text-muted-foreground leading-relaxed mt-2">
-            <BookOpen className="h-3 w-3 inline ml-1" />
+            <BookOpen className="h-3 w-3 inline ms-1" />
             مرجع مختصر للأقوال المعتمدة في المذاهب الأربعة. للحالات الخاصة يُرجى الرجوع لمفتٍ معتمد.
           </p>
         </CardHeader>
@@ -81,17 +81,17 @@ export function MadhabsComparison() {
             <table className="w-full text-xs md:text-sm border-collapse min-w-[700px]">
               <thead>
                 <tr className="bg-muted/60">
-                  <th className="p-2 text-right border border-border font-bold">المسألة</th>
-                  <th className="p-2 text-right border border-border font-bold text-primary">
+                  <th className="p-2 text-end border border-border font-bold">المسألة</th>
+                  <th className="p-2 text-end border border-border font-bold text-primary">
                     الحنفية
                   </th>
-                  <th className="p-2 text-right border border-border font-bold text-primary">
+                  <th className="p-2 text-end border border-border font-bold text-primary">
                     المالكية
                   </th>
-                  <th className="p-2 text-right border border-border font-bold text-primary">
+                  <th className="p-2 text-end border border-border font-bold text-primary">
                     الشافعية
                   </th>
-                  <th className="p-2 text-right border border-border font-bold text-primary">
+                  <th className="p-2 text-end border border-border font-bold text-primary">
                     الحنابلة
                   </th>
                 </tr>

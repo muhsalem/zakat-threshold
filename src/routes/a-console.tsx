@@ -93,7 +93,7 @@ function HiddenConsole() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pr-8"
+                    className="pe-8"
                     dir="ltr"
                     autoComplete="email"
                     required
@@ -144,7 +144,7 @@ function HiddenConsole() {
                     type="password"
                     value={pw}
                     onChange={(e) => setPw(e.target.value)}
-                    className="pr-8"
+                    className="pe-8"
                     dir="ltr"
                     autoComplete="off"
                     required

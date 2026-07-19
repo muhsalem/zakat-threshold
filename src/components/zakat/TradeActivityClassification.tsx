@@ -66,7 +66,7 @@ export default function TradeActivityClassification({ value, onChange, onOpenCom
       </div>
 
       <Alert className="border-primary/15 bg-background">
-        <AlertDescription className="text-xs leading-relaxed text-right">
+        <AlertDescription className="text-xs leading-relaxed text-end">
           سجّل <b>تاريخ تشغيل النشاط</b> لاحتساب بدء الحول التجاري بدقة. إن كان نشاطك يخص
           <b> شركة قائمة</b> فعّل الخيار وانتقل إلى تبويب <b>«زكاة الشركات»</b> حيث يظهر تصنيف
           النشاط التلقائي حسب <b>دولة الشركة</b> والقطاع المختار.
@@ -82,11 +82,11 @@ export default function TradeActivityClassification({ value, onChange, onOpenCom
               <Button
                 variant="outline"
                 className={cn(
-                  "w-full justify-start text-right font-normal",
+                  "w-full justify-start text-end font-normal",
                   !startDateObj && "text-muted-foreground",
                 )}
               >
-                <CalendarIcon className="ml-2 h-4 w-4" />
+                <CalendarIcon className="ms-2 h-4 w-4" />
                 {startDateObj
                   ? startDateObj.toLocaleDateString("ar-EG", {
                       year: "numeric",
@@ -203,7 +203,7 @@ function ShopLicensingTable({
       </div>
 
       <Alert className="border-primary/10 bg-muted/30">
-        <AlertDescription className="text-xs leading-relaxed text-right">
+        <AlertDescription className="text-xs leading-relaxed text-end">
           قائمة مرجعية لأنواع المحال التجارية والخدمية الشائعة في السوق المصري — تساعدك على{" "}
           <b>التعرف على طبيعة نشاطك</b> واختيار الاسم المناسب، ولتنبيهك على المحال{" "}
           <b>المحرّمة شرعًا</b> (كحوليات/قمار) كي تُستبعد من وعاء الزكاة ويُتخلَّص من كسبها.
@@ -217,7 +217,7 @@ function ShopLicensingTable({
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="ابحث باسم المحل أو النشاط…"
-            className="pr-9"
+            className="pe-9"
           />
         </div>
         <Select value={cat} onValueChange={(v) => setCat(v as ShopLicenseCategory | "all")}>
@@ -239,9 +239,9 @@ function ShopLicensingTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="text-right">المحل / النشاط</TableHead>
-              <TableHead className="text-right">الفئة</TableHead>
-              <TableHead className="text-right">إجراء</TableHead>
+              <TableHead className="text-end">المحل / النشاط</TableHead>
+              <TableHead className="text-end">الفئة</TableHead>
+              <TableHead className="text-end">إجراء</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

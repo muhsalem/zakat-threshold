@@ -213,7 +213,7 @@ function CertifiedReportPage() {
               </div>
               <div>
                 <div className="text-muted-foreground">المرجعيات</div>
-                <ul className="list-disc pr-5 mt-1 space-y-0.5">
+                <ul className="list-disc pe-5 mt-1 space-y-0.5">
                   <li>AAOIFI Standard 35 — الزكاة</li>
                   <li>قرار مجمع الفقه الإسلامي 3/1</li>
                   <li>سورة التوبة — الآية 60</li>
@@ -302,7 +302,7 @@ const SNAPSHOT_LABELS: { [key: string]: string } = {
   debts: "ديون عليك",
   hijriYear: "السنة الهجرية",
   country: "الدولة",
-  
+
   hawlDate: "تاريخ الحول",
   nisab: "قيمة النصاب",
 };

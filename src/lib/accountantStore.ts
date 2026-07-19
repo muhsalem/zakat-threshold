@@ -44,6 +44,7 @@ export type Client = {
   history: HistoryEntry[];
   email?: string;
   createdVia?: "manual" | "intake";
+  intakeDetails?: Record<string, unknown> | null;
 };
 
 function emptyBreakdown(): ZakatBreakdown {
@@ -82,6 +83,7 @@ type ClientRow = {
   created_via: string;
   last_calc_at: string | null;
   last_calc_amount: number | string | null;
+  intake_details: unknown;
 };
 
 type HistoryRow = {
@@ -112,6 +114,7 @@ function rowToClient(r: ClientRow, history: HistoryEntry[] = []): Client {
     createdVia: (r.created_via as "manual" | "intake") || "manual",
     lastCalcAt: r.last_calc_at ?? undefined,
     lastCalcAmount: r.last_calc_amount != null ? Number(r.last_calc_amount) : undefined,
+    intakeDetails: (r.intake_details as Record<string, unknown> | null) ?? null,
     history,
   };
 }
@@ -241,6 +244,7 @@ function patchToRow(p: ClientPatch): Record<string, unknown> {
   if (p.createdVia !== undefined) out.created_via = p.createdVia;
   if (p.lastCalcAt !== undefined) out.last_calc_at = p.lastCalcAt || null;
   if (p.lastCalcAmount !== undefined) out.last_calc_amount = p.lastCalcAmount ?? null;
+  if (p.intakeDetails !== undefined) out.intake_details = p.intakeDetails ?? null;
   return out;
 }
 
@@ -264,6 +268,7 @@ export async function createClient(input: {
   notes?: string;
   createdVia?: "manual" | "intake";
   status?: ClientStatus;
+  intakeDetails?: Record<string, unknown> | null;
 }): Promise<Client> {
   const ownerId = await getOwnerId();
   if (!ownerId) throw new Error("يجب تسجيل الدخول أولاً");
@@ -285,10 +290,11 @@ export async function createClient(input: {
     ) as Json,
     notes: input.notes ?? null,
     created_via: input.createdVia ?? "manual",
+    intake_details: input.intakeDetails ?? null,
   };
   const { data, error } = await supabase
     .from("accountant_clients")
-    .insert(row)
+    .insert(row as never)
     .select("*")
     .single();
   if (error) throw error;

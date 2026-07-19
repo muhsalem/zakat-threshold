@@ -42,7 +42,6 @@ import {
   complianceCheck,
   complianceScore,
   COUNTRY_LABELS,
-  
   STATUS_LABELS,
   KIND_LABELS,
   type Client,
@@ -343,6 +342,9 @@ function ClientDetail() {
         </CardContent>
       </Card>
 
+      {/* بيانات العميل كما أرسلها من نافذة الاستلام — بدون إعادة إدخال */}
+      {client.intakeDetails && <IntakeDetailsPanel details={client.intakeDetails} currency={client.currency} />}
+
       {/* تفصيل الأصول */}
       <Card>
         <CardHeader>
@@ -410,7 +412,7 @@ function ClientDetail() {
               {[...client.history].reverse().map((h, i) => (
                 <li
                   key={i}
-                  className="flex items-start gap-2 border-r-2 border-primary/40 pr-3 py-1"
+                  className="flex items-start gap-2 border-e-2 border-primary/40 pe-3 py-1"
                 >
                   <div className="flex-1">
                     <div className="font-medium">{h.action}</div>
@@ -460,5 +462,107 @@ function NumField({
         style={{ textAlign: "right" }}
       />
     </div>
+  );
+}
+
+// خريطة تسميات لكل حقل يرسله العميل من نموذج الاستلام
+const INTAKE_FIELD_LABELS: Record<string, string> = {
+  cash: "نقد",
+  bankAccounts: "أرصدة بنكية",
+  savingsBonds: "شهادات ادخار/سندات",
+  cryptoValue: "عملات رقمية (قيمة)",
+  gold: "ذهب/فضة (قيمة إجمالية)",
+  goldGrams: "ذهب (جرام)",
+  silverGrams: "فضة (جرام)",
+  jewelryPersonal: "حلي شخصي مستعمل",
+  investments: "استثمارات عامة",
+  stocksTrading: "أسهم للمتاجرة",
+  stocksLongTerm: "أسهم طويلة الأجل",
+  mutualFunds: "صناديق استثمارية",
+  sukuk: "صكوك",
+  esopVestedValue: "خيارات أسهم موظفين (ESOP) مستحقة",
+  bills: "أوراق تجارية (كمبيالات/شيكات)",
+  rikazMetals: "ركاز/معادن مكتشفة",
+  receivablesDoubtful: "ديون مشكوك في تحصيلها",
+  realEstateTrading: "عقارات للمتاجرة",
+  realEstateRental: "عقارات إيجارية",
+  rentalIncomeAnnual: "دخل إيجاري سنوي",
+  agricultureType: "نوع الزراعة",
+  agricultureValue: "قيمة المحصول",
+  livestockCamels: "إبل",
+  livestockCattle: "بقر",
+  livestockSheep: "غنم",
+  salaryMonthly: "راتب شهري",
+  endOfServiceBenefits: "مكافأة نهاية خدمة",
+  inventory: "عروض تجارة/مخزون",
+  businessAssets: "أصول تجارية",
+  receivables: "ديون مستحقة له",
+  debts: "ديون على العميل",
+  businessLiabilities: "التزامات تجارية",
+  hawlDate: "تاريخ الحول",
+  phone: "الجوال",
+  notes: "ملاحظات العميل",
+  mode: "نوع الطلب",
+  madhab: "المذهب",
+  country: "الدولة",
+  kind: "نوع العميل",
+  name: "الاسم",
+  email: "البريد",
+};
+
+const HIDDEN_INTAKE_KEYS = new Set(["name", "email", "kind", "country", "madhab", "hawlDate"]);
+
+function IntakeDetailsPanel({
+  details,
+  currency,
+}: {
+  details: Record<string, unknown>;
+  currency: string;
+}) {
+  const mode = String(details.mode ?? "quick");
+  const entries = Object.entries(details).filter(([k, v]) => {
+    if (HIDDEN_INTAKE_KEYS.has(k)) return false;
+    if (k === "mode") return false;
+    if (v === null || v === undefined || v === "" || v === 0 || v === "none") return false;
+    return true;
+  });
+  return (
+    <Card className="border-primary/30 bg-primary/5">
+      <CardHeader>
+        <CardTitle className="text-base flex items-center gap-2">
+          <Info className="h-4 w-4 text-primary" />
+          البيانات كما أرسلها العميل عبر نافذة الاستلام
+          <Badge variant="outline" className="ms-2">
+            {mode === "comprehensive" ? "تقرير شامل" : "حساب سريع"}
+          </Badge>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="text-xs text-muted-foreground mb-3">
+          هذه نسخة كاملة من كل حقل ملأه العميل — الحقول الرقمية أدناه تم تجميعها تلقائياً في
+          «تفصيل الأصول الزكوية» في الأسفل، فلا حاجة لإعادة إدخالها.
+        </p>
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+          {entries.length === 0 ? (
+            <div className="text-muted-foreground col-span-full text-center py-4">
+              لم يرسل العميل تفاصيل إضافية.
+            </div>
+          ) : (
+            entries.map(([k, v]) => (
+              <div key={k} className="flex justify-between gap-2 border rounded-md px-2.5 py-1.5 bg-background">
+                <span className="text-muted-foreground text-xs">
+                  {INTAKE_FIELD_LABELS[k] ?? k}
+                </span>
+                <span className="font-medium text-xs" dir={typeof v === "number" ? "ltr" : "rtl"}>
+                  {typeof v === "number"
+                    ? `${fmt(v)} ${["goldGrams", "silverGrams", "livestockCamels", "livestockCattle", "livestockSheep"].includes(k) ? "" : currency}`
+                    : String(v)}
+                </span>
+              </div>
+            ))
+          )}
+        </div>
+      </CardContent>
+    </Card>
   );
 }

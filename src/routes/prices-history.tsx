@@ -186,14 +186,14 @@ function PricesHistoryPage() {
         </div>
         <div className="flex flex-wrap gap-2 pt-1">
           <Badge variant="outline" className={REL_META.direct.cls}>
-            <RelDot r="direct" /> <span className="mr-1">مباشر: {fmt(relCounts.direct, 0)}</span>
+            <RelDot r="direct" /> <span className="me-1">مباشر: {fmt(relCounts.direct, 0)}</span>
           </Badge>
           <Badge variant="outline" className={REL_META.derived.cls}>
-            <RelDot r="derived" /> <span className="mr-1">مشتق: {fmt(relCounts.derived, 0)}</span>
+            <RelDot r="derived" /> <span className="me-1">مشتق: {fmt(relCounts.derived, 0)}</span>
           </Badge>
           <Badge variant="outline" className={REL_META.estimated.cls}>
             <RelDot r="estimated" />{" "}
-            <span className="mr-1">تقديري: {fmt(relCounts.estimated, 0)}</span>
+            <span className="me-1">تقديري: {fmt(relCounts.estimated, 0)}</span>
           </Badge>
         </div>
       </header>
@@ -303,9 +303,9 @@ function PricesHistoryPage() {
                 )}
               </div>
             </CardHeader>
-            <CardContent className="max-h-[600px] overflow-auto">
-              <Table>
-                <TableHeader className="sticky top-0 bg-background">
+            <CardContent className="p-0">
+              <Table wrapperClassName="max-h-[600px] overflow-auto">
+                <TableHeader className="[&_th]:sticky [&_th]:top-0 [&_th]:z-10 [&_th]:bg-background [&_th]:shadow-[inset_0_-1px_0_hsl(var(--border))]">
                   <TableRow>
                     <TableHead>التاريخ</TableHead>
                     <TableHead>سعر الذهب USD/جم</TableHead>

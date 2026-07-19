@@ -16,6 +16,7 @@ import {
 import { TrendingUp, Info, ShieldCheck, AlertTriangle } from "lucide-react";
 import { currency as fmtCurrency, num } from "@/lib/zakat";
 import { MarketQuoteButton } from "@/components/zakat/MarketQuoteButton";
+import { validateSecurityRow, type SecurityRowErrors } from "@/components/zakat/individual/securities/validation";
 
 type SecurityKind =
   | "stock_trade" // أسهم متاجرة
@@ -128,12 +129,39 @@ export function SecuritiesSection({
   const update = (id: number, patch: Partial<Row>) =>
     setRows((rs) => rs.map((r) => (r.id === id ? { ...r, ...patch } : r)));
 
+  const errorsByRow = useMemo(() => {
+    const map = new Map<number, SecurityRowErrors>();
+    for (const r of rows) {
+      map.set(
+        r.id,
+        validateSecurityRow({
+          kind: r.kind,
+          company: r.company,
+          ticker: r.ticker,
+          purchaseDate: r.purchaseDate,
+          qty: r.qty,
+          price: r.price,
+          shariaCompliant: r.shariaCompliant,
+          shariaIndex: r.shariaIndex,
+          purifyPct: r.purifyPct,
+          zakatableAssetsPct: r.zakatableAssetsPct,
+          auditor: r.auditor,
+          notes: r.notes,
+        }),
+      );
+    }
+    return map;
+  }, [rows]);
+
   const totals = useMemo(() => {
     let mv = 0,
       zakatable = 0,
       purify = 0;
     const byKind: Record<string, number> = {};
     for (const r of rows) {
+      const errs = errorsByRow.get(r.id) ?? {};
+      // استبعاد الصفوف التي بها أخطاء تؤثر على الحساب
+      if (errs.qty || errs.price || errs.purifyPct || errs.zakatableAssetsPct) continue;
       const t = rowZakatable(r);
       mv += t.mv;
       zakatable += t.zakatable;
@@ -141,7 +169,7 @@ export function SecuritiesSection({
       byKind[r.kind] = (byKind[r.kind] ?? 0) + t.zakatable;
     }
     return { mv, zakatable, purify, byKind };
-  }, [rows]);
+  }, [rows, errorsByRow]);
 
   useEffect(() => {
     onTotalChange(totals.zakatable);
@@ -187,12 +215,25 @@ export function SecuritiesSection({
       <div className="space-y-3">
         {rows.map((r) => {
           const t = rowZakatable(r);
+          const errs = errorsByRow.get(r.id) ?? {};
+          const Err = ({ msg }: { msg?: string }) =>
+            msg ? <p className="text-[11px] text-destructive">{msg}</p> : null;
           const needsCompany = r.shariaCompliant === "no" || r.shariaCompliant === "unknown";
+          const hasErrors = Object.keys(errs).length > 0;
+          const excludedFromTotal = !!(errs.qty || errs.price || errs.purifyPct || errs.zakatableAssetsPct);
           return (
-            <div key={r.id} className="rounded-lg border bg-card p-4 space-y-3">
+            <div
+              key={r.id}
+              className={`rounded-lg border p-4 space-y-3 ${hasErrors ? "border-destructive/60 bg-destructive/5" : "bg-card"}`}
+            >
               <div className="flex items-center justify-between gap-2 flex-wrap">
                 <div className="flex items-center gap-2 text-sm font-semibold text-primary">
                   <TrendingUp className="h-4 w-4" /> {KIND_LABEL[r.kind]}
+                  {excludedFromTotal && (
+                    <Badge variant="destructive" className="text-[10px]">
+                      مستبعد من الإجمالي
+                    </Badge>
+                  )}
                 </div>
                 <Button
                   type="button"
@@ -233,6 +274,7 @@ export function SecuritiesSection({
                       needsCompany ? "مطلوب — لتوثيق الفتوى" : "مثال: CIB / Aramco / Apple"
                     }
                   />
+                  <Err msg={errs.company} />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs">الرمز (Ticker)</Label>
@@ -240,7 +282,9 @@ export function SecuritiesSection({
                     value={r.ticker}
                     onChange={(e) => update(r.id, { ticker: e.target.value })}
                     placeholder="COMI.CA / 2222.SR / AAPL"
+                    maxLength={20}
                   />
+                  <Err msg={errs.ticker} />
                 </div>
 
                 <div className="space-y-1.5">
@@ -250,6 +294,7 @@ export function SecuritiesSection({
                     value={r.purchaseDate}
                     onChange={(e) => update(r.id, { purchaseDate: e.target.value })}
                   />
+                  <Err msg={errs.purchaseDate} />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs">الكمية</Label>
@@ -263,6 +308,7 @@ export function SecuritiesSection({
                     style={{ textAlign: "right" }}
                     placeholder="0"
                   />
+                  <Err msg={errs.qty} />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs">سعر الوحدة الحالي ({currencyName})</Label>
@@ -292,6 +338,7 @@ export function SecuritiesSection({
                       }
                     />
                   </div>
+                  <Err msg={errs.price} />
                 </div>
 
                 <div className="space-y-1.5">
@@ -319,7 +366,9 @@ export function SecuritiesSection({
                       value={r.shariaIndex}
                       onChange={(e) => update(r.id, { shariaIndex: e.target.value })}
                       placeholder="S&P Sharia / Dow Jones Islamic / TASI Sharia"
+                      maxLength={120}
                     />
+                    <Err msg={errs.shariaIndex} />
                   </div>
                 )}
                 <div className="space-y-1.5">
@@ -335,6 +384,7 @@ export function SecuritiesSection({
                     style={{ textAlign: "right" }}
                     placeholder="0"
                   />
+                  <Err msg={errs.purifyPct} />
                 </div>
 
                 {r.kind === "stock_invest" && (
@@ -353,6 +403,7 @@ export function SecuritiesSection({
                       style={{ textAlign: "right" }}
                       placeholder="افتراضي 30% — من القوائم المالية"
                     />
+                    <Err msg={errs.zakatableAssetsPct} />
                   </div>
                 )}
 

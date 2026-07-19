@@ -11,20 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  ScrollText,
-  Download,
-  RefreshCw,
-  Search,
-  Loader2,
-  Eye,
-} from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ScrollText, Download, RefreshCw, Search, Loader2, Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -250,7 +238,7 @@ export function OrgAuditLogPanel({ orgId }: { orgId: string }) {
           <div className="rounded-lg border overflow-hidden">
             <div className="max-h-[520px] overflow-auto">
               <table className="w-full text-sm">
-                <thead className="bg-muted/40 sticky top-0">
+                <thead className="[&_th]:sticky [&_th]:top-0 [&_th]:z-10 [&_th]:bg-muted [&_th]:shadow-[inset_0_-1px_0_hsl(var(--border))]">
                   <tr>
                     <th className="text-start px-2 py-2 font-semibold">التاريخ</th>
                     <th className="text-start px-2 py-2 font-semibold">الإجراء</th>
@@ -272,7 +260,10 @@ export function OrgAuditLogPanel({ orgId }: { orgId: string }) {
                           {new Date(r.created_at).toLocaleString("ar-EG")}
                         </td>
                         <td className="px-2 py-2">
-                          <Badge variant="outline" className={`text-[10px] ${ACTION_STYLE[r.action] || ""}`}>
+                          <Badge
+                            variant="outline"
+                            className={`text-[10px] ${ACTION_STYLE[r.action] || ""}`}
+                          >
                             {ACTION_LABEL[r.action] || r.action}
                           </Badge>
                         </td>
@@ -320,8 +311,14 @@ export function OrgAuditLogPanel({ orgId }: { orgId: string }) {
           {detail && (
             <div className="space-y-3 text-xs">
               <div className="grid grid-cols-2 gap-2">
-                <MetaItem label="التاريخ" value={new Date(detail.created_at).toLocaleString("ar-EG")} />
-                <MetaItem label="المُنفِّذ" value={profiles[detail.actor_id || ""] || detail.actor_id || "—"} />
+                <MetaItem
+                  label="التاريخ"
+                  value={new Date(detail.created_at).toLocaleString("ar-EG")}
+                />
+                <MetaItem
+                  label="المُنفِّذ"
+                  value={profiles[detail.actor_id || ""] || detail.actor_id || "—"}
+                />
                 <MetaItem label="نوع الكيان" value={detail.entity_type} />
                 <MetaItem label="معرّف الكيان" value={detail.entity_id?.slice(0, 8) || "—"} />
               </div>

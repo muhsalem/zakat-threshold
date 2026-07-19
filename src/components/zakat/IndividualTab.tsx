@@ -73,11 +73,7 @@ import {
 } from "@/lib/zakat";
 import { SaveToHistoryCard } from "./SaveToHistoryCard";
 import SalaryZakatCalculator from "./SalaryZakatCalculator";
-import AdvanceMultiYearZakat from "./AdvanceMultiYearZakat";
 import RibaPurificationCalc from "./RibaPurificationCalc";
-import InflationAdjusterCard from "./InflationAdjusterCard";
-import ZakatStatsDashboard from "./ZakatStatsDashboard";
-import SensitivityProjection from "./SensitivityProjection";
 import { CashBankSection } from "./CashBankSection";
 import { SecuritiesSection } from "./SecuritiesSection";
 import { EsopZakatSection } from "./EsopZakatSection";
@@ -94,12 +90,21 @@ import { FileSpreadsheet } from "lucide-react";
 import { IncomeUsufructSection } from "./IncomeUsufructSection";
 import { PrintReport } from "./PrintReport";
 import { RikazSection } from "./RikazSection";
-import { ShariaStandardsCard } from "./ShariaStandardsCard";
-import { ShariaAuditTrail } from "./ShariaAuditTrail";
 import { DigitalAssetsSection } from "./DigitalAssetsSection";
 import { CryptoFatwasCard } from "./CryptoFatwasCard";
 import { useAuditEntries } from "@/hooks/useAuditEntries";
 import { useMadhab } from "@/lib/madhabContext";
+import {
+  buildBaseReportData as buildBaseReportDataShared,
+  buildDeductionsList as buildDeductionsListShared,
+} from "@/lib/zakat/report-builders";
+import { GoldSilverSection } from "./individual/gold-silver/GoldSilverSection";
+import { CashBankAccordionSection } from "./individual/cash-bank/CashBankAccordionSection";
+import { TradeGoodsSubsection } from "./individual/trade/TradeGoodsSubsection";
+import { CropsAccordionSection } from "./individual/crops/CropsAccordionSection";
+import { LivestockAccordionSection } from "./individual/livestock/LivestockAccordionSection";
+import { DebtsAccordionSection } from "./individual/debts/DebtsAccordionSection";
+import { SecuritiesAccordionSection } from "./individual/securities/SecuritiesAccordionSection";
 import {
   EcommerceItemsTable,
   computeEcommerceTotals,
@@ -111,67 +116,9 @@ import TradeActivityClassification, {
 } from "./TradeActivityClassification";
 
 import { supabase } from "@/integrations/supabase/client";
-
-interface NumFieldProps {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  unit?: string;
-  hint?: string;
-  placeholder?: string;
-}
-function NumField({ label, value, onChange, unit, hint, placeholder }: NumFieldProps) {
-  return (
-    <div className="space-y-1.5">
-      <Label className="text-sm font-medium">{label}</Label>
-      <div className="relative">
-        <Input
-          type="number"
-          inputMode="decimal"
-          min="0"
-          step="0.01"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder ?? "0"}
-          className="pl-16"
-          dir="ltr"
-          style={{ textAlign: "right" }}
-        />
-        {unit && (
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
-            {unit}
-          </span>
-        )}
-      </div>
-      {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
-    </div>
-  );
-}
-
-function SectionResult({
-  label,
-  value,
-  eligible = true,
-  format,
-}: {
-  label: string;
-  value: number;
-  eligible?: boolean;
-  format: (n: number) => string;
-}) {
-  return (
-    <div
-      className={`flex items-center justify-between rounded-lg border px-4 py-3 ${eligible && value > 0 ? "border-primary/30 bg-primary/5" : "border-border bg-muted/40"}`}
-    >
-      <span className="text-sm font-medium">{label}</span>
-      <span
-        className={`font-bold ${eligible && value > 0 ? "text-primary" : "text-muted-foreground"}`}
-      >
-        {format(value)}
-      </span>
-    </div>
-  );
-}
+import { NumField, SectionResult, Row } from "./individual/shared";
+import { IndividualAuditTab } from "./individual/audit/IndividualAuditTab";
+import { DemoScenariosGuide } from "./individual/DemoScenariosGuide";
 
 export function IndividualTab() {
   // بيانات المزكي
@@ -817,104 +764,20 @@ export function IndividualTab() {
   const fitrContribution = fitrEnabled && fitrAuto.active ? fitrAuto.total : 0;
 
   /** بناء بيان الخصومات والمبرّرات الشرعية لإثبات سبب الاحتساب أو الاستبعاد. */
-  const buildDeductionsList = () => {
-    const items: Array<{
-      label: string;
-      amount: number;
-      included: boolean;
-      reason: string;
-      ref?: string;
-    }> = [];
-    const add = (label: string, raw: string, included: boolean, reason: string, ref?: string) => {
-      const amount = num(raw);
-      if (amount > 0) items.push({ label, amount, included, reason, ref });
-    };
-    // الديون الحالّة — تُخصم بإجماع الفقهاء
-    add(
-      "قروض شخصية حالّة",
+  const buildDeductionsList = () =>
+    buildDeductionsListShared({
       debtPersonalLoan,
-      true,
-      "دين حالّ مستحق السداد الآن — يُخصم من الوعاء الزكوي",
-      "AAOIFI 35 / إجماع الفقهاء",
-    );
-    add(
-      "ديون مصرفية حالّة",
       debtBankLoan,
-      true,
-      "أصل الدين دون الفوائد الربوية — يُخصم",
-      "AAOIFI 35",
-    );
-    add(
-      "تمويل استهلاكي حالّ",
       debtConsumerFinance,
-      true,
-      "تمويل إسلامي مستحق — يُخصم",
-      "مجمع الفقه الإسلامي",
-    );
-    add(
-      "أقساط سيارات/سلع حالّة",
       debtCarInstall,
-      true,
-      "قسط مستحق خلال الحول — يُخصم",
-      "AAOIFI 35",
-    );
-    add(
-      "ديون تجارية مستحقة",
       debtTradePayable,
-      true,
-      "دين للموردين مستحق الآن — يُخصم",
-      "AAOIFI 35",
-    );
-    add("أثمان مشتريات لم تُسدد", debtPurchases, true, "دين تجاري حالّ — يُخصم", "AAOIFI 35");
-    add(
-      "نفقة واجبة مستحقة",
+      debtPurchases,
       debtAlimony,
-      true,
-      "نفقة بحكم قضاء/اتفاق — تُخصم باعتبارها ديناً حالاً",
-      "قول الجمهور",
-    );
-    // الديون المؤجلة — السياسة تحدد القبول
-    const longTermLabel =
-      debtDeferredPolicy === "yearly"
-        ? "قسط السنة فقط (سياسة الأنفع للفقراء)"
-        : debtDeferredPolicy === "full"
-          ? "كامل الدين المؤجل (الأحوط للمزكّي)"
-          : "بدون خصم (الأنفع للفقراء التام)";
-    if (debtDeferredPolicy !== "none") {
-      add(
-        "قسط السنة من الديون المؤجلة",
-        debtDeferredYearly,
-        true,
-        `يُخصم وفق سياسة: ${longTermLabel}`,
-        "AAOIFI 35 / فتاوى معاصرة",
-      );
-    } else {
-      add(
-        "قسط السنة من الديون المؤجلة",
-        debtDeferredYearly,
-        false,
-        "مستبعد — السياسة المختارة لا تخصم الديون المؤجلة (الأنفع للفقراء)",
-        "ابن باز / ابن عثيمين",
-      );
-    }
-    add(
-      "تمويل عقاري (إجمالي متبقي)",
+      debtDeferredYearly,
       debtMortgage,
-      debtDeferredPolicy === "full",
-      debtDeferredPolicy === "full"
-        ? "السياسة الأحوط: خصم كامل الدين المؤجل"
-        : "مستبعد — التمويل العقاري المؤجل لا يُخصم بالكامل عند جمهور المعاصرين",
-      "ندوات البركة",
-    );
-    add(
-      "مهر مؤجل",
       debtMahr,
-      false,
-      "مستبعد — المهر المؤجل لا يُعتبر ديناً حالّاً ما لم يُطلب",
-      "قول الجمهور",
-    );
-    return items;
-  };
+      debtDeferredPolicy,
+    });
 
   /** بناء بيانات FX لإدراجها في PDF/Excel. */
   const buildFxPayload = () => {
@@ -934,95 +797,37 @@ export function IndividualTab() {
   };
 
   /** بيانات التقرير الأساسية المشتركة بين تصدير PDF و Excel. */
-  const buildBaseReportData = () => ({
-    name,
-    profession,
-    countryCode,
-    currencyName,
-    calendarBasis,
-    effectiveRate,
-    rows: [
-      {
-        label: "زكاة الذهب",
-        gross: calc.totalGoldValue,
-        nisab: calc.goldNisabValue,
-        eligible: calc.goldEligible,
-        zakat: calc.goldZakat,
-      },
-      {
-        label: "زكاة الفضة",
-        gross: calc.silverValue,
-        nisab: calc.silverNisabValue,
-        eligible: calc.silverEligible,
-        zakat: calc.silverZakat,
-      },
-      {
-        label: "زكاة الأوراق النقدية والحسابات البنكية والمحافظ الرقمية",
-        gross: calc.cashTotal,
-        eligible: true,
-        zakat: 0,
-      },
-      {
-        label: "زكاة الأوراق المالية ووثائق التأمين",
-        gross: calc.securitiesTotal,
-        eligible: true,
-        zakat: 0,
-      },
-      {
-        label: "زكاة الأوراق التجارية (الكمبيالات وأوراق القبض)",
-        gross: calc.billsTotal,
-        eligible: true,
-        zakat: 0,
-      },
-      {
-        label: "زكاة الدخل وعروض التجارة والمستغلات",
-        gross: calc.tradeTotal + calc.realEstateZakatable + incomeUsufructTotal,
-        eligible: true,
-        zakat: 0,
-      },
-      {
-        label: "زكاة الزروع والثمار",
-        gross: calc.cropsValue,
-        eligible: calc.cropsEligible,
-        zakat: calc.cropsZakat,
-      },
-      {
-        label: "زكاة الركاز والمعادن",
-        gross: rikazTotal,
-        eligible: rikazTotal > 0,
-        zakat: rikazTotal,
-      },
-    ],
-    livestock: {
-      camels: calc.camelsN,
-      cows: calc.cowsN,
-      sheep: calc.sheepN,
-      show: ownsLivestock,
-      mode: livestockForTrade ? ("trade" as const) : ("grazing" as const),
-      tradeValue: livestockForTrade ? num(livestockTradeValue) : 0,
-    },
-    esop: esopData,
-    rikazTotal,
-    monetaryGross: calc.monetaryGross,
-    debts: calc.debts,
-    monetaryBase: calc.monetaryBase,
-    moneyNisab: calc.moneyNisab,
-    totalZakat: calc.total,
-    hawlComplete: hawl ? hawl.hawlComplete : null,
-    hawlDate: nisabStartDate,
-    goldPricePerGram: num(goldPrice),
-    silverPricePerGram: num(silverPrice),
-    accountantName,
-    accountantLicense,
-    accountantPreamble,
-    accountantOpinion,
-    opinionType,
-    previousYearZakat,
-    auditEntries: includeAuditReport ? auditEntries : undefined,
-  });
+  const buildBaseReportData = () =>
+    buildBaseReportDataShared({
+      name,
+      profession,
+      countryCode,
+      currencyName,
+      calendarBasis,
+      effectiveRate,
+      calc,
+      incomeUsufructTotal,
+      rikazTotal,
+      ownsLivestock,
+      livestockForTrade,
+      livestockTradeValue,
+      esopData,
+      hawl,
+      nisabStartDate,
+      goldPrice,
+      silverPrice,
+      accountantName,
+      accountantLicense,
+      accountantPreamble,
+      accountantOpinion,
+      opinionType,
+      previousYearZakat,
+      includeAuditReport,
+      auditEntries,
+    });
 
   return (
-    <div dir="rtl" className="text-right">
+    <div dir="rtl" className="text-end">
       {/* تقرير الطباعة الاحترافي — يظهر فقط عند الطباعة */}
       <PrintReport
         data={{
@@ -1125,6 +930,9 @@ export function IndividualTab() {
         <TabsContent value="calc" className="mt-0">
           <div className="grid lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
+              {/* سيناريوهات بيانات وهمية لاختبار الحاسبة */}
+              <DemoScenariosGuide currency={currencyName} />
+
               {/* بيانات المزكي + الإقرار وشرط الحول */}
               <Card className="shadow-soft">
                 <CardHeader>
@@ -1282,12 +1090,12 @@ export function IndividualTab() {
                       {nisabSaveMsg && <span className="text-xs text-primary">{nisabSaveMsg}</span>}
                     </div>
                     <p className="text-[11px] text-muted-foreground">
-                      <Info className="inline h-3 w-3 ml-1" />
+                      <Info className="inline h-3 w-3 ms-1" />
                       مصدر التحويل: <b>Intl ICU CLDR — تقويم أم القرى</b>. يُؤكَّد التحويل تلقائياً
                       عند إدخال التاريخ الميلادي ويُحفظ في سجل النصاب.
                     </p>
                     <p className="text-xs text-muted-foreground leading-relaxed">
-                      <Info className="inline h-3 w-3 ml-1" />
+                      <Info className="inline h-3 w-3 ms-1" />
                       وفقاً للجمهور (ضم المستفاد إلى ما عنده من جنسه): تاريخ بلوغ النصاب الأول يصبح{" "}
                       <b>المرجع الموحَّد</b> لحَوْل جميع الأصول النقدية (ذهب، فضة، نقد، عروض تجارة،
                       أسهم). الزروع والثمار لا يشترط لها حول.
@@ -1373,8 +1181,6 @@ export function IndividualTab() {
                     />
                   </div>
 
-
-
                   {calendarBasis === "gregorian" && (
                     <div className="md:col-span-2">
                       <Alert className="border-gold/30 bg-gold/5">
@@ -1407,900 +1213,99 @@ export function IndividualTab() {
                 onValueChange={setOpenSections}
                 className="space-y-3"
               >
-                {/* زكاة الذهب */}
-                <AccordionItem
-                  id="section-gold"
-                  value="gold"
-                  className="border rounded-xl shadow-soft bg-card px-4"
-                >
-                  <AccordionTrigger className="hover:no-underline">
-                    <span className="flex items-center gap-2 text-base font-semibold">
-                      <Coins className="h-5 w-5 text-gold" /> زكاة الذهب
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent className="space-y-6 pb-4">
-                    {/* أ) السبائك والأونصات */}
-                    <div className="space-y-3 rounded-lg border border-gold/20 bg-gold/5 p-4">
-                      <div className="text-sm font-semibold text-primary">
-                        أ · السبائك والأونصات الذهبية
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        أدخل الأوزان بالجرام فقط — السعر يُؤخذ للحساب أسفل هذا القسم
-                      </p>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                        <NumField label="سبائك 24" value={sb24} onChange={setSb24} unit="جم" />
-                        <NumField label="سبائك 22" value={sb22} onChange={setSb22} unit="جم" />
-                        <NumField label="سبائك 21" value={sb21} onChange={setSb21} unit="جم" />
-                        <NumField label="سبائك 18" value={sb18} onChange={setSb18} unit="جم" />
-                        <NumField label="سبائك 14" value={sb14} onChange={setSb14} unit="جم" />
-                        <NumField label="سبائك 9" value={sb9} onChange={setSb9} unit="جم" />
-                        <NumField
-                          label="أونصات"
-                          value={ounces}
-                          onChange={setOunces}
-                          unit="أوقية"
-                          hint="1 أونصة = 31.1 جم"
-                        />
-                        <div className="rounded-md border bg-background p-3 flex flex-col justify-center">
-                          <span className="text-xs text-muted-foreground">
-                            الوزن المكافئ بعيار 24
-                          </span>
-                          <span className="text-lg font-bold text-primary">
-                            {fmt(calc.sabaikGrams24)} جم
-                          </span>
-                        </div>
-                      </div>
-                      <div className="grid md:grid-cols-3 gap-3 pt-2 border-t">
-                        <div className="flex items-center justify-between rounded-md border px-3 py-2">
-                          <Label className="text-xs">من كسب حلال</Label>
-                          <Switch checked={sbHalal} onCheckedChange={setSbHalal} />
-                        </div>
-                        <div className="flex items-center justify-between rounded-md border px-3 py-2">
-                          <Label className="text-xs">مملوكة ملكاً تاماً</Label>
-                          <Switch checked={sbFullyOwned} onCheckedChange={setSbFullyOwned} />
-                        </div>
-                        <HijriDateField
-                          compact
-                          label="تاريخ الاقتناء"
-                          value={sbAcquireDate}
-                          onChange={setSbAcquireDate}
-                        />
-                      </div>
-                    </div>
+                {/* زكاة الذهب والفضة — مستخرجة إلى GoldSilverSection */}
+                <GoldSilverSection
+                  sb24={sb24} setSb24={setSb24}
+                  sb22={sb22} setSb22={setSb22}
+                  sb21={sb21} setSb21={setSb21}
+                  sb18={sb18} setSb18={setSb18}
+                  sb14={sb14} setSb14={setSb14}
+                  sb9={sb9} setSb9={setSb9}
+                  ounces={ounces} setOunces={setOunces}
+                  sbHalal={sbHalal} setSbHalal={setSbHalal}
+                  sbFullyOwned={sbFullyOwned} setSbFullyOwned={setSbFullyOwned}
+                  sbAcquireDate={sbAcquireDate} setSbAcquireDate={setSbAcquireDate}
+                  coinFull={coinFull} setCoinFull={setCoinFull}
+                  coinHalf={coinHalf} setCoinHalf={setCoinHalf}
+                  coinQuarter={coinQuarter} setCoinQuarter={setCoinQuarter}
+                  coinCustomKarat={coinCustomKarat} setCoinCustomKarat={setCoinCustomKarat}
+                  coinCustomWeight={coinCustomWeight} setCoinCustomWeight={setCoinCustomWeight}
+                  coinCustomQty={coinCustomQty} setCoinCustomQty={setCoinCustomQty}
+                  coinHalal={coinHalal} setCoinHalal={setCoinHalal}
+                  coinFullyOwned={coinFullyOwned} setCoinFullyOwned={setCoinFullyOwned}
+                  coinAcquireDate={coinAcquireDate} setCoinAcquireDate={setCoinAcquireDate}
+                  coinPurpose={coinPurpose} setCoinPurpose={setCoinPurpose}
+                  jw24={jw24} setJw24={setJw24}
+                  jw22={jw22} setJw22={setJw22}
+                  jw21={jw21} setJw21={setJw21}
+                  jw18={jw18} setJw18={setJw18}
+                  jw14={jw14} setJw14={setJw14}
+                  jw12={jw12} setJw12={setJw12}
+                  jw9={jw9} setJw9={setJw9}
+                  jwStoneGrams={jwStoneGrams} setJwStoneGrams={setJwStoneGrams}
+                  jewelryPurpose={jewelryPurpose} setJewelryPurpose={setJewelryPurpose}
+                  jwAcquireDate={jwAcquireDate} setJwAcquireDate={setJwAcquireDate}
+                  jewelryOpinion={jewelryOpinion} setJewelryOpinion={setJewelryOpinion}
+                  jwHaal={jwHaal} setJwHaal={setJwHaal}
+                  jwModeration={jwModeration} setJwModeration={setJwModeration}
+                  jwPermissible={jwPermissible} setJwPermissible={setJwPermissible}
+                  brk24={brk24} setBrk24={setBrk24}
+                  brk21={brk21} setBrk21={setBrk21}
+                  brk18={brk18} setBrk18={setBrk18}
+                  brkOtherKarat={brkOtherKarat} setBrkOtherKarat={setBrkOtherKarat}
+                  brkOtherWeight={brkOtherWeight} setBrkOtherWeight={setBrkOtherWeight}
+                  brkStoneGrams={brkStoneGrams} setBrkStoneGrams={setBrkStoneGrams}
+                  storageKarat={storageKarat} setStorageKarat={setStorageKarat}
+                  storageWeight={storageWeight} setStorageWeight={setStorageWeight}
+                  brkAcquireDate={brkAcquireDate} setBrkAcquireDate={setBrkAcquireDate}
+                  sv999={sv999} setSv999={setSv999}
+                  sv960={sv960} setSv960={setSv960}
+                  sv925={sv925} setSv925={setSv925}
+                  sv900={sv900} setSv900={setSv900}
+                  sv835={sv835} setSv835={setSv835}
+                  sv800={sv800} setSv800={setSv800}
+                  sv750={sv750} setSv750={setSv750}
+                  svOunces={svOunces} setSvOunces={setSvOunces}
+                  svAcquireDate={svAcquireDate} setSvAcquireDate={setSvAcquireDate}
+                  coinLira={coinLira} setCoinLira={setCoinLira}
+                  coinRiyal={coinRiyal} setCoinRiyal={setCoinRiyal}
+                  coinSvOtherKarat={coinSvOtherKarat} setCoinSvOtherKarat={setCoinSvOtherKarat}
+                  coinSvOther={coinSvOther} setCoinSvOther={setCoinSvOther}
+                  svCoinAcquireDate={svCoinAcquireDate} setSvCoinAcquireDate={setSvCoinAcquireDate}
+                  svJewelry={svJewelry} setSvJewelry={setSvJewelry}
+                  svJewelryKarat={svJewelryKarat} setSvJewelryKarat={setSvJewelryKarat}
+                  svUtensils={svUtensils} setSvUtensils={setSvUtensils}
+                  svUtensilsKarat={svUtensilsKarat} setSvUtensilsKarat={setSvUtensilsKarat}
+                  svTools={svTools} setSvTools={setSvTools}
+                  svToolsKarat={svToolsKarat} setSvToolsKarat={setSvToolsKarat}
+                  silverPurpose={silverPurpose} setSilverPurpose={setSilverPurpose}
+                  svJewelryAcquireDate={svJewelryAcquireDate} setSvJewelryAcquireDate={setSvJewelryAcquireDate}
+                  silverOpinion={silverOpinion} setSilverOpinion={setSilverOpinion}
+                  goldPrice={goldPrice} setGoldPrice={setGoldPrice}
+                  silverPrice={silverPrice} setSilverPrice={setSilverPrice}
+                  calc={calc}
+                  effectiveRate={effectiveRate}
+                  currencyName={currencyName}
+                  countryName={country.name}
+                  cur={cur}
+                />
 
-                    {/* ب) الجنيهات والعملات الذهبية */}
-                    <div className="space-y-3 rounded-lg border border-gold/20 bg-gold/5 p-4">
-                      <div className="flex items-center justify-between flex-wrap gap-2">
-                        <div className="text-sm font-semibold text-primary">
-                          ب · الجنيهات والعملات الذهبية
-                        </div>
-                        <Badge variant="secondary" className="text-[10px]">
-                          الجنيه الكامل ≈ 8.5 جم عيار 21
-                        </Badge>
-                      </div>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                        <NumField
-                          label="جنيه كامل"
-                          value={coinFull}
-                          onChange={setCoinFull}
-                          unit="قطعة"
-                        />
-                        <NumField
-                          label="نصف جنيه"
-                          value={coinHalf}
-                          onChange={setCoinHalf}
-                          unit="قطعة"
-                        />
-                        <NumField
-                          label="ربع جنيه"
-                          value={coinQuarter}
-                          onChange={setCoinQuarter}
-                          unit="قطعة"
-                        />
-                        <div className="rounded-md border bg-background p-3 flex flex-col justify-center">
-                          <span className="text-xs text-muted-foreground">
-                            الوزن المكافئ بعيار 24
-                          </span>
-                          <span className="text-lg font-bold text-primary">
-                            {fmt(calc.coinsGrams24)} جم
-                          </span>
-                        </div>
-                      </div>
-                      <div className="rounded-md border border-dashed p-3 space-y-2">
-                        <div className="text-xs text-muted-foreground">
-                          عملة ذهبية أو قطعة بعيار / وزن مختلف (اختياري)
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                          <div className="space-y-1.5">
-                            <Label className="text-sm">العيار</Label>
-                            <Select value={coinCustomKarat} onValueChange={setCoinCustomKarat}>
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {["9", "12", "14", "18", "21", "22", "24"].map((k) => (
-                                  <SelectItem key={k} value={k}>
-                                    {k}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <NumField
-                            label="الوزن لكل قطعة (جم)"
-                            value={coinCustomWeight}
-                            onChange={setCoinCustomWeight}
-                            unit="جم"
-                          />
-                          <NumField
-                            label="عدد القطع"
-                            value={coinCustomQty}
-                            onChange={setCoinCustomQty}
-                            unit="قطعة"
-                          />
-                        </div>
-                      </div>
-                      <div className="grid md:grid-cols-2 gap-3 pt-2 border-t">
-                        <div className="flex items-center justify-between rounded-md border px-3 py-2">
-                          <Label className="text-xs">من كسب حلال</Label>
-                          <Switch checked={coinHalal} onCheckedChange={setCoinHalal} />
-                        </div>
-                        <div className="flex items-center justify-between rounded-md border px-3 py-2">
-                          <Label className="text-xs">مملوكة ملكاً تاماً</Label>
-                          <Switch checked={coinFullyOwned} onCheckedChange={setCoinFullyOwned} />
-                        </div>
-                        <HijriDateField
-                          compact
-                          label="تاريخ الاقتناء"
-                          value={coinAcquireDate}
-                          onChange={setCoinAcquireDate}
-                        />
-                        <div className="space-y-1.5">
-                          <Label className="text-xs">غرض الاقتناء</Label>
-                          <RadioGroup
-                            value={coinPurpose}
-                            onValueChange={(v) => setCoinPurpose(v as "storage" | "wear")}
-                            className="flex gap-4 pt-1"
-                          >
-                            <div className="flex items-center gap-2">
-                              <RadioGroupItem value="wear" id="cp-w" />
-                              <Label htmlFor="cp-w" className="text-sm">
-                                حلي وزينة
-                              </Label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <RadioGroupItem value="storage" id="cp-s" />
-                              <Label htmlFor="cp-s" className="text-sm">
-                                ادخار وحفظ قيمة
-                              </Label>
-                            </div>
-                          </RadioGroup>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* ج) المجوهرات */}
-                    <div className="space-y-3 rounded-lg border border-gold/20 bg-gold/5 p-4">
-                      <div className="text-sm font-semibold text-primary">
-                        ج · المجوهرات الذهبية
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        الخواتم · الدبل · السلاسل · الأساور · الحلقان · الأنسيالات · الكوليهات ·
-                        التيجان
-                      </p>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                        <NumField label="عيار 24" value={jw24} onChange={setJw24} unit="جم" />
-                        <NumField label="عيار 22" value={jw22} onChange={setJw22} unit="جم" />
-                        <NumField label="عيار 21" value={jw21} onChange={setJw21} unit="جم" />
-                        <NumField label="عيار 18" value={jw18} onChange={setJw18} unit="جم" />
-                        <NumField label="عيار 14" value={jw14} onChange={setJw14} unit="جم" />
-                        <NumField label="عيار 12" value={jw12} onChange={setJw12} unit="جم" />
-                        <NumField label="عيار 9" value={jw9} onChange={setJw9} unit="جم" />
-                        <div className="rounded-md border bg-background p-3 flex flex-col justify-center">
-                          <span className="text-xs text-muted-foreground">المكافئ بعيار 24</span>
-                          <span className="text-lg font-bold text-primary">
-                            {fmt(calc.jewelryGrams24Raw)} جم
-                          </span>
-                        </div>
-                      </div>
-                      <div className="grid md:grid-cols-2 gap-3 pt-2">
-                        <NumField
-                          label="وزن الأحجار الكريمة المُدمجة (للاستبعاد)"
-                          value={jwStoneGrams}
-                          onChange={setJwStoneGrams}
-                          unit="جم"
-                          hint="الألماس · الياقوت · الزمرد · اللؤلؤ — لا زكاة فيها لذاتها"
-                        />
-                        <div className="rounded-md border bg-primary/5 border-primary/20 p-3 text-[11px] leading-relaxed">
-                          <b className="text-primary">المصنعية مستبعَدة تلقائياً</b> — لأن الحساب
-                          يتم بوزن الذهب الصافي × سعر الجرام، فلا تدخل أجرة الصياغة في الوعاء.
-                        </div>
-                      </div>
-                      <div className="grid md:grid-cols-3 gap-3 pt-2">
-                        <div className="space-y-1.5">
-                          <Label className="text-sm">غرض الاقتناء</Label>
-                          <RadioGroup
-                            value={jewelryPurpose}
-                            onValueChange={(v) => setJewelryPurpose(v as "storage" | "wear")}
-                            className="flex gap-4"
-                          >
-                            <div className="flex items-center gap-2">
-                              <RadioGroupItem value="wear" id="jp-w" />
-                              <Label htmlFor="jp-w" className="text-sm">
-                                حلي وزينة
-                              </Label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <RadioGroupItem value="storage" id="jp-s" />
-                              <Label htmlFor="jp-s" className="text-sm">
-                                ادخار وحفظ قيمة
-                              </Label>
-                            </div>
-                          </RadioGroup>
-                        </div>
-                        <HijriDateField
-                          compact
-                          label="تاريخ الاقتناء"
-                          value={jwAcquireDate}
-                          onChange={setJwAcquireDate}
-                        />
-                        {jewelryPurpose === "wear" && (
-                          <div className="flex items-center justify-between rounded-md border px-3 py-2">
-                            <div className="space-y-0.5">
-                              <Label className="text-sm">
-                                إخضاع حلي الزينة للزكاة (رأي الحنفية)
-                              </Label>
-                              <p className="text-[10px] text-muted-foreground">
-                                إيقافه = رأي الجمهور (لا زكاة على المستعمل بشروطه)
-                              </p>
-                            </div>
-                            <Switch
-                              checked={jewelryOpinion === "hanafi"}
-                              onCheckedChange={(v) => setJewelryOpinion(v ? "hanafi" : "majority")}
-                            />
-                          </div>
-                        )}
-                      </div>
-                      {jewelryPurpose === "wear" && jewelryOpinion === "majority" && (
-                        <div className="rounded-md border border-primary/30 bg-primary/5 p-3 space-y-2">
-                          <div className="text-xs font-semibold text-primary">
-                            شروط إعفاء حلي الزينة (رأي الجمهور)
-                          </div>
-                          <div className="grid sm:grid-cols-3 gap-2">
-                            <div className="flex items-center justify-between rounded-md border bg-background px-2.5 py-1.5">
-                              <Label htmlFor="jw-haal" className="text-[11px]">
-                                حال غير مؤجل (مستعمل فعلاً)
-                              </Label>
-                              <Switch id="jw-haal" checked={jwHaal} onCheckedChange={setJwHaal} />
-                            </div>
-                            <div className="flex items-center justify-between rounded-md border bg-background px-2.5 py-1.5">
-                              <Label htmlFor="jw-mod" className="text-[11px]">
-                                في حدود القصد والاعتدال
-                              </Label>
-                              <Switch
-                                id="jw-mod"
-                                checked={jwModeration}
-                                onCheckedChange={setJwModeration}
-                              />
-                            </div>
-                            <div className="flex items-center justify-between rounded-md border bg-background px-2.5 py-1.5">
-                              <Label htmlFor="jw-perm" className="text-[11px]">
-                                استعمال مباح (لا تبرّج محرّم)
-                              </Label>
-                              <Switch
-                                id="jw-perm"
-                                checked={jwPermissible}
-                                onCheckedChange={setJwPermissible}
-                              />
-                            </div>
-                          </div>
-                          {!(jwHaal && jwModeration && jwPermissible) && (
-                            <p className="text-[11px] text-destructive leading-relaxed">
-                              ⚠ لاختلال أحد الشروط الثلاثة يخضع الحلي للزكاة احتياطاً حتى على رأي
-                              الجمهور.
-                            </p>
-                          )}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* د) المشغولات الذهبية الأخرى */}
-                    <div className="space-y-3 rounded-lg border border-gold/20 bg-gold/5 p-4">
-                      <div className="text-sm font-semibold text-primary">
-                        د · المشغولات الذهبية الأخرى
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        ذهب مستعمل وكسر (للتهشيم — قِدَم الطراز — مكسور) + ذهب ادخاري غير قابل للبس
-                      </p>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                        <NumField label="عيار 24" value={brk24} onChange={setBrk24} unit="جم" />
-                        <NumField label="عيار 21" value={brk21} onChange={setBrk21} unit="جم" />
-                        <NumField label="عيار 18" value={brk18} onChange={setBrk18} unit="جم" />
-                        <div className="space-y-1.5">
-                          <div className="flex items-center justify-between gap-2">
-                            <Label className="text-sm">عيار آخر</Label>
-                            <Select value={brkOtherKarat} onValueChange={setBrkOtherKarat}>
-                              <SelectTrigger className="h-7 w-16 text-xs">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {["9", "12", "14", "22"].map((k) => (
-                                  <SelectItem key={k} value={k}>
-                                    {k}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <div className="relative">
-                            <Input
-                              type="number"
-                              min="0"
-                              value={brkOtherWeight}
-                              onChange={(e) => setBrkOtherWeight(e.target.value)}
-                              placeholder="0"
-                              dir="ltr"
-                              style={{ textAlign: "right" }}
-                              className="pl-10"
-                            />
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-                              جم
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="grid md:grid-cols-2 gap-3">
-                        <NumField
-                          label="وزن الأحجار الكريمة في المشغولات (للاستبعاد)"
-                          value={brkStoneGrams}
-                          onChange={setBrkStoneGrams}
-                          unit="جم"
-                        />
-                        <div className="rounded-md border bg-primary/5 border-primary/20 p-3 text-[11px] leading-relaxed flex items-center">
-                          <span>
-                            <b className="text-primary">المصنعية مستبعَدة تلقائياً</b> — الحساب بوزن
-                            الذهب الصافي فقط.
-                          </span>
-                        </div>
-                      </div>
-                      <div className="rounded-md border border-dashed p-3 space-y-2">
-                        <div className="text-xs text-muted-foreground">
-                          ذهب ادخاري غير قابل للبس (ميداليات · جُعَل · ألواح · قطع تذكارية)
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                          <div className="space-y-1.5">
-                            <Label className="text-sm">العيار</Label>
-                            <Select value={storageKarat} onValueChange={setStorageKarat}>
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {["9", "12", "14", "18", "21", "22", "24"].map((k) => (
-                                  <SelectItem key={k} value={k}>
-                                    {k}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <NumField
-                            label="الوزن (جرام)"
-                            value={storageWeight}
-                            onChange={setStorageWeight}
-                            unit="جم"
-                          />
-                          <div className="rounded-md border bg-background p-3 flex flex-col justify-center">
-                            <span className="text-xs text-muted-foreground">المكافئ بعيار 24</span>
-                            <span className="text-lg font-bold text-primary">
-                              {fmt(calc.otherGrams24)} جم
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="grid md:grid-cols-3 gap-3 pt-2 border-t">
-                        <HijriDateField
-                          compact
-                          label="تاريخ الاقتناء"
-                          value={brkAcquireDate}
-                          onChange={setBrkAcquireDate}
-                        />
-                      </div>
-                    </div>
-
-                    {/* الإجمالي وربط السعر */}
-                    <div className="rounded-xl border-2 border-primary/40 bg-gradient-to-l from-primary/10 to-gold/10 p-4 space-y-3">
-                      <div className="flex items-center justify-between flex-wrap gap-3">
-                        <div className="text-sm font-bold text-primary">
-                          إجمالي الوعاء الزكوي من الذهب
-                        </div>
-                        {calc.goldEligible ? (
-                          <Badge className="bg-primary">بلغ النصاب</Badge>
-                        ) : (
-                          <Badge variant="secondary">دون النصاب ({GOLD_NISAB_GRAMS} جم)</Badge>
-                        )}
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
-                        <div className="rounded-md bg-background border p-3">
-                          <div className="text-xs text-muted-foreground">سبائك وأونصات</div>
-                          <div className="font-bold">{fmt(calc.sabaikGrams24)} جم</div>
-                        </div>
-                        <div className="rounded-md bg-background border p-3">
-                          <div className="text-xs text-muted-foreground">جنيهات وعملات</div>
-                          <div className="font-bold">{fmt(calc.coinsGrams24)} جم</div>
-                        </div>
-                        <div className="rounded-md bg-background border p-3">
-                          <div className="text-xs text-muted-foreground">مجوهرات (خاضعة)</div>
-                          <div className="font-bold">{fmt(calc.jewelryGrams24)} جم</div>
-                        </div>
-                        <div className="rounded-md bg-background border p-3">
-                          <div className="text-xs text-muted-foreground">مشغولات أخرى</div>
-                          <div className="font-bold">{fmt(calc.otherGrams24)} جم</div>
-                        </div>
-                      </div>
-                      <Separator />
-                      <div className="grid md:grid-cols-3 gap-3 text-sm">
-                        <div>
-                          <div className="text-xs text-muted-foreground">إجمالي الوزن بعيار 24</div>
-                          <div className="text-xl font-extrabold text-gold">
-                            {fmt(calc.totalGold24)} جم
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-xs text-muted-foreground">
-                            × سعر جرام عيار 24 اليوم
-                          </div>
-                          <div className="text-xl font-extrabold">{cur(num(goldPrice))}</div>
-                        </div>
-                        <div>
-                          <div className="text-xs text-muted-foreground">قيمة الوعاء الذهبي</div>
-                          <div className="text-xl font-extrabold text-primary">
-                            {cur(calc.totalGoldValue)}
-                          </div>
-                        </div>
-                      </div>
-                      <p className="text-[11px] text-muted-foreground leading-relaxed">
-                        تمت معادلة جميع الأعيرة (9 · 12 · 14 · 18 · 21 · 22) إلى عيار 24 بمعامل
-                        (العيار ÷ 24)، ثم ضُربت في سعر اليوم لجرام عيار 24.
-                      </p>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-
-                {/* زكاة الفضة */}
-                <AccordionItem
-                  id="section-silver"
-                  value="silver"
-                  className="border rounded-xl shadow-soft bg-card px-4"
-                >
-                  <AccordionTrigger className="hover:no-underline">
-                    <span className="flex items-center gap-2 text-base font-semibold">
-                      <Coins className="h-5 w-5 text-muted-foreground" /> زكاة الفضة
-                      <Badge variant="secondary" className="text-[10px] mr-2">
-                        النصاب: {SILVER_NISAB_GRAMS} جم عيار 999
-                      </Badge>
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent className="space-y-6 pb-4">
-                    {/* أ) السبائك والأونصات الفضية */}
-                    <div className="space-y-3 rounded-lg border border-muted-foreground/20 bg-muted/30 p-4">
-                      <div className="text-sm font-semibold text-primary">
-                        أ · السبائك والأونصات الفضية
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        أدخل الأوزان بالجرام — السعر يُؤخذ للحساب أسفل القسم
-                      </p>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                        <NumField
-                          label="عيار 999 (خالصة)"
-                          value={sv999}
-                          onChange={setSv999}
-                          unit="جم"
-                        />
-                        <NumField label="عيار 960" value={sv960} onChange={setSv960} unit="جم" />
-                        <NumField
-                          label="عيار 925 (استرلينج)"
-                          value={sv925}
-                          onChange={setSv925}
-                          unit="جم"
-                        />
-                        <NumField label="عيار 900" value={sv900} onChange={setSv900} unit="جم" />
-                        <NumField label="عيار 835" value={sv835} onChange={setSv835} unit="جم" />
-                        <NumField label="عيار 800" value={sv800} onChange={setSv800} unit="جم" />
-                        <NumField label="عيار 750" value={sv750} onChange={setSv750} unit="جم" />
-                        <NumField
-                          label="أونصات"
-                          value={svOunces}
-                          onChange={setSvOunces}
-                          unit="أوقية"
-                          hint="1 أونصة = 31.1 جم"
-                        />
-                      </div>
-                      <div className="rounded-md border bg-background p-3 flex items-center justify-between">
-                        <span className="text-xs text-muted-foreground">
-                          إجمالي وزن الفضة المكافئ بعيار 999 (جميع الأعيرة + الأونصات)
-                        </span>
-                        <span className="text-lg font-bold text-gold">
-                          {fmt(calc.svSabaikG999)} جم عيار 999
-                        </span>
-                      </div>
-                      <HijriDateField
-                        compact
-                        label="تاريخ الاقتناء"
-                        value={svAcquireDate}
-                        onChange={setSvAcquireDate}
-                      />
-                    </div>
-
-                    {/* ب) الجنيهات والعملات الفضية */}
-                    <div className="space-y-3 rounded-lg border border-muted-foreground/20 bg-muted/30 p-4">
-                      <div className="text-sm font-semibold text-primary">
-                        ب · الجنيهات والعملات الفضية
-                      </div>
-                      <div className="grid md:grid-cols-2 gap-3">
-                        <NumField
-                          label="ليرة عثمانية فضة"
-                          value={coinLira}
-                          onChange={setCoinLira}
-                          unit="قطعة"
-                          hint="≈ 12 جم عيار 830"
-                        />
-                        <NumField
-                          label="ريال فضة / مسكوكات (الوزن الكلي)"
-                          value={coinRiyal}
-                          onChange={setCoinRiyal}
-                          unit="جم"
-                          hint="افتراض عيار 900"
-                        />
-                      </div>
-                      <div className="rounded-md border border-dashed p-3 space-y-2">
-                        <div className="text-xs text-muted-foreground">
-                          عملات فضية أخرى — العيار والوزن الكلي
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                          <div className="space-y-1.5">
-                            <Label className="text-sm">العيار</Label>
-                            <Select value={coinSvOtherKarat} onValueChange={setCoinSvOtherKarat}>
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {["999", "960", "925", "900", "835", "800", "750"].map((k) => (
-                                  <SelectItem key={k} value={k}>
-                                    {k}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <NumField
-                            label="الوزن الكلي (جم)"
-                            value={coinSvOther}
-                            onChange={setCoinSvOther}
-                            unit="جم"
-                          />
-                          <div className="rounded-md border bg-background p-3 flex flex-col justify-center">
-                            <span className="text-xs text-muted-foreground">
-                              إجمالي العملات بعيار 999
-                            </span>
-                            <span className="text-lg font-bold text-gold">
-                              {fmt(calc.svCoinsG999)} جم
-                            </span>
-                          </div>
-                        </div>
-                        <HijriDateField
-                          compact
-                          label="تاريخ الاقتناء"
-                          value={svCoinAcquireDate}
-                          onChange={setSvCoinAcquireDate}
-                        />
-                      </div>
-                    </div>
-
-                    {/* ج) المجوهرات والمشغولات */}
-                    <div className="space-y-3 rounded-lg border border-muted-foreground/20 bg-muted/30 p-4">
-                      <div className="text-sm font-semibold text-primary">
-                        ج · مجوهرات ومشغولات فضية
-                      </div>
-                      <Alert className="border-muted-foreground/30 bg-background">
-                        <Info className="h-4 w-4" />
-                        <AlertDescription className="text-xs leading-relaxed">
-                          <b>متى تجب الزكاة على الحُلي الفضي؟</b> الجمهور: لا زكاة على الحلي
-                          المستعمل المباح. الحنفية: تجب إذا بلغ النصاب. أمّا المعدّ للادخار وحفظ
-                          القيمة فتجب فيه الزكاة باتفاق.
-                        </AlertDescription>
-                      </Alert>
-
-                      <div className="grid md:grid-cols-3 gap-3 items-end">
-                        <div className="md:col-span-2">
-                          <NumField
-                            label="وزن المجوهرات (خواتم · أساور · سلاسل · أقراط · دلايات · خلاخل)"
-                            value={svJewelry}
-                            onChange={setSvJewelry}
-                            unit="جم"
-                          />
-                        </div>
-                        <div className="space-y-1.5">
-                          <Label className="text-sm">العيار</Label>
-                          <Select value={svJewelryKarat} onValueChange={setSvJewelryKarat}>
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {["999", "925", "900", "835", "800", "750"].map((k) => (
-                                <SelectItem key={k} value={k}>
-                                  {k}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-
-                      <div className="grid md:grid-cols-3 gap-3 items-end">
-                        <div className="md:col-span-2">
-                          <NumField
-                            label="وزن المشغولات (ملاعق · صواني · فناجين · سبح)"
-                            value={svUtensils}
-                            onChange={setSvUtensils}
-                            unit="جم"
-                          />
-                        </div>
-                        <div className="space-y-1.5">
-                          <Label className="text-sm">العيار</Label>
-                          <Select value={svUtensilsKarat} onValueChange={setSvUtensilsKarat}>
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {["999", "925", "900", "835", "800", "750"].map((k) => (
-                                <SelectItem key={k} value={k}>
-                                  {k}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-
-                      <div className="grid md:grid-cols-3 gap-3 items-end">
-                        <div className="md:col-span-2">
-                          <NumField
-                            label="وزن الأدوات والتحف"
-                            value={svTools}
-                            onChange={setSvTools}
-                            unit="جم"
-                          />
-                        </div>
-                        <div className="space-y-1.5">
-                          <Label className="text-sm">العيار</Label>
-                          <Select value={svToolsKarat} onValueChange={setSvToolsKarat}>
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {["999", "925", "900", "835", "800", "750"].map((k) => (
-                                <SelectItem key={k} value={k}>
-                                  {k}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-
-                      <div className="grid md:grid-cols-3 gap-3 pt-2">
-                        <div className="space-y-1.5">
-                          <Label className="text-sm">غرض الاقتناء</Label>
-                          <RadioGroup
-                            value={silverPurpose}
-                            onValueChange={(v) => setSilverPurpose(v as "storage" | "wear")}
-                            className="flex gap-4"
-                          >
-                            <div className="flex items-center gap-2">
-                              <RadioGroupItem value="wear" id="sp-w" />
-                              <Label htmlFor="sp-w" className="text-sm">
-                                حلي وزينة
-                              </Label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <RadioGroupItem value="storage" id="sp-s" />
-                              <Label htmlFor="sp-s" className="text-sm">
-                                ادخار وحفظ قيمة
-                              </Label>
-                            </div>
-                          </RadioGroup>
-                        </div>
-                        <HijriDateField
-                          compact
-                          label="تاريخ الاقتناء"
-                          value={svJewelryAcquireDate}
-                          onChange={setSvJewelryAcquireDate}
-                        />
-                        {silverPurpose === "wear" && (
-                          <div className="flex items-center justify-between rounded-md border px-3 py-2">
-                            <div className="space-y-0.5">
-                              <Label className="text-sm">
-                                إخضاع حلي الزينة للزكاة (رأي الحنفية)
-                              </Label>
-                              <p className="text-[10px] text-muted-foreground">
-                                إيقافه = رأي الجمهور
-                              </p>
-                            </div>
-                            <Switch
-                              checked={silverOpinion === "hanafi"}
-                              onCheckedChange={(v) => setSilverOpinion(v ? "hanafi" : "majority")}
-                            />
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="rounded-md border bg-background p-3 flex items-center justify-between">
-                        <span className="text-xs text-muted-foreground">
-                          إجمالي المجوهرات والمشغولات (الخاضع للزكاة) بعيار 999
-                        </span>
-                        <span className="text-lg font-bold text-gold">
-                          {fmt(calc.svJewelryG999)} جم
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* الإجمالي الفضي */}
-                    <div className="rounded-xl border-2 border-primary/40 bg-gradient-to-l from-primary/10 to-muted/20 p-4 space-y-3">
-                      <div className="flex items-center justify-between flex-wrap gap-3">
-                        <div className="text-sm font-bold text-primary">
-                          إجمالي الوعاء الزكوي من الفضة
-                        </div>
-                        {calc.silverEligible ? (
-                          <Badge className="bg-primary">بلغ النصاب</Badge>
-                        ) : (
-                          <Badge variant="secondary">دون النصاب ({SILVER_NISAB_GRAMS} جم)</Badge>
-                        )}
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
-                        <div className="rounded-md bg-background border p-3">
-                          <div className="text-xs text-muted-foreground">سبائك وأونصات</div>
-                          <div className="font-bold">{fmt(calc.svSabaikG999)} جم</div>
-                        </div>
-                        <div className="rounded-md bg-background border p-3">
-                          <div className="text-xs text-muted-foreground">عملات</div>
-                          <div className="font-bold">{fmt(calc.svCoinsG999)} جم</div>
-                        </div>
-                        <div className="rounded-md bg-background border p-3">
-                          <div className="text-xs text-muted-foreground">مجوهرات (خاضعة)</div>
-                          <div className="font-bold">{fmt(calc.svJewelryG999)} جم</div>
-                        </div>
-                      </div>
-                      <Separator />
-                      <div className="grid md:grid-cols-3 gap-3 text-sm">
-                        <div>
-                          <div className="text-xs text-muted-foreground">
-                            إجمالي الوزن بعيار 999
-                          </div>
-                          <div className="text-xl font-extrabold text-gold">
-                            {fmt(calc.silverGrams)} جم
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-xs text-muted-foreground">× سعر جرام عيار 999</div>
-                          <div className="text-xl font-extrabold">{cur(num(silverPrice))}</div>
-                        </div>
-                        <div>
-                          <div className="text-xs text-muted-foreground">قيمة الوعاء الفضي</div>
-                          <div className="text-xl font-extrabold text-primary">
-                            {cur(calc.silverValue)}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* إجمالي وعاء الذهب + الفضة — الزكاة الواجبة ثم الأسعار المرجعية اللحظية */}
-                    <div className="rounded-xl border-2 border-gold/50 bg-gold/10 p-4 space-y-3">
-                      <div className="text-sm font-bold text-gold flex items-center gap-2">
-                        <Coins className="h-4 w-4" /> إجمالي وعاء زكاة الذهب والفضة
-                      </div>
-
-                      <div className="space-y-1 text-sm">
-                        <div className="flex items-center justify-between border-b border-dashed py-1.5">
-                          <span>الوعاء من الذهب</span>
-                          <span className="font-bold">{cur(calc.totalGoldValue)}</span>
-                        </div>
-                        <div className="flex items-center justify-between border-b border-dashed py-1.5">
-                          <span>الوعاء من الفضة</span>
-                          <span className="font-bold">{cur(calc.silverValue)}</span>
-                        </div>
-                        <div className="flex items-center justify-between border-b border-dashed py-1.5">
-                          <span>إجمالي الوعاء (الذهب + الفضة)</span>
-                          <span className="font-bold text-primary">
-                            {cur(calc.totalGoldValue + calc.silverValue)}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between py-1.5">
-                          <span>
-                            الزكاة الواجبة على الذهب والفضة ({(effectiveRate * 100).toFixed(3)}%)
-                          </span>
-                          <span className="font-extrabold text-gold text-lg">
-                            {cur(calc.goldZakat + calc.silverZakat)}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* الأسعار المرجعية — تحديث لحظي حسب الدولة المسجلة في بيانات المزكي */}
-                      <Separator />
-                      <div className="text-xs font-semibold text-primary flex items-center gap-2">
-                        <Info className="h-3.5 w-3.5" />
-                        الأسعار المرجعية اليوم ({country.name}) — تحديث لحظي حسب الدولة المسجلة في
-                        بيانات المزكي
-                      </div>
-                      <div className="grid md:grid-cols-2 gap-3 rounded-lg border bg-background/60 p-3">
-                        <NumField
-                          label="سعر جرام الذهب عيار 24"
-                          value={goldPrice}
-                          onChange={setGoldPrice}
-                          unit={currencyName}
-                        />
-                        <NumField
-                          label="سعر جرام الفضة الخالصة (عيار 999)"
-                          value={silverPrice}
-                          onChange={setSilverPrice}
-                          unit={currencyName}
-                        />
-                        <div className="md:col-span-2 text-xs text-muted-foreground bg-muted/40 rounded-md px-3 py-2 text-right">
-                          نصاب الذهب: <b>{cur(calc.goldNisabValue)}</b> — نصاب الفضة:{" "}
-                          <b>{cur(calc.silverNisabValue)}</b> — الأنفع للفقراء:{" "}
-                          <b>{cur(calc.moneyNisab)}</b>
-                        </div>
-                      </div>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
 
                 {/* النقد */}
-                <AccordionItem
-                  id="section-cash"
-                  value="cash"
-                  className="border rounded-xl shadow-soft bg-card px-4"
-                >
-                  <AccordionTrigger className="hover:no-underline">
-                    <span className="flex items-center gap-2 text-base font-semibold">
-                      <Landmark className="h-5 w-5 text-primary" /> زكاة الأوراق النقدية والحسابات
-                      والبطاقات والمحافظ البنكية
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent className="space-y-4 pb-4">
-                    <CashBankSection
-                      countryCode={countryCode}
-                      currencyName={currencyName}
-                      onTotalChange={setCashTotalFromSection}
-                    />
-                    <div className="pt-3 border-t border-dashed">
-                      <div className="mb-2 text-sm font-semibold text-primary">
-                        حاسبة تطهير الفوائد الربوية (تُلحق بالنقد والبنوك)
-                      </div>
-                      <RibaPurificationCalc currencyName={currencyName} />
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
+                <CashBankAccordionSection
+                  countryCode={countryCode}
+                  currencyName={currencyName}
+                  onCashTotalChange={setCashTotalFromSection}
+                />
+
 
                 {/* الأوراق المالية */}
-                <AccordionItem
-                  id="section-securities"
-                  value="securities"
-                  className="border rounded-xl shadow-soft bg-card px-4"
-                >
-                  <AccordionTrigger className="hover:no-underline">
-                    <span className="flex items-center gap-2 text-base font-semibold">
-                      <TrendingUp className="h-5 w-5 text-primary" /> زكاة الأوراق المالية ووثائق
-                      التأمين
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent className="space-y-4 pb-4">
-                    <SecuritiesSection
-                      currencyName={currencyName}
-                      onTotalChange={setSecuritiesTotalFromSection}
-                    />
-                    <EsopZakatSection currencyName={currencyName} onChange={setEsopData} />
-                  </AccordionContent>
-                </AccordionItem>
+                <SecuritiesAccordionSection
+                  currencyName={currencyName}
+                  onSecuritiesTotalChange={setSecuritiesTotalFromSection}
+                  onEsopChange={setEsopData}
+                />
+
 
                 {/* الأوراق التجارية */}
                 <AccordionItem
@@ -2334,7 +1339,7 @@ export function IndividualTab() {
                     <span className="flex items-center gap-2 text-base font-semibold">
                       <TrendingUp className="h-5 w-5 text-gold" /> زكاة العملات الرقمية والمحافظ
                       الاستثمارية
-                      <Badge variant="outline" className="text-[10px] mr-2">
+                      <Badge variant="outline" className="text-[10px] me-2">
                         AAOIFI 35
                       </Badge>
                     </span>
@@ -2362,104 +1367,26 @@ export function IndividualTab() {
                   </AccordionTrigger>
                   <AccordionContent className="space-y-4 pb-4">
                     {/* أولاً: عروض التجارة والديون */}
-                    <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-3">
-                      <div className="flex items-center gap-2 text-sm font-semibold text-primary">
-                        <Package className="h-4 w-4" /> أولاً: عروض التجارة والديون
-                      </div>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <NumField
-                          label="قيمة البضاعة بسعر السوق"
-                          value={inventory}
-                          onChange={setInventory}
-                          unit={currencyName}
-                          hint="تُقوَّم بسعر بيع الجملة يوم وجوب الزكاة"
-                        />
-                        <NumField
-                          label="ديون مرجوّة لك على الغير"
-                          value={receivablesGood}
-                          onChange={setReceivablesGood}
-                          unit={currencyName}
-                          hint="على مَليء مُقرّ بها"
-                        />
-                        <NumField
-                          label="ديون متعذّرة (على معسر أو جاحد)"
-                          value={receivablesBad}
-                          onChange={setReceivablesBad}
-                          unit={currencyName}
-                          hint="لا تُزكَّى حتى تُقبض، ثم زكاة سنة واحدة فقط — لا تُحتسب الآن"
-                        />
-                      </div>
+                    <TradeGoodsSubsection
+                      currencyName={currencyName}
+                      inventory={inventory}
+                      setInventory={setInventory}
+                      receivablesGood={receivablesGood}
+                      setReceivablesGood={setReceivablesGood}
+                      receivablesBad={receivablesBad}
+                      setReceivablesBad={setReceivablesBad}
+                      tradeIsShareholder={tradeIsShareholder}
+                      setTradeIsShareholder={setTradeIsShareholder}
+                      tradeShareCompany={tradeShareCompany}
+                      setTradeShareCompany={setTradeShareCompany}
+                      tradeSharePct={tradeSharePct}
+                      setTradeSharePct={setTradeSharePct}
+                      tradeShareCompanyBase={tradeShareCompanyBase}
+                      setTradeShareCompanyBase={setTradeShareCompanyBase}
+                      num={num}
+                      cur={cur}
+                    />
 
-                      {/* هل أنت مساهم في شركة */}
-                      <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
-                        <div className="flex items-center justify-between">
-                          <Label className="text-sm font-semibold">
-                            هل أنت مساهم / شريك في شركة قائمة؟
-                          </Label>
-                          <Switch
-                            checked={tradeIsShareholder}
-                            onCheckedChange={setTradeIsShareholder}
-                          />
-                        </div>
-                        {tradeIsShareholder && (
-                          <>
-                            <Alert className="border-primary/20 bg-primary/5">
-                              <Info className="h-4 w-4" />
-                              <AlertDescription className="text-xs">
-                                إن كانت الشركة تُخرج زكاتها كاملةً عن وعائها فلا تُكرّر الحساب —
-                                اتركها صفراً. وإلا أدخل الوعاء الزكوي للشركة (من تبويب «زكاة
-                                الشركات») ونسبة حصتك.
-                              </AlertDescription>
-                            </Alert>
-                            <div className="grid md:grid-cols-3 gap-3">
-                              <div>
-                                <Label className="text-xs">اسم الشركة</Label>
-                                <Input
-                                  value={tradeShareCompany}
-                                  onChange={(e) => setTradeShareCompany(e.target.value)}
-                                  placeholder="…"
-                                />
-                              </div>
-                              <NumField
-                                label="نسبة حصتك %"
-                                value={tradeSharePct}
-                                onChange={setTradeSharePct}
-                                unit="%"
-                              />
-                              <NumField
-                                label="وعاء الشركة الزكوي"
-                                value={tradeShareCompanyBase}
-                                onChange={setTradeShareCompanyBase}
-                                unit={currencyName}
-                              />
-                            </div>
-                            <div className="flex items-center justify-between gap-2 pt-1">
-                              <p className="text-[11px] text-muted-foreground">
-                                نصيبك المُحتسب:{" "}
-                                <b className="text-primary">
-                                  {cur(num(tradeShareCompanyBase) * (num(tradeSharePct) / 100))}
-                                </b>
-                              </p>
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  const el = document.getElementById(
-                                    "tab-company",
-                                  ) as HTMLElement | null;
-                                  el?.click();
-                                  window.scrollTo({ top: 0, behavior: "smooth" });
-                                }}
-                              >
-                                <Landmark className="h-3.5 w-3.5 ml-1" />
-                                فتح تبويب «زكاة الشركات» لحساب الوعاء
-                              </Button>
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </div>
 
                     {/* تصنيف النشاط التجاري + تاريخ التشغيل + ربط الشركة */}
                     <TradeActivityClassification
@@ -2491,7 +1418,7 @@ export function IndividualTab() {
                         <>
                           <Alert className="border-primary/20 bg-primary/5">
                             <Info className="h-4 w-4" />
-                            <AlertDescription className="text-xs leading-relaxed text-right">
+                            <AlertDescription className="text-xs leading-relaxed text-end">
                               <b>المتجر الإلكتروني:</b> يُزكَّى بقيمة البضاعة المعروضة للبيع +
                               المنتجات الرقمية + الخدمات الرقمية المُدّخَرة + المستحقات المرجوّة. لا
                               زكاة في الأصول الرقمية المُعدّة للبيع إذا كانت ضمن «العملات الرقمية»
@@ -2506,7 +1433,7 @@ export function IndividualTab() {
                           />
 
                           {ecommerceItems.length > 0 && (
-                            <div className="text-[11px] text-muted-foreground text-right">
+                            <div className="text-[11px] text-muted-foreground text-end">
                               الحقول أدناه مُغذّاة تلقائيًا من سجل البنود. يمكنك تعديلها يدويًا بعد
                               تفريغ السجل.
                             </div>
@@ -2565,7 +1492,7 @@ export function IndividualTab() {
                       </div>
                       <Alert className="border-primary/20 bg-background">
                         <Info className="h-4 w-4" />
-                        <AlertDescription className="text-xs leading-relaxed text-right">
+                        <AlertDescription className="text-xs leading-relaxed text-end">
                           <b>نطاق العقار:</b> يشمل الأرض الفضاء، أو المبنى، أو الأرض والمبنى معاً.
                           <br />
                           <b>عقار السكن الخاص:</b> لا زكاة فيه إجماعًا.
@@ -2713,222 +1640,48 @@ export function IndividualTab() {
                 </AccordionItem>
 
                 {/* الزروع */}
-                <AccordionItem
-                  id="section-crops"
-                  value="crops"
-                  className="border rounded-xl shadow-soft bg-card px-4"
-                >
-                  <AccordionTrigger className="hover:no-underline">
-                    <span className="flex items-center gap-2 text-base font-semibold">
-                      <Wheat className="h-5 w-5 text-gold" /> زكاة الزروع والثمار
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent className="space-y-4 pb-4">
-                    <div className="flex items-center justify-between rounded-lg border bg-muted/30 p-3">
-                      <Label className="text-sm font-semibold">هل تملك أرضاً زراعية؟</Label>
-                      <Switch checked={ownsFarmland} onCheckedChange={setOwnsFarmland} />
-                    </div>
-                    {ownsFarmland && (
-                      <>
-                        <div className="grid md:grid-cols-2 gap-4">
-                          <NumField
-                            label="كمية المحصول"
-                            value={cropsKg}
-                            onChange={setCropsKg}
-                            unit="كجم"
-                            hint={`النصاب: ${CROPS_NISAB_KG} كجم (5 أوسق)`}
-                          />
-                          <NumField
-                            label="سعر الكيلوجرام"
-                            value={cropsValuePerKg}
-                            onChange={setCropsValuePerKg}
-                            unit={currencyName}
-                          />
-                        </div>
-                        <div>
-                          <Label className="mb-2 block">طريقة الري</Label>
-                          <RadioGroup
-                            value={cropsIrrigation}
-                            onValueChange={(v) => setCropsIrrigation(v as "rain" | "irrigated")}
-                            className="flex flex-col md:flex-row gap-4"
-                          >
-                            <div className="flex items-center gap-2">
-                              <RadioGroupItem value="rain" id="rain" />
-                              <Label htmlFor="rain">سُقي بلا كلفة (مطر/أنهار) — 10%</Label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <RadioGroupItem value="irrigated" id="irr" />
-                              <Label htmlFor="irr">سُقي بكلفة (آلات/شراء) — 5%</Label>
-                            </div>
-                          </RadioGroup>
-                        </div>
-                        {calc.cropsEligible && (
-                          <div className="rounded-lg bg-muted/50 p-3 text-xs">
-                            قيمة المحصول: <b>{cur(calc.cropsValue)}</b> — النسبة:{" "}
-                            <b>{(calc.cropsRate * 100).toFixed(0)}%</b>
-                          </div>
-                        )}
-                        <p className="text-xs text-muted-foreground">
-                          ملاحظة: الزروع لا تشترط حولًا، وإنما تجب يوم الحصاد.
-                        </p>
-                      </>
-                    )}
+                <CropsAccordionSection
+                  currencyName={currencyName}
+                  ownsFarmland={ownsFarmland}
+                  setOwnsFarmland={setOwnsFarmland}
+                  cropsKg={cropsKg}
+                  setCropsKg={setCropsKg}
+                  cropsValuePerKg={cropsValuePerKg}
+                  setCropsValuePerKg={setCropsValuePerKg}
+                  cropsIrrigation={cropsIrrigation}
+                  setCropsIrrigation={setCropsIrrigation}
+                  cropsCalc={{
+                    cropsEligible: calc.cropsEligible,
+                    cropsValue: calc.cropsValue,
+                    cropsRate: calc.cropsRate,
+                  }}
+                  setAgriTradeBase={setAgriTradeBase}
+                  cur={cur}
+                />
 
-                    {/* تبويب فرعي: العسل + الثروة السمكية + مزارع الدواجن (تُلحق بالزروع والثمار) */}
-                    <div className="pt-4 border-t border-dashed">
-                      <div className="mb-3 text-sm font-semibold text-primary flex items-center gap-2">
-                        <Wheat className="h-4 w-4" /> أنشطة زراعية وحيوانية ملحقة (العسل / الثروة
-                        السمكية / الدواجن)
-                      </div>
-                      <RikazSection
-                        mode="agri-extras"
-                        currency={currencyName}
-                        onTradeBaseChange={setAgriTradeBase}
-                      />
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
 
                 {/* الأنعام */}
-                <AccordionItem
-                  id="section-livestock"
-                  value="livestock"
-                  className="border rounded-xl shadow-soft bg-card px-4"
-                >
-                  <AccordionTrigger className="hover:no-underline">
-                    <span className="flex items-center gap-2 text-base font-semibold">
-                      <Sprout className="h-5 w-5 text-primary" /> زكاة الأنعام (الإبل والبقر والغنم)
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent className="space-y-4 pb-4">
-                    <div className="flex items-center justify-between rounded-lg border bg-muted/30 p-3">
-                      <Label className="text-sm font-semibold">هل تملك مواشي / أنعام سائمة؟</Label>
-                      <Switch checked={ownsLivestock} onCheckedChange={setOwnsLivestock} />
-                    </div>
-                    {ownsLivestock && (
-                      <>
-                        <div className="flex items-center justify-between rounded-lg border bg-gold/5 border-gold/30 p-3">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2">
-                              <Label className="text-sm font-semibold">
-                                هل هذه الأنعام مُعدّة للتجارة (للبيع)؟
-                              </Label>
-                              <TooltipProvider delayDuration={150}>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <button
-                                      type="button"
-                                      className="text-muted-foreground hover:text-primary transition-colors"
-                                      aria-label="متى تُعدّ الأنعام للتجارة؟"
-                                    >
-                                      <HelpCircle className="h-4 w-4" />
-                                    </button>
-                                  </TooltipTrigger>
-                                  <TooltipContent
-                                    side="bottom"
-                                    className="max-w-xs text-right leading-relaxed bg-card text-card-foreground border shadow-lg"
-                                  >
-                                    <div className="space-y-1.5 text-xs">
-                                      <p>
-                                        <b>متى تُعدّ الأنعام للتجارة؟</b>
-                                      </p>
-                                      <p>
-                                        إذا اقتنيتها بنية <b>البيع والربح</b> (تربية تجارية، مزارع
-                                        تسمين، تجارة مواشي) — لا للنسل واللبن والاستهلاك.
-                                      </p>
-                                      <p>
-                                        <b>كيف تُحسب؟</b> تُقوَّم القطيع كاملاً بسعر السوق يوم وجوب
-                                        الزكاة، ثم 2.5% × القيمة السوقية الإجمالية، وتُضمّ النتيجة
-                                        لقاعدة عروض التجارة في الإجمالي.
-                                      </p>
-                                      <p className="text-muted-foreground">
-                                        المرجع: AAOIFI رقم 35 / قرار المجمع الفقهي رقم 28.
-                                      </p>
-                                    </div>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            </div>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              إن نعم، تُعامل معاملة <b>عروض التجارة</b> (2.5% من القيمة السوقية)
-                              وتُضمّ تلقائياً لقاعدة عروض التجارة — ولا تُحسب عيناً منعاً للازدواج.
-                            </p>
-                          </div>
-                          <Switch
-                            checked={livestockForTrade}
-                            onCheckedChange={setLivestockForTrade}
-                          />
-                        </div>
+                <LivestockAccordionSection
+                  currencyName={currencyName}
+                  ownsLivestock={ownsLivestock}
+                  setOwnsLivestock={setOwnsLivestock}
+                  livestockForTrade={livestockForTrade}
+                  setLivestockForTrade={setLivestockForTrade}
+                  livestockTradeValue={livestockTradeValue}
+                  setLivestockTradeValue={setLivestockTradeValue}
+                  camels={camels}
+                  setCamels={setCamels}
+                  cows={cows}
+                  setCows={setCows}
+                  sheep={sheep}
+                  setSheep={setSheep}
+                  livestockCalc={{
+                    camelsN: calc.camelsN,
+                    cowsN: calc.cowsN,
+                    sheepN: calc.sheepN,
+                  }}
+                />
 
-                        {livestockForTrade ? (
-                          <>
-                            <Alert className="border-primary/20 bg-primary/5">
-                              <Info className="h-4 w-4" />
-                              <AlertDescription className="text-xs">
-                                أدخل القيمة السوقية الإجمالية للقطيع (للبيع) — تُحسب 2.5% وتُضمّ
-                                لقاعدة عروض التجارة في الإجمالي.
-                              </AlertDescription>
-                            </Alert>
-                            <NumField
-                              label="القيمة السوقية الإجمالية للأنعام (للتجارة)"
-                              value={livestockTradeValue}
-                              onChange={setLivestockTradeValue}
-                              unit={currencyName}
-                              hint="بسعر السوق يوم وجوب الزكاة"
-                            />
-                          </>
-                        ) : (
-                          <>
-                            <Alert className="border-primary/20 bg-primary/5">
-                              <Info className="h-4 w-4" />
-                              <AlertDescription className="text-xs">
-                                الأنعام السائمة (للنسل واللبن لا للتجارة) تُزكَّى عيناً (لا قيمتها)،
-                                ويُشترط بلوغ النصاب وحولان الحول وسومُها (رعيها) أكثر السنة.
-                              </AlertDescription>
-                            </Alert>
-                            <div className="grid md:grid-cols-3 gap-4">
-                              <NumField
-                                label="عدد الإبل"
-                                value={camels}
-                                onChange={setCamels}
-                                hint="النصاب: 5"
-                              />
-                              <NumField
-                                label="عدد البقر/الجاموس"
-                                value={cows}
-                                onChange={setCows}
-                                hint="النصاب: 30"
-                              />
-                              <NumField
-                                label="عدد الغنم/المعز"
-                                value={sheep}
-                                onChange={setSheep}
-                                hint="النصاب: 40"
-                              />
-                            </div>
-                            <div className="space-y-2 text-sm">
-                              {calc.camelsN > 0 && (
-                                <div className="rounded-md bg-muted/50 p-2">
-                                  <b>الإبل ({calc.camelsN}):</b> {camelZakat(calc.camelsN)}
-                                </div>
-                              )}
-                              {calc.cowsN > 0 && (
-                                <div className="rounded-md bg-muted/50 p-2">
-                                  <b>البقر ({calc.cowsN}):</b> {cowZakat(calc.cowsN)}
-                                </div>
-                              )}
-                              {calc.sheepN > 0 && (
-                                <div className="rounded-md bg-muted/50 p-2">
-                                  <b>الغنم ({calc.sheepN}):</b> {sheepZakat(calc.sheepN)}
-                                </div>
-                              )}
-                            </div>
-                          </>
-                        )}
-                      </>
-                    )}
-                  </AccordionContent>
-                </AccordionItem>
 
                 {/* الركاز والمعادن — تبويب مستقل */}
                 <AccordionItem
@@ -2951,162 +1704,34 @@ export function IndividualTab() {
                 </AccordionItem>
 
                 {/* الديون */}
-                <AccordionItem
-                  id="section-debts"
-                  value="debts"
-                  className="border rounded-xl shadow-soft bg-card px-4"
-                >
-                  <AccordionTrigger className="hover:no-underline">
-                    <span className="flex items-center gap-2 text-base font-semibold">
-                      <MinusCircle className="h-5 w-5 text-destructive" /> الديون والالتزامات
-                      (تُخصم)
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent className="space-y-5 pb-4">
-                    {/* ① الديون الحالة */}
-                    <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 space-y-3">
-                      <div className="text-sm font-semibold text-destructive flex items-center gap-2">
-                        <Badge className="bg-destructive text-destructive-foreground">①</Badge>
-                        الديون الحالة (واجبة السداد الآن) — تُخصم باتفاق الفقهاء
-                      </div>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <NumField
-                          label="قروض شخصية"
-                          value={debtPersonalLoan}
-                          onChange={setDebtPersonalLoan}
-                          unit={currencyName}
-                        />
-                        <NumField
-                          label="ديون مصرفية"
-                          value={debtBankLoan}
-                          onChange={setDebtBankLoan}
-                          unit={currencyName}
-                          hint="أصل الدين دون الفوائد الربوية"
-                        />
-                        <NumField
-                          label="تمويل استهلاكي"
-                          value={debtConsumerFinance}
-                          onChange={setDebtConsumerFinance}
-                          unit={currencyName}
-                          hint="مرابحة / تورق / تقسيط حلال — الأصل المستحق"
-                        />
-                        <NumField
-                          label="أقساط سيارات أو سلع حالَّة"
-                          value={debtCarInstall}
-                          onChange={setDebtCarInstall}
-                          unit={currencyName}
-                        />
-                        <NumField
-                          label="ديون تجارية مستحقة"
-                          value={debtTradePayable}
-                          onChange={setDebtTradePayable}
-                          unit={currencyName}
-                        />
-                        <NumField
-                          label="أثمان مشتريات لم تُسدد"
-                          value={debtPurchases}
-                          onChange={setDebtPurchases}
-                          unit={currencyName}
-                        />
-                      </div>
-                    </div>
+                <DebtsAccordionSection
+                  currencyName={currencyName}
+                  debtPersonalLoan={debtPersonalLoan}
+                  setDebtPersonalLoan={setDebtPersonalLoan}
+                  debtBankLoan={debtBankLoan}
+                  setDebtBankLoan={setDebtBankLoan}
+                  debtConsumerFinance={debtConsumerFinance}
+                  setDebtConsumerFinance={setDebtConsumerFinance}
+                  debtCarInstall={debtCarInstall}
+                  setDebtCarInstall={setDebtCarInstall}
+                  debtTradePayable={debtTradePayable}
+                  setDebtTradePayable={setDebtTradePayable}
+                  debtPurchases={debtPurchases}
+                  setDebtPurchases={setDebtPurchases}
+                  debtDeferredPolicy={debtDeferredPolicy}
+                  setDebtDeferredPolicy={setDebtDeferredPolicy}
+                  debtMortgage={debtMortgage}
+                  setDebtMortgage={setDebtMortgage}
+                  debtMahr={debtMahr}
+                  setDebtMahr={setDebtMahr}
+                  debtDeferredYearly={debtDeferredYearly}
+                  setDebtDeferredYearly={setDebtDeferredYearly}
+                  debtAlimony={debtAlimony}
+                  setDebtAlimony={setDebtAlimony}
+                  expenses={expenses}
+                  setExpenses={setExpenses}
+                />
 
-                    {/* ② الديون المؤجلة */}
-                    <div className="rounded-lg border border-amber-500/40 bg-amber-50/40 dark:bg-amber-950/20 p-4 space-y-3">
-                      <div className="text-sm font-semibold text-amber-700 dark:text-amber-400 flex items-center gap-2">
-                        <Badge className="bg-amber-500 text-white">②</Badge>
-                        الديون المؤجلة (طويلة الأجل) — على خلاف بين العلماء
-                      </div>
-                      <Alert className="border-amber-500/30 bg-background">
-                        <Info className="h-4 w-4" />
-                        <AlertDescription className="text-xs leading-relaxed">
-                          <b>الجمهور:</b> يُخصم كل الدين حالًّا ومؤجلًا. <b>الأحوط:</b> يُخصم قسط
-                          السنة فقط. <b>الشافعية (قول قوي):</b> لا يُخصم الدين المؤجل أصلًا. والعمل
-                          المعاصر: إن لم يكن لديك مال زائد عن الحاجة فيجوز الخصم، والأحوط خصم قسط
-                          السنة فقط.
-                        </AlertDescription>
-                      </Alert>
-                      <div>
-                        <Label className="mb-2 block text-xs">السياسة المختارة لخصم المؤجل</Label>
-                        <RadioGroup
-                          value={debtDeferredPolicy}
-                          onValueChange={(v) =>
-                            setDebtDeferredPolicy(v as "yearly" | "full" | "none")
-                          }
-                          className="flex flex-wrap gap-3"
-                        >
-                          <div className="flex items-center gap-2 border rounded-md px-3 py-1.5">
-                            <RadioGroupItem value="yearly" id="dp-y" />
-                            <Label htmlFor="dp-y" className="text-xs cursor-pointer">
-                              قسط السنة فقط (الأحوط)
-                            </Label>
-                          </div>
-                          <div className="flex items-center gap-2 border rounded-md px-3 py-1.5">
-                            <RadioGroupItem value="full" id="dp-f" />
-                            <Label htmlFor="dp-f" className="text-xs cursor-pointer">
-                              خصم كامل الدين (الجمهور)
-                            </Label>
-                          </div>
-                          <div className="flex items-center gap-2 border rounded-md px-3 py-1.5">
-                            <RadioGroupItem value="none" id="dp-n" />
-                            <Label htmlFor="dp-n" className="text-xs cursor-pointer">
-                              لا يُخصم (الشافعية)
-                            </Label>
-                          </div>
-                        </RadioGroup>
-                      </div>
-                      <div className="grid md:grid-cols-3 gap-4">
-                        <NumField
-                          label="أقساط تمويل عقاري (إجمالي متبقي)"
-                          value={debtMortgage}
-                          onChange={setDebtMortgage}
-                          unit={currencyName}
-                        />
-                        <NumField
-                          label="مهر الزوجة المؤجل"
-                          value={debtMahr}
-                          onChange={setDebtMahr}
-                          unit={currencyName}
-                        />
-                        <NumField
-                          label="قسط السنة فقط من الديون المؤجلة"
-                          value={debtDeferredYearly}
-                          onChange={setDebtDeferredYearly}
-                          unit={currencyName}
-                          hint="يُستخدم مع سياسة «قسط السنة»"
-                        />
-                      </div>
-                    </div>
-
-                    {/* ③ النفقة الواجبة */}
-                    <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 space-y-3">
-                      <div className="text-sm font-semibold text-primary flex items-center gap-2">
-                        <Badge className="bg-primary">③</Badge>
-                        النفقة الواجبة إذا صارت دينًا — تُخصم
-                      </div>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
-                        نفقة الزوجة أو الأولاد بحكم قضاء أو اتفاق، ونفقة الأقارب الواجبة شرعاً متى
-                        ثبتت في الذمة كَدَين.
-                      </p>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <NumField
-                          label="نفقة واجبة مستحقة (زوجة/أولاد/أقارب)"
-                          value={debtAlimony}
-                          onChange={setDebtAlimony}
-                          unit={currencyName}
-                          hint="بحكم قضاء أو اتفاق"
-                        />
-                        <NumField
-                          label="نفقات ضرورية مستحقة"
-                          value={expenses}
-                          onChange={setExpenses}
-                          unit={currencyName}
-                          hint="فواتير وإيجارات مستحقة"
-                        />
-                      </div>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
               </Accordion>
             </div>
 
@@ -3127,7 +1752,7 @@ export function IndividualTab() {
                       <>
                         <div className="text-4xl font-black tracking-tight">
                           {fmt(netDue)}
-                          <span className="text-lg font-medium opacity-80 mr-2">
+                          <span className="text-lg font-medium opacity-80 me-2">
                             {currencyName}
                           </span>
                         </div>
@@ -3655,7 +2280,7 @@ export function IndividualTab() {
                           onClick={() => jumpToSection("debts")}
                           className="text-start hover:underline"
                         >
-                          <MinusCircle className="inline h-3.5 w-3.5 ml-1" />② الخصومات والديون
+                          <MinusCircle className="inline h-3.5 w-3.5 ms-1" />② الخصومات والديون
                           والالتزامات
                         </button>
                         <span>
@@ -4006,7 +2631,7 @@ export function IndividualTab() {
                       );
                     }}
                   >
-                    <FileText className="h-4 w-4 ml-2" />
+                    <FileText className="h-4 w-4 ms-2" />
                     تحميل التقرير PDF
                   </Button>
                   <Button
@@ -4025,12 +2650,12 @@ export function IndividualTab() {
                       );
                     }}
                   >
-                    <FileSpreadsheet className="h-4 w-4 ml-2" />
+                    <FileSpreadsheet className="h-4 w-4 ms-2" />
                     تحميل التقرير Excel
                   </Button>
 
                   <Button variant="outline" className="w-full" onClick={() => window.print()}>
-                    <CheckCircle2 className="h-4 w-4 ml-2" />
+                    <CheckCircle2 className="h-4 w-4 ms-2" />
                     طباعة التقرير
                   </Button>
                 </CardContent>
@@ -4040,251 +2665,29 @@ export function IndividualTab() {
         </TabsContent>
 
         <TabsContent value="audit" className="mt-0">
-          <div className="grid lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-5">
-              <Alert className="border-primary/30 bg-primary/5">
-                <ClipboardCheck className="h-4 w-4" />
-                <AlertDescription className="text-xs leading-relaxed">
-                  هذا القسم مُخصَّص للمحاسب/المدقق الشرعي لمراجعة بيانات المُزكِّي وإبداء الرأي
-                  المهني المناسب الذي يظهر لاحقاً في التقرير المطبوع. <b>تنبيه:</b> هذه أداة مساعدة
-                  للحساب وفق مدخلات المستخدم وليست فتوى شرعية ملزمة.
-                </AlertDescription>
-              </Alert>
-
-              {/* سجل التدقيق الشرعي للأوعية الزكوية (مَنقول من تبويب الحساب) */}
-              <ShariaAuditTrail />
-
-              {/* أدوات متقدمة للمراجعة والامتثال */}
-              <Card className="shadow-soft border-primary/20">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <ClipboardCheck className="h-4 w-4 text-primary" /> أدوات المراجعة والتخطيط
-                    المتقدمة
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <AdvanceMultiYearZakat annualZakat={calc.total} currencyName={currencyName} />
-                  <SensitivityProjection annualZakat={calc.total} currencyName={currencyName} />
-                  <InflationAdjusterCard currencyName={currencyName} />
-                  <ZakatStatsDashboard />
-                </CardContent>
-              </Card>
-
-              <Card className="shadow-soft">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <User className="h-4 w-4 text-primary" /> بيانات المحاسب الشرعي
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="space-y-1">
-                      <Label className="text-xs">اسم محاسب الزكاة</Label>
-                      <Input
-                        value={accountantName}
-                        onChange={(e) => setAccountantName(e.target.value)}
-                        placeholder="الاسم الكامل"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs">رقم القيد / الترخيص</Label>
-                      <Input
-                        value={accountantLicense}
-                        onChange={(e) => setAccountantLicense(e.target.value)}
-                        placeholder="رقم الترخيص"
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-1">
-                    <Label className="text-xs">ديباجة المحاسب (تظهر في رأس التقرير)</Label>
-                    <Textarea
-                      value={accountantPreamble}
-                      onChange={(e) => setAccountantPreamble(e.target.value)}
-                      rows={6}
-                      className="text-xs leading-6"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="shadow-soft">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <ShieldCheck className="h-4 w-4 text-primary" /> صنف النتيجة الشرعية التقديرية
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <RadioGroup
-                    value={opinionType}
-                    onValueChange={(v) => setOpinionType(v as "clean" | "qualified" | "adverse")}
-                    className="space-y-2"
-                  >
-                    <label
-                      htmlFor="op-clean"
-                      className="flex items-start gap-2 rounded-md border p-2.5 cursor-pointer hover:bg-muted/40"
-                    >
-                      <RadioGroupItem value="clean" id="op-clean" className="mt-0.5" />
-                      <div className="text-xs leading-relaxed">
-                        <b>نتيجة التقييم الزكوي</b> — الوعاء الزكوي مستوفٍ شروط الوجوب وفق البيانات
-                        المُدخَلة.
-                      </div>
-                    </label>
-                    <label
-                      htmlFor="op-qual"
-                      className="flex items-start gap-2 rounded-md border p-2.5 cursor-pointer hover:bg-muted/40"
-                    >
-                      <RadioGroupItem value="qualified" id="op-qual" className="mt-0.5" />
-                      <div className="text-xs leading-relaxed">
-                        <b>خلاصة الفحص الزكوي</b> — توجد بنود تحتاج إلى مراجعة فقهية أو محاسبية
-                        تخصصية قبل اعتماد النتيجة.
-                      </div>
-                    </label>
-                    <label
-                      htmlFor="op-adv"
-                      className="flex items-start gap-2 rounded-md border p-2.5 cursor-pointer hover:bg-muted/40"
-                    >
-                      <RadioGroupItem value="adverse" id="op-adv" className="mt-0.5" />
-                      <div className="text-xs leading-relaxed">
-                        <b>ملخص التحقق من النصاب</b> — الوعاء الزكوي أقل من النصاب الشرعي ولا تجب
-                        الزكاة في هذا الحول.
-                      </div>
-                    </label>
-                  </RadioGroup>
-
-                  <div className="space-y-1">
-                    <Label className="text-xs">نص الرأي المهني التفصيلي (اختياري)</Label>
-                    <Textarea
-                      value={accountantOpinion}
-                      onChange={(e) => setAccountantOpinion(e.target.value)}
-                      rows={3}
-                      placeholder="ملاحظات المحاسب على بنود التقرير أو تحفظاته…"
-                      className="text-xs leading-6"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <Label className="text-xs">إجمالي زكاة العام السابق (للمقارنة)</Label>
-                    <Input
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      value={previousYearZakat}
-                      onChange={(e) => setPreviousYearZakat(e.target.value)}
-                      dir="ltr"
-                      style={{ textAlign: "right" }}
-                      placeholder="0"
-                    />
-                  </div>
-
-                  <p className="text-[11px] text-muted-foreground">
-                    <Info className="inline h-3 w-3 ml-1" />
-                    تظهر النتيجة الشرعية التقديرية والمقارنة في التقرير المطبوع، إضافةً إلى رقم
-                    تسلسلي وبصمة SHA‑256 ورابط تحقق إلكتروني.
-                  </p>
-                </CardContent>
-              </Card>
-
-              {/* خيار دمج سجل المراجعة والتدقيق ضمن التقرير */}
-              <Card className="shadow-soft border-primary/30">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <FileText className="h-4 w-4 text-primary" /> دمج سجل المراجعة والتدقيق ضمن
-                    التقرير
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-start justify-between gap-3 rounded-md border p-3 bg-muted/30">
-                    <div className="space-y-1 flex-1">
-                      <Label className="text-sm font-bold">إدراج ملحق المراجعة والتدقيق</Label>
-                      <p className="text-[11px] text-muted-foreground leading-relaxed">
-                        عند التفعيل، يُضاف ملحق في نهاية تقرير الزكاة يتضمن سجل العمليات السابقة
-                        (الحفظ والحساب) ببصمة فريدة (SHA‑256) والمراجع الشرعية المستخدمة. يتطلب
-                        تسجيل الدخول.
-                      </p>
-                    </div>
-                    <Switch checked={includeAuditReport} onCheckedChange={setIncludeAuditReport} />
-                  </div>
-                  {includeAuditReport && (
-                    <Alert className="border-primary/30 bg-primary/5">
-                      <ShieldCheck className="h-4 w-4" />
-                      <AlertDescription className="text-xs">
-                        {auditLoading
-                          ? "جاري تحميل سجلات المراجعة…"
-                          : auditEntries.length > 0
-                            ? `سيُضاف ملحق يحتوي ${auditEntries.length} عملية مُسجَّلة في تقرير الزكاة.`
-                            : "لا توجد سجلات بعد. سجّل دخولك واحفظ أول حساب زكاة لتظهر السجلات هنا."}
-                      </AlertDescription>
-                    </Alert>
-                  )}
-                </CardContent>
-              </Card>
-
-              <Card className="shadow-soft">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <ClipboardCheck className="h-4 w-4 text-primary" /> قائمة فحص الإمتثال الشرعي
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="text-xs space-y-2 leading-relaxed">
-                    {[
-                      "تم التحقق من بلوغ النصاب الشرعي (ذهب/فضة) وفق الأسعار اللحظية.",
-                      "تم احتساب الحَوْل بالتقويم الهجري (354 يوماً) ما لم يُختَر التقويم الميلادي بنسبة 2.577%.",
-                      "تم خصم الديون الحالّة وقسط السنة من الديون المؤجلة فقط.",
-                      "لم تُدخَل بنود محرَّمة شرعاً ضمن الوعاء (فوائد ربوية، عوائد محرَّمة) دون تطهير.",
-                      "تم تصنيف الذهب بين زينة وادخار وفق غرض الاقتناء.",
-                      "تم تطبيق مبدأ الأنفع للفقراء عند اختلاف نصابي الذهب والفضة.",
-                    ].map((line, i) => (
-                      <li key={i} className="flex items-start gap-2">
-                        <CheckCircle2 className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
-                        <span>{line}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-
-              {/* المعايير الشرعية حسب النشاط — مدمَجة في تبويب المراجعة والتدقيق */}
-              <ShariaStandardsCard defaultSector="general" />
-            </div>
-
-            <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">
-              <Card className="border-gold/30 shadow-soft">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <Calculator className="h-4 w-4 text-gold" /> ملخص للمراجعة
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2 text-xs">
-                  <Row label="إجمالي الأصول النقدية" value={cur(calc.monetaryGross)} />
-                  <Row label="الديون المخصومة" value={cur(calc.debts)} />
-                  <Row label="الوعاء الصافي" value={cur(calc.monetaryBase)} highlight />
-                  <Row label="النصاب المُعتمد (الأنفع)" value={cur(calc.moneyNisab)} />
-                  <Separator className="my-2" />
-                  <Row label="إجمالي الزكاة المستحقة" value={cur(calc.total)} highlight />
-                  {parseFloat(previousYearZakat || "0") > 0 && (
-                    <Row
-                      label="الفرق عن العام السابق"
-                      value={cur(calc.total - parseFloat(previousYearZakat))}
-                    />
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+          <IndividualAuditTab
+            accountantName={accountantName}
+            setAccountantName={setAccountantName}
+            accountantLicense={accountantLicense}
+            setAccountantLicense={setAccountantLicense}
+            accountantPreamble={accountantPreamble}
+            setAccountantPreamble={setAccountantPreamble}
+            accountantOpinion={accountantOpinion}
+            setAccountantOpinion={setAccountantOpinion}
+            opinionType={opinionType}
+            setOpinionType={setOpinionType}
+            previousYearZakat={previousYearZakat}
+            setPreviousYearZakat={setPreviousYearZakat}
+            includeAuditReport={includeAuditReport}
+            setIncludeAuditReport={setIncludeAuditReport}
+            auditLoading={auditLoading}
+            auditEntries={auditEntries}
+            calc={calc}
+            cur={cur}
+            currencyName={currencyName}
+          />
         </TabsContent>
       </Tabs>
-    </div>
-  );
-}
-
-function Row({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
-  return (
-    <div
-      className={`flex items-center justify-between rounded-md px-2.5 py-1.5 ${highlight ? "bg-primary/10 font-bold text-primary" : ""}`}
-    >
-      <span>{label}</span>
-      <span dir="ltr">{value}</span>
     </div>
   );
 }

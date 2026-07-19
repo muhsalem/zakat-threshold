@@ -71,7 +71,7 @@ export default function RibaPurificationCalc({ currencyName = "ج.م" }: Props) 
           </div>
         </div>
 
-        <p className="text-xs text-muted-foreground border-r-2 border-destructive/40 pr-3 leading-relaxed">
+        <p className="text-xs text-muted-foreground border-e-2 border-destructive/40 pe-3 leading-relaxed">
           <strong>الحكم:</strong> الفوائد الربوية وإيرادات الأنشطة المحرمة تُصرف في وجوه الخير
           العامة (مرافق، طرق، فقراء) بنية التخلّص لا التقرّب، ولا تُحسب ضمن الزكاة. (المعيار الشرعي
           21 — AAOIFI، قرار مجمع الفقه الإسلامي رقم 30).

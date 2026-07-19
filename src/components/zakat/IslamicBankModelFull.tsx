@@ -72,18 +72,49 @@ export default function IslamicBankModelFull() {
     const zakat = base * ZAKAT_RATE;
     return { assets, deductions, base, zakat, misrep };
   }, [
-    cashLiquid, murabahaReceivables, ijaraReceivables, istisnaReceivables, salamGoods,
-    tradingInventory, sukukTrading, equityInvestments, mudarabaShare, musharakaShare,
-    goldSilverInventory, psia, restrictedInvestments, takafulParticipantsFund,
-    fixedAssetsForUse, doubtfulDebtsProvision, currentPayables, misrepAdjustment, fullParticipationAdj,
+    cashLiquid,
+    murabahaReceivables,
+    ijaraReceivables,
+    istisnaReceivables,
+    salamGoods,
+    tradingInventory,
+    sukukTrading,
+    equityInvestments,
+    mudarabaShare,
+    musharakaShare,
+    goldSilverInventory,
+    psia,
+    restrictedInvestments,
+    takafulParticipantsFund,
+    fixedAssetsForUse,
+    doubtfulDebtsProvision,
+    currentPayables,
+    misrepAdjustment,
+    fullParticipationAdj,
   ]);
 
   const fmt = (n: number) => new Intl.NumberFormat("ar-SA", { maximumFractionDigits: 2 }).format(n);
 
-  const Field = ({ label, value, onChange, hint }: { label: string; value: string; onChange: (v: string) => void; hint?: string }) => (
+  const Field = ({
+    label,
+    value,
+    onChange,
+    hint,
+  }: {
+    label: string;
+    value: string;
+    onChange: (v: string) => void;
+    hint?: string;
+  }) => (
     <div className="space-y-1">
       <Label className="text-sm">{label}</Label>
-      <Input type="number" value={value} onChange={(e) => onChange(e.target.value)} placeholder="0" inputMode="decimal" />
+      <Input
+        type="number"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="0"
+        inputMode="decimal"
+      />
       {hint && <p className="text-[11px] text-muted-foreground">{hint}</p>}
     </div>
   );
@@ -101,8 +132,10 @@ export default function IslamicBankModelFull() {
         <Alert>
           <Info className="w-4 h-4" />
           <AlertDescription className="text-xs">
-            نموذج مبني على <b>صافي الموجودات الزكوية</b>: مجموع الموجودات الزكوية − ودائع أصحاب حسابات الاستثمار − المخصّصات − الالتزامات الجارية المستحقة خلال السنة.
-            يُخرج بحصّة البنك من صناديق المشاركة والمضاربة، ولا يُزكّى صندوق المشتركين في التكافل لأنه ملك للمشتركين لا للشركة.
+            نموذج مبني على <b>صافي الموجودات الزكوية</b>: مجموع الموجودات الزكوية − ودائع أصحاب
+            حسابات الاستثمار − المخصّصات − الالتزامات الجارية المستحقة خلال السنة. يُخرج بحصّة البنك
+            من صناديق المشاركة والمضاربة، ولا يُزكّى صندوق المشتركين في التكافل لأنه ملك للمشتركين
+            لا للشركة.
           </AlertDescription>
         </Alert>
 
@@ -110,28 +143,92 @@ export default function IslamicBankModelFull() {
           <h3 className="font-semibold text-sm">الموجودات الزكوية</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <Field label="النقد والأرصدة السائلة" value={cashLiquid} onChange={setCashLiquid} />
-            <Field label="ذمم المرابحة (إجمالي)" value={murabahaReceivables} onChange={setMurabahaReceivables} hint="قبل خصم المخصّصات" />
-            <Field label="ذمم الإجارة المنتهية بالتمليك" value={ijaraReceivables} onChange={setIjaraReceivables} />
-            <Field label="ذمم الاستصناع الموازي" value={istisnaReceivables} onChange={setIstisnaReceivables} />
+            <Field
+              label="ذمم المرابحة (إجمالي)"
+              value={murabahaReceivables}
+              onChange={setMurabahaReceivables}
+              hint="قبل خصم المخصّصات"
+            />
+            <Field
+              label="ذمم الإجارة المنتهية بالتمليك"
+              value={ijaraReceivables}
+              onChange={setIjaraReceivables}
+            />
+            <Field
+              label="ذمم الاستصناع الموازي"
+              value={istisnaReceivables}
+              onChange={setIstisnaReceivables}
+            />
             <Field label="بضائع السلم المُقتناة" value={salamGoods} onChange={setSalamGoods} />
-            <Field label="مخزون تجاري (للمتاجرة)" value={tradingInventory} onChange={setTradingInventory} />
-            <Field label="صكوك للمتاجرة" value={sukukTrading} onChange={setSukukTrading} hint="بالقيمة السوقية" />
-            <Field label="استثمارات في أسهم للمتاجرة" value={equityInvestments} onChange={setEquityInvestments} />
-            <Field label="حصّة البنك في مضاربات مطلقة" value={mudarabaShare} onChange={setMudarabaShare} />
-            <Field label="حصّة البنك في مشاركات" value={musharakaShare} onChange={setMusharakaShare} />
-            <Field label="مخزون معادن نفيسة" value={goldSilverInventory} onChange={setGoldSilverInventory} />
+            <Field
+              label="مخزون تجاري (للمتاجرة)"
+              value={tradingInventory}
+              onChange={setTradingInventory}
+            />
+            <Field
+              label="صكوك للمتاجرة"
+              value={sukukTrading}
+              onChange={setSukukTrading}
+              hint="بالقيمة السوقية"
+            />
+            <Field
+              label="استثمارات في أسهم للمتاجرة"
+              value={equityInvestments}
+              onChange={setEquityInvestments}
+            />
+            <Field
+              label="حصّة البنك في مضاربات مطلقة"
+              value={mudarabaShare}
+              onChange={setMudarabaShare}
+            />
+            <Field
+              label="حصّة البنك في مشاركات"
+              value={musharakaShare}
+              onChange={setMusharakaShare}
+            />
+            <Field
+              label="مخزون معادن نفيسة"
+              value={goldSilverInventory}
+              onChange={setGoldSilverInventory}
+            />
           </div>
         </section>
 
         <section className="space-y-3">
           <h3 className="font-semibold text-sm">المستبعَدات والخصومات</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <Field label="ودائع أصحاب حسابات الاستثمار (PSIA)" value={psia} onChange={setPsia} hint="ملك للمودعين — تخرج من الوعاء" />
-            <Field label="مضاربات مقيّدة (Off-BS)" value={restrictedInvestments} onChange={setRestrictedInvestments} />
-            <Field label="صندوق المشتركين في التكافل" value={takafulParticipantsFund} onChange={setTakafulParticipantsFund} />
-            <Field label="أصول ثابتة للاستخدام (مبانٍ/أجهزة)" value={fixedAssetsForUse} onChange={setFixedAssetsForUse} />
-            <Field label="مخصّص الديون المشكوك في تحصيلها" value={doubtfulDebtsProvision} onChange={setDoubtfulDebtsProvision} />
-            <Field label="التزامات مستحقة الدفع خلال السنة" value={currentPayables} onChange={setCurrentPayables} hint="المُقتطع من رأس المال العامل" />
+            <Field
+              label="ودائع أصحاب حسابات الاستثمار (PSIA)"
+              value={psia}
+              onChange={setPsia}
+              hint="ملك للمودعين — تخرج من الوعاء"
+            />
+            <Field
+              label="مضاربات مقيّدة (Off-BS)"
+              value={restrictedInvestments}
+              onChange={setRestrictedInvestments}
+            />
+            <Field
+              label="صندوق المشتركين في التكافل"
+              value={takafulParticipantsFund}
+              onChange={setTakafulParticipantsFund}
+            />
+            <Field
+              label="أصول ثابتة للاستخدام (مبانٍ/أجهزة)"
+              value={fixedAssetsForUse}
+              onChange={setFixedAssetsForUse}
+            />
+            <Field
+              label="مخصّص الديون المشكوك في تحصيلها"
+              value={doubtfulDebtsProvision}
+              onChange={setDoubtfulDebtsProvision}
+            />
+            <Field
+              label="التزامات مستحقة الدفع خلال السنة"
+              value={currentPayables}
+              onChange={setCurrentPayables}
+              hint="المُقتطع من رأس المال العامل"
+            />
           </div>
         </section>
 
@@ -175,14 +272,28 @@ export default function IslamicBankModelFull() {
   );
 }
 
-function SummaryCard({ label, value, highlight, icon }: { label: string; value: string; highlight?: boolean; icon?: React.ReactNode }) {
+function SummaryCard({
+  label,
+  value,
+  highlight,
+  icon,
+}: {
+  label: string;
+  value: string;
+  highlight?: boolean;
+  icon?: React.ReactNode;
+}) {
   return (
-    <div className={`rounded-lg p-3 border ${highlight ? "bg-primary/5 border-primary/40" : "bg-muted/30"}`}>
+    <div
+      className={`rounded-lg p-3 border ${highlight ? "bg-primary/5 border-primary/40" : "bg-muted/30"}`}
+    >
       <div className="text-[11px] text-muted-foreground flex items-center gap-1">
         {icon}
         {label}
       </div>
-      <div className={`font-bold text-lg tabular-nums ${highlight ? "text-primary" : ""}`}>{value}</div>
+      <div className={`font-bold text-lg tabular-nums ${highlight ? "text-primary" : ""}`}>
+        {value}
+      </div>
     </div>
   );
 }

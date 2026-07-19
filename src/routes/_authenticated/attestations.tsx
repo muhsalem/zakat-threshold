@@ -125,7 +125,7 @@ function SingleAttestation({ id }: { id: string }) {
 
           <div>
             <div className="text-xs font-semibold text-muted-foreground mb-1">رأي المراجع</div>
-            <div className="bg-muted/40 p-4 rounded leading-relaxed border-r-4 border-primary">
+            <div className="bg-muted/40 p-4 rounded leading-relaxed border-e-4 border-primary">
               {a.opinion}
             </div>
           </div>

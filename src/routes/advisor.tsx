@@ -9,7 +9,6 @@ import { Sparkles, Send, ArrowRight, Bot, User, LogIn } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
-
 export const Route = createFileRoute("/advisor")({
   component: AdvisorPage,
   head: () => ({
@@ -21,7 +20,11 @@ export const Route = createFileRoute("/advisor")({
           "اسأل مستشار الزكاة الذكي عن أحكام وطرق حساب زكاة المال، الذهب، الأسهم، التجارة، الرواتب وأنواع الزكاة المعاصرة وفق المعايير الشرعية المعتمدة.",
       },
       { property: "og:title", content: "المستشار الشرعي الذكي — نِصاب" },
-      { property: "og:description", content: "إجابات فورية موثّقة عن أسئلة الزكاة المعاصرة بذكاء اصطناعي مدرَّب على مصادر شرعية معتمدة." },
+      {
+        property: "og:description",
+        content:
+          "إجابات فورية موثّقة عن أسئلة الزكاة المعاصرة بذكاء اصطناعي مدرَّب على مصادر شرعية معتمدة.",
+      },
       { property: "og:url", content: "/advisor" },
     ],
     links: [{ rel: "canonical", href: "/advisor" }],
@@ -60,7 +63,6 @@ function AdvisorPage() {
 
   const busy = status === "submitted" || status === "streaming";
 
-
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -94,14 +96,17 @@ function AdvisorPage() {
       {!authLoading && !user && (
         <Card className="border-amber-500/40 bg-amber-500/5">
           <CardContent className="flex items-center justify-between gap-3 py-4">
-            <p className="text-sm">يلزم تسجيل الدخول لاستخدام المستشار (لحماية استهلاك الذكاء الاصطناعي).</p>
+            <p className="text-sm">
+              يلزم تسجيل الدخول لاستخدام المستشار (لحماية استهلاك الذكاء الاصطناعي).
+            </p>
             <Link to="/auth">
-              <Button size="sm" className="gap-1"><LogIn className="h-4 w-4" /> تسجيل الدخول</Button>
+              <Button size="sm" className="gap-1">
+                <LogIn className="h-4 w-4" /> تسجيل الدخول
+              </Button>
             </Link>
           </CardContent>
         </Card>
       )}
-
 
       <Card className="border-primary/30">
         <CardHeader className="pb-3">
@@ -123,7 +128,6 @@ function AdvisorPage() {
                       onClick={() => submit(s)}
                       disabled={busy || !user}
                       className="text-xs rounded-full border border-primary/30 bg-card px-3 py-1.5 hover:bg-primary hover:text-primary-foreground transition-colors disabled:opacity-50"
-
                     >
                       {s}
                     </button>
@@ -173,14 +177,15 @@ function AdvisorPage() {
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={user ? "اكتب سؤالك الشرعي أو المحاسبي عن الزكاة…" : "سجّل الدخول لبدء المحادثة"}
+              placeholder={
+                user ? "اكتب سؤالك الشرعي أو المحاسبي عن الزكاة…" : "سجّل الدخول لبدء المحادثة"
+              }
               disabled={busy || !user}
               className="flex-1"
             />
             <Button type="submit" disabled={busy || !input.trim() || !user} className="gap-1.5">
               <Send className="h-4 w-4" /> إرسال
             </Button>
-
           </form>
         </CardContent>
       </Card>

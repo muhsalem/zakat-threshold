@@ -3,7 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Award, ExternalLink, ShieldCheck, ArrowLeft } from "lucide-react";
-import { SHARIA_CERTIFICATIONS, CERT_STATUS_LABEL, type CertStatus } from "@/lib/shariaCertifications";
+import {
+  SHARIA_CERTIFICATIONS,
+  CERT_STATUS_LABEL,
+  type CertStatus,
+} from "@/lib/shariaCertifications";
 
 export const Route = createFileRoute("/certifications")({
   head: () => ({
@@ -15,7 +19,10 @@ export const Route = createFileRoute("/certifications")({
           "سجل رسمي لهيئات الاعتماد الشرعي، معايير AAOIFI، قرارات المجامع الفقهية، وشهادات الحوكمة (ZATCA · ISO · SOC 2) التي تستند إليها منصة نِصاب.",
       },
       { property: "og:title", content: "الاعتمادات الشرعية | نِصاب" },
-      { property: "og:description", content: "شفافية كاملة عن مرجعيات المنصة الشرعية وشهادات الحوكمة." },
+      {
+        property: "og:description",
+        content: "شفافية كاملة عن مرجعيات المنصة الشرعية وشهادات الحوكمة.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -40,14 +47,14 @@ function CertificationsPage() {
             <h1 className="text-3xl font-bold">سجل الاعتمادات الشرعية والحوكمة</h1>
           </div>
           <p className="text-muted-foreground max-w-2xl">
-            شفافية كاملة حول المرجعيات الفقهية والمعايير الدولية التي تستند إليها منصة نِصاب،
-            مع حالة كل اعتماد (رسمي · قيد المراجعة · معياري · مخطّط) لتمكين المدقّقين والمؤسسات
-            من التحقّق قبل الاعتماد.
+            شفافية كاملة حول المرجعيات الفقهية والمعايير الدولية التي تستند إليها منصة نِصاب، مع
+            حالة كل اعتماد (رسمي · قيد المراجعة · معياري · مخطّط) لتمكين المدقّقين والمؤسسات من
+            التحقّق قبل الاعتماد.
           </p>
         </div>
         <Button asChild variant="ghost" size="sm">
           <Link to="/">
-            <ArrowLeft className="w-4 h-4 ml-1" />
+            <ArrowLeft className="w-4 h-4 ms-1" />
             الرئيسية
           </Link>
         </Button>
@@ -57,9 +64,13 @@ function CertificationsPage() {
         <CardContent className="flex items-start gap-3 pt-6">
           <ShieldCheck className="w-6 h-6 text-primary shrink-0 mt-1" />
           <div className="text-sm">
-            <b>نموذج ثقة متدرّج:</b> نميّز بين الاعتماد الرسمي المكتوب، والاستناد المعياري إلى مطبوعات
-            الهيئات، والاعتمادات قيد المراجعة، وتلك المخطّطة ضمن خارطة الطريق. أي تحديث على أي بند
-            يُسجَّل في <Link to="/sharia-changelog" className="text-primary underline">سجل التغييرات الشرعي</Link>.
+            <b>نموذج ثقة متدرّج:</b> نميّز بين الاعتماد الرسمي المكتوب، والاستناد المعياري إلى
+            مطبوعات الهيئات، والاعتمادات قيد المراجعة، وتلك المخطّطة ضمن خارطة الطريق. أي تحديث على
+            أي بند يُسجَّل في{" "}
+            <Link to="/sharia-changelog" className="text-primary underline">
+              سجل التغييرات الشرعي
+            </Link>
+            .
           </div>
         </CardContent>
       </Card>
@@ -102,11 +113,13 @@ function CertificationsPage() {
                         {c.since}
                       </div>
                     )}
-                    {c.notes && <p className="text-xs text-muted-foreground pt-1 border-t">{c.notes}</p>}
+                    {c.notes && (
+                      <p className="text-xs text-muted-foreground pt-1 border-t">{c.notes}</p>
+                    )}
                     {c.url && (
                       <Button asChild variant="outline" size="sm" className="mt-2">
                         <a href={c.url} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="w-3.5 h-3.5 ml-1" />
+                          <ExternalLink className="w-3.5 h-3.5 ms-1" />
                           الموقع الرسمي
                         </a>
                       </Button>
@@ -125,8 +138,8 @@ function CertificationsPage() {
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground space-y-2">
           <p>
-            نرحّب بتواصل الهيئات الشرعية والمدقّقين المستقلّين لبدء عملية اعتماد رسمي جديدة.
-            نوفّر: وثائق الخوارزميات، سجل تدقيق كامل، ونسخة تجريبية معزولة للمراجعة.
+            نرحّب بتواصل الهيئات الشرعية والمدقّقين المستقلّين لبدء عملية اعتماد رسمي جديدة. نوفّر:
+            وثائق الخوارزميات، سجل تدقيق كامل، ونسخة تجريبية معزولة للمراجعة.
           </p>
           <Button asChild>
             <a href="mailto:certifications@nisab.app">تواصل معنا للاعتماد</a>

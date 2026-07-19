@@ -146,7 +146,7 @@ export function SystemAuditPanel() {
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="text-right border-b bg-muted/40">
+              <thead className="text-end border-b bg-muted/40">
                 <tr>
                   <th className="py-2 px-3">التاريخ</th>
                   <th className="py-2 px-3">الحدث</th>
@@ -177,7 +177,9 @@ export function SystemAuditPanel() {
                         </td>
                         <td className="py-2 px-3">
                           {r.user_id === null ? (
-                            <Badge variant="secondary" className="text-[10px]">نظام</Badge>
+                            <Badge variant="secondary" className="text-[10px]">
+                              نظام
+                            </Badge>
                           ) : (
                             <Badge variant="outline" className="text-[10px] font-mono">
                               {r.user_id.slice(0, 8)}…
@@ -186,9 +188,7 @@ export function SystemAuditPanel() {
                         </td>
                         <td className="py-2 px-3 text-[11px] text-muted-foreground">
                           {r.payload ? (
-                            <code className="font-mono break-all">
-                              {JSON.stringify(r.payload)}
-                            </code>
+                            <code className="font-mono break-all">{JSON.stringify(r.payload)}</code>
                           ) : (
                             "—"
                           )}

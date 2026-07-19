@@ -103,7 +103,12 @@ export function RestoreLastDraftBanner({ kind }: { kind: Kind }) {
           <Button size="sm" onClick={restore} className="h-7 gap-1.5">
             <CloudDownload className="h-3.5 w-3.5" /> استعادة
           </Button>
-          <Button size="sm" variant="ghost" onClick={() => setDismissed(true)} className="h-7 gap-1">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setDismissed(true)}
+            className="h-7 gap-1"
+          >
             <X className="h-3.5 w-3.5" /> تجاهل
           </Button>
         </div>

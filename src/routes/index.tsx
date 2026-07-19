@@ -42,6 +42,7 @@ import {
 import nisabLogo from "@/assets/nisab-logo.png.asset.json";
 import { PayButton } from "@/components/PayButton";
 import type { PlanId } from "@/lib/payments";
+import { PLANS as PLANS_CATALOG, type Plan as CatalogPlan } from "@/lib/geo/plans";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -58,10 +59,16 @@ export const Route = createFileRoute("/")({
         content: "أدوات حساب + محاسبون معتمدون + تقارير رسمية خلال يومَي عمل. للأفراد والشركات.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:image", content: "https://project--c0035707-4e26-4f8b-ac7b-8485d608f9ce.lovable.app/og-image.jpg" },
+      {
+        property: "og:image",
+        content: "https://project--c0035707-4e26-4f8b-ac7b-8485d608f9ce.lovable.app/og-image.jpg",
+      },
       { property: "og:url", content: "/" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: "https://project--c0035707-4e26-4f8b-ac7b-8485d608f9ce.lovable.app/og-image.jpg" },
+      {
+        name: "twitter:image",
+        content: "https://project--c0035707-4e26-4f8b-ac7b-8485d608f9ce.lovable.app/og-image.jpg",
+      },
     ],
     links: [{ rel: "canonical", href: "/" }],
     scripts: [
@@ -130,7 +137,7 @@ function SiteHeader() {
             كيف تعمل
           </a>
           <a href="#pricing" className="hover:text-primary">
-            الأسعار
+            الاشتراكات والخطط
           </a>
           <a href="#faq" className="hover:text-primary">
             الأسئلة
@@ -145,8 +152,6 @@ function SiteHeader() {
     </header>
   );
 }
-
-
 
 /* ---------------- Hero ---------------- */
 
@@ -169,9 +174,11 @@ function Hero() {
             </span>
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed max-w-xl">
-            نجمع بين حاسبة ذكية مبنية على معايير <b>AAOIFI 35</b> و
-            <b>الاتحاد الدولي لعلماء المسلمين</b>، وبين شبكة محاسبين معتمدين يراجعون بياناتك ويرسلون
-            التقرير النهائي إلى بريدك.
+            حاسبة ذكية مبنية على معايير <b>AAOIFI 35</b> و
+            <b>الاتحاد الدولي لعلماء المسلمين</b> تُصدر لك تقريراً تفصيلياً جاهزاً للاعتماد.
+            <span className="block text-xs mt-1 text-primary/80">
+              قريباً: مراجعة بشرية من شبكة محاسبين قانونيين مرخّصين قبل الإصدار.
+            </span>
           </p>
           <div className="flex flex-wrap gap-3">
             <Link to="/client-intake">
@@ -289,11 +296,6 @@ function Features() {
       icon: Cpu,
       title: "أدوات ذكية 40+",
       desc: "زكاة الذهب، الأسهم، العقار، الصكوك، التكافل، الأصول الرقمية، والزروع والأنعام.",
-    },
-    {
-      icon: Briefcase,
-      title: "شبكة محاسبين معتمدين",
-      desc: "مراجعة بشرية من محاسبين قانونيين مرخّصين قبل إصدار التقرير.",
     },
     {
       icon: Clock,
@@ -622,173 +624,141 @@ function formatPrice(usd: number, ccyCode: string): string {
 }
 
 function Pricing() {
-  const [ccy, setCcy] = useState<string>("USD");
-  useEffect(() => {
-    setCcy(detectCurrency());
-  }, []);
-  const current = CURRENCIES[ccy] ?? CURRENCIES.USD;
+  const [tab, setTab] = useState<"individual" | "business" | "accountant">("individual");
+  const list = PLANS_CATALOG.filter((p) => p.audience === tab);
+  const gridCols =
+    tab === "individual"
+      ? "md:grid-cols-2 lg:grid-cols-3"
+      : tab === "business"
+        ? "md:grid-cols-2 lg:grid-cols-4"
+        : "md:grid-cols-3";
+
+  const tabs: Array<{ id: typeof tab; label: string; Icon: typeof Users }> = [
+    { id: "individual", label: "للأفراد", Icon: Users },
+    { id: "business", label: "للشركات", Icon: Building2 },
+    { id: "accountant", label: "للمحاسبين", Icon: Briefcase },
+  ];
 
   return (
     <section id="pricing" className="bg-muted/30 border-y" dir="rtl">
       <div className="container mx-auto px-4 py-20">
         <SectionHeader
-          eyebrow="خطط الأسعار"
-          title="ادفع مقابل ما تحتاجه فقط"
-          subtitle="أسعار شفافة بلا رسوم خفية. جميع الخطط تشمل التحديثات ودعم عربي."
+          eyebrow="Freemium + إدارة زكاة على مدار السنة"
+          title="الحاسبة مجانية للأبد — تدفع فقط مقابل الإدارة والتقارير"
+          subtitle="خطط مصمَّمة لدورة استخدامك: تقرير واحد، اشتراك سنوي بقيمة مستمرة، أو Lifetime — للأفراد والشركات والمحاسبين."
         />
 
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <span className="text-xs text-muted-foreground">العملة:</span>
-          <select
-            value={ccy}
-            onChange={(e) => setCcy(e.target.value)}
-            className="rounded-md border bg-background px-2 py-1 text-sm"
-            aria-label="اختر عملة العرض"
-          >
-            {Object.values(CURRENCIES).map((c) => (
-              <option key={c.code} value={c.code}>
-                {c.label} ({c.code})
-              </option>
+        <div className="flex justify-center mb-8">
+          <div className="inline-flex rounded-lg border bg-background p-1">
+            {tabs.map(({ id, label, Icon }) => (
+              <button
+                key={id}
+                onClick={() => setTab(id)}
+                className={`px-4 py-1.5 text-sm rounded-md transition ${tab === id ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}
+              >
+                <Icon className="inline h-4 w-4 ms-1" /> {label}
+              </button>
             ))}
-          </select>
-          {ccy !== "USD" && (
-            <span className="text-[11px] text-muted-foreground">
-              (تحويل تقريبي من الدولار — 1$ ≈ {current.rate} {current.symbol})
-            </span>
-          )}
-        </div>
-
-        <div className="mb-10">
-          <div className="text-center mb-6">
-            <Badge variant="outline" className="text-sm py-1.5 px-3">
-              <Users className="h-4 w-4 ml-1" /> خطط الأفراد
-            </Badge>
-          </div>
-          <div className="grid md:grid-cols-3 gap-4 max-w-5xl mx-auto">
-            <PriceCard
-              name="مجاني"
-              priceUSD={0}
-              ccy={ccy}
-              period="دائماً"
-              tagline="للتسجيل وبدء رحلة الحساب"
-              cta="ابدأ الآن"
-              to="/client-intake"
-              features={[
-                "تسجيل البيانات ورفع المستندات",
-                "زكاة الفطر والذهب والفضة",
-                "سجل النصاب التاريخي",
-                "تقرير PDF غير معتمد",
-              ]}
-            />
-            <PriceCard
-              name="معتمد"
-              priceUSD={19}
-              ccy={ccy}
-              period="/ تقرير"
-              tagline="تقرير رسمي بمراجعة محاسب"
-              highlight
-              badge="الأكثر شعبية"
-              cta="اطلب تقريري"
-              to="/client-intake"
-              planId="certified"
-              features={[
-                "كل ميزات المجاني",
-                "مراجعة محاسب معتمد",
-                "تقرير PDF مختوم + رقم تحقق",
-                "إرسال على البريد خلال يومَي عمل",
-                "استشارة شرعية مكتوبة",
-              ]}
-            />
-            <PriceCard
-              name="سنوي VIP"
-              priceUSD={79}
-              ccy={ccy}
-              period="/ سنة"
-              tagline="متابعة كاملة على مدار الحول"
-              cta="اشترك سنوياً"
-              to="/client-intake"
-              planId="vip_annual"
-              features={[
-                "4 تقارير معتمدة سنوياً",
-                "تذكير حَوْلي بالبريد والواتساب",
-                "أرشيف تقارير مؤمّن",
-                "أولوية دعم مباشر",
-                "استشارات شرعية غير محدودة",
-              ]}
-            />
           </div>
         </div>
 
-        <div>
-          <div className="text-center mb-6">
-            <Badge variant="outline" className="text-sm py-1.5 px-3">
-              <Building2 className="h-4 w-4 ml-1" /> خطط الشركات والمؤسسات
-            </Badge>
-          </div>
-          <div className="grid md:grid-cols-3 gap-4 max-w-5xl mx-auto">
-            <PriceCard
-              name="Startup"
-              priceUSD={149}
-              ccy={ccy}
-              period="/ شهر"
-              tagline="للشركات الناشئة وSMEs"
-              cta="ابدأ اشتراك الشركة"
-              to="/client-intake"
-              planId="startup"
-              features={[
-                "حساب زكوي شهري/سنوي",
-                "حتى 100 قيد محاسبي",
-                "استيراد Excel و CSV",
-                "تقرير معتمد ربع سنوي",
-                "دعم بريدي (48 ساعة)",
-              ]}
-            />
-            <PriceCard
-              name="Business"
-              priceUSD={499}
-              ccy={ccy}
-              period="/ شهر"
-              tagline="للشركات متوسطة الحجم"
-              highlight
-              badge="الأكثر توازناً"
-              cta="اطلب تجربة"
-              to="/client-intake"
-              planId="business"
-              features={[
-                "قيود غير محدودة",
-                "ربط ERP (Odoo / Zoho / SAP)",
-                "تقارير شهرية معتمدة",
-                "لوحة تحكم مالية كاملة",
-                "محاسب مخصّص لحسابك",
-                "توزيع المصارف الثمانية",
-              ]}
-            />
-            <PriceCard
-              name="Enterprise"
-              priceUSD={-1}
-              ccy={ccy}
-              period="/ سنوياً"
-              tagline="للمؤسسات والأوقاف الكبرى"
-              cta="تواصل مع المبيعات"
-              to="/enterprise"
-              features={[
-                "SLA زمن استجابة ساعة",
-                "SSO / SAML وأمان مؤسسي",
-                "ربط ERP مؤسسي مخصّص",
-                "فروع ومستخدمين غير محدودين",
-                "تقارير IFRS + ESG + AAOIFI",
-                "مدير حساب + مستشار شرعي",
-              ]}
-            />
-          </div>
+        <div className={`grid ${gridCols} gap-4 max-w-6xl mx-auto`}>
+          {list.map((plan) => (
+            <PlanCardHome key={plan.id} plan={plan} />
+          ))}
         </div>
 
-        <p className="text-center text-xs text-muted-foreground mt-8">
-          الأسعار مرجعها الدولار وتُعرض بعملتك المحلية بالتحويل التقريبي • الفوترة الفعلية تشمل
-          ضريبة القيمة المضافة حيثما تنطبق
-        </p>
+        <div className="text-center mt-8 space-y-2">
+          <Link to="/pricing" className="text-sm text-primary hover:underline">
+            عرض تفصيلي بالعملة المحلية (PPP) ←
+          </Link>
+          <p className="text-xs text-muted-foreground">
+            الأسعار بالدولار الأمريكي (T1). الفوترة الفعلية تشمل ضريبة القيمة المضافة حيثما تنطبق.
+          </p>
+        </div>
       </div>
     </section>
+  );
+}
+
+function PlanCardHome({ plan }: { plan: CatalogPlan }) {
+  const Icon = plan.icon;
+  const priceLabel =
+    plan.usdPrice === null
+      ? "حسب الطلب"
+      : plan.usdPrice === 0
+        ? "مجاناً"
+        : `$${plan.usdPrice}`;
+  const periodLabel =
+    plan.billing === "yearly"
+      ? "/ سنة"
+      : plan.billing === "monthly"
+        ? "/ شهر"
+        : plan.billing === "one_time"
+          ? "/ تقرير"
+          : plan.billing === "lifetime"
+            ? "مرة واحدة — للأبد"
+            : "";
+
+  return (
+    <Card
+      className={`relative flex flex-col ${plan.highlight ? "border-primary border-2 shadow-xl" : ""}`}
+    >
+      {plan.badge && (
+        <Badge className="absolute -top-3 right-4 bg-primary text-primary-foreground border-0 shadow-md">
+          {plan.badge}
+        </Badge>
+      )}
+      <CardHeader className="pb-3 space-y-2">
+        <div className="flex items-center gap-2">
+          <Icon className="h-5 w-5 text-primary" />
+          <div className="text-sm font-semibold text-muted-foreground">{plan.name}</div>
+        </div>
+        <div className="flex items-baseline gap-1 flex-wrap">
+          {plan.priceAnchorLabel && (
+            <span className="text-xs text-muted-foreground">{plan.priceAnchorLabel}</span>
+          )}
+          <span className={`text-3xl font-bold ${plan.highlight ? "text-primary" : ""}`}>
+            {priceLabel}
+          </span>
+          <span className="text-xs text-muted-foreground">{periodLabel}</span>
+        </div>
+        {plan.assetTier && (
+          <div className="text-[11px] text-primary/80 bg-primary/5 border border-primary/15 rounded px-2 py-0.5 inline-block w-fit">
+            {plan.assetTier}
+          </div>
+        )}
+        <p className="text-xs text-muted-foreground">{plan.tagline}</p>
+        {plan.ribbon && (
+          <div className="text-[11px] font-medium text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 rounded px-2 py-0.5">
+            ★ {plan.ribbon}
+          </div>
+        )}
+      </CardHeader>
+      <CardContent className="space-y-4 flex-1 flex flex-col">
+        <ul className="space-y-1.5 text-xs flex-1">
+          {plan.features.map((f) => (
+            <li key={f} className="flex items-start gap-2">
+              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />
+              <span>{f}</span>
+            </li>
+          ))}
+        </ul>
+        {plan.ctaTo ? (
+          <Link to={plan.ctaTo}>
+            <Button variant={plan.highlight ? "default" : "outline"} className="w-full">
+              {plan.usdPrice === 0 ? "ابدأ مجاناً" : `اختر ${plan.name}`}
+            </Button>
+          </Link>
+        ) : (
+          <a href={plan.ctaHref ?? "mailto:sales@nisab.app"}>
+            <Button variant="outline" className="w-full gap-1.5">
+              <Mail className="h-4 w-4" /> تواصل مع المبيعات
+            </Button>
+          </a>
+        )}
+      </CardContent>
+    </Card>
   );
 }
 
@@ -908,7 +878,7 @@ function FAQ() {
             <div className="font-semibold mb-2 flex items-start gap-2">
               <BookOpen className="h-4 w-4 text-primary mt-1 shrink-0" /> {qa.q}
             </div>
-            <p className="text-sm text-muted-foreground leading-relaxed pr-6">{qa.a}</p>
+            <p className="text-sm text-muted-foreground leading-relaxed pe-6">{qa.a}</p>
           </div>
         ))}
       </div>
@@ -975,13 +945,13 @@ function SiteFooter() {
             <Star className="h-3.5 w-3.5 fill-current" />
             <Star className="h-3.5 w-3.5 fill-current" />
             <Star className="h-3.5 w-3.5 fill-current" />
-            <span className="text-muted-foreground mr-1">4.9/5 من 2,300+ مستخدم</span>
+            <span className="text-muted-foreground me-1">4.9/5 من 2,300+ مستخدم</span>
           </div>
         </div>
         <FooterCol
           title="المنتج"
           links={[
-            ["الأسعار", "#pricing"],
+            ["الاشتراكات والخطط", "#pricing"],
             ["كيف تعمل", "#how"],
             ["للمؤسسات", "/enterprise"],
           ]}

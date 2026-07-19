@@ -5,46 +5,313 @@ on:
     branches: [main]
   pull_request:
 
+# ألغِ التشغيلات السابقة على نفس الفرع لتقليل الازدحام
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
+    name: Type-check · Lint · Unit · Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
         with: { bun-version: latest }
-      - run: bun install --frozen-lockfile
-      - name: Type-check
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      # فحص أنواع صارم — أي خطأ TS يوقف CI
+      - name: Type-check (strict)
         run: bunx tsgo --noEmit
+
+      # ESLint — الأخطاء تفشل CI؛ التحذيرات مسموحة (لا تعطيل للأخطاء)
+      - name: Lint
+        run: bunx eslint .
+
+      # اختبارات الوحدات والخصائص — بدون تجاوز
       - name: Unit & property tests
         run: bunx vitest run --reporter=verbose
-      - name: Build
+
+      # بناء الإنتاج — تأكيد عدم كسر البناء
+      - name: Production build
         run: bun run build
 
+      # حفظ مخرجات البناء لاستخدامها في مهمة a11y بدون إعادة البناء
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: |
+            dist
+            .output
+          if-no-files-found: ignore
+          retention-days: 1
+
   a11y:
+    name: Accessibility (axe)
     runs-on: ubuntu-latest
     needs: test
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
         with: { bun-version: latest }
-      - run: bun install --frozen-lockfile
-      - name: Start preview
-        run: bun run build && bun run preview &
-      - name: Wait for server
-        run: npx wait-on http://localhost:4173 -t 60000
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+
+      # تشغيل preview في الخلفية مع سجل مستقل — أي فشل في الإقلاع يظهر بوضوح
+      - name: Start preview server
+        run: |
+          nohup bun run preview > preview.log 2>&1 &
+          echo $! > preview.pid
+
+      - name: Wait for preview
+        run: npx --yes wait-on http://localhost:4173 -t 60000
+
+      # فحص axe — --exit يعيد كود خروج ≠ 0 عند أي انتهاك، فيفشل CI
       - name: Axe accessibility scan
-        run: npx @axe-core/cli http://localhost:4173 --exit
+        run: npx --yes @axe-core/cli http://localhost:4173 --exit
+
+      - name: Preview server logs (on failure)
+        if: failure()
+        run: cat preview.log || true
+
+      - name: Stop preview server
+        if: always()
+        run: |
+          if [ -f preview.pid ]; then kill "$(cat preview.pid)" || true; fi
 
   security:
+    name: Security scans
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Dependency review
-        uses: actions/dependency-review-action@v4
         if: github.event_name == 'pull_request'
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+
+      # Trivy — أي ثغرة HIGH/CRITICAL تفشل CI (سابقاً كان exit-code=0 يبتلع الأخطاء)
       - name: Trivy filesystem scan
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: fs
           severity: HIGH,CRITICAL
-          exit-code: "0"
+          ignore-unfixed: true
+          exit-code: "1"
+
+  rtl-pagination:
+    name: RTL pagination · ${{ matrix.browser }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Playwright (Python) + Pillow
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install playwright pillow
+          python -m playwright install --with-deps ${{ matrix.browser }}
+
+      # نفس matrix للأحجام (mobile/tablet/desktop) داخل السكربت — نغيّر المتصفح فقط
+      - name: Run RTL pagination behavioral tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-data.py
+
+      # تنقّل الكيبورد (Arrow/Home/End + Tab/Shift+Tab) وحلقة التركيز في RTL وLTR
+      - name: Run keyboard-nav & focus-ring tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-keyboard.py
+
+      # ARIA / semantics: role, aria-label, aria-live, aria-current, aria-disabled
+      - name: Run ARIA / semantics tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-aria.py
+
+      # Large dataset (120 سجل + 80 مرفق) — يتحقّق من الحساب الصحيح لكل perPage
+      - name: Run large-dataset pagination tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-large.py
+
+      # RTL a11y: ترتيب Tab / Shift+Tab + aria-current + aria-label لكل نمط pagination
+      - name: Run RTL a11y (tab-order + aria) tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-a11y.py
+
+      # حالات حافّة: N=0/1/exact/just-over/few/boundary/many pages
+      - name: Run edge-case pagination tests (0, 1, 2-5, 10+ pages)
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-edge.py
+
+      # انتقالات Tab بعد تغيّر عدد الصفحات: لا يقفز التركيز لعنصر معطّل
+      - name: Run Tab-transition tests (pages count changes)
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-tab-transitions.py
+
+      # aria-label + aria-current يتحدّثان صحيحًا بعد كل نقرة (prev/next/رقم)
+      - name: Run aria-label + aria-current update tests (RTL)
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-aria-updates.py
+
+      # Home/End/Arrow: صفحة وحيدة vs متعدّدة + انتقالات total_pages
+      - name: Run Home/End/Arrow transition tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-keys-transitions.py
+
+      # تغيير عدد السجلات بشكل حيّ دون إعادة تحميل (counter/range/prev/next)
+      - name: Run live dataset resize tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-live-resize.py
+
+      # ترتيب التركيز بعد تغيّر total: لا يقفز Tab لأي زر معطّل + تركيز aria-current
+      - name: Run focus-after-resize tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-focus-after-resize.py
+
+      # preserve/clamp: الصفحة تبقى كما هي إن صحّت، وإلا تُقيَّد للأخيرة، دون تحميل
+      - name: Run preserve+clamp on live resize tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-clamp-on-resize.py
+
+      # استعادة الحالة بعد refresh وإعادة الفتح (sessionStorage + URL params)
+      - name: Run restore-after-refresh tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-restore-after-refresh.py
+
+      # aria-label + aria-current + aria-disabled يتحدّثان فورًا مع تغيّر total
+      - name: Run aria-on-resize tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-aria-on-resize.py
+
+      # النقر على prev/next المعطّل لا يبدّل aria/tabindex/state ولا يسرّب التركيز
+      - name: Run disabled-click no-op tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-disabled-click-noop.py
+
+      # التركيز يعود لنفس عنصر التحكم بعد resize أو نقر رقم صفحة (بدون قفز)
+      - name: Run focus-return after resize/click tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-focus-return.py
+
+      # إعلان قارئ الشاشة للصفحة الحالية بعد __resizeData + توافق Tab/Shift+Tab
+      - name: Run SR announcement + focus/current-page agreement tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-sr-announce.py
+
+      # axe-core على سطح الـpager (RTL+LTR) بعد كل __resizeData / __resizeNumbered
+      - name: Run axe-core ARIA scan across resizes
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-axe-resize.py
+
+      # ترتيب Tab لا يتخطّى مفعَّلًا ولا يقف على prev/next معطَّل بعد resize
+      - name: Run tab-order vs disabled prev/next tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-tab-order-disabled.py
+
+      # force-click على prev/next أثناء resize لا يفعّل معطّلًا ولا يقفز صفحة
+      - name: Run force-click during resize tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-force-click-during-resize.py
+
+      # Enter/Space على prev/next المعطّلين لا يغيّر الحالة بعد resize
+      - name: Run Enter/Space on disabled prev/next tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-key-activation-disabled.py
+
+      # الأسهم تغيّر الصفحة فقط حين تكون prev/next مفعّلة ولا تتجاوز الحدود
+      - name: Run arrow-key boundaries tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-arrow-keys-boundaries.py
+
+      # النقر على prev/next المعطّلة بعد resize لا يحرّك الصفحة ولا التركيز
+      - name: Run post-resize disabled-click focus tests
+        env:
+          PW_BROWSER: ${{ matrix.browser }}
+        run: python tests/visual-rtl/run-post-resize-disabled-click.py
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      # Visual regression (chromium فقط — البيسلاينز مُلتقطة على chromium):
+      # يُنتج diffs/*.actual.png و diffs/*.diff.png عند أي انحراف بصري.
+      - name: Run visual regression (baselines vs current)
+        if: matrix.browser == 'chromium'
+        run: python tests/visual-rtl/run.py
+
+      # يُرفع دائمًا عند الفشل: لقطات الفشل السلوكية + الالتقاطات الحيّة +
+      # فرق البصري (baseline/actual/diff) لتشخيص أي تراجع في RTL بسرعة.
+      - name: Upload failure artifacts (screenshots + visual diffs)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rtl-pagination-failures-${{ matrix.browser }}
+          path: |
+            tests/visual-rtl/_capture/**
+            tests/visual-rtl/diffs/**
+            tests/visual-rtl/baselines/**
+          if-no-files-found: ignore
+          retention-days: 14
+
+

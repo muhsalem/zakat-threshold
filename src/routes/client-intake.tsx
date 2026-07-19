@@ -90,6 +90,9 @@ type FormState = {
   stocksLongTerm: number;
   mutualFunds: number;
   sukuk: number;
+  esopVestedValue: number;
+  bills: number;
+  rikazMetals: number;
   realEstateTrading: number;
   realEstateRental: number;
   rentalIncomeAnnual: number;
@@ -102,6 +105,7 @@ type FormState = {
   endOfServiceBenefits: number;
   businessAssets: number;
   businessLiabilities: number;
+  receivablesDoubtful: number;
   notes: string;
 };
 
@@ -130,6 +134,9 @@ const emptyForm: FormState = {
   stocksLongTerm: 0,
   mutualFunds: 0,
   sukuk: 0,
+  esopVestedValue: 0,
+  bills: 0,
+  rikazMetals: 0,
   realEstateTrading: 0,
   realEstateRental: 0,
   rentalIncomeAnnual: 0,
@@ -142,6 +149,7 @@ const emptyForm: FormState = {
   endOfServiceBenefits: 0,
   businessAssets: 0,
   businessLiabilities: 0,
+  receivablesDoubtful: 0,
   notes: "",
 };
 
@@ -250,7 +258,6 @@ function ClientIntakePage() {
       hawlDate: form.hawlDate,
     });
     if (!parsed.success) return toast.error(parsed.error.issues[0]?.message || "بيانات غير صالحة");
-
     // التفاصيل الكاملة تُحفظ بنيوياً، والتجميع الفقهي الصحيح يستبعد ما لا يصح
     // ضمه بمعدل 2.5% (أسهم طويلة الأجل، دخل إيجار، زروع، أنعام...) مع أعلام مراجعة
     const details: IntakeDetails = {
@@ -284,10 +291,32 @@ function ClientIntakePage() {
       businessAssets: form.businessAssets,
       businessLiabilities: form.businessLiabilities,
       receivables: form.receivables,
+      receivablesDoubtful: form.receivablesDoubtful,
       debts: form.debts,
+      esopVestedValue: form.esopVestedValue,
+      bills: form.bills,
+      rikazMetals: form.rikazMetals,
       notes: form.notes,
     };
     const { breakdown } = aggregateIntake(details);
+
+    const notesExtras =
+      mode === "comprehensive"
+        ? [
+            `ذهب: ${form.goldGrams} جم — فضة: ${form.silverGrams} جم — حلي شخصي: ${form.jewelryPersonal}`,
+            `أوراق تجارية (كمبيالات/شيكات): ${form.bills}`,
+            `ESOP (خيارات أسهم مستحقة): ${form.esopVestedValue}`,
+            `ركاز/معادن مكتشفة: ${form.rikazMetals}`,
+            `عقار إيجاري: ${form.realEstateRental} — دخل إيجاري سنوي: ${form.rentalIncomeAnnual}`,
+            `زراعة: ${form.agricultureType} بقيمة ${form.agricultureValue}`,
+            `أنعام — إبل: ${form.livestockCamels} · بقر: ${form.livestockCattle} · غنم: ${form.livestockSheep}`,
+            `راتب شهري: ${form.salaryMonthly} — مكافأة نهاية خدمة: ${form.endOfServiceBenefits}`,
+            `ديون مشكوك في تحصيلها: ${form.receivablesDoubtful}`,
+            form.notes,
+          ]
+            .filter(Boolean)
+            .join(" \n ")
+        : form.notes;
 
     const payload = {
       name: form.name,
@@ -297,8 +326,10 @@ function ClientIntakePage() {
       madhab: form.madhab,
       hawlDate: form.hawlDate,
       breakdown,
-      notes: `[${mode === "comprehensive" ? "تقرير شامل معتمد" : "حساب سريع"}] ${form.notes}`,
+      notes: `[${mode === "comprehensive" ? "تقرير شامل معتمد" : "حساب سريع"}] ${notesExtras}`,
       createdVia: "intake" as const,
+      // نسخة كاملة من كل حقول النموذج ليطّلع عليها المحاسب بلا إعادة إدخال
+      intakeDetails: { mode, ...form },
     };
 
     // إذا كان المستخدم مسجّل الدخول: احفظ في Lovable Cloud مباشرة
@@ -360,11 +391,11 @@ function ClientIntakePage() {
           <br />
           سيصلك التقرير الرسمي على بريدك <b>خلال يومَي عمل</b> بحد أقصى.
         </p>
-        <div className="rounded-lg border bg-primary/5 p-4 text-sm text-right space-y-2">
+        <div className="rounded-lg border bg-primary/5 p-4 text-sm text-end space-y-2">
           <div className="font-semibold flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-primary" /> ما التالي؟
           </div>
-          <ol className="list-decimal pr-6 space-y-1 text-muted-foreground">
+          <ol className="list-decimal pe-6 space-y-1 text-muted-foreground">
             <li>يستلم المحاسب المعتمد بياناتك خلال دقائق.</li>
             <li>مراجعة وتصنيف الأصول والالتزامات وفق المعايير الشرعية.</li>
             {isComp && (
@@ -627,9 +658,25 @@ function ClientIntakePage() {
               on={(v) => set("mutualFunds", v)}
             />
             <NumField label="صكوك" v={form.sukuk} on={(v) => set("sukuk", v)} />
+            <NumField
+              label="خيارات أسهم موظفين (ESOP) — الوَجَبات المستحقة"
+              v={form.esopVestedValue}
+              on={(v) => set("esopVestedValue", v)}
+            />
           </SectionCard>
 
-          <SectionCard title="4) العقارات" icon={<Home className="h-4 w-4" />}>
+          <SectionCard
+            title="4) الأوراق التجارية (كمبيالات وشيكات)"
+            icon={<FileCheck2 className="h-4 w-4" />}
+          >
+            <NumField
+              label="كمبيالات/شيكات/أوراق قبض محققة الأداء"
+              v={form.bills}
+              on={(v) => set("bills", v)}
+            />
+          </SectionCard>
+
+          <SectionCard title="5) العقارات" icon={<Home className="h-4 w-4" />}>
             <NumField
               label="عقار للمتاجرة"
               v={form.realEstateTrading}
@@ -647,7 +694,7 @@ function ClientIntakePage() {
             />
           </SectionCard>
 
-          <SectionCard title="5) الزروع والثمار" icon={<Wheat className="h-4 w-4" />}>
+          <SectionCard title="6) الزروع والثمار" icon={<Wheat className="h-4 w-4" />}>
             <Field label="نوع الري">
               <Select
                 value={form.agricultureType}
@@ -670,13 +717,21 @@ function ClientIntakePage() {
             />
           </SectionCard>
 
-          <SectionCard title="6) الأنعام (بالعدد)" icon={<Landmark className="h-4 w-4" />}>
+          <SectionCard title="7) الأنعام (بالعدد)" icon={<Landmark className="h-4 w-4" />}>
             <NumField label="إبل" v={form.livestockCamels} on={(v) => set("livestockCamels", v)} />
             <NumField label="بقر" v={form.livestockCattle} on={(v) => set("livestockCattle", v)} />
             <NumField label="غنم" v={form.livestockSheep} on={(v) => set("livestockSheep", v)} />
           </SectionCard>
 
-          <SectionCard title="7) الرواتب والمكافآت" icon={<Briefcase className="h-4 w-4" />}>
+          <SectionCard title="8) الركاز والمعادن المكتشفة" icon={<Coins className="h-4 w-4" />}>
+            <NumField
+              label="قيمة الركاز/المعادن (الزكاة 20% أو حسب رأي المحاسب)"
+              v={form.rikazMetals}
+              on={(v) => set("rikazMetals", v)}
+            />
+          </SectionCard>
+
+          <SectionCard title="9) الرواتب والمكافآت" icon={<Briefcase className="h-4 w-4" />}>
             <NumField
               label="راتب شهري"
               v={form.salaryMonthly}
@@ -689,7 +744,7 @@ function ClientIntakePage() {
             />
           </SectionCard>
 
-          <SectionCard title="8) نشاط تجاري/مؤسسة" icon={<Building2 className="h-4 w-4" />}>
+          <SectionCard title="10) نشاط تجاري/مؤسسة" icon={<Building2 className="h-4 w-4" />}>
             <NumField label="عروض تجارة/مخزون" v={form.inventory} on={(v) => set("inventory", v)} />
             <NumField
               label="أصول تشغيلية زكوية"
@@ -703,11 +758,16 @@ function ClientIntakePage() {
             />
           </SectionCard>
 
-          <SectionCard title="9) الديون" icon={<Scale className="h-4 w-4" />}>
+          <SectionCard title="11) الديون" icon={<Scale className="h-4 w-4" />}>
             <NumField
               label="ديون مستحقة لك (مرجوّة)"
               v={form.receivables}
               on={(v) => set("receivables", v)}
+            />
+            <NumField
+              label="ديون مشكوك في تحصيلها (تُزكَّى عند القبض)"
+              v={form.receivablesDoubtful}
+              on={(v) => set("receivablesDoubtful", v)}
             />
             <NumField label="ديون عليك (قصيرة الأجل)" v={form.debts} on={(v) => set("debts", v)} />
           </SectionCard>

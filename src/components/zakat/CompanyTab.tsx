@@ -100,7 +100,7 @@ function NumField({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="0"
-          className="pl-16"
+          className="ps-16"
           dir="ltr"
           style={{ textAlign: "right" }}
         />
@@ -1449,7 +1449,7 @@ export function CompanyTab() {
   ]);
 
   return (
-    <div dir="rtl" className="text-right">
+    <div dir="rtl" className="text-end">
       <Tabs defaultValue="zakat" className="space-y-6" dir="rtl">
         <TabsList dir="rtl" className="grid grid-cols-2 w-full max-w-2xl mx-auto h-auto">
           <TabsTrigger value="zakat" className="gap-2 text-sm py-2.5">
@@ -1489,7 +1489,7 @@ export function CompanyTab() {
                       <SelectContent>
                         {COUNTRIES.map((c) => (
                           <SelectItem key={c.code} value={c.code}>
-                            <span className="ml-2">{c.flag}</span> {c.name}
+                            <span className="ms-2">{c.flag}</span> {c.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -1672,7 +1672,7 @@ export function CompanyTab() {
                           </label>
                         </RadioGroup>
                         <p className="text-[11px] text-muted-foreground mt-1.5">
-                          <Info className="inline h-3 w-3 ml-1" />
+                          <Info className="inline h-3 w-3 ms-1" />
                           عند التثبيت يُعتمد تاريخ ميلاد الحول كمرجع دائم للسنوات اللاحقة.
                         </p>
                       </div>
@@ -1843,7 +1843,7 @@ export function CompanyTab() {
                       </SelectContent>
                     </Select>
                     <p className="text-[11px] text-muted-foreground mt-1.5">
-                      <Info className="h-3 w-3 inline ml-1" />
+                      <Info className="h-3 w-3 inline ms-1" />
                       سيتم فتح النموذج القطاعي المناسب تلقائياً أدناه: <b>{sector.label}</b>
                     </p>
                   </div>
@@ -1903,7 +1903,7 @@ export function CompanyTab() {
                           />
                         </div>
                         <p className="md:col-span-3 text-[11px] text-muted-foreground">
-                          <Info className="h-3 w-3 inline ml-1" />
+                          <Info className="h-3 w-3 inline ms-1" />
                           تُدمج بيانات الفروع في الوعاء الزكوي الموحّد للشركة الأم ما لم تكن مستقلة
                           قانونياً.
                         </p>
@@ -2111,7 +2111,7 @@ export function CompanyTab() {
                         <div className="font-semibold">
                           تنبيهات تحقق المدخلات / Input validation warnings:
                         </div>
-                        <ul className="list-disc pr-4 space-y-0.5">
+                        <ul className="list-disc pe-4 space-y-0.5">
                           {calc.warnings.map((w, i) => (
                             <li key={i}>
                               <span dir="rtl">{w.ar}</span>{" "}
@@ -2575,7 +2575,7 @@ export function CompanyTab() {
                             <p>
                               <b className="text-primary">مكوّناته:</b>
                             </p>
-                            <ul className="list-disc pr-4 space-y-0.5 text-muted-foreground">
+                            <ul className="list-disc pe-4 space-y-0.5 text-muted-foreground">
                               <li>
                                 <b>رأس المال المدفوع:</b> القيمة الاسمية للأسهم المسدّدة.
                               </li>
@@ -2589,7 +2589,7 @@ export function CompanyTab() {
                             <p>
                               <b className="text-primary">يُخصم منها:</b>
                             </p>
-                            <ul className="list-disc pr-4 space-y-0.5 text-muted-foreground">
+                            <ul className="list-disc pe-4 space-y-0.5 text-muted-foreground">
                               <li>الأصول الثابتة (مبانٍ، آلات، سيارات للاستخدام).</li>
                               <li>الأصول غير الملموسة (شهرة، براءات، برامج).</li>
                               <li>الخسائر المتراكمة.</li>
@@ -2992,7 +2992,7 @@ export function CompanyTab() {
               <CardContent>
                 <div className="text-4xl font-black tracking-tight">
                   {fmt(calc.zakat)}
-                  <span className="text-lg font-medium opacity-80 mr-2">{currencyName}</span>
+                  <span className="text-lg font-medium opacity-80 me-2">{currencyName}</span>
                 </div>
                 {!calc.reachesNisab && calc.base > 0 && (
                   <p className="text-xs mt-2 bg-destructive/30 rounded px-2 py-1">
@@ -3223,7 +3223,7 @@ export function CompanyTab() {
                       URL.revokeObjectURL(url);
                     }}
                   >
-                    <FileSpreadsheet className="h-4 w-4 ml-1" /> تصدير قائمة التدقيق (CSV)
+                    <FileSpreadsheet className="h-4 w-4 ms-1" /> تصدير قائمة التدقيق (CSV)
                   </Button>
                 </CardTitle>
                 <p className="text-sm text-muted-foreground">

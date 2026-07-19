@@ -25,6 +25,8 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/useAuth";
 
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
+import { DirectionProvider } from "@radix-ui/react-direction";
+import { ArchiveMigrationDialog } from "@/components/archive/ArchiveMigrationDialog";
 
 function NotFoundComponent() {
   return (
@@ -185,26 +187,29 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <LanguageProvider>
-        <MadhabProvider>
-          <a
-            href="#main"
-            className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:right-2 focus:z-50 focus:rounded focus:bg-primary focus:text-primary-foreground focus:px-3 focus:py-1.5 focus:text-sm"
-          >
-            تخطَّ إلى المحتوى الرئيسي
-          </a>
-          <SidebarProvider>
-            <AppShell />
-          </SidebarProvider>
-          <FloatingDock />
-          <AdminFloatingLinks />
-          <CommandPalette />
-          <OnboardingWizard />
-          <PWAInstallPrompt />
-          <MobileBottomNav />
-          <SonnerToaster />
-        </MadhabProvider>
-      </LanguageProvider>
+      <DirectionProvider dir="rtl">
+        <LanguageProvider>
+          <MadhabProvider>
+            <a
+              href="#main"
+              className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:right-2 focus:z-50 focus:rounded focus:bg-primary focus:text-primary-foreground focus:px-3 focus:py-1.5 focus:text-sm"
+            >
+              تخطَّ إلى المحتوى الرئيسي
+            </a>
+            <SidebarProvider>
+              <AppShell />
+            </SidebarProvider>
+            <FloatingDock />
+            <AdminFloatingLinks />
+            <CommandPalette />
+            <OnboardingWizard />
+            <PWAInstallPrompt />
+            <MobileBottomNav />
+            <ArchiveMigrationDialog />
+            <SonnerToaster />
+          </MadhabProvider>
+        </LanguageProvider>
+      </DirectionProvider>
     </QueryClientProvider>
   );
 }

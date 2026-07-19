@@ -190,7 +190,7 @@ function AccountantPortal() {
     return clients
       .filter((c) => filters.kind === "all" || c.kind === filters.kind)
       .filter((c) => filters.country === "all" || c.country === filters.country)
-      
+
       .filter((c) => filters.fiscalYear === "all" || String(c.fiscalYear) === filters.fiscalYear)
       .filter((c) => filters.status === "all" || c.status === filters.status)
       .filter(
@@ -479,7 +479,7 @@ function AccountantPortal() {
                     placeholder="بحث..."
                     value={q}
                     onChange={(e) => setQ(e.target.value)}
-                    className="pr-8"
+                    className="pe-8"
                   />
                 </div>
                 <FilterSelect
@@ -762,7 +762,7 @@ function AccountantPortal() {
                 <Suspense
                   fallback={
                     <div className="flex items-center justify-center py-16 text-muted-foreground">
-                      <Loader2 className="h-5 w-5 animate-spin ml-2" /> جارٍ التحميل...
+                      <Loader2 className="h-5 w-5 animate-spin ms-2" /> جارٍ التحميل...
                     </div>
                   }
                 >
@@ -1038,7 +1038,7 @@ function CalcModeGate() {
       <Suspense
         fallback={
           <div className="flex items-center justify-center py-16 text-muted-foreground">
-            <Loader2 className="h-5 w-5 animate-spin ml-2" /> جارٍ التحميل...
+            <Loader2 className="h-5 w-5 animate-spin ms-2" /> جارٍ التحميل...
           </div>
         }
       >
@@ -1066,7 +1066,7 @@ function GateCard({
   return (
     <button
       onClick={onClick}
-      className={`text-right rounded-xl border-2 bg-gradient-to-br ${color} p-4 hover:shadow-md hover:-translate-y-0.5 transition-all`}
+      className={`text-end rounded-xl border-2 bg-gradient-to-br ${color} p-4 hover:shadow-md hover:-translate-y-0.5 transition-all`}
     >
       <div className="flex items-center gap-2 mb-1.5">
         <div className="h-10 w-10 rounded-lg bg-background/70 flex items-center justify-center">

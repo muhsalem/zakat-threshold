@@ -30,17 +30,51 @@ const mk = (o: Partial<AttachmentFilterRow> & { id: string }): AttachmentFilterR
 });
 
 const rows: AttachmentFilterRow[] = [
-  mk({ id: "a", file_name: "قرار-مجمع.pdf", category: "council_decision", status: "approved", zakat_record_id: "rec1", created_at: "2026-01-10T00:00:00Z" }),
-  mk({ id: "b", file_name: "قوائم-مالية.pdf", category: "financial_statement", status: "pending", approval_id: "app1", created_at: "2026-02-05T00:00:00Z" }),
-  mk({ id: "c", file_name: "فتوى.pdf", category: "fatwa", status: "rejected", organization_id: "org1", created_at: "2026-03-20T00:00:00Z", review_note: "مرفوض لسبب" }),
-  mk({ id: "d", file_name: "audit.pdf", category: "audit", status: "draft", zakat_record_id: "rec2", created_at: "2026-04-01T00:00:00Z" }),
+  mk({
+    id: "a",
+    file_name: "قرار-مجمع.pdf",
+    category: "council_decision",
+    status: "approved",
+    zakat_record_id: "rec1",
+    created_at: "2026-01-10T00:00:00Z",
+  }),
+  mk({
+    id: "b",
+    file_name: "قوائم-مالية.pdf",
+    category: "financial_statement",
+    status: "pending",
+    approval_id: "app1",
+    created_at: "2026-02-05T00:00:00Z",
+  }),
+  mk({
+    id: "c",
+    file_name: "فتوى.pdf",
+    category: "fatwa",
+    status: "rejected",
+    organization_id: "org1",
+    created_at: "2026-03-20T00:00:00Z",
+    review_note: "مرفوض لسبب",
+  }),
+  mk({
+    id: "d",
+    file_name: "audit.pdf",
+    category: "audit",
+    status: "draft",
+    zakat_record_id: "rec2",
+    created_at: "2026-04-01T00:00:00Z",
+  }),
 ];
 
 const linked = { rec1: { record_type: "company" }, rec2: { record_type: "trade" } };
 
 describe("filterAttachments", () => {
   it("returns all rows with default state", () => {
-    expect(filterAttachments(rows, linked, baseState).map((r) => r.id)).toEqual(["a", "b", "c", "d"]);
+    expect(filterAttachments(rows, linked, baseState).map((r) => r.id)).toEqual([
+      "a",
+      "b",
+      "c",
+      "d",
+    ]);
   });
 
   it("filters by status", () => {

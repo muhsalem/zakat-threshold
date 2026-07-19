@@ -10,15 +10,19 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ZakatGoldRouteImport } from './routes/zakat-gold'
+import { Route as ZakatFitrRouteImport } from './routes/zakat-fitr'
 import { Route as ZakatCompanyRouteImport } from './routes/zakat-company'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as VerifyRouteImport } from './routes/verify'
+import { Route as SubscriptionConfirmationRouteImport } from './routes/subscription-confirmation'
 import { Route as StatusRouteImport } from './routes/status'
 import { Route as SoftwareRecommendationsRouteImport } from './routes/software-recommendations'
 import { Route as ShowcaseRouteImport } from './routes/showcase'
 import { Route as ShariaChangelogRouteImport } from './routes/sharia-changelog'
 import { Route as SecurityRouteImport } from './routes/security'
+import { Route as SalaryZakatRouteImport } from './routes/salary-zakat'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PricesHistoryRouteImport } from './routes/prices-history'
 import { Route as PortalSigninRouteImport } from './routes/portal-signin'
 import { Route as OrganizationsRouteImport } from './routes/organizations'
@@ -35,8 +39,10 @@ import { Route as FatwaCommunityRouteImport } from './routes/fatwa-community'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EvaluationRouteImport } from './routes/evaluation'
 import { Route as EsgRouteImport } from './routes/esg'
+import { Route as ErpConnectorsRouteImport } from './routes/erp-connectors'
 import { Route as EnterprisePricingRouteImport } from './routes/enterprise-pricing'
 import { Route as EnterpriseRouteImport } from './routes/enterprise'
+import { Route as EightChannelsRouteImport } from './routes/eight-channels'
 import { Route as DevelopersRouteImport } from './routes/developers'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as CropsRouteImport } from './routes/crops'
@@ -53,14 +59,20 @@ import { Route as AdvisorRouteImport } from './routes/advisor'
 import { Route as AConsoleRouteImport } from './routes/a-console'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RTokenRouteImport } from './routes/r.$token'
 import { Route as LegalTermsRouteImport } from './routes/legal.terms'
 import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as ApiExtractStatementRouteImport } from './routes/api/extract-statement'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as AuthenticatedSubscriptionRouteImport } from './routes/_authenticated/subscription'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedErpSetupRouteImport } from './routes/_authenticated/erp-setup'
 import { Route as AuthenticatedDraftsRouteImport } from './routes/_authenticated/drafts'
+import { Route as AuthenticatedDistributionPlanRouteImport } from './routes/_authenticated/distribution-plan'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedCoaMappingRouteImport } from './routes/_authenticated/coa-mapping'
+import { Route as AuthenticatedBulkClientsRouteImport } from './routes/_authenticated/bulk-clients'
 import { Route as AuthenticatedAuditReviewRouteImport } from './routes/_authenticated/audit-review'
 import { Route as AuthenticatedAttestationsRouteImport } from './routes/_authenticated/attestations'
 import { Route as AuthenticatedAttachmentsReviewRouteImport } from './routes/_authenticated/attachments-review'
@@ -69,6 +81,7 @@ import { Route as AuthenticatedAccountantRouteImport } from './routes/_authentic
 import { Route as ApiPublicOpenapiRouteImport } from './routes/api/public/openapi'
 import { Route as ApiPublicNisabRouteImport } from './routes/api/public/nisab'
 import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
+import { Route as ApiPublicGeoRouteImport } from './routes/api/public/geo'
 import { Route as ApiPublicCalcRouteImport } from './routes/api/public/calc'
 import { Route as AuthenticatedZakatCaseRecordIdRouteImport } from './routes/_authenticated/zakat-case.$recordId'
 import { Route as AuthenticatedComplianceReportRecordIdRouteImport } from './routes/_authenticated/compliance-report.$recordId'
@@ -87,6 +100,11 @@ const ZakatGoldRoute = ZakatGoldRouteImport.update({
   path: '/zakat-gold',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ZakatFitrRoute = ZakatFitrRouteImport.update({
+  id: '/zakat-fitr',
+  path: '/zakat-fitr',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ZakatCompanyRoute = ZakatCompanyRouteImport.update({
   id: '/zakat-company',
   path: '/zakat-company',
@@ -102,6 +120,12 @@ const VerifyRoute = VerifyRouteImport.update({
   path: '/verify',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SubscriptionConfirmationRoute =
+  SubscriptionConfirmationRouteImport.update({
+    id: '/subscription-confirmation',
+    path: '/subscription-confirmation',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const StatusRoute = StatusRouteImport.update({
   id: '/status',
   path: '/status',
@@ -127,9 +151,19 @@ const SecurityRoute = SecurityRouteImport.update({
   path: '/security',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SalaryZakatRoute = SalaryZakatRouteImport.update({
+  id: '/salary-zakat',
+  path: '/salary-zakat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PricesHistoryRoute = PricesHistoryRouteImport.update({
@@ -213,6 +247,11 @@ const EsgRoute = EsgRouteImport.update({
   path: '/esg',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ErpConnectorsRoute = ErpConnectorsRouteImport.update({
+  id: '/erp-connectors',
+  path: '/erp-connectors',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EnterprisePricingRoute = EnterprisePricingRouteImport.update({
   id: '/enterprise-pricing',
   path: '/enterprise-pricing',
@@ -221,6 +260,11 @@ const EnterprisePricingRoute = EnterprisePricingRouteImport.update({
 const EnterpriseRoute = EnterpriseRouteImport.update({
   id: '/enterprise',
   path: '/enterprise',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EightChannelsRoute = EightChannelsRouteImport.update({
+  id: '/eight-channels',
+  path: '/eight-channels',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DevelopersRoute = DevelopersRouteImport.update({
@@ -302,6 +346,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RTokenRoute = RTokenRouteImport.update({
+  id: '/r/$token',
+  path: '/r/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LegalTermsRoute = LegalTermsRouteImport.update({
   id: '/legal/terms',
   path: '/legal/terms',
@@ -327,6 +376,17 @@ const ApiChatRoute = ApiChatRouteImport.update({
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedSubscriptionRoute =
+  AuthenticatedSubscriptionRouteImport.update({
+    id: '/subscription',
+    path: '/subscription',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedErpSetupRoute = AuthenticatedErpSetupRouteImport.update({
   id: '/erp-setup',
   path: '/erp-setup',
@@ -337,11 +397,28 @@ const AuthenticatedDraftsRoute = AuthenticatedDraftsRouteImport.update({
   path: '/drafts',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDistributionPlanRoute =
+  AuthenticatedDistributionPlanRouteImport.update({
+    id: '/distribution-plan',
+    path: '/distribution-plan',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedCoaMappingRoute = AuthenticatedCoaMappingRouteImport.update({
+  id: '/coa-mapping',
+  path: '/coa-mapping',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedBulkClientsRoute =
+  AuthenticatedBulkClientsRouteImport.update({
+    id: '/bulk-clients',
+    path: '/bulk-clients',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAuditReviewRoute =
   AuthenticatedAuditReviewRouteImport.update({
     id: '/audit-review',
@@ -383,6 +460,11 @@ const ApiPublicNisabRoute = ApiPublicNisabRouteImport.update({
 const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
   id: '/api/public/health',
   path: '/api/public/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicGeoRoute = ApiPublicGeoRouteImport.update({
+  id: '/api/public/geo',
+  path: '/api/public/geo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicCalcRoute = ApiPublicCalcRouteImport.update({
@@ -470,8 +552,10 @@ export interface FileRoutesByFullPath {
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
+  '/eight-channels': typeof EightChannelsRoute
   '/enterprise': typeof EnterpriseRoute
   '/enterprise-pricing': typeof EnterprisePricingRoute
+  '/erp-connectors': typeof ErpConnectorsRoute
   '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
@@ -488,34 +572,45 @@ export interface FileRoutesByFullPath {
   '/organizations': typeof OrganizationsRoute
   '/portal-signin': typeof PortalSigninRoute
   '/prices-history': typeof PricesHistoryRoute
+  '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/salary-zakat': typeof SalaryZakatRoute
   '/security': typeof SecurityRoute
   '/sharia-changelog': typeof ShariaChangelogRoute
   '/showcase': typeof ShowcaseRoute
   '/software-recommendations': typeof SoftwareRecommendationsRoute
   '/status': typeof StatusRoute
+  '/subscription-confirmation': typeof SubscriptionConfirmationRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
   '/zakat-company': typeof ZakatCompanyRoute
+  '/zakat-fitr': typeof ZakatFitrRoute
   '/zakat-gold': typeof ZakatGoldRoute
   '/accountant': typeof AuthenticatedAccountantRouteWithChildren
   '/admin': typeof AuthenticatedAdminRoute
   '/attachments-review': typeof AuthenticatedAttachmentsReviewRoute
   '/attestations': typeof AuthenticatedAttestationsRoute
   '/audit-review': typeof AuthenticatedAuditReviewRoute
+  '/bulk-clients': typeof AuthenticatedBulkClientsRoute
+  '/coa-mapping': typeof AuthenticatedCoaMappingRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/distribution-plan': typeof AuthenticatedDistributionPlanRoute
   '/drafts': typeof AuthenticatedDraftsRoute
   '/erp-setup': typeof AuthenticatedErpSetupRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/subscription': typeof AuthenticatedSubscriptionRoute
   '/api/chat': typeof ApiChatRoute
   '/api/extract-statement': typeof ApiExtractStatementRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
+  '/r/$token': typeof RTokenRoute
   '/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
   '/certified-report/$recordId': typeof AuthenticatedCertifiedReportRecordIdRoute
   '/compliance-report/$recordId': typeof AuthenticatedComplianceReportRecordIdRoute
   '/zakat-case/$recordId': typeof AuthenticatedZakatCaseRecordIdRoute
   '/api/public/calc': typeof ApiPublicCalcRoute
+  '/api/public/geo': typeof ApiPublicGeoRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
   '/api/public/openapi': typeof ApiPublicOpenapiRoute
@@ -543,8 +638,10 @@ export interface FileRoutesByTo {
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
+  '/eight-channels': typeof EightChannelsRoute
   '/enterprise': typeof EnterpriseRoute
   '/enterprise-pricing': typeof EnterprisePricingRoute
+  '/erp-connectors': typeof ErpConnectorsRoute
   '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
@@ -561,34 +658,45 @@ export interface FileRoutesByTo {
   '/organizations': typeof OrganizationsRoute
   '/portal-signin': typeof PortalSigninRoute
   '/prices-history': typeof PricesHistoryRoute
+  '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/salary-zakat': typeof SalaryZakatRoute
   '/security': typeof SecurityRoute
   '/sharia-changelog': typeof ShariaChangelogRoute
   '/showcase': typeof ShowcaseRoute
   '/software-recommendations': typeof SoftwareRecommendationsRoute
   '/status': typeof StatusRoute
+  '/subscription-confirmation': typeof SubscriptionConfirmationRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
   '/zakat-company': typeof ZakatCompanyRoute
+  '/zakat-fitr': typeof ZakatFitrRoute
   '/zakat-gold': typeof ZakatGoldRoute
   '/accountant': typeof AuthenticatedAccountantRouteWithChildren
   '/admin': typeof AuthenticatedAdminRoute
   '/attachments-review': typeof AuthenticatedAttachmentsReviewRoute
   '/attestations': typeof AuthenticatedAttestationsRoute
   '/audit-review': typeof AuthenticatedAuditReviewRoute
+  '/bulk-clients': typeof AuthenticatedBulkClientsRoute
+  '/coa-mapping': typeof AuthenticatedCoaMappingRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/distribution-plan': typeof AuthenticatedDistributionPlanRoute
   '/drafts': typeof AuthenticatedDraftsRoute
   '/erp-setup': typeof AuthenticatedErpSetupRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/subscription': typeof AuthenticatedSubscriptionRoute
   '/api/chat': typeof ApiChatRoute
   '/api/extract-statement': typeof ApiExtractStatementRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
+  '/r/$token': typeof RTokenRoute
   '/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
   '/certified-report/$recordId': typeof AuthenticatedCertifiedReportRecordIdRoute
   '/compliance-report/$recordId': typeof AuthenticatedComplianceReportRecordIdRoute
   '/zakat-case/$recordId': typeof AuthenticatedZakatCaseRecordIdRoute
   '/api/public/calc': typeof ApiPublicCalcRoute
+  '/api/public/geo': typeof ApiPublicGeoRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
   '/api/public/openapi': typeof ApiPublicOpenapiRoute
@@ -618,8 +726,10 @@ export interface FileRoutesById {
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
+  '/eight-channels': typeof EightChannelsRoute
   '/enterprise': typeof EnterpriseRoute
   '/enterprise-pricing': typeof EnterprisePricingRoute
+  '/erp-connectors': typeof ErpConnectorsRoute
   '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
   '/faq': typeof FaqRoute
@@ -636,34 +746,45 @@ export interface FileRoutesById {
   '/organizations': typeof OrganizationsRoute
   '/portal-signin': typeof PortalSigninRoute
   '/prices-history': typeof PricesHistoryRoute
+  '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/salary-zakat': typeof SalaryZakatRoute
   '/security': typeof SecurityRoute
   '/sharia-changelog': typeof ShariaChangelogRoute
   '/showcase': typeof ShowcaseRoute
   '/software-recommendations': typeof SoftwareRecommendationsRoute
   '/status': typeof StatusRoute
+  '/subscription-confirmation': typeof SubscriptionConfirmationRoute
   '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
   '/zakat-company': typeof ZakatCompanyRoute
+  '/zakat-fitr': typeof ZakatFitrRoute
   '/zakat-gold': typeof ZakatGoldRoute
   '/_authenticated/accountant': typeof AuthenticatedAccountantRouteWithChildren
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/attachments-review': typeof AuthenticatedAttachmentsReviewRoute
   '/_authenticated/attestations': typeof AuthenticatedAttestationsRoute
   '/_authenticated/audit-review': typeof AuthenticatedAuditReviewRoute
+  '/_authenticated/bulk-clients': typeof AuthenticatedBulkClientsRoute
+  '/_authenticated/coa-mapping': typeof AuthenticatedCoaMappingRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/distribution-plan': typeof AuthenticatedDistributionPlanRoute
   '/_authenticated/drafts': typeof AuthenticatedDraftsRoute
   '/_authenticated/erp-setup': typeof AuthenticatedErpSetupRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/subscription': typeof AuthenticatedSubscriptionRoute
   '/api/chat': typeof ApiChatRoute
   '/api/extract-statement': typeof ApiExtractStatementRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
+  '/r/$token': typeof RTokenRoute
   '/_authenticated/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
   '/_authenticated/certified-report/$recordId': typeof AuthenticatedCertifiedReportRecordIdRoute
   '/_authenticated/compliance-report/$recordId': typeof AuthenticatedComplianceReportRecordIdRoute
   '/_authenticated/zakat-case/$recordId': typeof AuthenticatedZakatCaseRecordIdRoute
   '/api/public/calc': typeof ApiPublicCalcRoute
+  '/api/public/geo': typeof ApiPublicGeoRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/nisab': typeof ApiPublicNisabRoute
   '/api/public/openapi': typeof ApiPublicOpenapiRoute
@@ -693,8 +814,10 @@ export interface FileRouteTypes {
     | '/crops'
     | '/demo'
     | '/developers'
+    | '/eight-channels'
     | '/enterprise'
     | '/enterprise-pricing'
+    | '/erp-connectors'
     | '/esg'
     | '/evaluation'
     | '/faq'
@@ -711,34 +834,45 @@ export interface FileRouteTypes {
     | '/organizations'
     | '/portal-signin'
     | '/prices-history'
+    | '/pricing'
     | '/reset-password'
+    | '/salary-zakat'
     | '/security'
     | '/sharia-changelog'
     | '/showcase'
     | '/software-recommendations'
     | '/status'
+    | '/subscription-confirmation'
     | '/verify'
     | '/welcome'
     | '/zakat-company'
+    | '/zakat-fitr'
     | '/zakat-gold'
     | '/accountant'
     | '/admin'
     | '/attachments-review'
     | '/attestations'
     | '/audit-review'
+    | '/bulk-clients'
+    | '/coa-mapping'
     | '/dashboard'
+    | '/distribution-plan'
     | '/drafts'
     | '/erp-setup'
+    | '/settings'
+    | '/subscription'
     | '/api/chat'
     | '/api/extract-statement'
     | '/blog/$slug'
     | '/legal/privacy'
     | '/legal/terms'
+    | '/r/$token'
     | '/accountant/$clientId'
     | '/certified-report/$recordId'
     | '/compliance-report/$recordId'
     | '/zakat-case/$recordId'
     | '/api/public/calc'
+    | '/api/public/geo'
     | '/api/public/health'
     | '/api/public/nisab'
     | '/api/public/openapi'
@@ -766,8 +900,10 @@ export interface FileRouteTypes {
     | '/crops'
     | '/demo'
     | '/developers'
+    | '/eight-channels'
     | '/enterprise'
     | '/enterprise-pricing'
+    | '/erp-connectors'
     | '/esg'
     | '/evaluation'
     | '/faq'
@@ -784,34 +920,45 @@ export interface FileRouteTypes {
     | '/organizations'
     | '/portal-signin'
     | '/prices-history'
+    | '/pricing'
     | '/reset-password'
+    | '/salary-zakat'
     | '/security'
     | '/sharia-changelog'
     | '/showcase'
     | '/software-recommendations'
     | '/status'
+    | '/subscription-confirmation'
     | '/verify'
     | '/welcome'
     | '/zakat-company'
+    | '/zakat-fitr'
     | '/zakat-gold'
     | '/accountant'
     | '/admin'
     | '/attachments-review'
     | '/attestations'
     | '/audit-review'
+    | '/bulk-clients'
+    | '/coa-mapping'
     | '/dashboard'
+    | '/distribution-plan'
     | '/drafts'
     | '/erp-setup'
+    | '/settings'
+    | '/subscription'
     | '/api/chat'
     | '/api/extract-statement'
     | '/blog/$slug'
     | '/legal/privacy'
     | '/legal/terms'
+    | '/r/$token'
     | '/accountant/$clientId'
     | '/certified-report/$recordId'
     | '/compliance-report/$recordId'
     | '/zakat-case/$recordId'
     | '/api/public/calc'
+    | '/api/public/geo'
     | '/api/public/health'
     | '/api/public/nisab'
     | '/api/public/openapi'
@@ -840,8 +987,10 @@ export interface FileRouteTypes {
     | '/crops'
     | '/demo'
     | '/developers'
+    | '/eight-channels'
     | '/enterprise'
     | '/enterprise-pricing'
+    | '/erp-connectors'
     | '/esg'
     | '/evaluation'
     | '/faq'
@@ -858,34 +1007,45 @@ export interface FileRouteTypes {
     | '/organizations'
     | '/portal-signin'
     | '/prices-history'
+    | '/pricing'
     | '/reset-password'
+    | '/salary-zakat'
     | '/security'
     | '/sharia-changelog'
     | '/showcase'
     | '/software-recommendations'
     | '/status'
+    | '/subscription-confirmation'
     | '/verify'
     | '/welcome'
     | '/zakat-company'
+    | '/zakat-fitr'
     | '/zakat-gold'
     | '/_authenticated/accountant'
     | '/_authenticated/admin'
     | '/_authenticated/attachments-review'
     | '/_authenticated/attestations'
     | '/_authenticated/audit-review'
+    | '/_authenticated/bulk-clients'
+    | '/_authenticated/coa-mapping'
     | '/_authenticated/dashboard'
+    | '/_authenticated/distribution-plan'
     | '/_authenticated/drafts'
     | '/_authenticated/erp-setup'
+    | '/_authenticated/settings'
+    | '/_authenticated/subscription'
     | '/api/chat'
     | '/api/extract-statement'
     | '/blog/$slug'
     | '/legal/privacy'
     | '/legal/terms'
+    | '/r/$token'
     | '/_authenticated/accountant/$clientId'
     | '/_authenticated/certified-report/$recordId'
     | '/_authenticated/compliance-report/$recordId'
     | '/_authenticated/zakat-case/$recordId'
     | '/api/public/calc'
+    | '/api/public/geo'
     | '/api/public/health'
     | '/api/public/nisab'
     | '/api/public/openapi'
@@ -915,8 +1075,10 @@ export interface RootRouteChildren {
   CropsRoute: typeof CropsRoute
   DemoRoute: typeof DemoRoute
   DevelopersRoute: typeof DevelopersRoute
+  EightChannelsRoute: typeof EightChannelsRoute
   EnterpriseRoute: typeof EnterpriseRoute
   EnterprisePricingRoute: typeof EnterprisePricingRoute
+  ErpConnectorsRoute: typeof ErpConnectorsRoute
   EsgRoute: typeof EsgRoute
   EvaluationRoute: typeof EvaluationRoute
   FaqRoute: typeof FaqRoute
@@ -933,21 +1095,27 @@ export interface RootRouteChildren {
   OrganizationsRoute: typeof OrganizationsRoute
   PortalSigninRoute: typeof PortalSigninRoute
   PricesHistoryRoute: typeof PricesHistoryRoute
+  PricingRoute: typeof PricingRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SalaryZakatRoute: typeof SalaryZakatRoute
   SecurityRoute: typeof SecurityRoute
   ShariaChangelogRoute: typeof ShariaChangelogRoute
   ShowcaseRoute: typeof ShowcaseRoute
   SoftwareRecommendationsRoute: typeof SoftwareRecommendationsRoute
   StatusRoute: typeof StatusRoute
+  SubscriptionConfirmationRoute: typeof SubscriptionConfirmationRoute
   VerifyRoute: typeof VerifyRoute
   WelcomeRoute: typeof WelcomeRoute
   ZakatCompanyRoute: typeof ZakatCompanyRoute
+  ZakatFitrRoute: typeof ZakatFitrRoute
   ZakatGoldRoute: typeof ZakatGoldRoute
   ApiChatRoute: typeof ApiChatRoute
   ApiExtractStatementRoute: typeof ApiExtractStatementRoute
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   LegalTermsRoute: typeof LegalTermsRoute
+  RTokenRoute: typeof RTokenRoute
   ApiPublicCalcRoute: typeof ApiPublicCalcRoute
+  ApiPublicGeoRoute: typeof ApiPublicGeoRoute
   ApiPublicHealthRoute: typeof ApiPublicHealthRoute
   ApiPublicNisabRoute: typeof ApiPublicNisabRoute
   ApiPublicOpenapiRoute: typeof ApiPublicOpenapiRoute
@@ -969,6 +1137,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ZakatGoldRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/zakat-fitr': {
+      id: '/zakat-fitr'
+      path: '/zakat-fitr'
+      fullPath: '/zakat-fitr'
+      preLoaderRoute: typeof ZakatFitrRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/zakat-company': {
       id: '/zakat-company'
       path: '/zakat-company'
@@ -988,6 +1163,13 @@ declare module '@tanstack/react-router' {
       path: '/verify'
       fullPath: '/verify'
       preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subscription-confirmation': {
+      id: '/subscription-confirmation'
+      path: '/subscription-confirmation'
+      fullPath: '/subscription-confirmation'
+      preLoaderRoute: typeof SubscriptionConfirmationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/status': {
@@ -1025,11 +1207,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SecurityRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/salary-zakat': {
+      id: '/salary-zakat'
+      path: '/salary-zakat'
+      fullPath: '/salary-zakat'
+      preLoaderRoute: typeof SalaryZakatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/prices-history': {
@@ -1144,6 +1340,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EsgRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/erp-connectors': {
+      id: '/erp-connectors'
+      path: '/erp-connectors'
+      fullPath: '/erp-connectors'
+      preLoaderRoute: typeof ErpConnectorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/enterprise-pricing': {
       id: '/enterprise-pricing'
       path: '/enterprise-pricing'
@@ -1156,6 +1359,13 @@ declare module '@tanstack/react-router' {
       path: '/enterprise'
       fullPath: '/enterprise'
       preLoaderRoute: typeof EnterpriseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/eight-channels': {
+      id: '/eight-channels'
+      path: '/eight-channels'
+      fullPath: '/eight-channels'
+      preLoaderRoute: typeof EightChannelsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/developers': {
@@ -1270,6 +1480,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/r/$token': {
+      id: '/r/$token'
+      path: '/r/$token'
+      fullPath: '/r/$token'
+      preLoaderRoute: typeof RTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/legal/terms': {
       id: '/legal/terms'
       path: '/legal/terms'
@@ -1305,6 +1522,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/subscription': {
+      id: '/_authenticated/subscription'
+      path: '/subscription'
+      fullPath: '/subscription'
+      preLoaderRoute: typeof AuthenticatedSubscriptionRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/erp-setup': {
       id: '/_authenticated/erp-setup'
       path: '/erp-setup'
@@ -1319,11 +1550,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDraftsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/distribution-plan': {
+      id: '/_authenticated/distribution-plan'
+      path: '/distribution-plan'
+      fullPath: '/distribution-plan'
+      preLoaderRoute: typeof AuthenticatedDistributionPlanRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/coa-mapping': {
+      id: '/_authenticated/coa-mapping'
+      path: '/coa-mapping'
+      fullPath: '/coa-mapping'
+      preLoaderRoute: typeof AuthenticatedCoaMappingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/bulk-clients': {
+      id: '/_authenticated/bulk-clients'
+      path: '/bulk-clients'
+      fullPath: '/bulk-clients'
+      preLoaderRoute: typeof AuthenticatedBulkClientsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/audit-review': {
@@ -1380,6 +1632,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/health'
       fullPath: '/api/public/health'
       preLoaderRoute: typeof ApiPublicHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/geo': {
+      id: '/api/public/geo'
+      path: '/api/public/geo'
+      fullPath: '/api/public/geo'
+      preLoaderRoute: typeof ApiPublicGeoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/calc': {
@@ -1489,9 +1748,14 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAttachmentsReviewRoute: typeof AuthenticatedAttachmentsReviewRoute
   AuthenticatedAttestationsRoute: typeof AuthenticatedAttestationsRoute
   AuthenticatedAuditReviewRoute: typeof AuthenticatedAuditReviewRoute
+  AuthenticatedBulkClientsRoute: typeof AuthenticatedBulkClientsRoute
+  AuthenticatedCoaMappingRoute: typeof AuthenticatedCoaMappingRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDistributionPlanRoute: typeof AuthenticatedDistributionPlanRoute
   AuthenticatedDraftsRoute: typeof AuthenticatedDraftsRoute
   AuthenticatedErpSetupRoute: typeof AuthenticatedErpSetupRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedSubscriptionRoute: typeof AuthenticatedSubscriptionRoute
   AuthenticatedCertifiedReportRecordIdRoute: typeof AuthenticatedCertifiedReportRecordIdRoute
   AuthenticatedComplianceReportRecordIdRoute: typeof AuthenticatedComplianceReportRecordIdRoute
   AuthenticatedZakatCaseRecordIdRoute: typeof AuthenticatedZakatCaseRecordIdRoute
@@ -1503,9 +1767,14 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAttachmentsReviewRoute: AuthenticatedAttachmentsReviewRoute,
   AuthenticatedAttestationsRoute: AuthenticatedAttestationsRoute,
   AuthenticatedAuditReviewRoute: AuthenticatedAuditReviewRoute,
+  AuthenticatedBulkClientsRoute: AuthenticatedBulkClientsRoute,
+  AuthenticatedCoaMappingRoute: AuthenticatedCoaMappingRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDistributionPlanRoute: AuthenticatedDistributionPlanRoute,
   AuthenticatedDraftsRoute: AuthenticatedDraftsRoute,
   AuthenticatedErpSetupRoute: AuthenticatedErpSetupRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedSubscriptionRoute: AuthenticatedSubscriptionRoute,
   AuthenticatedCertifiedReportRecordIdRoute:
     AuthenticatedCertifiedReportRecordIdRoute,
   AuthenticatedComplianceReportRecordIdRoute:
@@ -1543,8 +1812,10 @@ const rootRouteChildren: RootRouteChildren = {
   CropsRoute: CropsRoute,
   DemoRoute: DemoRoute,
   DevelopersRoute: DevelopersRoute,
+  EightChannelsRoute: EightChannelsRoute,
   EnterpriseRoute: EnterpriseRoute,
   EnterprisePricingRoute: EnterprisePricingRoute,
+  ErpConnectorsRoute: ErpConnectorsRoute,
   EsgRoute: EsgRoute,
   EvaluationRoute: EvaluationRoute,
   FaqRoute: FaqRoute,
@@ -1561,21 +1832,27 @@ const rootRouteChildren: RootRouteChildren = {
   OrganizationsRoute: OrganizationsRoute,
   PortalSigninRoute: PortalSigninRoute,
   PricesHistoryRoute: PricesHistoryRoute,
+  PricingRoute: PricingRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SalaryZakatRoute: SalaryZakatRoute,
   SecurityRoute: SecurityRoute,
   ShariaChangelogRoute: ShariaChangelogRoute,
   ShowcaseRoute: ShowcaseRoute,
   SoftwareRecommendationsRoute: SoftwareRecommendationsRoute,
   StatusRoute: StatusRoute,
+  SubscriptionConfirmationRoute: SubscriptionConfirmationRoute,
   VerifyRoute: VerifyRoute,
   WelcomeRoute: WelcomeRoute,
   ZakatCompanyRoute: ZakatCompanyRoute,
+  ZakatFitrRoute: ZakatFitrRoute,
   ZakatGoldRoute: ZakatGoldRoute,
   ApiChatRoute: ApiChatRoute,
   ApiExtractStatementRoute: ApiExtractStatementRoute,
   LegalPrivacyRoute: LegalPrivacyRoute,
   LegalTermsRoute: LegalTermsRoute,
+  RTokenRoute: RTokenRoute,
   ApiPublicCalcRoute: ApiPublicCalcRoute,
+  ApiPublicGeoRoute: ApiPublicGeoRoute,
   ApiPublicHealthRoute: ApiPublicHealthRoute,
   ApiPublicNisabRoute: ApiPublicNisabRoute,
   ApiPublicOpenapiRoute: ApiPublicOpenapiRoute,

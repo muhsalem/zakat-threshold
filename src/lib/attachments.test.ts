@@ -17,15 +17,11 @@ function file(overrides: Partial<{ name: string; size: number; type: string }> =
 
 describe("validateUpload", () => {
   it("يقبل مرفقاً صحيحاً مربوطاً بإقرار زكاة", () => {
-    expect(
-      validateUpload({ file: file(), uploaded_by: USER, zakat_record_id: REC }),
-    ).toBeNull();
+    expect(validateUpload({ file: file(), uploaded_by: USER, zakat_record_id: REC })).toBeNull();
   });
 
   it("يرفض بدون مستخدم", () => {
-    expect(validateUpload({ file: file(), uploaded_by: "", zakat_record_id: REC })).toBe(
-      "no_user",
-    );
+    expect(validateUpload({ file: file(), uploaded_by: "", zakat_record_id: REC })).toBe("no_user");
   });
 
   it("يرفض ملفاً فارغاً", () => {
@@ -145,12 +141,14 @@ describe("buildStoragePath", () => {
 
 // ---------- Mock supabase client ----------
 type Row = Record<string, unknown>;
-function makeSupabase(opts: {
-  insertError?: { message: string } | null;
-  uploadError?: { message: string } | null;
-  signError?: { message: string } | null;
-  captured?: { table?: string; row?: Row; uploads?: string[]; removes?: string[] };
-} = {}) {
+function makeSupabase(
+  opts: {
+    insertError?: { message: string } | null;
+    uploadError?: { message: string } | null;
+    signError?: { message: string } | null;
+    captured?: { table?: string; row?: Row; uploads?: string[]; removes?: string[] };
+  } = {},
+) {
   const captured = opts.captured ?? {};
   captured.uploads = [];
   captured.removes = [];
@@ -168,7 +166,10 @@ function makeSupabase(opts: {
                 single: async () =>
                   err
                     ? { data: null, error: err }
-                    : { data: { id: "att-1", storage_path: (row as Row).storage_path }, error: null },
+                    : {
+                        data: { id: "att-1", storage_path: (row as Row).storage_path },
+                        error: null,
+                      },
               };
             },
             // used by download log (no .select().single())
@@ -197,7 +198,10 @@ function makeSupabase(opts: {
       },
     },
   };
-  return { supabase: supabase as unknown as import("@supabase/supabase-js").SupabaseClient, captured };
+  return {
+    supabase: supabase as unknown as import("@supabase/supabase-js").SupabaseClient,
+    captured,
+  };
 }
 
 describe("uploadAttachment", () => {
@@ -268,18 +272,14 @@ describe("downloadAttachment", () => {
 
   it("يفشل إذا رفض التخزين توقيع الرابط (لا وصول)", async () => {
     const { supabase } = makeSupabase({ signError: { message: "not authorized" } });
-    await expect(
-      downloadAttachment(supabase, "att-1", "x/y.pdf", USER),
-    ).rejects.toBeTruthy();
+    await expect(downloadAttachment(supabase, "att-1", "x/y.pdf", USER)).rejects.toBeTruthy();
   });
 
   it("يفشل إذا رفضت RLS إدراج سجل التنزيل", async () => {
     const { supabase } = makeSupabase({
       insertError: { message: "new row violates row-level security policy" },
     });
-    await expect(
-      downloadAttachment(supabase, "att-1", "x/y.pdf", USER),
-    ).rejects.toBeTruthy();
+    await expect(downloadAttachment(supabase, "att-1", "x/y.pdf", USER)).rejects.toBeTruthy();
   });
 });
 

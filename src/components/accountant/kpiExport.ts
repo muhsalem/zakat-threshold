@@ -183,11 +183,7 @@ export function exportKpiExcel(opts: {
   XLSX.writeFile(wb, `kpi-report-${stamp}.xlsx`);
 }
 
-export function exportKpiPdf(opts: {
-  stats: ExportStats;
-  attention: ExportRow[];
-  period: string;
-}) {
+export function exportKpiPdf(opts: { stats: ExportStats; attention: ExportRow[]; period: string }) {
   const now = new Date().toLocaleString("ar-EG");
   const rowsHtml = opts.attention
     .slice(0, 30)

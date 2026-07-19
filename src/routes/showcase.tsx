@@ -44,8 +44,14 @@ export const Route = createFileRoute("/showcase")({
       { property: "og:description", content: "اكتشف الفيديو التسويقي وحمّل العرض التقديمي." },
       { property: "og:type", content: "article" },
       { property: "og:url", content: "/showcase" },
-      { property: "og:image", content: "https://project--c0035707-4e26-4f8b-ac7b-8485d608f9ce.lovable.app/og-image.jpg" },
-      { name: "twitter:image", content: "https://project--c0035707-4e26-4f8b-ac7b-8485d608f9ce.lovable.app/og-image.jpg" },
+      {
+        property: "og:image",
+        content: "https://project--c0035707-4e26-4f8b-ac7b-8485d608f9ce.lovable.app/og-image.jpg",
+      },
+      {
+        name: "twitter:image",
+        content: "https://project--c0035707-4e26-4f8b-ac7b-8485d608f9ce.lovable.app/og-image.jpg",
+      },
     ],
     links: [{ rel: "canonical", href: "/showcase" }],
   }),

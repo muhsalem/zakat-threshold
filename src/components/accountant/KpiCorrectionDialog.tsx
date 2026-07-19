@@ -58,7 +58,7 @@ function approxHijriYear(d: Date): number {
 
 export function buildSuggestions(r: CorrectionRecord, issueCodes: IssueCode[]): Suggestion[] {
   const out: Suggestion[] = [];
-  const prepaid = Math.max(0, (r.zakat_due - r.net_due) || 0);
+  const prepaid = Math.max(0, r.zakat_due - r.net_due || 0);
 
   const expectedZakat = +(r.zakat_base * ZAKAT_RATE).toFixed(2);
   const recalcNet = +Math.max(0, expectedZakat - prepaid).toFixed(2);
@@ -276,7 +276,7 @@ export function KpiCorrectionDialog({
             </AlertDescription>
           </Alert>
         ) : (
-          <div className="space-y-3 max-h-[55vh] overflow-y-auto pr-1">
+          <div className="space-y-3 max-h-[55vh] overflow-y-auto pe-1">
             {suggestions.map((s) => {
               const isSel = selected.has(s.code);
               return (
@@ -347,13 +347,10 @@ export function KpiCorrectionDialog({
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>
             إلغاء
           </Button>
-          <Button
-            onClick={apply}
-            disabled={!record || chosen.length === 0 || !confirmed || saving}
-          >
+          <Button onClick={apply} disabled={!record || chosen.length === 0 || !confirmed || saving}>
             {saving ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin ml-2" /> جارٍ التطبيق…
+                <Loader2 className="h-4 w-4 animate-spin ms-2" /> جارٍ التطبيق…
               </>
             ) : (
               <>تطبيق وإعادة الاحتساب ({chosen.length})</>

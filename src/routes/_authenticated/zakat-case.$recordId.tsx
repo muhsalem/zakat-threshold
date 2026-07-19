@@ -23,10 +23,7 @@ import ComplianceChecklist, {
   type ComplianceInputs,
 } from "@/components/zakat/ComplianceChecklist";
 import ComplianceAttachmentsSummary from "@/components/attachments/ComplianceAttachmentsSummary";
-import {
-  GOLD_NISAB_GRAMS,
-  SILVER_NISAB_GRAMS,
-} from "@/lib/zakat";
+import { GOLD_NISAB_GRAMS, SILVER_NISAB_GRAMS } from "@/lib/zakat";
 
 export const Route = createFileRoute("/_authenticated/zakat-case/$recordId")({
   head: () => ({
@@ -41,6 +38,7 @@ export const Route = createFileRoute("/_authenticated/zakat-case/$recordId")({
   }),
   component: ZakatCaseDetail,
   errorComponent: ({ error, reset }) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks -- TanStack يستدعي errorComponent كمكون React فعلي
     const router = useRouter();
     return (
       <main className="container mx-auto max-w-2xl px-4 py-12" dir="rtl">
@@ -139,9 +137,7 @@ interface Attachment {
 function snapshotToInputs(snap: Snapshot | null): ComplianceInputs {
   if (!snap) return {};
   const goldGrams24 =
-    (snap.totalGold24 as number | undefined) ??
-    (snap.goldGrams as number | undefined) ??
-    0;
+    (snap.totalGold24 as number | undefined) ?? (snap.goldGrams as number | undefined) ?? 0;
   return {
     goldGrams24,
     silverGrams: (snap.silverGrams as number | undefined) ?? 0,
@@ -152,13 +148,10 @@ function snapshotToInputs(snap: Snapshot | null): ComplianceInputs {
     hawlDaysRemaining: snap.hawlDaysRemaining,
     hawlDaysPassed: snap.hawlDaysPassed,
     jewelryWornGrams:
-      snap.jewelryPurpose === "wear" ? (snap.jewelryGrams24Raw as number | undefined) ?? 0 : 0,
+      snap.jewelryPurpose === "wear" ? ((snap.jewelryGrams24Raw as number | undefined) ?? 0) : 0,
     jewelryOpinion: snap.jewelryOpinion,
     jewelryPurpose: snap.jewelryPurpose,
-    cropsKg:
-      (snap.cropsKg as number | undefined) ??
-      (snap.cropsValue as number | undefined) ??
-      0,
+    cropsKg: (snap.cropsKg as number | undefined) ?? (snap.cropsValue as number | undefined) ?? 0,
     camelsN: (snap.camelsN as number | undefined) ?? 0,
     cowsN: (snap.cowsN as number | undefined) ?? 0,
     sheepN: (snap.sheepN as number | undefined) ?? 0,
@@ -200,27 +193,31 @@ function ZakatCaseDetail() {
       setLoading(true);
       setErr(null);
       try {
-        const [{ data: rec, error: eRec }, { data: shariaRows }, { data: orgRows }, { data: atts }] =
-          await Promise.all([
-            supabase.from("zakat_records").select("*").eq("id", recordId).maybeSingle(),
-            supabase
-              .from("sharia_audit_log")
-              .select("id,action,created_at,fingerprint,sharia_refs,payload")
-              .eq("zakat_record_id", recordId)
-              .order("created_at", { ascending: false })
-              .limit(100),
-            supabase
-              .from("org_audit_log")
-              .select("id,action,created_at,actor_id,changed_fields,before_state,after_state,note")
-              .eq("entity_id", recordId)
-              .order("created_at", { ascending: false })
-              .limit(100),
-            supabase
-              .from("approval_attachments")
-              .select("id,file_name,category,label,size_bytes,created_at")
-              .eq("zakat_record_id", recordId)
-              .order("created_at", { ascending: false }),
-          ]);
+        const [
+          { data: rec, error: eRec },
+          { data: shariaRows },
+          { data: orgRows },
+          { data: atts },
+        ] = await Promise.all([
+          supabase.from("zakat_records").select("*").eq("id", recordId).maybeSingle(),
+          supabase
+            .from("sharia_audit_log")
+            .select("id,action,created_at,fingerprint,sharia_refs,payload")
+            .eq("zakat_record_id", recordId)
+            .order("created_at", { ascending: false })
+            .limit(100),
+          supabase
+            .from("org_audit_log")
+            .select("id,action,created_at,actor_id,changed_fields,before_state,after_state,note")
+            .eq("entity_id", recordId)
+            .order("created_at", { ascending: false })
+            .limit(100),
+          supabase
+            .from("approval_attachments")
+            .select("id,file_name,category,label,size_bytes,created_at")
+            .eq("zakat_record_id", recordId)
+            .order("created_at", { ascending: false }),
+        ]);
 
         if (cancelled) return;
         if (eRec) throw eRec;
@@ -245,7 +242,10 @@ function ZakatCaseDetail() {
 
   if (loading) {
     return (
-      <main className="container mx-auto max-w-4xl px-4 py-12 flex items-center justify-center" dir="rtl">
+      <main
+        className="container mx-auto max-w-4xl px-4 py-12 flex items-center justify-center"
+        dir="rtl"
+      >
         <Loader2 className="w-6 h-6 animate-spin text-primary" />
       </main>
     );
@@ -259,7 +259,7 @@ function ZakatCaseDetail() {
         </Alert>
         <Button asChild variant="outline" className="mt-4">
           <Link to="/dashboard">
-            <ArrowRight className="w-4 h-4 ml-1" />
+            <ArrowRight className="w-4 h-4 ms-1" />
             العودة
           </Link>
         </Button>
@@ -286,16 +286,16 @@ function ZakatCaseDetail() {
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={() => window.print()}>
-            <Printer className="w-4 h-4 ml-1" /> طباعة
+            <Printer className="w-4 h-4 ms-1" /> طباعة
           </Button>
           <Button asChild variant="outline" size="sm">
             <Link to="/compliance-report/$recordId" params={{ recordId }}>
-              <ClipboardCheck className="w-4 h-4 ml-1" /> تقرير الامتثال
+              <ClipboardCheck className="w-4 h-4 ms-1" /> تقرير الامتثال
             </Link>
           </Button>
           <Button asChild variant="outline" size="sm">
             <Link to="/certified-report/$recordId" params={{ recordId }}>
-              <FileText className="w-4 h-4 ml-1" /> التقرير المعتمد
+              <FileText className="w-4 h-4 ms-1" /> التقرير المعتمد
             </Link>
           </Button>
         </div>
@@ -303,29 +303,46 @@ function ZakatCaseDetail() {
 
       {/* Summary strip */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-2 text-sm">
-        <SummaryCard label="إجمالي الموجودات" value={fmt(Number(record.total_assets), record.currency)} />
-        <SummaryCard label="الالتزامات" value={fmt(Number(record.total_liabilities), record.currency)} />
-        <SummaryCard label="الوعاء الزكوي" value={fmt(Number(record.zakat_base), record.currency)} />
-        <SummaryCard label="الزكاة المستحقة" value={fmt(Number(record.zakat_due), record.currency)} highlight />
-        <SummaryCard label="الصافي المستحق" value={fmt(Number(record.net_due), record.currency)} highlight />
+        <SummaryCard
+          label="إجمالي الموجودات"
+          value={fmt(Number(record.total_assets), record.currency)}
+        />
+        <SummaryCard
+          label="الالتزامات"
+          value={fmt(Number(record.total_liabilities), record.currency)}
+        />
+        <SummaryCard
+          label="الوعاء الزكوي"
+          value={fmt(Number(record.zakat_base), record.currency)}
+        />
+        <SummaryCard
+          label="الزكاة المستحقة"
+          value={fmt(Number(record.zakat_due), record.currency)}
+          highlight
+        />
+        <SummaryCard
+          label="الصافي المستحق"
+          value={fmt(Number(record.net_due), record.currency)}
+          highlight
+        />
       </div>
 
       <Tabs defaultValue="compliance" className="w-full">
         <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="compliance">
-            <ClipboardCheck className="w-4 h-4 ml-1" /> مدقّق الامتثال
+            <ClipboardCheck className="w-4 h-4 ms-1" /> مدقّق الامتثال
           </TabsTrigger>
           <TabsTrigger value="violations">
-            <ShieldAlert className="w-4 h-4 ml-1" /> المخالفات والتصحيح
+            <ShieldAlert className="w-4 h-4 ms-1" /> المخالفات والتصحيح
           </TabsTrigger>
           <TabsTrigger value="history">
-            <History className="w-4 h-4 ml-1" /> سجل التغييرات
+            <History className="w-4 h-4 ms-1" /> سجل التغييرات
           </TabsTrigger>
           <TabsTrigger value="sharia">
-            <ScrollText className="w-4 h-4 ml-1" /> السجل الشرعي
+            <ScrollText className="w-4 h-4 ms-1" /> السجل الشرعي
           </TabsTrigger>
           <TabsTrigger value="attachments">
-            <FileText className="w-4 h-4 ml-1" /> المرفقات ({attachments.length})
+            <FileText className="w-4 h-4 ms-1" /> المرفقات ({attachments.length})
           </TabsTrigger>
         </TabsList>
 
@@ -369,9 +386,19 @@ function ZakatCaseDetail() {
   );
 }
 
-function SummaryCard({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
+function SummaryCard({
+  label,
+  value,
+  highlight,
+}: {
+  label: string;
+  value: string;
+  highlight?: boolean;
+}) {
   return (
-    <div className={`rounded-lg p-3 border ${highlight ? "bg-primary/5 border-primary/40" : "bg-muted/30"}`}>
+    <div
+      className={`rounded-lg p-3 border ${highlight ? "bg-primary/5 border-primary/40" : "bg-muted/30"}`}
+    >
       <div className="text-[11px] text-muted-foreground">{label}</div>
       <div className={`font-bold tabular-nums ${highlight ? "text-primary" : ""}`}>{value}</div>
     </div>
@@ -408,7 +435,9 @@ function ViolationsPanel({ inputs }: { inputs: ComplianceInputs }) {
           <div
             key={c.id}
             className={`rounded-lg border p-4 ${
-              c.status === "fail" ? "bg-rose-50/50 border-rose-200" : "bg-amber-50/50 border-amber-200"
+              c.status === "fail"
+                ? "bg-rose-50/50 border-rose-200"
+                : "bg-amber-50/50 border-amber-200"
             }`}
           >
             <div className="flex items-start gap-3">
@@ -500,7 +529,7 @@ function ChangeHistoryPanel({ rows }: { rows: OrgAuditRow[] }) {
       <CardContent>
         <div className="space-y-3">
           {rows.map((r) => (
-            <div key={r.id} className="border-l-2 border-primary/40 pr-3 py-1">
+            <div key={r.id} className="border-s-2 border-primary/40 pe-3 py-1">
               <div className="flex items-center gap-2 flex-wrap text-sm">
                 <Badge variant="outline">{ACTION_LABEL[r.action] || r.action}</Badge>
                 <span className="text-xs text-muted-foreground">

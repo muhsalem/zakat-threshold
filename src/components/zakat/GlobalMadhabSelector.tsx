@@ -1,15 +1,37 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Scale, CheckCircle2, XCircle } from "lucide-react";
 import { useMadhab, type Madhab } from "@/lib/madhabContext";
 
 const OPTIONS: { value: Madhab; label: string; hint: string }[] = [
-  { value: "aaoifi", label: "معيار AAOIFI 35 (الافتراضي)", hint: "رأي الجمهور مع ضوابط معايير المحاسبة والمراجعة الإسلامية" },
-  { value: "hanafi", label: "المذهب الحنفي", hint: "حلي المرأة المستعمل تجب فيه الزكاة، ولا نصاب في الزروع" },
-  { value: "maliki", label: "المذهب المالكي", hint: "الدَّين المرجوّ يُزكّى عن سنة واحدة عند القبض" },
+  {
+    value: "aaoifi",
+    label: "معيار AAOIFI 35 (الافتراضي)",
+    hint: "رأي الجمهور مع ضوابط معايير المحاسبة والمراجعة الإسلامية",
+  },
+  {
+    value: "hanafi",
+    label: "المذهب الحنفي",
+    hint: "حلي المرأة المستعمل تجب فيه الزكاة، ولا نصاب في الزروع",
+  },
+  {
+    value: "maliki",
+    label: "المذهب المالكي",
+    hint: "الدَّين المرجوّ يُزكّى عن سنة واحدة عند القبض",
+  },
   { value: "shafii", label: "المذهب الشافعي", hint: "لا زكاة في الحلي المعدّ للاستعمال المباح" },
-  { value: "hanbali", label: "المذهب الحنبلي", hint: "قريب من الشافعية في أغلب مسائل زكاة الأموال" },
+  {
+    value: "hanbali",
+    label: "المذهب الحنبلي",
+    hint: "قريب من الشافعية في أغلب مسائل زكاة الأموال",
+  },
 ];
 
 interface Props {
@@ -36,7 +58,9 @@ export default function GlobalMadhabSelector({ compact = false }: Props) {
         <CardTitle className="flex items-center gap-2 text-base">
           <Scale className="w-5 h-5 text-primary" />
           المرجعية الفقهية للحساب
-          <Badge variant="secondary" className="mr-auto">{rules.label}</Badge>
+          <Badge variant="secondary" className="me-auto">
+            {rules.label}
+          </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -65,7 +89,8 @@ export default function GlobalMadhabSelector({ compact = false }: Props) {
           </div>
         )}
         <p className="text-[11px] text-muted-foreground">
-          يؤثّر اختيار المرجعية على تصنيف الحلي المستعمَل، نصاب الزروع، الخلط في الأنعام، وحساب الديون — دون تغيير النسبة الأساسية 2.5%.
+          يؤثّر اختيار المرجعية على تصنيف الحلي المستعمَل، نصاب الزروع، الخلط في الأنعام، وحساب
+          الديون — دون تغيير النسبة الأساسية 2.5%.
         </p>
       </CardContent>
     </Card>

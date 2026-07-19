@@ -329,7 +329,7 @@ export function NisabHistory() {
                 onClick={() => refreshLive(countryCode)}
                 disabled={liveLoading}
               >
-                <RefreshCw className={`h-3.5 w-3.5 ml-1 ${liveLoading ? "animate-spin" : ""}`} />
+                <RefreshCw className={`h-3.5 w-3.5 ms-1 ${liveLoading ? "animate-spin" : ""}`} />
                 تحديث الأسعار
               </Button>
               {livePrices && !liveError && (
@@ -433,12 +433,12 @@ export function NisabHistory() {
             <Database className="h-5 w-5 text-primary" />
             قاعدة بيانات الأنصبة — اختر السنة والشهر
           </CardTitle>
-          <p className="text-sm text-muted-foreground text-right">
+          <p className="text-sm text-muted-foreground text-end">
             البيانات محفوظة في قاعدة بيانات النظام. اختر السنة، ولسنة 2026 يمكنك اختيار الشهر
             للاطلاع على النصاب الشهري التفصيلي.
           </p>
         </CardHeader>
-        <CardContent className="pt-6 space-y-4 text-right">
+        <CardContent className="pt-6 space-y-4 text-end">
           <div className="grid sm:grid-cols-3 gap-3">
             <div className="space-y-1.5">
               <Label className="text-xs">الدولة / العملة</Label>
@@ -671,7 +671,7 @@ export function NisabHistory() {
                 <table className="w-full text-xs border-collapse">
                   <thead>
                     <tr className="bg-muted/60">
-                      <th className="border px-2 py-1.5 text-right">الشهر</th>
+                      <th className="border px-2 py-1.5 text-end">الشهر</th>
                       <th className="border px-2 py-1.5">محافظ — ذهب</th>
                       <th className="border px-2 py-1.5">أساسي — ذهب</th>
                       <th className="border px-2 py-1.5">متفائل — ذهب</th>
@@ -687,7 +687,7 @@ export function NisabHistory() {
                       const sB = forecastScenarios.silver.base[idx].value * dbFx;
                       return (
                         <tr key={m} className="hover:bg-muted/30">
-                          <td className="border px-2 py-1.5 text-right font-semibold">
+                          <td className="border px-2 py-1.5 text-end font-semibold">
                             {MONTHS_AR[m - 1]}
                           </td>
                           <td className="border px-2 py-1.5 text-center text-emerald-700">
@@ -891,7 +891,7 @@ export function NisabHistory() {
             <div className="absolute right-3 top-2 bottom-2 w-px bg-gradient-to-b from-gold via-primary/30 to-transparent" />
             <div className="space-y-6">
               {NISAB_HISTORY.map((item, idx) => (
-                <div key={idx} className="relative pr-10">
+                <div key={idx} className="relative pe-10">
                   <div className="absolute right-1.5 top-1.5 h-3 w-3 rounded-full bg-gradient-gold ring-4 ring-background shadow-gold" />
                   <div className="flex flex-wrap items-baseline gap-2 mb-2">
                     <h3 className="text-lg font-bold text-primary">{item.era}</h3>

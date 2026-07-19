@@ -54,7 +54,7 @@ export function CropsZakatSection({ currencyName = "ج.م" }: { currencyName?: s
         <CardTitle className="flex items-center gap-2 text-base">
           <Wheat className="h-4 w-4 text-primary" />
           زكاة الزروع والثمار
-          <Badge variant="outline" className="text-[10px] mr-auto">
+          <Badge variant="outline" className="text-[10px] me-auto">
             {rules.cropsRequireNisab ? "قول الجمهور" : "المذهب الحنفي"}
           </Badge>
         </CardTitle>
@@ -66,8 +66,8 @@ export function CropsZakatSection({ currencyName = "ج.م" }: { currencyName?: s
           <AlertDescription className="text-xs leading-relaxed">
             {rules.cropsRequireNisab ? (
               <>
-                النصاب: <b>{CROPS_NISAB_KG} كجم</b> (5 أوسق) بعد التصفية والتجفيف. تُخرج عند الحصاد ولا
-                يُشترط الحول. المعدّل يعتمد على طبيعة الري.
+                النصاب: <b>{CROPS_NISAB_KG} كجم</b> (5 أوسق) بعد التصفية والتجفيف. تُخرج عند الحصاد
+                ولا يُشترط الحول. المعدّل يعتمد على طبيعة الري.
               </>
             ) : (
               <>

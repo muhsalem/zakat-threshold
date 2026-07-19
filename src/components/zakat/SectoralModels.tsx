@@ -43,7 +43,7 @@ function NF({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="0"
-          className="pl-14 h-9"
+          className="ps-14 h-9"
           dir="ltr"
           style={{ textAlign: "right" }}
         />

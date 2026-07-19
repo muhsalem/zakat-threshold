@@ -63,6 +63,7 @@ export type Database = {
           fiscal_year: number
           hawl_date: string | null
           id: string
+          intake_details: Json | null
           kind: string
           last_calc_amount: number | null
           last_calc_at: string | null
@@ -84,6 +85,7 @@ export type Database = {
           fiscal_year?: number
           hawl_date?: string | null
           id?: string
+          intake_details?: Json | null
           kind?: string
           last_calc_amount?: number | null
           last_calc_at?: string | null
@@ -105,6 +107,7 @@ export type Database = {
           fiscal_year?: number
           hawl_date?: string | null
           id?: string
+          intake_details?: Json | null
           kind?: string
           last_calc_amount?: number | null
           last_calc_at?: string | null
@@ -574,6 +577,54 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_preferences: {
+        Row: {
+          channel_email: boolean
+          channel_inapp: boolean
+          channel_sms: boolean
+          created_at: string
+          email_address: string | null
+          hawl_reminder_days: number[]
+          hawl_reminder_enabled: boolean
+          language: string
+          phone_e164: string | null
+          quiet_hours_end: number | null
+          quiet_hours_start: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          channel_email?: boolean
+          channel_inapp?: boolean
+          channel_sms?: boolean
+          created_at?: string
+          email_address?: string | null
+          hawl_reminder_days?: number[]
+          hawl_reminder_enabled?: boolean
+          language?: string
+          phone_e164?: string | null
+          quiet_hours_end?: number | null
+          quiet_hours_start?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          channel_email?: boolean
+          channel_inapp?: boolean
+          channel_sms?: boolean
+          created_at?: string
+          email_address?: string | null
+          hawl_reminder_days?: number[]
+          hawl_reminder_enabled?: boolean
+          language?: string
+          phone_e164?: string | null
+          quiet_hours_end?: number | null
+          quiet_hours_start?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           body: string | null
@@ -740,28 +791,79 @@ export type Database = {
         }
         Relationships: []
       }
+      payments: {
+        Row: {
+          amount_paid: number | null
+          created_at: string
+          currency: string | null
+          id: string
+          plan_id: string | null
+          status: string
+          stripe_customer_id: string | null
+          stripe_session_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          amount_paid?: number | null
+          created_at?: string
+          currency?: string | null
+          id?: string
+          plan_id?: string | null
+          status: string
+          stripe_customer_id?: string | null
+          stripe_session_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount_paid?: number | null
+          created_at?: string
+          currency?: string | null
+          id?: string
+          plan_id?: string | null
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_session_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           account_type: Database["public"]["Enums"]["account_type"]
+          country: string | null
           created_at: string
           display_name: string | null
           id: string
+          plan: string
+          plan_expires_at: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
           account_type?: Database["public"]["Enums"]["account_type"]
+          country?: string | null
           created_at?: string
           display_name?: string | null
           id?: string
+          plan?: string
+          plan_expires_at?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
           account_type?: Database["public"]["Enums"]["account_type"]
+          country?: string | null
           created_at?: string
           display_name?: string | null
           id?: string
+          plan?: string
+          plan_expires_at?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -864,6 +966,48 @@ export type Database = {
           },
         ]
       }
+      user_report_archive: {
+        Row: {
+          created_at: string
+          currency: string | null
+          id: string
+          kind: string
+          payload: Json
+          share_expires_at: string | null
+          share_revoked_at: string | null
+          share_token: string | null
+          updated_at: string
+          user_id: string
+          year: number | null
+        }
+        Insert: {
+          created_at?: string
+          currency?: string | null
+          id?: string
+          kind: string
+          payload?: Json
+          share_expires_at?: string | null
+          share_revoked_at?: string | null
+          share_token?: string | null
+          updated_at?: string
+          user_id: string
+          year?: number | null
+        }
+        Update: {
+          created_at?: string
+          currency?: string | null
+          id?: string
+          kind?: string
+          payload?: Json
+          share_expires_at?: string | null
+          share_revoked_at?: string | null
+          share_token?: string | null
+          updated_at?: string
+          user_id?: string
+          year?: number | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -881,6 +1025,57 @@ export type Database = {
           created_at?: string
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_subscriptions: {
+        Row: {
+          amount: number | null
+          billing_period: string
+          cancel_at_period_end: boolean
+          canceled_at: string | null
+          created_at: string
+          currency: string
+          id: string
+          plan_id: string
+          plan_name: string
+          renews_at: string | null
+          started_at: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number | null
+          billing_period?: string
+          cancel_at_period_end?: boolean
+          canceled_at?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          plan_id?: string
+          plan_name?: string
+          renews_at?: string | null
+          started_at?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number | null
+          billing_period?: string
+          cancel_at_period_end?: boolean
+          canceled_at?: string | null
+          created_at?: string
+          currency?: string
+          id?: string
+          plan_id?: string
+          plan_name?: string
+          renews_at?: string | null
+          started_at?: string
+          status?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []

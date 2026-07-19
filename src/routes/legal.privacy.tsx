@@ -24,7 +24,7 @@ function PrivacyPage() {
           <h1 className="text-lg font-bold">سياسة الخصوصية</h1>
         </div>
       </header>
-      <main className="container mx-auto px-4 py-10 max-w-3xl prose prose-sm text-right leading-loose">
+      <main className="container mx-auto px-4 py-10 max-w-3xl prose prose-sm text-end leading-loose">
         <h2 className="text-2xl font-bold mb-4 text-primary">سياسة الخصوصية</h2>
         <p className="text-muted-foreground text-xs mb-6">
           آخر تحديث: {new Date().toLocaleDateString("ar-EG")}
@@ -41,7 +41,7 @@ function PrivacyPage() {
           </div>
           <div>
             <h3 className="font-bold text-base mb-1">٢. البيانات التي نجمعها</h3>
-            <ul className="list-disc pr-6 space-y-1">
+            <ul className="list-disc pe-6 space-y-1">
               <li>
                 <b>لا نجمع</b> أرقام حسابات بنكية ولا أرقام بطاقات ائتمان ولا كلمات سر.
               </li>
@@ -63,7 +63,7 @@ function PrivacyPage() {
             <h3 className="font-bold text-base mb-1">
               ٤. حقوقك (وفق GDPR وقانون حماية البيانات المصري 151/2020)
             </h3>
-            <ul className="list-disc pr-6 space-y-1">
+            <ul className="list-disc pe-6 space-y-1">
               <li>الحق في الوصول إلى بياناتك وتصحيحها أو حذفها.</li>
               <li>الحق في سحب الموافقة في أي وقت.</li>
               <li>الحق في تقديم شكوى لجهة الإشراف المختصة.</li>

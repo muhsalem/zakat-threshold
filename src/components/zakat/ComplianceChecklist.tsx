@@ -91,7 +91,9 @@ export function useComplianceChecks(input: ComplianceInputs): ComplianceCheck[] 
       status: pass ? "pass" : "fail",
       detail: `الرصيد الحالي: ${fmt(goldG)} جم`,
       reference: "AAOIFI SS 35 · بند 3/1",
-      remedy: pass ? undefined : `يلزم بلوغ ${fmt(GOLD_NISAB_GRAMS - goldG)} جم إضافية لبلوغ النصاب`,
+      remedy: pass
+        ? undefined
+        : `يلزم بلوغ ${fmt(GOLD_NISAB_GRAMS - goldG)} جم إضافية لبلوغ النصاب`,
     });
   } else {
     checks.push({
@@ -378,7 +380,10 @@ export default function ComplianceChecklist({ inputs, compact = false }: Props) 
               <div className="flex-1 min-w-0 space-y-1">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-medium text-sm">{c.label}</span>
-                  <Badge variant="outline" className={`${STATUS_LABEL[c.status].className} text-[10px]`}>
+                  <Badge
+                    variant="outline"
+                    className={`${STATUS_LABEL[c.status].className} text-[10px]`}
+                  >
                     {STATUS_LABEL[c.status].ar}
                   </Badge>
                   <Tooltip>
@@ -405,7 +410,8 @@ export default function ComplianceChecklist({ inputs, compact = false }: Props) 
         </TooltipProvider>
 
         <p className="text-[11px] text-muted-foreground pt-2 border-t">
-          هذه قائمة تحقّق تلقائية بناءً على المدخلات والمذهب المختار. لا تُغني عن استشارة مفتٍ معتمد في الحالات الخاصة.
+          هذه قائمة تحقّق تلقائية بناءً على المدخلات والمذهب المختار. لا تُغني عن استشارة مفتٍ معتمد
+          في الحالات الخاصة.
         </p>
       </CardContent>
     </Card>

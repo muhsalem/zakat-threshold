@@ -22,6 +22,10 @@ import {
   HelpCircle,
   Sparkles,
   LayoutDashboard,
+  Settings,
+  MapPin,
+  Users,
+  HeartHandshake,
 } from "lucide-react";
 import { searchEntries } from "@/lib/searchIndex";
 import { useAuth, type AccountType } from "@/hooks/useAuth";
@@ -35,16 +39,25 @@ const NAV: NavItem[] = [
   { title: "السجل", url: "/history", icon: BookOpen, audience: ["all"] },
   { title: "التحقق من تقرير", url: "/verify", icon: ShieldCheck, audience: ["all"] },
   { title: "الإشعارات", url: "/analytics", icon: Bell, audience: ["all"] },
+  { title: "اشتراكي", url: "/subscription", icon: Sparkles, audience: ["all"] },
+  { title: "الإعدادات", url: "/settings", icon: Settings, audience: ["all"] },
   { title: "الأسئلة الشائعة", url: "/faq", icon: HelpCircle, audience: ["all"] },
 ];
 
 type CalcItem = { title: string; url: string; audience: Array<AccountType | "all"> };
 
 const CALCS: CalcItem[] = [
-  { title: "زكاة الذهب والفضة", url: "/zakat-gold", audience: ["individual"] },
-  { title: "زكاة الزروع", url: "/crops", audience: ["individual"] },
+  { title: "زكاة الفطر", url: "/zakat-fitr", audience: ["individual"] },
   { title: "زكاة الشركات", url: "/zakat-company", audience: ["company"] },
   { title: "زكاة المؤسسات", url: "/enterprise", audience: ["institution"] },
+  { title: "خطة توزيع الزكاة", url: "/distribution-plan", audience: ["individual"] },
+];
+
+type ProItem = { title: string; url: string; icon: any };
+const PRO_TOOLS: ProItem[] = [
+  { title: "ربط دليل الحسابات", url: "/coa-mapping", icon: MapPin },
+  { title: "معالجة عملاء دفعة", url: "/bulk-clients", icon: Users },
+  { title: "خطة التوزيع", url: "/distribution-plan", icon: HeartHandshake },
 ];
 
 function isVisible(audience: Array<AccountType | "all">, type: AccountType | null) {
@@ -77,7 +90,7 @@ export function AppSidebar() {
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 placeholder="ابحث في المنصة…"
-                className="pr-8 h-9 text-sm"
+                className="pe-8 h-9 text-sm"
                 dir="rtl"
                 aria-label="بحث"
               />
@@ -146,6 +159,26 @@ export function AppSidebar() {
                     <SidebarMenuButton asChild isActive={isActive(i.url)}>
                       <Link to={i.url} className="flex items-center gap-2">
                         <Calculator className="h-4 w-4" />
+                        {!collapsed && <span>{i.title}</span>}
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
+
+        {isAccountant && (
+          <SidebarGroup>
+            <SidebarGroupLabel>أدوات المحاسب</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {PRO_TOOLS.map((i) => (
+                  <SidebarMenuItem key={i.url}>
+                    <SidebarMenuButton asChild isActive={isActive(i.url)}>
+                      <Link to={i.url} className="flex items-center gap-2">
+                        <i.icon className="h-4 w-4" />
                         {!collapsed && <span>{i.title}</span>}
                       </Link>
                     </SidebarMenuButton>

@@ -59,7 +59,7 @@ export function FontSizeToggle() {
             className={current === s.id ? "bg-primary/10 font-bold text-primary" : ""}
           >
             <span style={{ fontSize: `${s.value}rem` }}>{s.label}</span>
-            {current === s.id && <span className="mr-auto text-xs">✓</span>}
+            {current === s.id && <span className="me-auto text-xs">✓</span>}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

@@ -124,7 +124,7 @@ export function SimpleZakatCalculator() {
         <CardTitle className="flex items-center gap-2 text-xl">
           <Sparkles className="h-5 w-5 text-gold" />
           حاسبة الزكاة المجانية السريعة
-          <Badge variant="secondary" className="mr-auto">
+          <Badge variant="secondary" className="me-auto">
             مجاناً — بدون تسجيل
           </Badge>
         </CardTitle>
@@ -197,7 +197,7 @@ export function SimpleZakatCalculator() {
           <Badge variant={r.reaches ? "secondary" : "destructive"} className="mt-1">
             {r.reaches ? (
               <>
-                <CheckCircle2 className="h-3 w-3 ml-1" /> بلغ النصاب
+                <CheckCircle2 className="h-3 w-3 ms-1" /> بلغ النصاب
               </>
             ) : (
               "أقل من النصاب — لا زكاة"

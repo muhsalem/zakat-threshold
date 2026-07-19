@@ -83,7 +83,7 @@ export function RealEstateZakatSection({ currencyName = "ج.م" }: Props) {
         <CardTitle className="flex items-center gap-2 text-base">
           <Building className="h-4 w-4 text-primary" />
           زكاة المستغلات (العقارات المؤجرة والمصانع ووسائل النقل)
-          <Badge variant="outline" className="text-[10px] mr-auto">
+          <Badge variant="outline" className="text-[10px] me-auto">
             AAOIFI 35 · أبو زهرة · المجمع الفقهي
           </Badge>
         </CardTitle>
@@ -94,7 +94,7 @@ export function RealEstateZakatSection({ currencyName = "ج.م" }: Props) {
           <AlertDescription className="text-xs leading-relaxed">
             <b>المستغلات</b>: أصول مقتناة للاستثمار وليس للبيع (إيجار، تأجير، إنتاج). للعلماء فيها
             ثلاثة آراء:
-            <ul className="list-disc pr-5 mt-1 space-y-0.5">
+            <ul className="list-disc pe-5 mt-1 space-y-0.5">
               <li>
                 <b>الجمهور:</b> 2.5% على صافي الغلة بعد الحول وبلوغ النصاب.
               </li>

@@ -36,7 +36,6 @@ async function requireUser(request: Request): Promise<{ userId: string } | Respo
   return { userId: data.claims.sub as string };
 }
 
-
 const SYSTEM_PROMPT = `أنت "مستشار نِصاب" — مساعد متخصص في فقه ومحاسبة الزكاة وفق المعايير الشرعية المعتمدة (خاصةً المعيار الشرعي 35 من AAOIFI، وفتاوى المجامع الفقهية الكبرى).
 
 قواعد إجابتك:

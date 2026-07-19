@@ -146,7 +146,7 @@ export function FitrCalculator() {
   const cur = (n: number) => currency(n, country.currency);
 
   return (
-    <div dir="rtl" className="grid lg:grid-cols-3 gap-6 text-right">
+    <div dir="rtl" className="grid lg:grid-cols-3 gap-6 text-end">
       <div className="lg:col-span-2 space-y-6">
         <Card className="shadow-soft">
           <CardHeader>
@@ -328,7 +328,7 @@ export function FitrCalculator() {
               <>
                 <div className="text-4xl font-black tracking-tight">
                   {fmt(calc.totalCash)}
-                  <span className="text-lg font-medium opacity-80 mr-2">{country.currency}</span>
+                  <span className="text-lg font-medium opacity-80 me-2">{country.currency}</span>
                 </div>
                 <p className="text-xs opacity-80 mt-2">
                   ما يعادل <b>{fmt(calc.totalKg)} كجم</b> من {selectedStaple.name}
@@ -338,7 +338,7 @@ export function FitrCalculator() {
               <>
                 <div className="text-4xl font-black tracking-tight">
                   {fmt(calc.totalKg)}
-                  <span className="text-lg font-medium opacity-80 mr-2">كجم</span>
+                  <span className="text-lg font-medium opacity-80 me-2">كجم</span>
                 </div>
                 <p className="text-xs opacity-80 mt-2">
                   من {selectedStaple.name} (ما يعادل <b>{cur(calc.totalCash)}</b> نقداً)

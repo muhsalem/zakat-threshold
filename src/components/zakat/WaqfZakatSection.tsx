@@ -52,7 +52,7 @@ export function WaqfZakatSection({ currencyName = "", onChange }: Props) {
         <CardTitle className="flex items-center gap-2 text-base">
           <Landmark className="h-4 w-4 text-primary" />
           زكاة الأوقاف والمؤسسات الوقفية
-          <Badge variant="outline" className="text-[10px] mr-auto">
+          <Badge variant="outline" className="text-[10px] me-auto">
             AAOIFI 35 / مجمع الفقه 140
           </Badge>
         </CardTitle>

@@ -77,7 +77,7 @@ export function ShariaAuditTrail() {
         <CardTitle className="flex items-center gap-2 text-base">
           <ShieldCheck className="h-4 w-4 text-emerald-600" />
           سجل التدقيق الشرعي للأوعية الزكوية
-          <Badge variant="outline" className="text-[10px] mr-auto">
+          <Badge variant="outline" className="text-[10px] me-auto">
             AAOIFI · المجامع الفقهية · بيت الزكاة
           </Badge>
         </CardTitle>
@@ -86,7 +86,7 @@ export function ShariaAuditTrail() {
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
             <thead className="bg-muted/50">
-              <tr className="text-right">
+              <tr className="text-end">
                 <th className="p-2 font-semibold">الوعاء</th>
                 <th className="p-2 font-semibold">الحكم الشرعي</th>
                 <th className="p-2 font-semibold">المعدل</th>
