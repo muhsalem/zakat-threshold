@@ -139,7 +139,7 @@ export async function migrateLocalToCloud(kind: ArchiveKind): Promise<number> {
     kind,
     year: e.year,
     currency: e.currency,
-    payload: e.payload as Record<string, unknown>,
+    payload: e.payload as never,
   }));
   const { error } = await supabase
     .from("user_report_archive")
