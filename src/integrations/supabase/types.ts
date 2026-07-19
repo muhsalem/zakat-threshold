@@ -942,6 +942,39 @@ export type Database = {
           },
         ]
       }
+      user_report_archive: {
+        Row: {
+          created_at: string
+          currency: string | null
+          id: string
+          kind: string
+          payload: Json
+          updated_at: string
+          user_id: string
+          year: number | null
+        }
+        Insert: {
+          created_at?: string
+          currency?: string | null
+          id?: string
+          kind: string
+          payload?: Json
+          updated_at?: string
+          user_id: string
+          year?: number | null
+        }
+        Update: {
+          created_at?: string
+          currency?: string | null
+          id?: string
+          kind?: string
+          payload?: Json
+          updated_at?: string
+          user_id?: string
+          year?: number | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string

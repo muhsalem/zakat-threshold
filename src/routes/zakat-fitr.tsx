@@ -8,9 +8,29 @@ import { Label } from "@/components/ui/label";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Wheat, Calculator, BookOpen, ShieldCheck, ArrowLeft, Users, FileDown, Archive, Trash2, BarChart3, Save } from "lucide-react";
+import { Wheat, Calculator, BookOpen, ShieldCheck, ArrowLeft, Users, FileDown, Archive, Trash2, BarChart3, Save, Cloud, CloudOff } from "lucide-react";
 import { exportHtmlToPdf, pdfWrap } from "@/lib/export/pdf";
 import { toast } from "sonner";
+import {
+  listArchive,
+  saveArchiveEntry,
+  deleteArchiveEntry,
+  clearArchive as clearCloudArchive,
+  migrateLocalToCloud,
+  type ArchiveRow,
+} from "@/lib/archive/cloud";
+import { supabase } from "@/integrations/supabase/client";
+
+type FitrPayload = {
+  peopleCount: number;
+  stapleId: string;
+  stapleLabel: string;
+  kgPerSaa: number;
+  pricePerKg: number;
+  totalKg: number;
+  totalCash: number;
+  savedAt: string;
+};
 
 type FitrArchiveEntry = {
   id: string;
@@ -26,17 +46,21 @@ type FitrArchiveEntry = {
   totalCash: number;
 };
 
-const ARCHIVE_KEY = "zakat-fitr-archive-v1";
-
-function loadArchive(): FitrArchiveEntry[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = window.localStorage.getItem(ARCHIVE_KEY);
-    return raw ? (JSON.parse(raw) as FitrArchiveEntry[]) : [];
-  } catch { return []; }
-}
-function saveArchive(list: FitrArchiveEntry[]) {
-  try { window.localStorage.setItem(ARCHIVE_KEY, JSON.stringify(list)); } catch { /* ignore */ }
+function rowToEntry(r: ArchiveRow<FitrPayload>): FitrArchiveEntry {
+  const p = r.payload || ({} as FitrPayload);
+  return {
+    id: r.id,
+    year: r.year ?? new Date().getFullYear(),
+    savedAt: p.savedAt || r.updated_at,
+    peopleCount: p.peopleCount ?? 0,
+    stapleId: p.stapleId ?? "wheat",
+    stapleLabel: p.stapleLabel ?? "قمح / دقيق",
+    kgPerSaa: p.kgPerSaa ?? 2.5,
+    pricePerKg: p.pricePerKg ?? 0,
+    currency: r.currency ?? "USD",
+    totalKg: p.totalKg ?? 0,
+    totalCash: p.totalCash ?? 0,
+  };
 }
 
 export const Route = createFileRoute("/zakat-fitr")({
@@ -73,8 +97,47 @@ function ZakatFitrPage() {
   const [currency, setCurrency] = useState<string>("USD");
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const [archive, setArchive] = useState<FitrArchiveEntry[]>([]);
+  const [isAuthed, setIsAuthed] = useState<boolean>(false);
+  const [busy, setBusy] = useState<boolean>(false);
 
-  useEffect(() => { setArchive(loadArchive()); }, []);
+  async function refreshArchive() {
+    try {
+      const rows = await listArchive<FitrPayload>("fitr");
+      setArchive(rows.map(rowToEntry).sort((a, b) => b.year - a.year));
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const { data } = await supabase.auth.getUser();
+      if (!mounted) return;
+      const authed = !!data.user;
+      setIsAuthed(authed);
+      if (authed) {
+        try {
+          const migrated = await migrateLocalToCloud("fitr");
+          if (migrated > 0) toast.success(`تمت مزامنة ${migrated} سجل إلى حسابك`);
+        } catch (e) { console.error(e); }
+      }
+      await refreshArchive();
+    })();
+    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_IN" || event === "SIGNED_OUT" || event === "USER_UPDATED") {
+        (async () => {
+          const { data } = await supabase.auth.getUser();
+          setIsAuthed(!!data.user);
+          if (data.user) {
+            try { await migrateLocalToCloud("fitr"); } catch (e) { console.error(e); }
+          }
+          await refreshArchive();
+        })();
+      }
+    });
+    return () => { mounted = false; sub.subscription.unsubscribe(); };
+  }, []);
 
   const active = STAPLES.find((s) => s.id === staple)!;
   const totalKg = useMemo(() => peopleCount * active.kgPerSaa, [peopleCount, active.kgPerSaa]);
@@ -86,38 +149,56 @@ function ZakatFitrPage() {
     setPricePerKg(s.suggestedPricePerKg);
   }
 
-  function archiveCurrent() {
-    const entry: FitrArchiveEntry = {
-      id: `${year}-${Date.now()}`,
-      year,
-      savedAt: new Date().toISOString(),
-      peopleCount,
-      stapleId: active.id,
-      stapleLabel: active.label,
-      kgPerSaa: active.kgPerSaa,
-      pricePerKg,
-      currency,
-      totalKg,
-      totalCash,
-    };
-    // Replace previous entry for same year+currency to keep comparison clean
-    const next = [entry, ...archive.filter((e) => !(e.year === year && e.currency === currency))]
-      .sort((a, b) => b.year - a.year);
-    setArchive(next);
-    saveArchive(next);
-    toast.success(`تم حفظ زكاة الفطر لسنة ${year}`);
+  async function archiveCurrent() {
+    setBusy(true);
+    try {
+      await saveArchiveEntry<FitrPayload>("fitr", {
+        year,
+        currency,
+        payload: {
+          peopleCount,
+          stapleId: active.id,
+          stapleLabel: active.label,
+          kgPerSaa: active.kgPerSaa,
+          pricePerKg,
+          totalKg,
+          totalCash,
+          savedAt: new Date().toISOString(),
+        },
+      });
+      await refreshArchive();
+      toast.success(
+        isAuthed
+          ? `تم حفظ زكاة الفطر لسنة ${year} في حسابك`
+          : `تم الحفظ محلياً — سجّل دخولك للمزامنة السحابية`,
+      );
+    } catch (e) {
+      console.error(e);
+      toast.error("تعذّر حفظ السجل");
+    } finally {
+      setBusy(false);
+    }
   }
 
-  function removeEntry(id: string) {
-    const next = archive.filter((e) => e.id !== id);
-    setArchive(next);
-    saveArchive(next);
+  async function removeEntry(id: string) {
+    try {
+      await deleteArchiveEntry("fitr", id);
+      await refreshArchive();
+    } catch (e) {
+      console.error(e);
+      toast.error("تعذّر حذف السجل");
+    }
   }
 
-  function clearArchive() {
+  async function clearArchive() {
     if (!confirm("حذف كل السجلات المؤرشفة؟")) return;
-    setArchive([]);
-    saveArchive([]);
+    try {
+      await clearCloudArchive("fitr");
+      await refreshArchive();
+    } catch (e) {
+      console.error(e);
+      toast.error("تعذّر حذف الأرشيف");
+    }
   }
 
   const comparison = useMemo(() => {
@@ -289,7 +370,7 @@ function ZakatFitrPage() {
             >
               <FileDown className="h-4 w-4" /> تصدير PDF
             </Button>
-            <Button variant="secondary" className="gap-1.5" onClick={archiveCurrent}>
+            <Button variant="secondary" className="gap-1.5" onClick={archiveCurrent} disabled={busy}>
               <Save className="h-4 w-4" /> أرشفة نتيجة {year}
             </Button>
             <Button asChild variant="outline">
@@ -373,8 +454,12 @@ function ZakatFitrPage() {
                 </div>
               );
             })}
-            <p className="text-xs text-muted-foreground border-e-2 border-primary/40 pe-3">
-              الأرشيف محفوظ محلياً في هذا المتصفح. للحفظ السحابي المتزامن استخدم حساب نِصاب المدفوع.
+            <p className="text-xs text-muted-foreground border-e-2 border-primary/40 pe-3 flex items-center gap-1.5">
+              {isAuthed ? (
+                <><Cloud className="h-3.5 w-3.5 text-primary" /> الأرشيف محفوظ في حسابك ويُزامن تلقائياً عبر أجهزتك.</>
+              ) : (
+                <><CloudOff className="h-3.5 w-3.5" /> الأرشيف محفوظ محلياً على هذا المتصفح — <Link to="/auth" className="underline hover:text-primary">سجّل الدخول</Link> لمزامنته سحابياً عبر أجهزتك.</>
+              )}
             </p>
           </CardContent>
         </Card>
