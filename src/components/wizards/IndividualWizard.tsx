@@ -74,11 +74,17 @@ export function IndividualWizard() {
 
   // ---- الملف والدولة ----
   const [name, setName] = useState("");
+  const [profession, setProfession] = useState("");
+  const [calcPrevYears, setCalcPrevYears] = useState<"no" | "yes">("no");
+  const [prevYearsCount, setPrevYearsCount] = useState("1");
+  const [fixHawl, setFixHawl] = useState<"no" | "yes">("no");
+  const [hawlDate, setHawlDate] = useState("");
   const [countryCode, setCountryCode] = useState("EG");
   const country = COUNTRY_PRICES.find((c) => c.code === countryCode) ?? COUNTRY_PRICES[0];
   const [goldPrice, setGoldPrice] = useState(String(country.gold24));
   const [silverPrice, setSilverPrice] = useState(String(country.silver));
   const currency = country.currency;
+
 
   function pickCountry(code: string) {
     const c = COUNTRY_PRICES.find((x) => x.code === code);
