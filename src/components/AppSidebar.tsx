@@ -98,7 +98,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild isActive={isActive(item.url)}>
                     <Link to={item.url} className="flex items-center gap-2">
                       <item.icon className="h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
+                      {!collapsed && <span className="whitespace-nowrap">{item.title}</span>}
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -126,7 +126,7 @@ export function AppSidebar() {
                     <SidebarMenuButton asChild isActive={isActive(i.url)}>
                       <Link to={i.url} className="flex items-center gap-2">
                         <Calculator className="h-4 w-4" />
-                        {!collapsed && <span>{i.title}</span>}
+                        {!collapsed && <span className="whitespace-nowrap">{i.title}</span>}
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -147,7 +147,7 @@ export function AppSidebar() {
                       <SidebarMenuButton asChild isActive={isActive(i.url)}>
                         <Link to={i.url} className="flex items-center gap-2">
                           <i.icon className="h-4 w-4" />
-                          {!collapsed && <span>{i.title}</span>}
+                          {!collapsed && <span className="whitespace-nowrap">{i.title}</span>}
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -165,7 +165,7 @@ export function AppSidebar() {
                       <SidebarMenuButton asChild isActive={isActive(i.url)}>
                         <Link to={i.url} className="flex items-center gap-2">
                           <i.icon className="h-4 w-4" />
-                          {!collapsed && <span>{i.title}</span>}
+                          {!collapsed && <span className="whitespace-nowrap">{i.title}</span>}
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -183,7 +183,7 @@ export function AppSidebar() {
                       <SidebarMenuButton asChild isActive={isActive(i.url)}>
                         <Link to={i.url} className="flex items-center gap-2">
                           <i.icon className="h-4 w-4" />
-                          {!collapsed && <span>{i.title}</span>}
+                          {!collapsed && <span className="whitespace-nowrap">{i.title}</span>}
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
