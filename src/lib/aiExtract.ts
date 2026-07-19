@@ -58,7 +58,10 @@ export function aiItemsToClassifiedRows(items: AiExtractedItem[]): ClassifiedRow
       erpType: it.category,
       category,
       // unclassified من الذكاء الاصطناعي = غير مصنف فعلاً → يدخل في فحص اكتمال التصنيف
-      source: it.category === "unclassified" || !AI_CATEGORY_TO_ZAKAT[it.category] ? "default" : "provider_rule",
+      source:
+        it.category === "unclassified" || !AI_CATEGORY_TO_ZAKAT[it.category]
+          ? "default"
+          : "provider_rule",
     };
   });
 }

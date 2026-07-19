@@ -33,14 +33,10 @@ function PlanCard({ plan, countryCode }: { plan: Plan; countryCode: string | nul
   return (
     <Card
       className={
-        plan.highlight
-          ? "border-primary shadow-lg relative flex flex-col"
-          : "flex flex-col"
+        plan.highlight ? "border-primary shadow-lg relative flex flex-col" : "flex flex-col"
       }
     >
-      {plan.badge && (
-        <Badge className="absolute -top-3 right-4">{plan.badge}</Badge>
-      )}
+      {plan.badge && <Badge className="absolute -top-3 right-4">{plan.badge}</Badge>}
       <CardHeader className="space-y-3">
         <div className="flex items-center gap-2">
           <Icon className="h-5 w-5 text-primary" />
@@ -75,10 +71,7 @@ function PlanCard({ plan, countryCode }: { plan: Plan; countryCode: string | nul
         </ul>
         {plan.ctaTo ? (
           <Link to={plan.ctaTo}>
-            <Button
-              className="w-full"
-              variant={plan.highlight ? "default" : "outline"}
-            >
+            <Button className="w-full" variant={plan.highlight ? "default" : "outline"}>
               {plan.usdPrice === 0 ? "ابدأ مجاناً" : `اختر ${plan.name}`}
             </Button>
           </Link>
@@ -108,8 +101,8 @@ function PricingPage() {
           أسعار مصمَّمة لدورة استخدامك — لا لمجرد نقرة حساب
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          الحاسبة الأساسية مجانية للأبد. تدفع فقط مقابل الإدارة المستمرة والتقارير المعتمدة.
-          الأسعار محلية عبر <b>PPP</b> — عرضك مبني على{" "}
+          الحاسبة الأساسية مجانية للأبد. تدفع فقط مقابل الإدارة المستمرة والتقارير المعتمدة. الأسعار
+          محلية عبر <b>PPP</b> — عرضك مبني على{" "}
           <span className="font-semibold">
             {info.flag} {info.nameAr}
           </span>
@@ -166,11 +159,10 @@ function PricingPage() {
           <div className="space-y-2 text-sm">
             <p className="font-semibold">كيف نحدّد أسعار الاشتراكات؟</p>
             <p className="text-muted-foreground leading-relaxed">
-              نصنّف الدول إلى 4 مناطق مستوحاة من البنك الدولي — دول عالية الدخل
-              (T1) تدفع السعر الكامل، دول متوسطة الدخل الأعلى (T2) 60%، دول
-              متوسطة الدخل الأدنى (T3) 35%، والدول منخفضة الدخل (T4) 20% فقط.
-              الفوترة الفعلية تتم بالدولار الأمريكي، لكن السعر المعروض بعملة
-              بلدك تقريبياً لسهولة الفهم.
+              نصنّف الدول إلى 4 مناطق مستوحاة من البنك الدولي — دول عالية الدخل (T1) تدفع السعر
+              الكامل، دول متوسطة الدخل الأعلى (T2) 60%، دول متوسطة الدخل الأدنى (T3) 35%، والدول
+              منخفضة الدخل (T4) 20% فقط. الفوترة الفعلية تتم بالدولار الأمريكي، لكن السعر المعروض
+              بعملة بلدك تقريبياً لسهولة الفهم.
             </p>
           </div>
         </div>

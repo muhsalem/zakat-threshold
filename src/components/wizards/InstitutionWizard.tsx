@@ -31,9 +31,9 @@ export function InstitutionWizard() {
       <Alert className="border-primary/30 bg-primary/5">
         <Landmark className="h-4 w-4" />
         <AlertDescription className="text-xs leading-6">
-          <strong>منهج المؤسسة (AAOIFI-35 §6/3):</strong> الأوقاف والتبرعات المقيّدة
-          والأصول المخصّصة للأنشطة الخيرية <strong>تُستبعد من الوعاء الزكوي</strong>.
-          تُحسب الزكاة فقط على الأصول التجارية النامية المملوكة للمؤسسة نفسها.
+          <strong>منهج المؤسسة (AAOIFI-35 §6/3):</strong> الأوقاف والتبرعات المقيّدة والأصول
+          المخصّصة للأنشطة الخيرية <strong>تُستبعد من الوعاء الزكوي</strong>. تُحسب الزكاة فقط على
+          الأصول التجارية النامية المملوكة للمؤسسة نفسها.
         </AlertDescription>
       </Alert>
 
@@ -114,8 +114,8 @@ export function InstitutionWizard() {
               placeholder="0"
             />
             <p className="mt-1 text-[10px] text-muted-foreground">
-              نقد وبنوك واستثمارات ومخزون البيع للأنشطة التجارية <strong>فقط</strong>،
-              بعد عزل ما ورد في الخطوة 1.
+              نقد وبنوك واستثمارات ومخزون البيع للأنشطة التجارية <strong>فقط</strong>، بعد عزل ما
+              ورد في الخطوة 1.
             </p>
           </div>
 

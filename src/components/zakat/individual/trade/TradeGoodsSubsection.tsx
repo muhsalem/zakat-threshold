@@ -81,9 +81,7 @@ export function TradeGoodsSubsection({
       {/* هل أنت مساهم في شركة */}
       <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
         <div className="flex items-center justify-between">
-          <Label className="text-sm font-semibold">
-            هل أنت مساهم / شريك في شركة قائمة؟
-          </Label>
+          <Label className="text-sm font-semibold">هل أنت مساهم / شريك في شركة قائمة؟</Label>
           <Switch checked={tradeIsShareholder} onCheckedChange={setTradeIsShareholder} />
         </div>
         {tradeIsShareholder && (
@@ -91,9 +89,8 @@ export function TradeGoodsSubsection({
             <Alert className="border-primary/20 bg-primary/5">
               <Info className="h-4 w-4" />
               <AlertDescription className="text-xs">
-                إن كانت الشركة تُخرج زكاتها كاملةً عن وعائها فلا تُكرّر الحساب —
-                اتركها صفراً. وإلا أدخل الوعاء الزكوي للشركة (من تبويب «زكاة
-                الشركات») ونسبة حصتك.
+                إن كانت الشركة تُخرج زكاتها كاملةً عن وعائها فلا تُكرّر الحساب — اتركها صفراً. وإلا
+                أدخل الوعاء الزكوي للشركة (من تبويب «زكاة الشركات») ونسبة حصتك.
               </AlertDescription>
             </Alert>
             <div className="grid md:grid-cols-3 gap-3">
@@ -130,9 +127,7 @@ export function TradeGoodsSubsection({
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  const el = document.getElementById(
-                    "tab-company",
-                  ) as HTMLElement | null;
+                  const el = document.getElementById("tab-company") as HTMLElement | null;
                   el?.click();
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}

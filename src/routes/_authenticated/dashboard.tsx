@@ -109,7 +109,6 @@ function DashboardPage() {
                 <Button asChild size="sm" variant="ghost" className="h-6 text-xs">
                   <Link to="/drafts">المسودات والسجل</Link>
                 </Button>
-
               </div>
             </div>
           </div>
@@ -121,7 +120,6 @@ function DashboardPage() {
               : 'هذه لوحة موجّهة خطوة‑بخطوة تجمع أهم مدخلاتك وتصدر تقريراً جاهزاً. للوصول إلى كل التبويبات التفصيلية استخدم زر "الوضع المتقدم" أعلاه.'}
           </p>
         </CardContent>
-
       </Card>
 
       {type === "individual" && (

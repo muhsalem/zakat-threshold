@@ -17,26 +17,57 @@ export type FitrImportRow = {
 };
 
 const HEADER_MAP: Record<string, keyof FitrImportRow> = {
-  year: "year", السنة: "year", العام: "year",
-  people: "peopleCount", peoplecount: "peopleCount", count: "peopleCount",
-  الافراد: "peopleCount", الأفراد: "peopleCount", عددالافراد: "peopleCount", عددالأفراد: "peopleCount",
-  staple: "stapleLabel", stapleid: "stapleId", staplelabel: "stapleLabel",
-  القوت: "stapleLabel", الطعام: "stapleLabel",
-  kgpersaa: "kgPerSaa", kgساع: "kgPerSaa", كجمصاع: "kgPerSaa", كجمللصاع: "kgPerSaa",
-  price: "pricePerKg", priceperkg: "pricePerKg", سعرالكجم: "pricePerKg", سعركجم: "pricePerKg", "سعر/كجم": "pricePerKg",
-  currency: "currency", العملة: "currency",
-  totalkg: "totalKg", الوزن: "totalKg", "الوزن(كجم)": "totalKg", إجماليالوزن: "totalKg",
-  totalcash: "totalCash", total: "totalCash", القيمة: "totalCash", الاجمالي: "totalCash", الإجمالي: "totalCash",
-  savedat: "savedAt", التاريخ: "savedAt",
+  year: "year",
+  السنة: "year",
+  العام: "year",
+  people: "peopleCount",
+  peoplecount: "peopleCount",
+  count: "peopleCount",
+  الافراد: "peopleCount",
+  الأفراد: "peopleCount",
+  عددالافراد: "peopleCount",
+  عددالأفراد: "peopleCount",
+  staple: "stapleLabel",
+  stapleid: "stapleId",
+  staplelabel: "stapleLabel",
+  القوت: "stapleLabel",
+  الطعام: "stapleLabel",
+  kgpersaa: "kgPerSaa",
+  kgساع: "kgPerSaa",
+  كجمصاع: "kgPerSaa",
+  كجمللصاع: "kgPerSaa",
+  price: "pricePerKg",
+  priceperkg: "pricePerKg",
+  سعرالكجم: "pricePerKg",
+  سعركجم: "pricePerKg",
+  "سعر/كجم": "pricePerKg",
+  currency: "currency",
+  العملة: "currency",
+  totalkg: "totalKg",
+  الوزن: "totalKg",
+  "الوزن(كجم)": "totalKg",
+  إجماليالوزن: "totalKg",
+  totalcash: "totalCash",
+  total: "totalCash",
+  القيمة: "totalCash",
+  الاجمالي: "totalCash",
+  الإجمالي: "totalCash",
+  savedat: "savedAt",
+  التاريخ: "savedAt",
 };
 
 function normHeader(h: string): string {
-  return String(h).toLowerCase().replace(/[\s_\-.]+/g, "").trim();
+  return String(h)
+    .toLowerCase()
+    .replace(/[\s_\-.]+/g, "")
+    .trim();
 }
 
 function toNumber(v: unknown, def = 0): number {
   if (v == null || v === "") return def;
-  const s = String(v).replace(/[,،\s]/g, "").replace(/[٠-٩]/g, (d) => "0123456789"[d.charCodeAt(0) - 0x0660]);
+  const s = String(v)
+    .replace(/[,،\s]/g, "")
+    .replace(/[٠-٩]/g, (d) => "0123456789"[d.charCodeAt(0) - 0x0660]);
   const n = Number(s);
   return Number.isFinite(n) ? n : def;
 }
@@ -73,10 +104,12 @@ export async function parseFitrFile(file: File): Promise<ImportResult> {
     const pricePerKg = toNumber(mapped.pricePerKg, 0);
     const rawTotalKg = (mapped as Record<string, unknown>).totalKg;
     const rawTotalCash = (mapped as Record<string, unknown>).totalCash;
-    const totalKg = rawTotalKg != null && rawTotalKg !== ""
-      ? toNumber(rawTotalKg, 0) : peopleCount * kgPerSaa;
-    const totalCash = rawTotalCash != null && rawTotalCash !== ""
-      ? toNumber(rawTotalCash, 0) : totalKg * pricePerKg;
+    const totalKg =
+      rawTotalKg != null && rawTotalKg !== "" ? toNumber(rawTotalKg, 0) : peopleCount * kgPerSaa;
+    const totalCash =
+      rawTotalCash != null && rawTotalCash !== ""
+        ? toNumber(rawTotalCash, 0)
+        : totalKg * pricePerKg;
 
     rows.push({
       year,
@@ -97,14 +130,34 @@ export async function parseFitrFile(file: File): Promise<ImportResult> {
 
 export function buildFitrTemplate(): Blob {
   const rows = [
-    { year: 2024, peopleCount: 5, stapleId: "wheat", stapleLabel: "قمح / دقيق",
-      kgPerSaa: 2.5, pricePerKg: 1.2, currency: "USD", totalKg: 12.5, totalCash: 15 },
-    { year: 2025, peopleCount: 5, stapleId: "rice", stapleLabel: "أرز",
-      kgPerSaa: 2.5, pricePerKg: 1.5, currency: "USD", totalKg: 12.5, totalCash: 18.75 },
+    {
+      year: 2024,
+      peopleCount: 5,
+      stapleId: "wheat",
+      stapleLabel: "قمح / دقيق",
+      kgPerSaa: 2.5,
+      pricePerKg: 1.2,
+      currency: "USD",
+      totalKg: 12.5,
+      totalCash: 15,
+    },
+    {
+      year: 2025,
+      peopleCount: 5,
+      stapleId: "rice",
+      stapleLabel: "أرز",
+      kgPerSaa: 2.5,
+      pricePerKg: 1.5,
+      currency: "USD",
+      totalKg: 12.5,
+      totalCash: 18.75,
+    },
   ];
   const ws = XLSX.utils.json_to_sheet(rows);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "fitr");
   const out = XLSX.write(wb, { type: "array", bookType: "xlsx" });
-  return new Blob([out], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+  return new Blob([out], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
 }

@@ -101,8 +101,8 @@ export function CropsAccordionSection({
         {/* تبويب فرعي: العسل + الثروة السمكية + مزارع الدواجن (تُلحق بالزروع والثمار) */}
         <div className="pt-4 border-t border-dashed">
           <div className="mb-3 text-sm font-semibold text-primary flex items-center gap-2">
-            <Wheat className="h-4 w-4" /> أنشطة زراعية وحيوانية ملحقة (العسل / الثروة
-            السمكية / الدواجن)
+            <Wheat className="h-4 w-4" /> أنشطة زراعية وحيوانية ملحقة (العسل / الثروة السمكية /
+            الدواجن)
           </div>
           <RikazSection
             mode="agri-extras"

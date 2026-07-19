@@ -86,7 +86,11 @@ export const securityRowSchema = z
     // اشتراط اسم الشركة عند عدم تأكيد التوافق الشرعي و وجود قيمة سوقية
     const qty = parseFloat(r.qty || "0") || 0;
     const price = parseFloat(r.price || "0") || 0;
-    if ((r.shariaCompliant === "no" || r.shariaCompliant === "unknown") && qty * price > 0 && r.company.length === 0) {
+    if (
+      (r.shariaCompliant === "no" || r.shariaCompliant === "unknown") &&
+      qty * price > 0 &&
+      r.company.length === 0
+    ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["company"],

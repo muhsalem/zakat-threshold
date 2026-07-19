@@ -17,9 +17,7 @@ const ROLES: SidebarRole[] = [
 describe("sidebar links per role", () => {
   it.each(ROLES)("role %s renders no duplicated URL", (role) => {
     const dupes = findDuplicateSidebarLinks(role);
-    expect(dupes, `Duplicate sidebar links for role "${role}": ${dupes.join(", ")}`).toEqual(
-      [],
-    );
+    expect(dupes, `Duplicate sidebar links for role "${role}": ${dupes.join(", ")}`).toEqual([]);
   });
 
   it.each(ROLES)("role %s renders at least one link", (role) => {

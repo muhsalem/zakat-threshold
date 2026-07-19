@@ -195,9 +195,7 @@ export function buildIndividualPrefill(client: {
   const d = client.breakdown.details;
   const agg = client.breakdown;
 
-  const noteLines: string[] = [
-    `عميل: ${client.name} — بيانات نافذة الاستقبال جاهزة للمراجعة.`,
-  ];
+  const noteLines: string[] = [`عميل: ${client.name} — بيانات نافذة الاستقبال جاهزة للمراجعة.`];
   if (d) {
     const { reviewFlags } = aggregateIntake(d);
     if (reviewFlags.length) {
@@ -212,9 +210,7 @@ export function buildIndividualPrefill(client: {
     if (n(d.sukuk)) manual.push(`صكوك: ${d.sukuk}`);
     if (n(d.cryptoValue)) manual.push(`عملات رقمية: ${d.cryptoValue}`);
     if (n(d.cash) + n(d.bankAccounts) + n(d.savingsBonds))
-      manual.push(
-        `نقد/بنوك/شهادات: ${n(d.cash)} + ${n(d.bankAccounts)} + ${n(d.savingsBonds)}`,
-      );
+      manual.push(`نقد/بنوك/شهادات: ${n(d.cash)} + ${n(d.bankAccounts)} + ${n(d.savingsBonds)}`);
     if (n(d.jewelryPersonal)) manual.push(`حلي شخصي بالقيمة: ${d.jewelryPersonal}`);
     if (n(d.salaryMonthly)) manual.push(`راتب شهري: ${d.salaryMonthly}`);
     if (n(d.endOfServiceBenefits)) manual.push(`نهاية خدمة: ${d.endOfServiceBenefits}`);

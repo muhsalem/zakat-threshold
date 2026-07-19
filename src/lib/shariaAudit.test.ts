@@ -18,7 +18,10 @@ function review(
   opts: { nisab?: number; totals?: { debit: number; credit: number } } = {},
 ) {
   const rows = classifyTrialBalance(tb, "generic");
-  const calc = computeZakatFromTrialBalance(rows, { nisab: opts.nisab ?? 85000, calendar: "hijri" });
+  const calc = computeZakatFromTrialBalance(rows, {
+    nisab: opts.nisab ?? 85000,
+    calendar: "hijri",
+  });
   return runShariaComplianceReview({
     rows,
     computation: calc,

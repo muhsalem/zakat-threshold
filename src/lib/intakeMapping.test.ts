@@ -188,7 +188,14 @@ describe("buildCompanyPrefill() — حمولة حاسبة الشركات", () =>
     const manual = buildCompanyPrefill({
       id: "co2",
       name: "شركة يدوية",
-      breakdown: { cash: 5000, gold: 0, investments: 0, inventory: 800, receivables: 0, debts: 300 },
+      breakdown: {
+        cash: 5000,
+        gold: 0,
+        investments: 0,
+        inventory: 800,
+        receivables: 0,
+        debts: 300,
+      },
     });
     expect(manual.cash).toBe(5000);
     expect(manual.inventoryBook).toBe(800);

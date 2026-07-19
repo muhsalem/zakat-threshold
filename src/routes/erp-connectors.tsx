@@ -101,9 +101,7 @@ function StatusBadge({ status }: { status: Provider["status"] }) {
       </Badge>
     );
   if (status === "beta")
-    return (
-      <Badge className="bg-amber-500/15 text-amber-700 dark:text-amber-400">تجريبي</Badge>
-    );
+    return <Badge className="bg-amber-500/15 text-amber-700 dark:text-amber-400">تجريبي</Badge>;
   return (
     <Badge variant="outline">
       <Clock className="mr-1 h-3 w-3" /> قريباً
@@ -120,15 +118,14 @@ function ErpConnectorsPage() {
           تكاملات ERP وأنظمة المحاسبة
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          اربط برنامج المحاسبة الخاص بشركتك لسحب ميزان المراجعة وحساب الزكاة تلقائياً،
-          ثم دفع قيد الزكاة إلى دفاترك عند الاعتماد.
+          اربط برنامج المحاسبة الخاص بشركتك لسحب ميزان المراجعة وحساب الزكاة تلقائياً، ثم دفع قيد
+          الزكاة إلى دفاترك عند الاعتماد.
         </p>
       </div>
 
       <Alert>
         <AlertDescription className="text-xs leading-6">
-          <strong>Odoo وSAP</strong> مفعّلان بالكامل — يمكنك إعداد الاتصال الآن من
-          {" "}
+          <strong>Odoo وSAP</strong> مفعّلان بالكامل — يمكنك إعداد الاتصال الآن من{" "}
           <Link to="/erp-setup" className="font-semibold text-primary hover:underline">
             صفحة إعداد ERP
           </Link>
@@ -167,10 +164,15 @@ function ErpConnectorsPage() {
           <CardTitle className="text-base">تحتاج تكامل مع نظام غير مدرج؟</CardTitle>
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground">
-          ندعم أي نظام محاسبي عبر API عام أو تصدير CSV/Excel لميزان المراجعة.
-          استخدم <Link to="/erp-setup" className="text-primary hover:underline">
-          إعداد ERP</Link> لرفع ملف يدوياً، أو <Link to="/enterprise" className="text-primary hover:underline">
-          تواصل معنا</Link> لتكامل مخصّص.
+          ندعم أي نظام محاسبي عبر API عام أو تصدير CSV/Excel لميزان المراجعة. استخدم{" "}
+          <Link to="/erp-setup" className="text-primary hover:underline">
+            إعداد ERP
+          </Link>{" "}
+          لرفع ملف يدوياً، أو{" "}
+          <Link to="/enterprise" className="text-primary hover:underline">
+            تواصل معنا
+          </Link>{" "}
+          لتكامل مخصّص.
         </CardContent>
       </Card>
     </div>

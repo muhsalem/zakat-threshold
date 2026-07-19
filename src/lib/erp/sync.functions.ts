@@ -123,10 +123,11 @@ export const calculateZakatFromErp = createServerFn({ method: "POST" })
     },
   )
   .handler(async ({ data, context }) => {
-    const { conn, creds, overrides: saved } = await loadConnection(
-      context.supabase,
-      data.connection_id,
-    );
+    const {
+      conn,
+      creds,
+      overrides: saved,
+    } = await loadConnection(context.supabase, data.connection_id);
     const dateTo = data.date_to ?? new Date().toISOString().slice(0, 10);
 
     const tb = await fetchTrialBalance(creds, dateTo);

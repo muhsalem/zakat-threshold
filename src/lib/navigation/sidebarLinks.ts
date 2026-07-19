@@ -64,10 +64,7 @@ export const PRO_REFERENCES: ProItem[] = [
   { title: "تدقيق سحب الأسعار", url: "/prices-audit", icon: ShieldCheck },
 ];
 
-export function isVisible(
-  audience: Array<AccountType | "all">,
-  type: AccountType | null,
-) {
+export function isVisible(audience: Array<AccountType | "all">, type: AccountType | null) {
   if (audience.includes("all")) return true;
   if (!type) return false;
   return audience.includes(type);
@@ -85,19 +82,13 @@ export function getSidebarLinksForRole(role: SidebarRole): Array<{
 }> {
   const isAccountant = role === "accountant" || role === "admin";
   const accountType: AccountType | null =
-    role === "guest"
-      ? null
-      : role === "accountant"
-        ? "individual"
-        : (role as AccountType);
+    role === "guest" ? null : role === "accountant" ? "individual" : (role as AccountType);
 
   const navItems = isAccountant
     ? NAV.filter((i) => i.url !== "/history" && i.url !== "/subscription")
     : NAV.filter((i) => isVisible(i.audience, accountType));
 
-  const calcItems = isAccountant
-    ? CALCS
-    : CALCS.filter((i) => isVisible(i.audience, accountType));
+  const calcItems = isAccountant ? CALCS : CALCS.filter((i) => isVisible(i.audience, accountType));
 
   const out: Array<{ url: string; title: string; group: string }> = [];
   for (const i of navItems) out.push({ url: i.url, title: i.title, group: "nav" });

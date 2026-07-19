@@ -72,9 +72,7 @@ export function ShariaComplianceReport({ review }: { review: ShariaReviewResult 
       >
         <ShieldIcon className={`h-8 w-8 ${ok ? "text-emerald-600" : "text-destructive"}`} />
         <div className="flex-1">
-          <div className="text-sm font-bold">
-            المراجعة الشرعية الشاملة — {review.grade}
-          </div>
+          <div className="text-sm font-bold">المراجعة الشرعية الشاملة — {review.grade}</div>
           <div className="text-[11px] text-muted-foreground">
             وفق {review.standard} · {review.counts.pass} مطابق · {review.counts.warning} تنبيه ·{" "}
             {review.counts.violation} مخالفة

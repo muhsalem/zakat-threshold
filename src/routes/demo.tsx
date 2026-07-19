@@ -290,7 +290,9 @@ function DemoPage() {
                     {c.breakdown.map((b, i) => (
                       <TableRow key={i}>
                         <TableCell>{b.item}</TableCell>
-                        <TableCell className={"text-start " + (b.amount < 0 ? "text-rose-600" : "")}>
+                        <TableCell
+                          className={"text-start " + (b.amount < 0 ? "text-rose-600" : "")}
+                        >
                           {fmt(b.amount, c.currency)}
                         </TableCell>
                       </TableRow>

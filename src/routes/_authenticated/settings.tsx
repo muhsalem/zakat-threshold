@@ -87,8 +87,7 @@ function SettingsPage() {
     })();
   }, [user?.id, user?.email]);
 
-  const update = <K extends keyof Prefs>(k: K, v: Prefs[K]) =>
-    setPrefs((p) => ({ ...p, [k]: v }));
+  const update = <K extends keyof Prefs>(k: K, v: Prefs[K]) => setPrefs((p) => ({ ...p, [k]: v }));
 
   function toggleDay(v: number) {
     setPrefs((p) => {
@@ -152,8 +151,8 @@ function SettingsPage() {
             <CardTitle>تذكيرات الحول</CardTitle>
           </div>
           <CardDescription>
-            نُذكّرك بموعد اكتمال الحول (354 يوماً هجرياً) لكل سجل زكاة. تُطبَّق التفضيلات على كل السجلات
-            المستقبلية.
+            نُذكّرك بموعد اكتمال الحول (354 يوماً هجرياً) لكل سجل زكاة. تُطبَّق التفضيلات على كل
+            السجلات المستقبلية.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -174,7 +173,11 @@ function SettingsPage() {
             />
           </div>
 
-          <div className={prefs.hawl_reminder_enabled ? "space-y-6" : "space-y-6 opacity-50 pointer-events-none"}>
+          <div
+            className={
+              prefs.hawl_reminder_enabled ? "space-y-6" : "space-y-6 opacity-50 pointer-events-none"
+            }
+          >
             {/* Timing */}
             <section>
               <Label className="text-base font-medium mb-2 block">متى تريد استلام التذكير؟</Label>
@@ -375,21 +378,21 @@ function NotificationPreview({ prefs }: { prefs: Prefs }) {
     ? sampleDays === 0
       ? "اليوم"
       : sampleDays === 1
-      ? "غداً"
-      : `خلال ${sampleDays} أيام`
+        ? "غداً"
+        : `خلال ${sampleDays} أيام`
     : sampleDays === 0
-    ? "today"
-    : sampleDays === 1
-    ? "tomorrow"
-    : `in ${sampleDays} days`;
+      ? "today"
+      : sampleDays === 1
+        ? "tomorrow"
+        : `in ${sampleDays} days`;
 
   const inappTitle = isAr
     ? sampleDays === 0
       ? "حلّ موعد إخراج زكاتك اليوم"
       : `تذكير: يحلّ حولُ زكاتك ${daysLabel}`
     : sampleDays === 0
-    ? "Your Zakat is due today"
-    : `Reminder: your Zakat Hawl completes ${daysLabel}`;
+      ? "Your Zakat is due today"
+      : `Reminder: your Zakat Hawl completes ${daysLabel}`;
 
   const inappBody = isAr
     ? `موعد اكتمال الحول: ${hawlDate} — قيمة الزكاة المقدّرة: 1٬250 SAR.`
@@ -445,7 +448,8 @@ function NotificationPreview({ prefs }: { prefs: Prefs }) {
             <div className="rounded-md border bg-card overflow-hidden">
               <div className="border-b p-3 text-xs space-y-1">
                 <div>
-                  <span className="text-muted-foreground">من:</span> نِصاب &lt;reminders@nisab.app&gt;
+                  <span className="text-muted-foreground">من:</span> نِصاب
+                  &lt;reminders@nisab.app&gt;
                 </div>
                 <div>
                   <span className="text-muted-foreground">إلى:</span>{" "}

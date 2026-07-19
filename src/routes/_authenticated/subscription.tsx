@@ -5,10 +5,24 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
-  DialogFooter, DialogTrigger, DialogClose,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogTrigger,
+  DialogClose,
 } from "@/components/ui/dialog";
-import { Loader2, CheckCircle2, XCircle, ArrowUpCircle, ArrowDownCircle, Receipt, Sparkles } from "lucide-react";
+import {
+  Loader2,
+  CheckCircle2,
+  XCircle,
+  ArrowUpCircle,
+  ArrowDownCircle,
+  Receipt,
+  Sparkles,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { PLANS, billingPeriodLabel, type Plan, type PlanId } from "@/lib/geo/plans";
@@ -18,7 +32,10 @@ export const Route = createFileRoute("/_authenticated/subscription")({
   head: () => ({
     meta: [
       { title: "اشتراكي — نِصاب" },
-      { name: "description", content: "إدارة اشتراكك: عرض الخطة الحالية، الترقية، التخفيض، أو الإلغاء." },
+      {
+        name: "description",
+        content: "إدارة اشتراكك: عرض الخطة الحالية، الترقية، التخفيض، أو الإلغاء.",
+      },
     ],
   }),
   component: SubscriptionPage,
@@ -48,7 +65,10 @@ type Payment = {
   created_at: string;
 };
 
-const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
+const STATUS_MAP: Record<
+  string,
+  { label: string; variant: "default" | "secondary" | "destructive" | "outline" }
+> = {
   active: { label: "نشط", variant: "default" },
   canceled: { label: "ملغى", variant: "destructive" },
   trialing: { label: "تجريبي", variant: "secondary" },
@@ -58,8 +78,14 @@ const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondar
 function fmtDate(iso: string | null) {
   if (!iso) return "—";
   try {
-    return new Date(iso).toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" });
-  } catch { return iso; }
+    return new Date(iso).toLocaleDateString("ar-EG", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  } catch {
+    return iso;
+  }
 }
 
 function planTier(id: string): number {
@@ -95,8 +121,12 @@ function SubscriptionPage() {
       setLoading(true);
       const [{ data: subRow }, { data: pays }] = await Promise.all([
         supabase.from("user_subscriptions").select("*").eq("user_id", user.id).maybeSingle(),
-        supabase.from("payments").select("id, plan_id, amount_paid, currency, status, created_at")
-          .eq("user_id", user.id).order("created_at", { ascending: false }).limit(20),
+        supabase
+          .from("payments")
+          .select("id, plan_id, amount_paid, currency, status, created_at")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(20),
       ]);
       setSub(subRow as Subscription | null);
       setPayments((pays ?? []) as Payment[]);
@@ -119,7 +149,9 @@ function SubscriptionPage() {
     const renews =
       target.billing === "lifetime" || target.billing === "one_time"
         ? null
-        : new Date(Date.now() + (target.billing === "monthly" ? 30 : 365) * 86400_000).toISOString();
+        : new Date(
+            Date.now() + (target.billing === "monthly" ? 30 : 365) * 86400_000,
+          ).toISOString();
 
     const { error } = await supabase
       .from("user_subscriptions")
@@ -143,7 +175,11 @@ function SubscriptionPage() {
       return;
     }
     toast.success(`تم التحويل إلى خطة ${target.name}`);
-    const { data } = await supabase.from("user_subscriptions").select("*").eq("user_id", user.id).maybeSingle();
+    const { data } = await supabase
+      .from("user_subscriptions")
+      .select("*")
+      .eq("user_id", user.id)
+      .maybeSingle();
     setSub(data as Subscription | null);
   }
 
@@ -164,7 +200,11 @@ function SubscriptionPage() {
       return;
     }
     toast.success("تم جدولة الإلغاء — سيبقى وصولك حتى نهاية الفترة الحالية");
-    const { data } = await supabase.from("user_subscriptions").select("*").eq("user_id", user.id).maybeSingle();
+    const { data } = await supabase
+      .from("user_subscriptions")
+      .select("*")
+      .eq("user_id", user.id)
+      .maybeSingle();
     setSub(data as Subscription | null);
   }
 
@@ -176,7 +216,11 @@ function SubscriptionPage() {
       .eq("user_id", user.id);
     if (error) return toast.error("تعذّر استئناف الاشتراك");
     toast.success("تم استئناف الاشتراك");
-    const { data } = await supabase.from("user_subscriptions").select("*").eq("user_id", user.id).maybeSingle();
+    const { data } = await supabase
+      .from("user_subscriptions")
+      .select("*")
+      .eq("user_id", user.id)
+      .maybeSingle();
     setSub(data as Subscription | null);
   }
 
@@ -198,7 +242,9 @@ function SubscriptionPage() {
           <Sparkles className="w-7 h-7 text-primary" />
           اشتراكي
         </h1>
-        <p className="text-muted-foreground mt-1">إدارة خطتك الحالية، الترقية أو التخفيض، والاطلاع على سجل المدفوعات.</p>
+        <p className="text-muted-foreground mt-1">
+          إدارة خطتك الحالية، الترقية أو التخفيض، والاطلاع على سجل المدفوعات.
+        </p>
       </div>
 
       {/* Current plan card */}
@@ -210,7 +256,9 @@ function SubscriptionPage() {
                 {currentPlan?.name ?? sub?.plan_name}
                 <Badge variant={statusBadge.variant}>{statusBadge.label}</Badge>
               </CardTitle>
-              <CardDescription className="mt-1">{currentPlan?.tagline ?? "خطتك الحالية"}</CardDescription>
+              <CardDescription className="mt-1">
+                {currentPlan?.tagline ?? "خطتك الحالية"}
+              </CardDescription>
             </div>
             <div className="text-left">
               <div className="text-3xl font-bold">
@@ -246,7 +294,9 @@ function SubscriptionPage() {
             <Alert>
               <AlertDescription className="flex items-center justify-between gap-3">
                 <span>سيتم إلغاء اشتراكك في {fmtDate(sub.renews_at)}. يمكنك استئنافه قبل ذلك.</span>
-                <Button size="sm" onClick={resumeSubscription}>استئناف الاشتراك</Button>
+                <Button size="sm" onClick={resumeSubscription}>
+                  استئناف الاشتراك
+                </Button>
               </AlertDescription>
             </Alert>
           )}
@@ -263,8 +313,9 @@ function SubscriptionPage() {
                 <DialogHeader>
                   <DialogTitle>تأكيد إلغاء الاشتراك</DialogTitle>
                   <DialogDescription>
-                    سيبقى وصولك إلى مزايا خطة <strong>{currentPlan?.name}</strong> حتى
-                    {" "}<strong>{fmtDate(sub?.renews_at ?? null)}</strong>، وبعدها ستعود تلقائياً للخطة المجانية.
+                    سيبقى وصولك إلى مزايا خطة <strong>{currentPlan?.name}</strong> حتى{" "}
+                    <strong>{fmtDate(sub?.renews_at ?? null)}</strong>، وبعدها ستعود تلقائياً للخطة
+                    المجانية.
                   </DialogDescription>
                 </DialogHeader>
                 <DialogFooter className="gap-2">
@@ -291,29 +342,37 @@ function SubscriptionPage() {
           {availablePlans.map((p) => {
             const isCurrent = p.id === sub?.plan_id;
             const t = planTier(p.id);
-            const direction = t > currentTier ? "upgrade" : t < currentTier ? "downgrade" : "current";
+            const direction =
+              t > currentTier ? "upgrade" : t < currentTier ? "downgrade" : "current";
             const Icon = p.icon;
             return (
-              <Card
-                key={p.id}
-                className={isCurrent ? "border-primary ring-1 ring-primary/40" : ""}
-              >
+              <Card key={p.id} className={isCurrent ? "border-primary ring-1 ring-primary/40" : ""}>
                 <CardHeader>
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2">
                       <Icon className="w-5 h-5 text-primary" />
                       <CardTitle className="text-lg">{p.name}</CardTitle>
                     </div>
-                    {p.ribbon && <Badge variant="secondary" className="text-xs">{p.ribbon}</Badge>}
+                    {p.ribbon && (
+                      <Badge variant="secondary" className="text-xs">
+                        {p.ribbon}
+                      </Badge>
+                    )}
                   </div>
                   <CardDescription>{p.tagline}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
                     <div className="text-2xl font-bold">
-                      {p.usdPrice === null ? "حسب الطلب" : p.usdPrice === 0 ? "مجاناً" : `$${p.usdPrice}`}
+                      {p.usdPrice === null
+                        ? "حسب الطلب"
+                        : p.usdPrice === 0
+                          ? "مجاناً"
+                          : `$${p.usdPrice}`}
                     </div>
-                    <div className="text-xs text-muted-foreground">{billingPeriodLabel(p.billing)}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {billingPeriodLabel(p.billing)}
+                    </div>
                   </div>
                   <ul className="text-sm space-y-1.5">
                     {p.features.slice(0, 4).map((f, i) => (
@@ -324,7 +383,9 @@ function SubscriptionPage() {
                     ))}
                   </ul>
                   {isCurrent ? (
-                    <Button variant="secondary" className="w-full" disabled>خطتك الحالية</Button>
+                    <Button variant="secondary" className="w-full" disabled>
+                      خطتك الحالية
+                    </Button>
                   ) : p.billing === "custom" ? (
                     <Button asChild variant="outline" className="w-full">
                       <a href="mailto:sales@nisab.app">تواصل مع المبيعات</a>
@@ -352,7 +413,11 @@ function SubscriptionPage() {
           })}
         </div>
         <p className="text-xs text-muted-foreground mt-3">
-          تصفّح جميع الخطط والإضافات في <Link to="/pricing" className="underline">صفحة الاشتراكات والخطط</Link>.
+          تصفّح جميع الخطط والإضافات في{" "}
+          <Link to="/pricing" className="underline">
+            صفحة الاشتراكات والخطط
+          </Link>
+          .
         </p>
       </div>
 
@@ -386,15 +451,27 @@ function SubscriptionPage() {
                         <td className="p-3">{fmtDate(p.created_at)}</td>
                         <td className="p-3">{p.plan_id ?? "—"}</td>
                         <td className="p-3 font-medium">
-                          {p.amount_paid ? `${Number(p.amount_paid).toFixed(2)} ${p.currency ?? "USD"}` : "—"}
+                          {p.amount_paid
+                            ? `${Number(p.amount_paid).toFixed(2)} ${p.currency ?? "USD"}`
+                            : "—"}
                         </td>
                         <td className="p-3">
-                          <Badge variant={p.status === "succeeded" || p.status === "paid" ? "default" : "secondary"}>
+                          <Badge
+                            variant={
+                              p.status === "succeeded" || p.status === "paid"
+                                ? "default"
+                                : "secondary"
+                            }
+                          >
                             {p.status}
                           </Badge>
                         </td>
                         <td className="p-3">
-                          <Button size="sm" variant="ghost" onClick={() => toast.info("سيتوفر تنزيل الإيصال قريباً")}>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => toast.info("سيتوفر تنزيل الإيصال قريباً")}
+                          >
                             تنزيل
                           </Button>
                         </td>

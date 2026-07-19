@@ -84,13 +84,13 @@ export function LivestockAccordionSection({
                             <b>متى تُعدّ الأنعام للتجارة؟</b>
                           </p>
                           <p>
-                            إذا اقتنيتها بنية <b>البيع والربح</b> (تربية تجارية، مزارع
-                            تسمين، تجارة مواشي) — لا للنسل واللبن والاستهلاك.
+                            إذا اقتنيتها بنية <b>البيع والربح</b> (تربية تجارية، مزارع تسمين، تجارة
+                            مواشي) — لا للنسل واللبن والاستهلاك.
                           </p>
                           <p>
-                            <b>كيف تُحسب؟</b> تُقوَّم القطيع كاملاً بسعر السوق يوم وجوب
-                            الزكاة، ثم 2.5% × القيمة السوقية الإجمالية، وتُضمّ النتيجة
-                            لقاعدة عروض التجارة في الإجمالي.
+                            <b>كيف تُحسب؟</b> تُقوَّم القطيع كاملاً بسعر السوق يوم وجوب الزكاة، ثم
+                            2.5% × القيمة السوقية الإجمالية، وتُضمّ النتيجة لقاعدة عروض التجارة في
+                            الإجمالي.
                           </p>
                           <p className="text-muted-foreground">
                             المرجع: AAOIFI رقم 35 / قرار المجمع الفقهي رقم 28.
@@ -101,8 +101,8 @@ export function LivestockAccordionSection({
                   </TooltipProvider>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  إن نعم، تُعامل معاملة <b>عروض التجارة</b> (2.5% من القيمة السوقية)
-                  وتُضمّ تلقائياً لقاعدة عروض التجارة — ولا تُحسب عيناً منعاً للازدواج.
+                  إن نعم، تُعامل معاملة <b>عروض التجارة</b> (2.5% من القيمة السوقية) وتُضمّ تلقائياً
+                  لقاعدة عروض التجارة — ولا تُحسب عيناً منعاً للازدواج.
                 </p>
               </div>
               <Switch checked={livestockForTrade} onCheckedChange={setLivestockForTrade} />
@@ -113,8 +113,8 @@ export function LivestockAccordionSection({
                 <Alert className="border-primary/20 bg-primary/5">
                   <Info className="h-4 w-4" />
                   <AlertDescription className="text-xs">
-                    أدخل القيمة السوقية الإجمالية للقطيع (للبيع) — تُحسب 2.5% وتُضمّ
-                    لقاعدة عروض التجارة في الإجمالي.
+                    أدخل القيمة السوقية الإجمالية للقطيع (للبيع) — تُحسب 2.5% وتُضمّ لقاعدة عروض
+                    التجارة في الإجمالي.
                   </AlertDescription>
                 </Alert>
                 <NumField
@@ -130,8 +130,8 @@ export function LivestockAccordionSection({
                 <Alert className="border-primary/20 bg-primary/5">
                   <Info className="h-4 w-4" />
                   <AlertDescription className="text-xs">
-                    الأنعام السائمة (للنسل واللبن لا للتجارة) تُزكَّى عيناً (لا قيمتها)،
-                    ويُشترط بلوغ النصاب وحولان الحول وسومُها (رعيها) أكثر السنة.
+                    الأنعام السائمة (للنسل واللبن لا للتجارة) تُزكَّى عيناً (لا قيمتها)، ويُشترط
+                    بلوغ النصاب وحولان الحول وسومُها (رعيها) أكثر السنة.
                   </AlertDescription>
                 </Alert>
                 <div className="grid md:grid-cols-3 gap-4">

@@ -48,8 +48,9 @@ export function NotificationsBell() {
       if (latestRecord && latestRecord.gregorian_date) {
         const start = new Date(latestRecord.gregorian_date);
         const today = new Date();
-        const diffMs = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()) - 
-                       Date.UTC(start.getFullYear(), start.getMonth(), start.getDate());
+        const diffMs =
+          Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()) -
+          Date.UTC(start.getFullYear(), start.getMonth(), start.getDate());
         const daysPassed = Math.floor(diffMs / 86400000);
         const HAWL = 354;
         const daysRemaining = Math.max(0, HAWL - (daysPassed % HAWL));

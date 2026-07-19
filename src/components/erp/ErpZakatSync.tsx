@@ -94,7 +94,9 @@ export function ErpZakatSync({ connectionId, onRecordCreated }: Props) {
       }
       setRows(r.rows);
       setSource(r.source);
-      toast.success(`تم سحب ${r.rows.length} حساباً (${r.source === "sandbox_demo" ? "بيانات تجريبية" : "بيانات حية"})`);
+      toast.success(
+        `تم سحب ${r.rows.length} حساباً (${r.source === "sandbox_demo" ? "بيانات تجريبية" : "بيانات حية"})`,
+      );
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "فشل السحب");
     } finally {
@@ -159,7 +161,12 @@ export function ErpZakatSync({ connectionId, onRecordCreated }: Props) {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         <div>
           <Label className="text-[11px]">حتى تاريخ</Label>
-          <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="h-8 text-xs" />
+          <Input
+            type="date"
+            value={dateTo}
+            onChange={(e) => setDateTo(e.target.value)}
+            className="h-8 text-xs"
+          />
         </div>
         <div>
           <Label className="text-[11px]">النصاب ({currency})</Label>
@@ -174,7 +181,12 @@ export function ErpZakatSync({ connectionId, onRecordCreated }: Props) {
         </div>
         <div>
           <Label className="text-[11px]">العملة</Label>
-          <Input value={currency} onChange={(e) => setCurrency(e.target.value.toUpperCase())} className="h-8 text-xs" maxLength={8} />
+          <Input
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value.toUpperCase())}
+            className="h-8 text-xs"
+            maxLength={8}
+          />
         </div>
         <div>
           <Label className="text-[11px]">أساس الحول</Label>
@@ -197,7 +209,12 @@ export function ErpZakatSync({ connectionId, onRecordCreated }: Props) {
         </Button>
         {rows.length > 0 && (
           <>
-            <Button size="sm" variant="secondary" onClick={runSaveMapping} disabled={busy === "map"}>
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={runSaveMapping}
+              disabled={busy === "map"}
+            >
               <Save className="h-3.5 w-3.5 mr-1" />
               حفظ التخصيصات ({Object.keys(overrides).length})
             </Button>
@@ -229,9 +246,12 @@ export function ErpZakatSync({ connectionId, onRecordCreated }: Props) {
             <div className="font-bold tabular-nums">{fmt(preview.zakatBase)}</div>
           </div>
           <div className="rounded border p-2 border-primary/50 bg-primary/5">
-            <div className="text-muted-foreground">الزكاة المستحقة ({(preview.rate * 100).toFixed(3)}%)</div>
+            <div className="text-muted-foreground">
+              الزكاة المستحقة ({(preview.rate * 100).toFixed(3)}%)
+            </div>
             <div className="font-bold tabular-nums text-primary">
-              {preview.eligible ? fmt(preview.zakatDue) : "دون النصاب"} {preview.eligible ? currency : ""}
+              {preview.eligible ? fmt(preview.zakatDue) : "دون النصاب"}{" "}
+              {preview.eligible ? currency : ""}
             </div>
           </div>
         </div>

@@ -122,7 +122,8 @@ export function YearlyComparison() {
       const cash = Number(f.payload?.totalCash ?? 0);
       if (cash <= 0) continue;
       const bucket =
-        map.get(y) ?? ({ year: y, currency: f.currency || lastCur, items: {}, total: 0 } as YearBucket);
+        map.get(y) ??
+        ({ year: y, currency: f.currency || lastCur, items: {}, total: 0 } as YearBucket);
       bucket.items.fitr = (bucket.items.fitr || 0) + cash;
       map.set(y, bucket);
     }
@@ -144,7 +145,9 @@ export function YearlyComparison() {
   }));
 
   if (loading) {
-    return <div className="text-center text-muted-foreground py-12">جاري تحميل بيانات المقارنة...</div>;
+    return (
+      <div className="text-center text-muted-foreground py-12">جاري تحميل بيانات المقارنة...</div>
+    );
   }
 
   if (!yearly.length) {
@@ -172,7 +175,8 @@ export function YearlyComparison() {
           </CardTitle>
           {yearly.length > 1 && (
             <Badge variant={totalDiff >= 0 ? "default" : "secondary"} className="text-xs">
-              {totalDiff >= 0 ? "▲" : "▼"} {Math.abs(totalPct).toFixed(1)}% من {first.year} إلى {last.year}
+              {totalDiff >= 0 ? "▲" : "▼"} {Math.abs(totalPct).toFixed(1)}% من {first.year} إلى{" "}
+              {last.year}
             </Badge>
           )}
         </CardHeader>
@@ -271,17 +275,15 @@ export function YearlyComparison() {
                       const p = prev > 0 ? (d / prev) * 100 : 0;
                       return (
                         <td key={y.year} className="border p-2 whitespace-nowrap">
-                          <div className="font-medium">
-                            {cur ? fmt(Math.round(cur)) : "—"}
-                          </div>
+                          <div className="font-medium">{cur ? fmt(Math.round(cur)) : "—"}</div>
                           {i > 0 && cur > 0 && prev > 0 && (
                             <div
                               className={`text-[11px] ${
                                 d > 0
                                   ? "text-emerald-600"
                                   : d < 0
-                                  ? "text-destructive"
-                                  : "text-muted-foreground"
+                                    ? "text-destructive"
+                                    : "text-muted-foreground"
                               }`}
                             >
                               {d >= 0 ? "+" : ""}
@@ -308,8 +310,8 @@ export function YearlyComparison() {
                               d > 0
                                 ? "text-emerald-600"
                                 : d < 0
-                                ? "text-destructive"
-                                : "text-muted-foreground"
+                                  ? "text-destructive"
+                                  : "text-muted-foreground"
                             }`}
                           >
                             {d >= 0 ? "+" : ""}
@@ -324,7 +326,8 @@ export function YearlyComparison() {
             </table>
           </div>
           <p className="text-xs text-muted-foreground mt-3">
-            القيم بعملة {currency}. تُحتسب مساهمة كل بند بضرب رصيده في 2.5% (نسبة الزكاة)، وتُضاف زكاة الفطر كما هي.
+            القيم بعملة {currency}. تُحتسب مساهمة كل بند بضرب رصيده في 2.5% (نسبة الزكاة)، وتُضاف
+            زكاة الفطر كما هي.
           </p>
         </CardContent>
       </Card>

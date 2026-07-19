@@ -6,9 +6,31 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
-import { Wheat, Calculator, BookOpen, ShieldCheck, ArrowLeft, Users, FileDown, Archive, Trash2, BarChart3, Save, Cloud, CloudOff, Share2, Link2Off, Upload, FileSpreadsheet } from "lucide-react";
+import {
+  Wheat,
+  Calculator,
+  BookOpen,
+  ShieldCheck,
+  ArrowLeft,
+  Users,
+  FileDown,
+  Archive,
+  Trash2,
+  BarChart3,
+  Save,
+  Cloud,
+  CloudOff,
+  Share2,
+  Link2Off,
+  Upload,
+  FileSpreadsheet,
+} from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { createShareLink, revokeShareLink } from "@/lib/archive/share.functions";
 import { parseFitrFile, buildFitrTemplate } from "@/lib/archive/import";
@@ -20,7 +42,6 @@ import {
   deleteArchiveEntry,
   clearArchive as clearCloudArchive,
   type ArchiveRow,
-
 } from "@/lib/archive/cloud";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -76,7 +97,10 @@ export const Route = createFileRoute("/zakat-fitr")({
           "حاسبة زكاة الفطر لكل أفراد الأسرة: صاع من غالب قوت البلد (~2.5 كجم) أو ما يعادله نقداً وفق مذهب الحنفية والمعاصرين.",
       },
       { property: "og:title", content: "زكاة الفطر — الحاسبة الشاملة" },
-      { property: "og:description", content: "احسب زكاة الفطر لعائلتك بالكيلو أو بالقيمة النقدية." },
+      {
+        property: "og:description",
+        content: "احسب زكاة الفطر لعائلتك بالكيلو أو بالقيمة النقدية.",
+      },
       { property: "og:type", content: "article" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -86,11 +110,11 @@ export const Route = createFileRoute("/zakat-fitr")({
 
 type StapleId = "wheat" | "rice" | "barley" | "dates" | "raisins";
 const STAPLES: { id: StapleId; label: string; kgPerSaa: number; suggestedPricePerKg: number }[] = [
-  { id: "wheat",   label: "قمح / دقيق", kgPerSaa: 2.5, suggestedPricePerKg: 1.2 },
-  { id: "rice",    label: "أرز",         kgPerSaa: 2.5, suggestedPricePerKg: 1.5 },
-  { id: "barley",  label: "شعير",        kgPerSaa: 2.5, suggestedPricePerKg: 1.0 },
-  { id: "dates",   label: "تمر",         kgPerSaa: 2.5, suggestedPricePerKg: 4.0 },
-  { id: "raisins", label: "زبيب",        kgPerSaa: 2.5, suggestedPricePerKg: 5.0 },
+  { id: "wheat", label: "قمح / دقيق", kgPerSaa: 2.5, suggestedPricePerKg: 1.2 },
+  { id: "rice", label: "أرز", kgPerSaa: 2.5, suggestedPricePerKg: 1.5 },
+  { id: "barley", label: "شعير", kgPerSaa: 2.5, suggestedPricePerKg: 1.0 },
+  { id: "dates", label: "تمر", kgPerSaa: 2.5, suggestedPricePerKg: 4.0 },
+  { id: "raisins", label: "زبيب", kgPerSaa: 2.5, suggestedPricePerKg: 5.0 },
 ];
 
 function ZakatFitrPage() {
@@ -129,7 +153,9 @@ function ZakatFitrPage() {
         })();
       }
     });
-    const onMigrated = () => { void refreshArchive(); };
+    const onMigrated = () => {
+      void refreshArchive();
+    };
     window.addEventListener("archive:migrated", onMigrated);
     return () => {
       mounted = false;
@@ -298,10 +324,12 @@ function ZakatFitrPage() {
   }, [archive]);
 
   return (
-
     <main className="container mx-auto max-w-4xl px-4 py-8 space-y-6" dir="rtl">
       <nav className="text-xs text-muted-foreground">
-        <Link to="/" className="hover:text-primary">الرئيسية</Link>{" "}· <span>زكاة الفطر</span>
+        <Link to="/" className="hover:text-primary">
+          الرئيسية
+        </Link>{" "}
+        · <span>زكاة الفطر</span>
       </nav>
 
       <header className="space-y-3">
@@ -313,8 +341,8 @@ function ZakatFitrPage() {
         </h1>
         <p className="text-muted-foreground text-lg leading-relaxed">
           تجب زكاة الفطر على كل مسلم صغير أو كبير، ذكر أو أنثى، حرّ أو عبد، بمقدار{" "}
-          <b>صاع (~2.5 كجم)</b> من غالب قوت البلد. يجوز إخراجها طعاماً، وأجاز الحنفية
-          والمعاصرون إخراجها نقداً بقيمة الصاع من الطعام.
+          <b>صاع (~2.5 كجم)</b> من غالب قوت البلد. يجوز إخراجها طعاماً، وأجاز الحنفية والمعاصرون
+          إخراجها نقداً بقيمة الصاع من الطعام.
         </p>
       </header>
 
@@ -345,10 +373,14 @@ function ZakatFitrPage() {
             <div className="space-y-1.5">
               <Label>نوع القوت</Label>
               <Select value={staple} onValueChange={(v) => pickStaple(v as StapleId)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   {STAPLES.map((s) => (
-                    <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>
+                    <SelectItem key={s.id} value={s.id}>
+                      {s.label}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -438,13 +470,13 @@ function ZakatFitrPage() {
                     <h2 style="font-size:15px;margin:0 0 8px;color:#0d766e">النتيجة</h2>
                     <table style="width:100%;border-collapse:collapse;font-size:13px">
                       <tr>
-                        <td style="border:1px solid #ddd;padding:10px;width:50%">إخراجها طعاماً<br/><b style="font-size:18px">${totalKg.toLocaleString("ar-EG",{maximumFractionDigits:2})} كجم</b></td>
-                        <td style="border:1px solid #ddd;padding:10px">إخراجها نقداً<br/><b style="font-size:18px">${totalCash.toLocaleString("ar-EG",{maximumFractionDigits:2})} ${currency}</b></td>
+                        <td style="border:1px solid #ddd;padding:10px;width:50%">إخراجها طعاماً<br/><b style="font-size:18px">${totalKg.toLocaleString("ar-EG", { maximumFractionDigits: 2 })} كجم</b></td>
+                        <td style="border:1px solid #ddd;padding:10px">إخراجها نقداً<br/><b style="font-size:18px">${totalCash.toLocaleString("ar-EG", { maximumFractionDigits: 2 })} ${currency}</b></td>
                       </tr>
                     </table>
                     <p style="font-size:11px;color:#666;margin-top:10px">
-                      = ${peopleCount} صاع × ${active.kgPerSaa} كجم = ${totalKg.toLocaleString("ar-EG",{maximumFractionDigits:2})} كجم
-                      × ${pricePerKg} ${currency}/كجم = ${totalCash.toLocaleString("ar-EG",{maximumFractionDigits:2})} ${currency}
+                      = ${peopleCount} صاع × ${active.kgPerSaa} كجم = ${totalKg.toLocaleString("ar-EG", { maximumFractionDigits: 2 })} كجم
+                      × ${pricePerKg} ${currency}/كجم = ${totalCash.toLocaleString("ar-EG", { maximumFractionDigits: 2 })} ${currency}
                     </p>`;
                   await exportHtmlToPdf(
                     pdfWrap("تقرير زكاة الفطر", body),
@@ -458,7 +490,12 @@ function ZakatFitrPage() {
             >
               <FileDown className="h-4 w-4" /> تصدير PDF
             </Button>
-            <Button variant="secondary" className="gap-1.5" onClick={archiveCurrent} disabled={busy}>
+            <Button
+              variant="secondary"
+              className="gap-1.5"
+              onClick={archiveCurrent}
+              disabled={busy}
+            >
               <Save className="h-4 w-4" /> أرشفة نتيجة {year}
             </Button>
             <Button asChild variant="outline">
@@ -478,7 +515,9 @@ function ZakatFitrPage() {
             <Button variant="ghost" size="sm" className="gap-1.5" onClick={downloadTemplate}>
               <FileDown className="h-4 w-4" /> قالب Excel
             </Button>
-            <label className={`inline-flex items-center gap-1.5 rounded-md border px-3 h-9 text-sm cursor-pointer hover:bg-accent ${busy ? "opacity-60 pointer-events-none" : ""}`}>
+            <label
+              className={`inline-flex items-center gap-1.5 rounded-md border px-3 h-9 text-sm cursor-pointer hover:bg-accent ${busy ? "opacity-60 pointer-events-none" : ""}`}
+            >
               <Upload className="h-4 w-4" />
               استيراد ملف
               <input
@@ -502,7 +541,12 @@ function ZakatFitrPage() {
             <CardTitle className="flex items-center gap-2 text-lg">
               <Archive className="h-5 w-5 text-primary" /> الأرشيف ({archive.length})
             </CardTitle>
-            <Button variant="ghost" size="sm" className="gap-1 text-destructive" onClick={clearArchive}>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-1 text-destructive"
+              onClick={clearArchive}
+            >
               <Trash2 className="h-4 w-4" /> حذف الكل
             </Button>
           </CardHeader>
@@ -511,8 +555,8 @@ function ZakatFitrPage() {
               const first = entries[0];
               const last = entries[entries.length - 1];
               const diff = entries.length > 1 ? last.totalCash - first.totalCash : 0;
-              const pct = entries.length > 1 && first.totalCash > 0
-                ? (diff / first.totalCash) * 100 : 0;
+              const pct =
+                entries.length > 1 && first.totalCash > 0 ? (diff / first.totalCash) * 100 : 0;
               return (
                 <div key={cur} className="space-y-2">
                   <div className="flex items-center justify-between flex-wrap gap-2">
@@ -522,7 +566,8 @@ function ZakatFitrPage() {
                     </div>
                     {entries.length > 1 && (
                       <Badge variant={diff >= 0 ? "default" : "secondary"} className="text-xs">
-                        {diff >= 0 ? "▲" : "▼"} {Math.abs(pct).toFixed(1)}% من {first.year} إلى {last.year}
+                        {diff >= 0 ? "▲" : "▼"} {Math.abs(pct).toFixed(1)}% من {first.year} إلى{" "}
+                        {last.year}
                       </Badge>
                     )}
                   </div>
@@ -551,23 +596,46 @@ function ZakatFitrPage() {
                               <td className="border p-2">{e.peopleCount}</td>
                               <td className="border p-2">{e.stapleLabel}</td>
                               <td className="border p-2">{e.pricePerKg}</td>
-                              <td className="border p-2">{e.totalKg.toLocaleString("ar-EG", { maximumFractionDigits: 2 })}</td>
-                              <td className="border p-2 font-bold">{e.totalCash.toLocaleString("ar-EG", { maximumFractionDigits: 2 })}</td>
-                              <td className={`border p-2 text-xs ${d > 0 ? "text-emerald-600" : d < 0 ? "text-destructive" : "text-muted-foreground"}`}>
+                              <td className="border p-2">
+                                {e.totalKg.toLocaleString("ar-EG", { maximumFractionDigits: 2 })}
+                              </td>
+                              <td className="border p-2 font-bold">
+                                {e.totalCash.toLocaleString("ar-EG", { maximumFractionDigits: 2 })}
+                              </td>
+                              <td
+                                className={`border p-2 text-xs ${d > 0 ? "text-emerald-600" : d < 0 ? "text-destructive" : "text-muted-foreground"}`}
+                              >
                                 {prev ? `${d >= 0 ? "+" : ""}${p.toFixed(1)}%` : "—"}
                               </td>
                               <td className="border p-1 text-center whitespace-nowrap">
                                 {isAuthed && !String(e.id).startsWith("local-") && (
                                   <>
-                                    <Button variant="ghost" size="icon" className="h-7 w-7" title="مشاركة" onClick={() => shareEntry(e.id)}>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="h-7 w-7"
+                                      title="مشاركة"
+                                      onClick={() => shareEntry(e.id)}
+                                    >
                                       <Share2 className="h-3.5 w-3.5" />
                                     </Button>
-                                    <Button variant="ghost" size="icon" className="h-7 w-7" title="إلغاء الرابط" onClick={() => revokeEntry(e.id)}>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="h-7 w-7"
+                                      title="إلغاء الرابط"
+                                      onClick={() => revokeEntry(e.id)}
+                                    >
                                       <Link2Off className="h-3.5 w-3.5" />
                                     </Button>
                                   </>
                                 )}
-                                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => removeEntry(e.id)}>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-7 w-7"
+                                  onClick={() => removeEntry(e.id)}
+                                >
                                   <Trash2 className="h-3.5 w-3.5" />
                                 </Button>
                               </td>
@@ -582,15 +650,23 @@ function ZakatFitrPage() {
             })}
             <p className="text-xs text-muted-foreground border-e-2 border-primary/40 pe-3 flex items-center gap-1.5">
               {isAuthed ? (
-                <><Cloud className="h-3.5 w-3.5 text-primary" /> الأرشيف محفوظ في حسابك ويُزامن تلقائياً عبر أجهزتك.</>
+                <>
+                  <Cloud className="h-3.5 w-3.5 text-primary" /> الأرشيف محفوظ في حسابك ويُزامن
+                  تلقائياً عبر أجهزتك.
+                </>
               ) : (
-                <><CloudOff className="h-3.5 w-3.5" /> الأرشيف محفوظ محلياً على هذا المتصفح — <Link to="/auth" className="underline hover:text-primary">سجّل الدخول</Link> لمزامنته سحابياً عبر أجهزتك.</>
+                <>
+                  <CloudOff className="h-3.5 w-3.5" /> الأرشيف محفوظ محلياً على هذا المتصفح —{" "}
+                  <Link to="/auth" className="underline hover:text-primary">
+                    سجّل الدخول
+                  </Link>{" "}
+                  لمزامنته سحابياً عبر أجهزتك.
+                </>
               )}
             </p>
           </CardContent>
         </Card>
       )}
-
 
       <section className="grid md:grid-cols-2 gap-4">
         <InfoBlock
@@ -621,17 +697,14 @@ function ZakatFitrPage() {
           <p>
             • عن ابن عمر رضي الله عنهما:{" "}
             <span className="text-foreground">
-              «فرض رسول الله ﷺ زكاة الفطر صاعاً من تمر، أو صاعاً من شعير، على العبد
-              والحر، والذكر والأنثى، والصغير والكبير من المسلمين»
+              «فرض رسول الله ﷺ زكاة الفطر صاعاً من تمر، أو صاعاً من شعير، على العبد والحر، والذكر
+              والأنثى، والصغير والكبير من المسلمين»
             </span>{" "}
             — متفق عليه.
           </p>
           <p>
-            • قوله ﷺ:{" "}
-            <span className="text-foreground">
-              «أغنوهم عن السؤال في هذا اليوم»
-            </span>{" "}
-            — رواه الدارقطني والبيهقي.
+            • قوله ﷺ: <span className="text-foreground">«أغنوهم عن السؤال في هذا اليوم»</span> —
+            رواه الدارقطني والبيهقي.
           </p>
           <p>• معيار AAOIFI 35 — بند زكاة الفطر: تُقدَّر بصاع من غالب قوت البلد.</p>
         </CardContent>
@@ -639,8 +712,8 @@ function ZakatFitrPage() {
 
       <div className="rounded-lg border bg-primary/5 p-4 flex items-center justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-2 text-sm">
-          <ShieldCheck className="h-5 w-5 text-primary" /> النتيجة تقديرية استرشادية —
-          يمكن اعتماد تسعيرة اللجنة الشرعية في بلدك.
+          <ShieldCheck className="h-5 w-5 text-primary" /> النتيجة تقديرية استرشادية — يمكن اعتماد
+          تسعيرة اللجنة الشرعية في بلدك.
         </div>
         <Button asChild variant="ghost" className="gap-1">
           <Link to="/faq">أسئلة زكاة الفطر</Link>

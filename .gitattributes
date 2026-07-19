@@ -1,0 +1,13 @@
+# توحيد نهايات الأسطر على LF في المستودع وعند الـcheckout —
+# يمنع ضجيج CRLF في prettier/eslint على Windows نهائياً
+* text=auto eol=lf
+
+# الملفات الثنائية كما هي
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.svg text eol=lf
+*.woff binary
+*.woff2 binary
+*.ico binary

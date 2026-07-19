@@ -1627,10 +1627,45 @@ export function PrintReport({ data }: { data: PrintReportData }) {
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "8.5pt" }}>
           <thead>
             <tr style={{ background: C.deepCream }}>
-              <th style={{ padding: "4pt 6pt", border: `0.5pt solid ${C.softBorder}`, textAlign: "right", width: "16%" }}>البعد</th>
-              <th style={{ padding: "4pt 6pt", border: `0.5pt solid ${C.softBorder}`, textAlign: "right" }}>الفحص والنتيجة</th>
-              <th style={{ padding: "4pt 6pt", border: `0.5pt solid ${C.softBorder}`, textAlign: "right", width: "10%" }}>الحكم</th>
-              <th style={{ padding: "4pt 6pt", border: `0.5pt solid ${C.softBorder}`, textAlign: "right", width: "26%" }}>المرجع</th>
+              <th
+                style={{
+                  padding: "4pt 6pt",
+                  border: `0.5pt solid ${C.softBorder}`,
+                  textAlign: "right",
+                  width: "16%",
+                }}
+              >
+                البعد
+              </th>
+              <th
+                style={{
+                  padding: "4pt 6pt",
+                  border: `0.5pt solid ${C.softBorder}`,
+                  textAlign: "right",
+                }}
+              >
+                الفحص والنتيجة
+              </th>
+              <th
+                style={{
+                  padding: "4pt 6pt",
+                  border: `0.5pt solid ${C.softBorder}`,
+                  textAlign: "right",
+                  width: "10%",
+                }}
+              >
+                الحكم
+              </th>
+              <th
+                style={{
+                  padding: "4pt 6pt",
+                  border: `0.5pt solid ${C.softBorder}`,
+                  textAlign: "right",
+                  width: "26%",
+                }}
+              >
+                المرجع
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -1649,13 +1684,30 @@ export function PrintReport({ data }: { data: PrintReportData }) {
                       ? "⚠ تنبيه"
                       : "✗ مخالفة";
               const sevColor =
-                f.severity === "violation" ? C.danger : f.severity === "warning" ? C.warn : C.primary;
+                f.severity === "violation"
+                  ? C.danger
+                  : f.severity === "warning"
+                    ? C.warn
+                    : C.primary;
               return (
                 <tr key={f.id}>
-                  <td style={{ padding: "4pt 6pt", border: `0.5pt solid ${C.softBorder}`, verticalAlign: "top" }}>
+                  <td
+                    style={{
+                      padding: "4pt 6pt",
+                      border: `0.5pt solid ${C.softBorder}`,
+                      verticalAlign: "top",
+                    }}
+                  >
                     {dimLabel[f.dimension]}
                   </td>
-                  <td style={{ padding: "4pt 6pt", border: `0.5pt solid ${C.softBorder}`, verticalAlign: "top", lineHeight: 1.55 }}>
+                  <td
+                    style={{
+                      padding: "4pt 6pt",
+                      border: `0.5pt solid ${C.softBorder}`,
+                      verticalAlign: "top",
+                      lineHeight: 1.55,
+                    }}
+                  >
                     <b>{f.title}</b>
                     {(f.severity === "warning" || f.severity === "violation") && (
                       <>
@@ -1672,10 +1724,27 @@ export function PrintReport({ data }: { data: PrintReportData }) {
                       </>
                     )}
                   </td>
-                  <td style={{ padding: "4pt 6pt", border: `0.5pt solid ${C.softBorder}`, verticalAlign: "top", fontWeight: 700, color: sevColor, whiteSpace: "nowrap" }}>
+                  <td
+                    style={{
+                      padding: "4pt 6pt",
+                      border: `0.5pt solid ${C.softBorder}`,
+                      verticalAlign: "top",
+                      fontWeight: 700,
+                      color: sevColor,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
                     {sevLabel}
                   </td>
-                  <td style={{ padding: "4pt 6pt", border: `0.5pt solid ${C.softBorder}`, verticalAlign: "top", color: C.soft, lineHeight: 1.5 }}>
+                  <td
+                    style={{
+                      padding: "4pt 6pt",
+                      border: `0.5pt solid ${C.softBorder}`,
+                      verticalAlign: "top",
+                      color: C.soft,
+                      lineHeight: 1.5,
+                    }}
+                  >
                     {f.reference}
                   </td>
                 </tr>

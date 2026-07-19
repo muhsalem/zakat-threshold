@@ -353,7 +353,9 @@ function ClientDetail() {
       </Card>
 
       {/* بيانات العميل كما أرسلها من نافذة الاستلام — بدون إعادة إدخال */}
-      {client.intakeDetails && <IntakeDetailsPanel details={client.intakeDetails} currency={client.currency} />}
+      {client.intakeDetails && (
+        <IntakeDetailsPanel details={client.intakeDetails} currency={client.currency} />
+      )}
 
       {/* تفصيل الأصول */}
       <Card>
@@ -549,8 +551,8 @@ function IntakeDetailsPanel({
       </CardHeader>
       <CardContent>
         <p className="text-xs text-muted-foreground mb-3">
-          هذه نسخة كاملة من كل حقل ملأه العميل — الحقول الرقمية أدناه تم تجميعها تلقائياً في
-          «تفصيل الأصول الزكوية» في الأسفل، فلا حاجة لإعادة إدخالها.
+          هذه نسخة كاملة من كل حقل ملأه العميل — الحقول الرقمية أدناه تم تجميعها تلقائياً في «تفصيل
+          الأصول الزكوية» في الأسفل، فلا حاجة لإعادة إدخالها.
         </p>
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-2 text-sm">
           {entries.length === 0 ? (
@@ -559,10 +561,11 @@ function IntakeDetailsPanel({
             </div>
           ) : (
             entries.map(([k, v]) => (
-              <div key={k} className="flex justify-between gap-2 border rounded-md px-2.5 py-1.5 bg-background">
-                <span className="text-muted-foreground text-xs">
-                  {INTAKE_FIELD_LABELS[k] ?? k}
-                </span>
+              <div
+                key={k}
+                className="flex justify-between gap-2 border rounded-md px-2.5 py-1.5 bg-background"
+              >
+                <span className="text-muted-foreground text-xs">{INTAKE_FIELD_LABELS[k] ?? k}</span>
                 <span className="font-medium text-xs" dir={typeof v === "number" ? "ltr" : "rtl"}>
                   {typeof v === "number"
                     ? `${fmt(v)} ${["goldGrams", "silverGrams", "livestockCamels", "livestockCattle", "livestockSheep"].includes(k) ? "" : currency}`

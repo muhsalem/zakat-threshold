@@ -48,10 +48,12 @@ export function CompanyOverviewPanel() {
         .from("organization_members")
         .select("organization_id, role, organizations(id, name, currency)")
         .eq("user_id", auth.user.id);
-      const rows = ((data ?? []) as unknown as Array<{
-        role: Role;
-        organizations: Org | null;
-      }>)
+      const rows = (
+        (data ?? []) as unknown as Array<{
+          role: Role;
+          organizations: Org | null;
+        }>
+      )
         .filter((r) => r.organizations)
         .map((r) => ({ org: r.organizations as Org, role: r.role }));
       setOrgs(rows);
@@ -82,8 +84,8 @@ export function CompanyOverviewPanel() {
         <CardContent className="space-y-3">
           <Alert>
             <AlertDescription>
-              لم يتم ربط حسابك بأي مؤسسة بعد. أنشئ مؤسستك لتفعيل مؤشرات الأداء (KPIs)،
-              اعتمادات Maker-Checker، وتقارير iXBRL.
+              لم يتم ربط حسابك بأي مؤسسة بعد. أنشئ مؤسستك لتفعيل مؤشرات الأداء (KPIs)، اعتمادات
+              Maker-Checker، وتقارير iXBRL.
             </AlertDescription>
           </Alert>
           <Button asChild size="sm">

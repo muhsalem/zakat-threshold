@@ -78,7 +78,8 @@ export function HawlReminderCard({
               <span className="font-medium text-foreground">{fmtDate(info.next)}</span>
               {typeof zakatDue === "number" && zakatDue > 0 && currency ? (
                 <>
-                  {" "}— وقيمة الزكاة المقدَّرة على آخر وعاء:{" "}
+                  {" "}
+                  — وقيمة الزكاة المقدَّرة على آخر وعاء:{" "}
                   <span className="font-medium text-foreground">
                     {Math.round(zakatDue).toLocaleString("ar")} {currency}
                   </span>
@@ -86,9 +87,7 @@ export function HawlReminderCard({
               ) : null}
               .
             </li>
-            <li>
-              نُرسل لك تذكيراً داخل التطبيق قبل 7 أيام، ثم قبل يوم، ثم في يوم اكتمال الحول.
-            </li>
+            <li>نُرسل لك تذكيراً داخل التطبيق قبل 7 أيام، ثم قبل يوم، ثم في يوم اكتمال الحول.</li>
           </ul>
         </div>
 
@@ -113,4 +112,3 @@ export function HawlReminderCard({
     </Card>
   );
 }
-

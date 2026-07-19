@@ -30,12 +30,21 @@ export const Route = createFileRoute("/r/$token")({
     const router = useRouter();
     return (
       <div className="container max-w-2xl py-10">
-        <Card><CardContent className="pt-6 text-center space-y-3">
-          <AlertCircle className="h-10 w-10 text-destructive mx-auto" />
-          <div className="font-semibold">تعذّر تحميل التقرير</div>
-          <p className="text-sm text-muted-foreground">{String(error?.message || error)}</p>
-          <Button onClick={() => { reset(); router.invalidate(); }}>حاول مجدداً</Button>
-        </CardContent></Card>
+        <Card>
+          <CardContent className="pt-6 text-center space-y-3">
+            <AlertCircle className="h-10 w-10 text-destructive mx-auto" />
+            <div className="font-semibold">تعذّر تحميل التقرير</div>
+            <p className="text-sm text-muted-foreground">{String(error?.message || error)}</p>
+            <Button
+              onClick={() => {
+                reset();
+                router.invalidate();
+              }}
+            >
+              حاول مجدداً
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   },
@@ -63,10 +72,13 @@ function SharedReportView() {
 
   if (error || !data) {
     const msg = String((error as Error)?.message || "");
-    const label = msg.includes("EXPIRED") ? "انتهت صلاحية الرابط"
-      : msg.includes("REVOKED") ? "تم إلغاء هذا الرابط"
-      : msg.includes("NOT_FOUND") || msg.includes("Invalid") ? "الرابط غير صالح"
-      : "تعذّر تحميل التقرير";
+    const label = msg.includes("EXPIRED")
+      ? "انتهت صلاحية الرابط"
+      : msg.includes("REVOKED")
+        ? "تم إلغاء هذا الرابط"
+        : msg.includes("NOT_FOUND") || msg.includes("Invalid")
+          ? "الرابط غير صالح"
+          : "تعذّر تحميل التقرير";
     return (
       <div className="container max-w-2xl py-10">
         <Card>
@@ -74,7 +86,9 @@ function SharedReportView() {
             <AlertCircle className="h-10 w-10 text-destructive mx-auto" />
             <div className="font-semibold text-lg">{label}</div>
             <p className="text-sm text-muted-foreground">اطلب رابطاً جديداً من صاحب التقرير.</p>
-            <Button asChild variant="outline"><Link to="/">العودة للرئيسية</Link></Button>
+            <Button asChild variant="outline">
+              <Link to="/">العودة للرئيسية</Link>
+            </Button>
           </CardContent>
         </Card>
       </div>
@@ -88,9 +102,13 @@ function SharedReportView() {
     <div className="container max-w-3xl py-8 space-y-6">
       <div className="flex items-center justify-between gap-2">
         <Button asChild variant="ghost" size="sm" className="gap-1">
-          <Link to="/"><ArrowLeft className="h-4 w-4" /> الرئيسية</Link>
+          <Link to="/">
+            <ArrowLeft className="h-4 w-4" /> الرئيسية
+          </Link>
         </Button>
-        <Badge variant="outline" className="gap-1"><ShieldCheck className="h-3 w-3" /> رابط مشاركة</Badge>
+        <Badge variant="outline" className="gap-1">
+          <ShieldCheck className="h-3 w-3" /> رابط مشاركة
+        </Badge>
       </div>
 
       <Card>
@@ -100,7 +118,8 @@ function SharedReportView() {
             {isFitr ? "تقرير زكاة الفطر" : `تقرير ${data.kind}`} — {data.year ?? "—"}
           </CardTitle>
           <div className="text-xs text-muted-foreground flex items-center gap-3 flex-wrap">
-            <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />
+            <span className="flex items-center gap-1">
+              <Calendar className="h-3 w-3" />
               حُفِظ: {new Date(data.updated_at).toLocaleDateString("ar-EG")}
             </span>
             {data.expires_at && (
@@ -115,8 +134,15 @@ function SharedReportView() {
               <Field label="القوت" value={p.stapleLabel ?? "—"} />
               <Field label="كجم/صاع" value={String(p.kgPerSaa ?? "—")} />
               <Field label="سعر الكيلو" value={`${p.pricePerKg ?? 0} ${data.currency ?? ""}`} />
-              <Field label="إجمالي الوزن" value={`${(p.totalKg ?? 0).toLocaleString("ar-EG", { maximumFractionDigits: 2 })} كجم`} />
-              <Field label="القيمة النقدية" value={`${(p.totalCash ?? 0).toLocaleString("ar-EG", { maximumFractionDigits: 2 })} ${data.currency ?? ""}`} highlight />
+              <Field
+                label="إجمالي الوزن"
+                value={`${(p.totalKg ?? 0).toLocaleString("ar-EG", { maximumFractionDigits: 2 })} كجم`}
+              />
+              <Field
+                label="القيمة النقدية"
+                value={`${(p.totalCash ?? 0).toLocaleString("ar-EG", { maximumFractionDigits: 2 })} ${data.currency ?? ""}`}
+                highlight
+              />
             </div>
           ) : (
             <pre className="text-xs bg-muted p-3 rounded overflow-x-auto" dir="ltr">
@@ -134,7 +160,9 @@ function SharedReportView() {
 
 function Field({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
   return (
-    <div className={`p-3 rounded border ${highlight ? "bg-primary/5 border-primary/30" : "bg-muted/30"}`}>
+    <div
+      className={`p-3 rounded border ${highlight ? "bg-primary/5 border-primary/30" : "bg-muted/30"}`}
+    >
       <div className="text-xs text-muted-foreground">{label}</div>
       <div className={`font-semibold ${highlight ? "text-primary text-lg" : ""}`}>{value}</div>
     </div>

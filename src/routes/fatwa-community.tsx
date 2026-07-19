@@ -110,8 +110,15 @@ function FatwaCommunity() {
 
           <div className="rounded border border-primary/40 bg-primary/5 p-4 text-sm">
             <p className="mb-2">
-              للمشاركة، يمكنك <Link to="/advisor" className="text-primary underline">فتح استشارة عبر الذكاء الاصطناعي</Link> أولاً،
-              ثم رفع النتيجة للمراجعة البشرية عبر <Link to="/client-intake" className="text-primary underline">نافذة استقبال العملاء</Link>.
+              للمشاركة، يمكنك{" "}
+              <Link to="/advisor" className="text-primary underline">
+                فتح استشارة عبر الذكاء الاصطناعي
+              </Link>{" "}
+              أولاً، ثم رفع النتيجة للمراجعة البشرية عبر{" "}
+              <Link to="/client-intake" className="text-primary underline">
+                نافذة استقبال العملاء
+              </Link>
+              .
             </p>
             <p className="text-xs text-muted-foreground">
               مبادرة غير هادفة للربح — بإشراف مستشارين شرعيين مستقلين.

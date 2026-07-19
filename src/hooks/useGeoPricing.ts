@@ -88,10 +88,7 @@ export function useGeoPricing() {
       data: { user },
     } = await supabase.auth.getUser();
     if (user) {
-      await supabase
-        .from("profiles")
-        .update({ country: upper })
-        .eq("user_id", user.id);
+      await supabase.from("profiles").update({ country: upper }).eq("user_id", user.id);
     }
   }, []);
 

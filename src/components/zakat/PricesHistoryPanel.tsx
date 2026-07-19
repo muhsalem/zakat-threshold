@@ -228,7 +228,9 @@ export function PricesHistoryPanel({ compact = false }: { compact?: boolean }) {
             </CardHeader>
             <CardContent className="p-0">
               <Table
-                wrapperClassName={compact ? "max-h-[400px] overflow-auto" : "max-h-[600px] overflow-auto"}
+                wrapperClassName={
+                  compact ? "max-h-[400px] overflow-auto" : "max-h-[600px] overflow-auto"
+                }
               >
                 <TableHeader className="[&_th]:sticky [&_th]:top-0 [&_th]:z-10 [&_th]:bg-background [&_th]:shadow-[inset_0_-1px_0_hsl(var(--border))]">
                   <TableRow>

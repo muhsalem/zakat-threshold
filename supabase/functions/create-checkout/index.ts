@@ -54,7 +54,11 @@ Deno.serve(async (req) => {
       apiVersion: "2024-06-20",
     });
 
-    const { planId, returnPath = "/", discount } = (await req.json()) as {
+    const {
+      planId,
+      returnPath = "/",
+      discount,
+    } = (await req.json()) as {
       planId: PlanId;
       returnPath?: string;
       discount?: { earlyBird?: boolean; prepayYears?: 1 | 3 };
@@ -116,12 +120,10 @@ Deno.serve(async (req) => {
       const unitAmount = stripePrice.unit_amount ?? 0;
       const currency = stripePrice.currency;
       // 3 سنوات × 80% = 2.4× السعر السنوي.
-      const eb = wantsEarlyBird ? 0.30 : 0;
+      const eb = wantsEarlyBird ? 0.3 : 0;
       // Early-Bird على السنة الأولى فقط:
       //   total = (1 - EB) * price + 2 * price ثم × (1 - 0.20)
-      const totalMinorUnits = Math.round(
-        ((1 - eb) * unitAmount + 2 * unitAmount) * 0.80,
-      );
+      const totalMinorUnits = Math.round(((1 - eb) * unitAmount + 2 * unitAmount) * 0.8);
       sessionParams.mode = "payment";
       sessionParams.line_items = [
         {

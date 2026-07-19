@@ -7,7 +7,6 @@ import type { LucideIcon } from "lucide-react";
 import {
   Sparkles,
   FileCheck2,
-  
   Users as UsersIcon,
   Infinity as InfinityIcon,
   Rocket,
@@ -136,12 +135,11 @@ export const PLANS: Plan[] = [
       "تقارير غير محدودة عبر السنوات",
       "تحديثات مجانية لكل الميزات القادمة",
       "أولوية في الدعم الفني",
-      "شارة \"عضو مؤسِّس\" في حسابك",
+      'شارة "عضو مؤسِّس" في حسابك',
       "ينتقل لورثتك — لا يُلغى بالوفاة",
     ],
     ctaTo: "/auth",
   },
-
 
   // ============ شركات (سنوي — إدارة زكاة الشركة طوال العام) ============
   {

@@ -59,8 +59,8 @@ function EnterprisePricing() {
         </Badge>
         <h1 className="text-3xl md:text-4xl font-bold">تسعير مصمَّم للنمو المؤسسي</h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          حلول زكاة كاملة للشركات والبنوك الإسلامية والصناديق الوقفية — بأسعار
-          محلية معتمدة على منطقة{" "}
+          حلول زكاة كاملة للشركات والبنوك الإسلامية والصناديق الوقفية — بأسعار محلية معتمدة على
+          منطقة{" "}
           <span className="font-semibold">
             {info.flag} {info.nameAr}
           </span>
@@ -77,7 +77,9 @@ function EnterprisePricing() {
           return (
             <Card
               key={t.id}
-              className={t.highlight ? "border-primary shadow-lg relative flex flex-col" : "flex flex-col"}
+              className={
+                t.highlight ? "border-primary shadow-lg relative flex flex-col" : "flex flex-col"
+              }
             >
               {t.badge && <Badge className="absolute -top-3 right-4">{t.badge}</Badge>}
               <CardHeader className="space-y-3">
@@ -157,8 +159,8 @@ function EnterprisePricing() {
       <section className="bg-muted/30 rounded-lg p-6 text-center space-y-3">
         <h2 className="text-xl font-bold">هل تحتاج حلاً مخصّصاً؟</h2>
         <p className="text-sm text-muted-foreground max-w-xl mx-auto">
-          فريقنا يصمّم عقود مؤسسية للبنوك الإسلامية وصناديق الأوقاف والمجموعات
-          متعددة الجنسيات — تشمل الاستضافة السيادية والتدقيق الشرعي.
+          فريقنا يصمّم عقود مؤسسية للبنوك الإسلامية وصناديق الأوقاف والمجموعات متعددة الجنسيات —
+          تشمل الاستضافة السيادية والتدقيق الشرعي.
         </p>
         <a href="mailto:enterprise@nisab.app">
           <Button className="gap-1.5">

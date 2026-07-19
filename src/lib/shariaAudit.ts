@@ -144,7 +144,9 @@ export function runShariaComplianceReview(input: ShariaReviewInput): ShariaRevie
   }
 
   // تأمين تجاري
-  const convIns = rows.filter((r) => matchWords(`${r.code} ${r.name}`, CONVENTIONAL_INSURANCE_WORDS));
+  const convIns = rows.filter((r) =>
+    matchWords(`${r.code} ${r.name}`, CONVENTIONAL_INSURANCE_WORDS),
+  );
   if (convIns.length) {
     push(
       {
@@ -351,7 +353,8 @@ export function runShariaComplianceReview(input: ShariaReviewInput): ShariaRevie
         title: `بنود منخفضة الثقة (${input.lowConfidence.length}) — تأكيد بشري لازم`,
         detail:
           "استُخرجت هذه البنود آلياً بدرجة ثقة منخفضة. المخرجات الآلية لا تُعتمد شرعاً دون مراجعة بشرية من محاسب/مستشار شرعي، خاصة قبل إصدار تقرير معتمد.",
-        reference: "مبادئ الحوكمة الشرعية — المعيار الشرعي للحوكمة (AAOIFI GS) · مسؤولية المراجعة البشرية",
+        reference:
+          "مبادئ الحوكمة الشرعية — المعيار الشرعي للحوكمة (AAOIFI GS) · مسؤولية المراجعة البشرية",
         accounts: input.lowConfidence.slice(0, 8),
       },
       "low_confidence_items",

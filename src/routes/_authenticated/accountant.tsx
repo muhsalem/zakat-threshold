@@ -218,7 +218,9 @@ function AccountantPortal() {
       wealth: rows.reduce((s, r) => s + r.wealth, 0),
       zakat: rows.reduce((s, r) => s + r.zakat, 0),
       needsAttention: rows.filter((r) => r.issues.some((i) => i.level === "error")).length,
-      overdue: rows.filter((r) => r.c.hawlDate && new Date(r.c.hawlDate) < today && r.c.status !== "completed").length,
+      overdue: rows.filter(
+        (r) => r.c.hawlDate && new Date(r.c.hawlDate) < today && r.c.status !== "completed",
+      ).length,
     };
   }, [rows]);
 

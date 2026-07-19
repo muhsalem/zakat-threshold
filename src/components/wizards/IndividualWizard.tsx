@@ -85,7 +85,6 @@ export function IndividualWizard() {
   const [silverPrice, setSilverPrice] = useState(String(country.silver));
   const currency = country.currency;
 
-
   function pickCountry(code: string) {
     const c = COUNTRY_PRICES.find((x) => x.code === code);
     if (!c) return;
@@ -444,7 +443,10 @@ export function IndividualWizard() {
             <TextField label="المهنة" v={profession} set={setProfession} />
             <div className="space-y-1.5">
               <Label className="text-xs">هل ترغب في حساب الزكاة عن سنوات سابقة؟</Label>
-              <Select value={calcPrevYears} onValueChange={(v) => setCalcPrevYears(v as "yes" | "no")}>
+              <Select
+                value={calcPrevYears}
+                onValueChange={(v) => setCalcPrevYears(v as "yes" | "no")}
+              >
                 <SelectTrigger className="h-9">
                   <SelectValue />
                 </SelectTrigger>
@@ -503,7 +505,6 @@ export function IndividualWizard() {
                 {fmt(totals.nisabValue)} {currency}). الأسعار تُحدَّث تلقائيًا حسب الدولة.
               </AlertDescription>
             </Alert>
-
           </div>
         )}
 
@@ -695,7 +696,6 @@ export function IndividualWizard() {
                 العملات الرقمية المُعتبرة مالاً تُزكَّى بالقيمة السوقية يوم الوجوب.
               </AlertDescription>
             </Alert>
-
           </div>
         )}
 
@@ -778,7 +778,6 @@ export function IndividualWizard() {
                 الأنعام تُزكَّى بعدد الرؤوس عادةً؛ نستخدم القيمة تقديراً مبسّطاً.
               </AlertDescription>
             </Alert>
-
           </div>
         )}
 

@@ -9,7 +9,11 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { Trash2, Plus, HeartHandshake, Download, CalendarIcon, FileDown } from "lucide-react";
 import { exportHtmlToPdf, pdfWrap } from "@/lib/export/pdf";
@@ -59,15 +63,18 @@ interface Recipient {
 function DistributionPlanPage() {
   const [total, setTotal] = useState(10000);
   const [pct, setPct] = useState<Record<ChannelId, number>>({
-    poor: 40, needy: 30, collectors: 0, reconciled: 0,
-    slaves: 0, debtors: 10, fisabilillah: 15, wayfarer: 5,
+    poor: 40,
+    needy: 30,
+    collectors: 0,
+    reconciled: 0,
+    slaves: 0,
+    debtors: 10,
+    fisabilillah: 15,
+    wayfarer: 5,
   });
   const [recipients, setRecipients] = useState<Recipient[]>([]);
 
-  const sumPct = useMemo(
-    () => Object.values(pct).reduce((a, b) => a + b, 0),
-    [pct],
-  );
+  const sumPct = useMemo(() => Object.values(pct).reduce((a, b) => a + b, 0), [pct]);
 
   const perChannel = useMemo(() => {
     const map: Record<ChannelId, number> = { ...pct };
@@ -91,8 +98,10 @@ function DistributionPlanPage() {
 
   /** توزيع لكل مصرف: (مخصص، مصروف، متبقٍ، تنبيه تجاوز) */
   const channelSummary = useMemo(() => {
-    const out: Record<ChannelId, { alloc: number; spent: number; remaining: number; over: boolean }> =
-      Object.create(null);
+    const out: Record<
+      ChannelId,
+      { alloc: number; spent: number; remaining: number; over: boolean }
+    > = Object.create(null);
     for (const c of CHANNELS) {
       const alloc = perChannel[c.id];
       const spent = recipients
@@ -132,7 +141,9 @@ function DistributionPlanPage() {
         sharePct: share,
       })),
     ]);
-    toast.success(`تم تقسيم مصرف "${CHANNELS.find(c => c.id === channel)?.label}" إلى ${n} مستحقين بالتساوي`);
+    toast.success(
+      `تم تقسيم مصرف "${CHANNELS.find((c) => c.id === channel)?.label}" إلى ${n} مستحقين بالتساوي`,
+    );
   };
 
   const remaining = +(total - distributed).toFixed(2);
@@ -164,13 +175,15 @@ function DistributionPlanPage() {
           <th style="border:1px solid #ddd;padding:6px">المصروف</th>
           <th style="border:1px solid #ddd;padding:6px">المتبقي</th>
         </tr>
-        ${CHANNELS.map((c) => `<tr>
+        ${CHANNELS.map(
+          (c) => `<tr>
           <td style="border:1px solid #ddd;padding:6px">${c.label}</td>
           <td style="border:1px solid #ddd;padding:6px;text-align:center">${pct[c.id]}%</td>
           <td style="border:1px solid #ddd;padding:6px;text-align:center">${perChannel[c.id].toLocaleString("ar-EG")}</td>
           <td style="border:1px solid #ddd;padding:6px;text-align:center">${channelSummary[c.id].spent.toLocaleString("ar-EG")}</td>
           <td style="border:1px solid #ddd;padding:6px;text-align:center ${channelSummary[c.id].over ? ";color:#b91c1c" : ""}">${channelSummary[c.id].remaining.toLocaleString("ar-EG")}</td>
-        </tr>`).join("")}
+        </tr>`,
+        ).join("")}
       </table>
       <h2 style="font-size:14px;color:#0d766e;margin:0 0 6px">المستفيدون (${recipients.length})</h2>
       <table style="width:100%;border-collapse:collapse">
@@ -182,14 +195,18 @@ function DistributionPlanPage() {
           <th style="border:1px solid #ddd;padding:6px">تاريخ الصرف</th>
           <th style="border:1px solid #ddd;padding:6px;text-align:right">ملاحظة</th>
         </tr>
-        ${recipients.map((r) => `<tr>
+        ${recipients
+          .map(
+            (r) => `<tr>
           <td style="border:1px solid #ddd;padding:6px">${r.name || "—"}</td>
           <td style="border:1px solid #ddd;padding:6px">${CHANNELS.find((c) => c.id === r.channel)?.label}</td>
           <td style="border:1px solid #ddd;padding:6px;text-align:center">${r.mode === "percent" ? r.sharePct + "٪ من المصرف" : "مبلغ ثابت"}</td>
           <td style="border:1px solid #ddd;padding:6px;text-align:center">${effectiveAmount(r).toLocaleString("ar-EG")}</td>
           <td style="border:1px solid #ddd;padding:6px;text-align:center">${r.disburseDate ?? "—"}</td>
           <td style="border:1px solid #ddd;padding:6px">${r.note ?? ""}</td>
-        </tr>`).join("")}
+        </tr>`,
+          )
+          .join("")}
       </table>
     </div>`;
 
@@ -223,34 +240,59 @@ function DistributionPlanPage() {
 
       <Alert>
         <AlertDescription>
-          استند التوزيع إلى الآية <b>﴿إنما الصدقات للفقراء والمساكين…﴾</b> [التوبة: 60].
-          يمكنك الآن تقسيم مبلغ كل مصرف على عدة مستحقين بنسبة مئوية من المصرف أو بمبلغ ثابت،
-          مع إضافة تاريخ صرف اختياري لكل مستحق. تفاصيل كل مصرف من{" "}
-          <Link to="/eight-channels" className="text-primary underline">صفحة المصارف الثمانية</Link>.
+          استند التوزيع إلى الآية <b>﴿إنما الصدقات للفقراء والمساكين…﴾</b> [التوبة: 60]. يمكنك الآن
+          تقسيم مبلغ كل مصرف على عدة مستحقين بنسبة مئوية من المصرف أو بمبلغ ثابت، مع إضافة تاريخ صرف
+          اختياري لكل مستحق. تفاصيل كل مصرف من{" "}
+          <Link to="/eight-channels" className="text-primary underline">
+            صفحة المصارف الثمانية
+          </Link>
+          .
         </AlertDescription>
       </Alert>
 
       <div className="grid gap-3 sm:grid-cols-4">
-        <Card><CardContent className="p-4">
-          <Label className="text-xs">إجمالي الزكاة</Label>
-          <Input type="number" value={total} onChange={(e) => setTotal(Number(e.target.value) || 0)} />
-        </CardContent></Card>
-        <Card><CardContent className="p-4 text-center">
-          <div className={`text-2xl font-bold ${sumPct === 100 ? "text-green-600" : "text-amber-600"}`}>{sumPct}%</div>
-          <div className="text-xs text-muted-foreground">مجموع النسب</div>
-        </CardContent></Card>
-        <Card><CardContent className="p-4 text-center">
-          <div className="text-2xl font-bold">{distributed.toLocaleString()}</div>
-          <div className="text-xs text-muted-foreground">وُزّع على مستفيدين</div>
-        </CardContent></Card>
-        <Card><CardContent className="p-4 text-center">
-          <div className={`text-2xl font-bold ${remaining === 0 ? "text-green-600" : "text-primary"}`}>{remaining.toLocaleString()}</div>
-          <div className="text-xs text-muted-foreground">المتبقي للتوزيع</div>
-        </CardContent></Card>
+        <Card>
+          <CardContent className="p-4">
+            <Label className="text-xs">إجمالي الزكاة</Label>
+            <Input
+              type="number"
+              value={total}
+              onChange={(e) => setTotal(Number(e.target.value) || 0)}
+            />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div
+              className={`text-2xl font-bold ${sumPct === 100 ? "text-green-600" : "text-amber-600"}`}
+            >
+              {sumPct}%
+            </div>
+            <div className="text-xs text-muted-foreground">مجموع النسب</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold">{distributed.toLocaleString()}</div>
+            <div className="text-xs text-muted-foreground">وُزّع على مستفيدين</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div
+              className={`text-2xl font-bold ${remaining === 0 ? "text-green-600" : "text-primary"}`}
+            >
+              {remaining.toLocaleString()}
+            </div>
+            <div className="text-xs text-muted-foreground">المتبقي للتوزيع</div>
+          </CardContent>
+        </Card>
       </div>
 
       <Card>
-        <CardHeader><CardTitle className="text-base">النسب حسب المصارف</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle className="text-base">النسب حسب المصارف</CardTitle>
+        </CardHeader>
         <CardContent className="space-y-3">
           {CHANNELS.map((c) => {
             const s = channelSummary[c.id];
@@ -274,7 +316,9 @@ function DistributionPlanPage() {
                       size="sm"
                       variant="ghost"
                       onClick={() => {
-                        const n = Number(prompt(`عدد المستحقين للتقسيم بالتساوي في مصرف "${c.label}"?`, "3"));
+                        const n = Number(
+                          prompt(`عدد المستحقين للتقسيم بالتساوي في مصرف "${c.label}"?`, "3"),
+                        );
                         if (n > 0) splitChannelEqually(c.id, n);
                       }}
                     >
@@ -283,7 +327,9 @@ function DistributionPlanPage() {
                   </div>
                 </div>
                 {pct[c.id] > 0 && (
-                  <div className={`text-[11px] pr-[118px] ${s.over ? "text-destructive" : "text-muted-foreground"}`}>
+                  <div
+                    className={`text-[11px] pr-[118px] ${s.over ? "text-destructive" : "text-muted-foreground"}`}
+                  >
                     مصروف: {s.spent.toLocaleString()} · متبقٍ: {s.remaining.toLocaleString()}
                     {s.over && " · تجاوز مخصَّص المصرف"}
                   </div>
@@ -294,7 +340,8 @@ function DistributionPlanPage() {
           {sumPct !== 100 && (
             <Alert>
               <AlertDescription>
-                يجب أن يكون مجموع النسب 100% (الحالي {sumPct}%). عدّل الشرائح ليصل المجموع للنسبة الكاملة.
+                يجب أن يكون مجموع النسب 100% (الحالي {sumPct}%). عدّل الشرائح ليصل المجموع للنسبة
+                الكاملة.
               </AlertDescription>
             </Alert>
           )}
@@ -335,16 +382,25 @@ function DistributionPlanPage() {
                   maxLength={120}
                   onChange={(e) => updateR(r.id, { name: e.target.value })}
                 />
-                <Select value={r.channel} onValueChange={(v) => updateR(r.id, { channel: v as ChannelId })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                <Select
+                  value={r.channel}
+                  onValueChange={(v) => updateR(r.id, { channel: v as ChannelId })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     {CHANNELS.map((c) => (
-                      <SelectItem key={c.id} value={c.id}>{c.label}</SelectItem>
+                      <SelectItem key={c.id} value={c.id}>
+                        {c.label}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
                 <Select value={r.mode} onValueChange={(v) => updateR(r.id, { mode: v as Mode })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="amount">مبلغ ثابت</SelectItem>
                     <SelectItem value="percent">نسبة من المصرف</SelectItem>
@@ -358,7 +414,11 @@ function DistributionPlanPage() {
                       max={100}
                       step="0.5"
                       value={r.sharePct}
-                      onChange={(e) => updateR(r.id, { sharePct: Math.min(100, Math.max(0, Number(e.target.value) || 0)) })}
+                      onChange={(e) =>
+                        updateR(r.id, {
+                          sharePct: Math.min(100, Math.max(0, Number(e.target.value) || 0)),
+                        })
+                      }
                     />
                     <span className="text-xs">%</span>
                   </div>
@@ -367,7 +427,9 @@ function DistributionPlanPage() {
                     type="number"
                     min={0}
                     value={r.amount}
-                    onChange={(e) => updateR(r.id, { amount: Math.max(0, Number(e.target.value) || 0) })}
+                    onChange={(e) =>
+                      updateR(r.id, { amount: Math.max(0, Number(e.target.value) || 0) })
+                    }
                   />
                 )}
                 <div className="relative">
@@ -387,14 +449,17 @@ function DistributionPlanPage() {
                   onChange={(e) => updateR(r.id, { note: e.target.value })}
                 />
                 <Button
-                  size="icon" variant="ghost" aria-label="حذف"
+                  size="icon"
+                  variant="ghost"
+                  aria-label="حذف"
                   onClick={() => setRecipients((prev) => prev.filter((x) => x.id !== r.id))}
                 >
                   <Trash2 className="h-4 w-4 text-destructive" />
                 </Button>
                 <div className="col-span-full text-[11px] text-muted-foreground pr-1">
                   المبلغ الفعلي: <b className="text-foreground">{eff.toLocaleString()}</b>
-                  {r.mode === "percent" && ` (${r.sharePct}% من ${perChannel[r.channel].toLocaleString()})`}
+                  {r.mode === "percent" &&
+                    ` (${r.sharePct}% من ${perChannel[r.channel].toLocaleString()})`}
                 </div>
               </div>
             );

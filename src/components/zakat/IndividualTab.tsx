@@ -440,7 +440,8 @@ export function IndividualTab() {
       if (p.sheep) setSheep(String(p.sheep));
     }
     toast.success(`تم تحميل بيانات العميل: ${p.clientName}`, {
-      description: "الحقول معبّأة من نافذة الاستقبال — راجع بنود «قرار المحاسب» في الملاحظات ثم أصدر التقرير.",
+      description:
+        "الحقول معبّأة من نافذة الاستقبال — راجع بنود «قرار المحاسب» في الملاحظات ثم أصدر التقرير.",
       duration: 8000,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1215,81 +1216,148 @@ export function IndividualTab() {
               >
                 {/* زكاة الذهب والفضة — مستخرجة إلى GoldSilverSection */}
                 <GoldSilverSection
-                  sb24={sb24} setSb24={setSb24}
-                  sb22={sb22} setSb22={setSb22}
-                  sb21={sb21} setSb21={setSb21}
-                  sb18={sb18} setSb18={setSb18}
-                  sb14={sb14} setSb14={setSb14}
-                  sb9={sb9} setSb9={setSb9}
-                  ounces={ounces} setOunces={setOunces}
-                  sbHalal={sbHalal} setSbHalal={setSbHalal}
-                  sbFullyOwned={sbFullyOwned} setSbFullyOwned={setSbFullyOwned}
-                  sbAcquireDate={sbAcquireDate} setSbAcquireDate={setSbAcquireDate}
-                  coinFull={coinFull} setCoinFull={setCoinFull}
-                  coinHalf={coinHalf} setCoinHalf={setCoinHalf}
-                  coinQuarter={coinQuarter} setCoinQuarter={setCoinQuarter}
-                  coinCustomKarat={coinCustomKarat} setCoinCustomKarat={setCoinCustomKarat}
-                  coinCustomWeight={coinCustomWeight} setCoinCustomWeight={setCoinCustomWeight}
-                  coinCustomQty={coinCustomQty} setCoinCustomQty={setCoinCustomQty}
-                  coinHalal={coinHalal} setCoinHalal={setCoinHalal}
-                  coinFullyOwned={coinFullyOwned} setCoinFullyOwned={setCoinFullyOwned}
-                  coinAcquireDate={coinAcquireDate} setCoinAcquireDate={setCoinAcquireDate}
-                  coinPurpose={coinPurpose} setCoinPurpose={setCoinPurpose}
-                  jw24={jw24} setJw24={setJw24}
-                  jw22={jw22} setJw22={setJw22}
-                  jw21={jw21} setJw21={setJw21}
-                  jw18={jw18} setJw18={setJw18}
-                  jw14={jw14} setJw14={setJw14}
-                  jw12={jw12} setJw12={setJw12}
-                  jw9={jw9} setJw9={setJw9}
-                  jwStoneGrams={jwStoneGrams} setJwStoneGrams={setJwStoneGrams}
-                  jewelryPurpose={jewelryPurpose} setJewelryPurpose={setJewelryPurpose}
-                  jwAcquireDate={jwAcquireDate} setJwAcquireDate={setJwAcquireDate}
-                  jewelryOpinion={jewelryOpinion} setJewelryOpinion={setJewelryOpinion}
-                  jwHaal={jwHaal} setJwHaal={setJwHaal}
-                  jwModeration={jwModeration} setJwModeration={setJwModeration}
-                  jwPermissible={jwPermissible} setJwPermissible={setJwPermissible}
-                  brk24={brk24} setBrk24={setBrk24}
-                  brk21={brk21} setBrk21={setBrk21}
-                  brk18={brk18} setBrk18={setBrk18}
-                  brkOtherKarat={brkOtherKarat} setBrkOtherKarat={setBrkOtherKarat}
-                  brkOtherWeight={brkOtherWeight} setBrkOtherWeight={setBrkOtherWeight}
-                  brkStoneGrams={brkStoneGrams} setBrkStoneGrams={setBrkStoneGrams}
-                  storageKarat={storageKarat} setStorageKarat={setStorageKarat}
-                  storageWeight={storageWeight} setStorageWeight={setStorageWeight}
-                  brkAcquireDate={brkAcquireDate} setBrkAcquireDate={setBrkAcquireDate}
-                  sv999={sv999} setSv999={setSv999}
-                  sv960={sv960} setSv960={setSv960}
-                  sv925={sv925} setSv925={setSv925}
-                  sv900={sv900} setSv900={setSv900}
-                  sv835={sv835} setSv835={setSv835}
-                  sv800={sv800} setSv800={setSv800}
-                  sv750={sv750} setSv750={setSv750}
-                  svOunces={svOunces} setSvOunces={setSvOunces}
-                  svAcquireDate={svAcquireDate} setSvAcquireDate={setSvAcquireDate}
-                  coinLira={coinLira} setCoinLira={setCoinLira}
-                  coinRiyal={coinRiyal} setCoinRiyal={setCoinRiyal}
-                  coinSvOtherKarat={coinSvOtherKarat} setCoinSvOtherKarat={setCoinSvOtherKarat}
-                  coinSvOther={coinSvOther} setCoinSvOther={setCoinSvOther}
-                  svCoinAcquireDate={svCoinAcquireDate} setSvCoinAcquireDate={setSvCoinAcquireDate}
-                  svJewelry={svJewelry} setSvJewelry={setSvJewelry}
-                  svJewelryKarat={svJewelryKarat} setSvJewelryKarat={setSvJewelryKarat}
-                  svUtensils={svUtensils} setSvUtensils={setSvUtensils}
-                  svUtensilsKarat={svUtensilsKarat} setSvUtensilsKarat={setSvUtensilsKarat}
-                  svTools={svTools} setSvTools={setSvTools}
-                  svToolsKarat={svToolsKarat} setSvToolsKarat={setSvToolsKarat}
-                  silverPurpose={silverPurpose} setSilverPurpose={setSilverPurpose}
-                  svJewelryAcquireDate={svJewelryAcquireDate} setSvJewelryAcquireDate={setSvJewelryAcquireDate}
-                  silverOpinion={silverOpinion} setSilverOpinion={setSilverOpinion}
-                  goldPrice={goldPrice} setGoldPrice={setGoldPrice}
-                  silverPrice={silverPrice} setSilverPrice={setSilverPrice}
+                  sb24={sb24}
+                  setSb24={setSb24}
+                  sb22={sb22}
+                  setSb22={setSb22}
+                  sb21={sb21}
+                  setSb21={setSb21}
+                  sb18={sb18}
+                  setSb18={setSb18}
+                  sb14={sb14}
+                  setSb14={setSb14}
+                  sb9={sb9}
+                  setSb9={setSb9}
+                  ounces={ounces}
+                  setOunces={setOunces}
+                  sbHalal={sbHalal}
+                  setSbHalal={setSbHalal}
+                  sbFullyOwned={sbFullyOwned}
+                  setSbFullyOwned={setSbFullyOwned}
+                  sbAcquireDate={sbAcquireDate}
+                  setSbAcquireDate={setSbAcquireDate}
+                  coinFull={coinFull}
+                  setCoinFull={setCoinFull}
+                  coinHalf={coinHalf}
+                  setCoinHalf={setCoinHalf}
+                  coinQuarter={coinQuarter}
+                  setCoinQuarter={setCoinQuarter}
+                  coinCustomKarat={coinCustomKarat}
+                  setCoinCustomKarat={setCoinCustomKarat}
+                  coinCustomWeight={coinCustomWeight}
+                  setCoinCustomWeight={setCoinCustomWeight}
+                  coinCustomQty={coinCustomQty}
+                  setCoinCustomQty={setCoinCustomQty}
+                  coinHalal={coinHalal}
+                  setCoinHalal={setCoinHalal}
+                  coinFullyOwned={coinFullyOwned}
+                  setCoinFullyOwned={setCoinFullyOwned}
+                  coinAcquireDate={coinAcquireDate}
+                  setCoinAcquireDate={setCoinAcquireDate}
+                  coinPurpose={coinPurpose}
+                  setCoinPurpose={setCoinPurpose}
+                  jw24={jw24}
+                  setJw24={setJw24}
+                  jw22={jw22}
+                  setJw22={setJw22}
+                  jw21={jw21}
+                  setJw21={setJw21}
+                  jw18={jw18}
+                  setJw18={setJw18}
+                  jw14={jw14}
+                  setJw14={setJw14}
+                  jw12={jw12}
+                  setJw12={setJw12}
+                  jw9={jw9}
+                  setJw9={setJw9}
+                  jwStoneGrams={jwStoneGrams}
+                  setJwStoneGrams={setJwStoneGrams}
+                  jewelryPurpose={jewelryPurpose}
+                  setJewelryPurpose={setJewelryPurpose}
+                  jwAcquireDate={jwAcquireDate}
+                  setJwAcquireDate={setJwAcquireDate}
+                  jewelryOpinion={jewelryOpinion}
+                  setJewelryOpinion={setJewelryOpinion}
+                  jwHaal={jwHaal}
+                  setJwHaal={setJwHaal}
+                  jwModeration={jwModeration}
+                  setJwModeration={setJwModeration}
+                  jwPermissible={jwPermissible}
+                  setJwPermissible={setJwPermissible}
+                  brk24={brk24}
+                  setBrk24={setBrk24}
+                  brk21={brk21}
+                  setBrk21={setBrk21}
+                  brk18={brk18}
+                  setBrk18={setBrk18}
+                  brkOtherKarat={brkOtherKarat}
+                  setBrkOtherKarat={setBrkOtherKarat}
+                  brkOtherWeight={brkOtherWeight}
+                  setBrkOtherWeight={setBrkOtherWeight}
+                  brkStoneGrams={brkStoneGrams}
+                  setBrkStoneGrams={setBrkStoneGrams}
+                  storageKarat={storageKarat}
+                  setStorageKarat={setStorageKarat}
+                  storageWeight={storageWeight}
+                  setStorageWeight={setStorageWeight}
+                  brkAcquireDate={brkAcquireDate}
+                  setBrkAcquireDate={setBrkAcquireDate}
+                  sv999={sv999}
+                  setSv999={setSv999}
+                  sv960={sv960}
+                  setSv960={setSv960}
+                  sv925={sv925}
+                  setSv925={setSv925}
+                  sv900={sv900}
+                  setSv900={setSv900}
+                  sv835={sv835}
+                  setSv835={setSv835}
+                  sv800={sv800}
+                  setSv800={setSv800}
+                  sv750={sv750}
+                  setSv750={setSv750}
+                  svOunces={svOunces}
+                  setSvOunces={setSvOunces}
+                  svAcquireDate={svAcquireDate}
+                  setSvAcquireDate={setSvAcquireDate}
+                  coinLira={coinLira}
+                  setCoinLira={setCoinLira}
+                  coinRiyal={coinRiyal}
+                  setCoinRiyal={setCoinRiyal}
+                  coinSvOtherKarat={coinSvOtherKarat}
+                  setCoinSvOtherKarat={setCoinSvOtherKarat}
+                  coinSvOther={coinSvOther}
+                  setCoinSvOther={setCoinSvOther}
+                  svCoinAcquireDate={svCoinAcquireDate}
+                  setSvCoinAcquireDate={setSvCoinAcquireDate}
+                  svJewelry={svJewelry}
+                  setSvJewelry={setSvJewelry}
+                  svJewelryKarat={svJewelryKarat}
+                  setSvJewelryKarat={setSvJewelryKarat}
+                  svUtensils={svUtensils}
+                  setSvUtensils={setSvUtensils}
+                  svUtensilsKarat={svUtensilsKarat}
+                  setSvUtensilsKarat={setSvUtensilsKarat}
+                  svTools={svTools}
+                  setSvTools={setSvTools}
+                  svToolsKarat={svToolsKarat}
+                  setSvToolsKarat={setSvToolsKarat}
+                  silverPurpose={silverPurpose}
+                  setSilverPurpose={setSilverPurpose}
+                  svJewelryAcquireDate={svJewelryAcquireDate}
+                  setSvJewelryAcquireDate={setSvJewelryAcquireDate}
+                  silverOpinion={silverOpinion}
+                  setSilverOpinion={setSilverOpinion}
+                  goldPrice={goldPrice}
+                  setGoldPrice={setGoldPrice}
+                  silverPrice={silverPrice}
+                  setSilverPrice={setSilverPrice}
                   calc={calc}
                   effectiveRate={effectiveRate}
                   currencyName={currencyName}
                   countryName={country.name}
                   cur={cur}
                 />
-
 
                 {/* النقد */}
                 <CashBankAccordionSection
@@ -1298,14 +1366,12 @@ export function IndividualTab() {
                   onCashTotalChange={setCashTotalFromSection}
                 />
 
-
                 {/* الأوراق المالية */}
                 <SecuritiesAccordionSection
                   currencyName={currencyName}
                   onSecuritiesTotalChange={setSecuritiesTotalFromSection}
                   onEsopChange={setEsopData}
                 />
-
 
                 {/* الأوراق التجارية */}
                 <AccordionItem
@@ -1386,7 +1452,6 @@ export function IndividualTab() {
                       num={num}
                       cur={cur}
                     />
-
 
                     {/* تصنيف النشاط التجاري + تاريخ التشغيل + ربط الشركة */}
                     <TradeActivityClassification
@@ -1659,7 +1724,6 @@ export function IndividualTab() {
                   cur={cur}
                 />
 
-
                 {/* الأنعام */}
                 <LivestockAccordionSection
                   currencyName={currencyName}
@@ -1681,7 +1745,6 @@ export function IndividualTab() {
                     sheepN: calc.sheepN,
                   }}
                 />
-
 
                 {/* الركاز والمعادن — تبويب مستقل */}
                 <AccordionItem
@@ -1731,7 +1794,6 @@ export function IndividualTab() {
                   expenses={expenses}
                   setExpenses={setExpenses}
                 />
-
               </Accordion>
             </div>
 

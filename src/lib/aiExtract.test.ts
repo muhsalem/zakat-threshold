@@ -9,12 +9,43 @@ import { computeZakatFromTrialBalance } from "./erp/zakatMapping";
 import { runShariaComplianceReview } from "./shariaAudit";
 
 const AI_ITEMS: AiExtractedItem[] = [
-  { category: "cash", label: "النقد لدى البنوك", amount: 500000, zakatable: true, confidence: 0.97 },
+  {
+    category: "cash",
+    label: "النقد لدى البنوك",
+    amount: 500000,
+    zakatable: true,
+    confidence: 0.97,
+  },
   { category: "murabaha", label: "ذمم مرابحة", amount: 200000, zakatable: true, confidence: 0.9 },
-  { category: "equity_trading", label: "أسهم للمتاجرة", amount: 150000, zakatable: true, confidence: 0.85 },
-  { category: "fixed_assets_use", label: "مبانٍ ومعدات", amount: 800000, zakatable: false, confidence: 0.95 },
-  { category: "current_payables", label: "التزامات مستحقة", amount: 250000, zakatable: false, confidence: 0.9 },
-  { category: "unclassified", label: "بند غامض", amount: 30000, zakatable: false, confidence: 0.4, note: "غير واضح" },
+  {
+    category: "equity_trading",
+    label: "أسهم للمتاجرة",
+    amount: 150000,
+    zakatable: true,
+    confidence: 0.85,
+  },
+  {
+    category: "fixed_assets_use",
+    label: "مبانٍ ومعدات",
+    amount: 800000,
+    zakatable: false,
+    confidence: 0.95,
+  },
+  {
+    category: "current_payables",
+    label: "التزامات مستحقة",
+    amount: 250000,
+    zakatable: false,
+    confidence: 0.9,
+  },
+  {
+    category: "unclassified",
+    label: "بند غامض",
+    amount: 30000,
+    zakatable: false,
+    confidence: 0.4,
+    note: "غير واضح",
+  },
 ];
 
 describe("aiItemsToClassifiedRows() — محوّل مخرجات الذكاء الاصطناعي", () => {
@@ -86,7 +117,13 @@ describe("مسار الذكاء الاصطناعي — حساب + مراجعة �
   it("بند ربوي مستخرج آلياً يُكشف في المراجعة", () => {
     const withRiba = aiItemsToClassifiedRows([
       ...AI_ITEMS,
-      { category: "unclassified", label: "فوائد بنكية دائنة", amount: 12000, zakatable: false, confidence: 0.7 },
+      {
+        category: "unclassified",
+        label: "فوائد بنكية دائنة",
+        amount: 12000,
+        zakatable: false,
+        confidence: 0.7,
+      },
     ]);
     const review = runShariaComplianceReview({
       rows: withRiba,

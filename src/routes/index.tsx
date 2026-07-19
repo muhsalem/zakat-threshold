@@ -174,8 +174,8 @@ function Hero() {
             </span>
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed max-w-xl">
-            حاسبة ذكية مبنية على معايير <b>AAOIFI 35</b> و
-            <b>الاتحاد الدولي لعلماء المسلمين</b> تُصدر لك تقريراً تفصيلياً جاهزاً للاعتماد.
+            حاسبة ذكية مبنية على معايير <b>AAOIFI 35</b> و<b>الاتحاد الدولي لعلماء المسلمين</b>{" "}
+            تُصدر لك تقريراً تفصيلياً جاهزاً للاعتماد.
             <span className="block text-xs mt-1 text-primary/80">
               قريباً: مراجعة بشرية من شبكة محاسبين قانونيين مرخّصين قبل الإصدار.
             </span>
@@ -684,11 +684,7 @@ function Pricing() {
 function PlanCardHome({ plan }: { plan: CatalogPlan }) {
   const Icon = plan.icon;
   const priceLabel =
-    plan.usdPrice === null
-      ? "حسب الطلب"
-      : plan.usdPrice === 0
-        ? "مجاناً"
-        : `$${plan.usdPrice}`;
+    plan.usdPrice === null ? "حسب الطلب" : plan.usdPrice === 0 ? "مجاناً" : `$${plan.usdPrice}`;
   const periodLabel =
     plan.billing === "yearly"
       ? "/ سنة"

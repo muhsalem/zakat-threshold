@@ -103,7 +103,10 @@ export async function saveArchiveEntry<T extends Record<string, unknown>>(
 export async function deleteArchiveEntry(kind: ArchiveKind, id: string): Promise<void> {
   const uid = await getUserId();
   if (!uid) {
-    writeLocal(kind, readLocal(kind).filter((e) => e.id !== id));
+    writeLocal(
+      kind,
+      readLocal(kind).filter((e) => e.id !== id),
+    );
     return;
   }
   const { error } = await supabase.from("user_report_archive").delete().eq("id", id);
@@ -209,9 +212,7 @@ export async function previewMigration(
       .select("year, currency")
       .eq("kind", kind);
     if (error) throw error;
-    const existing = new Set(
-      (data ?? []).map((r) => `${r.year ?? "na"}|${r.currency ?? "na"}`),
-    );
+    const existing = new Set((data ?? []).map((r) => `${r.year ?? "na"}|${r.currency ?? "na"}`));
     for (const row of local) {
       const key = `${row.year ?? "na"}|${row.currency ?? "na"}`;
       items.push({
@@ -242,9 +243,7 @@ export async function commitMigration(
   if (!uid) return { uploaded: 0, skipped: 0 };
   const preview = await previewMigration(kinds);
   const chosen =
-    strategy === "overwrite"
-      ? preview.items
-      : preview.items.filter((i) => i.status === "new");
+    strategy === "overwrite" ? preview.items : preview.items.filter((i) => i.status === "new");
   if (chosen.length) {
     const rows = chosen.map((i) => ({
       user_id: uid,

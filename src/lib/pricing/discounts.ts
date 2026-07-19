@@ -70,8 +70,8 @@ export function computeDiscount(
   const earlyBird = !!opts.earlyBird && isEarlyBirdEligible(planId);
   const years = opts.prepayYears === 3 && isPrepayEligible(planId) ? 3 : 1;
 
-  const earlyBirdPct = earlyBird ? 0.30 : 0;
-  const prepayPct = years === 3 ? 0.20 : 0;
+  const earlyBirdPct = earlyBird ? 0.3 : 0;
+  const prepayPct = years === 3 ? 0.2 : 0;
 
   // Early-Bird يُطبَّق على أول فاتورة فقط (سنة واحدة)، وخصم الدفع المسبق
   // يُطبَّق على كامل السنوات الثلاث.

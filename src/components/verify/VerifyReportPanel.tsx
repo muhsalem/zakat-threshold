@@ -142,10 +142,7 @@ export function VerifyReportPanel({ syncUrl = false }: VerifyReportPanelProps) {
                 نتيجة التحقق من تقرير الزكاة
               </CardTitle>
               <div className="flex flex-wrap items-center gap-2">
-                <Badge
-                  variant={isValid ? "default" : "destructive"}
-                  className="text-sm px-3 py-1"
-                >
+                <Badge variant={isValid ? "default" : "destructive"} className="text-sm px-3 py-1">
                   {isValid
                     ? "صالح · Valid"
                     : expired

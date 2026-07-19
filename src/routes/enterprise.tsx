@@ -44,7 +44,8 @@ export const Route = createFileRoute("/enterprise")({
       { property: "og:title", content: "Enterprise Integrations — نصاب" },
       {
         property: "og:description",
-        content: "ERP, Accounting, Banking & Automation connectors for banks, corporations, and Islamic financial institutions.",
+        content:
+          "ERP, Accounting, Banking & Automation connectors for banks, corporations, and Islamic financial institutions.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -75,69 +76,265 @@ interface Connector {
 
 const CONNECTORS: Connector[] = [
   // ERP
-  { id: "sap", name: "SAP S/4HANA", name_ar: "ساب", category: "erp", status: "available", short: "Enterprise ERP Integration", short_ar: "تكامل ERP للمؤسسات", logo: "🔵", tech: ["ERP", "REST", "OAuth"], timeline: "Live" },
-  { id: "dynamics", name: "Microsoft Dynamics 365", name_ar: "دايناميكس 365", category: "erp", status: "development", short: "Cloud ERP & Finance", short_ar: "ERP سحابي ومالية", logo: "🟦", tech: ["ERP", "REST", "OAuth"], timeline: "Q3 2027" },
-  { id: "oracle", name: "Oracle Fusion", name_ar: "أوراكل فيوجن", category: "erp", status: "development", short: "Enterprise Cloud ERP", short_ar: "ERP سحابي مؤسسي", logo: "🔴", tech: ["ERP", "REST"], timeline: "Q4 2027" },
-  { id: "odoo", name: "Odoo", name_ar: "أودو", category: "erp", status: "available", short: "Open-source ERP Suite", short_ar: "منظومة ERP مفتوحة", logo: "🟣", tech: ["ERP", "API", "REST"], timeline: "Live" },
-  { id: "netsuite", name: "NetSuite", name_ar: "نت سويت", category: "erp", status: "planned", short: "Cloud Business Suite", short_ar: "منظومة أعمال سحابية", logo: "🟠", tech: ["ERP", "SaaS"], timeline: "Q1 2028" },
+  {
+    id: "sap",
+    name: "SAP S/4HANA",
+    name_ar: "ساب",
+    category: "erp",
+    status: "available",
+    short: "Enterprise ERP Integration",
+    short_ar: "تكامل ERP للمؤسسات",
+    logo: "🔵",
+    tech: ["ERP", "REST", "OAuth"],
+    timeline: "Live",
+  },
+  {
+    id: "dynamics",
+    name: "Microsoft Dynamics 365",
+    name_ar: "دايناميكس 365",
+    category: "erp",
+    status: "development",
+    short: "Cloud ERP & Finance",
+    short_ar: "ERP سحابي ومالية",
+    logo: "🟦",
+    tech: ["ERP", "REST", "OAuth"],
+    timeline: "Q3 2027",
+  },
+  {
+    id: "oracle",
+    name: "Oracle Fusion",
+    name_ar: "أوراكل فيوجن",
+    category: "erp",
+    status: "development",
+    short: "Enterprise Cloud ERP",
+    short_ar: "ERP سحابي مؤسسي",
+    logo: "🔴",
+    tech: ["ERP", "REST"],
+    timeline: "Q4 2027",
+  },
+  {
+    id: "odoo",
+    name: "Odoo",
+    name_ar: "أودو",
+    category: "erp",
+    status: "available",
+    short: "Open-source ERP Suite",
+    short_ar: "منظومة ERP مفتوحة",
+    logo: "🟣",
+    tech: ["ERP", "API", "REST"],
+    timeline: "Live",
+  },
+  {
+    id: "netsuite",
+    name: "NetSuite",
+    name_ar: "نت سويت",
+    category: "erp",
+    status: "planned",
+    short: "Cloud Business Suite",
+    short_ar: "منظومة أعمال سحابية",
+    logo: "🟠",
+    tech: ["ERP", "SaaS"],
+    timeline: "Q1 2028",
+  },
 
   // Accounting
-  { id: "quickbooks", name: "QuickBooks Online", name_ar: "كويك بوكس", category: "accounting", status: "beta", short: "SMB Accounting Platform", short_ar: "محاسبة الشركات الصغيرة", logo: "🟢", tech: ["SaaS", "REST", "OAuth"], timeline: "Beta" },
-  { id: "xero", name: "Xero", name_ar: "زيرو", category: "accounting", status: "beta", short: "Cloud Accounting Software", short_ar: "محاسبة سحابية", logo: "🔷", tech: ["SaaS", "REST", "OAuth"], timeline: "Beta" },
-  { id: "zoho", name: "Zoho Books", name_ar: "زوهو بوكس", category: "accounting", status: "beta", short: "Online Accounting Suite", short_ar: "محاسبة إلكترونية", logo: "🟠", tech: ["SaaS", "REST"], timeline: "Beta" },
+  {
+    id: "quickbooks",
+    name: "QuickBooks Online",
+    name_ar: "كويك بوكس",
+    category: "accounting",
+    status: "beta",
+    short: "SMB Accounting Platform",
+    short_ar: "محاسبة الشركات الصغيرة",
+    logo: "🟢",
+    tech: ["SaaS", "REST", "OAuth"],
+    timeline: "Beta",
+  },
+  {
+    id: "xero",
+    name: "Xero",
+    name_ar: "زيرو",
+    category: "accounting",
+    status: "beta",
+    short: "Cloud Accounting Software",
+    short_ar: "محاسبة سحابية",
+    logo: "🔷",
+    tech: ["SaaS", "REST", "OAuth"],
+    timeline: "Beta",
+  },
+  {
+    id: "zoho",
+    name: "Zoho Books",
+    name_ar: "زوهو بوكس",
+    category: "accounting",
+    status: "beta",
+    short: "Online Accounting Suite",
+    short_ar: "محاسبة إلكترونية",
+    logo: "🟠",
+    tech: ["SaaS", "REST"],
+    timeline: "Beta",
+  },
 
   // Banking
-  { id: "sama", name: "SAMA Open Banking", name_ar: "ساما المفتوح", category: "banking", status: "development", short: "Saudi Open Banking Framework", short_ar: "المصرفية المفتوحة السعودية", logo: "🟢", tech: ["Banking", "REST", "OAuth"], timeline: "Q2 2027" },
-  { id: "cbuae", name: "CBUAE Open Finance", name_ar: "المصرف المركزي الإماراتي", category: "banking", status: "development", short: "UAE Open Finance API", short_ar: "التمويل المفتوح الإماراتي", logo: "🟡", tech: ["Banking", "REST", "OAuth"], timeline: "Q3 2027" },
-  { id: "bahrain-ob", name: "Bahrain Open Banking", name_ar: "المصرفية المفتوحة البحرينية", category: "banking", status: "planned", short: "CBB Open Banking Standard", short_ar: "معيار CBB المفتوح", logo: "🔴", tech: ["Banking", "REST"], timeline: "Q1 2028" },
-  { id: "uk-ob", name: "Open Banking UK", name_ar: "المصرفية المفتوحة البريطانية", category: "banking", status: "planned", short: "UK OBIE Standard", short_ar: "معيار OBIE البريطاني", logo: "🇬🇧", tech: ["Banking", "REST", "OAuth"], timeline: "2028" },
+  {
+    id: "sama",
+    name: "SAMA Open Banking",
+    name_ar: "ساما المفتوح",
+    category: "banking",
+    status: "development",
+    short: "Saudi Open Banking Framework",
+    short_ar: "المصرفية المفتوحة السعودية",
+    logo: "🟢",
+    tech: ["Banking", "REST", "OAuth"],
+    timeline: "Q2 2027",
+  },
+  {
+    id: "cbuae",
+    name: "CBUAE Open Finance",
+    name_ar: "المصرف المركزي الإماراتي",
+    category: "banking",
+    status: "development",
+    short: "UAE Open Finance API",
+    short_ar: "التمويل المفتوح الإماراتي",
+    logo: "🟡",
+    tech: ["Banking", "REST", "OAuth"],
+    timeline: "Q3 2027",
+  },
+  {
+    id: "bahrain-ob",
+    name: "Bahrain Open Banking",
+    name_ar: "المصرفية المفتوحة البحرينية",
+    category: "banking",
+    status: "planned",
+    short: "CBB Open Banking Standard",
+    short_ar: "معيار CBB المفتوح",
+    logo: "🔴",
+    tech: ["Banking", "REST"],
+    timeline: "Q1 2028",
+  },
+  {
+    id: "uk-ob",
+    name: "Open Banking UK",
+    name_ar: "المصرفية المفتوحة البريطانية",
+    category: "banking",
+    status: "planned",
+    short: "UK OBIE Standard",
+    short_ar: "معيار OBIE البريطاني",
+    logo: "🇬🇧",
+    tech: ["Banking", "REST", "OAuth"],
+    timeline: "2028",
+  },
 
   // Automation
-  { id: "zapier", name: "Zapier", name_ar: "زابير", category: "automation", status: "available", short: "No-code Automation", short_ar: "أتمتة بدون كود", logo: "⚡", tech: ["iPaaS", "REST"], timeline: "Live" },
-  { id: "make", name: "Make", name_ar: "ميك", category: "automation", status: "available", short: "Visual Workflow Builder", short_ar: "منشئ سير عمل بصري", logo: "🟣", tech: ["iPaaS", "REST"], timeline: "Live" },
-  { id: "n8n", name: "n8n", name_ar: "n8n", category: "automation", status: "available", short: "Self-hosted Automation", short_ar: "أتمتة مستضافة ذاتياً", logo: "🟥", tech: ["iPaaS", "REST"], timeline: "Live" },
-  { id: "webhooks", name: "Webhooks", name_ar: "ويب هوكس", category: "automation", status: "available", short: "Custom Event Triggers", short_ar: "محفزات أحداث مخصصة", logo: "🔗", tech: ["Webhook", "API"], timeline: "Live" },
+  {
+    id: "zapier",
+    name: "Zapier",
+    name_ar: "زابير",
+    category: "automation",
+    status: "available",
+    short: "No-code Automation",
+    short_ar: "أتمتة بدون كود",
+    logo: "⚡",
+    tech: ["iPaaS", "REST"],
+    timeline: "Live",
+  },
+  {
+    id: "make",
+    name: "Make",
+    name_ar: "ميك",
+    category: "automation",
+    status: "available",
+    short: "Visual Workflow Builder",
+    short_ar: "منشئ سير عمل بصري",
+    logo: "🟣",
+    tech: ["iPaaS", "REST"],
+    timeline: "Live",
+  },
+  {
+    id: "n8n",
+    name: "n8n",
+    name_ar: "n8n",
+    category: "automation",
+    status: "available",
+    short: "Self-hosted Automation",
+    short_ar: "أتمتة مستضافة ذاتياً",
+    logo: "🟥",
+    tech: ["iPaaS", "REST"],
+    timeline: "Live",
+  },
+  {
+    id: "webhooks",
+    name: "Webhooks",
+    name_ar: "ويب هوكس",
+    category: "automation",
+    status: "available",
+    short: "Custom Event Triggers",
+    short_ar: "محفزات أحداث مخصصة",
+    logo: "🔗",
+    tech: ["Webhook", "API"],
+    timeline: "Live",
+  },
 ];
 
 // ────────────────────────────────────────────────────────────────
 // UI Helpers
 // ────────────────────────────────────────────────────────────────
-const STATUS_META: Record<Status, { label: string; label_ar: string; dot: string; badge: string; icon: typeof CheckCircle2 }> = {
+const STATUS_META: Record<
+  Status,
+  { label: string; label_ar: string; dot: string; badge: string; icon: typeof CheckCircle2 }
+> = {
   available: {
     label: "Available",
     label_ar: "متاح",
     dot: "bg-emerald-500",
-    badge: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/30",
+    badge:
+      "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/30",
     icon: CheckCircle2,
   },
   beta: {
     label: "Beta",
     label_ar: "تجريبي",
     dot: "bg-sky-500",
-    badge: "bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-500/10 dark:text-sky-300 dark:border-sky-500/30",
+    badge:
+      "bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-500/10 dark:text-sky-300 dark:border-sky-500/30",
     icon: Sparkles,
   },
   development: {
     label: "In Development",
     label_ar: "قيد التطوير",
     dot: "bg-amber-500",
-    badge: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/30",
+    badge:
+      "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/30",
     icon: Clock,
   },
   planned: {
     label: "Planned",
     label_ar: "مخطط",
     dot: "bg-slate-400",
-    badge: "bg-slate-50 text-slate-600 border-slate-200 dark:bg-slate-500/10 dark:text-slate-300 dark:border-slate-500/30",
+    badge:
+      "bg-slate-50 text-slate-600 border-slate-200 dark:bg-slate-500/10 dark:text-slate-300 dark:border-slate-500/30",
     icon: CircleDashed,
   },
 };
 
-const CATEGORY_META: Record<Category, { label: string; label_ar: string; icon: typeof Database; accent: string }> = {
+const CATEGORY_META: Record<
+  Category,
+  { label: string; label_ar: string; icon: typeof Database; accent: string }
+> = {
   erp: { label: "ERP Systems", label_ar: "أنظمة ERP", icon: Server, accent: "text-[#0F766E]" },
-  accounting: { label: "Accounting", label_ar: "المحاسبة", icon: Database, accent: "text-[#1E3A5F]" },
+  accounting: {
+    label: "Accounting",
+    label_ar: "المحاسبة",
+    icon: Database,
+    accent: "text-[#1E3A5F]",
+  },
   banking: { label: "Banking", label_ar: "المصرفية", icon: Landmark, accent: "text-[#C8A951]" },
-  automation: { label: "Automation", label_ar: "الأتمتة", icon: Workflow, accent: "text-[#0F766E]" },
+  automation: {
+    label: "Automation",
+    label_ar: "الأتمتة",
+    icon: Workflow,
+    accent: "text-[#0F766E]",
+  },
 };
 
 function StatusBadge({ status }: { status: Status }) {
@@ -250,7 +447,9 @@ function ConnectorCard({ c }: { c: Connector }) {
             className="h-8 flex-1 bg-[#0F766E] text-xs text-white hover:bg-[#0d6560]"
             asChild
           >
-            <a href={`mailto:enterprise@nisab.app?subject=Early%20Access%20-%20${encodeURIComponent(c.name)}`}>
+            <a
+              href={`mailto:enterprise@nisab.app?subject=Early%20Access%20-%20${encodeURIComponent(c.name)}`}
+            >
               <Rocket className="me-1 h-3 w-3" />
               Early Access
             </a>
@@ -286,7 +485,9 @@ function StatCard({
           <Icon className="h-6 w-6 text-white" />
         </div>
         <div className="min-w-0">
-          <div className="text-2xl font-bold leading-none tracking-tight text-foreground">{value}</div>
+          <div className="text-2xl font-bold leading-none tracking-tight text-foreground">
+            {value}
+          </div>
           <div className="mt-1 text-[11px] font-medium text-muted-foreground">{label_ar}</div>
           <div className="text-[10px] text-muted-foreground/70">{label}</div>
         </div>
@@ -327,7 +528,12 @@ function EnterprisePage() {
   }, [query, category, availOnly, comingOnly]);
 
   const grouped = useMemo(() => {
-    const g: Record<Category, Connector[]> = { erp: [], accounting: [], banking: [], automation: [] };
+    const g: Record<Category, Connector[]> = {
+      erp: [],
+      accounting: [],
+      banking: [],
+      automation: [],
+    };
     filtered.forEach((c) => g[c.category].push(c));
     return g;
   }, [filtered]);
@@ -367,7 +573,8 @@ function EnterprisePage() {
               </h1>
               <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-base">
                 جاهزون للتكامل مع أشهر أنظمة ERP والمحاسبة والبنوك ومنصات الأعمال عبر REST API و
-                Webhooks و Open Banking — مصمم للبنوك، الشركات، الجهات الحكومية، والمؤسسات المالية الإسلامية.
+                Webhooks و Open Banking — مصمم للبنوك، الشركات، الجهات الحكومية، والمؤسسات المالية
+                الإسلامية.
               </p>
             </div>
             <div className="shrink-0">
@@ -430,12 +637,12 @@ function EnterprisePage() {
                   k === "all"
                     ? "الكل"
                     : k === "erp"
-                    ? "ERP"
-                    : k === "accounting"
-                    ? "محاسبة"
-                    : k === "banking"
-                    ? "بنوك"
-                    : "أتمتة";
+                      ? "ERP"
+                      : k === "accounting"
+                        ? "محاسبة"
+                        : k === "banking"
+                          ? "بنوك"
+                          : "أتمتة";
                 return (
                   <button
                     key={k}
@@ -558,8 +765,9 @@ function EnterprisePage() {
                 جاهزون لتكاملك المؤسسي القادم
               </h3>
               <p className="max-w-2xl text-sm leading-relaxed text-white/80">
-                All integrations are powered by secure REST APIs, Webhooks, OAuth 2.0, Open Banking standards,
-                and Enterprise-grade security. Native ERP integrations are available through our Early Access Program.
+                All integrations are powered by secure REST APIs, Webhooks, OAuth 2.0, Open Banking
+                standards, and Enterprise-grade security. Native ERP integrations are available
+                through our Early Access Program.
               </p>
             </div>
             <div className="flex flex-col gap-2 sm:flex-row lg:flex-col lg:items-stretch">
@@ -653,7 +861,8 @@ function ErpFormatPreview() {
           <div>
             <h3 className="text-base font-semibold">معاينة تصدير قيد الزكاة</h3>
             <p className="text-[11px] text-muted-foreground">
-              Live preview from <span className="font-mono">/api/public/erp/journal</span> · AAOIFI FAS 9
+              Live preview from <span className="font-mono">/api/public/erp/journal</span> · AAOIFI
+              FAS 9
             </p>
           </div>
         </div>

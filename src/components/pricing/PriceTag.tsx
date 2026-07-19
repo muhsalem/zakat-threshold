@@ -46,27 +46,20 @@ export function PriceTag({
   // نُخفي مرجع USD في T3/T4 لتجنّب شعور المستخدم بـ"المقارنة" السلبية.
   // نُظهره فقط في T1 (نفس السعر) و T2 (خصم معتدل).
   const showUsdReference =
-    price.currency !== "USD" &&
-    (price.country.tier === "T1" || price.country.tier === "T2");
+    price.currency !== "USD" && (price.country.tier === "T1" || price.country.tier === "T2");
 
   return (
     <div className={cn("space-y-1", className)}>
-      {anchorLabel && (
-        <span className="text-xs text-muted-foreground block">{anchorLabel}</span>
-      )}
+      {anchorLabel && <span className="text-xs text-muted-foreground block">{anchorLabel}</span>}
       <div className="flex items-baseline gap-1 flex-wrap">
         <span className="text-3xl font-bold">{price.formatted}</span>
         <span className="text-sm text-muted-foreground">{periodText}</span>
       </div>
       {showUsdReference && price.usdEquivalent > 0 && (
-        <div className="text-xs text-muted-foreground">
-          ≈ ${price.usdEquivalent.toFixed(2)} USD
-        </div>
+        <div className="text-xs text-muted-foreground">≈ ${price.usdEquivalent.toFixed(2)} USD</div>
       )}
       {!showUsdReference && price.saving > 0 && (
-        <div className="text-xs text-primary font-medium">
-          سعر محلي مخصّص لمنطقتك
-        </div>
+        <div className="text-xs text-primary font-medium">سعر محلي مخصّص لمنطقتك</div>
       )}
     </div>
   );

@@ -67,7 +67,9 @@ export function IndividualOverviewPanel() {
   const last = rows[rows.length - 1];
   const lastYear = last?.hijri_year ? parseInt(last.hijri_year, 10) : null;
   const nextHawl = lastYear && !Number.isNaN(lastYear) ? String(lastYear + 1) : "—";
-  const avgBase = rows.length ? rows.reduce((s, r) => s + Number(r.zakat_base || 0), 0) / rows.length : 0;
+  const avgBase = rows.length
+    ? rows.reduce((s, r) => s + Number(r.zakat_base || 0), 0) / rows.length
+    : 0;
 
   const empty = rows.length === 0;
 
@@ -104,7 +106,11 @@ export function IndividualOverviewPanel() {
               icon={<History className="h-4 w-4" />}
               label="عدد السنوات المسجّلة"
               value={`${yearsCount}`}
-              hint={last ? `آخر تحديث: ${new Date(last.gregorian_date).toLocaleDateString("ar")}` : undefined}
+              hint={
+                last
+                  ? `آخر تحديث: ${new Date(last.gregorian_date).toLocaleDateString("ar")}`
+                  : undefined
+              }
             />
             <Kpi
               icon={<Calendar className="h-4 w-4" />}
@@ -136,7 +142,6 @@ export function IndividualOverviewPanel() {
             />
           </div>
         )}
-
       </CardContent>
     </Card>
   );

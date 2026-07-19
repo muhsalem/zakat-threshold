@@ -5,10 +5,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableFooter,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+  TableFooter,
 } from "@/components/ui/table";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -63,9 +73,7 @@ function newRow(): ClientRow {
 }
 
 function BulkClientsPage() {
-  const [rows, setRows] = useState<ClientRow[]>(() =>
-    Array.from({ length: 3 }, () => newRow()),
-  );
+  const [rows, setRows] = useState<ClientRow[]>(() => Array.from({ length: 3 }, () => newRow()));
   const [running, setRunning] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -108,14 +116,31 @@ function BulkClientsPage() {
 
   const exportCsv = () => {
     const header = [
-      "العميل", "العملة", "نقد", "مدينون", "مخزون", "استثمارات",
-      "خصوم", "الصافي", "النصاب", "الزكاة المستحقة", "الحالة",
+      "العميل",
+      "العملة",
+      "نقد",
+      "مدينون",
+      "مخزون",
+      "استثمارات",
+      "خصوم",
+      "الصافي",
+      "النصاب",
+      "الزكاة المستحقة",
+      "الحالة",
     ].join(",");
     const lines = rows.map((r) =>
       [
-        r.client_name, r.currency, r.cash, r.receivables, r.inventory,
-        r.investments, r.liabilities, r.net ?? "", r.nisab,
-        r.zakat_due ?? "", r.status,
+        r.client_name,
+        r.currency,
+        r.cash,
+        r.receivables,
+        r.inventory,
+        r.investments,
+        r.liabilities,
+        r.net ?? "",
+        r.nisab,
+        r.zakat_due ?? "",
+        r.status,
       ].join(","),
     );
     const blob = new Blob([[header, ...lines].join("\n")], { type: "text/csv;charset=utf-8" });
@@ -142,18 +167,24 @@ function BulkClientsPage() {
       </Alert>
 
       <div className="grid gap-3 sm:grid-cols-3">
-        <Card><CardContent className="p-4 text-center">
-          <div className="text-2xl font-bold">{rows.length}</div>
-          <div className="text-xs text-muted-foreground">عملاء</div>
-        </CardContent></Card>
-        <Card><CardContent className="p-4 text-center">
-          <div className="text-2xl font-bold text-green-600">{totals.done}</div>
-          <div className="text-xs text-muted-foreground">تم الحساب</div>
-        </CardContent></Card>
-        <Card><CardContent className="p-4 text-center">
-          <div className="text-2xl font-bold">{totals.totalZakat.toLocaleString()}</div>
-          <div className="text-xs text-muted-foreground">إجمالي زكاة (مختلط)</div>
-        </CardContent></Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold">{rows.length}</div>
+            <div className="text-xs text-muted-foreground">عملاء</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-green-600">{totals.done}</div>
+            <div className="text-xs text-muted-foreground">تم الحساب</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold">{totals.totalZakat.toLocaleString()}</div>
+            <div className="text-xs text-muted-foreground">إجمالي زكاة (مختلط)</div>
+          </CardContent>
+        </Card>
       </div>
 
       {running && <Progress value={progress} />}
@@ -171,7 +202,9 @@ function BulkClientsPage() {
       </div>
 
       <Card>
-        <CardHeader><CardTitle className="text-base">قائمة العملاء</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle className="text-base">قائمة العملاء</CardTitle>
+        </CardHeader>
         <CardContent className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -193,11 +226,20 @@ function BulkClientsPage() {
               {rows.map((r) => (
                 <TableRow key={r.id}>
                   <TableCell>
-                    <Input value={r.client_name} onChange={(e) => update(r.id, { client_name: e.target.value })} placeholder="اسم العميل" />
+                    <Input
+                      value={r.client_name}
+                      onChange={(e) => update(r.id, { client_name: e.target.value })}
+                      placeholder="اسم العميل"
+                    />
                   </TableCell>
                   <TableCell>
-                    <Select value={r.currency} onValueChange={(v) => update(r.id, { currency: v as Currency })}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
+                    <Select
+                      value={r.currency}
+                      onValueChange={(v) => update(r.id, { currency: v as Currency })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="SAR">SAR</SelectItem>
                         <SelectItem value="USD">USD</SelectItem>
@@ -206,12 +248,23 @@ function BulkClientsPage() {
                       </SelectContent>
                     </Select>
                   </TableCell>
-                  {(["cash", "receivables", "inventory", "investments", "liabilities", "nisab"] as const).map((k) => (
+                  {(
+                    [
+                      "cash",
+                      "receivables",
+                      "inventory",
+                      "investments",
+                      "liabilities",
+                      "nisab",
+                    ] as const
+                  ).map((k) => (
                     <TableCell key={k}>
                       <Input
                         type="number"
                         value={r[k]}
-                        onChange={(e) => update(r.id, { [k]: Number(e.target.value) || 0 } as Partial<ClientRow>)}
+                        onChange={(e) =>
+                          update(r.id, { [k]: Number(e.target.value) || 0 } as Partial<ClientRow>)
+                        }
                         className="w-24"
                       />
                     </TableCell>
@@ -225,7 +278,12 @@ function BulkClientsPage() {
                     {r.status === "pending" && <Badge variant="outline">في الانتظار</Badge>}
                   </TableCell>
                   <TableCell>
-                    <Button size="icon" variant="ghost" aria-label="حذف" onClick={() => setRows((prev) => prev.filter((x) => x.id !== r.id))}>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      aria-label="حذف"
+                      onClick={() => setRows((prev) => prev.filter((x) => x.id !== r.id))}
+                    >
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
                   </TableCell>
@@ -234,7 +292,9 @@ function BulkClientsPage() {
             </TableBody>
             <TableFooter>
               <TableRow>
-                <TableCell colSpan={8} className="text-left">إجمالي الأصول (مختلط)</TableCell>
+                <TableCell colSpan={8} className="text-left">
+                  إجمالي الأصول (مختلط)
+                </TableCell>
                 <TableCell className="font-bold">{totals.totalAssets.toLocaleString()}</TableCell>
                 <TableCell colSpan={2}></TableCell>
               </TableRow>

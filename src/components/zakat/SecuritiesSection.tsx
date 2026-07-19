@@ -16,7 +16,10 @@ import {
 import { TrendingUp, Info, ShieldCheck, AlertTriangle } from "lucide-react";
 import { currency as fmtCurrency, num } from "@/lib/zakat";
 import { MarketQuoteButton } from "@/components/zakat/MarketQuoteButton";
-import { validateSecurityRow, type SecurityRowErrors } from "@/components/zakat/individual/securities/validation";
+import {
+  validateSecurityRow,
+  type SecurityRowErrors,
+} from "@/components/zakat/individual/securities/validation";
 
 type SecurityKind =
   | "stock_trade" // أسهم متاجرة
@@ -220,7 +223,12 @@ export function SecuritiesSection({
             msg ? <p className="text-[11px] text-destructive">{msg}</p> : null;
           const needsCompany = r.shariaCompliant === "no" || r.shariaCompliant === "unknown";
           const hasErrors = Object.keys(errs).length > 0;
-          const excludedFromTotal = !!(errs.qty || errs.price || errs.purifyPct || errs.zakatableAssetsPct);
+          const excludedFromTotal = !!(
+            errs.qty ||
+            errs.price ||
+            errs.purifyPct ||
+            errs.zakatableAssetsPct
+          );
           return (
             <div
               key={r.id}

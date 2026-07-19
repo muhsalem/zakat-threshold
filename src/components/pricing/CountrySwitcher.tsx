@@ -32,9 +32,7 @@ export function CountrySwitcher() {
             <span className="flex items-center gap-2">
               <span className="text-lg leading-none">{info.flag}</span>
               <span>{info.nameAr}</span>
-              <span className="text-xs text-muted-foreground">
-                ({info.currency})
-              </span>
+              <span className="text-xs text-muted-foreground">({info.currency})</span>
             </span>
           </SelectValue>
         </SelectTrigger>
@@ -44,9 +42,7 @@ export function CountrySwitcher() {
               <span className="flex items-center gap-2">
                 <span className="text-lg leading-none">{c.flag}</span>
                 <span>{c.nameAr}</span>
-                <span className="text-xs text-muted-foreground">
-                  ({c.currency})
-                </span>
+                <span className="text-xs text-muted-foreground">({c.currency})</span>
               </span>
             </SelectItem>
           ))}

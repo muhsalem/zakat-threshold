@@ -42,7 +42,8 @@ function SalaryZakatPage() {
         <AlertDescription className="text-xs leading-6">
           <strong>الطرق الثلاث:</strong>
           <br />• <strong>السنوية:</strong> جمع كل المدخرات في نهاية الحول وحساب 2.5% عليها.
-          <br />• <strong>الشهرية:</strong> إخراج 2.5% من الراتب مباشرة بعد خصم الحاجات (رأي القرضاوي).
+          <br />• <strong>الشهرية:</strong> إخراج 2.5% من الراتب مباشرة بعد خصم الحاجات (رأي
+          القرضاوي).
           <br />• <strong>عند القبض:</strong> إخراج جزء من كل راتب بمجرد استلامه (الأيسر للموظف).
         </AlertDescription>
       </Alert>

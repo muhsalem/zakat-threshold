@@ -29,15 +29,11 @@ export function SecuritiesAccordionSection({
     >
       <AccordionTrigger className="hover:no-underline">
         <span className="flex items-center gap-2 text-base font-semibold">
-          <TrendingUp className="h-5 w-5 text-primary" /> زكاة الأوراق المالية ووثائق
-          التأمين
+          <TrendingUp className="h-5 w-5 text-primary" /> زكاة الأوراق المالية ووثائق التأمين
         </span>
       </AccordionTrigger>
       <AccordionContent className="space-y-4 pb-4">
-        <SecuritiesSection
-          currencyName={currencyName}
-          onTotalChange={onSecuritiesTotalChange}
-        />
+        <SecuritiesSection currencyName={currencyName} onTotalChange={onSecuritiesTotalChange} />
         <EsopZakatSection currencyName={currencyName} onChange={onEsopChange} />
       </AccordionContent>
     </AccordionItem>

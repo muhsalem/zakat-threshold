@@ -195,6 +195,14 @@ async def run() -> int:
     browser_name = os.environ.get("PW_BROWSER", "chromium").lower()
     if browser_name not in ("chromium", "firefox", "webkit"):
         browser_name = "chromium"
+    if browser_name == "webkit":
+        # WebKit's Tab-focus policy for buttons differs by platform (Safari's
+        # "Full Keyboard Access" semantics leak into headless runs), so
+        # programmatic focus + Tab walks are not comparable there. The
+        # skip-disabled logic itself is covered on chromium+firefox, and
+        # webkit still runs the ARIA/click/state suites.
+        print("skip webkit — Tab-walk semantics differ (browser policy, not app logic)")
+        return 0
 
     Handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(ROOT))
     httpd = socketserver.TCPServer(("127.0.0.1", 0), Handler)

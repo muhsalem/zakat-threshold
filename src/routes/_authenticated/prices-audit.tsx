@@ -37,10 +37,7 @@ const JOB_LABEL: Record<string, string> = {
   "daily-metal-prices-snapshot": "لقطة أسعار (قديم)",
 };
 
-const STATUS_META: Record<
-  string,
-  { label: string; className: string; icon: any }
-> = {
+const STATUS_META: Record<string, { label: string; className: string; icon: any }> = {
   success: {
     label: "نجاح",
     className: "bg-emerald-500/10 text-emerald-600 border-emerald-500/30",
@@ -113,19 +110,12 @@ function PricesAuditPage() {
         <div>
           <h1 className="text-2xl font-bold">سجل تدقيق سحب الأسعار</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            كل محاولة سحب أسعار المعادن ونِصاب الدول اليومي، مع المصدر المستخدم و
-            أي احتياط (fallback) أو خطأ شبكة.
+            كل محاولة سحب أسعار المعادن ونِصاب الدول اليومي، مع المصدر المستخدم و أي احتياط
+            (fallback) أو خطأ شبكة.
           </p>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => refetch()}
-          disabled={isFetching}
-        >
-          <RefreshCw
-            className={`h-4 w-4 ml-2 ${isFetching ? "animate-spin" : ""}`}
-          />
+        <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isFetching}>
+          <RefreshCw className={`h-4 w-4 ml-2 ${isFetching ? "animate-spin" : ""}`} />
           تحديث
         </Button>
       </div>
@@ -139,28 +129,20 @@ function PricesAuditPage() {
 
       <div className="flex flex-wrap gap-3">
         <div className="w-56">
-          <label className="text-xs text-muted-foreground mb-1 block">
-            المهمة
-          </label>
+          <label className="text-xs text-muted-foreground mb-1 block">المهمة</label>
           <Select value={jobFilter} onValueChange={setJobFilter}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">كل المهام</SelectItem>
-              <SelectItem value="snapshot-daily-prices">
-                أسعار المعادن اليومية
-              </SelectItem>
-              <SelectItem value="snapshot-daily-nisab">
-                نصاب الدول اليومي
-              </SelectItem>
+              <SelectItem value="snapshot-daily-prices">أسعار المعادن اليومية</SelectItem>
+              <SelectItem value="snapshot-daily-nisab">نصاب الدول اليومي</SelectItem>
             </SelectContent>
           </Select>
         </div>
         <div className="w-56">
-          <label className="text-xs text-muted-foreground mb-1 block">
-            الحالة
-          </label>
+          <label className="text-xs text-muted-foreground mb-1 block">الحالة</label>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger>
               <SelectValue />
@@ -181,13 +163,9 @@ function PricesAuditPage() {
         </CardHeader>
         <CardContent className="p-0">
           {isLoading ? (
-            <div className="p-6 text-sm text-muted-foreground">
-              جارٍ التحميل…
-            </div>
+            <div className="p-6 text-sm text-muted-foreground">جارٍ التحميل…</div>
           ) : rows.length === 0 ? (
-            <div className="p-6 text-sm text-muted-foreground">
-              لا توجد سجلات مطابقة للفلاتر.
-            </div>
+            <div className="p-6 text-sm text-muted-foreground">لا توجد سجلات مطابقة للفلاتر.</div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -210,17 +188,10 @@ function PricesAuditPage() {
                     const Icon = meta.icon;
                     return (
                       <tr key={r.id} className="border-t align-top">
-                        <td className="p-3 whitespace-nowrap text-xs">
-                          {formatDate(r.run_at)}
-                        </td>
-                        <td className="p-3 text-xs">
-                          {JOB_LABEL[r.job_name] ?? r.job_name}
-                        </td>
+                        <td className="p-3 whitespace-nowrap text-xs">{formatDate(r.run_at)}</td>
+                        <td className="p-3 text-xs">{JOB_LABEL[r.job_name] ?? r.job_name}</td>
                         <td className="p-3">
-                          <Badge
-                            variant="outline"
-                            className={`gap-1 ${meta.className}`}
-                          >
+                          <Badge variant="outline" className={`gap-1 ${meta.className}`}>
                             <Icon className="h-3 w-3" />
                             {meta.label}
                           </Badge>
@@ -241,21 +212,15 @@ function PricesAuditPage() {
                           )}
                         </td>
                         <td className="p-3 text-xs" dir="ltr">
-                          {r.currencies_missing?.length
-                            ? r.currencies_missing.join(", ")
-                            : "—"}
+                          {r.currencies_missing?.length ? r.currencies_missing.join(", ") : "—"}
                         </td>
-                        <td className="p-3 text-xs text-center">
-                          {r.records_written ?? 0}
-                        </td>
+                        <td className="p-3 text-xs text-center">{r.records_written ?? 0}</td>
                         <td className="p-3 text-xs" dir="ltr">
                           {r.duration_ms != null ? `${r.duration_ms}ms` : "—"}
                         </td>
                         <td className="p-3 text-xs max-w-xs">
                           {r.error_message ? (
-                            <span className="text-red-600 break-words">
-                              {r.error_message}
-                            </span>
+                            <span className="text-red-600 break-words">{r.error_message}</span>
                           ) : r.metadata ? (
                             <details>
                               <summary className="cursor-pointer text-muted-foreground">

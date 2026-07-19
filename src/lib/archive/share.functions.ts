@@ -29,9 +29,10 @@ export const createShareLink = createServerFn({ method: "POST" })
     // rotate token if revoked; otherwise reuse existing token
     if (!token || row.share_revoked_at) token = generateToken();
 
-    const expiresAt = data.expiresInDays && data.expiresInDays > 0
-      ? new Date(Date.now() + data.expiresInDays * 86400_000).toISOString()
-      : null;
+    const expiresAt =
+      data.expiresInDays && data.expiresInDays > 0
+        ? new Date(Date.now() + data.expiresInDays * 86400_000).toISOString()
+        : null;
 
     const { error: updErr } = await supabase
       .from("user_report_archive")
@@ -71,7 +72,9 @@ export const getSharedReport = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: row, error } = await supabaseAdmin
       .from("user_report_archive")
-      .select("id, kind, year, currency, payload, created_at, updated_at, share_expires_at, share_revoked_at")
+      .select(
+        "id, kind, year, currency, payload, created_at, updated_at, share_expires_at, share_revoked_at",
+      )
       .eq("share_token", token)
       .maybeSingle();
     if (error) throw error;

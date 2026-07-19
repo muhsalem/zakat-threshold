@@ -166,8 +166,7 @@ export const Route = createFileRoute("/api/public/hooks/snapshot-daily-nisab")({
           });
         }
 
-        const status =
-          fx.missing.length > 0 || fx.errors.length > 0 ? "partial" : "success";
+        const status = fx.missing.length > 0 || fx.errors.length > 0 ? "partial" : "success";
 
         await logAudit({
           status,

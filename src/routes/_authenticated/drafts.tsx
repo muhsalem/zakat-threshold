@@ -190,7 +190,6 @@ function DraftsPage() {
     setRecordsTotal(count ?? 0);
   }
 
-
   async function refresh() {
     setError(null);
     const { data: userData } = await supabase.auth.getUser();

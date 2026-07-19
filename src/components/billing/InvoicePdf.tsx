@@ -14,7 +14,7 @@ Font.registerHyphenationCallback((w) => [w]);
 export type InvoiceAddon = { name: string; amount: number };
 export type InvoiceData = {
   invoiceNumber: string;
-  issuedAt: string;      // ISO
+  issuedAt: string; // ISO
   planName: string;
   billingPeriod: string; // نص عربي (سنوي/دفعة واحدة/…)
   amount: number;
@@ -25,13 +25,26 @@ export type InvoiceData = {
   sessionId?: string;
 };
 
-const C = { primary: "#0e3b2a", gold: "#c9a14a", border: "#d4cbb0", muted: "#5a6660", text: "#1a2622" };
+const C = {
+  primary: "#0e3b2a",
+  gold: "#c9a14a",
+  border: "#d4cbb0",
+  muted: "#5a6660",
+  text: "#1a2622",
+};
 const BASE = { fontFamily: "Cairo", direction: "rtl" as const, textAlign: "right" as const };
 
 const s = StyleSheet.create({
   page: { padding: 36, fontFamily: "Cairo", fontSize: 10, color: C.text, lineHeight: 1.6 },
-  header: { borderBottomWidth: 2, borderBottomColor: C.primary, paddingBottom: 12, marginBottom: 18,
-            flexDirection: "row-reverse", justifyContent: "space-between", alignItems: "flex-end" },
+  header: {
+    borderBottomWidth: 2,
+    borderBottomColor: C.primary,
+    paddingBottom: 12,
+    marginBottom: 18,
+    flexDirection: "row-reverse",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+  },
   brand: { ...BASE, fontSize: 20, fontWeight: 700, color: C.primary },
   brandSub: { ...BASE, fontSize: 9, color: C.muted, marginTop: 2 },
   invBox: { alignItems: "flex-start" },
@@ -39,26 +52,54 @@ const s = StyleSheet.create({
   invNum: { ...BASE, textAlign: "left", fontSize: 13, fontWeight: 700, color: C.gold },
   section: { marginBottom: 14 },
   h: { ...BASE, fontSize: 12, fontWeight: 700, color: C.primary, marginBottom: 6 },
-  row: { flexDirection: "row-reverse", justifyContent: "space-between", paddingVertical: 4,
-         borderBottomWidth: 0.5, borderBottomColor: C.border },
+  row: {
+    flexDirection: "row-reverse",
+    justifyContent: "space-between",
+    paddingVertical: 4,
+    borderBottomWidth: 0.5,
+    borderBottomColor: C.border,
+  },
   cell: { ...BASE, fontSize: 10 },
   cellL: { ...BASE, textAlign: "left", fontSize: 10 },
-  total: { flexDirection: "row-reverse", justifyContent: "space-between", marginTop: 10, paddingTop: 8,
-           borderTopWidth: 1.5, borderTopColor: C.primary },
+  total: {
+    flexDirection: "row-reverse",
+    justifyContent: "space-between",
+    marginTop: 10,
+    paddingTop: 8,
+    borderTopWidth: 1.5,
+    borderTopColor: C.primary,
+  },
   totalLabel: { ...BASE, fontSize: 12, fontWeight: 700 },
   totalVal: { ...BASE, textAlign: "left", fontSize: 14, fontWeight: 700, color: C.primary },
-  footer: { position: "absolute", bottom: 24, left: 36, right: 36, ...BASE, fontSize: 8,
-            color: C.muted, textAlign: "center", borderTopWidth: 0.5, borderTopColor: C.border, paddingTop: 6 },
+  footer: {
+    position: "absolute",
+    bottom: 24,
+    left: 36,
+    right: 36,
+    ...BASE,
+    fontSize: 8,
+    color: C.muted,
+    textAlign: "center",
+    borderTopWidth: 0.5,
+    borderTopColor: C.border,
+    paddingTop: 6,
+  },
 });
 
 function fmt(n: number, cur: string) {
-  try { return new Intl.NumberFormat("ar", { style: "currency", currency: cur }).format(n); }
-  catch { return `${n.toFixed(2)} ${cur}`; }
+  try {
+    return new Intl.NumberFormat("ar", { style: "currency", currency: cur }).format(n);
+  } catch {
+    return `${n.toFixed(2)} ${cur}`;
+  }
 }
 function fmtDate(iso?: string | null) {
   if (!iso) return "—";
-  try { return new Intl.DateTimeFormat("ar", { dateStyle: "long" }).format(new Date(iso)); }
-  catch { return iso; }
+  try {
+    return new Intl.DateTimeFormat("ar", { dateStyle: "long" }).format(new Date(iso));
+  } catch {
+    return iso;
+  }
 }
 
 export function InvoiceDocument({ data }: { data: InvoiceData }) {
@@ -88,9 +129,18 @@ export function InvoiceDocument({ data }: { data: InvoiceData }) {
 
         <View style={s.section}>
           <Text style={s.h}>تفاصيل الاشتراك</Text>
-          <View style={s.row}><Text style={s.cell}>الخطة</Text><Text style={s.cellL}>{data.planName}</Text></View>
-          <View style={s.row}><Text style={s.cell}>الفوترة</Text><Text style={s.cellL}>{data.billingPeriod}</Text></View>
-          <View style={s.row}><Text style={s.cell}>قيمة الخطة</Text><Text style={s.cellL}>{fmt(data.amount, data.currency)}</Text></View>
+          <View style={s.row}>
+            <Text style={s.cell}>الخطة</Text>
+            <Text style={s.cellL}>{data.planName}</Text>
+          </View>
+          <View style={s.row}>
+            <Text style={s.cell}>الفوترة</Text>
+            <Text style={s.cellL}>{data.billingPeriod}</Text>
+          </View>
+          <View style={s.row}>
+            <Text style={s.cell}>قيمة الخطة</Text>
+            <Text style={s.cellL}>{fmt(data.amount, data.currency)}</Text>
+          </View>
           {data.renewsAt !== undefined && (
             <View style={s.row}>
               <Text style={s.cell}>تاريخ التجديد القادم</Text>
@@ -125,7 +175,8 @@ export function InvoiceDocument({ data }: { data: InvoiceData }) {
         )}
 
         <Text style={s.footer}>
-          شكراً لاشتراكك في نِصاب — للاستفسارات: support@nisab.app · هذه الفاتورة صادرة إلكترونياً وصالحة بدون توقيع.
+          شكراً لاشتراكك في نِصاب — للاستفسارات: support@nisab.app · هذه الفاتورة صادرة إلكترونياً
+          وصالحة بدون توقيع.
         </Text>
       </Page>
     </Document>

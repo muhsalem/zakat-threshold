@@ -26,8 +26,8 @@ export function CashBankAccordionSection({
     >
       <AccordionTrigger className="hover:no-underline">
         <span className="flex items-center gap-2 text-base font-semibold">
-          <Landmark className="h-5 w-5 text-primary" /> زكاة الأوراق النقدية والحسابات
-          والبطاقات والمحافظ البنكية
+          <Landmark className="h-5 w-5 text-primary" /> زكاة الأوراق النقدية والحسابات والبطاقات
+          والمحافظ البنكية
         </span>
       </AccordionTrigger>
       <AccordionContent className="space-y-4 pb-4">

@@ -90,8 +90,16 @@ const SCENARIOS: Scenario[] = [
       {
         title: "٣) الأسهم والصكوك",
         rows: [
-          { label: "أسهم للاستثمار طويل الأجل", value: "120000", hint: "زكاة على الأرباح والقيمة النقدية للسهم" },
-          { label: "أسهم للمضاربة (قصيرة الأجل)", value: "30000", hint: "زكاة على القيمة السوقية كاملة" },
+          {
+            label: "أسهم للاستثمار طويل الأجل",
+            value: "120000",
+            hint: "زكاة على الأرباح والقيمة النقدية للسهم",
+          },
+          {
+            label: "أسهم للمضاربة (قصيرة الأجل)",
+            value: "30000",
+            hint: "زكاة على القيمة السوقية كاملة",
+          },
           { label: "صكوك مرابحة/إجارة", value: "50000" },
           { label: "توزيعات نقدية مقبوضة", value: "6000" },
         ],
@@ -171,7 +179,9 @@ export function DemoScenariosGuide({ currency = "SAR" }: { currency?: string }) 
         <CardTitle className="flex items-center gap-2 text-base">
           <FlaskConical className="h-5 w-5 text-primary" />
           سيناريوهات بيانات وهمية للاختبار
-          <Badge variant="outline" className="ms-2 text-[10px]">اختياري</Badge>
+          <Badge variant="outline" className="ms-2 text-[10px]">
+            اختياري
+          </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -179,8 +189,8 @@ export function DemoScenariosGuide({ currency = "SAR" }: { currency?: string }) 
           <Info className="h-4 w-4" />
           <AlertDescription className="text-xs leading-relaxed text-end">
             كل سيناريو يعرض القيم بالترتيب: <b>الذهب والفضة</b> ← <b>النقد والبنوك</b> ←{" "}
-            <b>الأسهم والصكوك</b> ← <b>الديون</b>. المبالغ افتراضية للاختبار بعملة{" "}
-            <b>{currency}</b> — انسخها للحقل المقابل داخل الأكورديون.
+            <b>الأسهم والصكوك</b> ← <b>الديون</b>. المبالغ افتراضية للاختبار بعملة <b>{currency}</b>{" "}
+            — انسخها للحقل المقابل داخل الأكورديون.
           </AlertDescription>
         </Alert>
 
@@ -203,25 +213,41 @@ export function DemoScenariosGuide({ currency = "SAR" }: { currency?: string }) 
         </div>
 
         {openId && (
-          <Accordion type="multiple" defaultValue={SCENARIOS.find((s) => s.id === openId)!.sections.map((_, i) => `sec-${i}`)}>
+          <Accordion
+            type="multiple"
+            defaultValue={SCENARIOS.find((s) => s.id === openId)!.sections.map(
+              (_, i) => `sec-${i}`,
+            )}
+          >
             <div className="rounded-md border bg-background p-3 mb-2 text-xs text-muted-foreground">
               {SCENARIOS.find((s) => s.id === openId)!.profile}
             </div>
             {SCENARIOS.find((s) => s.id === openId)!.sections.map((sec, i) => (
-              <AccordionItem key={i} value={`sec-${i}`} className="border rounded-md mb-2 px-3 bg-background">
+              <AccordionItem
+                key={i}
+                value={`sec-${i}`}
+                className="border rounded-md mb-2 px-3 bg-background"
+              >
                 <AccordionTrigger className="text-sm font-semibold hover:no-underline py-2">
                   {sec.title}
                 </AccordionTrigger>
                 <AccordionContent className="pb-2">
                   <div className="divide-y">
                     {sec.rows.map((r, idx) => (
-                      <div key={idx} className="flex items-center justify-between gap-2 py-1.5 text-xs">
+                      <div
+                        key={idx}
+                        className="flex items-center justify-between gap-2 py-1.5 text-xs"
+                      >
                         <div className="flex flex-col text-start">
                           <span>{r.label}</span>
-                          {r.hint && <span className="text-[10px] text-muted-foreground">{r.hint}</span>}
+                          {r.hint && (
+                            <span className="text-[10px] text-muted-foreground">{r.hint}</span>
+                          )}
                         </div>
                         <div className="flex items-center gap-1.5">
-                          <span className="font-mono font-semibold" dir="ltr">{r.value}</span>
+                          <span className="font-mono font-semibold" dir="ltr">
+                            {r.value}
+                          </span>
                           <Button
                             type="button"
                             size="sm"

@@ -285,7 +285,12 @@ export function buildReportWorkbook(data: PrintReportData): XLSX.WorkBook {
   // ورقة: المراجعة الشرعية الشاملة الآلية (شرعية · امتثال · حوكمة)
   const sharia = buildReviewFromPrintReport(data);
   const dimLabel = { sharia: "شرعي", compliance: "امتثال", governance: "حوكمة" } as const;
-  const sevLabel = { pass: "مطابق", info: "ملاحظة", warning: "تنبيه", violation: "مخالفة" } as const;
+  const sevLabel = {
+    pass: "مطابق",
+    info: "ملاحظة",
+    warning: "تنبيه",
+    violation: "مخالفة",
+  } as const;
   const shariaAoA: (string | number)[][] = [
     ["المراجعة الشرعية الشاملة الآلية — وفق " + sharia.standard],
     [],
@@ -305,13 +310,17 @@ export function buildReportWorkbook(data: PrintReportData): XLSX.WorkBook {
       f.reference,
     ]),
     [],
-    [
-      "إخلاء مسؤولية",
-      "مراجعة آلية مساندة — لا تغني عن الرأي البشري للمراجع الشرعي المعتمد.",
-    ],
+    ["إخلاء مسؤولية", "مراجعة آلية مساندة — لا تغني عن الرأي البشري للمراجع الشرعي المعتمد."],
   ];
   const wsSharia = XLSX.utils.aoa_to_sheet(shariaAoA);
-  wsSharia["!cols"] = [{ wch: 10 }, { wch: 42 }, { wch: 10 }, { wch: 70 }, { wch: 40 }, { wch: 45 }];
+  wsSharia["!cols"] = [
+    { wch: 10 },
+    { wch: 42 },
+    { wch: 10 },
+    { wch: 70 },
+    { wch: 40 },
+    { wch: 45 },
+  ];
   XLSX.utils.book_append_sheet(wb, wsSharia, "المراجعة الشرعية الشاملة");
 
   // ورقة 4: المراجعة الشرعية / المحاسبية

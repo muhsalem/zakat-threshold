@@ -71,8 +71,7 @@ export function DebtsAccordionSection({
     >
       <AccordionTrigger className="hover:no-underline">
         <span className="flex items-center gap-2 text-base font-semibold">
-          <MinusCircle className="h-5 w-5 text-destructive" /> الديون والالتزامات
-          (تُخصم)
+          <MinusCircle className="h-5 w-5 text-destructive" /> الديون والالتزامات (تُخصم)
         </span>
       </AccordionTrigger>
       <AccordionContent className="space-y-5 pb-4">
@@ -133,10 +132,9 @@ export function DebtsAccordionSection({
           <Alert className="border-amber-500/30 bg-background">
             <Info className="h-4 w-4" />
             <AlertDescription className="text-xs leading-relaxed">
-              <b>الجمهور:</b> يُخصم كل الدين حالًّا ومؤجلًا. <b>الأحوط:</b> يُخصم قسط
-              السنة فقط. <b>الشافعية (قول قوي):</b> لا يُخصم الدين المؤجل أصلًا. والعمل
-              المعاصر: إن لم يكن لديك مال زائد عن الحاجة فيجوز الخصم، والأحوط خصم قسط
-              السنة فقط.
+              <b>الجمهور:</b> يُخصم كل الدين حالًّا ومؤجلًا. <b>الأحوط:</b> يُخصم قسط السنة فقط.{" "}
+              <b>الشافعية (قول قوي):</b> لا يُخصم الدين المؤجل أصلًا. والعمل المعاصر: إن لم يكن لديك
+              مال زائد عن الحاجة فيجوز الخصم، والأحوط خصم قسط السنة فقط.
             </AlertDescription>
           </Alert>
           <div>
@@ -196,8 +194,8 @@ export function DebtsAccordionSection({
             النفقة الواجبة إذا صارت دينًا — تُخصم
           </div>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            نفقة الزوجة أو الأولاد بحكم قضاء أو اتفاق، ونفقة الأقارب الواجبة شرعاً متى
-            ثبتت في الذمة كَدَين.
+            نفقة الزوجة أو الأولاد بحكم قضاء أو اتفاق، ونفقة الأقارب الواجبة شرعاً متى ثبتت في الذمة
+            كَدَين.
           </p>
           <div className="grid md:grid-cols-2 gap-4">
             <NumField

@@ -64,11 +64,6 @@ export async function getUserPlan(): Promise<string> {
   const { data: authData } = await supabase.auth.getUser();
   const uid = authData?.user?.id;
   if (!uid) return "free";
-  const { data } = await supabase
-    .from("profiles")
-    .select("plan")
-    .eq("user_id", uid)
-    .maybeSingle();
+  const { data } = await supabase.from("profiles").select("plan").eq("user_id", uid).maybeSingle();
   return ((data as { plan?: string } | null)?.plan ?? "free") || "free";
 }
-

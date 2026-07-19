@@ -86,39 +86,39 @@ export function OrgOverviewPanel({ orgId, orgName, currency }: Props) {
       setLoading(true);
       const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
 
-      const [membersRes, approvalsRes, attachmentsRes, attestationsRes, notificationsRes, auditRes] =
-        await Promise.all([
-          supabase
-            .from("organization_members")
-            .select("user_id, role")
-            .eq("organization_id", orgId),
-          supabase
-            .from("zakat_approvals")
-            .select("id, title, status, snapshot, decided_at, submitted_at, maker_id")
-            .eq("organization_id", orgId)
-            .order("submitted_at", { ascending: false }),
-          supabase
-            .from("approval_attachments")
-            .select("id, status")
-            .eq("organization_id", orgId),
-          supabase
-            .from("sharia_attestations")
-            .select("id, issued_at")
-            .order("issued_at", { ascending: false })
-            .limit(500),
-          supabase
-            .from("notifications")
-            .select("id, type, read_at")
-            .eq("type", "hawl_reminder")
-            .is("read_at", null)
-            .limit(500),
-          supabase
-            .from("org_audit_log")
-            .select("actor_id")
-            .eq("organization_id", orgId)
-            .gte("created_at", thirtyDaysAgo)
-            .limit(2000),
-        ]);
+      const [
+        membersRes,
+        approvalsRes,
+        attachmentsRes,
+        attestationsRes,
+        notificationsRes,
+        auditRes,
+      ] = await Promise.all([
+        supabase.from("organization_members").select("user_id, role").eq("organization_id", orgId),
+        supabase
+          .from("zakat_approvals")
+          .select("id, title, status, snapshot, decided_at, submitted_at, maker_id")
+          .eq("organization_id", orgId)
+          .order("submitted_at", { ascending: false }),
+        supabase.from("approval_attachments").select("id, status").eq("organization_id", orgId),
+        supabase
+          .from("sharia_attestations")
+          .select("id, issued_at")
+          .order("issued_at", { ascending: false })
+          .limit(500),
+        supabase
+          .from("notifications")
+          .select("id, type, read_at")
+          .eq("type", "hawl_reminder")
+          .is("read_at", null)
+          .limit(500),
+        supabase
+          .from("org_audit_log")
+          .select("actor_id")
+          .eq("organization_id", orgId)
+          .gte("created_at", thirtyDaysAgo)
+          .limit(2000),
+      ]);
 
       if (cancelled) return;
 
@@ -187,9 +187,7 @@ export function OrgOverviewPanel({ orgId, orgName, currency }: Props) {
         )
         .filter((h) => Number.isFinite(h) && h >= 0);
       const avgCycleHours =
-        cycleTimes.length > 0
-          ? cycleTimes.reduce((s, h) => s + h, 0) / cycleTimes.length
-          : null;
+        cycleTimes.length > 0 ? cycleTimes.reduce((s, h) => s + h, 0) / cycleTimes.length : null;
 
       const lastActivity =
         approvals
@@ -450,9 +448,7 @@ export function OrgOverviewPanel({ orgId, orgName, currency }: Props) {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
-                {fmtMoney.format(kpis.avgZakatPerApproval)}
-              </div>
+              <div className="text-2xl font-bold">{fmtMoney.format(kpis.avgZakatPerApproval)}</div>
             </CardContent>
           </Card>
         </div>
@@ -508,9 +504,7 @@ export function OrgOverviewPanel({ orgId, orgName, currency }: Props) {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-amber-600">
-                {kpis.attachmentsPending}
-              </div>
+              <div className="text-2xl font-bold text-amber-600">{kpis.attachmentsPending}</div>
             </CardContent>
           </Card>
           <Card>
@@ -520,9 +514,7 @@ export function OrgOverviewPanel({ orgId, orgName, currency }: Props) {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-emerald-600">
-                {kpis.attestationsValid}
-              </div>
+              <div className="text-2xl font-bold text-emerald-600">{kpis.attestationsValid}</div>
               <p className="text-xs text-muted-foreground mt-1">خلال 12 شهر</p>
             </CardContent>
           </Card>
@@ -533,9 +525,7 @@ export function OrgOverviewPanel({ orgId, orgName, currency }: Props) {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-amber-600">
-                {kpis.hawlRemindersOpen}
-              </div>
+              <div className="text-2xl font-bold text-amber-600">{kpis.hawlRemindersOpen}</div>
               <p className="text-xs text-muted-foreground mt-1">غير مقروءة</p>
             </CardContent>
           </Card>

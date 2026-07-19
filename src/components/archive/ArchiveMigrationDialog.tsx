@@ -94,9 +94,7 @@ export function ArchiveMigrationDialog() {
 
   function deleteLocal() {
     if (!preview) return;
-    const ok = window.confirm(
-      "سيتم حذف السجلات المحلية دون رفعها إلى حسابك. هل أنت متأكد؟",
-    );
+    const ok = window.confirm("سيتم حذف السجلات المحلية دون رفعها إلى حسابك. هل أنت متأكد؟");
     if (!ok) return;
     const kinds = Array.from(new Set(preview.items.map((i) => i.kind)));
     for (const k of kinds) discardLocal(k);
@@ -120,8 +118,9 @@ export function ArchiveMigrationDialog() {
             وجدنا {preview.totalLocal} سجل محفوظ محلياً على هذا الجهاز.
             {preview.duplicateCount > 0 ? (
               <>
-                {" "}منها <b>{preview.newCount}</b> جديد و
-                <b> {preview.duplicateCount}</b> موجود مسبقاً في حسابك.
+                {" "}
+                منها <b>{preview.newCount}</b> جديد و<b> {preview.duplicateCount}</b> موجود مسبقاً
+                في حسابك.
               </>
             ) : (
               <> جميعها جديدة ولم تُرفع بعد.</>
@@ -163,11 +162,7 @@ export function ArchiveMigrationDialog() {
           </div>
           <div className="flex flex-wrap gap-2">
             {preview.duplicateCount > 0 && (
-              <Button
-                variant="outline"
-                onClick={() => run("overwrite")}
-                disabled={busy}
-              >
+              <Button variant="outline" onClick={() => run("overwrite")} disabled={busy}>
                 {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : "استبدال الموجود"}
               </Button>
             )}

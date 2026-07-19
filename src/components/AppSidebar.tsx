@@ -12,12 +12,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Input } from "@/components/ui/input";
-import {
-  Search,
-  Calculator,
-  HelpCircle,
-  HeartHandshake,
-} from "lucide-react";
+import { Search, Calculator, HelpCircle, HeartHandshake } from "lucide-react";
 import { searchEntries } from "@/lib/searchIndex";
 import { useAuth, type AccountType } from "@/hooks/useAuth";
 import {
@@ -28,7 +23,6 @@ import {
   PRO_REFERENCES,
   isVisible,
 } from "@/lib/navigation/sidebarLinks";
-
 
 export function AppSidebar() {
   const { state } = useSidebar();
@@ -193,7 +187,6 @@ export function AppSidebar() {
             </SidebarGroup>
           </>
         )}
-
       </SidebarContent>
     </Sidebar>
   );

@@ -5,10 +5,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -90,11 +99,17 @@ function CoaMappingPage() {
         const parsed: Row[] = JSON.parse(raw);
         if (Array.isArray(parsed) && parsed.length) setRows(parsed);
       }
-    } catch { /* noop */ }
+    } catch {
+      /* noop */
+    }
   }, []);
 
   useEffect(() => {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(rows)); } catch { /* noop */ }
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(rows));
+    } catch {
+      /* noop */
+    }
   }, [rows]);
 
   const stats = useMemo(() => {
@@ -107,9 +122,7 @@ function CoaMappingPage() {
   const visible = useMemo(() => {
     const q = filter.trim().toLowerCase();
     if (!q) return rows;
-    return rows.filter(
-      (r) => r.code.toLowerCase().includes(q) || r.name.toLowerCase().includes(q),
-    );
+    return rows.filter((r) => r.code.toLowerCase().includes(q) || r.name.toLowerCase().includes(q));
   }, [rows, filter]);
 
   const exportJson = () => {
@@ -152,28 +165,36 @@ function CoaMappingPage() {
 
       <Alert>
         <AlertDescription>
-          استورد دليل حساباتك من نظام ERP، ثم صنّف كل حساب ضمن فئة زكوية.
-          يتم حفظ الربط تلقائياً على متصفحك ويمكن تصديره ومشاركته مع الفريق.
+          استورد دليل حساباتك من نظام ERP، ثم صنّف كل حساب ضمن فئة زكوية. يتم حفظ الربط تلقائياً على
+          متصفحك ويمكن تصديره ومشاركته مع الفريق.
         </AlertDescription>
       </Alert>
 
       <div className="grid gap-3 sm:grid-cols-4">
-        <Card><CardContent className="p-4 text-center">
-          <div className="text-2xl font-bold">{stats.total}</div>
-          <div className="text-xs text-muted-foreground">حسابات</div>
-        </CardContent></Card>
-        <Card><CardContent className="p-4 text-center">
-          <div className="text-2xl font-bold text-green-600">{stats.mapped}</div>
-          <div className="text-xs text-muted-foreground">مربوطة</div>
-        </CardContent></Card>
-        <Card><CardContent className="p-4 text-center">
-          <div className="text-2xl font-bold text-amber-600">{stats.missing}</div>
-          <div className="text-xs text-muted-foreground">تحتاج تصنيف</div>
-        </CardContent></Card>
-        <Card><CardContent className="p-4 text-center">
-          <div className="text-2xl font-bold">{stats.coverage}%</div>
-          <div className="text-xs text-muted-foreground">تغطية</div>
-        </CardContent></Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold">{stats.total}</div>
+            <div className="text-xs text-muted-foreground">حسابات</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-green-600">{stats.mapped}</div>
+            <div className="text-xs text-muted-foreground">مربوطة</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-amber-600">{stats.missing}</div>
+            <div className="text-xs text-muted-foreground">تحتاج تصنيف</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold">{stats.coverage}%</div>
+            <div className="text-xs text-muted-foreground">تغطية</div>
+          </CardContent>
+        </Card>
       </div>
 
       <Card>
@@ -259,18 +280,32 @@ function CoaMappingPage() {
                             )
                           }
                         >
-                          <SelectTrigger><SelectValue placeholder="اختر تصنيفاً" /></SelectTrigger>
+                          <SelectTrigger>
+                            <SelectValue placeholder="اختر تصنيفاً" />
+                          </SelectTrigger>
                           <SelectContent>
                             {CATEGORIES.map((c) => (
-                              <SelectItem key={c.id} value={c.id}>{c.label}</SelectItem>
+                              <SelectItem key={c.id} value={c.id}>
+                                {c.label}
+                              </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
                         {cat && (
                           <Badge
-                            variant={cat.badge === "asset" ? "default" : cat.badge === "liab" ? "secondary" : "outline"}
+                            variant={
+                              cat.badge === "asset"
+                                ? "default"
+                                : cat.badge === "liab"
+                                  ? "secondary"
+                                  : "outline"
+                            }
                           >
-                            {cat.badge === "asset" ? "أصل" : cat.badge === "liab" ? "خصم" : "مستثنى"}
+                            {cat.badge === "asset"
+                              ? "أصل"
+                              : cat.badge === "liab"
+                                ? "خصم"
+                                : "مستثنى"}
                           </Badge>
                         )}
                       </div>
@@ -292,7 +327,9 @@ function CoaMappingPage() {
                         variant="ghost"
                         aria-label="حذف"
                         onClick={() =>
-                          setRows((prev) => (prev.length === 1 ? [newRow()] : prev.filter((x) => x.id !== r.id)))
+                          setRows((prev) =>
+                            prev.length === 1 ? [newRow()] : prev.filter((x) => x.id !== r.id),
+                          )
                         }
                       >
                         <Trash2 className="h-4 w-4 text-destructive" />
