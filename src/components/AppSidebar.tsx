@@ -27,7 +27,9 @@ import {
   HeartHandshake,
   LineChart,
   Landmark,
+  ShieldCheck,
 } from "lucide-react";
+
 import { searchEntries } from "@/lib/searchIndex";
 import { useAuth, type AccountType } from "@/hooks/useAuth";
 
@@ -68,7 +70,9 @@ const PRO_RECORDS: ProItem[] = [
 const PRO_REFERENCES: ProItem[] = [
   { title: "الأنصبة", url: "/nisab-audit", icon: Landmark },
   { title: "سجل الأسعار", url: "/prices-history", icon: LineChart },
+  { title: "تدقيق سحب الأسعار", url: "/prices-audit", icon: ShieldCheck },
 ];
+
 
 
 function isVisible(audience: Array<AccountType | "all">, type: AccountType | null) {
