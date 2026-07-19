@@ -16,21 +16,43 @@ const SILVER_NISAB_GRAMS = 595;
 
 async function fetchAllFxFromUsd(currencies: string[]): Promise<Record<string, number>> {
   const unique = Array.from(new Set(currencies.filter((c) => c && c !== "USD")));
-  if (unique.length === 0) return { USD: 1 };
+  const rates: Record<string, number> = { USD: 1 };
+  if (unique.length === 0) return rates;
+
+  // Primary: frankfurter.app (ECB, ~30 major currencies).
   try {
     const url = `https://api.frankfurter.app/latest?from=USD&to=${unique.join(",")}`;
     const res = await fetch(url);
-    if (!res.ok) return { USD: 1 };
-    const j = (await res.json()) as { rates?: Record<string, number> };
-    const rates: Record<string, number> = { USD: 1 };
-    for (const c of unique) {
-      const v = j.rates?.[c];
-      if (v && v > 0) rates[c] = v;
+    if (res.ok) {
+      const j = (await res.json()) as { rates?: Record<string, number> };
+      for (const c of unique) {
+        const v = j.rates?.[c];
+        if (v && v > 0) rates[c] = v;
+      }
     }
-    return rates;
   } catch {
-    return { USD: 1 };
+    /* ignore, try fallback */
   }
+
+  // Fallback: open.er-api.com covers pegged/exotic currencies frankfurter omits
+  // (SAR, AED, EGP, JOD, KWD, PKR, QAR, …). Only fill in what we're still missing.
+  const missing = unique.filter((c) => !(c in rates));
+  if (missing.length > 0) {
+    try {
+      const res = await fetch("https://open.er-api.com/v6/latest/USD");
+      if (res.ok) {
+        const j = (await res.json()) as { rates?: Record<string, number> };
+        for (const c of missing) {
+          const v = j.rates?.[c];
+          if (v && v > 0) rates[c] = v;
+        }
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+
+  return rates;
 }
 
 export const Route = createFileRoute("/api/public/hooks/snapshot-daily-nisab")({
