@@ -203,6 +203,41 @@ function ZakatFitrPage() {
     }
   }
 
+  const createShare = useServerFn(createShareLink);
+  const revokeShare = useServerFn(revokeShareLink);
+
+  async function shareEntry(id: string) {
+    if (!isAuthed) {
+      toast.error("سجّل الدخول لتفعيل روابط المشاركة السحابية");
+      return;
+    }
+    try {
+      const days = Number(prompt("مدة صلاحية الرابط بالأيام (اترك فارغاً لرابط دائم):", "30") || 0);
+      const { token } = await createShare({ data: { id, expiresInDays: days || null } });
+      const url = `${window.location.origin}/r/${token}`;
+      try {
+        await navigator.clipboard.writeText(url);
+        toast.success("تم نسخ رابط المشاركة", { description: url });
+      } catch {
+        toast.success("تم إنشاء الرابط", { description: url });
+      }
+    } catch (e) {
+      console.error(e);
+      toast.error("تعذّر إنشاء الرابط");
+    }
+  }
+
+  async function revokeEntry(id: string) {
+    if (!confirm("إلغاء رابط المشاركة لهذا التقرير؟")) return;
+    try {
+      await revokeShare({ data: { id } });
+      toast.success("تم إلغاء الرابط");
+    } catch (e) {
+      console.error(e);
+      toast.error("تعذّر إلغاء الرابط");
+    }
+  }
+
   const comparison = useMemo(() => {
     // group by currency, sort by year asc
     const groups: Record<string, FitrArchiveEntry[]> = {};
