@@ -833,6 +833,57 @@ export type Database = {
         }
         Relationships: []
       }
+      price_fetch_audit: {
+        Row: {
+          currencies_missing: string[] | null
+          currencies_requested: string[] | null
+          duration_ms: number | null
+          error_message: string | null
+          fallback_source: string | null
+          fallback_used: boolean
+          http_status: number | null
+          id: string
+          job_name: string
+          metadata: Json | null
+          primary_source: string | null
+          records_written: number | null
+          run_at: string
+          status: string
+        }
+        Insert: {
+          currencies_missing?: string[] | null
+          currencies_requested?: string[] | null
+          duration_ms?: number | null
+          error_message?: string | null
+          fallback_source?: string | null
+          fallback_used?: boolean
+          http_status?: number | null
+          id?: string
+          job_name: string
+          metadata?: Json | null
+          primary_source?: string | null
+          records_written?: number | null
+          run_at?: string
+          status: string
+        }
+        Update: {
+          currencies_missing?: string[] | null
+          currencies_requested?: string[] | null
+          duration_ms?: number | null
+          error_message?: string | null
+          fallback_source?: string | null
+          fallback_used?: boolean
+          http_status?: number | null
+          id?: string
+          job_name?: string
+          metadata?: Json | null
+          primary_source?: string | null
+          records_written?: number | null
+          run_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           account_type: Database["public"]["Enums"]["account_type"]
