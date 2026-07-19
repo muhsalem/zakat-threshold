@@ -8,7 +8,9 @@ import { Label } from "@/components/ui/label";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Wheat, Calculator, BookOpen, ShieldCheck, ArrowLeft, Users, FileDown, Archive, Trash2, BarChart3, Save, Cloud, CloudOff } from "lucide-react";
+import { Wheat, Calculator, BookOpen, ShieldCheck, ArrowLeft, Users, FileDown, Archive, Trash2, BarChart3, Save, Cloud, CloudOff, Share2, Link2Off } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { createShareLink, revokeShareLink } from "@/lib/archive/share.functions";
 import { exportHtmlToPdf, pdfWrap } from "@/lib/export/pdf";
 import { toast } from "sonner";
 import {
