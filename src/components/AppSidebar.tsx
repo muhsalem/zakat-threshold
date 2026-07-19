@@ -17,7 +17,6 @@ import {
   Home,
   Calculator,
   BookOpen,
-  ShieldCheck,
   Bell,
   HelpCircle,
   Sparkles,
@@ -26,6 +25,8 @@ import {
   MapPin,
   Users,
   HeartHandshake,
+  LineChart,
+  Landmark,
 } from "lucide-react";
 import { searchEntries } from "@/lib/searchIndex";
 import { useAuth, type AccountType } from "@/hooks/useAuth";
@@ -37,7 +38,7 @@ const NAV: NavItem[] = [
   { title: "لوحتي", url: "/dashboard", icon: LayoutDashboard, audience: ["all"] },
   { title: "المستشار الذكي", url: "/advisor", icon: Sparkles, audience: ["all"] },
   { title: "السجل", url: "/history", icon: BookOpen, audience: ["all"] },
-  
+
   { title: "الإشعارات", url: "/analytics", icon: Bell, audience: ["all"] },
   { title: "اشتراكي", url: "/subscription", icon: Sparkles, audience: ["all"] },
   { title: "الإعدادات", url: "/settings", icon: Settings, audience: ["all"] },
@@ -55,10 +56,17 @@ const CALCS: CalcItem[] = [
 
 type ProItem = { title: string; url: string; icon: any };
 const PRO_TOOLS: ProItem[] = [
+  { title: "الحاسبة الشاملة", url: "/client-intake", icon: Calculator },
   { title: "ربط دليل الحسابات", url: "/coa-mapping", icon: MapPin },
   { title: "معالجة عملاء دفعة", url: "/bulk-clients", icon: Users },
   { title: "خطة التوزيع", url: "/distribution-plan", icon: HeartHandshake },
 ];
+
+const PRO_REFERENCES: ProItem[] = [
+  { title: "الأنصبة", url: "/nisab-audit", icon: Landmark },
+  { title: "سجل الأسعار", url: "/prices-history", icon: LineChart },
+];
+
 
 function isVisible(audience: Array<AccountType | "all">, type: AccountType | null) {
   if (audience.includes("all")) return true;
@@ -170,24 +178,45 @@ export function AppSidebar() {
         )}
 
         {isAccountant && (
-          <SidebarGroup>
-            <SidebarGroupLabel>أدوات المحاسب</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {PRO_TOOLS.map((i) => (
-                  <SidebarMenuItem key={i.url}>
-                    <SidebarMenuButton asChild isActive={isActive(i.url)}>
-                      <Link to={i.url} className="flex items-center gap-2">
-                        <i.icon className="h-4 w-4" />
-                        {!collapsed && <span>{i.title}</span>}
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
+          <>
+            <SidebarGroup>
+              <SidebarGroupLabel>أدوات المحاسب</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {PRO_TOOLS.map((i) => (
+                    <SidebarMenuItem key={i.url}>
+                      <SidebarMenuButton asChild isActive={isActive(i.url)}>
+                        <Link to={i.url} className="flex items-center gap-2">
+                          <i.icon className="h-4 w-4" />
+                          {!collapsed && <span>{i.title}</span>}
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+
+            <SidebarGroup>
+              <SidebarGroupLabel>الأنصبة والأسعار</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {PRO_REFERENCES.map((i) => (
+                    <SidebarMenuItem key={i.url}>
+                      <SidebarMenuButton asChild isActive={isActive(i.url)}>
+                        <Link to={i.url} className="flex items-center gap-2">
+                          <i.icon className="h-4 w-4" />
+                          {!collapsed && <span>{i.title}</span>}
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </>
         )}
+
       </SidebarContent>
     </Sidebar>
   );
