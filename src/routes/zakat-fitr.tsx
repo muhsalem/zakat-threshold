@@ -8,9 +8,10 @@ import { Label } from "@/components/ui/label";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Wheat, Calculator, BookOpen, ShieldCheck, ArrowLeft, Users, FileDown, Archive, Trash2, BarChart3, Save, Cloud, CloudOff, Share2, Link2Off } from "lucide-react";
+import { Wheat, Calculator, BookOpen, ShieldCheck, ArrowLeft, Users, FileDown, Archive, Trash2, BarChart3, Save, Cloud, CloudOff, Share2, Link2Off, Upload, FileSpreadsheet } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { createShareLink, revokeShareLink } from "@/lib/archive/share.functions";
+import { parseFitrFile, buildFitrTemplate } from "@/lib/archive/import";
 import { exportHtmlToPdf, pdfWrap } from "@/lib/export/pdf";
 import { toast } from "sonner";
 import {
@@ -238,6 +239,60 @@ function ZakatFitrPage() {
     }
   }
 
+  async function importFile(file: File) {
+    setBusy(true);
+    try {
+      const { rows, errors } = await parseFitrFile(file);
+      if (!rows.length) {
+        toast.error("لا توجد سجلات صالحة في الملف", {
+          description: errors[0]?.message,
+        });
+        return;
+      }
+      let ok = 0;
+      for (const r of rows) {
+        try {
+          await saveArchiveEntry<FitrPayload>("fitr", {
+            year: r.year,
+            currency: r.currency,
+            payload: {
+              peopleCount: r.peopleCount,
+              stapleId: r.stapleId,
+              stapleLabel: r.stapleLabel,
+              kgPerSaa: r.kgPerSaa,
+              pricePerKg: r.pricePerKg,
+              totalKg: r.totalKg,
+              totalCash: r.totalCash,
+              savedAt: r.savedAt,
+            },
+          });
+          ok++;
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      await refreshArchive();
+      toast.success(`تم استيراد ${ok} سجل${ok > 1 ? "اً" : ""}`, {
+        description: errors.length ? `${errors.length} صف تخطّي (بيانات ناقصة)` : undefined,
+      });
+    } catch (e) {
+      console.error(e);
+      toast.error("تعذّر قراءة الملف — تأكد من صيغة Excel/CSV");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function downloadTemplate() {
+    const blob = buildFitrTemplate();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "fitr-import-template.xlsx";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   const comparison = useMemo(() => {
     // group by currency, sort by year asc
     const groups: Record<string, FitrArchiveEntry[]> = {};
@@ -413,6 +468,34 @@ function ZakatFitrPage() {
             <Button asChild variant="outline">
               <Link to="/advisor">اسأل المستشار الشرعي</Link>
             </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent className="pt-4 flex flex-wrap items-center justify-between gap-2">
+          <div className="text-sm text-muted-foreground flex items-center gap-2">
+            <FileSpreadsheet className="h-4 w-4 text-primary" />
+            استيراد سجلات سابقة من ملف Excel/CSV لاستعادة الحسابات بسرعة.
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" className="gap-1.5" onClick={downloadTemplate}>
+              <FileDown className="h-4 w-4" /> قالب Excel
+            </Button>
+            <label className={`inline-flex items-center gap-1.5 rounded-md border px-3 h-9 text-sm cursor-pointer hover:bg-accent ${busy ? "opacity-60 pointer-events-none" : ""}`}>
+              <Upload className="h-4 w-4" />
+              استيراد ملف
+              <input
+                type="file"
+                accept=".xlsx,.xls,.csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv"
+                className="hidden"
+                onChange={async (e) => {
+                  const f = e.target.files?.[0];
+                  e.target.value = "";
+                  if (f) await importFile(f);
+                }}
+              />
+            </label>
           </div>
         </CardContent>
       </Card>
