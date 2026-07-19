@@ -477,7 +477,17 @@ function ZakatFitrPage() {
                               <td className={`border p-2 text-xs ${d > 0 ? "text-emerald-600" : d < 0 ? "text-destructive" : "text-muted-foreground"}`}>
                                 {prev ? `${d >= 0 ? "+" : ""}${p.toFixed(1)}%` : "—"}
                               </td>
-                              <td className="border p-1 text-center">
+                              <td className="border p-1 text-center whitespace-nowrap">
+                                {isAuthed && !String(e.id).startsWith("local-") && (
+                                  <>
+                                    <Button variant="ghost" size="icon" className="h-7 w-7" title="مشاركة" onClick={() => shareEntry(e.id)}>
+                                      <Share2 className="h-3.5 w-3.5" />
+                                    </Button>
+                                    <Button variant="ghost" size="icon" className="h-7 w-7" title="إلغاء الرابط" onClick={() => revokeEntry(e.id)}>
+                                      <Link2Off className="h-3.5 w-3.5" />
+                                    </Button>
+                                  </>
+                                )}
                                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => removeEntry(e.id)}>
                                   <Trash2 className="h-3.5 w-3.5" />
                                 </Button>
