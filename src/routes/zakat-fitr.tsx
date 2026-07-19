@@ -8,7 +8,9 @@ import { Label } from "@/components/ui/label";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Wheat, Calculator, BookOpen, ShieldCheck, ArrowLeft, Users, FileDown, Archive, Trash2, BarChart3, Save, Cloud, CloudOff } from "lucide-react";
+import { Wheat, Calculator, BookOpen, ShieldCheck, ArrowLeft, Users, FileDown, Archive, Trash2, BarChart3, Save, Cloud, CloudOff, Share2, Link2Off } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { createShareLink, revokeShareLink } from "@/lib/archive/share.functions";
 import { exportHtmlToPdf, pdfWrap } from "@/lib/export/pdf";
 import { toast } from "sonner";
 import {
@@ -198,6 +200,41 @@ function ZakatFitrPage() {
     } catch (e) {
       console.error(e);
       toast.error("تعذّر حذف الأرشيف");
+    }
+  }
+
+  const createShare = useServerFn(createShareLink);
+  const revokeShare = useServerFn(revokeShareLink);
+
+  async function shareEntry(id: string) {
+    if (!isAuthed) {
+      toast.error("سجّل الدخول لتفعيل روابط المشاركة السحابية");
+      return;
+    }
+    try {
+      const days = Number(prompt("مدة صلاحية الرابط بالأيام (اترك فارغاً لرابط دائم):", "30") || 0);
+      const { token } = await createShare({ data: { id, expiresInDays: days || null } });
+      const url = `${window.location.origin}/r/${token}`;
+      try {
+        await navigator.clipboard.writeText(url);
+        toast.success("تم نسخ رابط المشاركة", { description: url });
+      } catch {
+        toast.success("تم إنشاء الرابط", { description: url });
+      }
+    } catch (e) {
+      console.error(e);
+      toast.error("تعذّر إنشاء الرابط");
+    }
+  }
+
+  async function revokeEntry(id: string) {
+    if (!confirm("إلغاء رابط المشاركة لهذا التقرير؟")) return;
+    try {
+      await revokeShare({ data: { id } });
+      toast.success("تم إلغاء الرابط");
+    } catch (e) {
+      console.error(e);
+      toast.error("تعذّر إلغاء الرابط");
     }
   }
 
@@ -440,7 +477,17 @@ function ZakatFitrPage() {
                               <td className={`border p-2 text-xs ${d > 0 ? "text-emerald-600" : d < 0 ? "text-destructive" : "text-muted-foreground"}`}>
                                 {prev ? `${d >= 0 ? "+" : ""}${p.toFixed(1)}%` : "—"}
                               </td>
-                              <td className="border p-1 text-center">
+                              <td className="border p-1 text-center whitespace-nowrap">
+                                {isAuthed && !String(e.id).startsWith("local-") && (
+                                  <>
+                                    <Button variant="ghost" size="icon" className="h-7 w-7" title="مشاركة" onClick={() => shareEntry(e.id)}>
+                                      <Share2 className="h-3.5 w-3.5" />
+                                    </Button>
+                                    <Button variant="ghost" size="icon" className="h-7 w-7" title="إلغاء الرابط" onClick={() => revokeEntry(e.id)}>
+                                      <Link2Off className="h-3.5 w-3.5" />
+                                    </Button>
+                                  </>
+                                )}
                                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => removeEntry(e.id)}>
                                   <Trash2 className="h-3.5 w-3.5" />
                                 </Button>

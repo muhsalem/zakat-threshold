@@ -949,6 +949,9 @@ export type Database = {
           id: string
           kind: string
           payload: Json
+          share_expires_at: string | null
+          share_revoked_at: string | null
+          share_token: string | null
           updated_at: string
           user_id: string
           year: number | null
@@ -959,6 +962,9 @@ export type Database = {
           id?: string
           kind: string
           payload?: Json
+          share_expires_at?: string | null
+          share_revoked_at?: string | null
+          share_token?: string | null
           updated_at?: string
           user_id: string
           year?: number | null
@@ -969,6 +975,9 @@ export type Database = {
           id?: string
           kind?: string
           payload?: Json
+          share_expires_at?: string | null
+          share_revoked_at?: string | null
+          share_token?: string | null
           updated_at?: string
           user_id?: string
           year?: number | null
