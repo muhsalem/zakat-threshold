@@ -44,8 +44,8 @@ const NAV: NavItem[] = [
   { title: "الإشعارات", url: "/analytics", icon: Bell, audience: ["all"] },
   { title: "اشتراكي", url: "/subscription", icon: Sparkles, audience: ["all"] },
   { title: "الإعدادات", url: "/settings", icon: Settings, audience: ["all"] },
-  { title: "الأسئلة الشائعة", url: "/faq", icon: HelpCircle, audience: ["all"] },
 ];
+
 
 type CalcItem = { title: string; url: string; audience: Array<AccountType | "all"> };
 
