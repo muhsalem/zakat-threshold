@@ -441,23 +441,69 @@ export function IndividualWizard() {
                 </SelectContent>
               </Select>
             </div>
-            <Field
-              label={`سعر جرام الذهب عيار 24 (${currency})`}
-              v={goldPrice}
-              set={setGoldPrice}
-            />
-            <Field
-              label={`سعر جرام الفضة النقية (${currency})`}
-              v={silverPrice}
-              set={setSilverPrice}
-            />
+            <TextField label="المهنة" v={profession} set={setProfession} />
+            <div className="space-y-1.5">
+              <Label className="text-xs">هل ترغب في حساب الزكاة عن سنوات سابقة؟</Label>
+              <Select value={calcPrevYears} onValueChange={(v) => setCalcPrevYears(v as "yes" | "no")}>
+                <SelectTrigger className="h-9">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="no">لا</SelectItem>
+                  <SelectItem value="yes">نعم</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {calcPrevYears === "yes" && (
+              <div className="space-y-1.5">
+                <Label className="text-xs">عدد السنوات السابقة</Label>
+                <Input
+                  type="number"
+                  min="1"
+                  max="20"
+                  value={prevYearsCount}
+                  onChange={(e) => setPrevYearsCount(e.target.value)}
+                  className="h-9"
+                  dir="ltr"
+                  style={{ textAlign: "right" }}
+                />
+              </div>
+            )}
+            <div className="space-y-1.5">
+              <Label className="text-xs">هل تريد تثبيت تاريخ حساب الزكاة (الحول)؟</Label>
+              <Select value={fixHawl} onValueChange={(v) => setFixHawl(v as "yes" | "no")}>
+                <SelectTrigger className="h-9">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="no">لا</SelectItem>
+                  <SelectItem value="yes">نعم — ثبّت تاريخ الحول</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {fixHawl === "yes" && (
+              <div className="space-y-1.5">
+                <Label className="text-xs">تاريخ الحول (هجري/ميلادي)</Label>
+                <Input
+                  type="date"
+                  value={hawlDate}
+                  onChange={(e) => setHawlDate(e.target.value)}
+                  className="h-9"
+                  dir="ltr"
+                />
+                <p className="text-[11px] text-muted-foreground">
+                  سنُذكِّرك سنويًا بموعد حسبة زكاتك عبر البريد والجوال.
+                </p>
+              </div>
+            )}
             <Alert className="sm:col-span-2">
               <AlertDescription className="text-xs leading-relaxed">
                 <b>نصاب الذهب:</b> {fmt(totals.nisabGold)} {currency} — <b>نصاب الفضة:</b>{" "}
                 {fmt(totals.nisabSilver)} {currency}. نعتمد <b>الأنفع للفقراء</b> (
-                {fmt(totals.nisabValue)} {currency}).
+                {fmt(totals.nisabValue)} {currency}). الأسعار تُحدَّث تلقائيًا حسب الدولة.
               </AlertDescription>
             </Alert>
+
           </div>
         )}
 
