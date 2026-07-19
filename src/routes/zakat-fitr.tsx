@@ -239,6 +239,59 @@ function ZakatFitrPage() {
     }
   }
 
+  async function importFile(file: File) {
+    setBusy(true);
+    try {
+      const { rows, errors } = await parseFitrFile(file);
+      if (!rows.length) {
+        toast.error("لا توجد سجلات صالحة في الملف", {
+          description: errors[0]?.message,
+        });
+        return;
+      }
+      let ok = 0;
+      for (const r of rows) {
+        try {
+          await saveArchiveEntry<FitrPayload>("fitr", {
+            year: r.year,
+            currency: r.currency,
+            payload: {
+              peopleCount: r.peopleCount,
+              stapleId: r.stapleId,
+              stapleLabel: r.stapleLabel,
+              kgPerSaa: r.kgPerSaa,
+              pricePerKg: r.pricePerKg,
+              totalKg: r.totalKg,
+              totalCash: r.totalCash,
+              savedAt: r.savedAt,
+            },
+          });
+          ok++;
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      await refreshArchive();
+      toast.success(`تم استيراد ${ok} سجل${ok > 1 ? "اً" : ""}`, {
+        description: errors.length ? `${errors.length} صف تخطّي (بيانات ناقصة)` : undefined,
+      });
+    } catch (e) {
+      console.error(e);
+      toast.error("تعذّر قراءة الملف — تأكد من صيغة Excel/CSV");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function downloadTemplate() {
+    const blob = buildFitrTemplate();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "fitr-import-template.xlsx";
+    a.click();
+    URL.revokeObjectURL(url);
+
   const comparison = useMemo(() => {
     // group by currency, sort by year asc
     const groups: Record<string, FitrArchiveEntry[]> = {};
