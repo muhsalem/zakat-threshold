@@ -370,7 +370,7 @@ function ZakatFitrPage() {
             >
               <FileDown className="h-4 w-4" /> تصدير PDF
             </Button>
-            <Button variant="secondary" className="gap-1.5" onClick={archiveCurrent}>
+            <Button variant="secondary" className="gap-1.5" onClick={archiveCurrent} disabled={busy}>
               <Save className="h-4 w-4" /> أرشفة نتيجة {year}
             </Button>
             <Button asChild variant="outline">
