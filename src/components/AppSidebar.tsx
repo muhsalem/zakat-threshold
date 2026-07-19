@@ -92,8 +92,9 @@ export function AppSidebar() {
 
   // Accountants see everything (full calculator access).
   const navItems = isAccountant
-    ? NAV.filter((i) => i.url !== "/history")
+    ? NAV.filter((i) => i.url !== "/history" && i.url !== "/subscription")
     : NAV.filter((i) => isVisible(i.audience, accountType));
+
   const calcItems = isAccountant ? CALCS : CALCS.filter((i) => isVisible(i.audience, accountType));
 
   return (
