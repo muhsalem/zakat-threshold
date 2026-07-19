@@ -986,10 +986,11 @@ function SavedRecordsPanel() {
 
 function CalcModeGate() {
   const [mode, setMode] = useState<"individual" | "company" | "fitr" | null>(null);
-  // إن وُجدت حمولة تعبئة مسبقة من صفحة عميل — افتح حاسبة الأفراد مباشرة
+  // إن وُجدت حمولة تعبئة مسبقة من صفحة عميل — افتح الحاسبة المناسبة مباشرة
   useEffect(() => {
     try {
-      if (localStorage.getItem("zakat_individual_prefill_v1")) setMode("individual");
+      if (localStorage.getItem("zakat_company_prefill_v1")) setMode("company");
+      else if (localStorage.getItem("zakat_individual_prefill_v1")) setMode("individual");
     } catch {}
   }, []);
   if (!mode) {

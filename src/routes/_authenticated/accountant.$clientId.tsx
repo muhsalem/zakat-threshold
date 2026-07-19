@@ -31,7 +31,13 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { signReport } from "@/lib/signature.functions";
 import { fmt, ZAKAT_RATE } from "@/lib/zakat";
-import { aggregateIntake, buildIndividualPrefill, savePrefill } from "@/lib/intakeMapping";
+import {
+  aggregateIntake,
+  buildIndividualPrefill,
+  savePrefill,
+  buildCompanyPrefill,
+  saveCompanyPrefill,
+} from "@/lib/intakeMapping";
 import {
   fetchClient,
   updateClient,
@@ -111,8 +117,13 @@ function ClientDetail() {
   const reviewFlags = intakeDetails ? aggregateIntake(intakeDetails).reviewFlags : [];
 
   const openInCalculator = () => {
-    savePrefill(buildIndividualPrefill(client));
-    toast.success("جُهّزت بيانات العميل — تُفتح الآن في الحاسبة الشاملة");
+    if (client.kind === "individual") {
+      savePrefill(buildIndividualPrefill(client));
+      toast.success("جُهّزت بيانات العميل — تُفتح الآن في حاسبة الأفراد الشاملة");
+    } else {
+      saveCompanyPrefill(buildCompanyPrefill(client));
+      toast.success("جُهّزت بيانات الشركة — تُفتح الآن في حاسبة الشركات");
+    }
     navigate({ to: "/accountant" });
   };
 
@@ -253,11 +264,10 @@ function ClientDetail() {
           <Button onClick={recalc} className="gap-1.5">
             <Calculator className="h-4 w-4" /> احسب الزكاة
           </Button>
-          {client.kind === "individual" && (
-            <Button onClick={openInCalculator} variant="secondary" className="gap-1.5">
-              <Calculator className="h-4 w-4" /> افتح في الحاسبة الشاملة
-            </Button>
-          )}
+          <Button onClick={openInCalculator} variant="secondary" className="gap-1.5">
+            <Calculator className="h-4 w-4" />
+            {client.kind === "individual" ? "افتح في الحاسبة الشاملة" : "افتح في حاسبة الشركات"}
+          </Button>
           <Button
             onClick={issueAndSendReport}
             disabled={sendingReport}

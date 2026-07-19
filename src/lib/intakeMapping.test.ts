@@ -5,6 +5,9 @@ import {
   savePrefill,
   consumePrefill,
   INDIVIDUAL_PREFILL_KEY,
+  buildCompanyPrefill,
+  saveCompanyPrefill,
+  consumeCompanyPrefill,
   type IntakeDetails,
 } from "./intakeMapping";
 
@@ -149,6 +152,74 @@ describe("buildIndividualPrefill() — حمولة الحاسبة الشاملة"
     expect(manual.inventory).toBe(500);
     expect(manual.goldGrams).toBeUndefined();
     expect(manual.notes).toContain("يدوي");
+  });
+});
+
+describe("buildCompanyPrefill() — حمولة حاسبة الشركات", () => {
+  const client = {
+    id: "co1",
+    name: "شركة الاختبار التجارية",
+    country: "SA",
+    hawlDate: "2026-12-15",
+    breakdown: aggregateIntake(baseDetails()).breakdown,
+  };
+  const p = buildCompanyPrefill(client);
+
+  it("يمرر الهوية والحول والمجاميع الفقهية الصحيحة", () => {
+    expect(p.clientName).toBe("شركة الاختبار التجارية");
+    expect(p.hawlDate).toBe("2026-12-15");
+    expect(p.cash).toBe(10000 + 40000 + 5000 + 2000);
+    expect(p.receivablesGood).toBe(11000);
+    expect(p.inventoryBook).toBe(30000 + 15000);
+    expect(p.stocksTrading).toBe(1000 + 20000 + 4000 + 6000 + 150000);
+    expect(p.shortTermPayables).toBe(9000 + 7000);
+  });
+
+  it("الأسهم طويلة الأجل مستبعدة من الاستثمارات وتظهر في الأعلام", () => {
+    expect(p.stocksTrading).not.toBe(1000 + 20000 + 4000 + 6000 + 150000 + 60000);
+    expect(p.reviewFlags.join(" | ")).toContain("أسهم طويلة الأجل");
+  });
+
+  it("الذهب/الفضة يظهران كعلم توجيهي لقسم المعادن", () => {
+    expect(p.reviewFlags.join(" | ")).toContain("قسم المعادن الثمينة");
+  });
+
+  it("عميل بلا details → حمولة من المجاميع بلا أعلام ولا انهيار", () => {
+    const manual = buildCompanyPrefill({
+      id: "co2",
+      name: "شركة يدوية",
+      breakdown: { cash: 5000, gold: 0, investments: 0, inventory: 800, receivables: 0, debts: 300 },
+    });
+    expect(manual.cash).toBe(5000);
+    expect(manual.inventoryBook).toBe(800);
+    expect(manual.reviewFlags).toHaveLength(0);
+  });
+});
+
+describe("saveCompanyPrefill/consumeCompanyPrefill — تسليم لمرة واحدة", () => {
+  beforeEach(() => {
+    const store = new Map<string, string>();
+    globalThis.localStorage = {
+      getItem: (k: string) => store.get(k) ?? null,
+      setItem: (k: string, v: string) => void store.set(k, v),
+      removeItem: (k: string) => void store.delete(k),
+      clear: () => store.clear(),
+      key: () => null,
+      get length() {
+        return store.size;
+      },
+    } as Storage;
+  });
+
+  it("حمولة الشركة تُستهلك مرة واحدة ومستقلة عن حمولة الأفراد", () => {
+    saveCompanyPrefill({ clientId: "co1", clientName: "شركة", reviewFlags: ["علم"] });
+    savePrefill({ clientId: "i1", clientName: "فرد", notes: "ن" });
+    const co = consumeCompanyPrefill();
+    expect(co?.clientName).toBe("شركة");
+    expect(co?.reviewFlags).toEqual(["علم"]);
+    expect(consumeCompanyPrefill()).toBeNull();
+    // حمولة الأفراد لم تتأثر
+    expect(consumePrefill()?.clientName).toBe("فرد");
   });
 });
 

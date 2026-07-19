@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
+import { consumeCompanyPrefill } from "@/lib/intakeMapping";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -1448,8 +1450,51 @@ export function CompanyTab() {
     sector.group,
   ]);
 
+  // ===== تعبئة مسبقة من بيانات عميل شركة/مؤسسة (يفتحها المحاسب) =====
+  const [prefillBanner, setPrefillBanner] = useState<{
+    clientName: string;
+    flags: string[];
+  } | null>(null);
+  useEffect(() => {
+    const p = consumeCompanyPrefill();
+    if (!p) return;
+    setCompanyName(p.clientName);
+    if (p.countryCode) setCountryCode(p.countryCode);
+    if (p.hawlDate) setHawlStart(p.hawlDate);
+    if (p.cash) setCash(String(p.cash));
+    if (p.receivablesGood) setRecGood(String(p.receivablesGood));
+    if (p.inventoryBook) setInvBook(String(p.inventoryBook));
+    if (p.stocksTrading) setStkTrading(String(p.stocksTrading));
+    if (p.shortTermPayables) setStPayables(String(p.shortTermPayables));
+    setPrefillBanner({ clientName: p.clientName, flags: p.reviewFlags });
+    toast.success(`تم تحميل بيانات الشركة: ${p.clientName}`, {
+      description: "الحقول معبّأة من نافذة الاستقبال — راجع بنود «قرار المحاسب» ثم أصدر التقرير.",
+      duration: 8000,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div dir="rtl" className="text-end">
+      {prefillBanner && (
+        <Alert className="mb-4 border-primary/40 bg-primary/5">
+          <AlertDescription className="text-xs leading-relaxed space-y-1.5">
+            <div className="font-bold text-sm">
+              📋 بيانات العميل «{prefillBanner.clientName}» معبّأة من نافذة الاستقبال
+            </div>
+            {prefillBanner.flags.length > 0 && (
+              <>
+                <div className="font-semibold">بنود تحتاج قرار المحاسب:</div>
+                <ul className="list-disc pr-5 space-y-0.5">
+                  {prefillBanner.flags.map((f, i) => (
+                    <li key={i}>{f}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </AlertDescription>
+        </Alert>
+      )}
       <Tabs defaultValue="zakat" className="space-y-6" dir="rtl">
         <TabsList dir="rtl" className="grid grid-cols-2 w-full max-w-2xl mx-auto h-auto">
           <TabsTrigger value="zakat" className="gap-2 text-sm py-2.5">

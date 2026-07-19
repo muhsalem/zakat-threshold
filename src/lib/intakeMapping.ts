@@ -252,6 +252,83 @@ export function savePrefill(p: IndividualPrefill) {
   localStorage.setItem(INDIVIDUAL_PREFILL_KEY, JSON.stringify(p));
 }
 
+/* ------------------------------------------------------------------ */
+/*             حمولة التعبئة المسبقة لحاسبة الشركات (للمحاسب)            */
+/* ------------------------------------------------------------------ */
+
+export const COMPANY_PREFILL_KEY = "zakat_company_prefill_v1";
+
+/** ما تفهمه حاسبة الشركات مباشرة من بيانات عميل شركة/مؤسسة */
+export interface CompanyPrefill {
+  clientId: string;
+  clientName: string;
+  countryCode?: string;
+  hawlDate?: string;
+  /** أعلام «بنود تحتاج قرار المحاسب» — تُعرض بطاقة تنبيه أعلى الحاسبة */
+  reviewFlags: string[];
+  /** النقد وما في حكمه مجمّعاً (نقد + بنوك + شهادات + رقمية) */
+  cash?: number;
+  /** الذمم المدينة المرجوّة */
+  receivablesGood?: number;
+  /** المخزون/عروض التجارة (يشمل الأصول التشغيلية الزكوية) */
+  inventoryBook?: number;
+  /** استثمارات بنية المتاجرة (أسهم/صناديق/صكوك/عقار متاجرة) */
+  stocksTrading?: number;
+  /** التزامات قصيرة الأجل (ديون + التزامات النشاط) */
+  shortTermPayables?: number;
+}
+
+export function buildCompanyPrefill(client: {
+  id: string;
+  name: string;
+  country?: string;
+  hawlDate?: string;
+  breakdown: ZakatBreakdown;
+}): CompanyPrefill {
+  const d = client.breakdown.details;
+  const agg = client.breakdown;
+
+  const flags: string[] = [];
+  if (d) {
+    flags.push(...aggregateIntake(d).reviewFlags);
+    if (n(d.gold) + n(d.goldGrams) + n(d.silverGrams) > 0)
+      flags.push(
+        `ذهب/فضة (قيمة ${n(d.gold)} · ذهب ${n(d.goldGrams)} جم · فضة ${n(d.silverGrams)} جم): أدخلها في قسم المعادن الثمينة بحاسبة الشركة.`,
+      );
+    if (d.notes) flags.push(`ملاحظات العميل: ${d.notes}`);
+  }
+
+  return {
+    clientId: client.id,
+    clientName: client.name,
+    countryCode: client.country,
+    hawlDate: client.hawlDate || undefined,
+    reviewFlags: flags,
+    cash: n(agg.cash) || undefined,
+    receivablesGood: n(agg.receivables) || undefined,
+    inventoryBook: n(agg.inventory) || undefined,
+    stocksTrading: n(agg.investments) || undefined,
+    shortTermPayables: n(agg.debts) || undefined,
+  };
+}
+
+export function saveCompanyPrefill(p: CompanyPrefill) {
+  localStorage.setItem(COMPANY_PREFILL_KEY, JSON.stringify(p));
+}
+
+/** قراءة حمولة الشركة مرة واحدة ثم حذفها (one-shot) */
+export function consumeCompanyPrefill(): CompanyPrefill | null {
+  try {
+    const raw = localStorage.getItem(COMPANY_PREFILL_KEY);
+    if (!raw) return null;
+    localStorage.removeItem(COMPANY_PREFILL_KEY);
+    const p = JSON.parse(raw) as CompanyPrefill;
+    return p && p.clientName ? p : null;
+  } catch {
+    return null;
+  }
+}
+
 /** قراءة الحمولة مرة واحدة ثم حذفها (one-shot) */
 export function consumePrefill(): IndividualPrefill | null {
   try {
