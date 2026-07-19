@@ -579,23 +579,47 @@ export type Database = {
       }
       notification_preferences: {
         Row: {
+          channel_email: boolean
+          channel_inapp: boolean
+          channel_sms: boolean
           created_at: string
+          email_address: string | null
           hawl_reminder_days: number[]
           hawl_reminder_enabled: boolean
+          language: string
+          phone_e164: string | null
+          quiet_hours_end: number | null
+          quiet_hours_start: number | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          channel_email?: boolean
+          channel_inapp?: boolean
+          channel_sms?: boolean
           created_at?: string
+          email_address?: string | null
           hawl_reminder_days?: number[]
           hawl_reminder_enabled?: boolean
+          language?: string
+          phone_e164?: string | null
+          quiet_hours_end?: number | null
+          quiet_hours_start?: number | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          channel_email?: boolean
+          channel_inapp?: boolean
+          channel_sms?: boolean
           created_at?: string
+          email_address?: string | null
           hawl_reminder_days?: number[]
           hawl_reminder_enabled?: boolean
+          language?: string
+          phone_e164?: string | null
+          quiet_hours_end?: number | null
+          quiet_hours_start?: number | null
           updated_at?: string
           user_id?: string
         }
