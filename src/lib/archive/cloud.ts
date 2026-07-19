@@ -90,7 +90,7 @@ export async function saveArchiveEntry<T extends Record<string, unknown>>(
         kind,
         year: entry.year,
         currency: entry.currency,
-        payload: entry.payload as unknown as Record<string, unknown>,
+        payload: entry.payload as never,
       },
       { onConflict: "user_id,kind,year,currency" },
     )
