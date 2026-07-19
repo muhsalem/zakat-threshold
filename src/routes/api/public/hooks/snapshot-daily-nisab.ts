@@ -97,7 +97,7 @@ export const Route = createFileRoute("/api/public/hooks/snapshot-daily-nisab")({
 
         const logAudit = async (row: Record<string, any>) => {
           try {
-            await supabaseAdmin.from("price_fetch_audit").insert({
+            await (supabaseAdmin.from("price_fetch_audit") as any).insert({
               job_name: "snapshot-daily-nisab",
               duration_ms: Date.now() - startedAt,
               ...row,
