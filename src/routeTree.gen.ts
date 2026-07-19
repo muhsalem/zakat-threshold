@@ -59,6 +59,7 @@ import { Route as AdvisorRouteImport } from './routes/advisor'
 import { Route as AConsoleRouteImport } from './routes/a-console'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RTokenRouteImport } from './routes/r.$token'
 import { Route as LegalTermsRouteImport } from './routes/legal.terms'
 import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
@@ -345,6 +346,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RTokenRoute = RTokenRouteImport.update({
+  id: '/r/$token',
+  path: '/r/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LegalTermsRoute = LegalTermsRouteImport.update({
   id: '/legal/terms',
   path: '/legal/terms',
@@ -598,6 +604,7 @@ export interface FileRoutesByFullPath {
   '/blog/$slug': typeof BlogSlugRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
+  '/r/$token': typeof RTokenRoute
   '/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
   '/certified-report/$recordId': typeof AuthenticatedCertifiedReportRecordIdRoute
   '/compliance-report/$recordId': typeof AuthenticatedComplianceReportRecordIdRoute
@@ -683,6 +690,7 @@ export interface FileRoutesByTo {
   '/blog/$slug': typeof BlogSlugRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
+  '/r/$token': typeof RTokenRoute
   '/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
   '/certified-report/$recordId': typeof AuthenticatedCertifiedReportRecordIdRoute
   '/compliance-report/$recordId': typeof AuthenticatedComplianceReportRecordIdRoute
@@ -770,6 +778,7 @@ export interface FileRoutesById {
   '/blog/$slug': typeof BlogSlugRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
+  '/r/$token': typeof RTokenRoute
   '/_authenticated/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
   '/_authenticated/certified-report/$recordId': typeof AuthenticatedCertifiedReportRecordIdRoute
   '/_authenticated/compliance-report/$recordId': typeof AuthenticatedComplianceReportRecordIdRoute
@@ -857,6 +866,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/legal/privacy'
     | '/legal/terms'
+    | '/r/$token'
     | '/accountant/$clientId'
     | '/certified-report/$recordId'
     | '/compliance-report/$recordId'
@@ -942,6 +952,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/legal/privacy'
     | '/legal/terms'
+    | '/r/$token'
     | '/accountant/$clientId'
     | '/certified-report/$recordId'
     | '/compliance-report/$recordId'
@@ -1028,6 +1039,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/legal/privacy'
     | '/legal/terms'
+    | '/r/$token'
     | '/_authenticated/accountant/$clientId'
     | '/_authenticated/certified-report/$recordId'
     | '/_authenticated/compliance-report/$recordId'
@@ -1101,6 +1113,7 @@ export interface RootRouteChildren {
   ApiExtractStatementRoute: typeof ApiExtractStatementRoute
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   LegalTermsRoute: typeof LegalTermsRoute
+  RTokenRoute: typeof RTokenRoute
   ApiPublicCalcRoute: typeof ApiPublicCalcRoute
   ApiPublicGeoRoute: typeof ApiPublicGeoRoute
   ApiPublicHealthRoute: typeof ApiPublicHealthRoute
@@ -1467,6 +1480,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/r/$token': {
+      id: '/r/$token'
+      path: '/r/$token'
+      fullPath: '/r/$token'
+      preLoaderRoute: typeof RTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/legal/terms': {
       id: '/legal/terms'
       path: '/legal/terms'
@@ -1830,6 +1850,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiExtractStatementRoute: ApiExtractStatementRoute,
   LegalPrivacyRoute: LegalPrivacyRoute,
   LegalTermsRoute: LegalTermsRoute,
+  RTokenRoute: RTokenRoute,
   ApiPublicCalcRoute: ApiPublicCalcRoute,
   ApiPublicGeoRoute: ApiPublicGeoRoute,
   ApiPublicHealthRoute: ApiPublicHealthRoute,
