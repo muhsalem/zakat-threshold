@@ -454,8 +454,12 @@ function ZakatFitrPage() {
                 </div>
               );
             })}
-            <p className="text-xs text-muted-foreground border-e-2 border-primary/40 pe-3">
-              الأرشيف محفوظ محلياً في هذا المتصفح. للحفظ السحابي المتزامن استخدم حساب نِصاب المدفوع.
+            <p className="text-xs text-muted-foreground border-e-2 border-primary/40 pe-3 flex items-center gap-1.5">
+              {isAuthed ? (
+                <><Cloud className="h-3.5 w-3.5 text-primary" /> الأرشيف محفوظ في حسابك ويُزامن تلقائياً عبر أجهزتك.</>
+              ) : (
+                <><CloudOff className="h-3.5 w-3.5" /> الأرشيف محفوظ محلياً على هذا المتصفح — <Link to="/auth" className="underline hover:text-primary">سجّل الدخول</Link> لمزامنته سحابياً عبر أجهزتك.</>
+              )}
             </p>
           </CardContent>
         </Card>
