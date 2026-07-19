@@ -60,7 +60,7 @@ const PRO_TOOLS: ProItem[] = [
   { title: "ربط دليل الحسابات", url: "/coa-mapping", icon: MapPin },
   { title: "السجل", url: "/history", icon: BookOpen },
   { title: "معالجة عملاء دفعة", url: "/bulk-clients", icon: Users },
-  { title: "خطة التوزيع", url: "/distribution-plan", icon: HeartHandshake },
+  
 ];
 
 const PRO_REFERENCES: ProItem[] = [
