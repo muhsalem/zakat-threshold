@@ -91,7 +91,7 @@ function CheckoutResultPage() {
               <XCircle className="h-14 w-14 text-muted-foreground mx-auto" />
               <h1 className="text-xl font-bold">تم إلغاء عملية الدفع</h1>
               <p className="text-sm text-muted-foreground">لم يُخصم أي مبلغ من حسابك.</p>
-              <Link to="/#pricing">
+              <Link to="/" hash="pricing">
                 <Button variant="outline" className="w-full">
                   العودة للأسعار
                 </Button>

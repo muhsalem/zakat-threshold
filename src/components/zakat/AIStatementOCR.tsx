@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,6 +8,10 @@ import { Sparkles, Upload, Loader2, FileText, Info, CheckCircle2, XCircle } from
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { ZAKAT_RATE } from "@/lib/zakat";
+import { aiItemsToClassifiedRows, lowConfidenceLabels } from "@/lib/aiExtract";
+import { computeZakatFromTrialBalance } from "@/lib/erp/zakatMapping";
+import { runShariaComplianceReview } from "@/lib/shariaAudit";
+import { ShariaComplianceReport } from "./ShariaComplianceReport";
 
 interface ExtractedItem {
   category: string;
@@ -120,6 +124,20 @@ export default function AIStatementOCR() {
   );
   const base = Math.max(0, totals.zakatable - totals.deductions);
   const zakat = base * ZAKAT_RATE;
+
+  // المراجعة الشرعية الشاملة على البنود المستخرجة بالذكاء الاصطناعي
+  const review = useMemo(() => {
+    if (items.length === 0) return null;
+    const rows = aiItemsToClassifiedRows(items);
+    const computation = computeZakatFromTrialBalance(rows, { calendar: "hijri" });
+    return runShariaComplianceReview({
+      rows,
+      computation,
+      hawlComplete: null,
+      calendar: "hijri",
+      lowConfidence: lowConfidenceLabels(items),
+    });
+  }, [items]);
 
   const fmt = (n: number) => new Intl.NumberFormat("ar-SA", { maximumFractionDigits: 2 }).format(n);
 
@@ -258,6 +276,9 @@ export default function AIStatementOCR() {
             <p className="text-[11px] text-muted-foreground">
               ⚠️ النتيجة أوّليّة وتحتاج مراجعة محاسبي/شرعي معتمد قبل الاعتماد النهائي.
             </p>
+
+            {/* ====== المراجعة الشرعية الشاملة (شرعية · امتثال · حوكمة) ====== */}
+            {review && <ShariaComplianceReport review={review} />}
           </div>
         )}
       </CardContent>

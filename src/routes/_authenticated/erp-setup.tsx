@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { CheckCircle2, XCircle, Trash2, Plug, RefreshCw, Send, ExternalLink } from "lucide-react";
+import { ErpZakatSync } from "@/components/erp/ErpZakatSync";
 
 type Provider = "odoo" | "odoo_sandbox" | "sap" | "sap_sandbox";
 
@@ -206,8 +207,9 @@ function ErpSetupPage() {
           <div>
             <h1 className="text-2xl font-bold">إعداد موصلات ERP</h1>
             <p className="text-sm text-muted-foreground">
-              اربط حسابك على Odoo أو SAP لدفع قيود الزكاة تلقائياً (Dr Zakat Expense / Cr Zakat
-              Payable).
+              اربط حسابك على Odoo أو SAP: اسحب ميزان المراجعة، صنّف الحسابات زكوياً حسب منطق كل
+              نظام، احسب الوعاء والزكاة (AAOIFI 35)، ثم رحّل القيد تلقائياً (Dr Zakat Expense / Cr
+              Zakat Payable).
             </p>
           </div>
         </header>
@@ -360,6 +362,7 @@ function ErpSetupPage() {
                     {c.last_test_status.slice(0, 80)}
                   </Badge>
                 )}
+                <ErpZakatSync connectionId={c.id} onRecordCreated={() => reload()} />
                 {records.length > 0 && (
                   <div className="pt-2 border-t space-y-1">
                     <div className="text-xs font-semibold text-muted-foreground">

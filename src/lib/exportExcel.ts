@@ -1,6 +1,7 @@
 import * as XLSX from "xlsx";
 import type { PrintReportData } from "@/components/zakat/PrintReport";
 import { camelZakat, cowZakat, sheepZakat, ZAKAT_RATE } from "@/lib/zakat";
+import { buildReviewFromPrintReport } from "@/lib/printReportReview";
 
 /** يبني مصنّف الإكسل من بيانات التقرير (قابل للاختبار). */
 export function buildReportWorkbook(data: PrintReportData): XLSX.WorkBook {
@@ -280,6 +281,38 @@ export function buildReportWorkbook(data: PrintReportData): XLSX.WorkBook {
     wsFx["!cols"] = [{ wch: 38 }, { wch: 18 }, { wch: 16 }, { wch: 18 }, { wch: 22 }];
     XLSX.utils.book_append_sheet(wb, wsFx, "أسعار الصرف");
   }
+
+  // ورقة: المراجعة الشرعية الشاملة الآلية (شرعية · امتثال · حوكمة)
+  const sharia = buildReviewFromPrintReport(data);
+  const dimLabel = { sharia: "شرعي", compliance: "امتثال", governance: "حوكمة" } as const;
+  const sevLabel = { pass: "مطابق", info: "ملاحظة", warning: "تنبيه", violation: "مخالفة" } as const;
+  const shariaAoA: (string | number)[][] = [
+    ["المراجعة الشرعية الشاملة الآلية — وفق " + sharia.standard],
+    [],
+    ["درجة الامتثال", `${sharia.score}/100 — ${sharia.grade}`],
+    [
+      "ملخص الفحوص",
+      `${sharia.counts.pass} مطابق · ${sharia.counts.info} ملاحظة · ${sharia.counts.warning} تنبيه · ${sharia.counts.violation} مخالفة`,
+    ],
+    [],
+    ["البعد", "الفحص", "الحكم", "التفصيل", "الحسابات المعنية", "المرجع الشرعي/المعياري"],
+    ...sharia.findings.map((f) => [
+      dimLabel[f.dimension],
+      f.title,
+      sevLabel[f.severity],
+      f.detail,
+      f.accounts?.join(" · ") ?? "—",
+      f.reference,
+    ]),
+    [],
+    [
+      "إخلاء مسؤولية",
+      "مراجعة آلية مساندة — لا تغني عن الرأي البشري للمراجع الشرعي المعتمد.",
+    ],
+  ];
+  const wsSharia = XLSX.utils.aoa_to_sheet(shariaAoA);
+  wsSharia["!cols"] = [{ wch: 10 }, { wch: 42 }, { wch: 10 }, { wch: 70 }, { wch: 40 }, { wch: 45 }];
+  XLSX.utils.book_append_sheet(wb, wsSharia, "المراجعة الشرعية الشاملة");
 
   // ورقة 4: المراجعة الشرعية / المحاسبية
 

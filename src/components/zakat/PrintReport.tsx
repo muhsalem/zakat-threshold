@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { buildReviewFromPrintReport } from "@/lib/printReportReview";
+import type { FindingDimension } from "@/lib/shariaAudit";
 import {
   currency as fmtCurrency,
   camelZakat,
@@ -298,6 +300,8 @@ function fmtTime(d: Date): string {
 }
 
 export function PrintReport({ data }: { data: PrintReportData }) {
+  // المراجعة الشرعية الشاملة الآلية — تُطبع ضمن التقرير وتظهر في PDF
+  const shariaReview = useMemo(() => buildReviewFromPrintReport(data), [data]);
   const currencyLong = CURRENCY_FULL[data.countryCode] ?? data.currencyName;
   const countryLong = COUNTRY_FULL[data.countryCode] ?? data.countryCode;
   const curFull = (n: number) => fmtCurrency(n, currencyLong);
@@ -1589,6 +1593,102 @@ export function PrintReport({ data }: { data: PrintReportData }) {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* ◆ المراجعة الشرعية الشاملة (آلية) — شرعية · امتثال · حوكمة */}
+      <div className="print-avoid-break" style={cardStyle(C)}>
+        <div style={titleStyle(C)}>◆ المراجعة الشرعية الشاملة (آلية) — {shariaReview.standard}</div>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10pt",
+            background: shariaReview.counts.violation === 0 ? C.cream : "#fbeeec",
+            border: `0.75pt solid ${shariaReview.counts.violation === 0 ? C.border : C.danger}`,
+            borderRadius: "4pt",
+            padding: "8pt 12pt",
+            marginBottom: "8pt",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "16pt",
+              fontWeight: 800,
+              color: shariaReview.counts.violation === 0 ? C.primary : C.danger,
+            }}
+          >
+            {shariaReview.score}/100
+          </div>
+          <div style={{ fontSize: "9.5pt", lineHeight: 1.6, color: C.text }}>
+            <b>درجة الامتثال: {shariaReview.grade}</b>
+            <br />
+            {shariaReview.counts.pass} فحص مطابق · {shariaReview.counts.info} ملاحظة ·{" "}
+            {shariaReview.counts.warning} تنبيه · {shariaReview.counts.violation} مخالفة
+          </div>
+        </div>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "8.5pt" }}>
+          <thead>
+            <tr style={{ background: C.deepCream }}>
+              <th style={{ padding: "4pt 6pt", border: `0.5pt solid ${C.softBorder}`, textAlign: "right", width: "16%" }}>البعد</th>
+              <th style={{ padding: "4pt 6pt", border: `0.5pt solid ${C.softBorder}`, textAlign: "right" }}>الفحص والنتيجة</th>
+              <th style={{ padding: "4pt 6pt", border: `0.5pt solid ${C.softBorder}`, textAlign: "right", width: "10%" }}>الحكم</th>
+              <th style={{ padding: "4pt 6pt", border: `0.5pt solid ${C.softBorder}`, textAlign: "right", width: "26%" }}>المرجع</th>
+            </tr>
+          </thead>
+          <tbody>
+            {shariaReview.findings.map((f) => {
+              const dimLabel: Record<FindingDimension, string> = {
+                sharia: "شرعي",
+                compliance: "امتثال",
+                governance: "حوكمة",
+              };
+              const sevLabel =
+                f.severity === "pass"
+                  ? "✓ مطابق"
+                  : f.severity === "info"
+                    ? "ملاحظة"
+                    : f.severity === "warning"
+                      ? "⚠ تنبيه"
+                      : "✗ مخالفة";
+              const sevColor =
+                f.severity === "violation" ? C.danger : f.severity === "warning" ? C.warn : C.primary;
+              return (
+                <tr key={f.id}>
+                  <td style={{ padding: "4pt 6pt", border: `0.5pt solid ${C.softBorder}`, verticalAlign: "top" }}>
+                    {dimLabel[f.dimension]}
+                  </td>
+                  <td style={{ padding: "4pt 6pt", border: `0.5pt solid ${C.softBorder}`, verticalAlign: "top", lineHeight: 1.55 }}>
+                    <b>{f.title}</b>
+                    {(f.severity === "warning" || f.severity === "violation") && (
+                      <>
+                        <br />
+                        <span style={{ color: C.soft }}>{f.detail}</span>
+                        {f.accounts && f.accounts.length > 0 && (
+                          <>
+                            <br />
+                            <span style={{ color: C.soft, fontSize: "7.5pt" }}>
+                              الحسابات: {f.accounts.join(" · ")}
+                            </span>
+                          </>
+                        )}
+                      </>
+                    )}
+                  </td>
+                  <td style={{ padding: "4pt 6pt", border: `0.5pt solid ${C.softBorder}`, verticalAlign: "top", fontWeight: 700, color: sevColor, whiteSpace: "nowrap" }}>
+                    {sevLabel}
+                  </td>
+                  <td style={{ padding: "4pt 6pt", border: `0.5pt solid ${C.softBorder}`, verticalAlign: "top", color: C.soft, lineHeight: 1.5 }}>
+                    {f.reference}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        <div style={{ fontSize: "7.5pt", color: C.soft, marginTop: "5pt", lineHeight: 1.6 }}>
+          مراجعة آلية مساندة وفق المعيار الشرعي 35 وضوابط الحوكمة — لا تغني عن الرأي البشري للمراجع
+          الشرعي المعتمد الوارد أدناه.
+        </div>
       </div>
 
       {/* ⑩ النتيجة الشرعية التقديرية */}

@@ -1,5 +1,6 @@
 // متجر بوابة المحاسب — يعتمد Lovable Cloud (Supabase) مع RLS يقيّد كل محاسب على عملائه فقط.
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import { ZAKAT_RATE } from "@/lib/zakat";
 
 export type ClientKind = "individual" | "company" | "institution";
@@ -13,6 +14,8 @@ export type ZakatBreakdown = {
   inventory: number;
   receivables: number;
   debts: number;
+  /** التفاصيل الكاملة من نافذة استقبال العملاء — تُحفظ في jsonb وتصل المحاسب بنيوياً */
+  details?: import("@/lib/intakeMapping").IntakeDetails;
 };
 
 export type HistoryEntry = {
@@ -56,6 +59,8 @@ function normalizeBreakdown(input: unknown): ZakatBreakdown {
     inventory: Number(b.inventory) || 0,
     receivables: Number(b.receivables) || 0,
     debts: Number(b.debts) || 0,
+    // نحافظ على تفاصيل نافذة الاستقبال إن وُجدت — لا تُسقطها عمليات التحديث
+    ...(b.details && typeof b.details === "object" ? { details: b.details } : {}),
   };
 }
 
@@ -274,7 +279,10 @@ export async function createClient(input: {
     status: input.status ?? "new",
     hawl_date: input.hawlDate ?? new Date(Date.now() + 180 * 86400000).toISOString().slice(0, 10),
     nisab: input.nisab ?? 24000,
-    breakdown: { ...emptyBreakdown(), ...(input.breakdown ?? {}) },
+    // تسلسل صريح إلى JSON عادي — يرضي نوع Json لدى Supabase مع الحفاظ على details
+    breakdown: JSON.parse(
+      JSON.stringify({ ...emptyBreakdown(), ...(input.breakdown ?? {}) }),
+    ) as Json,
     notes: input.notes ?? null,
     created_via: input.createdVia ?? "manual",
   };

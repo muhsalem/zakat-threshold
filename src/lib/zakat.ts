@@ -288,12 +288,20 @@ export interface HawlStatus {
   hawlComplete: boolean;
   daysRemaining: number;
 }
+// فرق الأيام التقويمية بعد التطبيع على منتصف الليل UTC — يمنع انحراف يوم عند عبور التوقيت الصيفي
+const diffCalendarDays = (from: Date, to: Date): number =>
+  Math.floor(
+    (Date.UTC(to.getFullYear(), to.getMonth(), to.getDate()) -
+      Date.UTC(from.getFullYear(), from.getMonth(), from.getDate())) /
+      86400000,
+  );
+
 export function checkHawl(startDateISO: string, today = new Date()): HawlStatus | null {
   if (!startDateISO) return null;
   const start = new Date(startDateISO);
   if (isNaN(start.getTime())) return null;
   const hijriStart = gregorianToHijri(start.getFullYear(), start.getMonth() + 1, start.getDate());
-  const daysPassed = Math.floor((today.getTime() - start.getTime()) / 86400000);
+  const daysPassed = diffCalendarDays(start, today);
   const hawlComplete = daysPassed >= HAWL_DAYS_HIJRI;
   return {
     hijriStart,
@@ -332,11 +340,10 @@ export function generateHawlSchedule(
   const future = Math.max(0, opts.futureCycles ?? 2);
   const cycleDays = opts.basis === "gregorian" ? 365 : HAWL_DAYS_HIJRI;
   const today = opts.today ?? new Date();
-  const todayMs = today.getTime();
   const startMs = start.getTime();
 
   // تحديد فهرس الدورة الحالية بالنسبة لتاريخ البداية
-  const elapsedDays = Math.floor((todayMs - startMs) / 86400000);
+  const elapsedDays = diffCalendarDays(start, today);
   const currentIndex = Math.floor(elapsedDays / cycleDays);
 
   const cycles: HawlCycle[] = [];
@@ -345,7 +352,7 @@ export function generateHawlSchedule(
     const cEnd = new Date(startMs + (i + 1) * cycleDays * 86400000 - 86400000);
     const hijriStart = gregorianToHijri(cStart.getFullYear(), cStart.getMonth() + 1, cStart.getDate());
     const hijriEnd = gregorianToHijri(cEnd.getFullYear(), cEnd.getMonth() + 1, cEnd.getDate());
-    const inCycleDays = Math.floor((todayMs - cStart.getTime()) / 86400000);
+    const inCycleDays = diffCalendarDays(cStart, today);
     const status: HawlCycle["status"] =
       i < currentIndex ? "past" : i > currentIndex ? "future" : "current";
     const daysPassed = status === "past" ? cycleDays : status === "future" ? 0 : Math.max(0, Math.min(cycleDays, inCycleDays));

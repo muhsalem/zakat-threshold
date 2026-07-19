@@ -6,6 +6,14 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Upload, FileSpreadsheet, CheckCircle2, AlertTriangle, Download } from "lucide-react";
 import { fmt } from "@/lib/zakat";
+import {
+  classifyTrialBalance,
+  computeZakatFromTrialBalance,
+  type TrialBalanceRow,
+  type ZakatComputation,
+} from "@/lib/erp/zakatMapping";
+import { runShariaComplianceReview, type ShariaReviewResult } from "@/lib/shariaAudit";
+import { ShariaComplianceReport } from "./ShariaComplianceReport";
 
 export interface TrialBalanceMapped {
   cash: number;
@@ -16,6 +24,10 @@ export interface TrialBalanceMapped {
   shortTermDebt: number;
   totals: { debit: number; credit: number };
   rowCount: number;
+  /** حساب الزكاة الفوري من الميزان المرفوع (AAOIFI 35) */
+  computation?: ZakatComputation;
+  /** نتيجة المراجعة الشرعية الشاملة */
+  review?: ShariaReviewResult;
 }
 
 interface Props {
@@ -78,6 +90,8 @@ function parseCSV(text: string): string[][] {
 
 export function TrialBalanceImport({ onMapped }: Props) {
   const [result, setResult] = useState<TrialBalanceMapped | null>(null);
+  const [review, setReview] = useState<ShariaReviewResult | null>(null);
+  const [computation, setComputation] = useState<ZakatComputation | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [unmapped, setUnmapped] = useState<string[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -100,14 +114,15 @@ export function TrialBalanceImport({ onMapped }: Props) {
       }
       if (rows.length < 2) throw new Error("الملف فارغ أو لا يحتوي صفوف بيانات");
 
-      // اكتشف أعمدة الاسم/المدين/الدائن من رأس الجدول
+      // اكتشف أعمدة الاسم/المدين/الدائن (والكود إن وُجد) من رأس الجدول
       const header = rows[0].map((h) => h.trim().toLowerCase());
+      const codeIdx = header.findIndex((h) => /code|كود|رمز|رقم الحساب/.test(h));
       let nameIdx = header.findIndex((h) => /name|account|اسم|حساب|بيان/.test(h));
       let debitIdx = header.findIndex((h) => /debit|مدين|له/.test(h));
       let creditIdx = header.findIndex((h) => /credit|دائن|عليه/.test(h));
-      if (nameIdx === -1) nameIdx = 0;
-      if (debitIdx === -1) debitIdx = 1;
-      if (creditIdx === -1) creditIdx = 2;
+      if (nameIdx === -1 || nameIdx === codeIdx) nameIdx = codeIdx === 0 ? 1 : 0;
+      if (debitIdx === -1) debitIdx = nameIdx + 1;
+      if (creditIdx === -1) creditIdx = debitIdx + 1;
 
       const acc: TrialBalanceMapped = {
         cash: 0,
@@ -120,6 +135,7 @@ export function TrialBalanceImport({ onMapped }: Props) {
         rowCount: 0,
       };
       const unknown: string[] = [];
+      const tbRows: TrialBalanceRow[] = [];
 
       for (let i = 1; i < rows.length; i++) {
         const r = rows[i];
@@ -130,6 +146,11 @@ export function TrialBalanceImport({ onMapped }: Props) {
         acc.totals.debit += debit;
         acc.totals.credit += credit;
         acc.rowCount++;
+        tbRows.push({
+          code: codeIdx >= 0 ? (r[codeIdx] || String(i)).trim() : String(i),
+          name: label,
+          balance: +(debit - credit).toFixed(2),
+        });
         const cat = classify(label);
         if (!cat) {
           unknown.push(label);
@@ -140,7 +161,22 @@ export function TrialBalanceImport({ onMapped }: Props) {
         else acc[cat] += amount;
       }
 
+      // التصنيف الموحّد (نفس محرك تكامل ERP) ← حساب الزكاة ← المراجعة الشرعية الشاملة
+      const classified = classifyTrialBalance(tbRows, "generic");
+      const calc = computeZakatFromTrialBalance(classified, { calendar: "hijri" });
+      const shariaReview = runShariaComplianceReview({
+        rows: classified,
+        computation: calc,
+        totals: acc.totals,
+        hawlComplete: null,
+        calendar: "hijri",
+      });
+
+      acc.computation = calc;
+      acc.review = shariaReview;
       setResult(acc);
+      setComputation(calc);
+      setReview(shariaReview);
       setUnmapped(unknown.slice(0, 10));
       onMapped?.(acc);
     } catch (e) {
@@ -234,6 +270,33 @@ export function TrialBalanceImport({ onMapped }: Props) {
                 <b>حسابات لم تُصنَّف ({unmapped.length}):</b> {unmapped.join(" · ")}
               </div>
             )}
+
+            {/* ====== حساب الزكاة الفوري من الميزان المرفوع ====== */}
+            {computation && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                <div className="rounded-md border p-2">
+                  <div className="text-muted-foreground">أصول زكوية</div>
+                  <b className="tabular-nums">{fmt(computation.zakatableAssets)}</b>
+                </div>
+                <div className="rounded-md border p-2">
+                  <div className="text-muted-foreground">خصوم مخصومة</div>
+                  <b className="tabular-nums">{fmt(computation.deductibleLiabilities)}</b>
+                </div>
+                <div className="rounded-md border p-2">
+                  <div className="text-muted-foreground">الوعاء الزكوي</div>
+                  <b className="tabular-nums">{fmt(computation.zakatBase)}</b>
+                </div>
+                <div className="rounded-md border border-primary/50 bg-primary/5 p-2">
+                  <div className="text-muted-foreground">
+                    الزكاة المستحقة ({(computation.rate * 100).toFixed(1)}%)
+                  </div>
+                  <b className="tabular-nums text-primary">{fmt(computation.zakatDue)}</b>
+                </div>
+              </div>
+            )}
+
+            {/* ====== المراجعة الشرعية الشاملة (شرعية · امتثال · حوكمة) ====== */}
+            {review && <ShariaComplianceReport review={review} />}
           </div>
         )}
       </CardContent>

@@ -205,6 +205,61 @@ describe("Excel export — Rikaz integration", () => {
   });
 });
 
+describe("Excel/PDF export — المراجعة الشرعية الشاملة", () => {
+  it("يضيف ورقة المراجعة الشرعية دائماً مع الدرجة والأبعاد الثلاثة", () => {
+    const wb = build(baseData());
+    const rows = readSheet(wb, "المراجعة الشرعية الشاملة");
+    const flat = rows.flat().join("|");
+    expect(flat).toMatch(/درجة الامتثال/);
+    expect(flat).toMatch(/AAOIFI-SS-35/);
+    expect(flat).toMatch(/شرعي/);
+    expect(flat).toMatch(/امتثال/);
+    expect(flat).toMatch(/حوكمة/);
+    expect(flat).toMatch(/لا يغني عن الرأي البشري|لا تغني عن الرأي البشري/);
+  });
+
+  it("تقرير نظيف: لا مخالفات والحول المكتمل يظهر مطابقاً", () => {
+    const wb = build(baseData()); // hawlComplete: true
+    const rows = readSheet(wb, "المراجعة الشرعية الشاملة");
+    const flat = rows.flat().join("|");
+    expect(flat).toMatch(/الحول مكتمل/);
+    expect(flat).not.toMatch(/بنود ربوية مكتشفة/);
+  });
+
+  it("بند ربوي في التقرير يظهر كمخالفة في ورقة المراجعة", () => {
+    const wb = build(
+      baseData({
+        rows: [
+          { label: "نقد", gross: 100000, eligible: true, zakat: 2500 },
+          { label: "فوائد بنكية دائنة", gross: 8000, eligible: false, zakat: 0 },
+        ],
+      }),
+    );
+    const rows = readSheet(wb, "المراجعة الشرعية الشاملة");
+    const flat = rows.flat().join("|");
+    expect(flat).toMatch(/بنود ربوية مكتشفة/);
+    expect(flat).toMatch(/مخالفة/);
+    expect(flat).toMatch(/التطهير/);
+  });
+
+  it("المحوّل يحترم أرقام التقرير المعتمدة ولا يعيد حسابها", async () => {
+    const { buildReviewFromPrintReport } = await import("@/lib/printReportReview");
+    // بنود التقرير مجموعها 100,000 لكن الوعاء المعتمد في التقرير 1,000 فقط
+    // (دون النصاب) — لو أعاد المحوّل الحساب من البنود لقال «بلغ النصاب» خطأً
+    const data = baseData({ monetaryBase: 1000, totalZakat: 0, moneyNisab: 20000 });
+    const r = buildReviewFromPrintReport(data);
+    const nisabFinding = r.findings.find((f) => f.id === "nisab_checked");
+    expect(nisabFinding?.title).toContain("دون النصاب");
+    expect(r.findings.find((f) => f.id === "hawl_complete")).toBeTruthy();
+  });
+
+  it("حول غير مكتمل في التقرير → تنبيه في المراجعة", async () => {
+    const { buildReviewFromPrintReport } = await import("@/lib/printReportReview");
+    const r = buildReviewFromPrintReport(baseData({ hawlComplete: false }));
+    expect(r.findings.find((f) => f.id === "hawl_incomplete")?.severity).toBe("warning");
+  });
+});
+
 describe("PDF report data — ESOP and Waqf payload shape", () => {
   it("PrintReportData accepts esop and waqf and they flow through unchanged", () => {
     const data = baseData({

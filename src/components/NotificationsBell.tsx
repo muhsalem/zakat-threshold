@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Bell, BellRing, Check, CheckCheck, Trash2, ExternalLink } from "lucide-react";
+import { Bell, BellRing, Check, CheckCheck, Trash2, ExternalLink, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -23,6 +23,7 @@ export function NotificationsBell() {
   const { user } = useAuth();
   const [items, setItems] = useState<Notification[]>([]);
   const [open, setOpen] = useState(false);
+  const [countdown, setCountdown] = useState<number | null>(null);
 
   const unread = items.filter((n) => !n.read_at).length;
 
@@ -34,6 +35,31 @@ export function NotificationsBell() {
       .order("created_at", { ascending: false })
       .limit(30);
     if (!error && data) setItems(data as Notification[]);
+
+    try {
+      const { data: latestRecord } = await supabase
+        .from("zakat_records")
+        .select("gregorian_date")
+        .eq("user_id", user.id)
+        .order("gregorian_date", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (latestRecord && latestRecord.gregorian_date) {
+        const start = new Date(latestRecord.gregorian_date);
+        const today = new Date();
+        const diffMs = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()) - 
+                       Date.UTC(start.getFullYear(), start.getMonth(), start.getDate());
+        const daysPassed = Math.floor(diffMs / 86400000);
+        const HAWL = 354;
+        const daysRemaining = Math.max(0, HAWL - (daysPassed % HAWL));
+        setCountdown(daysRemaining);
+      } else {
+        setCountdown(null);
+      }
+    } catch (err) {
+      console.error("Failed to load hawl countdown", err);
+    }
   };
 
   useEffect(() => {
@@ -129,6 +155,17 @@ export function NotificationsBell() {
             )}
           </div>
         </div>
+        {countdown !== null && (
+          <div className="px-4 py-2.5 bg-primary/10 border-b flex items-center justify-between text-xs text-primary font-medium">
+            <span className="flex items-center gap-1.5">
+              <Clock className="h-4 w-4 text-primary animate-pulse" />
+              <span>متبقي على اكتمال الحَوْل التالي:</span>
+            </span>
+            <Badge variant="default" className="text-xs px-2 py-0.5 font-bold">
+              {countdown} يوم
+            </Badge>
+          </div>
+        )}
         <ScrollArea className="max-h-96">
           {items.length === 0 ? (
             <div className="p-8 text-center text-sm text-muted-foreground">

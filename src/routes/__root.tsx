@@ -171,7 +171,15 @@ function RootComponent() {
   useEffect(() => {
     initSentry();
     if (typeof window !== "undefined" && "serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js").catch(() => {});
+      if (import.meta.env.PROD) {
+        navigator.serviceWorker.register("/sw.js").catch(() => {});
+      } else {
+        // في التطوير: SW الكاش-أولاً يخدم وحدات قديمة ويكسر HMR — نزيله إنوُجد
+        navigator.serviceWorker
+          .getRegistrations()
+          .then((rs) => rs.forEach((r) => r.unregister()))
+          .catch(() => {});
+      }
     }
   }, []);
 

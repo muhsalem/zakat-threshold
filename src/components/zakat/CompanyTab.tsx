@@ -2791,8 +2791,17 @@ export function CompanyTab() {
               sector.label?.includes("تكافل") ||
               sector.label?.includes("تأمين")) && <TakafulSection currencyName={currencyName} />}
 
-            {/* ====== استيراد ميزان المراجعة (CSV) ====== */}
-            <TrialBalanceImport />
+            {/* ====== استيراد ميزان المراجعة (CSV/Excel) — يغذي الوعاء تلقائياً ====== */}
+            <TrialBalanceImport
+              onMapped={(d) => {
+                // تعبئة حقول الحساب مباشرةً من الميزان المرفوع
+                if (d.cash > 0) setCash(String(d.cash));
+                if (d.receivables > 0) setRecGood(String(d.receivables));
+                if (d.inventory > 0) setInvBook(String(d.inventory));
+                if (d.shortTermInvest > 0) setStkTrading(String(d.shortTermInvest));
+                if (d.shortTermDebt > 0) setStPayables(String(d.shortTermDebt));
+              }}
+            />
 
             {/* زكاة المستغلات (عقارات/مصانع/فنادق) أصبحت مدمجة داخل النموذج القطاعي التفصيلي (تبويب المستغلات) */}
 

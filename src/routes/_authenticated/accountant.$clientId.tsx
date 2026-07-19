@@ -31,6 +31,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { signReport } from "@/lib/signature.functions";
 import { fmt, ZAKAT_RATE } from "@/lib/zakat";
+import { aggregateIntake, buildIndividualPrefill, savePrefill } from "@/lib/intakeMapping";
 import {
   fetchClient,
   updateClient,
@@ -107,6 +108,14 @@ function ClientDetail() {
   const above = wealth >= client.nisab;
   const issues = complianceCheck(client);
   const score = complianceScore(client);
+  const intakeDetails = client.breakdown.details;
+  const reviewFlags = intakeDetails ? aggregateIntake(intakeDetails).reviewFlags : [];
+
+  const openInCalculator = () => {
+    savePrefill(buildIndividualPrefill(client));
+    toast.success("جُهّزت بيانات العميل — تُفتح الآن في الحاسبة الشاملة");
+    navigate({ to: "/accountant" });
+  };
 
   const recalc = async () => {
     const amount = zakatOf(client);
@@ -245,6 +254,11 @@ function ClientDetail() {
           <Button onClick={recalc} className="gap-1.5">
             <Calculator className="h-4 w-4" /> احسب الزكاة
           </Button>
+          {client.kind === "individual" && (
+            <Button onClick={openInCalculator} variant="secondary" className="gap-1.5">
+              <Calculator className="h-4 w-4" /> افتح في الحاسبة الشاملة
+            </Button>
+          )}
           <Button
             onClick={issueAndSendReport}
             disabled={sendingReport}

@@ -42,6 +42,7 @@ import {
   type ClientKind,
   COUNTRY_LABELS,
 } from "@/lib/accountantStore";
+import { aggregateIntake, type IntakeDetails } from "@/lib/intakeMapping";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/client-intake")({
@@ -82,6 +83,7 @@ type FormState = {
   savingsBonds: number;
   cryptoValue: number;
   goldGrams: number;
+  goldKarat: 18 | 21 | 24;
   silverGrams: number;
   jewelryPersonal: number;
   stocksTrading: number;
@@ -121,6 +123,7 @@ const emptyForm: FormState = {
   savingsBonds: 0,
   cryptoValue: 0,
   goldGrams: 0,
+  goldKarat: 21,
   silverGrams: 0,
   jewelryPersonal: 0,
   stocksTrading: 0,
@@ -247,30 +250,44 @@ function ClientIntakePage() {
       hawlDate: form.hawlDate,
     });
     if (!parsed.success) return toast.error(parsed.error.issues[0]?.message || "بيانات غير صالحة");
-    const aggCash = form.cash + form.bankAccounts + form.savingsBonds + form.cryptoValue;
-    const aggInv =
-      form.investments +
-      form.stocksTrading +
-      form.stocksLongTerm +
-      form.mutualFunds +
-      form.sukuk +
-      form.realEstateTrading +
-      form.rentalIncomeAnnual;
-    const aggInventory = form.inventory + form.businessAssets + form.agricultureValue;
-    const aggDebts = form.debts + form.businessLiabilities;
-    const notesExtras =
-      mode === "comprehensive"
-        ? [
-            `ذهب: ${form.goldGrams} جم — فضة: ${form.silverGrams} جم — حلي شخصي: ${form.jewelryPersonal}`,
-            `عقار إيجاري: ${form.realEstateRental} — دخل إيجاري سنوي: ${form.rentalIncomeAnnual}`,
-            `زراعة: ${form.agricultureType} بقيمة ${form.agricultureValue}`,
-            `أنعام — إبل: ${form.livestockCamels} · بقر: ${form.livestockCattle} · غنم: ${form.livestockSheep}`,
-            `راتب شهري: ${form.salaryMonthly} — مكافأة نهاية خدمة: ${form.endOfServiceBenefits}`,
-            form.notes,
-          ]
-            .filter(Boolean)
-            .join(" \n ")
-        : form.notes;
+
+    // التفاصيل الكاملة تُحفظ بنيوياً، والتجميع الفقهي الصحيح يستبعد ما لا يصح
+    // ضمه بمعدل 2.5% (أسهم طويلة الأجل، دخل إيجار، زروع، أنعام...) مع أعلام مراجعة
+    const details: IntakeDetails = {
+      mode,
+      phone: form.phone || undefined,
+      cash: form.cash,
+      bankAccounts: form.bankAccounts,
+      savingsBonds: form.savingsBonds,
+      cryptoValue: form.cryptoValue,
+      gold: form.gold,
+      goldGrams: form.goldGrams,
+      goldKarat: form.goldKarat,
+      silverGrams: form.silverGrams,
+      jewelryPersonal: form.jewelryPersonal,
+      investments: form.investments,
+      stocksTrading: form.stocksTrading,
+      stocksLongTerm: form.stocksLongTerm,
+      mutualFunds: form.mutualFunds,
+      sukuk: form.sukuk,
+      realEstateTrading: form.realEstateTrading,
+      realEstateRental: form.realEstateRental,
+      rentalIncomeAnnual: form.rentalIncomeAnnual,
+      agricultureType: form.agricultureType,
+      agricultureValue: form.agricultureValue,
+      livestockCamels: form.livestockCamels,
+      livestockCattle: form.livestockCattle,
+      livestockSheep: form.livestockSheep,
+      salaryMonthly: form.salaryMonthly,
+      endOfServiceBenefits: form.endOfServiceBenefits,
+      inventory: form.inventory,
+      businessAssets: form.businessAssets,
+      businessLiabilities: form.businessLiabilities,
+      receivables: form.receivables,
+      debts: form.debts,
+      notes: form.notes,
+    };
+    const { breakdown } = aggregateIntake(details);
 
     const payload = {
       name: form.name,
@@ -279,15 +296,8 @@ function ClientIntakePage() {
       country: form.country,
       madhab: form.madhab,
       hawlDate: form.hawlDate,
-      breakdown: {
-        cash: aggCash,
-        gold: form.gold,
-        investments: aggInv,
-        inventory: aggInventory,
-        receivables: form.receivables,
-        debts: aggDebts,
-      },
-      notes: `[${mode === "comprehensive" ? "تقرير شامل معتمد" : "حساب سريع"}] ${notesExtras}`,
+      breakdown,
+      notes: `[${mode === "comprehensive" ? "تقرير شامل معتمد" : "حساب سريع"}] ${form.notes}`,
       createdVia: "intake" as const,
     };
 
@@ -569,6 +579,21 @@ function ClientIntakePage() {
               v={form.goldGrams}
               on={(v) => set("goldGrams", v)}
             />
+            <Field label="عيار الذهب الغالب">
+              <Select
+                value={String(form.goldKarat)}
+                onValueChange={(v) => set("goldKarat", Number(v) as 18 | 21 | 24)}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="18">عيار 18</SelectItem>
+                  <SelectItem value="21">عيار 21 (الأكثر شيوعاً)</SelectItem>
+                  <SelectItem value="24">عيار 24 (سبائك)</SelectItem>
+                </SelectContent>
+              </Select>
+            </Field>
             <NumField
               label="فضة — الوزن بالجرام"
               v={form.silverGrams}

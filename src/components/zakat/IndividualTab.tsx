@@ -51,6 +51,7 @@ import {
   Globe,
 } from "lucide-react";
 import { toast } from "sonner";
+import { consumePrefill } from "@/lib/intakeMapping";
 import {
   ZAKAT_RATE,
   ZAKAT_RATE_GREGORIAN,
@@ -459,6 +460,44 @@ export function IndividualTab() {
   const [debtMahr, setDebtMahr] = useState(""); // مهر مؤجل
   // ③ النفقة الواجبة إذا صارت ديناً
   const [debtAlimony, setDebtAlimony] = useState(""); // نفقة زوجة/أولاد/أقارب بحكم أو اتفاق
+
+  // ===== تعبئة مسبقة من بيانات عميل نافذة الاستقبال (يفتحها المحاسب) =====
+  useEffect(() => {
+    const p = consumePrefill();
+    if (!p) return;
+    setName(p.clientName);
+    if (p.countryCode) setCountryCode(p.countryCode);
+    if (p.hawlDate) setNisabStartDate(p.hawlDate);
+    if (p.notes) setNotes(p.notes);
+    if (p.goldGrams) {
+      const setGold = p.goldKarat === 24 ? setSb24 : p.goldKarat === 18 ? setSb18 : setSb21;
+      setGold(String(p.goldGrams));
+    }
+    if (p.silverGrams) setSv999(String(p.silverGrams));
+    if (p.inventory) setInventory(String(p.inventory));
+    if (p.receivablesGood) setReceivablesGood(String(p.receivablesGood));
+    if (p.debts) setDebtPersonalLoan(String(p.debts));
+    if (p.realEstateTrading) setReTradeLand(String(p.realEstateTrading));
+    if (p.rentalIncomeAnnual) setReRentBuildingIncome(String(p.rentalIncomeAnnual));
+    if (p.agricultureType && p.agricultureType !== "none" && p.agricultureValue) {
+      setOwnsFarmland(true);
+      // قيمة إجمالية بلا وزن من العميل: كجم=1 × قيمة الكجم = قيمة المحصول
+      setCropsKg("1");
+      setCropsValuePerKg(String(p.agricultureValue));
+      setCropsIrrigation(p.agricultureType === "rainfed" ? "rain" : "irrigated");
+    }
+    if ((p.camels ?? 0) + (p.cows ?? 0) + (p.sheep ?? 0) > 0) {
+      setOwnsLivestock(true);
+      if (p.camels) setCamels(String(p.camels));
+      if (p.cows) setCows(String(p.cows));
+      if (p.sheep) setSheep(String(p.sheep));
+    }
+    toast.success(`تم تحميل بيانات العميل: ${p.clientName}`, {
+      description: "الحقول معبّأة من نافذة الاستقبال — راجع بنود «قرار المحاسب» في الملاحظات ثم أصدر التقرير.",
+      duration: 8000,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   // نفقات ضرورية مستحقة (فواتير وإيجارات)
   const [expenses, setExpenses] = useState("");
 

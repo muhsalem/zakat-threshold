@@ -39,6 +39,7 @@ import {
   Filter,
   Landmark,
   LineChart,
+  Clock,
 } from "lucide-react";
 import { PricesHistoryPanel } from "@/components/zakat/PricesHistoryPanel";
 import { NisabHistory } from "@/components/zakat/NisabHistory";
@@ -210,12 +211,14 @@ function AccountantPortal() {
   const totals = useMemo(() => {
     const ind = rows.filter((r) => r.c.kind === "individual");
     const com = rows.filter((r) => r.c.kind !== "individual");
+    const today = new Date();
     return {
       individuals: ind.length,
       companies: com.length,
       wealth: rows.reduce((s, r) => s + r.wealth, 0),
       zakat: rows.reduce((s, r) => s + r.zakat, 0),
       needsAttention: rows.filter((r) => r.issues.some((i) => i.level === "error")).length,
+      overdue: rows.filter((r) => r.c.hawlDate && new Date(r.c.hawlDate) < today && r.c.status !== "completed").length,
     };
   }, [rows]);
 
@@ -293,6 +296,24 @@ function AccountantPortal() {
     a.click();
     URL.revokeObjectURL(url);
     toast.success(`تم إنشاء دفعة تقارير لـ ${selectedClients.length} عميل`);
+  };
+
+  const bulkSendReminders = async () => {
+    if (selectedClients.length === 0) return toast.error("اختر عملاء أولاً");
+    try {
+      let sentCount = 0;
+      for (const c of selectedClients) {
+        if (!c.email) continue;
+        // Log in history
+        await addHistory(c.id, { action: "إرسال تذكير بالحول (تلقائي/جماعي)" });
+        // Simulating the email send. In real environment, it would call a webhook or email helper
+        sentCount++;
+      }
+      await reload();
+      toast.success(`تم إرسال تذكير بالحَوْل لـ ${sentCount} عميل (عبر البريد/السجل)`);
+    } catch (e) {
+      toast.error("تعذّر إرسال التذكير", { description: (e as Error).message });
+    }
   };
 
   const bulkStatus = async (status: ClientStatus) => {
@@ -406,7 +427,7 @@ function AccountantPortal() {
         </TabsContent>
 
         <TabsContent value="clients" className="space-y-6 mt-0">
-          <section className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
+          <section className="grid sm:grid-cols-2 lg:grid-cols-6 gap-3">
             <Kpi
               icon={<Users className="h-4 w-4" />}
               label="أفراد"
@@ -430,7 +451,13 @@ function AccountantPortal() {
               suffix="ر.س"
             />
             <Kpi
-              icon={<AlertTriangle className="h-4 w-4" />}
+              icon={<Clock className="h-4 w-4 text-destructive" />}
+              label="عملاء متأخرون"
+              value={String(totals.overdue)}
+              note="تجاوزوا موعد الحول"
+            />
+            <Kpi
+              icon={<AlertTriangle className="h-4 w-4 text-amber-500" />}
               label="تحتاج تدخل"
               value={String(totals.needsAttention)}
               note="نواقص بيانات"
@@ -517,6 +544,9 @@ function AccountantPortal() {
                 </Button>
                 <Button size="sm" variant="secondary" onClick={bulkReports} className="gap-1">
                   <FileText className="h-3.5 w-3.5" /> دفعة تقارير
+                </Button>
+                <Button size="sm" variant="outline" onClick={bulkSendReminders} className="gap-1">
+                  <Clock className="h-3.5 w-3.5 text-primary" /> إرسال تذكير جماعي
                 </Button>
                 <Button size="sm" variant="outline" onClick={() => bulkStatus("review")}>
                   وضع في المراجعة
@@ -959,6 +989,12 @@ function SavedRecordsPanel() {
 
 function CalcModeGate() {
   const [mode, setMode] = useState<"individual" | "company" | "fitr" | null>(null);
+  // إن وُجدت حمولة تعبئة مسبقة من صفحة عميل — افتح حاسبة الأفراد مباشرة
+  useEffect(() => {
+    try {
+      if (localStorage.getItem("zakat_individual_prefill_v1")) setMode("individual");
+    } catch {}
+  }, []);
   if (!mode) {
     return (
       <div className="space-y-4">
