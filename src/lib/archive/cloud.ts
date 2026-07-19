@@ -125,9 +125,8 @@ export async function clearArchive(kind: ArchiveKind): Promise<void> {
 }
 
 /**
- * One-shot migration: push any localStorage rows for `kind` into the cloud
- * for the signed-in user, then clear the local cache. Safe to call multiple
- * times — upsert de-duplicates on (user_id, kind, year, currency).
+ * Legacy one-shot migration kept for callers that want silent behavior.
+ * New flow is: previewMigration -> user confirms -> commitMigration.
  */
 export async function migrateLocalToCloud(kind: ArchiveKind): Promise<number> {
   const uid = await getUserId();
@@ -147,6 +146,127 @@ export async function migrateLocalToCloud(kind: ArchiveKind): Promise<number> {
   if (error) throw error;
   writeLocal(kind, []);
   return rows.length;
+}
+
+/** Archive kinds that participate in the sign-in migration flow. */
+export const MIGRATABLE_KINDS: ArchiveKind[] = ["fitr"];
+
+/** Session flag to avoid re-showing the confirmation dialog after dismiss. */
+const DISMISS_KEY = "archive-migration-dismissed-v1";
+export function isMigrationDismissed(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    return window.sessionStorage.getItem(DISMISS_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+export function setMigrationDismissed(v: boolean) {
+  if (typeof window === "undefined") return;
+  try {
+    if (v) window.sessionStorage.setItem(DISMISS_KEY, "1");
+    else window.sessionStorage.removeItem(DISMISS_KEY);
+  } catch {
+    /* ignore */
+  }
+}
+
+export type MigrationItem = {
+  kind: ArchiveKind;
+  year: number | null;
+  currency: string | null;
+  payload: Record<string, unknown>;
+  status: "new" | "duplicate";
+};
+
+export type MigrationPreview = {
+  items: MigrationItem[];
+  totalLocal: number;
+  newCount: number;
+  duplicateCount: number;
+};
+
+export function listLocal<T = Record<string, unknown>>(kind: ArchiveKind): ArchiveRow<T>[] {
+  return readLocal<T>(kind);
+}
+
+export function discardLocal(kind: ArchiveKind) {
+  writeLocal(kind, []);
+}
+
+export async function previewMigration(
+  kinds: ArchiveKind[] = MIGRATABLE_KINDS,
+): Promise<MigrationPreview> {
+  const uid = await getUserId();
+  const items: MigrationItem[] = [];
+  if (!uid) return { items, totalLocal: 0, newCount: 0, duplicateCount: 0 };
+
+  for (const kind of kinds) {
+    const local = readLocal(kind);
+    if (!local.length) continue;
+    const { data, error } = await supabase
+      .from("user_report_archive")
+      .select("year, currency")
+      .eq("kind", kind);
+    if (error) throw error;
+    const existing = new Set(
+      (data ?? []).map((r) => `${r.year ?? "na"}|${r.currency ?? "na"}`),
+    );
+    for (const row of local) {
+      const key = `${row.year ?? "na"}|${row.currency ?? "na"}`;
+      items.push({
+        kind,
+        year: row.year,
+        currency: row.currency,
+        payload: row.payload as Record<string, unknown>,
+        status: existing.has(key) ? "duplicate" : "new",
+      });
+    }
+  }
+  const newCount = items.filter((i) => i.status === "new").length;
+  return {
+    items,
+    totalLocal: items.length,
+    newCount,
+    duplicateCount: items.length - newCount,
+  };
+}
+
+export type MigrationStrategy = "skip-duplicates" | "overwrite";
+
+export async function commitMigration(
+  strategy: MigrationStrategy,
+  kinds: ArchiveKind[] = MIGRATABLE_KINDS,
+): Promise<{ uploaded: number; skipped: number }> {
+  const uid = await getUserId();
+  if (!uid) return { uploaded: 0, skipped: 0 };
+  const preview = await previewMigration(kinds);
+  const chosen =
+    strategy === "overwrite"
+      ? preview.items
+      : preview.items.filter((i) => i.status === "new");
+  if (chosen.length) {
+    const rows = chosen.map((i) => ({
+      user_id: uid,
+      kind: i.kind,
+      year: i.year,
+      currency: i.currency,
+      payload: i.payload as never,
+    }));
+    const { error } = await supabase
+      .from("user_report_archive")
+      .upsert(rows, { onConflict: "user_id,kind,year,currency" });
+    if (error) throw error;
+  }
+  for (const kind of kinds) writeLocal(kind, []);
+  setMigrationDismissed(true);
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("archive:migrated", { detail: { kinds } }));
+  }
+  return {
+    uploaded: chosen.length,
+    skipped: preview.totalLocal - chosen.length,
+  };
 }
 
 export function isAuthedArchive(): Promise<boolean> {

@@ -19,8 +19,8 @@ import {
   saveArchiveEntry,
   deleteArchiveEntry,
   clearArchive as clearCloudArchive,
-  migrateLocalToCloud,
   type ArchiveRow,
+
 } from "@/lib/archive/cloud";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -117,14 +117,7 @@ function ZakatFitrPage() {
     (async () => {
       const { data } = await supabase.auth.getUser();
       if (!mounted) return;
-      const authed = !!data.user;
-      setIsAuthed(authed);
-      if (authed) {
-        try {
-          const migrated = await migrateLocalToCloud("fitr");
-          if (migrated > 0) toast.success(`تمت مزامنة ${migrated} سجل إلى حسابك`);
-        } catch (e) { console.error(e); }
-      }
+      setIsAuthed(!!data.user);
       await refreshArchive();
     })();
     const { data: sub } = supabase.auth.onAuthStateChange((event) => {
@@ -132,14 +125,17 @@ function ZakatFitrPage() {
         (async () => {
           const { data } = await supabase.auth.getUser();
           setIsAuthed(!!data.user);
-          if (data.user) {
-            try { await migrateLocalToCloud("fitr"); } catch (e) { console.error(e); }
-          }
           await refreshArchive();
         })();
       }
     });
-    return () => { mounted = false; sub.subscription.unsubscribe(); };
+    const onMigrated = () => { void refreshArchive(); };
+    window.addEventListener("archive:migrated", onMigrated);
+    return () => {
+      mounted = false;
+      sub.subscription.unsubscribe();
+      window.removeEventListener("archive:migrated", onMigrated);
+    };
   }, []);
 
   const active = STAPLES.find((s) => s.id === staple)!;
