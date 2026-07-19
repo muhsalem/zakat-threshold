@@ -57,10 +57,12 @@ const CALCS: CalcItem[] = [
 type ProItem = { title: string; url: string; icon: any };
 const PRO_TOOLS: ProItem[] = [
   { title: "الحاسبة الشاملة", url: "/client-intake", icon: Calculator },
-  { title: "ربط دليل الحسابات", url: "/coa-mapping", icon: MapPin },
-  { title: "السجل", url: "/history", icon: BookOpen },
   { title: "معالجة عملاء دفعة", url: "/bulk-clients", icon: Users },
-  
+];
+
+const PRO_RECORDS: ProItem[] = [
+  { title: "السجل", url: "/history", icon: BookOpen },
+  { title: "ربط دليل الحسابات", url: "/coa-mapping", icon: MapPin },
 ];
 
 const PRO_REFERENCES: ProItem[] = [
@@ -187,6 +189,24 @@ export function AppSidebar() {
               <SidebarGroupContent>
                 <SidebarMenu>
                   {PRO_TOOLS.map((i) => (
+                    <SidebarMenuItem key={i.url}>
+                      <SidebarMenuButton asChild isActive={isActive(i.url)}>
+                        <Link to={i.url} className="flex items-center gap-2">
+                          <i.icon className="h-4 w-4" />
+                          {!collapsed && <span>{i.title}</span>}
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+
+            <SidebarGroup>
+              <SidebarGroupLabel>سجلات ومحفوظات</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {PRO_RECORDS.map((i) => (
                     <SidebarMenuItem key={i.url}>
                       <SidebarMenuButton asChild isActive={isActive(i.url)}>
                         <Link to={i.url} className="flex items-center gap-2">
