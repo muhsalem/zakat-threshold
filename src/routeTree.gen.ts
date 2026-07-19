@@ -67,6 +67,7 @@ import { Route as ApiExtractStatementRouteImport } from './routes/api/extract-st
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedSubscriptionRouteImport } from './routes/_authenticated/subscription'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedPricesAuditRouteImport } from './routes/_authenticated/prices-audit'
 import { Route as AuthenticatedErpSetupRouteImport } from './routes/_authenticated/erp-setup'
 import { Route as AuthenticatedDraftsRouteImport } from './routes/_authenticated/drafts'
 import { Route as AuthenticatedDistributionPlanRouteImport } from './routes/_authenticated/distribution-plan'
@@ -387,6 +388,12 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPricesAuditRoute =
+  AuthenticatedPricesAuditRouteImport.update({
+    id: '/prices-audit',
+    path: '/prices-audit',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedErpSetupRoute = AuthenticatedErpSetupRouteImport.update({
   id: '/erp-setup',
   path: '/erp-setup',
@@ -597,6 +604,7 @@ export interface FileRoutesByFullPath {
   '/distribution-plan': typeof AuthenticatedDistributionPlanRoute
   '/drafts': typeof AuthenticatedDraftsRoute
   '/erp-setup': typeof AuthenticatedErpSetupRoute
+  '/prices-audit': typeof AuthenticatedPricesAuditRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/subscription': typeof AuthenticatedSubscriptionRoute
   '/api/chat': typeof ApiChatRoute
@@ -683,6 +691,7 @@ export interface FileRoutesByTo {
   '/distribution-plan': typeof AuthenticatedDistributionPlanRoute
   '/drafts': typeof AuthenticatedDraftsRoute
   '/erp-setup': typeof AuthenticatedErpSetupRoute
+  '/prices-audit': typeof AuthenticatedPricesAuditRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/subscription': typeof AuthenticatedSubscriptionRoute
   '/api/chat': typeof ApiChatRoute
@@ -771,6 +780,7 @@ export interface FileRoutesById {
   '/_authenticated/distribution-plan': typeof AuthenticatedDistributionPlanRoute
   '/_authenticated/drafts': typeof AuthenticatedDraftsRoute
   '/_authenticated/erp-setup': typeof AuthenticatedErpSetupRoute
+  '/_authenticated/prices-audit': typeof AuthenticatedPricesAuditRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/subscription': typeof AuthenticatedSubscriptionRoute
   '/api/chat': typeof ApiChatRoute
@@ -859,6 +869,7 @@ export interface FileRouteTypes {
     | '/distribution-plan'
     | '/drafts'
     | '/erp-setup'
+    | '/prices-audit'
     | '/settings'
     | '/subscription'
     | '/api/chat'
@@ -945,6 +956,7 @@ export interface FileRouteTypes {
     | '/distribution-plan'
     | '/drafts'
     | '/erp-setup'
+    | '/prices-audit'
     | '/settings'
     | '/subscription'
     | '/api/chat'
@@ -1032,6 +1044,7 @@ export interface FileRouteTypes {
     | '/_authenticated/distribution-plan'
     | '/_authenticated/drafts'
     | '/_authenticated/erp-setup'
+    | '/_authenticated/prices-audit'
     | '/_authenticated/settings'
     | '/_authenticated/subscription'
     | '/api/chat'
@@ -1536,6 +1549,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/prices-audit': {
+      id: '/_authenticated/prices-audit'
+      path: '/prices-audit'
+      fullPath: '/prices-audit'
+      preLoaderRoute: typeof AuthenticatedPricesAuditRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/erp-setup': {
       id: '/_authenticated/erp-setup'
       path: '/erp-setup'
@@ -1754,6 +1774,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDistributionPlanRoute: typeof AuthenticatedDistributionPlanRoute
   AuthenticatedDraftsRoute: typeof AuthenticatedDraftsRoute
   AuthenticatedErpSetupRoute: typeof AuthenticatedErpSetupRoute
+  AuthenticatedPricesAuditRoute: typeof AuthenticatedPricesAuditRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedSubscriptionRoute: typeof AuthenticatedSubscriptionRoute
   AuthenticatedCertifiedReportRecordIdRoute: typeof AuthenticatedCertifiedReportRecordIdRoute
@@ -1773,6 +1794,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDistributionPlanRoute: AuthenticatedDistributionPlanRoute,
   AuthenticatedDraftsRoute: AuthenticatedDraftsRoute,
   AuthenticatedErpSetupRoute: AuthenticatedErpSetupRoute,
+  AuthenticatedPricesAuditRoute: AuthenticatedPricesAuditRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedSubscriptionRoute: AuthenticatedSubscriptionRoute,
   AuthenticatedCertifiedReportRecordIdRoute:

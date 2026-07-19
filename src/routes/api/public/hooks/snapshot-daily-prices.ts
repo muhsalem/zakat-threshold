@@ -12,16 +12,35 @@ export const Route = createFileRoute("/api/public/hooks/snapshot-daily-prices")(
         const rl = rateLimit(request, { key: "snapshot-daily", limit: 6, windowMs: 60_000 });
         if (!rl.ok) return rateLimitResponse(rl.retryAfter);
 
+        const startedAt = Date.now();
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        const logAudit = async (row: Record<string, any>) => {
+          try {
+            await (supabaseAdmin.from("price_fetch_audit") as any).insert({
+              job_name: "snapshot-daily-prices",
+              duration_ms: Date.now() - startedAt,
+              ...row,
+            });
+          } catch {
+            /* never let audit break the job */
+          }
+        };
+
         const { getLiveMetalPrices } = await import("@/lib/metalPrices.functions");
         const res = await getLiveMetalPrices();
         if (!res.ok) {
+          await logAudit({
+            status: "error",
+            primary_source: (res as any).tried?.[0] ?? null,
+            error_message: res.error,
+            metadata: { stage: "fetch_metals", tried: (res as any).tried ?? [] },
+          });
           return new Response(JSON.stringify({ ok: false, error: res.error, tried: res.tried }), {
             status: 502,
             headers: { "Content-Type": "application/json" },
           });
         }
 
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const today = new Date().toISOString().slice(0, 10);
         const rows = [
           {
@@ -49,11 +68,25 @@ export const Route = createFileRoute("/api/public/hooks/snapshot-daily-prices")(
           .upsert(rows, { onConflict: "price_date,metal,currency" });
 
         if (error) {
+          await logAudit({
+            status: "error",
+            primary_source: res.source,
+            records_written: 0,
+            error_message: `db upsert: ${error.message}`,
+            metadata: { stage: "db_upsert" },
+          });
           return new Response(JSON.stringify({ ok: false, error: error.message }), {
             status: 500,
             headers: { "Content-Type": "application/json" },
           });
         }
+
+        await logAudit({
+          status: "success",
+          primary_source: res.source,
+          records_written: rows.length,
+          metadata: { date: today },
+        });
 
         await supabaseAdmin.from("sharia_audit_log").insert({
           user_id: null,
@@ -66,6 +99,7 @@ export const Route = createFileRoute("/api/public/hooks/snapshot-daily-prices")(
           { headers: { "Content-Type": "application/json" } },
         );
       },
+
       GET: async () =>
         new Response(JSON.stringify({ ok: true, hint: "POST to snapshot today's prices" }), {
           headers: { "Content-Type": "application/json" },
