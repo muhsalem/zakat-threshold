@@ -291,6 +291,7 @@ function ZakatFitrPage() {
     a.download = "fitr-import-template.xlsx";
     a.click();
     URL.revokeObjectURL(url);
+  }
 
   const comparison = useMemo(() => {
     // group by currency, sort by year asc
