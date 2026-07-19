@@ -91,7 +91,7 @@ const COMMANDS: Cmd[] = [
   { label: "توصيات البرمجيات", to: "/software-recommendations", icon: Server, group: "المطوّرون" },
   { label: "دليل المطوّرين والـ API", to: "/developers", icon: Globe, group: "المطوّرون" },
   { label: "حالة النظام", to: "/status", icon: Activity, group: "المطوّرون" },
-  { label: "التحقق من تقرير زكاة", to: "/verify", icon: ShieldCheck, group: "أدوات" },
+  
   { label: "الشروط والاستخدام", to: "/legal/terms", icon: ScrollText, group: "قانوني" },
   { label: "سياسة الخصوصية", to: "/legal/privacy", icon: Lock, group: "قانوني" },
 ];
