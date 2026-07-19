@@ -350,7 +350,15 @@ function ChannelRow({
 }
 
 function NotificationPreview({ prefs }: { prefs: Prefs }) {
-  const [tab, setTab] = useState("email");
+  const firstActive = prefs.channel_inapp ? "inapp" : prefs.channel_email ? "email" : "sms";
+  const [tab, setTab] = useState(firstActive);
+  useEffect(() => {
+    const disabled =
+      (tab === "inapp" && !prefs.channel_inapp) ||
+      (tab === "email" && !prefs.channel_email) ||
+      (tab === "sms" && !prefs.channel_sms);
+    if (disabled) setTab(firstActive);
+  }, [prefs.channel_inapp, prefs.channel_email, prefs.channel_sms, tab, firstActive]);
   const sampleDays = useMemo(() => {
     const d = [...prefs.hawl_reminder_days].sort((a, b) => a - b);
     return d[0] ?? 7;
