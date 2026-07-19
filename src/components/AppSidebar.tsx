@@ -203,6 +203,24 @@ export function AppSidebar() {
             </SidebarGroup>
 
             <SidebarGroup>
+              <SidebarGroupLabel>سجلات ومحفوظات</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {PRO_RECORDS.map((i) => (
+                    <SidebarMenuItem key={i.url}>
+                      <SidebarMenuButton asChild isActive={isActive(i.url)}>
+                        <Link to={i.url} className="flex items-center gap-2">
+                          <i.icon className="h-4 w-4" />
+                          {!collapsed && <span>{i.title}</span>}
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+
+            <SidebarGroup>
               <SidebarGroupLabel>الأنصبة والأسعار</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
