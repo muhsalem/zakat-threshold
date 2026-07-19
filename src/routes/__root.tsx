@@ -197,6 +197,7 @@ function RootComponent() {
             <OnboardingWizard />
             <PWAInstallPrompt />
             <MobileBottomNav />
+            <ArchiveMigrationDialog />
             <SonnerToaster />
           </MadhabProvider>
         </LanguageProvider>
