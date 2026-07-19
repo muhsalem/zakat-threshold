@@ -58,6 +58,7 @@ type ProItem = { title: string; url: string; icon: any };
 const PRO_TOOLS: ProItem[] = [
   { title: "الحاسبة الشاملة", url: "/client-intake", icon: Calculator },
   { title: "ربط دليل الحسابات", url: "/coa-mapping", icon: MapPin },
+  { title: "السجل", url: "/history", icon: BookOpen },
   { title: "معالجة عملاء دفعة", url: "/bulk-clients", icon: Users },
   { title: "خطة التوزيع", url: "/distribution-plan", icon: HeartHandshake },
 ];
