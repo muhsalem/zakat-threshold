@@ -966,7 +966,6 @@ function SiteFooter() {
             ["الخصوصية", "/legal/privacy"],
             ["الشروط", "/legal/terms"],
             ["الأمان", "/security"],
-            ["الأسئلة الشائعة", "/faq"],
           ]}
         />
       </div>

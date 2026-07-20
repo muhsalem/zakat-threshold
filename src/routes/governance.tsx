@@ -220,9 +220,6 @@ function GovernancePage() {
         <Button asChild variant="outline" size="sm">
           <Link to="/legal/terms">شروط الاستخدام</Link>
         </Button>
-        <Button asChild variant="outline" size="sm">
-          <Link to="/faq">الأسئلة الشائعة</Link>
-        </Button>
       </div>
     </div>
   );

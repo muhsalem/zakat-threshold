@@ -17,7 +17,7 @@ export const searchIndex: SearchEntry[] = [
   { title: "زكاة المؤسسات", to: "/enterprise", keywords: "مؤسسة" },
   { title: "زكاة المجموعات", to: "/group-zakat", keywords: "جماعية مجموعة" },
   { title: "التحقق من تقرير", to: "/verify", keywords: "التحقق تحقق تقرير" },
-  { title: "الأسئلة الشائعة", to: "/faq", keywords: "faq مساعدة" },
+  
   { title: "الأثر والإحصائيات", to: "/impact", keywords: "أثر إحصاء" },
   { title: "الحوكمة والامتثال", to: "/compliance", keywords: "حوكمة امتثال" },
   { title: "الشفافية والحوكمة البيئية (ESG)", to: "/esg", keywords: "esg بيئي" },

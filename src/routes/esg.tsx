@@ -159,7 +159,7 @@ function EsgPage() {
 
       <p className="text-xs text-muted-foreground border-t pt-4">
         يُحدَّث هذا التقرير ربع سنوياً. لطلب نسخة كاملة موقّعة تواصل معنا عبر{" "}
-        <a className="underline" href="/faq">
+        <a className="underline" href="/advisor">
           مركز الدعم
         </a>
         .

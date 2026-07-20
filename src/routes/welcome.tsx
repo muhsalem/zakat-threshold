@@ -162,10 +162,10 @@ function WelcomePage() {
           </div>
           <nav className="flex items-center gap-2">
             <Link
-              to="/faq"
+              to="/governance"
               className="text-sm text-muted-foreground hover:text-foreground hidden sm:inline"
             >
-              الأسئلة الشائعة
+              الحوكمة
             </Link>
             <Link
               to="/organizations"
@@ -317,7 +317,7 @@ function WelcomePage() {
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <Link to="/faq">اقرأ الأسئلة الشائعة</Link>
+                <Link to="/advisor">اسأل المستشار الشرعي</Link>
               </Button>
             </div>
           </CardContent>

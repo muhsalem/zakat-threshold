@@ -6,7 +6,7 @@ const ITEMS = [
   { to: "/organizations", label: "الشركات", icon: Building2 },
   { to: "/advisor", label: "مستشار", icon: Bot },
   { to: "/history", label: "سجلاتي", icon: History },
-  { to: "/faq", label: "المزيد", icon: LayoutGrid },
+  { to: "/welcome", label: "المزيد", icon: LayoutGrid },
 ] as const;
 
 export function MobileBottomNav() {

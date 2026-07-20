@@ -81,7 +81,7 @@ const COMMANDS: Cmd[] = [
   { label: "التاريخ / سجلاتي", to: "/history", icon: History, group: "حسابي" },
   { label: "تسجيل الدخول / حساب", to: "/auth", icon: Lock, group: "حسابي" },
   { label: "الأثر الاجتماعي", to: "/impact", icon: Sparkles, group: "معلومات" },
-  { label: "الأسئلة الشائعة", to: "/faq", icon: HelpCircle, group: "معلومات" },
+  
   { label: "مصفوفة الامتثال", to: "/compliance", icon: FileCheck, group: "معلومات" },
   { label: "الحوكمة والاستدامة (ESG)", to: "/esg", icon: Scale, group: "معلومات" },
   { label: "الأمان والخصوصية", to: "/security", icon: ShieldCheck, group: "معلومات" },

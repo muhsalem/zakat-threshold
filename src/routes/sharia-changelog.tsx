@@ -214,9 +214,6 @@ function ShariaChangelogPage() {
             ميثاق الحوكمة <ArrowRight className="h-4 w-4 me-1" />
           </Link>
         </Button>
-        <Button asChild variant="outline" size="sm">
-          <Link to="/faq">الأسئلة الشائعة</Link>
-        </Button>
       </div>
     </div>
   );

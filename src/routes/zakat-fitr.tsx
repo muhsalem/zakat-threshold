@@ -710,14 +710,11 @@ function ZakatFitrPage() {
         </CardContent>
       </Card>
 
-      <div className="rounded-lg border bg-primary/5 p-4 flex items-center justify-between gap-2 flex-wrap">
-        <div className="flex items-center gap-2 text-sm">
-          <ShieldCheck className="h-5 w-5 text-primary" /> النتيجة تقديرية استرشادية — يمكن اعتماد
-          تسعيرة اللجنة الشرعية في بلدك.
+      <div className="rounded-lg border bg-primary/5 p-4 flex items-center gap-2 flex-wrap">
+        <ShieldCheck className="h-5 w-5 text-primary" />
+        <div className="text-sm">
+          النتيجة تقديرية استرشادية — يمكن اعتماد تسعيرة اللجنة الشرعية في بلدك.
         </div>
-        <Button asChild variant="ghost" className="gap-1">
-          <Link to="/faq">أسئلة زكاة الفطر</Link>
-        </Button>
       </div>
 
       <div className="pt-4">
