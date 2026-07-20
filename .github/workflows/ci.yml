@@ -50,6 +50,8 @@ jobs:
           path: |
             dist
             .output
+          # .output يبدأ بنقطة — بدون هذا الخيار يتجاهله upload-artifact كملف مخفي
+          include-hidden-files: true
           if-no-files-found: ignore
           retention-days: 1
 
