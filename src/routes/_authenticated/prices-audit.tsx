@@ -227,23 +227,14 @@ function PricesAuditPage() {
                           {r.duration_ms != null ? `${r.duration_ms}ms` : "—"}
                         </td>
                         <td className="p-3 text-xs max-w-xs">
-                          {r.error_message ? (
-                            <span className="text-red-600 break-words">{r.error_message}</span>
-                          ) : r.metadata ? (
-                            <details>
-                              <summary className="cursor-pointer text-muted-foreground">
-                                عرض
-                              </summary>
-                              <pre
-                                dir="ltr"
-                                className="mt-1 text-[10px] bg-muted p-2 rounded overflow-x-auto"
-                              >
-                                {JSON.stringify(r.metadata, null, 2)}
-                              </pre>
-                            </details>
-                          ) : (
-                            "—"
-                          )}
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-7 gap-1 text-xs"
+                            onClick={() => setSelected(r)}
+                          >
+                            <Eye className="h-3.5 w-3.5" /> عرض
+                          </Button>
                         </td>
                       </tr>
                     );
@@ -254,6 +245,180 @@ function PricesAuditPage() {
           )}
         </CardContent>
       </Card>
+
+      <AuditDetailsDialog row={selected} onClose={() => setSelected(null)} />
+    </div>
+  );
+}
+
+function AuditDetailsDialog({ row, onClose }: { row: AuditRow | null; onClose: () => void }) {
+  const meta = row?.metadata ?? null;
+  const steps: any[] = Array.isArray(meta?.steps) ? meta!.steps : [];
+  const requests: any[] = Array.isArray(meta?.requests)
+    ? meta!.requests
+    : Array.isArray(meta?.attempts)
+      ? meta!.attempts
+      : [];
+  const response = meta?.response ?? meta?.sample ?? meta?.body ?? null;
+
+  return (
+    <Dialog open={!!row} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto" dir="rtl">
+        {row && (
+          <>
+            <DialogHeader>
+              <DialogTitle className="text-base">
+                تفاصيل المحاولة — {JOB_LABEL[row.job_name] ?? row.job_name}
+              </DialogTitle>
+              <DialogDescription className="text-xs">{formatDate(row.run_at)}</DialogDescription>
+            </DialogHeader>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
+              <Field label="الحالة" value={STATUS_META[row.status]?.label ?? row.status} />
+              <Field label="المصدر الأساسي" value={row.primary_source ?? "—"} ltr />
+              <Field
+                label="المصدر الاحتياطي"
+                value={
+                  row.fallback_used
+                    ? (row.fallback_source ?? "used")
+                    : (row.fallback_source ?? "لم يُستخدم")
+                }
+                ltr
+              />
+              <Field label="HTTP" value={row.http_status?.toString() ?? "—"} ltr />
+              <Field
+                label="المدة الكلية"
+                value={row.duration_ms != null ? `${row.duration_ms} ms` : "—"}
+                ltr
+              />
+              <Field label="صفوف مكتوبة" value={String(row.records_written ?? 0)} />
+              <Field
+                label="عملات مطلوبة"
+                value={row.currencies_requested?.join(", ") || "—"}
+                ltr
+              />
+              <Field
+                label="عملات مفقودة"
+                value={row.currencies_missing?.join(", ") || "—"}
+                ltr
+              />
+            </div>
+
+            {row.error_message && (
+              <div className="rounded-md border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-700">
+                <div className="font-semibold mb-1">رسالة الخطأ</div>
+                <div className="break-words" dir="ltr">
+                  {row.error_message}
+                </div>
+              </div>
+            )}
+
+            {steps.length > 0 && (
+              <Section title="مدة الخطوات">
+                <table className="w-full text-xs" dir="ltr">
+                  <thead className="bg-muted/40">
+                    <tr>
+                      <th className="text-left p-2">Step</th>
+                      <th className="text-left p-2">Status</th>
+                      <th className="text-left p-2">Duration</th>
+                      <th className="text-left p-2">Note</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {steps.map((s, i) => (
+                      <tr key={i} className="border-t">
+                        <td className="p-2">{s.name ?? s.step ?? `#${i + 1}`}</td>
+                        <td className="p-2">{s.status ?? (s.ok ? "ok" : "—")}</td>
+                        <td className="p-2">
+                          {s.duration_ms != null ? `${s.duration_ms} ms` : "—"}
+                        </td>
+                        <td className="p-2 text-muted-foreground">{s.note ?? s.message ?? ""}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </Section>
+            )}
+
+            {requests.length > 0 && (
+              <Section title="الطلبات (Requests)">
+                <div className="space-y-2">
+                  {requests.map((req, i) => (
+                    <div key={i} className="rounded border p-2 text-[11px]" dir="ltr">
+                      <div className="flex flex-wrap gap-2 items-center">
+                        <Badge variant="outline">{req.method ?? "GET"}</Badge>
+                        {req.status != null && (
+                          <Badge
+                            variant="outline"
+                            className={
+                              Number(req.status) >= 400
+                                ? "bg-red-500/10 text-red-600 border-red-500/30"
+                                : "bg-emerald-500/10 text-emerald-600 border-emerald-500/30"
+                            }
+                          >
+                            {req.status}
+                          </Badge>
+                        )}
+                        {req.duration_ms != null && (
+                          <span className="text-muted-foreground">{req.duration_ms} ms</span>
+                        )}
+                      </div>
+                      <div className="mt-1 break-all text-muted-foreground">
+                        {req.url ?? req.endpoint ?? "—"}
+                      </div>
+                      {req.error && (
+                        <div className="mt-1 text-red-600 break-words">{String(req.error)}</div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </Section>
+            )}
+
+            {response != null && (
+              <Section title="الاستجابة">
+                <pre
+                  dir="ltr"
+                  className="text-[10px] bg-muted p-2 rounded overflow-x-auto max-h-64"
+                >
+                  {typeof response === "string" ? response : JSON.stringify(response, null, 2)}
+                </pre>
+              </Section>
+            )}
+
+            {meta && (
+              <Section title="Metadata خام">
+                <pre
+                  dir="ltr"
+                  className="text-[10px] bg-muted p-2 rounded overflow-x-auto max-h-64"
+                >
+                  {JSON.stringify(meta, null, 2)}
+                </pre>
+              </Section>
+            )}
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function Field({ label, value, ltr }: { label: string; value: string; ltr?: boolean }) {
+  return (
+    <div className="rounded border p-2">
+      <div className="text-[10px] text-muted-foreground">{label}</div>
+      <div className="mt-0.5 font-medium break-words" dir={ltr ? "ltr" : undefined}>
+        {value}
+      </div>
+    </div>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-1.5">
+      <div className="text-xs font-semibold">{title}</div>
+      {children}
     </div>
   );
 }
