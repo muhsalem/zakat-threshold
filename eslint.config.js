@@ -42,4 +42,11 @@ export default tseslint.config(
     },
   },
   eslintPluginPrettier,
+  {
+    // التنسيق تحذير لا خطأ: دفعات Lovable المباشرة تصل غير مُنسّقة أحياناً،
+    // وكسر CI بمخالفة مسافات يحجب الأخطاء الحقيقية. التنسيق يُدار بـ bun run format.
+    rules: {
+      "prettier/prettier": "warn",
+    },
+  },
 );

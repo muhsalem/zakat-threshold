@@ -292,16 +292,8 @@ function AuditDetailsDialog({ row, onClose }: { row: AuditRow | null; onClose: (
                 ltr
               />
               <Field label="صفوف مكتوبة" value={String(row.records_written ?? 0)} />
-              <Field
-                label="عملات مطلوبة"
-                value={row.currencies_requested?.join(", ") || "—"}
-                ltr
-              />
-              <Field
-                label="عملات مفقودة"
-                value={row.currencies_missing?.join(", ") || "—"}
-                ltr
-              />
+              <Field label="عملات مطلوبة" value={row.currencies_requested?.join(", ") || "—"} ltr />
+              <Field label="عملات مفقودة" value={row.currencies_missing?.join(", ") || "—"} ltr />
             </div>
 
             {row.error_message && (
