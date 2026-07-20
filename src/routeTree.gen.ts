@@ -36,7 +36,6 @@ import { Route as GroupZakatRouteImport } from './routes/group-zakat'
 import { Route as GovernanceRouteImport } from './routes/governance'
 import { Route as GovPortalRouteImport } from './routes/gov-portal'
 import { Route as FatwaCommunityRouteImport } from './routes/fatwa-community'
-import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EvaluationRouteImport } from './routes/evaluation'
 import { Route as EsgRouteImport } from './routes/esg'
 import { Route as ErpConnectorsRouteImport } from './routes/erp-connectors'
@@ -231,11 +230,6 @@ const GovPortalRoute = GovPortalRouteImport.update({
 const FatwaCommunityRoute = FatwaCommunityRouteImport.update({
   id: '/fatwa-community',
   path: '/fatwa-community',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FaqRoute = FaqRouteImport.update({
-  id: '/faq',
-  path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EvaluationRoute = EvaluationRouteImport.update({
@@ -565,7 +559,6 @@ export interface FileRoutesByFullPath {
   '/erp-connectors': typeof ErpConnectorsRoute
   '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
-  '/faq': typeof FaqRoute
   '/fatwa-community': typeof FatwaCommunityRoute
   '/gov-portal': typeof GovPortalRoute
   '/governance': typeof GovernanceRoute
@@ -652,7 +645,6 @@ export interface FileRoutesByTo {
   '/erp-connectors': typeof ErpConnectorsRoute
   '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
-  '/faq': typeof FaqRoute
   '/fatwa-community': typeof FatwaCommunityRoute
   '/gov-portal': typeof GovPortalRoute
   '/governance': typeof GovernanceRoute
@@ -741,7 +733,6 @@ export interface FileRoutesById {
   '/erp-connectors': typeof ErpConnectorsRoute
   '/esg': typeof EsgRoute
   '/evaluation': typeof EvaluationRoute
-  '/faq': typeof FaqRoute
   '/fatwa-community': typeof FatwaCommunityRoute
   '/gov-portal': typeof GovPortalRoute
   '/governance': typeof GovernanceRoute
@@ -830,7 +821,6 @@ export interface FileRouteTypes {
     | '/erp-connectors'
     | '/esg'
     | '/evaluation'
-    | '/faq'
     | '/fatwa-community'
     | '/gov-portal'
     | '/governance'
@@ -917,7 +907,6 @@ export interface FileRouteTypes {
     | '/erp-connectors'
     | '/esg'
     | '/evaluation'
-    | '/faq'
     | '/fatwa-community'
     | '/gov-portal'
     | '/governance'
@@ -1005,7 +994,6 @@ export interface FileRouteTypes {
     | '/erp-connectors'
     | '/esg'
     | '/evaluation'
-    | '/faq'
     | '/fatwa-community'
     | '/gov-portal'
     | '/governance'
@@ -1094,7 +1082,6 @@ export interface RootRouteChildren {
   ErpConnectorsRoute: typeof ErpConnectorsRoute
   EsgRoute: typeof EsgRoute
   EvaluationRoute: typeof EvaluationRoute
-  FaqRoute: typeof FaqRoute
   FatwaCommunityRoute: typeof FatwaCommunityRoute
   GovPortalRoute: typeof GovPortalRoute
   GovernanceRoute: typeof GovernanceRoute
@@ -1330,13 +1317,6 @@ declare module '@tanstack/react-router' {
       path: '/fatwa-community'
       fullPath: '/fatwa-community'
       preLoaderRoute: typeof FatwaCommunityRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/faq': {
-      id: '/faq'
-      path: '/faq'
-      fullPath: '/faq'
-      preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/evaluation': {
@@ -1840,7 +1820,6 @@ const rootRouteChildren: RootRouteChildren = {
   ErpConnectorsRoute: ErpConnectorsRoute,
   EsgRoute: EsgRoute,
   EvaluationRoute: EvaluationRoute,
-  FaqRoute: FaqRoute,
   FatwaCommunityRoute: FatwaCommunityRoute,
   GovPortalRoute: GovPortalRoute,
   GovernanceRoute: GovernanceRoute,
