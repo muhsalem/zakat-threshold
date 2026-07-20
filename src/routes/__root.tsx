@@ -190,12 +190,15 @@ function RootComponent() {
       <DirectionProvider dir="rtl">
         <LanguageProvider>
           <MadhabProvider>
-            <a
-              href="#main"
-              className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:right-2 focus:z-50 focus:rounded focus:bg-primary focus:text-primary-foreground focus:px-3 focus:py-1.5 focus:text-sm"
-            >
-              تخطَّ إلى المحتوى الرئيسي
-            </a>
+            {/* داخل nav landmark كي لا يقع الرابط خارج معالم الصفحة (axe: region) */}
+            <nav aria-label="روابط التخطي">
+              <a
+                href="#main"
+                className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:right-2 focus:z-50 focus:rounded focus:bg-primary focus:text-primary-foreground focus:px-3 focus:py-1.5 focus:text-sm"
+              >
+                تخطَّ إلى المحتوى الرئيسي
+              </a>
+            </nav>
             <SidebarProvider>
               <AppShell />
             </SidebarProvider>
@@ -221,7 +224,8 @@ function AppShell() {
       {user && <AppSidebar />}
       <div className="flex-1 flex flex-col min-w-0">
         <TopBar />
-        <main className="flex-1">
+        {/* id + tabIndex: هدف رابط التخطي يجب أن يكون قابلاً للتركيز (axe: skip-link) */}
+        <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
           <Outlet />
         </main>
       </div>

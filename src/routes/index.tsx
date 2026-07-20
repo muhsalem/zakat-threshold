@@ -212,7 +212,9 @@ function Hero() {
               <div className="text-sm font-semibold flex items-center gap-2">
                 <FileText className="h-4 w-4 text-primary" /> تقرير الزكاة السنوي
               </div>
-              <Badge className="bg-emerald-500/15 text-emerald-600 border-0">جاهز للإرسال</Badge>
+              <Badge className="bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border-0">
+                جاهز للإرسال
+              </Badge>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <StatMini label="إجمالي الأصول" value="128,400" />
@@ -246,7 +248,12 @@ function StatMini({
   tone?: "primary" | "gold";
 }) {
   const cls =
-    tone === "primary" ? "text-primary" : tone === "gold" ? "text-gold" : "text-foreground";
+    tone === "primary"
+      ? "text-primary"
+      : tone === "gold"
+        ? // درجة أدكن نهاراً لتحقيق تباين WCAG AA؛ الذهبي الفاتح يبقى للوضع الداكن
+          "text-amber-700 dark:text-gold"
+        : "text-foreground";
   return (
     <div className="rounded-lg border bg-background/50 p-3">
       <div className="text-[11px] text-muted-foreground">{label}</div>
