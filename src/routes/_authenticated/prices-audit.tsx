@@ -87,6 +87,7 @@ export const Route = createFileRoute("/_authenticated/prices-audit")({
 function PricesAuditPage() {
   const [jobFilter, setJobFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [selected, setSelected] = useState<AuditRow | null>(null);
 
   const { data, isLoading, refetch, isFetching } = useQuery({
     queryKey: ["price-fetch-audit", jobFilter, statusFilter],
