@@ -19,7 +19,7 @@ import {
   LineChart,
   ShieldCheck,
   Bot,
-  HelpCircle,
+  
   FileCheck,
   Boxes,
   ScrollText,
