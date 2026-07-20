@@ -81,9 +81,16 @@ jobs:
       - name: Warm up first page
         run: curl -s -o /dev/null --max-time 90 http://localhost:8080/ || true
 
+      # كروم وChromeDriver متطابقا الإصدار (نسختا الرنر تتنافران دورياً)
+      - name: Install matched Chrome + ChromeDriver
+        run: npx --yes browser-driver-manager install chrome
+
       # فحص axe — --exit يعيد كود خروج ≠ 0 عند أي انتهاك، فيفشل CI
       - name: Axe accessibility scan
-        run: npx --yes @axe-core/cli http://localhost:8080 --exit
+        run: |
+          source ~/.browser-driver-manager/.env 2>/dev/null || true
+          npx --yes @axe-core/cli http://localhost:8080 --exit \
+            ${CHROMEDRIVER_TEST_PATH:+--chromedriver-path "$CHROMEDRIVER_TEST_PATH"}
 
       - name: Preview server logs (on failure)
         if: failure()
