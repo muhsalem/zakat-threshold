@@ -12,7 +12,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RefreshCw, AlertTriangle, CheckCircle2, AlertCircle } from "lucide-react";
+import { RefreshCw, AlertTriangle, CheckCircle2, AlertCircle, Eye } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 type AuditRow = {
   id: string;
