@@ -35,7 +35,11 @@ jobs:
         run: bunx vitest run --reporter=verbose
 
       # بناء الإنتاج — تأكيد عدم كسر البناء
+      # حد ذاكرة V8 مرفوع: البناء (SSR + client + عشرات الصفحات) يتجاوز
+      # الحد الافتراضي على رنرات GitHub (فشل سابقاً بـ FatalProcessOutOfMemory)
       - name: Production build
+        env:
+          NODE_OPTIONS: "--max-old-space-size=6144"
         run: bun run build
 
       # حفظ مخرجات البناء لاستخدامها في مهمة a11y بدون إعادة البناء
