@@ -67,23 +67,23 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-
-      # تشغيل preview في الخلفية مع سجل مستقل — أي فشل في الإقلاع يظهر بوضوح
-      - name: Start preview server
+      # الفحص على خادم التطوير: vite preview لا يدعم مخرجات preset
+      # كلاودفلير (.output بلا dist/server) — وdev يجسد نفس DOM والإتاحة
+      - name: Start dev server
         run: |
-          nohup bun run preview > preview.log 2>&1 &
+          nohup bun run dev > preview.log 2>&1 &
           echo $! > preview.pid
 
-      - name: Wait for preview
-        run: npx --yes wait-on http://localhost:4173 -t 60000
+      - name: Wait for dev server
+        run: npx --yes wait-on http://localhost:8080 -t 120000
+
+      # طلب تحفيزي يدفئ ترجمة الصفحة الأولى قبل فحص axe
+      - name: Warm up first page
+        run: curl -s -o /dev/null --max-time 90 http://localhost:8080/ || true
 
       # فحص axe — --exit يعيد كود خروج ≠ 0 عند أي انتهاك، فيفشل CI
       - name: Axe accessibility scan
-        run: npx --yes @axe-core/cli http://localhost:4173 --exit
+        run: npx --yes @axe-core/cli http://localhost:8080 --exit
 
       - name: Preview server logs (on failure)
         if: failure()
