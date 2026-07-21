@@ -13,7 +13,7 @@ export const Route = createFileRoute("/api/public/calc")({
     handlers: {
       OPTIONS: async () => new Response(null, { status: 204, headers: CORS }),
       POST: async ({ request }) => {
-        const rl = rateLimit(request, { key: "calc", limit: 30, windowMs: 60_000 });
+        const rl = await rateLimit(request, { key: "calc", limit: 30, windowMs: 60_000 });
         if (!rl.ok) return rateLimitResponse(rl.retryAfter, CORS);
         let body: unknown;
         try {

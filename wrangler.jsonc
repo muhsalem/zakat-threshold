@@ -4,4 +4,9 @@
   "compatibility_date": "2025-09-24",
   "compatibility_flags": ["nodejs_compat"],
   "main": "src/server.ts",
+  // خطوة تُجرى مرة واحدة يدوياً قبل أول نشر إنتاجي (يتطلب حساب Cloudflare):
+  //   1) wrangler kv namespace create RATE_LIMIT_KV
+  //   2) الصق الـ id الناتج أدناه بدل "REPLACE_WITH_KV_NAMESPACE_ID"
+  // بدون هذا الربط يعمل حد الطلبات محلياً بالذاكرة فقط (انظر rate-limit.server.ts)
+  "kv_namespaces": [{ "binding": "RATE_LIMIT_KV", "id": "REPLACE_WITH_KV_NAMESPACE_ID" }],
 }

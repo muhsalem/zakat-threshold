@@ -20,7 +20,7 @@ export const Route = createFileRoute("/api/public/prices/history")({
     handlers: {
       OPTIONS: async () => new Response(null, { status: 204, headers: CORS }),
       GET: async ({ request }) => {
-        const rl = rateLimit(request, { key: "prices-history", limit: 60, windowMs: 60_000 });
+        const rl = await rateLimit(request, { key: "prices-history", limit: 60, windowMs: 60_000 });
         if (!rl.ok) return rateLimitResponse(rl.retryAfter, CORS);
 
         const url = new URL(request.url);

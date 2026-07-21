@@ -19,7 +19,7 @@ export const Route = createFileRoute("/api/public/erp/webhook")({
     handlers: {
       OPTIONS: async () => new Response(null, { status: 204, headers: CORS }),
       POST: async ({ request }) => {
-        const rl = rateLimit(request, { key: "erp-webhook", limit: 60, windowMs: 60_000 });
+        const rl = await rateLimit(request, { key: "erp-webhook", limit: 60, windowMs: 60_000 });
         if (!rl.ok) return rateLimitResponse(rl.retryAfter);
 
         const secret = process.env.ERP_WEBHOOK_SECRET;

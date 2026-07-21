@@ -89,7 +89,11 @@ export const Route = createFileRoute("/api/public/hooks/snapshot-daily-nisab")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const rl = rateLimit(request, { key: "snapshot-daily-nisab", limit: 6, windowMs: 60_000 });
+        const rl = await rateLimit(request, {
+          key: "snapshot-daily-nisab",
+          limit: 6,
+          windowMs: 60_000,
+        });
         if (!rl.ok) return rateLimitResponse(rl.retryAfter);
 
         const startedAt = Date.now();

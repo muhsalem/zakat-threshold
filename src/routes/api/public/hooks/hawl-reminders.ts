@@ -23,7 +23,7 @@ async function run(request: Request): Promise<Response> {
       headers: { "Content-Type": "application/json" },
     });
   }
-  const rl = rateLimit(request, { key: "hawl-reminders", limit: 6, windowMs: 60_000 });
+  const rl = await rateLimit(request, { key: "hawl-reminders", limit: 6, windowMs: 60_000 });
   if (!rl.ok) return rateLimitResponse(rl.retryAfter);
 
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

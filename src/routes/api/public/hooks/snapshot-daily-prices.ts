@@ -9,7 +9,7 @@ export const Route = createFileRoute("/api/public/hooks/snapshot-daily-prices")(
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const rl = rateLimit(request, { key: "snapshot-daily", limit: 6, windowMs: 60_000 });
+        const rl = await rateLimit(request, { key: "snapshot-daily", limit: 6, windowMs: 60_000 });
         if (!rl.ok) return rateLimitResponse(rl.retryAfter);
 
         const startedAt = Date.now();

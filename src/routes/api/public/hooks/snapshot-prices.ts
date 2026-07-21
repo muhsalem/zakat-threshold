@@ -10,7 +10,7 @@ export const Route = createFileRoute("/api/public/hooks/snapshot-prices")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const rl = rateLimit(request, { key: "snapshot-prices", limit: 6, windowMs: 60_000 });
+        const rl = await rateLimit(request, { key: "snapshot-prices", limit: 6, windowMs: 60_000 });
         if (!rl.ok) return rateLimitResponse(rl.retryAfter);
 
         // 1) اجلب الأسعار من المصدر الحيّ (مع fallback chain)

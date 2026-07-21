@@ -26,6 +26,7 @@ const SYSTEM = `أنت خبير محاسبي شرعي متخصّص في زكاة
 - mudaraba_share: حصة في مضاربات
 - musharaka_share: حصة في مشاركات
 - precious_metals: ذهب/فضة
+- crypto_digital: عملات رقمية/مشفّرة أو أصول رقمية (تُزكّى كالنقود وفق قرار مجمع الفقه الإسلامي 237)
 
 الفئات المستبعَدة (zakatable=false):
 - fixed_assets_use: أصول ثابتة للاستخدام
@@ -72,7 +73,7 @@ export const Route = createFileRoute("/api/extract-statement")({
       POST: async ({ request }) => {
         const auth = await requireUser(request);
         if (auth instanceof Response) return auth;
-        const rl = rateLimit(request, {
+        const rl = await rateLimit(request, {
           key: `extract:${auth.userId}`,
           limit: 10,
           windowMs: 60_000,

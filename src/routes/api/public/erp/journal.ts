@@ -56,7 +56,7 @@ export const Route = createFileRoute("/api/public/erp/journal")({
       },
 
       POST: async ({ request }) => {
-        const rl = rateLimit(request, { key: "erp-journal", limit: 30, windowMs: 60_000 });
+        const rl = await rateLimit(request, { key: "erp-journal", limit: 30, windowMs: 60_000 });
         if (!rl.ok) return rateLimitResponse(rl.retryAfter);
 
         let payload: ZakatCalcInput;

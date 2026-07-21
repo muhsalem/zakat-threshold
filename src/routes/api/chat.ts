@@ -77,7 +77,11 @@ export const Route = createFileRoute("/api/chat")({
       POST: async ({ request }) => {
         const auth = await requireUser(request);
         if (auth instanceof Response) return auth;
-        const rl = rateLimit(request, { key: `chat:${auth.userId}`, limit: 20, windowMs: 60_000 });
+        const rl = await rateLimit(request, {
+          key: `chat:${auth.userId}`,
+          limit: 20,
+          windowMs: 60_000,
+        });
         if (!rl.ok) return rateLimitResponse(rl.retryAfter);
 
         const { messages } = (await request.json()) as { messages?: UIMessage[] };
