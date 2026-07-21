@@ -3,6 +3,7 @@
  * Server-only helpers. Never import from client bundles.
  */
 import type { NormalizedJournalEntry } from "./journal";
+import { assertUrlSafe } from "./ssrfGuard";
 
 export type Provider = "odoo" | "sap" | "odoo_sandbox" | "sap_sandbox";
 
@@ -33,10 +34,16 @@ export interface PushResult {
 const TIMEOUT_MS = 15_000;
 
 async function jfetch(url: string, init: RequestInit & { timeoutMs?: number } = {}) {
+  // بوابة SSRF: base_url مُدخل من المستخدم — يُفحص قبل كل اتصال خارج، بما
+  // في ذلك عمليات إعادة التوجيه غير المباشرة عبر تعطيل المتابعة التلقائية
+  await assertUrlSafe(url);
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), init.timeoutMs ?? TIMEOUT_MS);
   try {
-    const res = await fetch(url, { ...init, signal: ctrl.signal });
+    const res = await fetch(url, { ...init, signal: ctrl.signal, redirect: "manual" });
+    if (res.status >= 300 && res.status < 400) {
+      throw new Error("erp_redirect_rejected"); // لا نتبع إعادة توجيه قد تشير لعنوان داخلي
+    }
     const txt = await res.text();
     let json: unknown = null;
     try {

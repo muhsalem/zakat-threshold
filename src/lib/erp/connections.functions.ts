@@ -6,6 +6,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { buildNormalizedJournal, type ZakatCalcInput } from "./journal";
 import { testConnection, pushJournal, type Provider, type ErpCreds } from "./providers.server";
+import { checkUrlSafe } from "./ssrfGuard";
 
 export interface ErpConnectionInput {
   id?: string;
@@ -40,6 +41,10 @@ export const saveErpConnection = createServerFn({ method: "POST" })
     return d;
   })
   .handler(async ({ data, context }) => {
+    // بوابة SSRF عند الحفظ (دفاع متعدد الطبقات — بجانب فحص كل اتصال فعلي في jfetch)
+    const urlCheck = await checkUrlSafe(data.base_url);
+    if (!urlCheck.ok) throw new Error(urlCheck.reason ?? "base_url_unsafe");
+
     const row = {
       user_id: context.userId,
       provider: data.provider,

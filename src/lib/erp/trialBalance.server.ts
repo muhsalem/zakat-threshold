@@ -8,14 +8,19 @@
  */
 import type { ErpCreds } from "./providers.server";
 import type { TrialBalanceRow } from "./zakatMapping";
+import { assertUrlSafe } from "./ssrfGuard";
 
 const TIMEOUT_MS = 20_000;
 
 async function jfetch(url: string, init: RequestInit & { timeoutMs?: number } = {}) {
+  await assertUrlSafe(url); // بوابة SSRF — انظر ssrfGuard.ts
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), init.timeoutMs ?? TIMEOUT_MS);
   try {
-    const res = await fetch(url, { ...init, signal: ctrl.signal });
+    const res = await fetch(url, { ...init, signal: ctrl.signal, redirect: "manual" });
+    if (res.status >= 300 && res.status < 400) {
+      throw new Error("erp_redirect_rejected");
+    }
     const txt = await res.text();
     let json: unknown = null;
     try {
