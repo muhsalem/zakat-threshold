@@ -170,7 +170,7 @@ export default function AIStatementOCR() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-primary" />
-          استخراج الوعاء الزكوي بالذكاء الاصطناعي
+          تدقيق وامتثال شرعي آلي للقوائم المالية (ذكاء اصطناعي)
           <Badge variant="outline">Vision + Text</Badge>
         </CardTitle>
       </CardHeader>

@@ -2879,9 +2879,6 @@ export function CompanyTab() {
               </>
             )}
 
-            {/* ====== استخراج الوعاء الزكوي بالذكاء الاصطناعي ====== */}
-            <AIStatementOCR />
-
             {/* ====== مطابقة الوعاء الزكوي مع الضريبي ====== */}
             <TaxZakatReconciliation currencyName={currencyName} />
           </div>
@@ -3236,13 +3233,18 @@ export function CompanyTab() {
                 </CardTitle>
                 <p className="text-xs text-muted-foreground">
                   ارفق قائمة المركز المالي وقائمة الدخل وقائمة التدفقات النقدية وقائمة التغيرات في
-                  حقوق الملكية لمراجعة بنود الوعاء الزكوي والامتثال الشرعي.
+                  حقوق الملكية كسجل مرجعي للمراجع البشري ومراقب الحسابات. لتحليل آلي فوري لقائمة
+                  المركز المالي (استخراج البنود، حساب الوعاء، وكشف الربا/الأنشطة المحرمة) استخدم
+                  أداة التدقيق الآلي أدناه مباشرة.
                 </p>
               </CardHeader>
               <CardContent>
                 <FinancialUpload />
               </CardContent>
             </Card>
+
+            {/* ====== التدقيق والامتثال الشرعي الآلي على القوائم المالية ====== */}
+            <AIStatementOCR />
 
             {/* قائمة التدقيق الشرعي */}
             <Card className="border-primary/30 shadow-soft">
