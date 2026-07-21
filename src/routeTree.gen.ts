@@ -62,9 +62,11 @@ import { Route as RTokenRouteImport } from './routes/r.$token'
 import { Route as LegalTermsRouteImport } from './routes/legal.terms'
 import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as ApiShariaStockScreeningRouteImport } from './routes/api/sharia-stock-screening'
 import { Route as ApiExtractStatementRouteImport } from './routes/api/extract-statement'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedSubscriptionRouteImport } from './routes/_authenticated/subscription'
+import { Route as AuthenticatedShariaStockScreeningRouteImport } from './routes/_authenticated/sharia-stock-screening'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedPricesAuditRouteImport } from './routes/_authenticated/prices-audit'
 import { Route as AuthenticatedErpSetupRouteImport } from './routes/_authenticated/erp-setup'
@@ -361,6 +363,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => BlogRoute,
 } as any)
+const ApiShariaStockScreeningRoute = ApiShariaStockScreeningRouteImport.update({
+  id: '/api/sharia-stock-screening',
+  path: '/api/sharia-stock-screening',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiExtractStatementRoute = ApiExtractStatementRouteImport.update({
   id: '/api/extract-statement',
   path: '/api/extract-statement',
@@ -375,6 +382,12 @@ const AuthenticatedSubscriptionRoute =
   AuthenticatedSubscriptionRouteImport.update({
     id: '/subscription',
     path: '/subscription',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedShariaStockScreeningRoute =
+  AuthenticatedShariaStockScreeningRouteImport.update({
+    id: '/sharia-stock-screening',
+    path: '/sharia-stock-screening',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
@@ -599,9 +612,11 @@ export interface FileRoutesByFullPath {
   '/erp-setup': typeof AuthenticatedErpSetupRoute
   '/prices-audit': typeof AuthenticatedPricesAuditRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/sharia-stock-screening': typeof AuthenticatedShariaStockScreeningRoute
   '/subscription': typeof AuthenticatedSubscriptionRoute
   '/api/chat': typeof ApiChatRoute
   '/api/extract-statement': typeof ApiExtractStatementRoute
+  '/api/sharia-stock-screening': typeof ApiShariaStockScreeningRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
@@ -685,9 +700,11 @@ export interface FileRoutesByTo {
   '/erp-setup': typeof AuthenticatedErpSetupRoute
   '/prices-audit': typeof AuthenticatedPricesAuditRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/sharia-stock-screening': typeof AuthenticatedShariaStockScreeningRoute
   '/subscription': typeof AuthenticatedSubscriptionRoute
   '/api/chat': typeof ApiChatRoute
   '/api/extract-statement': typeof ApiExtractStatementRoute
+  '/api/sharia-stock-screening': typeof ApiShariaStockScreeningRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
@@ -773,9 +790,11 @@ export interface FileRoutesById {
   '/_authenticated/erp-setup': typeof AuthenticatedErpSetupRoute
   '/_authenticated/prices-audit': typeof AuthenticatedPricesAuditRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/sharia-stock-screening': typeof AuthenticatedShariaStockScreeningRoute
   '/_authenticated/subscription': typeof AuthenticatedSubscriptionRoute
   '/api/chat': typeof ApiChatRoute
   '/api/extract-statement': typeof ApiExtractStatementRoute
+  '/api/sharia-stock-screening': typeof ApiShariaStockScreeningRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
@@ -861,9 +880,11 @@ export interface FileRouteTypes {
     | '/erp-setup'
     | '/prices-audit'
     | '/settings'
+    | '/sharia-stock-screening'
     | '/subscription'
     | '/api/chat'
     | '/api/extract-statement'
+    | '/api/sharia-stock-screening'
     | '/blog/$slug'
     | '/legal/privacy'
     | '/legal/terms'
@@ -947,9 +968,11 @@ export interface FileRouteTypes {
     | '/erp-setup'
     | '/prices-audit'
     | '/settings'
+    | '/sharia-stock-screening'
     | '/subscription'
     | '/api/chat'
     | '/api/extract-statement'
+    | '/api/sharia-stock-screening'
     | '/blog/$slug'
     | '/legal/privacy'
     | '/legal/terms'
@@ -1034,9 +1057,11 @@ export interface FileRouteTypes {
     | '/_authenticated/erp-setup'
     | '/_authenticated/prices-audit'
     | '/_authenticated/settings'
+    | '/_authenticated/sharia-stock-screening'
     | '/_authenticated/subscription'
     | '/api/chat'
     | '/api/extract-statement'
+    | '/api/sharia-stock-screening'
     | '/blog/$slug'
     | '/legal/privacy'
     | '/legal/terms'
@@ -1111,6 +1136,7 @@ export interface RootRouteChildren {
   ZakatGoldRoute: typeof ZakatGoldRoute
   ApiChatRoute: typeof ApiChatRoute
   ApiExtractStatementRoute: typeof ApiExtractStatementRoute
+  ApiShariaStockScreeningRoute: typeof ApiShariaStockScreeningRoute
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   LegalTermsRoute: typeof LegalTermsRoute
   RTokenRoute: typeof RTokenRoute
@@ -1501,6 +1527,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof BlogRoute
     }
+    '/api/sharia-stock-screening': {
+      id: '/api/sharia-stock-screening'
+      path: '/api/sharia-stock-screening'
+      fullPath: '/api/sharia-stock-screening'
+      preLoaderRoute: typeof ApiShariaStockScreeningRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/extract-statement': {
       id: '/api/extract-statement'
       path: '/api/extract-statement'
@@ -1520,6 +1553,13 @@ declare module '@tanstack/react-router' {
       path: '/subscription'
       fullPath: '/subscription'
       preLoaderRoute: typeof AuthenticatedSubscriptionRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/sharia-stock-screening': {
+      id: '/_authenticated/sharia-stock-screening'
+      path: '/sharia-stock-screening'
+      fullPath: '/sharia-stock-screening'
+      preLoaderRoute: typeof AuthenticatedShariaStockScreeningRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings': {
@@ -1756,6 +1796,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedErpSetupRoute: typeof AuthenticatedErpSetupRoute
   AuthenticatedPricesAuditRoute: typeof AuthenticatedPricesAuditRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedShariaStockScreeningRoute: typeof AuthenticatedShariaStockScreeningRoute
   AuthenticatedSubscriptionRoute: typeof AuthenticatedSubscriptionRoute
   AuthenticatedCertifiedReportRecordIdRoute: typeof AuthenticatedCertifiedReportRecordIdRoute
   AuthenticatedComplianceReportRecordIdRoute: typeof AuthenticatedComplianceReportRecordIdRoute
@@ -1776,6 +1817,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedErpSetupRoute: AuthenticatedErpSetupRoute,
   AuthenticatedPricesAuditRoute: AuthenticatedPricesAuditRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedShariaStockScreeningRoute:
+    AuthenticatedShariaStockScreeningRoute,
   AuthenticatedSubscriptionRoute: AuthenticatedSubscriptionRoute,
   AuthenticatedCertifiedReportRecordIdRoute:
     AuthenticatedCertifiedReportRecordIdRoute,
@@ -1849,6 +1892,7 @@ const rootRouteChildren: RootRouteChildren = {
   ZakatGoldRoute: ZakatGoldRoute,
   ApiChatRoute: ApiChatRoute,
   ApiExtractStatementRoute: ApiExtractStatementRoute,
+  ApiShariaStockScreeningRoute: ApiShariaStockScreeningRoute,
   LegalPrivacyRoute: LegalPrivacyRoute,
   LegalTermsRoute: LegalTermsRoute,
   RTokenRoute: RTokenRoute,

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { consumeCompanyPrefill } from "@/lib/intakeMapping";
 import { trackEvent } from "@/lib/analytics";
@@ -3224,6 +3225,28 @@ export function CompanyTab() {
         {/* ======================= تبويب التدقيق والامتثال ======================= */}
         <TabsContent value="audit" className="grid lg:grid-cols-3 gap-6 mt-4">
           <div className="lg:col-span-2 space-y-6">
+            {/* الفرز الشرعي لأسهم شركات أخرى تملك المنشأة أسهمها للمتاجرة */}
+            <Card className="shadow-soft border-primary/30 bg-primary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Scale className="h-5 w-5 text-primary" />
+                  الفرز الشرعي لأسهم الشركات المتداوَلة
+                </CardTitle>
+                <p className="text-xs text-muted-foreground">
+                  إن كانت المنشأة تملك أسهماً في شركات أخرى للمتاجرة، تحقّق أولاً أنها حلال الاقتناء
+                  قبل تزكيتها — وفق منهجيات أيوفي وDJIM وS&P، باستخراج مزدوج للتحقق وحساب حتمي للنسب
+                  من القوائم المالية المرفوعة (PDF).
+                </p>
+              </CardHeader>
+              <CardContent>
+                <Button asChild variant="outline" className="gap-1.5">
+                  <Link to="/sharia-stock-screening">
+                    <Scale className="h-4 w-4" /> فتح أداة الفرز الشرعي للأسهم
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+
             {/* رفع القوائم المالية */}
             <Card className="shadow-soft border-primary/20">
               <CardHeader className="bg-gradient-to-l from-primary/10 to-transparent">
