@@ -31,6 +31,9 @@ export const AI_CATEGORY_TO_ZAKAT: Record<string, ZakatCategory> = {
   mudaraba_share: "investments",
   musharaka_share: "investments",
   precious_metals: "investments",
+  // عملات رقمية — تُزكّى كالنقود وفق رأي الجمهور المعاصر؛ مصنَّفة ضمن
+  // الاستثمارات الزكوية (2.5%) لا الأصول الثابتة. انظر cryptoFatwas.ts
+  crypto_digital: "investments",
   fixed_assets_use: "fixed_assets",
   intangibles: "fixed_assets",
   psia: "excluded",

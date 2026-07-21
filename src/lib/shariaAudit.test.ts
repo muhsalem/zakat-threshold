@@ -96,4 +96,30 @@ describe("runShariaComplianceReview() — المراجعة الشرعية الش
     const r = review(CLEAN_TB);
     for (const f of r.findings) expect(f.reference.length).toBeGreaterThan(3);
   });
+
+  it("يكشف الأصول الرقمية/المشفّرة ويوثّق حكمها كالنقود (ملاحظة لا مخالفة)", () => {
+    const r = review([
+      ...CLEAN_TB,
+      { code: "1400", name: "محفظة عملات رقمية - بيتكوين", balance: 40000 },
+    ]);
+    const f = r.findings.find((x) => x.id === "crypto_detected");
+    expect(f).toBeTruthy();
+    expect(f!.severity).toBe("info");
+    expect(f!.detail).toContain("2.5%");
+    expect(f!.reference).toContain("237");
+  });
+
+  it("يكشف NFT ويطلب قرار المحاسب بحسب النية (تنبيه)", () => {
+    const r = review([...CLEAN_TB, { code: "1500", name: "أصول NFT فنية", balance: 15000 }]);
+    const f = r.findings.find((x) => x.id === "nft_detected");
+    expect(f).toBeTruthy();
+    expect(f!.severity).toBe("warning");
+    expect(f!.detail).toContain("نية الاقتناء");
+  });
+
+  it("ميزان بلا عملات رقمية لا يُصدر علم كريبتو/NFT", () => {
+    const r = review(CLEAN_TB);
+    expect(r.findings.find((x) => x.id === "crypto_detected")).toBeUndefined();
+    expect(r.findings.find((x) => x.id === "nft_detected")).toBeUndefined();
+  });
 });

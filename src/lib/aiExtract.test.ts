@@ -82,6 +82,20 @@ describe("aiItemsToClassifiedRows() — محوّل مخرجات الذكاء ا�
       expect(AI_CATEGORY_TO_ZAKAT[cat]).toBeTruthy();
     }
   });
+
+  it("عملات رقمية مستخرَجة تُصنَّف استثماراً زكوياً كالنقود (2.5%)", () => {
+    const r = aiItemsToClassifiedRows([
+      {
+        category: "crypto_digital",
+        label: "محفظة بيتكوين",
+        amount: 40000,
+        zakatable: true,
+        confidence: 0.9,
+      },
+    ]);
+    expect(r[0].category).toBe("investments");
+    expect(r[0].source).toBe("provider_rule");
+  });
 });
 
 describe("مسار الذكاء الاصطناعي — حساب + مراجعة شرعية كاملة", () => {

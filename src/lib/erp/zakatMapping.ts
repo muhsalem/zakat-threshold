@@ -139,6 +139,21 @@ const KEYWORD_RULES: Array<{ cat: ZakatCategory; words: string[] }> = [
       "marketable",
       "gold",
       "silver",
+      // عملات رقمية/مشفّرة — تُزكّى كالنقود وفق قرار مجمع الفقه الإسلامي
+      // الدولي 237 (8/24) ومعيار AAOIFI 21؛ انظر src/lib/cryptoFatwas.ts
+      "عملات رقمية",
+      "عملة رقمية",
+      "عملات مشفرة",
+      "بيتكوين",
+      "إيثيريوم",
+      "أصول رقمية",
+      "محفظة رقمية",
+      "crypto",
+      "bitcoin",
+      "ethereum",
+      "digital asset",
+      "digital currency",
+      "stablecoin",
     ],
   },
   {

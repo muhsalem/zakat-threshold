@@ -56,6 +56,19 @@ describe("classifyTrialBalance() — SAP عبر الأكواد والكلمات"
     expect(rows[2].category).toBe("current_liabilities");
     expect(rows[3].category).toBe("excluded");
   });
+
+  it("يصنف العملات الرقمية/المشفّرة استثماراً زكوياً لا غير مصنف", () => {
+    const rows = classifyTrialBalance(
+      [
+        { code: "1600", name: "محفظة عملات رقمية", balance: 30000 },
+        { code: "1601", name: "Bitcoin Wallet", balance: 20000 },
+      ],
+      "generic",
+    );
+    expect(rows[0].category).toBe("investments");
+    expect(rows[0].source).toBe("keyword");
+    expect(rows[1].category).toBe("investments");
+  });
 });
 
 describe("classifyTrialBalance() — التجاوزات اليدوية", () => {

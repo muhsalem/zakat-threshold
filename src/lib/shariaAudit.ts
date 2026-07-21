@@ -84,6 +84,24 @@ const HARAM_ACTIVITY_WORDS = [
 
 const CONVENTIONAL_INSURANCE_WORDS = ["تأمين تجاري", "conventional insurance"];
 
+const CRYPTO_WORDS = [
+  "عملات رقمية",
+  "عملة رقمية",
+  "عملات مشفرة",
+  "بيتكوين",
+  "إيثيريوم",
+  "أصول رقمية",
+  "محفظة رقمية",
+  "crypto",
+  "bitcoin",
+  "ethereum",
+  "digital asset",
+  "digital currency",
+  "stablecoin",
+];
+
+const NFT_WORDS = ["nft", "رمز غير قابل للاستبدال", "توكن فني"];
+
 const matchWords = (text: string, words: string[]) => {
   const t = text.toLowerCase();
   return words.some((w) => t.includes(w.toLowerCase()));
@@ -159,6 +177,42 @@ export function runShariaComplianceReview(input: ShariaReviewInput): ShariaRevie
         accounts: convIns.map((r) => `${r.code} ${r.name}`).slice(0, 8),
       },
       "conventional_insurance",
+    );
+  }
+
+  // عملات رقمية/أصول مشفّرة — تُزكّى كالنقود 2.5% وفق رأي الجمهور المعاصر
+  const cryptoRows = rows.filter((r) => matchWords(`${r.code} ${r.name}`, CRYPTO_WORDS));
+  if (cryptoRows.length) {
+    push(
+      {
+        dimension: "sharia",
+        severity: "info",
+        title: "أصول رقمية/عملات مشفّرة مكتشفة — تُزكّى كالنقود",
+        detail:
+          "وُجدت بنود عملات رقمية أو أصول مشفّرة. الرأي الراجح (مجمع الفقه الإسلامي الدولي وAAOIFI): تُعامَل معاملة النقود بمعدل 2.5% من القيمة السوقية عند بلوغ النصاب وحولان الحول إن اتُّخذت للادخار/الاستثمار، أو كعروض تجارة كاملة إن اتُّخذت للمتاجرة النشطة. أرباح Staking/Yield تُضمّ للوعاء عند تحقّقها.",
+        reference:
+          "قرار مجمع الفقه الإسلامي الدولي 237 (8/24) · AAOIFI معيار 21 · انظر مرجع الفتاوى الكامل في src/lib/cryptoFatwas.ts",
+        accounts: cryptoRows.map((r) => `${r.code} ${r.name}`).slice(0, 8),
+      },
+      "crypto_detected",
+    );
+  }
+
+  // NFT — لا تصنيف آلي أحادي؛ الحكم يتبع نية الاقتناء ونوع الأصل المرتبط
+  const nftRows = rows.filter((r) => matchWords(`${r.code} ${r.name}`, NFT_WORDS));
+  if (nftRows.length) {
+    push(
+      {
+        dimension: "sharia",
+        severity: "warning",
+        title: "أصول NFT مكتشفة — تحتاج قرار المحاسب بحسب النية",
+        detail:
+          "وُجدت بنود NFT. الحكم يختلف بحسب نية الاقتناء: اقتناء شخصي (لا زكاة، كالتحف)، متاجرة (عروض تجارة 2.5%)، أو تمثيل حق في أصل حقيقي (حكم الأصل الأساسي). راجع تصنيف كل بند يدوياً.",
+        reference:
+          "قياس على عروض التجارة والمقتنيات — AAOIFI 21 · مسألة مفتوحة قيد الدراسة الفقهية المعاصرة",
+        accounts: nftRows.map((r) => `${r.code} ${r.name}`).slice(0, 8),
+      },
+      "nft_detected",
     );
   }
 
