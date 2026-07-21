@@ -8,6 +8,7 @@ import { FontSizeToggle } from "@/components/FontSizeToggle";
 import LanguageToggle from "@/components/LanguageToggle";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { trackEvent } from "@/lib/analytics";
 import {
   Moon,
   ShieldCheck,
@@ -96,6 +97,9 @@ export const Route = createFileRoute("/")({
 });
 
 function Landing() {
+  useEffect(() => {
+    trackEvent("landing_view");
+  }, []);
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />

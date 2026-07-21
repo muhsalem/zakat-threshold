@@ -57,6 +57,7 @@ const FitrCalculator = lazy(() =>
 import { fmt } from "@/lib/zakat";
 import { AccountantDashboard } from "@/components/accountant/AccountantDashboard";
 import { KpiCompliancePanel } from "@/components/accountant/KpiCompliancePanel";
+import { ProductFunnelPanel } from "@/components/accountant/ProductFunnelPanel";
 
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -418,8 +419,9 @@ function AccountantPortal() {
         <TabsContent value="dashboard" className="mt-0">
           <AccountantDashboard />
         </TabsContent>
-        <TabsContent value="kpis" className="mt-0">
+        <TabsContent value="kpis" className="mt-0 space-y-6">
           <KpiCompliancePanel />
+          <ProductFunnelPanel />
         </TabsContent>
         <TabsContent value="saved" className="mt-0">
           <SavedRecordsPanel />

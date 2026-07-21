@@ -52,6 +52,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { consumePrefill } from "@/lib/intakeMapping";
+import { trackEvent } from "@/lib/analytics";
 import {
   ZAKAT_RATE,
   ZAKAT_RATE_GREGORIAN,
@@ -407,6 +408,11 @@ export function IndividualTab() {
   const [debtMahr, setDebtMahr] = useState(""); // مهر مؤجل
   // ③ النفقة الواجبة إذا صارت ديناً
   const [debtAlimony, setDebtAlimony] = useState(""); // نفقة زوجة/أولاد/أقارب بحكم أو اتفاق
+
+  // تتبّع قمع المنتج — بداية استخدام حاسبة الأفراد (انظر src/lib/analytics.ts)
+  useEffect(() => {
+    trackEvent("calculator_started", { calculator: "individual" });
+  }, []);
 
   // ===== تعبئة مسبقة من بيانات عميل نافذة الاستقبال (يفتحها المحاسب) =====
   useEffect(() => {
@@ -2683,6 +2689,7 @@ export function IndividualTab() {
                     onClick={() => {
                       const deductions = buildDeductionsList();
                       const fxInfo = buildFxPayload();
+                      trackEvent("report_exported", { calculator: "individual", format: "pdf" });
                       downloadZakatPdf(
                         {
                           ...buildBaseReportData(),
@@ -2702,6 +2709,7 @@ export function IndividualTab() {
                     onClick={() => {
                       const deductions = buildDeductionsList();
                       const fxInfo = buildFxPayload();
+                      trackEvent("report_exported", { calculator: "individual", format: "excel" });
                       downloadReportExcel(
                         {
                           ...buildBaseReportData(),

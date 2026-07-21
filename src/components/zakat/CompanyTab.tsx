@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { consumeCompanyPrefill } from "@/lib/intakeMapping";
+import { trackEvent } from "@/lib/analytics";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -1449,6 +1450,11 @@ export function CompanyTab() {
     accelerateYears,
     sector.group,
   ]);
+
+  // تتبّع قمع المنتج — بداية استخدام حاسبة الشركات (انظر src/lib/analytics.ts)
+  useEffect(() => {
+    trackEvent("calculator_started", { calculator: "company" });
+  }, []);
 
   // ===== تعبئة مسبقة من بيانات عميل شركة/مؤسسة (يفتحها المحاسب) =====
   const [prefillBanner, setPrefillBanner] = useState<{
@@ -2993,12 +2999,13 @@ export function CompanyTab() {
                     <Button
                       size="sm"
                       className="flex-1 gap-1.5 min-w-[140px]"
-                      onClick={() =>
+                      onClick={() => {
+                        trackEvent("report_exported", { calculator: "company", format: "pdf" });
                         downloadZakatPdf(
                           baseData,
                           `zakat-company-${companyName || "report"}-${stamp}.pdf`,
-                        )
-                      }
+                        );
+                      }}
                     >
                       <FileText className="h-3.5 w-3.5" /> تحميل التقرير
                     </Button>
@@ -3006,12 +3013,13 @@ export function CompanyTab() {
                       variant="secondary"
                       size="sm"
                       className="flex-1 gap-1.5 min-w-[140px]"
-                      onClick={() =>
+                      onClick={() => {
+                        trackEvent("report_exported", { calculator: "company", format: "excel" });
                         downloadReportExcel(
                           baseData,
                           `zakat-company-${companyName || "report"}-${stamp}.xlsx`,
-                        )
-                      }
+                        );
+                      }}
                     >
                       <FileSpreadsheet className="h-3.5 w-3.5" /> Excel
                     </Button>

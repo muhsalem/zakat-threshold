@@ -44,6 +44,7 @@ import {
 } from "@/lib/accountantStore";
 import { aggregateIntake, type IntakeDetails } from "@/lib/intakeMapping";
 import { supabase } from "@/integrations/supabase/client";
+import { trackEvent } from "@/lib/analytics";
 
 export const Route = createFileRoute("/client-intake")({
   head: () => ({
@@ -356,6 +357,8 @@ function ClientIntakePage() {
     } catch {}
     setDraftSavedAt(null);
     setSubmitted(mode);
+    trackEvent("intake_form_submitted", { mode, kind: form.kind });
+    if (mode === "comprehensive") trackEvent("certified_report_requested", { kind: form.kind });
     toast.success(
       mode === "comprehensive" ? "تم إرسال طلب التقرير الشامل" : "تم إرسال بياناتك للمحاسب",
     );
