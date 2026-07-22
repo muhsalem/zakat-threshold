@@ -12,7 +12,7 @@ export interface ContractAnswer {
 }
 
 export interface ScreeningPayload {
-  meta: { id: string; time: string; fileName: string; hash: string };
+  meta: { id: string; time: string; fileName: string; hash: string; edited?: boolean };
   audit: ComputedStockAudit;
   answers: Record<number, ContractAnswer>;
 }
@@ -31,15 +31,22 @@ export interface ScreeningListItem {
 // (هجرته حديثة) — from<any> مؤقت يُزال عند إعادة توليد الأنواع بعد مزامنة
 // Supabase القادمة (نفس نمط src/lib/analytics.ts).
 
+const ARCHIVE_PAGE_SIZE = 50;
+
 export const listShariaStockScreenings = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }): Promise<ScreeningListItem[]> => {
-    const { data, error } = await (context.supabase.from("sharia_stock_screenings" as never) as any)
+  .inputValidator((d: { offset?: number } | undefined) => d ?? {})
+  .handler(async ({ data, context }): Promise<{ rows: ScreeningListItem[]; hasMore: boolean }> => {
+    const offset = data.offset ?? 0;
+    const { data: rows, error } = await (
+      context.supabase.from("sharia_stock_screenings" as never) as any
+    )
       .select("id, created_at, company_name, file_name, methodology, score, verdict_tone")
       .order("created_at", { ascending: false })
-      .limit(50);
+      .range(offset, offset + ARCHIVE_PAGE_SIZE - 1);
     if (error) throw new Error((error as { message: string }).message);
-    return (data ?? []) as ScreeningListItem[];
+    const list = (rows ?? []) as ScreeningListItem[];
+    return { rows: list, hasMore: list.length === ARCHIVE_PAGE_SIZE };
   });
 
 export const getShariaStockScreening = createServerFn({ method: "GET" })

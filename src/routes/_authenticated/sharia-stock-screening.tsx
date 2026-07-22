@@ -45,9 +45,11 @@ import {
   compareExtracts,
   METHODOLOGIES,
   fmtNum,
+  num,
   type MethodologyKey,
   type StockAuditExtract,
   type ComputedStockAudit,
+  type VerificationResult,
 } from "@/lib/shariaStockScreening";
 import {
   listShariaStockScreenings,
@@ -148,21 +150,32 @@ function ShariaStockScreeningPage() {
   const [marketCap, setMarketCap] = useState("");
   const [avgMarketCap, setAvgMarketCap] = useState("");
   const [dualPass, setDualPass] = useState(true);
-  const [stage, setStage] = useState<"idle" | "analyzing" | "done" | "error">("idle");
+  const [stage, setStage] = useState<"idle" | "analyzing" | "review" | "done" | "error">("idle");
   const [progress, setProgress] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const [current, setCurrent] = useState<{ id: string | null; payload: ScreeningPayload } | null>(
     null,
   );
+  const [draft, setDraft] = useState<{
+    original: StockAuditExtract;
+    edited: StockAuditExtract;
+    verification: VerificationResult;
+    meta: { fileName: string; hash: string };
+  } | null>(null);
   const [archive, setArchive] = useState<ScreeningListItem[]>([]);
   const [archiveLoaded, setArchiveLoaded] = useState(false);
+  const [archiveOffset, setArchiveOffset] = useState(0);
+  const [archiveHasMore, setArchiveHasMore] = useState(false);
+  const [archiveLoadingMore, setArchiveLoadingMore] = useState(false);
   const [answersSaved, setAnswersSaved] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const loadArchive = async () => {
     try {
-      const rows = await listFn();
+      const { rows, hasMore } = await listFn({ data: { offset: 0 } });
       setArchive(rows);
+      setArchiveOffset(rows.length);
+      setArchiveHasMore(hasMore);
     } catch {
       /* لا أرشيف بعد أو غير مسجّل دخول */
     } finally {
@@ -170,6 +183,20 @@ function ShariaStockScreeningPage() {
     }
   };
   if (!archiveLoaded) void loadArchive();
+
+  const loadMoreArchive = async () => {
+    setArchiveLoadingMore(true);
+    try {
+      const { rows, hasMore } = await listFn({ data: { offset: archiveOffset } });
+      setArchive((a) => [...a, ...rows]);
+      setArchiveOffset((o) => o + rows.length);
+      setArchiveHasMore(hasMore);
+    } catch (e) {
+      toast.error("تعذّر تحميل المزيد", { description: (e as Error).message });
+    } finally {
+      setArchiveLoadingMore(false);
+    }
+  };
 
   const audit: ComputedStockAudit | null = useMemo(() => {
     if (!current) return null;
@@ -179,6 +206,10 @@ function ShariaStockScreeningPage() {
   const onFile = async (file: File) => {
     if (file.type !== "application/pdf") {
       toast.error("يُقبل حالياً ملف PDF فقط");
+      return;
+    }
+    if (file.size > 15 * 1024 * 1024) {
+      toast.error("الملف أكبر من الحد المسموح (15 ميجابايت)");
       return;
     }
     setStage("analyzing");
@@ -194,37 +225,76 @@ function ShariaStockScreeningPage() {
       const base64 = await fileToBase64(file);
       const { extract, extract2 } = await callScreen(base64, dualPass);
       const verification = compareExtracts(extract, extract2);
-      const auditResult = computeStockAudit(extract, {
-        marketCap,
-        avgMarketCap,
-        methodologyKey,
+      setDraft({
+        original: extract,
+        edited: JSON.parse(JSON.stringify(extract)) as StockAuditExtract,
         verification,
+        meta: { fileName: file.name, hash },
       });
-      const meta = {
-        id: "SA-" + Date.now().toString(36).toUpperCase(),
-        time: new Date().toLocaleString("ar-EG", { dateStyle: "full", timeStyle: "short" }),
-        fileName: file.name,
-        hash,
-      };
-      const payload: ScreeningPayload = { meta, audit: auditResult, answers: {} };
-      setCurrent({ id: null, payload });
-      setStage("done");
-      try {
-        const saved = await saveFn({ data: { methodology: methodologyKey, payload } });
-        setCurrent({ id: saved.id, payload });
-        void loadArchiveSilent();
-      } catch (e) {
-        toast.error("تعذّر حفظ التقرير في الأرشيف", { description: (e as Error).message });
-      }
+      setStage("review");
     } catch (e) {
       setErrMsg(e instanceof Error ? e.message : "حدث خطأ غير متوقع أثناء التحليل");
       setStage("error");
     }
   };
 
+  const confirmDraft = async () => {
+    if (!draft) return;
+    const wasEdited = JSON.stringify(draft.original) !== JSON.stringify(draft.edited);
+    const auditResult = computeStockAudit(draft.edited, {
+      marketCap,
+      avgMarketCap,
+      methodologyKey,
+      verification: draft.verification,
+    });
+    const meta = {
+      id: "SA-" + Date.now().toString(36).toUpperCase(),
+      time: new Date().toLocaleString("ar-EG", { dateStyle: "full", timeStyle: "short" }),
+      fileName: draft.meta.fileName,
+      hash: draft.meta.hash,
+      edited: wasEdited,
+    };
+    const payload: ScreeningPayload = { meta, audit: auditResult, answers: {} };
+    setCurrent({ id: null, payload });
+    setStage("done");
+    setDraft(null);
+    try {
+      const saved = await saveFn({ data: { methodology: methodologyKey, payload } });
+      setCurrent({ id: saved.id, payload });
+      void loadArchiveSilent();
+    } catch (e) {
+      toast.error("تعذّر حفظ التقرير في الأرشيف", { description: (e as Error).message });
+    }
+  };
+
+  const setFigure = (key: keyof StockAuditExtract["figures"], v: string) => {
+    setDraft((d) =>
+      d ? { ...d, edited: { ...d.edited, figures: { ...d.edited.figures, [key]: num(v) } } } : d,
+    );
+  };
+  const setDebtAmount = (i: number, v: string) => {
+    setDraft((d) => {
+      if (!d) return d;
+      const arr = d.edited.conventionalDebt.slice();
+      arr[i] = { ...arr[i], amount: num(v) };
+      return { ...d, edited: { ...d.edited, conventionalDebt: arr } };
+    });
+  };
+  const setDepositAmount = (i: number, v: string) => {
+    setDraft((d) => {
+      if (!d) return d;
+      const arr = d.edited.interestBearingDeposits.slice();
+      arr[i] = { ...arr[i], amount: num(v) };
+      return { ...d, edited: { ...d.edited, interestBearingDeposits: arr } };
+    });
+  };
+
   const loadArchiveSilent = async () => {
     try {
-      setArchive(await listFn());
+      const { rows, hasMore } = await listFn({ data: { offset: 0 } });
+      setArchive(rows);
+      setArchiveOffset(rows.length);
+      setArchiveHasMore(hasMore);
     } catch {
       /* تجاهل */
     }
@@ -444,6 +514,21 @@ function ShariaStockScreeningPage() {
                       </Button>
                     </div>
                   ))}
+                  {archiveHasMore && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                      onClick={loadMoreArchive}
+                      disabled={archiveLoadingMore}
+                    >
+                      {archiveLoadingMore ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        "تحميل المزيد"
+                      )}
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
             )}
@@ -454,6 +539,136 @@ function ShariaStockScreeningPage() {
           <div className="text-center py-20">
             <Loader2 className="h-10 w-10 animate-spin text-primary mx-auto mb-4" />
             <p className="text-muted-foreground">{progress}</p>
+          </div>
+        )}
+
+        {stage === "review" && draft && (
+          <div className="space-y-6">
+            <Alert className="border-primary/40 bg-primary/5">
+              <Info className="h-4 w-4 text-primary" />
+              <AlertDescription className="text-xs leading-relaxed">
+                راجع الأرقام المستخرجة أدناه وصحّح أي خطأ قبل احتساب النسب — الحساب حتمي، فأي خطأ في
+                الاستخراج (رقم مقروء خطأ من الذكاء الاصطناعي) ينتقل مباشرة إلى الحكم الشرعي. هذه
+                الخطوة إلزامية لأن التصحيح غير ممكن بعد اعتماد التقرير.
+              </AlertDescription>
+            </Alert>
+
+            {draft.verification.unconfirmed.length > 0 && (
+              <Alert className="border-destructive/40 bg-destructive/5">
+                <AlertTriangle className="h-4 w-4 text-destructive" />
+                <AlertDescription className="text-xs">
+                  <b>
+                    أرقام غير مؤكدة ({draft.verification.unconfirmed.length}) — اختلف الاستخراجان،
+                    راجعها في الملف الأصلي قبل الاعتماد:
+                  </b>
+                  <ul className="list-disc pr-5 mt-1 space-y-0.5">
+                    {draft.verification.unconfirmed.map((u, i) => (
+                      <li key={i}>
+                        {u.label}: {fmtNum(u.v1)} ・ {fmtNum(u.v2)} (فارق {fmtNum(u.diffPct)}٪)
+                      </li>
+                    ))}
+                  </ul>
+                </AlertDescription>
+              </Alert>
+            )}
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">
+                  {draft.edited.company?.name || "الشركة"} — الأرقام الرئيسية
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="grid sm:grid-cols-3 gap-3">
+                {(
+                  [
+                    ["totalAssets", "إجمالي الأصول"],
+                    ["totalLiabilities", "إجمالي الالتزامات"],
+                    ["totalEquity", "حقوق الملكية"],
+                    ["totalRevenue", "إجمالي الإيرادات"],
+                    ["interestIncome", "الفوائد الدائنة"],
+                    ["capitalizedInterest", "الفوائد المرسملة"],
+                    ["weightedShares", "المتوسط المرجح للأسهم"],
+                  ] as const
+                ).map(([key, label]) => (
+                  <div key={key}>
+                    <Label className="text-xs">{label}</Label>
+                    <Input
+                      value={String(draft.edited.figures[key] ?? 0)}
+                      onChange={(e) => setFigure(key, e.target.value)}
+                      inputMode="decimal"
+                      className={
+                        num(draft.edited.figures[key]) !== num(draft.original.figures[key])
+                          ? "border-primary"
+                          : undefined
+                      }
+                    />
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            {draft.edited.conventionalDebt.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">مفردات الديون الربوية</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {draft.edited.conventionalDebt.map((d, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <span className="flex-1 text-sm">{d.name}</span>
+                      <Input
+                        value={String(d.amount)}
+                        onChange={(e) => setDebtAmount(i, e.target.value)}
+                        inputMode="decimal"
+                        className={`w-40 ${
+                          num(d.amount) !== num(draft.original.conventionalDebt[i]?.amount)
+                            ? "border-primary"
+                            : ""
+                        }`}
+                      />
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+
+            {draft.edited.interestBearingDeposits.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">مفردات الودائع بفائدة</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {draft.edited.interestBearingDeposits.map((d, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <span className="flex-1 text-sm">{d.name}</span>
+                      <Input
+                        value={String(d.amount)}
+                        onChange={(e) => setDepositAmount(i, e.target.value)}
+                        inputMode="decimal"
+                        className={`w-40 ${
+                          num(d.amount) !== num(draft.original.interestBearingDeposits[i]?.amount)
+                            ? "border-primary"
+                            : ""
+                        }`}
+                      />
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+
+            <div className="flex flex-wrap justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setDraft(null);
+                  setStage("idle");
+                }}
+              >
+                إلغاء وإعادة الرفع
+              </Button>
+              <Button onClick={confirmDraft}>اعتماد الأرقام واحتساب النسب</Button>
+            </div>
           </div>
         )}
 
@@ -970,6 +1185,11 @@ function ShariaStockScreeningPage() {
               <div>
                 رقم التقرير: <b>{current.payload.meta.id}</b> · التاريخ:{" "}
                 <b>{current.payload.meta.time}</b> · الملف: <b>{current.payload.meta.fileName}</b>
+                {current.payload.meta.edited && (
+                  <Badge variant="outline" className="mr-2 text-amber-600 text-[10px]">
+                    عُدِّلت أرقام مستخرَجة يدوياً قبل الاحتساب
+                  </Badge>
+                )}
               </div>
               <div className="font-mono" dir="ltr">
                 SHA-256: {current.payload.meta.hash.slice(0, 24)}…
