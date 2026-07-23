@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { rateLimit, rateLimitResponse } from "@/lib/rate-limit.server";
+import { resolveRuling, type Jurisdiction, type Madhab } from "@/lib/fatwaEngine";
+
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
