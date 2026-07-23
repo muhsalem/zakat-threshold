@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { rateLimit, rateLimitResponse } from "@/lib/rate-limit.server";
+import { resolveRuling, type Jurisdiction, type Madhab } from "@/lib/fatwaEngine";
+
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -45,14 +47,31 @@ export const Route = createFileRoute("/api/public/calc")({
         const eligible = net >= nisab;
         const zakat = eligible ? +(net * rate).toFixed(2) : 0;
 
+        // مرجع الفتوى — يربط كل حساب بقاعدة موثّقة في محرك الفتاوى
+        const topic = typeof b.topic === "string" ? b.topic : "cash.general";
+        const jurisdiction =
+          typeof b.jurisdiction === "string" ? (b.jurisdiction as Jurisdiction) : undefined;
+        const madhab = typeof b.madhab === "string" ? (b.madhab as Madhab) : undefined;
+        const ruling = resolveRuling({ topic, jurisdiction, madhab });
+        const fatwa_ref = ruling
+          ? {
+              fatwa_ref_id: ruling.id,
+              authority: ruling.authority,
+              basis: ruling.basis,
+              evidence: ruling.evidence,
+              effective_from: ruling.effective_from,
+            }
+          : null;
+
         return new Response(
           JSON.stringify({
             ok: true,
-            input: { assets, liabilities, nisab, rate, calendar },
+            input: { assets, liabilities, nisab, rate, calendar, topic, jurisdiction, madhab },
             net_assets: +net.toFixed(2),
             eligible,
             zakat_due: zakat,
             standard: "AAOIFI 35",
+            fatwa_ref,
             note:
               calendar === "gregorian"
                 ? "تم تطبيق معدّل 2.577% لاحتساب الحول بالتقويم الميلادي وفق توصية الندوة السابعة لقضايا الزكاة."
@@ -61,6 +80,7 @@ export const Route = createFileRoute("/api/public/calc")({
           }),
           { headers: CORS },
         );
+
       },
     },
   },
