@@ -4,8 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   GraduationCap,
   Stethoscope,
@@ -18,7 +18,8 @@ import {
   Info,
   Coins,
   Briefcase,
-  Layers,
+  ShieldCheck,
+  AlertTriangle,
 } from "lucide-react";
 import { num, fmt, ZAKAT_RATE } from "@/lib/zakat";
 
@@ -34,6 +35,9 @@ export function ProfessionsZakatSection({
   onZakatChange,
 }: ProfessionsZakatSectionProps) {
   const [selectedProfession, setSelectedProfession] = useState<ProfessionType>("teacher");
+
+  // خيار حماية منع الازدواج الزكوي
+  const [alreadyInCashBank, setAlreadyInCashBank] = useState(false);
 
   // 1. المعلمون والتربويون
   const [teacherBasic, setTeacherBasic] = useState("");
@@ -66,7 +70,7 @@ export function ProfessionsZakatSection({
   // المدخر والمصروف الفعلي المستقطع (مشترك)
   const [professionSavedCapital, setProfessionSavedCapital] = useState("");
 
-  // احتساب الزكاة والوعاء
+  // احتساب الزكاة والوعاء مع ضمان عدم الازدواج
   const calcs = useMemo(() => {
     let grossIncomeAnnual = 0;
     let title = "";
@@ -107,9 +111,20 @@ export function ProfessionsZakatSection({
     }
 
     const saved = num(professionSavedCapital);
-    // الوعاء الزكوي: المحسوب على المدخرات الفعلية القائمة عند الحول من دخل المهنة
-    const zakatBase = saved > 0 ? saved : grossIncomeAnnual;
-    const zakatDue = zakatBase * ZAKAT_RATE;
+
+    // إذا كان المال مدخراً بالفعل ومحسوباً في البنك، فيكون مبلغ الزكاة هنا 0 منعاً للازدواج!
+    let zakatBase = 0;
+    let zakatDue = 0;
+    let isDoubleCountGuarded = false;
+
+    if (alreadyInCashBank) {
+      zakatBase = 0;
+      zakatDue = 0;
+      isDoubleCountGuarded = true;
+    } else {
+      zakatBase = saved > 0 ? saved : grossIncomeAnnual;
+      zakatDue = zakatBase * ZAKAT_RATE;
+    }
 
     return {
       title,
@@ -117,9 +132,11 @@ export function ProfessionsZakatSection({
       saved,
       zakatBase,
       zakatDue,
+      isDoubleCountGuarded,
     };
   }, [
     selectedProfession,
+    alreadyInCashBank,
     teacherBasic,
     teacherAllowances,
     teacherTutoring,
@@ -147,6 +164,7 @@ export function ProfessionsZakatSection({
         grossIncomeAnnual: calcs.grossIncomeAnnual,
         savedCapital: calcs.saved,
         zakatDue: calcs.zakatDue,
+        isDoubleCountGuarded: calcs.isDoubleCountGuarded,
       });
     }
   }, [calcs, selectedProfession, onZakatChange]);
@@ -161,15 +179,24 @@ export function ProfessionsZakatSection({
               تبويب زكاة دخل المهن والأنشطة الإضافية
             </CardTitle>
             <CardDescription className="text-xs mt-0.5">
-              اختر مهنتك أو نشاطك الشخصي لحساب زكاة الدخل والبدلات والمكافآت التخصصية بمرونة شرعية.
+              اختر مهنتك أو نشاطك الشخصي لحساب زكاة الدخل والبدلات والمكافآت التخصصية مع ضابط منع الازدواج.
             </CardDescription>
           </div>
-          <Badge variant="outline" className="text-emerald-700 border-emerald-500/40 text-xs w-fit">
-            تخصيص فقهي حسب المهنة
+          <Badge variant="outline" className="text-emerald-700 border-emerald-500/40 text-xs w-fit flex items-center gap-1">
+            <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" /> حماية عدم الازدواج الشرعي
           </Badge>
         </div>
       </CardHeader>
       <CardContent className="space-y-5 pt-5">
+        {/* شريط تنبيه شرعي لمنع الازدواج */}
+        <Alert className="border-emerald-500/40 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100">
+          <ShieldCheck className="h-4 w-4 text-emerald-600 mt-0.5" />
+          <AlertTitle className="text-xs font-bold">ضابط الفقه الشرعي لمنع الازدواج الزكوي (AAOIFI 35):</AlertTitle>
+          <AlertDescription className="text-[11px] leading-relaxed mt-0.5">
+            قال النبي ﷺ: <em>«لا تُثَنَّى الصَّدَقَةُ فِي عَامٍ»</em>. المال المدخر من المهنة يُزكى مرة واحدة فقط عن السنة؛ إما ضمن رصيدك بالبنك في قسم السيولة أو هنا فور استلامه، لضمان عدم الخصم أو التثنية المزدوجة.
+          </AlertDescription>
+        </Alert>
+
         {/* اختيار المهنة */}
         <div className="space-y-2">
           <Label className="text-xs font-semibold">اختر المهنة أو النشاط الذي تزاوله:</Label>
@@ -252,6 +279,22 @@ export function ProfessionsZakatSection({
               <span>الحرفيون المستقلون</span>
             </button>
           </div>
+        </div>
+
+        {/* خيار حماية ومنع الازدواج الزكوي */}
+        <div className="flex items-center justify-between p-3 rounded-xl border bg-muted/30">
+          <div className="space-y-0.5">
+            <Label className="text-xs font-bold text-foreground">
+              هل مدخرات هذا الدخل مضافة بالفعل ضمن رصيدك البنكي في قسم السيولة؟
+            </Label>
+            <p className="text-[11px] text-muted-foreground">
+              تفعيل هذا الخيار يحميك من تكرار زكاة نفس المال مرتين إذا كنت تضع مدخراتك في البنك.
+            </p>
+          </div>
+          <Switch
+            checked={alreadyInCashBank}
+            onCheckedChange={setAlreadyInCashBank}
+          />
         </div>
 
         {/* حقول إدخال بيانات المهنة المحددة */}
@@ -467,31 +510,39 @@ export function ProfessionsZakatSection({
           )}
 
           {/* المدخر الفعلي عند الحول للمهنة */}
-          <div className="border-t pt-3 mt-2 space-y-1.5">
-            <Label className="text-xs font-semibold text-emerald-800 dark:text-emerald-300">
-              المدخرات والسيولة القائمة المتبقية من دخل المهنة عند حلول الحول:
-            </Label>
-            <Input
-              type="number"
-              className="border-emerald-500/40 font-bold"
-              placeholder="مثال: أدخل رصيد الحساب الادخاري المتبقي نهاية العام"
-              value={professionSavedCapital}
-              onChange={(e) => setProfessionSavedCapital(e.target.value)}
-            />
-            <span className="text-[10px] text-muted-foreground">
-              ملاحظة شرعية: إن لم يتم إدخال السيولة المدخرة عند الحول، يتم احتساب الزكاة على إجمالي الدخل السنوي بنسبة 2.5% احتياطاً.
-            </span>
-          </div>
+          {!alreadyInCashBank && (
+            <div className="border-t pt-3 mt-2 space-y-1.5">
+              <Label className="text-xs font-semibold text-emerald-800 dark:text-emerald-300">
+                المدخرات والسيولة القائمة المتبقية من دخل المهنة عند حلول الحول (إن لم تكن مدخلة بالبنك):
+              </Label>
+              <Input
+                type="number"
+                className="border-emerald-500/40 font-bold"
+                placeholder="مثال: أدخل رصيد الحساب الادخاري المتبقي نهاية العام"
+                value={professionSavedCapital}
+                onChange={(e) => setProfessionSavedCapital(e.target.value)}
+              />
+              <span className="text-[10px] text-muted-foreground">
+                ملاحظة شرعية: إن لم يتم إدخال السيولة المدخرة عند الحول، يتم احتساب الزكاة على إجمالي الدخل السنوي بنسبة 2.5% احتياطاً.
+              </span>
+            </div>
+          )}
         </div>
 
         {/* نتيجة الوعاء للمهنة */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
           <div className="space-y-0.5 text-right w-full sm:w-auto">
-            <div className="text-xs text-muted-foreground font-medium">
+            <div className="text-xs text-muted-foreground font-medium flex items-center gap-1">
               الوعاء الزكوي لـ ({calcs.title}):
+              {calcs.isDoubleCountGuarded && (
+                <Badge variant="secondary" className="text-[10px] bg-emerald-600 text-white">
+                  محمي من الازدواج
+                </Badge>
+              )}
             </div>
             <div className="text-sm font-bold text-foreground">
-              إجمالي الدخل السنوي: {fmt(calcs.grossIncomeAnnual)} {currencyName} | المدخر: {fmt(calcs.saved)} {currencyName}
+              إجمالي الدخل السنوي: {fmt(calcs.grossIncomeAnnual)} {currencyName}
+              {!alreadyInCashBank && ` | المدخر: ${fmt(calcs.saved)} ${currencyName}`}
             </div>
           </div>
 

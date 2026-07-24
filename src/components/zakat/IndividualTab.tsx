@@ -628,7 +628,7 @@ export function IndividualTab() {
     // الزكاة المالية (تشترط الحول) — لا نحسبها إن لم يكتمل الحول وكان التاريخ مُدخلًا
     const hawlBlocks = hawl !== null && !hawl.hawlComplete;
     const monetaryGoldZakat = hawlBlocks ? 0 : goldZakat + silverZakat + monetaryZakat;
-    const total = monetaryGoldZakat + cropsZakat + rikazTotal;
+    const total = monetaryGoldZakat + cropsZakat + rikazTotal + professionsZakatTotal;
 
     return {
       sabaikGrams24,
@@ -2064,6 +2064,7 @@ export function IndividualTab() {
                             ["عروض التجارة", calc.tradeTotal, "2.5%"],
                             ["العقار (تجارة + إيجار مُدّخر)", calc.realEstateZakatable, "2.5%"],
                             ["المستغلات والدخل والإيرادات", incomeUsufructTotal, "2.5%"],
+                            ["زكاة دخل المهن والأنشطة الإضافية", professionsZakatTotal, "2.5%"],
                             [
                               "الزروع والثمار",
                               calc.cropsValue,
@@ -2154,6 +2155,12 @@ export function IndividualTab() {
                       {
                         k: "المستغلات والدخل والإيرادات",
                         v: incomeUsufructTotal,
+                        rate: "2.5%",
+                        section: "income-trade-usufruct",
+                      },
+                      {
+                        k: "زكاة دخل المهن والأنشطة الإضافية",
+                        v: professionsZakatTotal,
                         rate: "2.5%",
                         section: "income-trade-usufruct",
                       },
