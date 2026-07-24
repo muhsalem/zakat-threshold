@@ -38,29 +38,7 @@ function SalaryZakatPage() {
         </p>
       </div>
 
-      <Alert className="border-emerald-500/40 bg-emerald-500/10 dark:bg-emerald-950/30">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 w-full">
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-emerald-600 text-white">
-              <Wallet className="h-4 w-4" />
-            </div>
-            <div>
-              <div className="font-bold text-xs text-emerald-900 dark:text-emerald-200">
-                هل أنت من الكادر التعليمي والتربوي؟
-              </div>
-              <div className="text-[11px] text-emerald-700 dark:text-emerald-300">
-                خصصنا بوابة متكاملة لحساب زكاة بدل التدريس والصفوف والدروس الخصوصية للمدربين والمعلمين.
-              </div>
-            </div>
-          </div>
-          <Link
-            to="/teachers-zakat"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-emerald-600 text-white hover:bg-emerald-700 text-xs font-bold transition-colors whitespace-nowrap shadow-sm"
-          >
-            الانتقال لبوابة المعلمين ←
-          </Link>
-        </div>
-      </Alert>
+
 
       <Alert>
         <AlertDescription className="text-xs leading-6">

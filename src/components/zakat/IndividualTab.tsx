@@ -49,6 +49,7 @@ import {
   Store,
   MonitorSmartphone,
   Globe,
+  Briefcase,
 } from "lucide-react";
 import { toast } from "sonner";
 import { consumePrefill } from "@/lib/intakeMapping";
@@ -93,6 +94,7 @@ import { PrintReport } from "./PrintReport";
 import { RikazSection } from "./RikazSection";
 import { DigitalAssetsSection } from "./DigitalAssetsSection";
 import { CryptoFatwasCard } from "./CryptoFatwasCard";
+import { ProfessionsZakatSection } from "./ProfessionsZakatSection";
 import { useAuditEntries } from "@/hooks/useAuditEntries";
 import { useMadhab } from "@/lib/madhabContext";
 import {
@@ -364,6 +366,7 @@ export function IndividualTab() {
 
   // المستغلات والدخل (المجموع يُحسب داخل المكوّن)
   const [incomeUsufructTotal, setIncomeUsufructTotal] = useState(0);
+  const [professionsZakatTotal, setProfessionsZakatTotal] = useState(0);
 
   // الزروع — هل يملك أرضاً زراعية
   const [ownsFarmland, setOwnsFarmland] = useState(false);
@@ -1705,6 +1708,17 @@ export function IndividualTab() {
                       <SalaryZakatCalculator
                         currencyName={currencyName}
                         nisabValue={calc.moneyNisab}
+                      />
+                    </div>
+
+                    {/* خامساً: زكاة المهن والأنشطة الإضافية — تبويب مخصص يظهر حسب المهنة */}
+                    <div className="rounded-lg border border-emerald-600/30 bg-emerald-500/5 p-4 space-y-3">
+                      <div className="flex items-center gap-2 text-sm font-semibold text-emerald-800 dark:text-emerald-300">
+                        <Briefcase className="h-4 w-4 text-emerald-600" /> خامساً: تبويب زكاة المهن والأنشطة الإضافية (تخصيص المعلمين، الأطباء، المهندسين...)
+                      </div>
+                      <ProfessionsZakatSection
+                        currencyName={currencyName}
+                        onZakatChange={(amount) => setProfessionsZakatTotal(amount)}
                       />
                     </div>
                   </AccordionContent>
