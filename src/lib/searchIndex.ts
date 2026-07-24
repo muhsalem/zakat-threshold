@@ -7,6 +7,7 @@ export type SearchEntry = {
 
 export const searchIndex: SearchEntry[] = [
   { title: "الحاسبة الرئيسية", to: "/", keywords: "زكاة حساب رئيسي" },
+  { title: "بوابة دخل وزكاة المعلمين", to: "/teachers-zakat", keywords: "معلم معلمين مدرس تدريس دروس خصوصية راتب بدلات تربوي" },
   { title: "المستشار الذكي", to: "/advisor", keywords: "ai ذكاء اصطناعي فتوى" },
   { title: "السجل والتاريخ", to: "/history", keywords: "سجل تقارير سنوات" },
   { title: "نافذة الفرد / الشركة", to: "/client-intake", keywords: "استقبال بيانات عميل" },

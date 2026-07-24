@@ -42,6 +42,7 @@ export const NAV: NavItem[] = [
 ];
 
 export const CALCS: CalcItem[] = [
+  { title: "بوابة دخل المعلمين", url: "/teachers-zakat", audience: ["all"] },
   { title: "زكاة الفطر", url: "/zakat-fitr", audience: ["individual"] },
   { title: "زكاة الشركات", url: "/zakat-company", audience: ["company"] },
   { title: "زكاة المؤسسات", url: "/enterprise", audience: ["institution"] },
