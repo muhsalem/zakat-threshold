@@ -2065,7 +2065,7 @@ export function IndividualTab() {
                             ["عروض التجارة", calc.tradeTotal, "2.5%"],
                             ["العقار (تجارة + إيجار مُدّخر)", calc.realEstateZakatable, "2.5%"],
                             ["المستغلات والدخل والإيرادات", incomeUsufructTotal, "2.5%"],
-                            ["زكاة دخل المهن والأنشطة الإضافية", professionsZakatTotal, "2.5%"],
+                            ["زكاة دخل المهن والأنشطة الإضافية (مبلغ الزكاة مباشرة)", professionsZakatTotal, "زكاة نهائية"],
                             [
                               "الزروع والثمار",
                               calc.cropsValue,
