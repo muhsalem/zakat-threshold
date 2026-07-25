@@ -89,7 +89,7 @@ Deno.serve(async (req) => {
       const { data: match } = await supabase
         .from("accountant_clients")
         .select("id")
-        .eq("accountant_user_id", u.user.id)
+        .eq("owner_id", u.user.id)
         .ilike("email", requested)
         .limit(1)
         .maybeSingle();

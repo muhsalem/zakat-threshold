@@ -751,6 +751,7 @@ export function IndividualTab() {
     cashTotalFromSection,
     digitalAssetsTotal,
     rikazTotal,
+    professionsZakatTotal,
   ]);
 
   const cur = (n: number) => currency(n, currencyName);
@@ -2064,7 +2065,7 @@ export function IndividualTab() {
                             ["عروض التجارة", calc.tradeTotal, "2.5%"],
                             ["العقار (تجارة + إيجار مُدّخر)", calc.realEstateZakatable, "2.5%"],
                             ["المستغلات والدخل والإيرادات", incomeUsufructTotal, "2.5%"],
-                            ["زكاة دخل المهن والأنشطة الإضافية", professionsZakatTotal, "2.5%"],
+                            ["زكاة دخل المهن والأنشطة الإضافية (مبلغ الزكاة مباشرة)", professionsZakatTotal, "زكاة نهائية"],
                             [
                               "الزروع والثمار",
                               calc.cropsValue,
@@ -2159,9 +2160,9 @@ export function IndividualTab() {
                         section: "income-trade-usufruct",
                       },
                       {
-                        k: "زكاة دخل المهن والأنشطة الإضافية",
+                        k: "زكاة دخل المهن والأنشطة الإضافية (مبلغ الزكاة مباشرة)",
                         v: professionsZakatTotal,
-                        rate: "2.5%",
+                        rate: "زكاة نهائية",
                         section: "income-trade-usufruct",
                       },
                       {
