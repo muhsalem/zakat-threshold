@@ -2160,9 +2160,9 @@ export function IndividualTab() {
                         section: "income-trade-usufruct",
                       },
                       {
-                        k: "زكاة دخل المهن والأنشطة الإضافية",
+                        k: "زكاة دخل المهن والأنشطة الإضافية (مبلغ الزكاة مباشرة)",
                         v: professionsZakatTotal,
-                        rate: "2.5%",
+                        rate: "زكاة نهائية",
                         section: "income-trade-usufruct",
                       },
                       {
