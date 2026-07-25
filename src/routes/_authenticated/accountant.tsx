@@ -58,6 +58,7 @@ import { fmt } from "@/lib/zakat";
 import { AccountantDashboard } from "@/components/accountant/AccountantDashboard";
 import { KpiCompliancePanel } from "@/components/accountant/KpiCompliancePanel";
 import { ProductFunnelPanel } from "@/components/accountant/ProductFunnelPanel";
+import { ZakatCrmManager } from "@/components/crm/ZakatCrmManager";
 
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -399,6 +400,9 @@ function AccountantPortal() {
           <TabsTrigger value="kpis" className="gap-1.5">
             <TrendingUp className="h-3.5 w-3.5" /> مؤشرات الأداء والامتثال
           </TabsTrigger>
+          <TabsTrigger value="crm" className="gap-1.5 bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 font-bold border border-indigo-500/30">
+            <Users className="h-3.5 w-3.5 text-indigo-600" /> إدارة علاقات العُملاء (CRM)
+          </TabsTrigger>
           <TabsTrigger value="clients" className="gap-1.5">
             <Users className="h-3.5 w-3.5" /> العملاء والمحفظة
           </TabsTrigger>
@@ -418,6 +422,9 @@ function AccountantPortal() {
 
         <TabsContent value="dashboard" className="mt-0">
           <AccountantDashboard />
+        </TabsContent>
+        <TabsContent value="crm" className="mt-0">
+          <ZakatCrmManager />
         </TabsContent>
         <TabsContent value="kpis" className="mt-0 space-y-6">
           <KpiCompliancePanel />
