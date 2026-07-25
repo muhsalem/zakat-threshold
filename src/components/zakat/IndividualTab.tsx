@@ -751,6 +751,7 @@ export function IndividualTab() {
     cashTotalFromSection,
     digitalAssetsTotal,
     rikazTotal,
+    professionsZakatTotal,
   ]);
 
   const cur = (n: number) => currency(n, currencyName);
