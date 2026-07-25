@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Building2, Calculator, ShieldCheck, BookOpen, ArrowLeft } from "lucide-react";
+import { FinancialStatementOcrHelper } from "@/components/zakat/FinancialStatementOcrHelper";
+import { ShariaBoardCard } from "@/components/zakat/ShariaBoardCard";
 
 export const Route = createFileRoute("/zakat-company")({
   head: () => ({
@@ -69,6 +71,12 @@ function ZakatCompanyPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* القراءة الآلية للميزانيات العمومية عبر AI Financial OCR */}
+      <FinancialStatementOcrHelper />
+
+      {/* بطاقة الاعتماد الفكهي والمحاسبي للهيئة */}
+      <ShariaBoardCard />
 
       <section className="grid md:grid-cols-2 gap-4">
         <InfoBlock

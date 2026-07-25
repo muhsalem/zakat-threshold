@@ -95,6 +95,8 @@ import { RikazSection } from "./RikazSection";
 import { DigitalAssetsSection } from "./DigitalAssetsSection";
 import { CryptoFatwasCard } from "./CryptoFatwasCard";
 import { ProfessionsZakatSection } from "./ProfessionsZakatSection";
+import { ShariaBoardCard } from "./ShariaBoardCard";
+import { ZakatSocialImpactDashboard } from "./ZakatSocialImpactDashboard";
 import { useAuditEntries } from "@/hooks/useAuditEntries";
 import { useMadhab } from "@/lib/madhabContext";
 import {
@@ -941,6 +943,9 @@ export function IndividualTab() {
         <TabsContent value="calc" className="mt-0">
           <div className="grid lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
+              {/* بطاقة الاعتماد الشرعي والهيئة الفقهية */}
+              <ShariaBoardCard />
+
               {/* سيناريوهات بيانات وهمية لاختبار الحاسبة */}
               <DemoScenariosGuide currency={currencyName} />
 
@@ -1880,6 +1885,12 @@ export function IndividualTab() {
               <EightChannelsDistribution
                 netDue={Math.max(0, calc.total - num(prepaidZakat)) + fitrContribution}
                 currencyName={currencyName}
+              />
+
+              {/* لوحة الأثر الاجتماعي والتنموي للزكاة */}
+              <ZakatSocialImpactDashboard
+                currencyName={currencyName}
+                totalZakatCollected={Math.max(10000, calc.total)}
               />
 
               {/* تعجيل الزكاة */}
