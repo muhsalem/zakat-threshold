@@ -97,6 +97,9 @@ import { CryptoFatwasCard } from "./CryptoFatwasCard";
 import { ProfessionsZakatSection } from "./ProfessionsZakatSection";
 import { ShariaBoardCard } from "./ShariaBoardCard";
 import { ZakatSocialImpactDashboard } from "./ZakatSocialImpactDashboard";
+import { ZakatDiagnosticWizard } from "./ZakatDiagnosticWizard";
+import { ZakatFinancialSimulator } from "./ZakatFinancialSimulator";
+import { ZakatHealthScoreBadge } from "./ZakatHealthScoreBadge";
 import { useAuditEntries } from "@/hooks/useAuditEntries";
 import { useMadhab } from "@/lib/madhabContext";
 import {
@@ -943,6 +946,18 @@ export function IndividualTab() {
         <TabsContent value="calc" className="mt-0">
           <div className="grid lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
+              {/* مؤشر الصحة والجاهزية الزكوية */}
+              <ZakatHealthScoreBadge
+                hasHawlCompleted={hawlState === "yes"}
+                isNisabReached={calc.total > 0}
+              />
+
+              {/* الموجه والتشخيص الزكوي الذكي */}
+              <ZakatDiagnosticWizard />
+
+              {/* محاكي السيناريوهات المالية الزكوية */}
+              <ZakatFinancialSimulator initialBase={calc.totalBase} currencyName={currencyName} />
+
               {/* بطاقة الاعتماد الشرعي والهيئة الفقهية */}
               <ShariaBoardCard />
 
