@@ -27,6 +27,7 @@ import { Route as PricesHistoryRouteImport } from './routes/prices-history'
 import { Route as PortalSigninRouteImport } from './routes/portal-signin'
 import { Route as OrganizationsRouteImport } from './routes/organizations'
 import { Route as NisabAuditRouteImport } from './routes/nisab-audit'
+import { Route as LivestockRouteImport } from './routes/livestock'
 import { Route as LiquidityStressRouteImport } from './routes/liquidity-stress'
 import { Route as KycAmlRouteImport } from './routes/kyc-aml'
 import { Route as InstitutionalEndorsementsRouteImport } from './routes/institutional-endorsements'
@@ -187,6 +188,11 @@ const OrganizationsRoute = OrganizationsRouteImport.update({
 const NisabAuditRoute = NisabAuditRouteImport.update({
   id: '/nisab-audit',
   path: '/nisab-audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LivestockRoute = LivestockRouteImport.update({
+  id: '/livestock',
+  path: '/livestock',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LiquidityStressRoute = LiquidityStressRouteImport.update({
@@ -587,6 +593,7 @@ export interface FileRoutesByFullPath {
   '/institutional-endorsements': typeof InstitutionalEndorsementsRoute
   '/kyc-aml': typeof KycAmlRoute
   '/liquidity-stress': typeof LiquidityStressRoute
+  '/livestock': typeof LivestockRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
   '/portal-signin': typeof PortalSigninRoute
@@ -676,6 +683,7 @@ export interface FileRoutesByTo {
   '/institutional-endorsements': typeof InstitutionalEndorsementsRoute
   '/kyc-aml': typeof KycAmlRoute
   '/liquidity-stress': typeof LiquidityStressRoute
+  '/livestock': typeof LivestockRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
   '/portal-signin': typeof PortalSigninRoute
@@ -767,6 +775,7 @@ export interface FileRoutesById {
   '/institutional-endorsements': typeof InstitutionalEndorsementsRoute
   '/kyc-aml': typeof KycAmlRoute
   '/liquidity-stress': typeof LiquidityStressRoute
+  '/livestock': typeof LivestockRoute
   '/nisab-audit': typeof NisabAuditRoute
   '/organizations': typeof OrganizationsRoute
   '/portal-signin': typeof PortalSigninRoute
@@ -858,6 +867,7 @@ export interface FileRouteTypes {
     | '/institutional-endorsements'
     | '/kyc-aml'
     | '/liquidity-stress'
+    | '/livestock'
     | '/nisab-audit'
     | '/organizations'
     | '/portal-signin'
@@ -947,6 +957,7 @@ export interface FileRouteTypes {
     | '/institutional-endorsements'
     | '/kyc-aml'
     | '/liquidity-stress'
+    | '/livestock'
     | '/nisab-audit'
     | '/organizations'
     | '/portal-signin'
@@ -1037,6 +1048,7 @@ export interface FileRouteTypes {
     | '/institutional-endorsements'
     | '/kyc-aml'
     | '/liquidity-stress'
+    | '/livestock'
     | '/nisab-audit'
     | '/organizations'
     | '/portal-signin'
@@ -1128,6 +1140,7 @@ export interface RootRouteChildren {
   InstitutionalEndorsementsRoute: typeof InstitutionalEndorsementsRoute
   KycAmlRoute: typeof KycAmlRoute
   LiquidityStressRoute: typeof LiquidityStressRoute
+  LivestockRoute: typeof LivestockRoute
   NisabAuditRoute: typeof NisabAuditRoute
   OrganizationsRoute: typeof OrganizationsRoute
   PortalSigninRoute: typeof PortalSigninRoute
@@ -1293,6 +1306,13 @@ declare module '@tanstack/react-router' {
       path: '/nisab-audit'
       fullPath: '/nisab-audit'
       preLoaderRoute: typeof NisabAuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/livestock': {
+      id: '/livestock'
+      path: '/livestock'
+      fullPath: '/livestock'
+      preLoaderRoute: typeof LivestockRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/liquidity-stress': {
@@ -1892,6 +1912,7 @@ const rootRouteChildren: RootRouteChildren = {
   InstitutionalEndorsementsRoute: InstitutionalEndorsementsRoute,
   KycAmlRoute: KycAmlRoute,
   LiquidityStressRoute: LiquidityStressRoute,
+  LivestockRoute: LivestockRoute,
   NisabAuditRoute: NisabAuditRoute,
   OrganizationsRoute: OrganizationsRoute,
   PortalSigninRoute: PortalSigninRoute,
