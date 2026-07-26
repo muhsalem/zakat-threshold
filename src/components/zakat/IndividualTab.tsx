@@ -968,7 +968,7 @@ export function IndividualTab() {
               <ZakatDiagnosticWizard />
 
               {/* محاكي السيناريوهات المالية الزكوية */}
-              <ZakatFinancialSimulator initialBase={calc.grossMonetary} currencyName={currencyName} />
+              <ZakatFinancialSimulator initialBase={calc.monetaryBase} currencyName={currencyName} />
 
               {/* بطاقة الاعتماد الشرعي والهيئة الفقهية */}
               <ShariaBoardCard />
