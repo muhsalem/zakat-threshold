@@ -960,7 +960,7 @@ export function IndividualTab() {
 
               {/* مؤشر الصحة والجاهزية الزكوية */}
               <ZakatHealthScoreBadge
-                hasHawlCompleted={hawlState === "yes"}
+                hasHawlCompleted={hawl?.hawlComplete ?? false}
                 isNisabReached={calc.total > 0}
               />
 
@@ -968,7 +968,7 @@ export function IndividualTab() {
               <ZakatDiagnosticWizard />
 
               {/* محاكي السيناريوهات المالية الزكوية */}
-              <ZakatFinancialSimulator initialBase={calc.totalBase} currencyName={currencyName} />
+              <ZakatFinancialSimulator initialBase={calc.grossMonetary} currencyName={currencyName} />
 
               {/* بطاقة الاعتماد الشرعي والهيئة الفقهية */}
               <ShariaBoardCard />
