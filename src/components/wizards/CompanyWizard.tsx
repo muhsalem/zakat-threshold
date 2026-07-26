@@ -460,8 +460,28 @@ export function CompanyWizard() {
                 </SelectContent>
               </Select>
             </div>
+            <div className="space-y-1.5 sm:col-span-2">
+              <Label className="text-xs">تاريخ بدء السنة المالية (بلوغ النصاب)</Label>
+              <Input
+                type="date"
+                value={fiscalStartDate}
+                onChange={(e) => setFiscalStartDate(e.target.value)}
+                className="h-9"
+                dir="ltr"
+              />
+              <p className="text-[11px] text-muted-foreground">
+                يُحسب الحول تلقائيًا من هذا التاريخ حتى سنة التقييم الحالية وفق التقويم{" "}
+                {yearType === "hijri" ? "الهجري (354 يومًا)" : "الميلادي (365 يومًا)"}.
+              </p>
+            </div>
+            {fiscalStartDate && (
+              <div className="sm:col-span-2">
+                <HawlEngineCard startDateISO={fiscalStartDate} basis={yearType} />
+              </div>
+            )}
           </div>
         )}
+
 
         {step === 1 && (
           <div className="grid sm:grid-cols-2 gap-3">
