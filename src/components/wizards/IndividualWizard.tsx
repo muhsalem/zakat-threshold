@@ -485,7 +485,7 @@ export function IndividualWizard() {
               </Select>
             </div>
             {fixHawl === "yes" && (
-              <div className="space-y-1.5">
+              <div className="space-y-1.5 sm:col-span-2">
                 <Label className="text-xs">تاريخ الحول (هجري/ميلادي)</Label>
                 <Input
                   type="date"
@@ -497,6 +497,11 @@ export function IndividualWizard() {
                 <p className="text-[11px] text-muted-foreground">
                   سنُذكِّرك سنويًا بموعد حسبة زكاتك عبر البريد والجوال.
                 </p>
+                {hawlDate && (
+                  <div className="pt-2">
+                    <HawlEngineCard startDateISO={hawlDate} basis="hijri" />
+                  </div>
+                )}
               </div>
             )}
             <Alert className="sm:col-span-2">
