@@ -61,6 +61,7 @@ export function CompanyWizard() {
   const [sector, setSector] = useState("trade");
   const [yearType, setYearType] = useState<"hijri" | "gregorian">("hijri");
   const [fiscalYear, setFiscalYear] = useState("");
+  const [fiscalStartDate, setFiscalStartDate] = useState("");
   const [countryCode, setCountryCode] = useState("SA");
   const country = COUNTRY_PRICES.find((c) => c.code === countryCode) ?? COUNTRY_PRICES[0];
   const currency = country.currency;
