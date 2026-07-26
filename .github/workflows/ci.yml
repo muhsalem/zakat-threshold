@@ -114,8 +114,12 @@ jobs:
           fail-on-severity: high
 
       # Trivy — أي ثغرة HIGH/CRITICAL تفشل CI (سابقاً كان exit-code=0 يبتلع الأخطاء)
+      # مثبَّت على commit SHA غير قابل للتغيير (لا وسم/تاغ) بعد اختراق سلسلة توريد
+      # فعلي لـ trivy-action شمل انتحال إصدارات وحتى إعادة توجيه وسوم (tags) —
+      # v0.35.0 (57a97c7e7821a5776cebc9bb87c984fa69cba8f1) موقَّع ومؤكَّد آمن رسمياً.
+      # لا تُرجَع لـ @master ولا لوسم متحرك مهما كان السبب.
       - name: Trivy filesystem scan
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0
         with:
           scan-type: fs
           severity: HIGH,CRITICAL
