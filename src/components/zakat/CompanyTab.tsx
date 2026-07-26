@@ -1096,8 +1096,8 @@ export function CompanyTab() {
   const [compliance, setCompliance] = useState<Record<string, boolean>>({});
   const toggleC = (id: string) => setCompliance((p) => ({ ...p, [id]: !p[id] }));
 
-  // ديباجة المحاسب (للتقرير المطبوع)
-  const [accName, setAccName] = useState("محمد سعيد سالم");
+  // ديباجة المحاسب (للتقرير المطبوع) — يجب إدخالها فعلياً، لا اسم افتراضي
+  const [accName, setAccName] = useState("");
   const [accLicense, setAccLicense] = useState("");
   const [accFirm, setAccFirm] = useState("");
   const [accStatement, setAccStatement] = useState(
