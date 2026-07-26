@@ -48,16 +48,16 @@ import { PLANS as PLANS_CATALOG, type Plan as CatalogPlan } from "@/lib/geo/plan
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "نِصاب — منصة زكاة شرعية معتمدة للأفراد والشركات" },
+      { title: "نِصاب — منصة زكاة مبنية على معايير AAOIFI للأفراد والشركات" },
       {
         name: "description",
         content:
-          "منصة نِصاب: احسب زكاتك بدقة شرعية، أرسل بياناتك لمحاسب معتمد، واستلم تقريراً رسمياً خلال يومي عمل. خطط تسعير مرنة للأفراد والشركات والمؤسسات.",
+          "منصة نِصاب: احسب زكاتك بدقة وفق معيار AAOIFI 35 و5 مذاهب فقهية، واحصل على تقرير مفصَّل فوري. خطط تسعير مرنة للأفراد والشركات والمؤسسات.",
       },
-      { property: "og:title", content: "نِصاب — منصة زكاة شرعية معتمدة" },
+      { property: "og:title", content: "نِصاب — منصة زكاة مبنية على معايير AAOIFI" },
       {
         property: "og:description",
-        content: "أدوات حساب + محاسبون معتمدون + تقارير رسمية خلال يومَي عمل. للأفراد والشركات.",
+        content: "أدوات حساب دقيقة + تقارير فورية قابلة للتحقق. للأفراد والشركات.",
       },
       { property: "og:type", content: "website" },
       {
@@ -169,19 +169,19 @@ function Hero() {
       <div className="container mx-auto px-4 py-16 md:py-24 grid md:grid-cols-2 gap-10 items-center">
         <div className="space-y-6">
           <Badge variant="outline" className="gap-1.5 border-primary/40 bg-primary/5 text-primary">
-            <Sparkles className="h-3.5 w-3.5" /> منصة الزكاة الأولى المعتمدة شرعياً ومحاسبياً
+            <Sparkles className="h-3.5 w-3.5" /> حاسبة زكاة مبنية على معايير AAOIFI
           </Badge>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.15]">
             احسب زكاتك بدقة —
             <span className="block bg-gradient-to-l from-primary via-primary to-gold bg-clip-text text-transparent">
-              واستلم تقريراً رسمياً خلال يومَي عمل
+              واحصل على تقرير مفصَّل فوراً
             </span>
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed max-w-xl">
-            حاسبة ذكية مبنية على معايير <b>AAOIFI 35</b> و<b>الاتحاد الدولي لعلماء المسلمين</b>{" "}
-            تُصدر لك تقريراً تفصيلياً جاهزاً للاعتماد.
+            حاسبة ذكية مبنية على معيار <b>AAOIFI 35</b>، تستند إلى قرارات مجمع الفقه الإسلامي
+            الدولي وتدعم 5 مذاهب فقهية، تُصدر لك تقريراً تفصيلياً فورياً.
             <span className="block text-xs mt-1 text-primary/80">
-              قريباً: مراجعة بشرية من شبكة محاسبين قانونيين مرخّصين قبل الإصدار.
+              قريباً: مراجعة بشرية اختيارية من شبكة محاسبين قانونيين مرخّصين قبل الاعتماد النهائي.
             </span>
           </p>
           <div className="flex flex-wrap gap-3">
@@ -201,10 +201,10 @@ function Hero() {
               <ShieldCheck className="h-4 w-4 text-emerald-500" /> بيانات مشفّرة
             </span>
             <span className="inline-flex items-center gap-1">
-              <Clock className="h-4 w-4 text-primary" /> تقرير خلال يومَي عمل
+              <Clock className="h-4 w-4 text-primary" /> تقرير فوري
             </span>
             <span className="inline-flex items-center gap-1">
-              <FileCheck2 className="h-4 w-4 text-gold" /> اعتماد محاسب مرخّص
+              <FileCheck2 className="h-4 w-4 text-gold" /> مطابق لمعيار AAOIFI 35
             </span>
           </div>
         </div>
@@ -217,7 +217,7 @@ function Hero() {
                 <FileText className="h-4 w-4 text-primary" /> تقرير الزكاة السنوي
               </div>
               <Badge className="bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border-0">
-                جاهز للإرسال
+                جاهز للتنزيل
               </Badge>
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -227,14 +227,11 @@ function Hero() {
               <StatMini label="زكاة مستحقة" value="2,895" tone="gold" />
             </div>
             <div className="border-t pt-3 flex items-center justify-between text-xs text-muted-foreground">
-              <span>معتمد من محاسب قانوني مرخّص — CPA</span>
+              <span>حساب آلي حتمي — لا اجتهاد بشري في الأرقام</span>
               <span className="inline-flex items-center gap-1">
                 <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> مطابق AAOIFI 35
               </span>
             </div>
-          </div>
-          <div className="absolute -bottom-6 -right-6 rounded-xl border bg-card px-4 py-3 shadow-lg hidden md:flex items-center gap-2 text-xs">
-            <Mail className="h-4 w-4 text-primary" /> يصلك على بريدك خلال 48 ساعة
           </div>
         </div>
       </div>
@@ -300,8 +297,8 @@ function Features() {
   const features = [
     {
       icon: Scale,
-      title: "دقة شرعية مطلقة",
-      desc: "محرك فتوى يقارن 5 مذاهب و15+ هيئة شرعية، مع مراجع لكل حكم.",
+      title: "دقة شرعية بمرجعية واضحة",
+      desc: "محرك فتوى يقارن 5 مذاهب فقهية وفق معيار AAOIFI 35 وقرارات مجمع الفقه، مع مرجع لكل حكم.",
     },
     {
       icon: Cpu,
@@ -310,8 +307,8 @@ function Features() {
     },
     {
       icon: Clock,
-      title: "تقرير خلال 48 ساعة",
-      desc: "التزام زمني موثّق: تقرير معتمد يصل بريدك خلال يومَي عمل من الإرسال.",
+      title: "تقرير فوري",
+      desc: "احسب واحصل على تقريرك التفصيلي فور الإدخال — بلا انتظار.",
     },
     {
       icon: Database,
@@ -320,8 +317,8 @@ function Features() {
     },
     {
       icon: Lock,
-      title: "أمان بنكي",
-      desc: "تشفير AES-256، RLS على كل صف، ولا مشاركة بيانات مع طرف ثالث.",
+      title: "أمان على مستوى الصف",
+      desc: "عزل بيانات كل مستخدم (Row-Level Security) وتشفير أثناء النقل، ولا مشاركة بيانات مع طرف ثالث.",
     },
     {
       icon: LineChart,
@@ -405,15 +402,15 @@ function HowItWorks() {
     },
     {
       n: 3,
-      icon: Mail,
-      title: "تصل بياناتك للمحاسب",
-      desc: "يستلم المحاسب المعتمد ملفك مباشرة، ويراجعه وفق المعايير الشرعية.",
+      icon: Calculator,
+      title: "احسب فوراً",
+      desc: "النظام يحسب الوعاء الزكوي والمستحق فوراً وفق معيار AAOIFI 35 وقواعد مذهبك.",
     },
     {
       n: 4,
       icon: FileCheck2,
-      title: "تقرير رسمي على بريدك",
-      desc: "خلال يومَي عمل يصلك تقرير PDF مختوم برقم مرجعي قابل للتحقق.",
+      title: "نزّل تقريرك",
+      desc: "تقرير PDF/Excel برقم مرجعي قابل للتحقق، جاهز للتنزيل والأرشفة فوراً. (قريباً: خيار مراجعة بشرية اختيارية من محاسب مرخّص قبل الاعتماد النهائي.)",
     },
   ];
   return (
@@ -852,20 +849,20 @@ function PriceCard({
 function FAQ() {
   const qas = [
     {
-      q: "كم يستغرق استلام التقرير المعتمد؟",
-      a: "خلال يومَي عمل كحد أقصى من لحظة إرسال بياناتك، ويصلك على بريدك بصيغة PDF مختوم.",
+      q: "كم يستغرق استلام تقريري؟",
+      a: "التقرير الآلي فوري فور إدخال بياناتك ويمكن تنزيله مباشرة. خيار المراجعة البشرية من محاسب مرخّص قبل الاعتماد النهائي قيد الإطلاق قريباً.",
     },
     {
       q: "هل بياناتي المالية آمنة؟",
-      a: "نعم — نستخدم تشفير AES-256، وسياسات RLS على كل صف، ولا نُشارك بياناتك مع أي طرف ثالث.",
+      a: "نعم — نستخدم سياسات عزل بيانات على مستوى الصف (RLS) بحيث لا يصل أي مستخدم لبيانات غيره، وتشفير أثناء النقل، ولا نُشارك بياناتك مع أي طرف ثالث.",
     },
     {
       q: "هل يمكنني تجربة الحاسبة قبل الدفع؟",
-      a: "بالتأكيد. الحاسبة الذاتية مجانية بالكامل، وتدفع فقط عند طلب تقرير معتمد من محاسب.",
+      a: "بالتأكيد. الحاسبة الذاتية مجانية بالكامل، وتدفع فقط عند طلب التقرير الشامل أو خطط الشركات.",
     },
     {
-      q: "ما المعايير الشرعية المعتمدة؟",
-      a: "AAOIFI 35، الاتحاد الدولي لعلماء المسلمين، وهيئات الفتوى الرسمية في السعودية ومصر والإمارات.",
+      q: "ما المعايير الشرعية التي تطبّقها الحاسبة؟",
+      a: "معيار AAOIFI الشرعي رقم 35 والمحاسبي رقم 9، وقرارات مجمع الفقه الإسلامي الدولي المنشورة. راجع سجل الاعتمادات الشرعية الكامل وحالة كل مرجعية بشفافية.",
     },
     {
       q: "هل تدعمون الشركات متعددة الفروع؟",
