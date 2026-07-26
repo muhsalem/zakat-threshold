@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 import { fmt, COUNTRY_PRICES, ZAKAT_RATE } from "@/lib/zakat";
 import { toast } from "sonner";
+import { HawlEngineCard } from "@/components/zakat/HawlEngineCard";
 import { SaveToHistoryCard } from "@/components/zakat/SaveToHistoryCard";
 import { useWizardAutosave } from "@/hooks/useWizardAutosave";
 import { useCloudAutosave } from "@/hooks/useCloudAutosave";
