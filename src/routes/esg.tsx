@@ -108,14 +108,12 @@ function EsgPage() {
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
             {[
-              { k: "الاستجابة", v: "< 200ms" },
-              { k: "التوفّر", v: "99.9%" },
-              { k: "المذاهب", v: "4+" },
+              { k: "المذاهب", v: "5" },
               { k: "الفتاوى", v: "50+" },
-              { k: "الولايات", v: "12" },
-              { k: "العملات", v: "50+" },
+              { k: "الولايات", v: "14" },
+              { k: "العملات", v: "25+" },
               { k: "الأصول", v: "40+ نوع" },
-              { k: "السنوات", v: "1975→" },
+              { k: "بيانات الأسعار", v: "1926→" },
             ].map((x) => (
               <div key={x.k} className="rounded-lg border bg-muted/30 p-3">
                 <div className="text-xl font-bold text-primary">{x.v}</div>

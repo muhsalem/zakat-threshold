@@ -78,7 +78,7 @@ const SECTIONS: Section[] = [
         name: "NetSuite — SuiteTalk",
         role: "Enterprise ERP",
         status: "in-use",
-        note: "?format=netsuite (REST/SOAP)",
+        note: "?format=netsuite يُرجِع JSON جاهز للاستيراد اليدوي — لا يوجد اتصال SuiteTalk API حي بعد",
       },
       {
         name: "SAP S/4HANA — IDoc ACC_DOCUMENT03",

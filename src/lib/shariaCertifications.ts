@@ -84,9 +84,9 @@ export const SHARIA_CERTIFICATIONS: ShariaCertification[] = [
     bodyEn: "Shariyah Review Bureau (SRB)",
     country: "البحرين",
     scope: "اعتماد شرعي مستقل للحسابات ومخرجات المنتج",
-    status: "in_review",
+    status: "planned",
     url: "https://shariyah.net",
-    notes: "قيد التواصل الأولي لبدء عملية الاعتماد الشرعي الرسمي.",
+    notes: "لم يبدأ تواصل رسمي بعد — مرشَّح للتعاقد لبدء عملية الاعتماد الشرعي الرسمي.",
   },
   {
     id: "aliment-uae",
@@ -102,9 +102,9 @@ export const SHARIA_CERTIFICATIONS: ShariaCertification[] = [
     bodyEn: "ISO/IEC 27001",
     country: "دولي",
     scope: "شهادة إدارة أمن المعلومات",
-    status: "in_review",
+    status: "planned",
     reference: "ISO/IEC 27001:2022",
-    notes: "الضوابط الأمنية مطبّقة، والتدقيق الخارجي مخطّط ضمن Wave 3.",
+    notes: "بعض الضوابط الأمنية (RLS، تشفير النقل) مطبّقة عملياً، لكن التدقيق الخارجي الرسمي لم يبدأ بعد — مخطَّط ضمن Wave 3.",
   },
   {
     id: "iso-27701",

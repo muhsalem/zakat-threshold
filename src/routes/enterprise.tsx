@@ -585,30 +585,30 @@ function EnterprisePage() {
           {/* Stats */}
           <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <StatCard
-              value="12+"
-              label="Enterprise Connectors"
-              label_ar="موصّل مؤسسي"
+              value="16"
+              label="Connectors (live + roadmap)"
+              label_ar="موصّل (مفعَّل ومخطَّط)"
               icon={Layers}
               accent="from-[#0F766E] to-[#0d6560]"
             />
             <StatCard
-              value="100+"
-              label="REST APIs"
-              label_ar="واجهة برمجية"
+              value="6"
+              label="Public REST Endpoints"
+              label_ar="نقطة API عامة"
               icon={FileCode2}
               accent="from-[#1E3A5F] to-[#152a45]"
             />
             <StatCard
-              value="99.9%"
-              label="Reliability SLA"
-              label_ar="موثوقية الخدمة"
+              value="RLS"
+              label="Row-Level Data Isolation"
+              label_ar="عزل بيانات على مستوى الصف"
               icon={Zap}
               accent="from-[#C8A951] to-[#a88a3f]"
             />
             <StatCard
-              value="ISO Ready"
-              label="Enterprise Security"
-              label_ar="أمان مؤسسي"
+              value="ISO 27001"
+              label="Audit Planned"
+              label_ar="تدقيق مخطَّط"
               icon={Shield}
               accent="from-[#0F766E] to-[#1E3A5F]"
             />

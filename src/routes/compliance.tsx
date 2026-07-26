@@ -102,7 +102,7 @@ const SHARIA: ControlRow[] = [
     standard: "IFA-OIC Resolutions",
     scope: "مجمع الفقه الإسلامي الدولي",
     status: "compliant",
-    evidence: "≥ 12 قرار مطبَّق",
+    evidence: "5 قرارات مطبَّقة حالياً في محرك الفتاوى (fatwaEngine.ts)",
   },
   {
     standard: "Sharia Advisory Board (formal)",
