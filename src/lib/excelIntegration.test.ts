@@ -22,7 +22,7 @@ describe("Excel Integration & Import/Export Engine", () => {
       calendarBasis: "hijri",
     };
 
-    const wb = buildReportWorkbook(mockReportData);
+    const wb = buildReportWorkbook(mockReportData as unknown as PrintReportData);
     expect(wb.SheetNames).toContain("الملخص");
     expect(wb.SheetNames).toContain("تفاصيل البنود");
 
