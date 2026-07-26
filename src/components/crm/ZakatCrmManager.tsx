@@ -185,7 +185,7 @@ export function ZakatCrmManager() {
       "آخر تواصل": c.lastContact,
       "ملاحظات": c.notes,
     }));
-    downloadReportExcel(rows, `قاعدة_عملاء_الزكاة_CRM_${new Date().toISOString().slice(0, 10)}.xlsx`);
+    downloadReportExcel(rows as any, `قاعدة_عملاء_الزكاة_CRM_${new Date().toISOString().slice(0, 10)}.xlsx`);
     toast.success("تم تصدير سجلات العُملاء (CRM) إلى ملف Excel بنجاح");
   };
 
