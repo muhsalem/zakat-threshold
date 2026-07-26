@@ -6,8 +6,35 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { RefreshCw, TrendingUp, Globe2, Info } from "lucide-react";
+import { RefreshCw, TrendingUp, Globe2, Info, WifiOff } from "lucide-react";
 import { getLiveMetalPrices } from "@/lib/metalPrices.functions";
+
+const CACHE_KEY = "nisab:lastMetalPrices";
+const STALE_WARN_MS = 24 * 60 * 60 * 1000;
+
+interface CachedPrices {
+  goldUsd: number;
+  silverUsd: number;
+  updatedAt: string;
+}
+
+function saveCachedPrices(p: CachedPrices) {
+  try {
+    window.localStorage.setItem(CACHE_KEY, JSON.stringify(p));
+  } catch {
+    /* التخزين المحلي غير متاح (وضع خاص مثلاً) — تجاهل بصمت */
+  }
+}
+
+function loadCachedPrices(): CachedPrices | null {
+  try {
+    const raw = window.localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as CachedPrices;
+  } catch {
+    return null;
+  }
+}
 
 /**
  * USD→local conversion factors (approximate, editable). For full accuracy,
@@ -51,11 +78,8 @@ export function LivePricesCard({ currency, onApply }: Props) {
   const fetchPrices = useServerFn(getLiveMetalPrices);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [data, setData] = useState<{
-    goldUsd: number;
-    silverUsd: number;
-    updatedAt: string;
-  } | null>(null);
+  const [data, setData] = useState<CachedPrices | null>(null);
+  const [usingCache, setUsingCache] = useState(false);
   const [usdRate, setUsdRate] = useState(String(DEFAULT_USD_RATES[currency] ?? 1));
   const [localGold, setLocalGold] = useState("");
   const [localSilver, setLocalSilver] = useState("");
@@ -66,13 +90,32 @@ export function LivePricesCard({ currency, onApply }: Props) {
     try {
       const r = await fetchPrices();
       if (!r.ok) throw new Error(r.error);
-      setData({ goldUsd: r.gold24PerGram, silverUsd: r.silverPerGram, updatedAt: r.updatedAt });
+      const fresh: CachedPrices = {
+        goldUsd: r.gold24PerGram,
+        silverUsd: r.silverPerGram,
+        updatedAt: r.updatedAt,
+      };
+      setData(fresh);
+      setUsingCache(false);
+      saveCachedPrices(fresh);
     } catch (e) {
-      setError((e as Error).message);
+      const cached = loadCachedPrices();
+      if (cached) {
+        setData(cached);
+        setUsingCache(true);
+        setError(
+          `تعذّر الاتصال بالسوق العالمي (${(e as Error).message}) — تُعرض آخر أسعار محفوظة محلياً`,
+        );
+      } else {
+        setError((e as Error).message);
+      }
     } finally {
       setBusy(false);
     }
   }
+
+  const cacheAgeMs = usingCache && data ? Date.now() - new Date(data.updatedAt).getTime() : 0;
+  const cacheVeryStale = usingCache && cacheAgeMs > STALE_WARN_MS;
 
   function applyGlobal() {
     if (!data) return;
@@ -124,8 +167,34 @@ export function LivePricesCard({ currency, onApply }: Props) {
         </Button>
 
         {error && (
-          <Alert variant="destructive">
+          <Alert variant={usingCache ? "default" : "destructive"} className={usingCache ? "border-amber-500/40 bg-amber-500/5" : undefined}>
+            {usingCache && <WifiOff className="h-4 w-4 text-amber-600" />}
             <AlertDescription className="text-xs">{error}</AlertDescription>
+          </Alert>
+        )}
+
+        {usingCache && data && (
+          <Alert
+            className={
+              cacheVeryStale
+                ? "border-destructive/40 bg-destructive/5"
+                : "border-amber-500/40 bg-amber-500/5"
+            }
+          >
+            <WifiOff className={`h-4 w-4 ${cacheVeryStale ? "text-destructive" : "text-amber-600"}`} />
+            <AlertDescription className="text-xs leading-relaxed">
+              أسعار مخزَّنة محلياً من آخر اتصال ناجح بتاريخ{" "}
+              <b>{new Date(data.updatedAt).toLocaleString("ar-EG")}</b> — ليست لحظية.
+              {cacheVeryStale && (
+                <>
+                  {" "}
+                  <b className="text-destructive">
+                    مضى عليها أكثر من 24 ساعة؛ لا تُعتمد لتحديد بلوغ النصاب دون تحديث فعلي عند توفر
+                    الشبكة.
+                  </b>
+                </>
+              )}
+            </AlertDescription>
           </Alert>
         )}
 
