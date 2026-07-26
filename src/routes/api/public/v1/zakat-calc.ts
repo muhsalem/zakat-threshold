@@ -122,7 +122,7 @@ export const Route = createFileRoute("/api/public/v1/zakat-calc")({
                     id: ruling.id,
                     authority: ruling.authority,
                     basis: ruling.basis,
-                    summary: ruling.summary,
+                    summary: ruling.evidence ?? ruling.notes ?? null,
                   }
                 : null,
             },

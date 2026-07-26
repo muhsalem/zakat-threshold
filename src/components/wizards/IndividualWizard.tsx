@@ -32,6 +32,7 @@ import {
 } from "lucide-react";
 import { fmt, COUNTRY_PRICES, GOLD_NISAB_GRAMS, SILVER_NISAB_GRAMS, ZAKAT_RATE } from "@/lib/zakat";
 import { toast } from "sonner";
+import { HawlEngineCard } from "@/components/zakat/HawlEngineCard";
 import { SaveToHistoryCard } from "@/components/zakat/SaveToHistoryCard";
 import { useWizardAutosave } from "@/hooks/useWizardAutosave";
 import { useCloudAutosave } from "@/hooks/useCloudAutosave";
@@ -484,7 +485,7 @@ export function IndividualWizard() {
               </Select>
             </div>
             {fixHawl === "yes" && (
-              <div className="space-y-1.5">
+              <div className="space-y-1.5 sm:col-span-2">
                 <Label className="text-xs">تاريخ الحول (هجري/ميلادي)</Label>
                 <Input
                   type="date"
@@ -496,6 +497,11 @@ export function IndividualWizard() {
                 <p className="text-[11px] text-muted-foreground">
                   سنُذكِّرك سنويًا بموعد حسبة زكاتك عبر البريد والجوال.
                 </p>
+                {hawlDate && (
+                  <div className="pt-2">
+                    <HawlEngineCard startDateISO={hawlDate} basis="hijri" />
+                  </div>
+                )}
               </div>
             )}
             <Alert className="sm:col-span-2">

@@ -5,7 +5,7 @@ import type { PrintReportData } from "@/components/zakat/PrintReport";
 
 describe("Excel Integration & Import/Export Engine", () => {
   it("يقوم بتوليد ملف Excel كامل متعدد الأوراق (Multi-sheet XLSX)", () => {
-    const mockReportData: PrintReportData = {
+    const mockReportData = {
       name: "شركة النجاح المحدودة",
       countryCode: "SA",
       currencyName: "ر.س",
@@ -22,7 +22,7 @@ describe("Excel Integration & Import/Export Engine", () => {
       calendarBasis: "hijri",
     };
 
-    const wb = buildReportWorkbook(mockReportData);
+    const wb = buildReportWorkbook(mockReportData as unknown as PrintReportData);
     expect(wb.SheetNames).toContain("الملخص");
     expect(wb.SheetNames).toContain("تفاصيل البنود");
 
