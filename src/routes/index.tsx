@@ -22,7 +22,6 @@ import {
   Clock,
   ArrowLeft,
   CheckCircle2,
-  Star,
   Globe2,
   LogIn,
   LogOut,
@@ -937,16 +936,8 @@ function SiteFooter() {
             <Moon className="h-4 w-4 text-primary" /> نِصاب
           </div>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            منصة الزكاة الأولى المعتمدة شرعياً ومحاسبياً للأفراد والشركات والمؤسسات.
+            منصة زكاة مبنية على معايير AAOIFI للأفراد والشركات والمؤسسات.
           </p>
-          <div className="flex items-center gap-1 text-xs text-gold">
-            <Star className="h-3.5 w-3.5 fill-current" />
-            <Star className="h-3.5 w-3.5 fill-current" />
-            <Star className="h-3.5 w-3.5 fill-current" />
-            <Star className="h-3.5 w-3.5 fill-current" />
-            <Star className="h-3.5 w-3.5 fill-current" />
-            <span className="text-muted-foreground me-1">4.9/5 من 2,300+ مستخدم</span>
-          </div>
         </div>
         <FooterCol
           title="المنتج"
