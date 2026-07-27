@@ -49,13 +49,13 @@ import { trackEvent } from "@/lib/analytics";
 export const Route = createFileRoute("/client-intake")({
   head: () => ({
     meta: [
-      { title: "احسب زكاتك مع محاسبك المعتمد — نافذة العميل" },
+      { title: "احسب زكاتك — نافذة العميل" },
       {
         name: "description",
-        content: "نموذج بسيط أو تقرير زكاة شامل معتمد يُرسل بريدياً خلال يومَي عمل من محاسب مرخّص.",
+        content: "نموذج بسيط أو تقرير زكاة شامل فوري وفق معيار AAOIFI 35، بصيغة PDF مختوم برقم مرجعي.",
       },
       { property: "og:title", content: "احسب زكاتك — نافذة العميل" },
-      { property: "og:description", content: "تسليم بيانات آمن للمحاسب المعتمد وتقرير PDF مختوم" },
+      { property: "og:description", content: "تسليم بيانات آمن وتقرير PDF مختوم فوري" },
       { property: "og:type", content: "website" },
     ],
   }),
@@ -360,7 +360,7 @@ function ClientIntakePage() {
     trackEvent("intake_form_submitted", { mode, kind: form.kind });
     if (mode === "comprehensive") trackEvent("certified_report_requested", { kind: form.kind });
     toast.success(
-      mode === "comprehensive" ? "تم إرسال طلب التقرير الشامل" : "تم إرسال بياناتك للمحاسب",
+      mode === "comprehensive" ? "تم إرسال طلب التقرير الشامل" : "تم استلام بياناتك وجارٍ الاحتساب",
     );
 
     // إرسال بريد تأكيد للعميل عبر Edge Function
@@ -389,18 +389,19 @@ function ClientIntakePage() {
         <h1 className="text-3xl font-bold">تم استلام بياناتك بنجاح</h1>
         <p className="text-muted-foreground leading-relaxed">
           {isComp
-            ? "طلب تقرير الزكاة الشامل قيد الإعداد من محاسب مرخّص."
-            : "بياناتك بين يدي المحاسب المعتمد للمراجعة."}
+            ? "طلب تقرير الزكاة الشامل قيد الاحتساب الآلي الآن."
+            : "بياناتك قيد الاحتساب الآلي الآن."}
           <br />
-          سيصلك التقرير الرسمي على بريدك <b>خلال يومَي عمل</b> بحد أقصى.
+          سيصلك التقرير على بريدك <b>خلال دقائق</b>. (خيار المراجعة البشرية من محاسب مرخّص قادم
+          قريباً.)
         </p>
         <div className="rounded-lg border bg-primary/5 p-4 text-sm text-end space-y-2">
           <div className="font-semibold flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-primary" /> ما التالي؟
           </div>
           <ol className="list-decimal pe-6 space-y-1 text-muted-foreground">
-            <li>يستلم المحاسب المعتمد بياناتك خلال دقائق.</li>
-            <li>مراجعة وتصنيف الأصول والالتزامات وفق المعايير الشرعية.</li>
+            <li>يحتسب النظام بياناتك آلياً خلال دقائق.</li>
+            <li>تصنيف الأصول والالتزامات وفق معيار AAOIFI 35.</li>
             {isComp && (
               <li>احتساب زكاة كل نوع من الأصول (نقد، ذهب، أسهم، عقار، زراعة، أنعام، تجارة).</li>
             )}
@@ -439,7 +440,7 @@ function ClientIntakePage() {
         </p>
         <div className="flex flex-wrap gap-2">
           <FeatureChip icon={<Shield className="h-3.5 w-3.5" />} text="بيانات مشفّرة" />
-          <FeatureChip icon={<CheckCircle2 className="h-3.5 w-3.5" />} text="محاسب معتمد" />
+          <FeatureChip icon={<CheckCircle2 className="h-3.5 w-3.5" />} text="حساب فوري" />
           <FeatureChip icon={<Users className="h-3.5 w-3.5" />} text="أفراد وشركات ومؤسسات" />
         </div>
       </section>
@@ -448,8 +449,8 @@ function ClientIntakePage() {
       <section className="grid md:grid-cols-3 gap-3">
         <BenefitCard
           icon={<Award className="h-5 w-5" />}
-          title="اعتماد شرعي ومحاسبي"
-          text="مراجعة من محاسب مرخّص وفق معايير AAOIFI 35 والاتحاد الدولي لعلماء المسلمين."
+          title="حساب دقيق وفق AAOIFI 35"
+          text="حساب آلي حتمي وفق معيار AAOIFI 35. المراجعة البشرية من محاسب مرخّص خيار اختياري قادم قريباً."
         />
         <BenefitCard
           icon={<Stamp className="h-5 w-5" />}
@@ -473,8 +474,8 @@ function ClientIntakePage() {
         />
         <BenefitCard
           icon={<Sparkles className="h-5 w-5" />}
-          title="تسليم خلال يومَي عمل"
-          text="التزام SLA مع تذكير آلي بموعد الحول القادم لتجديد الحساب."
+          title="تسليم فوري"
+          text="تقريرك جاهز فور الإدخال، مع تذكير آلي بموعد الحول القادم لتجديد الحساب."
         />
       </section>
 
@@ -808,13 +809,12 @@ function ClientIntakePage() {
         </Button>
         <Button size="lg" onClick={() => void submit()} className="gap-1.5">
           <Send className="h-4 w-4" />{" "}
-          {mode === "comprehensive" ? "طلب التقرير الشامل" : "إرسال إلى المحاسب"}
+          {mode === "comprehensive" ? "طلب التقرير الشامل" : "احتساب الزكاة"}
         </Button>
       </div>
 
       <p className="text-[11px] text-muted-foreground text-center">
-        بإرسالك النموذج فأنت توافق على مشاركة بياناتك مع المحاسب/الشركة المعتمدين لغرض احتساب الزكاة
-        فقط.
+        بإرسالك النموذج فأنت توافق على استخدام بياناتك لغرض احتساب الزكاة فقط.
       </p>
     </main>
   );

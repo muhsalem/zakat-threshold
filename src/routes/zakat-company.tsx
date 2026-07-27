@@ -121,8 +121,8 @@ function ZakatCompanyPage() {
 
       <div className="rounded-lg border bg-primary/5 p-4 flex items-center justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-2 text-sm">
-          <ShieldCheck className="h-5 w-5 text-primary" /> اطلب تقريراً معتمداً من محاسب مرخّص خلال
-          يومَي عمل.
+          <ShieldCheck className="h-5 w-5 text-primary" /> احصل على تقرير مفصَّل فوري وفق معيار
+          AAOIFI 35.
         </div>
         <Button asChild variant="ghost" className="gap-1">
           <Link to="/client-intake">اطلب التقرير</Link>

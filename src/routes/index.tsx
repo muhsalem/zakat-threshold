@@ -268,24 +268,20 @@ function StatMini({
 /* ---------------- Trust ---------------- */
 
 function TrustBar() {
-  const items = [
-    "AAOIFI 35",
-    "الاتحاد الدولي لعلماء المسلمين",
-    "هيئة الزكاة والضريبة (السعودية)",
-    "IFRS متوافق",
-    "GDPR",
-    "ISO 27001 روحاً",
-  ];
+  const items = ["معيار AAOIFI 35", "قرارات مجمع الفقه الإسلامي الدولي", "عزل بيانات RLS"];
   return (
     <section className="border-y bg-muted/30" dir="rtl">
       <div className="container mx-auto px-4 py-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs text-muted-foreground">
-        <span className="font-semibold text-foreground/70">مرجعيات وتوافق:</span>
+        <span className="font-semibold text-foreground/70">نطبّق فعلياً:</span>
         {items.map((i) => (
           <span key={i} className="inline-flex items-center gap-1.5">
             <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
             {i}
           </span>
         ))}
+        <Link to="/certifications" className="underline hover:text-foreground">
+          سجل الاعتمادات الكامل وحالة كل مرجعية ←
+        </Link>
       </div>
     </section>
   );

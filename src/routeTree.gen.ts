@@ -9,200 +9,233 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ZakatGoldRouteImport } from './routes/zakat-gold'
-import { Route as ZakatFitrRouteImport } from './routes/zakat-fitr'
-import { Route as ZakatCompanyRouteImport } from './routes/zakat-company'
-import { Route as WelcomeRouteImport } from './routes/welcome'
-import { Route as VerifyRouteImport } from './routes/verify'
-import { Route as SubscriptionConfirmationRouteImport } from './routes/subscription-confirmation'
-import { Route as StatusRouteImport } from './routes/status'
-import { Route as SoftwareRecommendationsRouteImport } from './routes/software-recommendations'
-import { Route as ShowcaseRouteImport } from './routes/showcase'
-import { Route as ShariaChangelogRouteImport } from './routes/sharia-changelog'
-import { Route as SecurityRouteImport } from './routes/security'
-import { Route as SalaryZakatRouteImport } from './routes/salary-zakat'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as PricingRouteImport } from './routes/pricing'
-import { Route as PricesHistoryRouteImport } from './routes/prices-history'
-import { Route as PortalSigninRouteImport } from './routes/portal-signin'
-import { Route as OrganizationsRouteImport } from './routes/organizations'
-import { Route as NisabAuditRouteImport } from './routes/nisab-audit'
-import { Route as LivestockRouteImport } from './routes/livestock'
-import { Route as LiquidityStressRouteImport } from './routes/liquidity-stress'
-import { Route as KycAmlRouteImport } from './routes/kyc-aml'
-import { Route as InstitutionalEndorsementsRouteImport } from './routes/institutional-endorsements'
-import { Route as ImpactRouteImport } from './routes/impact'
-import { Route as HistoryRouteImport } from './routes/history'
-import { Route as GroupZakatRouteImport } from './routes/group-zakat'
-import { Route as GovernanceRouteImport } from './routes/governance'
-import { Route as GovPortalRouteImport } from './routes/gov-portal'
-import { Route as FatwaCommunityRouteImport } from './routes/fatwa-community'
-import { Route as EvaluationRouteImport } from './routes/evaluation'
-import { Route as EsgRouteImport } from './routes/esg'
-import { Route as ErpConnectorsRouteImport } from './routes/erp-connectors'
-import { Route as EnterprisePricingRouteImport } from './routes/enterprise-pricing'
-import { Route as EnterpriseRouteImport } from './routes/enterprise'
-import { Route as EightChannelsRouteImport } from './routes/eight-channels'
-import { Route as DevelopersRouteImport } from './routes/developers'
-import { Route as DemoRouteImport } from './routes/demo'
-import { Route as CropsRouteImport } from './routes/crops'
-import { Route as ComplianceRouteImport } from './routes/compliance'
-import { Route as ClientIntakeRouteImport } from './routes/client-intake'
-import { Route as CheckoutResultRouteImport } from './routes/checkout-result'
-import { Route as CertificationsRouteImport } from './routes/certifications'
-import { Route as BlogRouteImport } from './routes/blog'
-import { Route as AwardSubmissionRouteImport } from './routes/award-submission'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AuditRouteImport } from './routes/audit'
-import { Route as AnalyticsRouteImport } from './routes/analytics'
-import { Route as AdvisorRouteImport } from './routes/advisor'
-import { Route as AConsoleRouteImport } from './routes/a-console'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as RTokenRouteImport } from './routes/r.$token'
-import { Route as LegalTermsRouteImport } from './routes/legal.terms'
-import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
-import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
-import { Route as ApiShariaStockScreeningRouteImport } from './routes/api/sharia-stock-screening'
-import { Route as ApiExtractStatementRouteImport } from './routes/api/extract-statement'
-import { Route as ApiChatRouteImport } from './routes/api/chat'
-import { Route as AuthenticatedSubscriptionRouteImport } from './routes/_authenticated/subscription'
-import { Route as AuthenticatedShariaStockScreeningRouteImport } from './routes/_authenticated/sharia-stock-screening'
-import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
-import { Route as AuthenticatedPricesAuditRouteImport } from './routes/_authenticated/prices-audit'
-import { Route as AuthenticatedErpSetupRouteImport } from './routes/_authenticated/erp-setup'
-import { Route as AuthenticatedDraftsRouteImport } from './routes/_authenticated/drafts'
-import { Route as AuthenticatedDistributionPlanRouteImport } from './routes/_authenticated/distribution-plan'
-import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
-import { Route as AuthenticatedCoaMappingRouteImport } from './routes/_authenticated/coa-mapping'
-import { Route as AuthenticatedBulkClientsRouteImport } from './routes/_authenticated/bulk-clients'
-import { Route as AuthenticatedAuditReviewRouteImport } from './routes/_authenticated/audit-review'
-import { Route as AuthenticatedAttestationsRouteImport } from './routes/_authenticated/attestations'
-import { Route as AuthenticatedAttachmentsReviewRouteImport } from './routes/_authenticated/attachments-review'
-import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AConsoleRouteImport } from './routes/a-console'
+import { Route as AdvisorRouteImport } from './routes/advisor'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
+import { Route as AuditRouteImport } from './routes/audit'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AwardSubmissionRouteImport } from './routes/award-submission'
+import { Route as BlogRouteImport } from './routes/blog'
+import { Route as CertificationsRouteImport } from './routes/certifications'
+import { Route as CheckoutResultRouteImport } from './routes/checkout-result'
+import { Route as ClientIntakeRouteImport } from './routes/client-intake'
+import { Route as ComplianceRouteImport } from './routes/compliance'
+import { Route as CropsRouteImport } from './routes/crops'
+import { Route as DemoRouteImport } from './routes/demo'
+import { Route as DevelopersRouteImport } from './routes/developers'
+import { Route as EightChannelsRouteImport } from './routes/eight-channels'
+import { Route as EnterpriseRouteImport } from './routes/enterprise'
+import { Route as EnterprisePricingRouteImport } from './routes/enterprise-pricing'
+import { Route as ErpConnectorsRouteImport } from './routes/erp-connectors'
+import { Route as EsgRouteImport } from './routes/esg'
+import { Route as EvaluationRouteImport } from './routes/evaluation'
+import { Route as FatwaCommunityRouteImport } from './routes/fatwa-community'
+import { Route as GovPortalRouteImport } from './routes/gov-portal'
+import { Route as GovernanceRouteImport } from './routes/governance'
+import { Route as GroupZakatRouteImport } from './routes/group-zakat'
+import { Route as HistoryRouteImport } from './routes/history'
+import { Route as ImpactRouteImport } from './routes/impact'
+import { Route as InstitutionalEndorsementsRouteImport } from './routes/institutional-endorsements'
+import { Route as KycAmlRouteImport } from './routes/kyc-aml'
+import { Route as LiquidityStressRouteImport } from './routes/liquidity-stress'
+import { Route as LivestockRouteImport } from './routes/livestock'
+import { Route as NisabAuditRouteImport } from './routes/nisab-audit'
+import { Route as OrganizationsRouteImport } from './routes/organizations'
+import { Route as PortalSigninRouteImport } from './routes/portal-signin'
+import { Route as PricesHistoryRouteImport } from './routes/prices-history'
+import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SalaryZakatRouteImport } from './routes/salary-zakat'
+import { Route as SecurityRouteImport } from './routes/security'
+import { Route as ShariaChangelogRouteImport } from './routes/sharia-changelog'
+import { Route as ShowcaseRouteImport } from './routes/showcase'
+import { Route as SoftwareRecommendationsRouteImport } from './routes/software-recommendations'
+import { Route as StatusRouteImport } from './routes/status'
+import { Route as SubscriptionConfirmationRouteImport } from './routes/subscription-confirmation'
+import { Route as VerifyRouteImport } from './routes/verify'
+import { Route as WelcomeRouteImport } from './routes/welcome'
+import { Route as ZakatCompanyRouteImport } from './routes/zakat-company'
+import { Route as ZakatFitrRouteImport } from './routes/zakat-fitr'
+import { Route as ZakatGoldRouteImport } from './routes/zakat-gold'
 import { Route as AuthenticatedAccountantRouteImport } from './routes/_authenticated/accountant'
-import { Route as ApiPublicOpenapiRouteImport } from './routes/api/public/openapi'
-import { Route as ApiPublicNisabRouteImport } from './routes/api/public/nisab'
-import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
-import { Route as ApiPublicGeoRouteImport } from './routes/api/public/geo'
-import { Route as ApiPublicCalcRouteImport } from './routes/api/public/calc'
-import { Route as AuthenticatedZakatCaseRecordIdRouteImport } from './routes/_authenticated/zakat-case.$recordId'
-import { Route as AuthenticatedComplianceReportRecordIdRouteImport } from './routes/_authenticated/compliance-report.$recordId'
-import { Route as AuthenticatedCertifiedReportRecordIdRouteImport } from './routes/_authenticated/certified-report.$recordId'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAttachmentsReviewRouteImport } from './routes/_authenticated/attachments-review'
+import { Route as AuthenticatedAttestationsRouteImport } from './routes/_authenticated/attestations'
+import { Route as AuthenticatedAuditReviewRouteImport } from './routes/_authenticated/audit-review'
+import { Route as AuthenticatedBulkClientsRouteImport } from './routes/_authenticated/bulk-clients'
+import { Route as AuthenticatedCoaMappingRouteImport } from './routes/_authenticated/coa-mapping'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedDistributionPlanRouteImport } from './routes/_authenticated/distribution-plan'
+import { Route as AuthenticatedDraftsRouteImport } from './routes/_authenticated/drafts'
+import { Route as AuthenticatedErpSetupRouteImport } from './routes/_authenticated/erp-setup'
+import { Route as AuthenticatedPricesAuditRouteImport } from './routes/_authenticated/prices-audit'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedShariaStockScreeningRouteImport } from './routes/_authenticated/sharia-stock-screening'
+import { Route as AuthenticatedSubscriptionRouteImport } from './routes/_authenticated/subscription'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as ApiExtractStatementRouteImport } from './routes/api/extract-statement'
+import { Route as ApiShariaStockScreeningRouteImport } from './routes/api/sharia-stock-screening'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
+import { Route as LegalTermsRouteImport } from './routes/legal.terms'
+import { Route as RTokenRouteImport } from './routes/r.$token'
 import { Route as AuthenticatedAccountantClientIdRouteImport } from './routes/_authenticated/accountant.$clientId'
-import { Route as ApiPublicV1ZakatCalcRouteImport } from './routes/api/public/v1/zakat-calc'
-import { Route as ApiPublicPricesHistoryRouteImport } from './routes/api/public/prices/history'
-import { Route as ApiPublicHooksSnapshotPricesRouteImport } from './routes/api/public/hooks/snapshot-prices'
-import { Route as ApiPublicHooksSnapshotDailyPricesRouteImport } from './routes/api/public/hooks/snapshot-daily-prices'
-import { Route as ApiPublicHooksSnapshotDailyNisabRouteImport } from './routes/api/public/hooks/snapshot-daily-nisab'
-import { Route as ApiPublicHooksHawlRemindersRouteImport } from './routes/api/public/hooks/hawl-reminders'
-import { Route as ApiPublicErpWebhookRouteImport } from './routes/api/public/erp/webhook'
+import { Route as AuthenticatedCertifiedReportRecordIdRouteImport } from './routes/_authenticated/certified-report.$recordId'
+import { Route as AuthenticatedComplianceReportRecordIdRouteImport } from './routes/_authenticated/compliance-report.$recordId'
+import { Route as AuthenticatedZakatCaseRecordIdRouteImport } from './routes/_authenticated/zakat-case.$recordId'
+import { Route as ApiPublicCalcRouteImport } from './routes/api/public/calc'
+import { Route as ApiPublicGeoRouteImport } from './routes/api/public/geo'
+import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
+import { Route as ApiPublicNisabRouteImport } from './routes/api/public/nisab'
+import { Route as ApiPublicOpenapiRouteImport } from './routes/api/public/openapi'
 import { Route as ApiPublicErpJournalRouteImport } from './routes/api/public/erp/journal'
+import { Route as ApiPublicErpWebhookRouteImport } from './routes/api/public/erp/webhook'
+import { Route as ApiPublicHooksHawlRemindersRouteImport } from './routes/api/public/hooks/hawl-reminders'
+import { Route as ApiPublicHooksSnapshotDailyNisabRouteImport } from './routes/api/public/hooks/snapshot-daily-nisab'
+import { Route as ApiPublicHooksSnapshotDailyPricesRouteImport } from './routes/api/public/hooks/snapshot-daily-prices'
+import { Route as ApiPublicHooksSnapshotPricesRouteImport } from './routes/api/public/hooks/snapshot-prices'
+import { Route as ApiPublicPricesHistoryRouteImport } from './routes/api/public/prices/history'
+import { Route as ApiPublicV1ZakatCalcRouteImport } from './routes/api/public/v1/zakat-calc'
 
-const ZakatGoldRoute = ZakatGoldRouteImport.update({
-  id: '/zakat-gold',
-  path: '/zakat-gold',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ZakatFitrRoute = ZakatFitrRouteImport.update({
-  id: '/zakat-fitr',
-  path: '/zakat-fitr',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ZakatCompanyRoute = ZakatCompanyRouteImport.update({
-  id: '/zakat-company',
-  path: '/zakat-company',
+const AConsoleRoute = AConsoleRouteImport.update({
+  id: '/a-console',
+  path: '/a-console',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WelcomeRoute = WelcomeRouteImport.update({
-  id: '/welcome',
-  path: '/welcome',
+const AdvisorRoute = AdvisorRouteImport.update({
+  id: '/advisor',
+  path: '/advisor',
   getParentRoute: () => rootRouteImport,
 } as any)
-const VerifyRoute = VerifyRouteImport.update({
-  id: '/verify',
-  path: '/verify',
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SubscriptionConfirmationRoute =
-  SubscriptionConfirmationRouteImport.update({
-    id: '/subscription-confirmation',
-    path: '/subscription-confirmation',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const StatusRoute = StatusRouteImport.update({
-  id: '/status',
-  path: '/status',
+const AuditRoute = AuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SoftwareRecommendationsRoute = SoftwareRecommendationsRouteImport.update({
-  id: '/software-recommendations',
-  path: '/software-recommendations',
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ShowcaseRoute = ShowcaseRouteImport.update({
-  id: '/showcase',
-  path: '/showcase',
+const AwardSubmissionRoute = AwardSubmissionRouteImport.update({
+  id: '/award-submission',
+  path: '/award-submission',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ShariaChangelogRoute = ShariaChangelogRouteImport.update({
-  id: '/sharia-changelog',
-  path: '/sharia-changelog',
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SecurityRoute = SecurityRouteImport.update({
-  id: '/security',
-  path: '/security',
+const CertificationsRoute = CertificationsRouteImport.update({
+  id: '/certifications',
+  path: '/certifications',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SalaryZakatRoute = SalaryZakatRouteImport.update({
-  id: '/salary-zakat',
-  path: '/salary-zakat',
+const CheckoutResultRoute = CheckoutResultRouteImport.update({
+  id: '/checkout-result',
+  path: '/checkout-result',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
+const ClientIntakeRoute = ClientIntakeRouteImport.update({
+  id: '/client-intake',
+  path: '/client-intake',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PricingRoute = PricingRouteImport.update({
-  id: '/pricing',
-  path: '/pricing',
+const ComplianceRoute = ComplianceRouteImport.update({
+  id: '/compliance',
+  path: '/compliance',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PricesHistoryRoute = PricesHistoryRouteImport.update({
-  id: '/prices-history',
-  path: '/prices-history',
+const CropsRoute = CropsRouteImport.update({
+  id: '/crops',
+  path: '/crops',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PortalSigninRoute = PortalSigninRouteImport.update({
-  id: '/portal-signin',
-  path: '/portal-signin',
+const DemoRoute = DemoRouteImport.update({
+  id: '/demo',
+  path: '/demo',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OrganizationsRoute = OrganizationsRouteImport.update({
-  id: '/organizations',
-  path: '/organizations',
+const DevelopersRoute = DevelopersRouteImport.update({
+  id: '/developers',
+  path: '/developers',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NisabAuditRoute = NisabAuditRouteImport.update({
-  id: '/nisab-audit',
-  path: '/nisab-audit',
+const EightChannelsRoute = EightChannelsRouteImport.update({
+  id: '/eight-channels',
+  path: '/eight-channels',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LivestockRoute = LivestockRouteImport.update({
-  id: '/livestock',
-  path: '/livestock',
+const EnterpriseRoute = EnterpriseRouteImport.update({
+  id: '/enterprise',
+  path: '/enterprise',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LiquidityStressRoute = LiquidityStressRouteImport.update({
-  id: '/liquidity-stress',
-  path: '/liquidity-stress',
+const EnterprisePricingRoute = EnterprisePricingRouteImport.update({
+  id: '/enterprise-pricing',
+  path: '/enterprise-pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
-const KycAmlRoute = KycAmlRouteImport.update({
-  id: '/kyc-aml',
-  path: '/kyc-aml',
+const ErpConnectorsRoute = ErpConnectorsRouteImport.update({
+  id: '/erp-connectors',
+  path: '/erp-connectors',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EsgRoute = EsgRouteImport.update({
+  id: '/esg',
+  path: '/esg',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EvaluationRoute = EvaluationRouteImport.update({
+  id: '/evaluation',
+  path: '/evaluation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FatwaCommunityRoute = FatwaCommunityRouteImport.update({
+  id: '/fatwa-community',
+  path: '/fatwa-community',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GovPortalRoute = GovPortalRouteImport.update({
+  id: '/gov-portal',
+  path: '/gov-portal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GovernanceRoute = GovernanceRouteImport.update({
+  id: '/governance',
+  path: '/governance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GroupZakatRoute = GroupZakatRouteImport.update({
+  id: '/group-zakat',
+  path: '/group-zakat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoryRoute = HistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImpactRoute = ImpactRouteImport.update({
+  id: '/impact',
+  path: '/impact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InstitutionalEndorsementsRoute =
@@ -211,239 +244,126 @@ const InstitutionalEndorsementsRoute =
     path: '/institutional-endorsements',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ImpactRoute = ImpactRouteImport.update({
-  id: '/impact',
-  path: '/impact',
+const KycAmlRoute = KycAmlRouteImport.update({
+  id: '/kyc-aml',
+  path: '/kyc-aml',
   getParentRoute: () => rootRouteImport,
 } as any)
-const HistoryRoute = HistoryRouteImport.update({
-  id: '/history',
-  path: '/history',
+const LiquidityStressRoute = LiquidityStressRouteImport.update({
+  id: '/liquidity-stress',
+  path: '/liquidity-stress',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GroupZakatRoute = GroupZakatRouteImport.update({
-  id: '/group-zakat',
-  path: '/group-zakat',
+const LivestockRoute = LivestockRouteImport.update({
+  id: '/livestock',
+  path: '/livestock',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GovernanceRoute = GovernanceRouteImport.update({
-  id: '/governance',
-  path: '/governance',
+const NisabAuditRoute = NisabAuditRouteImport.update({
+  id: '/nisab-audit',
+  path: '/nisab-audit',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GovPortalRoute = GovPortalRouteImport.update({
-  id: '/gov-portal',
-  path: '/gov-portal',
+const OrganizationsRoute = OrganizationsRouteImport.update({
+  id: '/organizations',
+  path: '/organizations',
   getParentRoute: () => rootRouteImport,
 } as any)
-const FatwaCommunityRoute = FatwaCommunityRouteImport.update({
-  id: '/fatwa-community',
-  path: '/fatwa-community',
+const PortalSigninRoute = PortalSigninRouteImport.update({
+  id: '/portal-signin',
+  path: '/portal-signin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EvaluationRoute = EvaluationRouteImport.update({
-  id: '/evaluation',
-  path: '/evaluation',
+const PricesHistoryRoute = PricesHistoryRouteImport.update({
+  id: '/prices-history',
+  path: '/prices-history',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EsgRoute = EsgRouteImport.update({
-  id: '/esg',
-  path: '/esg',
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ErpConnectorsRoute = ErpConnectorsRouteImport.update({
-  id: '/erp-connectors',
-  path: '/erp-connectors',
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EnterprisePricingRoute = EnterprisePricingRouteImport.update({
-  id: '/enterprise-pricing',
-  path: '/enterprise-pricing',
+const SalaryZakatRoute = SalaryZakatRouteImport.update({
+  id: '/salary-zakat',
+  path: '/salary-zakat',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EnterpriseRoute = EnterpriseRouteImport.update({
-  id: '/enterprise',
-  path: '/enterprise',
+const SecurityRoute = SecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EightChannelsRoute = EightChannelsRouteImport.update({
-  id: '/eight-channels',
-  path: '/eight-channels',
+const ShariaChangelogRoute = ShariaChangelogRouteImport.update({
+  id: '/sharia-changelog',
+  path: '/sharia-changelog',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DevelopersRoute = DevelopersRouteImport.update({
-  id: '/developers',
-  path: '/developers',
+const ShowcaseRoute = ShowcaseRouteImport.update({
+  id: '/showcase',
+  path: '/showcase',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoRoute = DemoRouteImport.update({
-  id: '/demo',
-  path: '/demo',
+const SoftwareRecommendationsRoute = SoftwareRecommendationsRouteImport.update({
+  id: '/software-recommendations',
+  path: '/software-recommendations',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CropsRoute = CropsRouteImport.update({
-  id: '/crops',
-  path: '/crops',
+const StatusRoute = StatusRouteImport.update({
+  id: '/status',
+  path: '/status',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ComplianceRoute = ComplianceRouteImport.update({
-  id: '/compliance',
-  path: '/compliance',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ClientIntakeRoute = ClientIntakeRouteImport.update({
-  id: '/client-intake',
-  path: '/client-intake',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CheckoutResultRoute = CheckoutResultRouteImport.update({
-  id: '/checkout-result',
-  path: '/checkout-result',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CertificationsRoute = CertificationsRouteImport.update({
-  id: '/certifications',
-  path: '/certifications',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BlogRoute = BlogRouteImport.update({
-  id: '/blog',
-  path: '/blog',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AwardSubmissionRoute = AwardSubmissionRouteImport.update({
-  id: '/award-submission',
-  path: '/award-submission',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuditRoute = AuditRouteImport.update({
-  id: '/audit',
-  path: '/audit',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AnalyticsRoute = AnalyticsRouteImport.update({
-  id: '/analytics',
-  path: '/analytics',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdvisorRoute = AdvisorRouteImport.update({
-  id: '/advisor',
-  path: '/advisor',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AConsoleRoute = AConsoleRouteImport.update({
-  id: '/a-console',
-  path: '/a-console',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RTokenRoute = RTokenRouteImport.update({
-  id: '/r/$token',
-  path: '/r/$token',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LegalTermsRoute = LegalTermsRouteImport.update({
-  id: '/legal/terms',
-  path: '/legal/terms',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LegalPrivacyRoute = LegalPrivacyRouteImport.update({
-  id: '/legal/privacy',
-  path: '/legal/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BlogSlugRoute = BlogSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => BlogRoute,
-} as any)
-const ApiShariaStockScreeningRoute = ApiShariaStockScreeningRouteImport.update({
-  id: '/api/sharia-stock-screening',
-  path: '/api/sharia-stock-screening',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiExtractStatementRoute = ApiExtractStatementRouteImport.update({
-  id: '/api/extract-statement',
-  path: '/api/extract-statement',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiChatRoute = ApiChatRouteImport.update({
-  id: '/api/chat',
-  path: '/api/chat',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedSubscriptionRoute =
-  AuthenticatedSubscriptionRouteImport.update({
-    id: '/subscription',
-    path: '/subscription',
-    getParentRoute: () => AuthenticatedRouteRoute,
+const SubscriptionConfirmationRoute =
+  SubscriptionConfirmationRouteImport.update({
+    id: '/subscription-confirmation',
+    path: '/subscription-confirmation',
+    getParentRoute: () => rootRouteImport,
   } as any)
-const AuthenticatedShariaStockScreeningRoute =
-  AuthenticatedShariaStockScreeningRouteImport.update({
-    id: '/sharia-stock-screening',
-    path: '/sharia-stock-screening',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
+const VerifyRoute = VerifyRouteImport.update({
+  id: '/verify',
+  path: '/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WelcomeRoute = WelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ZakatCompanyRoute = ZakatCompanyRouteImport.update({
+  id: '/zakat-company',
+  path: '/zakat-company',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ZakatFitrRoute = ZakatFitrRouteImport.update({
+  id: '/zakat-fitr',
+  path: '/zakat-fitr',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ZakatGoldRoute = ZakatGoldRouteImport.update({
+  id: '/zakat-gold',
+  path: '/zakat-gold',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAccountantRoute = AuthenticatedAccountantRouteImport.update({
+  id: '/accountant',
+  path: '/accountant',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedPricesAuditRoute =
-  AuthenticatedPricesAuditRouteImport.update({
-    id: '/prices-audit',
-    path: '/prices-audit',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedErpSetupRoute = AuthenticatedErpSetupRouteImport.update({
-  id: '/erp-setup',
-  path: '/erp-setup',
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedDraftsRoute = AuthenticatedDraftsRouteImport.update({
-  id: '/drafts',
-  path: '/drafts',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedDistributionPlanRoute =
-  AuthenticatedDistributionPlanRouteImport.update({
-    id: '/distribution-plan',
-    path: '/distribution-plan',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedCoaMappingRoute = AuthenticatedCoaMappingRouteImport.update({
-  id: '/coa-mapping',
-  path: '/coa-mapping',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedBulkClientsRoute =
-  AuthenticatedBulkClientsRouteImport.update({
-    id: '/bulk-clients',
-    path: '/bulk-clients',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedAuditReviewRoute =
-  AuthenticatedAuditReviewRouteImport.update({
-    id: '/audit-review',
-    path: '/audit-review',
+const AuthenticatedAttachmentsReviewRoute =
+  AuthenticatedAttachmentsReviewRouteImport.update({
+    id: '/attachments-review',
+    path: '/attachments-review',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedAttestationsRoute =
@@ -452,51 +372,112 @@ const AuthenticatedAttestationsRoute =
     path: '/attestations',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedAttachmentsReviewRoute =
-  AuthenticatedAttachmentsReviewRouteImport.update({
-    id: '/attachments-review',
-    path: '/attachments-review',
+const AuthenticatedAuditReviewRoute =
+  AuthenticatedAuditReviewRouteImport.update({
+    id: '/audit-review',
+    path: '/audit-review',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
+const AuthenticatedBulkClientsRoute =
+  AuthenticatedBulkClientsRouteImport.update({
+    id: '/bulk-clients',
+    path: '/bulk-clients',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedCoaMappingRoute = AuthenticatedCoaMappingRouteImport.update({
+  id: '/coa-mapping',
+  path: '/coa-mapping',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedAccountantRoute = AuthenticatedAccountantRouteImport.update({
-  id: '/accountant',
-  path: '/accountant',
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const ApiPublicOpenapiRoute = ApiPublicOpenapiRouteImport.update({
-  id: '/api/public/openapi',
-  path: '/api/public/openapi',
+const AuthenticatedDistributionPlanRoute =
+  AuthenticatedDistributionPlanRouteImport.update({
+    id: '/distribution-plan',
+    path: '/distribution-plan',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDraftsRoute = AuthenticatedDraftsRouteImport.update({
+  id: '/drafts',
+  path: '/drafts',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedErpSetupRoute = AuthenticatedErpSetupRouteImport.update({
+  id: '/erp-setup',
+  path: '/erp-setup',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPricesAuditRoute =
+  AuthenticatedPricesAuditRouteImport.update({
+    id: '/prices-audit',
+    path: '/prices-audit',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedShariaStockScreeningRoute =
+  AuthenticatedShariaStockScreeningRouteImport.update({
+    id: '/sharia-stock-screening',
+    path: '/sharia-stock-screening',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSubscriptionRoute =
+  AuthenticatedSubscriptionRouteImport.update({
+    id: '/subscription',
+    path: '/subscription',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicNisabRoute = ApiPublicNisabRouteImport.update({
-  id: '/api/public/nisab',
-  path: '/api/public/nisab',
+const ApiExtractStatementRoute = ApiExtractStatementRouteImport.update({
+  id: '/api/extract-statement',
+  path: '/api/extract-statement',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
-  id: '/api/public/health',
-  path: '/api/public/health',
+const ApiShariaStockScreeningRoute = ApiShariaStockScreeningRouteImport.update({
+  id: '/api/sharia-stock-screening',
+  path: '/api/sharia-stock-screening',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicGeoRoute = ApiPublicGeoRouteImport.update({
-  id: '/api/public/geo',
-  path: '/api/public/geo',
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => BlogRoute,
+} as any)
+const LegalPrivacyRoute = LegalPrivacyRouteImport.update({
+  id: '/legal/privacy',
+  path: '/legal/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicCalcRoute = ApiPublicCalcRouteImport.update({
-  id: '/api/public/calc',
-  path: '/api/public/calc',
+const LegalTermsRoute = LegalTermsRouteImport.update({
+  id: '/legal/terms',
+  path: '/legal/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedZakatCaseRecordIdRoute =
-  AuthenticatedZakatCaseRecordIdRouteImport.update({
-    id: '/zakat-case/$recordId',
-    path: '/zakat-case/$recordId',
+const RTokenRoute = RTokenRouteImport.update({
+  id: '/r/$token',
+  path: '/r/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAccountantClientIdRoute =
+  AuthenticatedAccountantClientIdRouteImport.update({
+    id: '/$clientId',
+    path: '/$clientId',
+    getParentRoute: () => AuthenticatedAccountantRoute,
+  } as any)
+const AuthenticatedCertifiedReportRecordIdRoute =
+  AuthenticatedCertifiedReportRecordIdRouteImport.update({
+    id: '/certified-report/$recordId',
+    path: '/certified-report/$recordId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedComplianceReportRecordIdRoute =
@@ -505,38 +486,51 @@ const AuthenticatedComplianceReportRecordIdRoute =
     path: '/compliance-report/$recordId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedCertifiedReportRecordIdRoute =
-  AuthenticatedCertifiedReportRecordIdRouteImport.update({
-    id: '/certified-report/$recordId',
-    path: '/certified-report/$recordId',
+const AuthenticatedZakatCaseRecordIdRoute =
+  AuthenticatedZakatCaseRecordIdRouteImport.update({
+    id: '/zakat-case/$recordId',
+    path: '/zakat-case/$recordId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedAccountantClientIdRoute =
-  AuthenticatedAccountantClientIdRouteImport.update({
-    id: '/$clientId',
-    path: '/$clientId',
-    getParentRoute: () => AuthenticatedAccountantRoute,
-  } as any)
-const ApiPublicV1ZakatCalcRoute = ApiPublicV1ZakatCalcRouteImport.update({
-  id: '/api/public/v1/zakat-calc',
-  path: '/api/public/v1/zakat-calc',
+const ApiPublicCalcRoute = ApiPublicCalcRouteImport.update({
+  id: '/api/public/calc',
+  path: '/api/public/calc',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicPricesHistoryRoute = ApiPublicPricesHistoryRouteImport.update({
-  id: '/api/public/prices/history',
-  path: '/api/public/prices/history',
+const ApiPublicGeoRoute = ApiPublicGeoRouteImport.update({
+  id: '/api/public/geo',
+  path: '/api/public/geo',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicHooksSnapshotPricesRoute =
-  ApiPublicHooksSnapshotPricesRouteImport.update({
-    id: '/api/public/hooks/snapshot-prices',
-    path: '/api/public/hooks/snapshot-prices',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksSnapshotDailyPricesRoute =
-  ApiPublicHooksSnapshotDailyPricesRouteImport.update({
-    id: '/api/public/hooks/snapshot-daily-prices',
-    path: '/api/public/hooks/snapshot-daily-prices',
+const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
+  id: '/api/public/health',
+  path: '/api/public/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicNisabRoute = ApiPublicNisabRouteImport.update({
+  id: '/api/public/nisab',
+  path: '/api/public/nisab',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicOpenapiRoute = ApiPublicOpenapiRouteImport.update({
+  id: '/api/public/openapi',
+  path: '/api/public/openapi',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicErpJournalRoute = ApiPublicErpJournalRouteImport.update({
+  id: '/api/public/erp/journal',
+  path: '/api/public/erp/journal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicErpWebhookRoute = ApiPublicErpWebhookRouteImport.update({
+  id: '/api/public/erp/webhook',
+  path: '/api/public/erp/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicHooksHawlRemindersRoute =
+  ApiPublicHooksHawlRemindersRouteImport.update({
+    id: '/api/public/hooks/hawl-reminders',
+    path: '/api/public/hooks/hawl-reminders',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiPublicHooksSnapshotDailyNisabRoute =
@@ -545,20 +539,26 @@ const ApiPublicHooksSnapshotDailyNisabRoute =
     path: '/api/public/hooks/snapshot-daily-nisab',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicHooksHawlRemindersRoute =
-  ApiPublicHooksHawlRemindersRouteImport.update({
-    id: '/api/public/hooks/hawl-reminders',
-    path: '/api/public/hooks/hawl-reminders',
+const ApiPublicHooksSnapshotDailyPricesRoute =
+  ApiPublicHooksSnapshotDailyPricesRouteImport.update({
+    id: '/api/public/hooks/snapshot-daily-prices',
+    path: '/api/public/hooks/snapshot-daily-prices',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicErpWebhookRoute = ApiPublicErpWebhookRouteImport.update({
-  id: '/api/public/erp/webhook',
-  path: '/api/public/erp/webhook',
+const ApiPublicHooksSnapshotPricesRoute =
+  ApiPublicHooksSnapshotPricesRouteImport.update({
+    id: '/api/public/hooks/snapshot-prices',
+    path: '/api/public/hooks/snapshot-prices',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicPricesHistoryRoute = ApiPublicPricesHistoryRouteImport.update({
+  id: '/api/public/prices/history',
+  path: '/api/public/prices/history',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicErpJournalRoute = ApiPublicErpJournalRouteImport.update({
-  id: '/api/public/erp/journal',
-  path: '/api/public/erp/journal',
+const ApiPublicV1ZakatCalcRoute = ApiPublicV1ZakatCalcRouteImport.update({
+  id: '/api/public/v1/zakat-calc',
+  path: '/api/public/v1/zakat-calc',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -1182,340 +1182,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/zakat-gold': {
-      id: '/zakat-gold'
-      path: '/zakat-gold'
-      fullPath: '/zakat-gold'
-      preLoaderRoute: typeof ZakatGoldRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/zakat-fitr': {
-      id: '/zakat-fitr'
-      path: '/zakat-fitr'
-      fullPath: '/zakat-fitr'
-      preLoaderRoute: typeof ZakatFitrRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/zakat-company': {
-      id: '/zakat-company'
-      path: '/zakat-company'
-      fullPath: '/zakat-company'
-      preLoaderRoute: typeof ZakatCompanyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/welcome': {
-      id: '/welcome'
-      path: '/welcome'
-      fullPath: '/welcome'
-      preLoaderRoute: typeof WelcomeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/verify': {
-      id: '/verify'
-      path: '/verify'
-      fullPath: '/verify'
-      preLoaderRoute: typeof VerifyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/subscription-confirmation': {
-      id: '/subscription-confirmation'
-      path: '/subscription-confirmation'
-      fullPath: '/subscription-confirmation'
-      preLoaderRoute: typeof SubscriptionConfirmationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/status': {
-      id: '/status'
-      path: '/status'
-      fullPath: '/status'
-      preLoaderRoute: typeof StatusRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/software-recommendations': {
-      id: '/software-recommendations'
-      path: '/software-recommendations'
-      fullPath: '/software-recommendations'
-      preLoaderRoute: typeof SoftwareRecommendationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/showcase': {
-      id: '/showcase'
-      path: '/showcase'
-      fullPath: '/showcase'
-      preLoaderRoute: typeof ShowcaseRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sharia-changelog': {
-      id: '/sharia-changelog'
-      path: '/sharia-changelog'
-      fullPath: '/sharia-changelog'
-      preLoaderRoute: typeof ShariaChangelogRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/security': {
-      id: '/security'
-      path: '/security'
-      fullPath: '/security'
-      preLoaderRoute: typeof SecurityRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/salary-zakat': {
-      id: '/salary-zakat'
-      path: '/salary-zakat'
-      fullPath: '/salary-zakat'
-      preLoaderRoute: typeof SalaryZakatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pricing': {
-      id: '/pricing'
-      path: '/pricing'
-      fullPath: '/pricing'
-      preLoaderRoute: typeof PricingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/prices-history': {
-      id: '/prices-history'
-      path: '/prices-history'
-      fullPath: '/prices-history'
-      preLoaderRoute: typeof PricesHistoryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/portal-signin': {
-      id: '/portal-signin'
-      path: '/portal-signin'
-      fullPath: '/portal-signin'
-      preLoaderRoute: typeof PortalSigninRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/organizations': {
-      id: '/organizations'
-      path: '/organizations'
-      fullPath: '/organizations'
-      preLoaderRoute: typeof OrganizationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/nisab-audit': {
-      id: '/nisab-audit'
-      path: '/nisab-audit'
-      fullPath: '/nisab-audit'
-      preLoaderRoute: typeof NisabAuditRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/livestock': {
-      id: '/livestock'
-      path: '/livestock'
-      fullPath: '/livestock'
-      preLoaderRoute: typeof LivestockRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/liquidity-stress': {
-      id: '/liquidity-stress'
-      path: '/liquidity-stress'
-      fullPath: '/liquidity-stress'
-      preLoaderRoute: typeof LiquidityStressRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/kyc-aml': {
-      id: '/kyc-aml'
-      path: '/kyc-aml'
-      fullPath: '/kyc-aml'
-      preLoaderRoute: typeof KycAmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/institutional-endorsements': {
-      id: '/institutional-endorsements'
-      path: '/institutional-endorsements'
-      fullPath: '/institutional-endorsements'
-      preLoaderRoute: typeof InstitutionalEndorsementsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/impact': {
-      id: '/impact'
-      path: '/impact'
-      fullPath: '/impact'
-      preLoaderRoute: typeof ImpactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/history': {
-      id: '/history'
-      path: '/history'
-      fullPath: '/history'
-      preLoaderRoute: typeof HistoryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/group-zakat': {
-      id: '/group-zakat'
-      path: '/group-zakat'
-      fullPath: '/group-zakat'
-      preLoaderRoute: typeof GroupZakatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/governance': {
-      id: '/governance'
-      path: '/governance'
-      fullPath: '/governance'
-      preLoaderRoute: typeof GovernanceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/gov-portal': {
-      id: '/gov-portal'
-      path: '/gov-portal'
-      fullPath: '/gov-portal'
-      preLoaderRoute: typeof GovPortalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/fatwa-community': {
-      id: '/fatwa-community'
-      path: '/fatwa-community'
-      fullPath: '/fatwa-community'
-      preLoaderRoute: typeof FatwaCommunityRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/evaluation': {
-      id: '/evaluation'
-      path: '/evaluation'
-      fullPath: '/evaluation'
-      preLoaderRoute: typeof EvaluationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/esg': {
-      id: '/esg'
-      path: '/esg'
-      fullPath: '/esg'
-      preLoaderRoute: typeof EsgRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/erp-connectors': {
-      id: '/erp-connectors'
-      path: '/erp-connectors'
-      fullPath: '/erp-connectors'
-      preLoaderRoute: typeof ErpConnectorsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/enterprise-pricing': {
-      id: '/enterprise-pricing'
-      path: '/enterprise-pricing'
-      fullPath: '/enterprise-pricing'
-      preLoaderRoute: typeof EnterprisePricingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/enterprise': {
-      id: '/enterprise'
-      path: '/enterprise'
-      fullPath: '/enterprise'
-      preLoaderRoute: typeof EnterpriseRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/eight-channels': {
-      id: '/eight-channels'
-      path: '/eight-channels'
-      fullPath: '/eight-channels'
-      preLoaderRoute: typeof EightChannelsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/developers': {
-      id: '/developers'
-      path: '/developers'
-      fullPath: '/developers'
-      preLoaderRoute: typeof DevelopersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo': {
-      id: '/demo'
-      path: '/demo'
-      fullPath: '/demo'
-      preLoaderRoute: typeof DemoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/crops': {
-      id: '/crops'
-      path: '/crops'
-      fullPath: '/crops'
-      preLoaderRoute: typeof CropsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/compliance': {
-      id: '/compliance'
-      path: '/compliance'
-      fullPath: '/compliance'
-      preLoaderRoute: typeof ComplianceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/client-intake': {
-      id: '/client-intake'
-      path: '/client-intake'
-      fullPath: '/client-intake'
-      preLoaderRoute: typeof ClientIntakeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/checkout-result': {
-      id: '/checkout-result'
-      path: '/checkout-result'
-      fullPath: '/checkout-result'
-      preLoaderRoute: typeof CheckoutResultRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/certifications': {
-      id: '/certifications'
-      path: '/certifications'
-      fullPath: '/certifications'
-      preLoaderRoute: typeof CertificationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/blog': {
-      id: '/blog'
-      path: '/blog'
-      fullPath: '/blog'
-      preLoaderRoute: typeof BlogRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/award-submission': {
-      id: '/award-submission'
-      path: '/award-submission'
-      fullPath: '/award-submission'
-      preLoaderRoute: typeof AwardSubmissionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/audit': {
-      id: '/audit'
-      path: '/audit'
-      fullPath: '/audit'
-      preLoaderRoute: typeof AuditRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/analytics': {
-      id: '/analytics'
-      path: '/analytics'
-      fullPath: '/analytics'
-      preLoaderRoute: typeof AnalyticsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/advisor': {
-      id: '/advisor'
-      path: '/advisor'
-      fullPath: '/advisor'
-      preLoaderRoute: typeof AdvisorRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/a-console': {
-      id: '/a-console'
-      path: '/a-console'
-      fullPath: '/a-console'
-      preLoaderRoute: typeof AConsoleRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -1525,151 +1196,347 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/a-console': {
+      id: '/a-console'
+      path: '/a-console'
+      fullPath: '/a-console'
+      preLoaderRoute: typeof AConsoleRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/r/$token': {
-      id: '/r/$token'
-      path: '/r/$token'
-      fullPath: '/r/$token'
-      preLoaderRoute: typeof RTokenRouteImport
+    '/advisor': {
+      id: '/advisor'
+      path: '/advisor'
+      fullPath: '/advisor'
+      preLoaderRoute: typeof AdvisorRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/legal/terms': {
-      id: '/legal/terms'
-      path: '/legal/terms'
-      fullPath: '/legal/terms'
-      preLoaderRoute: typeof LegalTermsRouteImport
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/legal/privacy': {
-      id: '/legal/privacy'
-      path: '/legal/privacy'
-      fullPath: '/legal/privacy'
-      preLoaderRoute: typeof LegalPrivacyRouteImport
+    '/audit': {
+      id: '/audit'
+      path: '/audit'
+      fullPath: '/audit'
+      preLoaderRoute: typeof AuditRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/blog/$slug': {
-      id: '/blog/$slug'
-      path: '/$slug'
-      fullPath: '/blog/$slug'
-      preLoaderRoute: typeof BlogSlugRouteImport
-      parentRoute: typeof BlogRoute
-    }
-    '/api/sharia-stock-screening': {
-      id: '/api/sharia-stock-screening'
-      path: '/api/sharia-stock-screening'
-      fullPath: '/api/sharia-stock-screening'
-      preLoaderRoute: typeof ApiShariaStockScreeningRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/extract-statement': {
-      id: '/api/extract-statement'
-      path: '/api/extract-statement'
-      fullPath: '/api/extract-statement'
-      preLoaderRoute: typeof ApiExtractStatementRouteImport
+    '/award-submission': {
+      id: '/award-submission'
+      path: '/award-submission'
+      fullPath: '/award-submission'
+      preLoaderRoute: typeof AwardSubmissionRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/chat': {
-      id: '/api/chat'
-      path: '/api/chat'
-      fullPath: '/api/chat'
-      preLoaderRoute: typeof ApiChatRouteImport
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/subscription': {
-      id: '/_authenticated/subscription'
-      path: '/subscription'
-      fullPath: '/subscription'
-      preLoaderRoute: typeof AuthenticatedSubscriptionRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/certifications': {
+      id: '/certifications'
+      path: '/certifications'
+      fullPath: '/certifications'
+      preLoaderRoute: typeof CertificationsRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/sharia-stock-screening': {
-      id: '/_authenticated/sharia-stock-screening'
-      path: '/sharia-stock-screening'
-      fullPath: '/sharia-stock-screening'
-      preLoaderRoute: typeof AuthenticatedShariaStockScreeningRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/checkout-result': {
+      id: '/checkout-result'
+      path: '/checkout-result'
+      fullPath: '/checkout-result'
+      preLoaderRoute: typeof CheckoutResultRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/settings': {
-      id: '/_authenticated/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/client-intake': {
+      id: '/client-intake'
+      path: '/client-intake'
+      fullPath: '/client-intake'
+      preLoaderRoute: typeof ClientIntakeRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/prices-audit': {
-      id: '/_authenticated/prices-audit'
-      path: '/prices-audit'
-      fullPath: '/prices-audit'
-      preLoaderRoute: typeof AuthenticatedPricesAuditRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/compliance': {
+      id: '/compliance'
+      path: '/compliance'
+      fullPath: '/compliance'
+      preLoaderRoute: typeof ComplianceRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/erp-setup': {
-      id: '/_authenticated/erp-setup'
-      path: '/erp-setup'
-      fullPath: '/erp-setup'
-      preLoaderRoute: typeof AuthenticatedErpSetupRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/crops': {
+      id: '/crops'
+      path: '/crops'
+      fullPath: '/crops'
+      preLoaderRoute: typeof CropsRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/drafts': {
-      id: '/_authenticated/drafts'
-      path: '/drafts'
-      fullPath: '/drafts'
-      preLoaderRoute: typeof AuthenticatedDraftsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/demo': {
+      id: '/demo'
+      path: '/demo'
+      fullPath: '/demo'
+      preLoaderRoute: typeof DemoRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/distribution-plan': {
-      id: '/_authenticated/distribution-plan'
-      path: '/distribution-plan'
-      fullPath: '/distribution-plan'
-      preLoaderRoute: typeof AuthenticatedDistributionPlanRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/developers': {
+      id: '/developers'
+      path: '/developers'
+      fullPath: '/developers'
+      preLoaderRoute: typeof DevelopersRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/dashboard': {
-      id: '/_authenticated/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/eight-channels': {
+      id: '/eight-channels'
+      path: '/eight-channels'
+      fullPath: '/eight-channels'
+      preLoaderRoute: typeof EightChannelsRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/coa-mapping': {
-      id: '/_authenticated/coa-mapping'
-      path: '/coa-mapping'
-      fullPath: '/coa-mapping'
-      preLoaderRoute: typeof AuthenticatedCoaMappingRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/enterprise': {
+      id: '/enterprise'
+      path: '/enterprise'
+      fullPath: '/enterprise'
+      preLoaderRoute: typeof EnterpriseRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/bulk-clients': {
-      id: '/_authenticated/bulk-clients'
-      path: '/bulk-clients'
-      fullPath: '/bulk-clients'
-      preLoaderRoute: typeof AuthenticatedBulkClientsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/enterprise-pricing': {
+      id: '/enterprise-pricing'
+      path: '/enterprise-pricing'
+      fullPath: '/enterprise-pricing'
+      preLoaderRoute: typeof EnterprisePricingRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/audit-review': {
-      id: '/_authenticated/audit-review'
-      path: '/audit-review'
-      fullPath: '/audit-review'
-      preLoaderRoute: typeof AuthenticatedAuditReviewRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/erp-connectors': {
+      id: '/erp-connectors'
+      path: '/erp-connectors'
+      fullPath: '/erp-connectors'
+      preLoaderRoute: typeof ErpConnectorsRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/attestations': {
-      id: '/_authenticated/attestations'
-      path: '/attestations'
-      fullPath: '/attestations'
-      preLoaderRoute: typeof AuthenticatedAttestationsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/esg': {
+      id: '/esg'
+      path: '/esg'
+      fullPath: '/esg'
+      preLoaderRoute: typeof EsgRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/attachments-review': {
-      id: '/_authenticated/attachments-review'
-      path: '/attachments-review'
-      fullPath: '/attachments-review'
-      preLoaderRoute: typeof AuthenticatedAttachmentsReviewRouteImport
+    '/evaluation': {
+      id: '/evaluation'
+      path: '/evaluation'
+      fullPath: '/evaluation'
+      preLoaderRoute: typeof EvaluationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fatwa-community': {
+      id: '/fatwa-community'
+      path: '/fatwa-community'
+      fullPath: '/fatwa-community'
+      preLoaderRoute: typeof FatwaCommunityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gov-portal': {
+      id: '/gov-portal'
+      path: '/gov-portal'
+      fullPath: '/gov-portal'
+      preLoaderRoute: typeof GovPortalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/governance': {
+      id: '/governance'
+      path: '/governance'
+      fullPath: '/governance'
+      preLoaderRoute: typeof GovernanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/group-zakat': {
+      id: '/group-zakat'
+      path: '/group-zakat'
+      fullPath: '/group-zakat'
+      preLoaderRoute: typeof GroupZakatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/history': {
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/impact': {
+      id: '/impact'
+      path: '/impact'
+      fullPath: '/impact'
+      preLoaderRoute: typeof ImpactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/institutional-endorsements': {
+      id: '/institutional-endorsements'
+      path: '/institutional-endorsements'
+      fullPath: '/institutional-endorsements'
+      preLoaderRoute: typeof InstitutionalEndorsementsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kyc-aml': {
+      id: '/kyc-aml'
+      path: '/kyc-aml'
+      fullPath: '/kyc-aml'
+      preLoaderRoute: typeof KycAmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/liquidity-stress': {
+      id: '/liquidity-stress'
+      path: '/liquidity-stress'
+      fullPath: '/liquidity-stress'
+      preLoaderRoute: typeof LiquidityStressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/livestock': {
+      id: '/livestock'
+      path: '/livestock'
+      fullPath: '/livestock'
+      preLoaderRoute: typeof LivestockRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nisab-audit': {
+      id: '/nisab-audit'
+      path: '/nisab-audit'
+      fullPath: '/nisab-audit'
+      preLoaderRoute: typeof NisabAuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/organizations': {
+      id: '/organizations'
+      path: '/organizations'
+      fullPath: '/organizations'
+      preLoaderRoute: typeof OrganizationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal-signin': {
+      id: '/portal-signin'
+      path: '/portal-signin'
+      fullPath: '/portal-signin'
+      preLoaderRoute: typeof PortalSigninRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prices-history': {
+      id: '/prices-history'
+      path: '/prices-history'
+      fullPath: '/prices-history'
+      preLoaderRoute: typeof PricesHistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/salary-zakat': {
+      id: '/salary-zakat'
+      path: '/salary-zakat'
+      fullPath: '/salary-zakat'
+      preLoaderRoute: typeof SalaryZakatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/security': {
+      id: '/security'
+      path: '/security'
+      fullPath: '/security'
+      preLoaderRoute: typeof SecurityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sharia-changelog': {
+      id: '/sharia-changelog'
+      path: '/sharia-changelog'
+      fullPath: '/sharia-changelog'
+      preLoaderRoute: typeof ShariaChangelogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/showcase': {
+      id: '/showcase'
+      path: '/showcase'
+      fullPath: '/showcase'
+      preLoaderRoute: typeof ShowcaseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/software-recommendations': {
+      id: '/software-recommendations'
+      path: '/software-recommendations'
+      fullPath: '/software-recommendations'
+      preLoaderRoute: typeof SoftwareRecommendationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/status': {
+      id: '/status'
+      path: '/status'
+      fullPath: '/status'
+      preLoaderRoute: typeof StatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subscription-confirmation': {
+      id: '/subscription-confirmation'
+      path: '/subscription-confirmation'
+      fullPath: '/subscription-confirmation'
+      preLoaderRoute: typeof SubscriptionConfirmationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verify': {
+      id: '/verify'
+      path: '/verify'
+      fullPath: '/verify'
+      preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/welcome': {
+      id: '/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof WelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/zakat-company': {
+      id: '/zakat-company'
+      path: '/zakat-company'
+      fullPath: '/zakat-company'
+      preLoaderRoute: typeof ZakatCompanyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/zakat-fitr': {
+      id: '/zakat-fitr'
+      path: '/zakat-fitr'
+      fullPath: '/zakat-fitr'
+      preLoaderRoute: typeof ZakatFitrRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/zakat-gold': {
+      id: '/zakat-gold'
+      path: '/zakat-gold'
+      fullPath: '/zakat-gold'
+      preLoaderRoute: typeof ZakatGoldRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/accountant': {
+      id: '/_authenticated/accountant'
+      path: '/accountant'
+      fullPath: '/accountant'
+      preLoaderRoute: typeof AuthenticatedAccountantRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/admin': {
@@ -1679,53 +1546,158 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/accountant': {
-      id: '/_authenticated/accountant'
-      path: '/accountant'
-      fullPath: '/accountant'
-      preLoaderRoute: typeof AuthenticatedAccountantRouteImport
+    '/_authenticated/attachments-review': {
+      id: '/_authenticated/attachments-review'
+      path: '/attachments-review'
+      fullPath: '/attachments-review'
+      preLoaderRoute: typeof AuthenticatedAttachmentsReviewRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/api/public/openapi': {
-      id: '/api/public/openapi'
-      path: '/api/public/openapi'
-      fullPath: '/api/public/openapi'
-      preLoaderRoute: typeof ApiPublicOpenapiRouteImport
+    '/_authenticated/attestations': {
+      id: '/_authenticated/attestations'
+      path: '/attestations'
+      fullPath: '/attestations'
+      preLoaderRoute: typeof AuthenticatedAttestationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/audit-review': {
+      id: '/_authenticated/audit-review'
+      path: '/audit-review'
+      fullPath: '/audit-review'
+      preLoaderRoute: typeof AuthenticatedAuditReviewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/bulk-clients': {
+      id: '/_authenticated/bulk-clients'
+      path: '/bulk-clients'
+      fullPath: '/bulk-clients'
+      preLoaderRoute: typeof AuthenticatedBulkClientsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/coa-mapping': {
+      id: '/_authenticated/coa-mapping'
+      path: '/coa-mapping'
+      fullPath: '/coa-mapping'
+      preLoaderRoute: typeof AuthenticatedCoaMappingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/distribution-plan': {
+      id: '/_authenticated/distribution-plan'
+      path: '/distribution-plan'
+      fullPath: '/distribution-plan'
+      preLoaderRoute: typeof AuthenticatedDistributionPlanRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/drafts': {
+      id: '/_authenticated/drafts'
+      path: '/drafts'
+      fullPath: '/drafts'
+      preLoaderRoute: typeof AuthenticatedDraftsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/erp-setup': {
+      id: '/_authenticated/erp-setup'
+      path: '/erp-setup'
+      fullPath: '/erp-setup'
+      preLoaderRoute: typeof AuthenticatedErpSetupRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/prices-audit': {
+      id: '/_authenticated/prices-audit'
+      path: '/prices-audit'
+      fullPath: '/prices-audit'
+      preLoaderRoute: typeof AuthenticatedPricesAuditRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/sharia-stock-screening': {
+      id: '/_authenticated/sharia-stock-screening'
+      path: '/sharia-stock-screening'
+      fullPath: '/sharia-stock-screening'
+      preLoaderRoute: typeof AuthenticatedShariaStockScreeningRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/subscription': {
+      id: '/_authenticated/subscription'
+      path: '/subscription'
+      fullPath: '/subscription'
+      preLoaderRoute: typeof AuthenticatedSubscriptionRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/nisab': {
-      id: '/api/public/nisab'
-      path: '/api/public/nisab'
-      fullPath: '/api/public/nisab'
-      preLoaderRoute: typeof ApiPublicNisabRouteImport
+    '/api/extract-statement': {
+      id: '/api/extract-statement'
+      path: '/api/extract-statement'
+      fullPath: '/api/extract-statement'
+      preLoaderRoute: typeof ApiExtractStatementRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/health': {
-      id: '/api/public/health'
-      path: '/api/public/health'
-      fullPath: '/api/public/health'
-      preLoaderRoute: typeof ApiPublicHealthRouteImport
+    '/api/sharia-stock-screening': {
+      id: '/api/sharia-stock-screening'
+      path: '/api/sharia-stock-screening'
+      fullPath: '/api/sharia-stock-screening'
+      preLoaderRoute: typeof ApiShariaStockScreeningRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/geo': {
-      id: '/api/public/geo'
-      path: '/api/public/geo'
-      fullPath: '/api/public/geo'
-      preLoaderRoute: typeof ApiPublicGeoRouteImport
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof BlogRoute
+    }
+    '/legal/privacy': {
+      id: '/legal/privacy'
+      path: '/legal/privacy'
+      fullPath: '/legal/privacy'
+      preLoaderRoute: typeof LegalPrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/calc': {
-      id: '/api/public/calc'
-      path: '/api/public/calc'
-      fullPath: '/api/public/calc'
-      preLoaderRoute: typeof ApiPublicCalcRouteImport
+    '/legal/terms': {
+      id: '/legal/terms'
+      path: '/legal/terms'
+      fullPath: '/legal/terms'
+      preLoaderRoute: typeof LegalTermsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/zakat-case/$recordId': {
-      id: '/_authenticated/zakat-case/$recordId'
-      path: '/zakat-case/$recordId'
-      fullPath: '/zakat-case/$recordId'
-      preLoaderRoute: typeof AuthenticatedZakatCaseRecordIdRouteImport
+    '/r/$token': {
+      id: '/r/$token'
+      path: '/r/$token'
+      fullPath: '/r/$token'
+      preLoaderRoute: typeof RTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/accountant/$clientId': {
+      id: '/_authenticated/accountant/$clientId'
+      path: '/$clientId'
+      fullPath: '/accountant/$clientId'
+      preLoaderRoute: typeof AuthenticatedAccountantClientIdRouteImport
+      parentRoute: typeof AuthenticatedAccountantRoute
+    }
+    '/_authenticated/certified-report/$recordId': {
+      id: '/_authenticated/certified-report/$recordId'
+      path: '/certified-report/$recordId'
+      fullPath: '/certified-report/$recordId'
+      preLoaderRoute: typeof AuthenticatedCertifiedReportRecordIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/compliance-report/$recordId': {
@@ -1735,60 +1707,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedComplianceReportRecordIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/certified-report/$recordId': {
-      id: '/_authenticated/certified-report/$recordId'
-      path: '/certified-report/$recordId'
-      fullPath: '/certified-report/$recordId'
-      preLoaderRoute: typeof AuthenticatedCertifiedReportRecordIdRouteImport
+    '/_authenticated/zakat-case/$recordId': {
+      id: '/_authenticated/zakat-case/$recordId'
+      path: '/zakat-case/$recordId'
+      fullPath: '/zakat-case/$recordId'
+      preLoaderRoute: typeof AuthenticatedZakatCaseRecordIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/accountant/$clientId': {
-      id: '/_authenticated/accountant/$clientId'
-      path: '/$clientId'
-      fullPath: '/accountant/$clientId'
-      preLoaderRoute: typeof AuthenticatedAccountantClientIdRouteImport
-      parentRoute: typeof AuthenticatedAccountantRoute
-    }
-    '/api/public/v1/zakat-calc': {
-      id: '/api/public/v1/zakat-calc'
-      path: '/api/public/v1/zakat-calc'
-      fullPath: '/api/public/v1/zakat-calc'
-      preLoaderRoute: typeof ApiPublicV1ZakatCalcRouteImport
+    '/api/public/calc': {
+      id: '/api/public/calc'
+      path: '/api/public/calc'
+      fullPath: '/api/public/calc'
+      preLoaderRoute: typeof ApiPublicCalcRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/prices/history': {
-      id: '/api/public/prices/history'
-      path: '/api/public/prices/history'
-      fullPath: '/api/public/prices/history'
-      preLoaderRoute: typeof ApiPublicPricesHistoryRouteImport
+    '/api/public/geo': {
+      id: '/api/public/geo'
+      path: '/api/public/geo'
+      fullPath: '/api/public/geo'
+      preLoaderRoute: typeof ApiPublicGeoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/snapshot-prices': {
-      id: '/api/public/hooks/snapshot-prices'
-      path: '/api/public/hooks/snapshot-prices'
-      fullPath: '/api/public/hooks/snapshot-prices'
-      preLoaderRoute: typeof ApiPublicHooksSnapshotPricesRouteImport
+    '/api/public/health': {
+      id: '/api/public/health'
+      path: '/api/public/health'
+      fullPath: '/api/public/health'
+      preLoaderRoute: typeof ApiPublicHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/snapshot-daily-prices': {
-      id: '/api/public/hooks/snapshot-daily-prices'
-      path: '/api/public/hooks/snapshot-daily-prices'
-      fullPath: '/api/public/hooks/snapshot-daily-prices'
-      preLoaderRoute: typeof ApiPublicHooksSnapshotDailyPricesRouteImport
+    '/api/public/nisab': {
+      id: '/api/public/nisab'
+      path: '/api/public/nisab'
+      fullPath: '/api/public/nisab'
+      preLoaderRoute: typeof ApiPublicNisabRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/snapshot-daily-nisab': {
-      id: '/api/public/hooks/snapshot-daily-nisab'
-      path: '/api/public/hooks/snapshot-daily-nisab'
-      fullPath: '/api/public/hooks/snapshot-daily-nisab'
-      preLoaderRoute: typeof ApiPublicHooksSnapshotDailyNisabRouteImport
+    '/api/public/openapi': {
+      id: '/api/public/openapi'
+      path: '/api/public/openapi'
+      fullPath: '/api/public/openapi'
+      preLoaderRoute: typeof ApiPublicOpenapiRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/hawl-reminders': {
-      id: '/api/public/hooks/hawl-reminders'
-      path: '/api/public/hooks/hawl-reminders'
-      fullPath: '/api/public/hooks/hawl-reminders'
-      preLoaderRoute: typeof ApiPublicHooksHawlRemindersRouteImport
+    '/api/public/erp/journal': {
+      id: '/api/public/erp/journal'
+      path: '/api/public/erp/journal'
+      fullPath: '/api/public/erp/journal'
+      preLoaderRoute: typeof ApiPublicErpJournalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/erp/webhook': {
@@ -1798,11 +1763,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicErpWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/erp/journal': {
-      id: '/api/public/erp/journal'
-      path: '/api/public/erp/journal'
-      fullPath: '/api/public/erp/journal'
-      preLoaderRoute: typeof ApiPublicErpJournalRouteImport
+    '/api/public/hooks/hawl-reminders': {
+      id: '/api/public/hooks/hawl-reminders'
+      path: '/api/public/hooks/hawl-reminders'
+      fullPath: '/api/public/hooks/hawl-reminders'
+      preLoaderRoute: typeof ApiPublicHooksHawlRemindersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/snapshot-daily-nisab': {
+      id: '/api/public/hooks/snapshot-daily-nisab'
+      path: '/api/public/hooks/snapshot-daily-nisab'
+      fullPath: '/api/public/hooks/snapshot-daily-nisab'
+      preLoaderRoute: typeof ApiPublicHooksSnapshotDailyNisabRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/snapshot-daily-prices': {
+      id: '/api/public/hooks/snapshot-daily-prices'
+      path: '/api/public/hooks/snapshot-daily-prices'
+      fullPath: '/api/public/hooks/snapshot-daily-prices'
+      preLoaderRoute: typeof ApiPublicHooksSnapshotDailyPricesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/snapshot-prices': {
+      id: '/api/public/hooks/snapshot-prices'
+      path: '/api/public/hooks/snapshot-prices'
+      fullPath: '/api/public/hooks/snapshot-prices'
+      preLoaderRoute: typeof ApiPublicHooksSnapshotPricesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/prices/history': {
+      id: '/api/public/prices/history'
+      path: '/api/public/prices/history'
+      fullPath: '/api/public/prices/history'
+      preLoaderRoute: typeof ApiPublicPricesHistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/zakat-calc': {
+      id: '/api/public/v1/zakat-calc'
+      path: '/api/public/v1/zakat-calc'
+      fullPath: '/api/public/v1/zakat-calc'
+      preLoaderRoute: typeof ApiPublicV1ZakatCalcRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -1955,3 +1955,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

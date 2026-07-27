@@ -211,8 +211,8 @@ export function SimpleZakatCalculator() {
         <Alert className="border-gold/30 bg-gold/5">
           <AlertDescription className="text-xs leading-relaxed">
             هذه حاسبة تقديرية للأصول الشائعة (نقد + ذهب + فضة). للحساب الكامل الذي يشمل العقار
-            والتجارة والاستثمارات والزروع والأنعام، استخدم <b>الحاسبة الاحترافية</b>، أو أرسل
-            بياناتك لمحاسب معتمد لاستلام تقرير رسمي خلال 48 ساعة.
+            والتجارة والاستثمارات والزروع والأنعام، استخدم <b>الحاسبة الاحترافية</b> للحصول على
+            تقرير تفصيلي فوري.
           </AlertDescription>
         </Alert>
       </CardContent>
