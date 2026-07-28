@@ -833,6 +833,179 @@ export type Database = {
         }
         Relationships: []
       }
+      pdf_report_audit: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string
+          id: string
+          ip: string | null
+          metadata: Json | null
+          report_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          ip?: string | null
+          metadata?: Json | null
+          report_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          ip?: string | null
+          metadata?: Json | null
+          report_id?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pdf_report_audit_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "pdf_reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pdf_reports: {
+        Row: {
+          content_hash: string
+          created_at: string
+          created_by: string | null
+          id: string
+          kind: string
+          last_downloaded_at: string | null
+          last_downloaded_by: string | null
+          organization_id: string | null
+          report_uid: string
+          signature_meta: Json | null
+          snapshot: Json
+          status: string
+          storage_path: string | null
+          template_id: string | null
+          title: string
+          updated_at: string
+          user_id: string
+          version: number
+          zakat_record_id: string | null
+        }
+        Insert: {
+          content_hash: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind: string
+          last_downloaded_at?: string | null
+          last_downloaded_by?: string | null
+          organization_id?: string | null
+          report_uid?: string
+          signature_meta?: Json | null
+          snapshot: Json
+          status?: string
+          storage_path?: string | null
+          template_id?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+          version?: number
+          zakat_record_id?: string | null
+        }
+        Update: {
+          content_hash?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string
+          last_downloaded_at?: string | null
+          last_downloaded_by?: string | null
+          organization_id?: string | null
+          report_uid?: string
+          signature_meta?: Json | null
+          snapshot?: Json
+          status?: string
+          storage_path?: string | null
+          template_id?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+          version?: number
+          zakat_record_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pdf_reports_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pdf_reports_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "pdf_templates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pdf_reports_zakat_record_id_fkey"
+            columns: ["zakat_record_id"]
+            isOneToOne: false
+            referencedRelation: "zakat_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pdf_templates: {
+        Row: {
+          config: Json
+          created_at: string
+          id: string
+          is_default: boolean
+          kind: string
+          name: string
+          organization_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          kind: string
+          name: string
+          organization_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          kind?: string
+          name?: string
+          organization_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pdf_templates_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       price_fetch_audit: {
         Row: {
           currencies_missing: string[] | null
@@ -1349,6 +1522,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      next_pdf_report_uid: { Args: never; Returns: string }
     }
     Enums: {
       account_type: "individual" | "company" | "institution" | "admin"
