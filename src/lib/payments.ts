@@ -29,8 +29,13 @@ export async function startCheckout(
   const user = authData?.user;
   if (!user) return { ok: false, error: "يجب تسجيل الدخول أولاً" };
 
+  // مفتاح تكرار (idempotency key) — يُولَّد مرة واحدة لكل ضغطة دفع، ويُمرَّر
+  // لـ Stripe كي لا تُنشئ جلسات/قسائم مكرَّرة لو أعاد المتصفح/الشبكة الطلب
+  // تلقائياً (انقطاع اتصال، إعادة محاولة fetch) دون علم المستخدم.
+  const idempotencyKey = crypto.randomUUID();
+
   const { data, error } = await supabase.functions.invoke("create-checkout", {
-    body: { planId, returnPath, discount },
+    body: { planId, returnPath, discount, idempotencyKey },
   });
 
   if (error || !data?.url) {

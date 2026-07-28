@@ -58,11 +58,20 @@ Deno.serve(async (req) => {
       planId,
       returnPath = "/",
       discount,
+      idempotencyKey,
     } = (await req.json()) as {
       planId: PlanId;
       returnPath?: string;
       discount?: { earlyBird?: boolean; prepayYears?: 1 | 3 };
+      idempotencyKey?: string;
     };
+
+    // مفتاح تكرار لكل عملية Stripe — إن لم يصل من العميل (طلب مباشر غير معتاد)
+    // نولّد واحداً هنا، فلا تُنشأ جلسة/قسيمة بلا مفتاح تكرار مطلقاً.
+    const idemBase =
+      typeof idempotencyKey === "string" && idempotencyKey.length >= 8
+        ? idempotencyKey
+        : crypto.randomUUID();
 
     if (!planId || !PLANS[planId]) {
       return new Response(JSON.stringify({ error: "planId غير صالح" }), {
@@ -148,12 +157,15 @@ Deno.serve(async (req) => {
         // ننشئ قسيمة (coupon) لمرة واحدة بنسبة 30% ونربطها بالجلسة.
         // للاشتراك: duration=once → تُطبَّق على أول فاتورة فقط.
         // للدفع الفوري: duration=once هي الوحيدة المدعومة.
-        const coupon = await stripe.coupons.create({
-          percent_off: 30,
-          duration: "once",
-          name: "Early-Bird 30% (نِصاب)",
-          metadata: { source: "nisab-early-bird", planId },
-        });
+        const coupon = await stripe.coupons.create(
+          {
+            percent_off: 30,
+            duration: "once",
+            name: "Early-Bird 30% (نِصاب)",
+            metadata: { source: "nisab-early-bird", planId },
+          },
+          { idempotencyKey: `${idemBase}-coupon` },
+        );
         sessionParams.discounts = [{ coupon: coupon.id }];
         sessionParams.metadata.earlyBird = "true";
         // لا يمكن الجمع بين discounts و allow_promotion_codes
@@ -161,7 +173,9 @@ Deno.serve(async (req) => {
       }
     }
 
-    const session = await stripe.checkout.sessions.create(sessionParams);
+    const session = await stripe.checkout.sessions.create(sessionParams, {
+      idempotencyKey: `${idemBase}-session`,
+    });
 
     return new Response(JSON.stringify({ url: session.url, sessionId: session.id }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
