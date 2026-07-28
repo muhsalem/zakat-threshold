@@ -1,81 +1,128 @@
-# تسعير جغرافي ذكي (Global PPP Pricing)
+# خطة تنفيذ: وحدة تقارير PDF الاحترافية
 
-## استراتيجية الأسعار (توصية تسويقية)
+## النطاق المتفق عليه
+- **الدفعة**: كل ما سبق (قالب + محرك + سجل + تدقيق) كـ MVP متكامل قابل للتوسع.
+- **المحرك**: الانتقال إلى **pdfmake** (يدعم RTL/العربية أصلاً + ترقيم صفحات X/Y + ترويسة/تذييل ديناميكي + خطوط مضمّنة).
+- **الختم**: صورة ختم PNG + اسم المعتمد ورقم الترخيص + QR للتحقق عبر `/verify`.
+- **القوالب**: تقرير الإقرار (`zakat-case`) + Compliance + Certified.
 
-### 4 مناطق قوة شرائية (مستوحاة من البنك الدولي)
+---
 
-| المنطقة             | معامل | العملة المعروضة                   | أمثلة الدول                                                                           |
-| ------------------- | ----- | --------------------------------- | ------------------------------------------------------------------------------------- |
-| **T1 High-income**  | ×1.00 | USD / SAR / AED / EUR / GBP       | US, UK, EU, دول الخليج، كندا، أستراليا، سنغافورة، اليابان                             |
-| **T2 Upper-middle** | ×0.60 | TRY / MYR / MXN / BRL             | تركيا، ماليزيا، المكسيك، البرازيل، الأرجنتين، الصين                                   |
-| **T3 Lower-middle** | ×0.35 | EGP / JOD / MAD / IDR / PKR / INR | مصر، الأردن، المغرب، الجزائر، تونس، العراق، لبنان، إندونيسيا، الهند، باكستان، نيجيريا |
-| **T4 Low-income**   | ×0.20 | USD (رمزي)                        | اليمن، السودان، الصومال، أفغانستان، إثيوبيا                                           |
+## 1) قاعدة البيانات (Migration واحدة)
 
-**افتراضي عالمي**: T1 / USD إذا تعذّر الكشف.
+### جدول `pdf_templates` — قوالب قابلة للحفظ
+- `id`, `user_id` (owner) أو `organization_id` للقوالب المشتركة
+- `name`, `kind` (`declaration` | `compliance` | `certified`)
+- `is_default boolean`
+- `config jsonb` يحوي:
+  - `layout`: `classic` | `modern` | `minimal`
+  - `brand`: `{ logo_url, org_name, primary_color, accent_color, font_family, heading_size }`
+  - `header`: `{ show_logo, show_org, show_report_no, custom_text }`
+  - `footer`: `{ show_page_numbers, show_issuer, custom_text }`
+  - `stamp`: `{ enabled, image_url, position: tl|tr|bl|br|center, opacity, signer_name, signer_license }`
+  - `sections`: `{ owner_info, inputs, assets, calc_steps, deductions, results, notes, sharia_refs, legal_notice }` (كل واحد boolean)
+  - `legal_notice_text`, `notes_text`
 
-### هيكل الباقات المقترح (خبرة تسويقية)
+### جدول `pdf_reports` — سجل التقارير المُولّدة
+- `id uuid`, `report_uid text unique` (معرّف فريد قابل للعرض مثل `RPT-2026-00001`)
+- `user_id`, `organization_id`, `zakat_record_id`, `template_id`
+- `kind` (declaration/compliance/certified)
+- `title`, `content_hash text` (SHA-256 من الـsnapshot لضمان عدم العبث)
+- `snapshot jsonb` (المدخلات وقت التوليد — لإعادة الإنتاج المطابقة)
+- `status text` (`generated` | `downloaded` | `sent` | `approved` | `canceled`)
+- `version integer` (رقم النسخة عند إعادة التوليد لنفس الإقرار)
+- `storage_path text` (اختياري — تخزين النسخة في bucket خاص)
+- `created_by`, `created_at`, `last_downloaded_at`, `last_downloaded_by`
 
-**للأفراد** — تدرّج تحويلي واضح:
+### جدول `pdf_report_audit` — سجل تدقيق كل عملية
+- `id`, `report_id`, `actor_id`, `action` (`created`|`downloaded`|`viewed`|`sent`|`approved`|`canceled`|`regenerated`|`template_updated`)
+- `ip`, `user_agent`, `metadata jsonb`, `created_at`
 
-- **مجاني** — حاسبة كاملة، حفظ 3 حسابات، بدون PDF رسمي
-- **Personal Pro** — T1: $9.99/شهر — تقرير PDF بختم شرعي، أرشيف، تنبيهات الحول، توثيق سنوي
-- **Family** — T1: $19.99/شهر — حتى 5 أفراد + زكاة العائلة المجمّعة + استشارة سنوية
+### GRANT + RLS
+- `SELECT/INSERT/UPDATE ON pdf_templates TO authenticated` مع سياسة `user_id = auth.uid()` أو عضو في المنظمة.
+- `pdf_reports`: مالك السجل + محاسبو العميل + مراجعو المنظمة.
+- `pdf_report_audit`: DENY UPDATE/DELETE، INSERT بواسطة triggers، SELECT للمالك والمُدقّق.
+- Trigger `log_pdf_report_change()` يُدرج تلقائياً في `pdf_report_audit`.
+- Bucket تخزين `pdf-reports` (خاص) مع سياسات مماثلة لـ `approval-attachments`.
 
-**للشركات** — 3 مستويات (موجودة، سنُبقيها ونطبق PPP):
+---
 
-- **Startup** — T1: $149/شهر
-- **Business** — T1: $499/شهر (الأكثر طلبًا)
-- **Enterprise** — حسب الطلب
+## 2) محرك PDF (`src/lib/pdf/`)
 
-مثال أثر PPP على "Personal Pro":
+- `engine.ts`: تهيئة `pdfmake` مع خط `Cairo`/`Tajawal` مضمّن (base64) لدعم العربية.
+- `layouts/classic.ts`, `modern.ts`, `minimal.ts`: توليد `docDefinition` لكل قالب.
+- `sections/`: مكونات معاد استخدامها — `header.ts` (شعار/رقم تقرير), `footer.ts` (X من Y + المُصدر + التاريخ), `stamp.ts` (توقيع + QR + بيانات المعتمد), `ownerInfo.ts`, `inputs.ts`, `calcSteps.ts`, `deductions.ts`, `results.ts`, `shariaRefs.ts`, `legalNotice.ts`.
+- `generate.ts`: يستقبل `{ template, data }` ويُرجع `Blob`. يحسب `content_hash` ويولّد `report_uid`.
 
-- T1: $9.99 → **9.99 USD / 37 SAR / 37 AED**
-- T3 (مصر): $9.99 × 0.35 → **~170 EGP** (بدل 490 EGP للسعر العالمي المباشر)
-- T3 (باكستان): **~980 PKR**
+## 3) Server Functions (`src/lib/pdf/reports.functions.ts`)
 
-## التنفيذ التقني
+- `createPdfReport({ zakatRecordId, templateId, kind })` — يُدرج في `pdf_reports`، يبني الـsnapshot، يُرجع `{ reportId, report_uid, snapshot, template }` لتوليد PDF في المتصفح ثم يرفع Blob إلى Storage.
+- `listPdfReports({ filters })` — مع تصفية بالتاريخ/المستخدم/النوع/الحالة + `pagination`.
+- `getPdfReport(id)` / `regeneratePdfReport(id)` / `updateReportStatus(id, status)` / `deletePdfReport(id)` (بصلاحية).
+- `logPdfDownload(reportId)` — يحدّث `last_downloaded_*` ويكتب Audit.
+- `savePdfTemplate` / `listPdfTemplates` / `deletePdfTemplate`.
 
-### 1. قاعدة البيانات
+## 4) الواجهات
 
-Migration واحد: إضافة `country CHAR(2)` (nullable) إلى `profiles` لحفظ اختيار المستخدم.
+### أ) `/pdf-templates` — إدارة القوالب
+- قائمة القوالب + زر "قالب جديد".
+- محرر بتبويبات:
+  1. **الهوية**: شعار (رفع إلى bucket)، اسم الجهة، ألوان (color picker)، خط، حجم عنوان.
+  2. **الأقسام**: Switches لكل قسم (بيانات الصاحب، المدخلات، الأصول، خطوات الحساب، الخصومات، النتائج، الملاحظات، المراجع الشرعية، التنويهات القانونية).
+  3. **الترويسة/التذييل**: نصوص مخصصة + خيارات الترقيم والشعار.
+  4. **الختم**: رفع صورة، الموضع، الشفافية، بيانات المعتمد.
+  5. **معاينة مباشرة**: iframe يعرض PDF Blob يُحدَّث فورياً عند تعديل الحقول (debounce 400ms).
+- زر "حفظ" + "تعيين كافتراضي" + "تكرار".
 
-### 2. الكشف التلقائي
+### ب) `/reports-history` — سجل التقارير
+- جدول: رقم التقرير، الإقرار، النوع، اسم المستخدم، تاريخ الإنشاء، آخر تنزيل، المنزّل، الحالة، الإجراءات.
+- Filters: تاريخ من/إلى، نوع، حالة، بحث نصي (رقم تقرير/اسم).
+- Actions: عرض، إعادة تنزيل، نسخة جديدة (regenerate)، تغيير الحالة، مقارنة نسختين (diff مبسّط لل snapshots)، حذف.
 
-- Server route `src/routes/api/public/geo.ts` — يقرأ `CF-IPCountry` header ويُرجع `{ country, tier, currency }`.
-- Hook `useGeoPricing()` — يستدعي الـ route مرة واحدة، يخزّن في `localStorage`، ويطابق مع `profile.country` للمسجّلين (تكامل ثنائي: كل تغيير يُحفظ في الاثنين).
+### ج) تكامل `/zakat-case/$recordId`
+- استبدال الزر الحالي بقائمة منسدلة: "تنزيل تقرير — القالب الافتراضي / اختيار قالب…".
+- عند الإنشاء يُسجَّل في `pdf_reports` تلقائياً ويظهر في السجل.
 
-### 3. طبقة التسعير
+### د) `/verify/$reportUid` — تحقق عام (يستخدم QR)
+- يعرض: رقم التقرير، تاريخ الإصدار، المُصدر، `content_hash`، الحالة. بدون مدخلات حسّاسة.
 
-- `src/lib/geo/countries.ts` — خريطة كاملة ISO-2 → `{ tier, currency, currencySymbol, locale }` (≈200 دولة).
-- `src/lib/geo/pricing.ts` — دوال: `getLocalPrice(usdBase, country)`, `formatPrice(amount, currency, locale)` مع تقريب نفسي (99, 149, 499).
+## 5) الأمان والصلاحيات
 
-### 4. واجهات
+- role gate جديد: `can_manage_templates`, `can_approve_reports` عبر `has_role`.
+- ربط الأزرار بـ `useUserRole` (استخدام موجود).
+- كل زر تنزيل/إنشاء/حذف يستدعي `logPdfDownload` أو Audit.
+- تشفير `content_hash` (SHA-256) لضمان عدم التلاعب.
 
-- **تحديث** `src/routes/enterprise-pricing.tsx` — أسعار ديناميكية + مبدّل دولة/عملة أعلى الصفحة + شارة "أسعار محلية معتمدة على منطقتك".
-- **جديد** `src/routes/pricing.tsx` — صفحة تسعير موحّدة (أفراد + شركات) مع تبويبين، تستخدم نفس النظام.
-- **مكوّن** `CountryPricingSwitcher` — قائمة منسدلة (أعلام + أسماء) للتبديل اليدوي.
+## 6) التوسع المستقبلي (بنية جاهزة، غير مُنفَّذ الآن)
+- Digital signature (PAdES/PKI): حقول `signature_meta jsonb` محجوزة في `pdf_reports`.
+- إرسال بالبريد: hook في `updateReportStatus('sent')` يستدعي `send-report-email` Edge Function الموجودة.
+- شهادات إلكترونية / اعتماد شرعي: يستفيد من `sharia_attestations` الموجود.
 
-### 5. رابط تنقّل
+---
 
-إضافة "الأسعار" في القائمة الرئيسية → `/pricing`.
+## تفاصيل تقنية
 
-## ملفات ستُنشأ/تُعدّل
+- **Package**: `bun add pdfmake` + `@types/pdfmake`. حجم إضافي ~800KB لكن أُحمّل بـ`await import()` كسولاً.
+- **الخط العربي**: `Cairo-Regular.ttf` + `Cairo-Bold.ttf` مضمّنة base64 في `src/lib/pdf/fonts.ts` لضمان ظهور صحيح دون CORS.
+- **QR للتحقق**: `qrcode` (خفيف). URL: `https://<host>/verify/<report_uid>`.
+- **إعادة إنتاج مطابقة**: snapshot يُحفظ كما هو، أي إعادة توليد لاحقة تنتج نفس `content_hash`.
+- **اختبارات**: `pdf/engine.test.ts` للتحقق من ثبات `content_hash`؛ `reports.functions.test.ts` للتحقق من الصلاحيات؛ Playwright e2e لسير كامل (إنشاء قالب → تنزيل تقرير → ظهوره في السجل).
+- **i18n**: كل نصوص القوالب تمرّ عبر `t()` مع دعم AR/EN.
 
-```text
-src/lib/geo/countries.ts              (جديد)
-src/lib/geo/pricing.ts                (جديد)
-src/lib/geo/plans.ts                  (جديد — تعريف الباقات المركزي)
-src/hooks/useGeoPricing.ts            (جديد)
-src/components/pricing/PriceTag.tsx   (جديد)
-src/components/pricing/CountrySwitcher.tsx (جديد)
-src/routes/api/public/geo.ts          (جديد)
-src/routes/pricing.tsx                (جديد — أفراد + شركات موحّد)
-src/routes/enterprise-pricing.tsx     (تحديث لاستخدام plans.ts + PPP)
-supabase migration                    (profiles.country)
-```
+## ما لن يُنفَّذ في هذه الدفعة (بوضوح)
+- توقيع رقمي PKI/PAdES حقيقي.
+- إرسال البريد الآلي (البنية جاهزة، لكن دون تفعيل خدمة).
+- أرشفة سحابية طويلة الأمد (خارج bucket القياسي).
+- شهادات إلكترونية مصدّقة من جهات خارجية.
 
-## خارج النطاق
+## ترتيب التنفيذ
+1. Migration + Storage bucket + RLS + Trigger التدقيق.
+2. محرك pdfmake + قالب `classic` + خطوط عربية.
+3. Server functions للتقارير والقوالب.
+4. شاشة `/pdf-templates` مع Live Preview.
+5. شاشة `/reports-history` مع الفلاتر والإجراءات.
+6. ربط بشاشة `/zakat-case/$recordId` وشاشات Compliance/Certified.
+7. صفحة التحقق العامة `/verify/$reportUid` + QR.
+8. اختبارات + توثيق موجز في README.
 
-- الدفع الفعلي بالعملات المحلية (Stripe/Paddle) — لاحقًا.
-- VAT/ضريبة القيمة المضافة الإقليمية — لاحقًا.
-- كشف عبر GPS/طلب إذن المتصفح — نكتفي بـ IP + اختيار يدوي.
+**التقدير**: عمل ضخم لكن مركّز — سيصل ~15 ملف جديد + 5 تعديلات + Migration واحدة.
