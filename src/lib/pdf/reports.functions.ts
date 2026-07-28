@@ -164,7 +164,7 @@ export const createPdfReport = createServerFn({ method: "POST" })
         organization_id: data.organization_id ?? null,
         kind: data.kind,
         title: data.title,
-        snapshot: data.snapshot,
+        snapshot: data.snapshot as never,
         content_hash: data.content_hash,
         storage_path: data.storage_path ?? null,
         version,
@@ -191,7 +191,7 @@ export const updateReportStatus = createServerFn({ method: "POST" })
     }
     const { error } = await context.supabase
       .from("pdf_reports")
-      .update(patch)
+      .update(patch as never)
       .eq("id", data.id)
       .eq("user_id", context.userId);
     if (error) throw new Error(error.message);
