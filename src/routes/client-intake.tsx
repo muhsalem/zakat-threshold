@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { Progress } from "@/components/ui/progress";
 import { Save, RotateCcw } from "lucide-react";
@@ -45,6 +46,7 @@ import {
 import { aggregateIntake, type IntakeDetails } from "@/lib/intakeMapping";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
+import { submitReviewRequest } from "@/lib/humanReviewQueue.functions";
 
 export const Route = createFileRoute("/client-intake")({
   head: () => ({
@@ -156,6 +158,7 @@ const emptyForm: FormState = {
 
 function ClientIntakePage() {
   const navigate = useNavigate();
+  const submitReview = useServerFn(submitReviewRequest);
   const [mode, setMode] = useState<ReportMode>("quick");
   const [signedIn, setSignedIn] = useState(false);
   const [form, setForm] = useState<FormState>(emptyForm);
@@ -337,7 +340,24 @@ function ClientIntakePage() {
     const { data: userRes } = await supabase.auth.getUser();
     if (userRes.user) {
       try {
-        await createAccountantClient(payload);
+        const savedClient = await createAccountantClient(payload);
+        // طلب "التقرير الشامل" فقط هو ما يستدعي مراجعة بشرية فعلياً —
+        // يدخل طابور المراجعة (queued) حتى يُفعَّل ظهوره للمحاسبين لاحقاً.
+        if (mode === "comprehensive") {
+          try {
+            await submitReview({
+              data: {
+                reportKind: form.kind,
+                sourceClientId: savedClient.id,
+                payload,
+              },
+            });
+          } catch (e) {
+            console.error("submitReviewRequest failed:", e);
+            // لا نمنع نجاح الحفظ الأساسي بسبب فشل التسجيل في طابور المراجعة —
+            // بيانات المستخدم محفوظة أصلاً في clients، والمحاسب يقدر يصل لها يدوياً.
+          }
+        }
       } catch (e) {
         toast.error("تعذّر الحفظ في السحابة", { description: (e as Error).message });
         return;
