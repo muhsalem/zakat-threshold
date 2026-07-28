@@ -31,7 +31,29 @@ interface AuditRow {
   sharia_refs: string[] | null;
   created_at: string;
   zakat_record_id: string | null;
+  user_id: string | null;
+  payload: { changed_fields?: string[] } | null;
 }
+
+const ACTION_LABEL: Record<string, string> = {
+  create_zakat_record: "إنشاء سجل زكاة",
+  update_zakat_record: "تعديل سجل زكاة",
+  delete_zakat_record: "حذف سجل زكاة",
+};
+
+const FIELD_LABEL: Record<string, string> = {
+  total_assets: "إجمالي الأصول",
+  total_liabilities: "إجمالي الالتزامات",
+  zakat_base: "الوعاء",
+  zakat_due: "الزكاة المستحقة",
+  prepaid_zakat: "الزكاة المقدَّمة",
+  net_due: "الصافي المستحق",
+  currency: "العملة",
+  hijri_year: "السنة الهجرية",
+  gregorian_date: "تاريخ الحساب",
+  notes: "الملاحظات",
+  snapshot: "بيانات الإقرار",
+};
 
 function AuditPage() {
   const { user, loading } = useAuth();
@@ -45,11 +67,11 @@ function AuditPage() {
     }
     supabase
       .from("sharia_audit_log")
-      .select("id,action,fingerprint,sharia_refs,created_at,zakat_record_id")
+      .select("id,action,fingerprint,sharia_refs,created_at,zakat_record_id,user_id,payload")
       .order("created_at", { ascending: false })
       .limit(100)
       .then(({ data }) => {
-        setRows((data as AuditRow[]) ?? []);
+        setRows((data as unknown as AuditRow[]) ?? []);
         setBusy(false);
       });
   }, [user]);
@@ -131,26 +153,63 @@ function AuditPage() {
                 <CardTitle className="text-sm flex items-center justify-between gap-2">
                   <span className="flex items-center gap-2">
                     <FileText className="h-4 w-4 text-primary" />
-                    {r.action === "create_zakat_record" ? "إنشاء سجل زكاة" : r.action}
+                    {ACTION_LABEL[r.action] ?? r.action}
                   </span>
                   <span className="text-xs text-muted-foreground font-normal">
-                    {new Date(r.created_at).toLocaleString("ar-EG")}
+                    {new Date(r.created_at).toLocaleString("ar-EG", {
+                      dateStyle: "medium",
+                      timeStyle: "short",
+                    })}
                   </span>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="text-xs space-y-1.5">
+              <CardContent className="text-xs space-y-2">
+                <div className="flex flex-wrap gap-x-3 gap-y-1 text-muted-foreground">
+                  {r.user_id === user?.id ? (
+                    <span>المستخدم: أنت</span>
+                  ) : (
+                    r.user_id && (
+                      <span>
+                        المستخدم: <code className="font-mono">{r.user_id.slice(0, 8)}…</code>
+                      </span>
+                    )
+                  )}
+                  {r.zakat_record_id && (
+                    <span>
+                      السجل: <code className="font-mono">{r.zakat_record_id.slice(0, 8)}…</code>
+                    </span>
+                  )}
+                </div>
+                {r.payload?.changed_fields && r.payload.changed_fields.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    <span className="text-muted-foreground">الحقول المتغيّرة:</span>
+                    {r.payload.changed_fields.map((f) => (
+                      <span
+                        key={f}
+                        className="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-400 text-[10px] font-bold"
+                      >
+                        {FIELD_LABEL[f] ?? f}
+                      </span>
+                    ))}
+                  </div>
+                )}
                 {r.fingerprint && (
                   <div>
                     <span className="text-muted-foreground">البصمة:</span>{" "}
-                    <code className="font-mono">{r.fingerprint}</code>
+                    <code className="font-mono">{r.fingerprint.slice(0, 24)}…</code>
                   </div>
                 )}
                 {r.sharia_refs && r.sharia_refs.length > 0 && (
                   <div className="flex flex-wrap gap-1.5">
+                    <span className="text-muted-foreground">المراجع الشرعية:</span>
                     {r.sharia_refs.map((ref) => (
                       <span
                         key={ref}
-                        className="px-2 py-0.5 rounded-md bg-primary/10 text-primary text-[10px] font-bold"
+                        className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
+                          ref.startsWith("FATWA:")
+                            ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+                            : "bg-primary/10 text-primary"
+                        }`}
                       >
                         {ref}
                       </span>
