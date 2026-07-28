@@ -31,7 +31,29 @@ interface AuditRow {
   sharia_refs: string[] | null;
   created_at: string;
   zakat_record_id: string | null;
+  user_id: string | null;
+  payload: { changed_fields?: string[] } | null;
 }
+
+const ACTION_LABEL: Record<string, string> = {
+  create_zakat_record: "إنشاء سجل زكاة",
+  update_zakat_record: "تعديل سجل زكاة",
+  delete_zakat_record: "حذف سجل زكاة",
+};
+
+const FIELD_LABEL: Record<string, string> = {
+  total_assets: "إجمالي الأصول",
+  total_liabilities: "إجمالي الالتزامات",
+  zakat_base: "الوعاء",
+  zakat_due: "الزكاة المستحقة",
+  prepaid_zakat: "الزكاة المقدَّمة",
+  net_due: "الصافي المستحق",
+  currency: "العملة",
+  hijri_year: "السنة الهجرية",
+  gregorian_date: "تاريخ الحساب",
+  notes: "الملاحظات",
+  snapshot: "بيانات الإقرار",
+};
 
 function AuditPage() {
   const { user, loading } = useAuth();
@@ -45,11 +67,11 @@ function AuditPage() {
     }
     supabase
       .from("sharia_audit_log")
-      .select("id,action,fingerprint,sharia_refs,created_at,zakat_record_id")
+      .select("id,action,fingerprint,sharia_refs,created_at,zakat_record_id,user_id,payload")
       .order("created_at", { ascending: false })
       .limit(100)
       .then(({ data }) => {
-        setRows((data as AuditRow[]) ?? []);
+        setRows((data as unknown as AuditRow[]) ?? []);
         setBusy(false);
       });
   }, [user]);
