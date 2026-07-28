@@ -62,12 +62,12 @@ export const savePdfTemplate = createServerFn({ method: "POST" })
       name: data.name,
       kind: data.kind,
       is_default: data.is_default,
-      config: data.config as unknown as Record<string, unknown>,
+      config: data.config as never,
     };
     if (data.id) {
       const { data: updated, error } = await context.supabase
         .from("pdf_templates")
-        .update(row)
+        .update(row as never)
         .eq("id", data.id)
         .eq("user_id", context.userId)
         .select()
@@ -77,7 +77,7 @@ export const savePdfTemplate = createServerFn({ method: "POST" })
     }
     const { data: inserted, error } = await context.supabase
       .from("pdf_templates")
-      .insert(row)
+      .insert(row as never)
       .select()
       .single();
     if (error) throw new Error(error.message);
