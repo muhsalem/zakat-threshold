@@ -24,6 +24,7 @@ import ComplianceChecklist, {
 } from "@/components/zakat/ComplianceChecklist";
 import ComplianceAttachmentsSummary from "@/components/attachments/ComplianceAttachmentsSummary";
 import { GOLD_NISAB_GRAMS, SILVER_NISAB_GRAMS } from "@/lib/zakat";
+import { ProfessionalPdfButton } from "@/components/zakat/ProfessionalPdfButton";
 
 export const Route = createFileRoute("/_authenticated/zakat-case/$recordId")({
   head: () => ({
@@ -284,10 +285,46 @@ function ZakatCaseDetail() {
             <code className="text-xs bg-muted px-1 rounded">{record.id.slice(0, 8)}</code>
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Button variant="outline" size="sm" onClick={() => window.print()}>
             <Printer className="w-4 h-4 ms-1" /> طباعة
           </Button>
+          <ProfessionalPdfButton
+            zakatRecordId={record.id}
+            kind="declaration"
+            title={`تقرير زكاة — ${record.gregorian_date}`}
+            payload={{
+              owner: { name: (record as { owner_name?: string }).owner_name ?? "—" },
+              meta: {
+                currency: record.currency,
+                hijri_year: record.hijri_year ?? undefined,
+                gregorian_date: record.gregorian_date,
+              },
+              inputs: [
+                { label: "إجمالي الموجودات", value: fmt(Number(record.total_assets), record.currency) },
+                { label: "الالتزامات", value: fmt(Number(record.total_liabilities), record.currency) },
+              ],
+              assets: [
+                { label: "الوعاء الزكوي", value: fmt(Number(record.zakat_base), record.currency) },
+              ],
+              calc_steps: [
+                { label: "نسبة الزكاة", value: "2.5%" },
+                { label: "الوعاء", value: fmt(Number(record.zakat_base), record.currency) },
+              ],
+              deductions: [
+                { label: "إجمالي الالتزامات", value: fmt(Number(record.total_liabilities), record.currency), included: true },
+              ],
+              results: [
+                { label: "الزكاة المستحقة", value: fmt(Number(record.zakat_due), record.currency), emphasize: true },
+                { label: "المدفوع مسبقًا", value: fmt(Number(record.prepaid_zakat), record.currency) },
+                { label: "الصافي", value: fmt(Number(record.net_due), record.currency), emphasize: true },
+              ],
+              sharia_refs: [
+                { ref: "AAOIFI معيار 35" },
+                { ref: "مجمع الفقه الإسلامي — نصاب الذهب 85g والفضة 595g" },
+              ],
+            }}
+          />
           <Button asChild variant="outline" size="sm">
             <Link to="/compliance-report/$recordId" params={{ recordId }}>
               <ClipboardCheck className="w-4 h-4 ms-1" /> تقرير الامتثال
