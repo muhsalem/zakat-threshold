@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "أذونات نافذة نِصاب الأساسية — لا وصول لملفات النظام أو الشبكة الخام؛ التطبيق مجرد نافذة تعرض الموقع المستضاف.",
+  "windows": ["main"],
+  "permissions": ["core:default"]
+}
