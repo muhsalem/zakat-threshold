@@ -28,7 +28,7 @@ import {
 } from "lucide-react";
 import { fmt } from "@/lib/zakat";
 import { toast } from "sonner";
-import { downloadReportExcel } from "@/lib/exportExcel";
+import * as XLSX from "xlsx";
 
 export type ClientCategory = "all" | "individual" | "company" | "institution";
 export type PipelineStage = "new" | "documents" | "audit" | "sharia" | "issued" | "renew_due";
