@@ -131,11 +131,7 @@ export function ZakatBreakdownChart({ currencyName, categories, livestock }: Pro
                     ))}
                   </Pie>
                   <Tooltip
-                    formatter={(v: number, _n, entry) => [
-                      `${fmt(v)} ${currencyName}`,
-                      // @ts-expect-error recharts payload typing
-                      entry?.payload?.label,
-                    ]}
+                    formatter={(v: number) => [`${fmt(v)} ${currencyName}`, "الزكاة"]}
                     contentStyle={{ direction: "rtl", fontSize: 12, borderRadius: 8 }}
                   />
                   <Legend
