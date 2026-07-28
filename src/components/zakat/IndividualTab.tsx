@@ -74,6 +74,7 @@ import {
   ZAKAT_RECIPIENTS,
 } from "@/lib/zakat";
 import { SaveToHistoryCard } from "./SaveToHistoryCard";
+import { ZakatBreakdownChart, type CategoryValue } from "./ZakatBreakdownChart";
 import SalaryZakatCalculator from "./SalaryZakatCalculator";
 import RibaPurificationCalc from "./RibaPurificationCalc";
 import { CashBankSection } from "./CashBankSection";
