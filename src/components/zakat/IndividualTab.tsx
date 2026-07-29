@@ -103,6 +103,7 @@ import { ZakatHealthScoreBadge } from "./ZakatHealthScoreBadge";
 import { VoiceZakatAssistant } from "./VoiceZakatAssistant";
 import { ZakatJournalEntriesGenerator } from "./ZakatJournalEntriesGenerator";
 import { ZakatInstitutionPortal } from "./ZakatInstitutionPortal";
+import { MultiJurisdictionSelector } from "./MultiJurisdictionSelector";
 import { useAuditEntries } from "@/hooks/useAuditEntries";
 import { useMadhab } from "@/lib/madhabContext";
 import {
@@ -949,6 +950,9 @@ export function IndividualTab() {
         <TabsContent value="calc" className="mt-0">
           <div className="grid lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
+              {/* محدد التشريعات والولايات القضائية الزكوية */}
+              <MultiJurisdictionSelector />
+
               {/* بوابة حوكمة وتدقيق بيوت ومؤسسات الزكاة */}
               <ZakatInstitutionPortal />
 
