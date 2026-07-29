@@ -960,7 +960,7 @@ export function IndividualTab() {
 
               {/* مؤشر الصحة والجاهزية الزكوية */}
               <ZakatHealthScoreBadge
-                hasHawlCompleted={hawl?.hawlComplete ?? false}
+                hasHawlCompleted={Boolean(hawl?.hawlComplete)}
                 isNisabReached={calc.total > 0}
               />
 

@@ -20,6 +20,8 @@ describe("Excel Integration & Import/Export Engine", () => {
         { label: "عروض التجارة (المخزون)", gross: 500000, nisab: 25000, eligible: true, zakat: 12500 },
       ],
       calendarBasis: "hijri",
+      opinionType: "clean",
+      accountantName: "أ. محمد سعيد",
     };
 
     const wb = buildReportWorkbook(mockReportData as unknown as PrintReportData);
