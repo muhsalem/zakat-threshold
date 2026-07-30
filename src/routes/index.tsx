@@ -119,42 +119,43 @@ function Landing() {
 
 function SiteHeader() {
   return (
-    <header className="border-b border-border/60 bg-card/70 backdrop-blur sticky top-0 z-30">
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between gap-3">
-        <Link to="/" className="flex items-center gap-3">
+    <header className="sticky top-14 z-30 border-b border-border/60 bg-card/70 backdrop-blur">
+      <div className="container mx-auto grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-2.5 md:flex md:justify-between">
+        <Link to="/" className="flex min-w-0 items-center gap-2.5">
           <img
             src={nisabLogo.url}
             alt="نِصاب — حاسبة الزكاة"
-            className="h-12 w-12 rounded-xl object-contain bg-white shadow-md"
+            className="h-10 w-10 shrink-0 rounded-xl bg-white object-contain shadow-sm"
           />
-          <div className="leading-tight">
-            <div className="font-bold">نِصاب</div>
-            <div className="text-[10px] text-muted-foreground">Zakat Platform</div>
-          </div>
+          <span className="min-w-0 leading-tight">
+            <span className="block truncate font-bold">نِصاب</span>
+            <span className="block text-[10px] text-muted-foreground">Zakat Platform</span>
+          </span>
         </Link>
-        <nav className="hidden md:flex items-center gap-4 text-sm">
-          <a href="#features" className="hover:text-primary">
-            المميزات
-          </a>
-          <a href="#how" className="hover:text-primary">
-            كيف تعمل
-          </a>
-          <a href="#pricing" className="hover:text-primary">
-            الاشتراكات والخطط
-          </a>
-          <a href="#faq" className="hover:text-primary">
-            الأسئلة
-          </a>
+        <nav
+          aria-label="أقسام الصفحة"
+          className="hidden items-center gap-1 text-sm md:flex"
+        >
+          {[
+            { href: "#features", label: "المميزات" },
+            { href: "#how", label: "كيف تعمل" },
+            { href: "#pricing", label: "الاشتراكات والخطط" },
+            { href: "#faq", label: "الأسئلة" },
+          ].map((l) => (
+            <a
+              key={l.href}
+              href={l.href}
+              className="rounded-md px-3 py-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            >
+              {l.label}
+            </a>
+          ))}
         </nav>
-        <div className="flex items-center gap-1">
-          <LanguageToggle />
-          <FontSizeToggle />
-          <ThemeToggle />
-        </div>
       </div>
     </header>
   );
 }
+
 
 /* ---------------- Hero ---------------- */
 

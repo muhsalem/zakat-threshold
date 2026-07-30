@@ -215,7 +215,7 @@ function RootComponent() {
             </SidebarProvider>
             <FloatingDock />
             <AdminFloatingLinks />
-            <CommandPalette />
+            
             <OnboardingWizard />
             <PWAInstallPrompt />
             <MobileBottomNav />
