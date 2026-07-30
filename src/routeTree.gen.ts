@@ -25,6 +25,7 @@ import { Route as ComplianceRouteImport } from './routes/compliance'
 import { Route as CropsRouteImport } from './routes/crops'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as DevelopersRouteImport } from './routes/developers'
+import { Route as DiagnosticsRouteImport } from './routes/diagnostics'
 import { Route as EightChannelsRouteImport } from './routes/eight-channels'
 import { Route as EnterpriseRouteImport } from './routes/enterprise'
 import { Route as EnterprisePricingRouteImport } from './routes/enterprise-pricing'
@@ -179,6 +180,11 @@ const DemoRoute = DemoRouteImport.update({
 const DevelopersRoute = DevelopersRouteImport.update({
   id: '/developers',
   path: '/developers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiagnosticsRoute = DiagnosticsRouteImport.update({
+  id: '/diagnostics',
+  path: '/diagnostics',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EightChannelsRoute = EightChannelsRouteImport.update({
@@ -598,6 +604,7 @@ export interface FileRoutesByFullPath {
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
+  '/diagnostics': typeof DiagnosticsRoute
   '/eight-channels': typeof EightChannelsRoute
   '/enterprise': typeof EnterpriseRoute
   '/enterprise-pricing': typeof EnterprisePricingRoute
@@ -691,6 +698,7 @@ export interface FileRoutesByTo {
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
+  '/diagnostics': typeof DiagnosticsRoute
   '/eight-channels': typeof EightChannelsRoute
   '/enterprise': typeof EnterpriseRoute
   '/enterprise-pricing': typeof EnterprisePricingRoute
@@ -786,6 +794,7 @@ export interface FileRoutesById {
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
+  '/diagnostics': typeof DiagnosticsRoute
   '/eight-channels': typeof EightChannelsRoute
   '/enterprise': typeof EnterpriseRoute
   '/enterprise-pricing': typeof EnterprisePricingRoute
@@ -881,6 +890,7 @@ export interface FileRouteTypes {
     | '/crops'
     | '/demo'
     | '/developers'
+    | '/diagnostics'
     | '/eight-channels'
     | '/enterprise'
     | '/enterprise-pricing'
@@ -974,6 +984,7 @@ export interface FileRouteTypes {
     | '/crops'
     | '/demo'
     | '/developers'
+    | '/diagnostics'
     | '/eight-channels'
     | '/enterprise'
     | '/enterprise-pricing'
@@ -1068,6 +1079,7 @@ export interface FileRouteTypes {
     | '/crops'
     | '/demo'
     | '/developers'
+    | '/diagnostics'
     | '/eight-channels'
     | '/enterprise'
     | '/enterprise-pricing'
@@ -1163,6 +1175,7 @@ export interface RootRouteChildren {
   CropsRoute: typeof CropsRoute
   DemoRoute: typeof DemoRoute
   DevelopersRoute: typeof DevelopersRoute
+  DiagnosticsRoute: typeof DiagnosticsRoute
   EightChannelsRoute: typeof EightChannelsRoute
   EnterpriseRoute: typeof EnterpriseRoute
   EnterprisePricingRoute: typeof EnterprisePricingRoute
@@ -1330,6 +1343,13 @@ declare module '@tanstack/react-router' {
       path: '/developers'
       fullPath: '/developers'
       preLoaderRoute: typeof DevelopersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/diagnostics': {
+      id: '/diagnostics'
+      path: '/diagnostics'
+      fullPath: '/diagnostics'
+      preLoaderRoute: typeof DiagnosticsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/eight-channels': {
@@ -1971,6 +1991,7 @@ const rootRouteChildren: RootRouteChildren = {
   CropsRoute: CropsRoute,
   DemoRoute: DemoRoute,
   DevelopersRoute: DevelopersRoute,
+  DiagnosticsRoute: DiagnosticsRoute,
   EightChannelsRoute: EightChannelsRoute,
   EnterpriseRoute: EnterpriseRoute,
   EnterprisePricingRoute: EnterprisePricingRoute,
@@ -2029,13 +2050,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
