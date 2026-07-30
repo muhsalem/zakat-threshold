@@ -118,14 +118,15 @@ export function CommandPalette() {
         type="button"
         onClick={() => setOpen(true)}
         aria-label="فتح لوحة الأوامر (Ctrl+K)"
-        className="print:hidden fixed top-3 left-3 z-40 hidden sm:inline-flex items-center gap-2 rounded-lg border border-border bg-card/95 backdrop-blur px-3 py-1.5 text-xs text-muted-foreground shadow hover:text-foreground hover:border-primary/40 transition-colors"
+        className="print:hidden inline-flex items-center gap-2 rounded-lg border border-border bg-muted/40 px-2.5 py-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground hover:border-primary/40"
       >
-        <Coins className="h-3.5 w-3.5" />
-        <span>ابحث أو انتقل…</span>
-        <kbd className="pointer-events-none ms-1 hidden md:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium">
+        <Coins className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+        <span className="hidden lg:inline">ابحث أو انتقل…</span>
+        <kbd className="pointer-events-none ms-1 hidden lg:inline-flex h-5 select-none items-center gap-1 rounded border bg-background px-1.5 font-mono text-[10px] font-medium">
           <span className="text-xs">⌘</span>K
         </kbd>
       </button>
+
 
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput placeholder="اكتب للبحث في الصفحات والأدوات…" dir="rtl" />
