@@ -81,6 +81,21 @@ export function buildExceptionsQueue(
     const abs = Math.abs(row.balance);
     const meta = ZAKAT_CATEGORIES[row.category];
 
+    // فحص مستقل: بعض الفئات تستوجب بتّاً شرعياً مهما كان مصدر التصنيف
+    if (shariaCats.includes(row.category) && abs > 0) {
+      items.push({
+        code: row.code,
+        name: row.name,
+        balance: row.balance,
+        category: row.category,
+        reason: "requires_sharia_review",
+        severity: "blocking",
+        message: "هذه الفئة تستوجب بتّاً شرعياً في نية الاقتناء (متاجرة أم استثمار).",
+      });
+    }
+
+
+
     if (row.source === "default") {
       items.push({
         code: row.code,
