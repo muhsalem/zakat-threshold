@@ -3,6 +3,8 @@ import { toast } from "sonner";
 import { CloudUpload, Loader2 } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabaseReady";
+
 import {
   commitMigration,
   isMigrationDismissed,
