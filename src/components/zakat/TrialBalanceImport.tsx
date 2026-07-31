@@ -14,6 +14,9 @@ import {
 } from "@/lib/erp/zakatMapping";
 import { runShariaComplianceReview, type ShariaReviewResult } from "@/lib/shariaAudit";
 import { ShariaComplianceReport } from "./ShariaComplianceReport";
+import { ExceptionsQueuePanel } from "./ExceptionsQueuePanel";
+import { MethodologyCrossCheckCard } from "./MethodologyCrossCheckCard";
+import type { ClassifiedRow } from "@/lib/erp/zakatMapping";
 
 export interface TrialBalanceMapped {
   cash: number;
@@ -94,6 +97,7 @@ export function TrialBalanceImport({ onMapped }: Props) {
   const [computation, setComputation] = useState<ZakatComputation | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [unmapped, setUnmapped] = useState<string[]>([]);
+  const [classifiedRows, setClassifiedRows] = useState<ClassifiedRow[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const handleFile = async (f: File) => {
@@ -178,6 +182,7 @@ export function TrialBalanceImport({ onMapped }: Props) {
       setComputation(calc);
       setReview(shariaReview);
       setUnmapped(unknown.slice(0, 10));
+      setClassifiedRows(classified);
       onMapped?.(acc);
     } catch (e) {
       setError(e instanceof Error ? e.message : "فشل قراءة الملف");
@@ -296,6 +301,13 @@ export function TrialBalanceImport({ onMapped }: Props) {
             )}
 
             {/* ====== المراجعة الشرعية الشاملة (شرعية · امتثال · حوكمة) ====== */}
+            {classifiedRows.length > 0 && (
+              <div className="space-y-3">
+                <ExceptionsQueuePanel rows={classifiedRows} />
+                <MethodologyCrossCheckCard rows={classifiedRows} />
+              </div>
+            )}
+
             {review && <ShariaComplianceReport review={review} />}
           </div>
         )}
