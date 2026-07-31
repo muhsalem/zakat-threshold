@@ -50,10 +50,11 @@ export function MethodologyCrossCheckCard({ rows }: MethodologyCrossCheckCardPro
         <div className="grid gap-2 sm:grid-cols-3">
           {results.map((r) => (
             <div key={r.methodology.id} className="rounded-md border p-3 text-xs">
-              <div className="font-semibold">{r.methodology.nameAr}</div>
+              <div className="font-semibold">{r.methodology.labelAr}</div>
               <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
-                {r.methodology.descriptionAr}
+                {r.methodology.formulaAr}
               </p>
+              <p className="mt-1 text-[11px] text-muted-foreground">{r.methodology.notes}</p>
               <div className="mt-2 flex justify-between">
                 <span className="text-muted-foreground">الوعاء</span>
                 <b className="tabular-nums text-primary">{fmt(r.zakatBase)}</b>
