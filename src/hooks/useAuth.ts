@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabaseReady";
+
 
 export type AccountType = "individual" | "company" | "institution" | "admin";
 export type AppRole = "admin" | "moderator" | "user" | "accountant";
