@@ -48,27 +48,39 @@ export function ArchiveMigrationDialog() {
   }, []);
 
   useEffect(() => {
+    if (!isSupabaseConfigured()) return;
     let mounted = true;
-    (async () => {
-      const { data } = await supabase.auth.getUser();
-      if (!mounted) return;
-      if (data.user) await check();
-    })();
-    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "SIGNED_IN") {
-        setMigrationDismissed(false);
-        void check();
-      }
-      if (event === "SIGNED_OUT") {
-        setOpen(false);
-        setPreview(null);
-      }
-    });
+    let unsubscribe: (() => void) | undefined;
+    try {
+      (async () => {
+        try {
+          const { data } = await supabase.auth.getUser();
+          if (!mounted) return;
+          if (data.user) await check();
+        } catch (e) {
+          console.error("[archive-migration] auth check failed", e);
+        }
+      })();
+      const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+        if (event === "SIGNED_IN") {
+          setMigrationDismissed(false);
+          void check();
+        }
+        if (event === "SIGNED_OUT") {
+          setOpen(false);
+          setPreview(null);
+        }
+      });
+      unsubscribe = () => sub.subscription.unsubscribe();
+    } catch (e) {
+      console.error("[archive-migration] supabase unavailable", e);
+    }
     return () => {
       mounted = false;
-      sub.subscription.unsubscribe();
+      unsubscribe?.();
     };
   }, [check]);
+
 
   async function run(strategy: MigrationStrategy) {
     setBusy(true);
