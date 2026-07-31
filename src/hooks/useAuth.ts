@@ -13,23 +13,38 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, s) => {
-      setSession(s);
-      setUser(s?.user ?? null);
-      if (!s?.user) {
-        setAccountType(null);
-        setRoles([]);
-      }
-    });
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
-      setSession(s);
-      setUser(s?.user ?? null);
+    if (!isSupabaseConfigured()) {
       setLoading(false);
-    });
-    return () => subscription.unsubscribe();
+      return;
+    }
+    let unsubscribe: (() => void) | undefined;
+    try {
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((_event, s) => {
+        setSession(s);
+        setUser(s?.user ?? null);
+        if (!s?.user) {
+          setAccountType(null);
+          setRoles([]);
+        }
+      });
+      unsubscribe = () => subscription.unsubscribe();
+      supabase.auth
+        .getSession()
+        .then(({ data: { session: s } }) => {
+          setSession(s);
+          setUser(s?.user ?? null);
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
+    } catch (e) {
+      console.error("[useAuth] backend unavailable", e);
+      setLoading(false);
+    }
+    return () => unsubscribe?.();
   }, []);
+
 
   useEffect(() => {
     if (!user) return;
