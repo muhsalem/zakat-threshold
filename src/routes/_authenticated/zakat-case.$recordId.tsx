@@ -25,6 +25,7 @@ import ComplianceChecklist, {
 import ComplianceAttachmentsSummary from "@/components/attachments/ComplianceAttachmentsSummary";
 import { GOLD_NISAB_GRAMS, SILVER_NISAB_GRAMS } from "@/lib/zakat";
 import { ProfessionalPdfButton } from "@/components/zakat/ProfessionalPdfButton";
+import { VersionStampCard } from "@/components/zakat/VersionStampCard";
 
 export const Route = createFileRoute("/_authenticated/zakat-case/$recordId")({
   head: () => ({
@@ -363,6 +364,11 @@ function ZakatCaseDetail() {
           highlight
         />
       </div>
+
+      <VersionStampCard
+        methodologyVersion="1.0.0"
+        frozenAt={(record as { created_at?: string }).created_at}
+      />
 
       <Tabs defaultValue="compliance" className="w-full">
         <TabsList className="w-full justify-start overflow-x-auto">
