@@ -48,6 +48,7 @@ import { Route as PortalSigninRouteImport } from './routes/portal-signin'
 import { Route as PricesHistoryRouteImport } from './routes/prices-history'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as RulesCatalogRouteImport } from './routes/rules-catalog'
 import { Route as SalaryZakatRouteImport } from './routes/salary-zakat'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as ShariaChangelogRouteImport } from './routes/sharia-changelog'
@@ -296,6 +297,11 @@ const PricingRoute = PricingRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RulesCatalogRoute = RulesCatalogRouteImport.update({
+  id: '/rules-catalog',
+  path: '/rules-catalog',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SalaryZakatRoute = SalaryZakatRouteImport.update({
@@ -627,6 +633,7 @@ export interface FileRoutesByFullPath {
   '/prices-history': typeof PricesHistoryRoute
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/rules-catalog': typeof RulesCatalogRoute
   '/salary-zakat': typeof SalaryZakatRoute
   '/security': typeof SecurityRoute
   '/sharia-changelog': typeof ShariaChangelogRoute
@@ -721,6 +728,7 @@ export interface FileRoutesByTo {
   '/prices-history': typeof PricesHistoryRoute
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/rules-catalog': typeof RulesCatalogRoute
   '/salary-zakat': typeof SalaryZakatRoute
   '/security': typeof SecurityRoute
   '/sharia-changelog': typeof ShariaChangelogRoute
@@ -817,6 +825,7 @@ export interface FileRoutesById {
   '/prices-history': typeof PricesHistoryRoute
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/rules-catalog': typeof RulesCatalogRoute
   '/salary-zakat': typeof SalaryZakatRoute
   '/security': typeof SecurityRoute
   '/sharia-changelog': typeof ShariaChangelogRoute
@@ -913,6 +922,7 @@ export interface FileRouteTypes {
     | '/prices-history'
     | '/pricing'
     | '/reset-password'
+    | '/rules-catalog'
     | '/salary-zakat'
     | '/security'
     | '/sharia-changelog'
@@ -1007,6 +1017,7 @@ export interface FileRouteTypes {
     | '/prices-history'
     | '/pricing'
     | '/reset-password'
+    | '/rules-catalog'
     | '/salary-zakat'
     | '/security'
     | '/sharia-changelog'
@@ -1102,6 +1113,7 @@ export interface FileRouteTypes {
     | '/prices-history'
     | '/pricing'
     | '/reset-password'
+    | '/rules-catalog'
     | '/salary-zakat'
     | '/security'
     | '/sharia-changelog'
@@ -1198,6 +1210,7 @@ export interface RootRouteChildren {
   PricesHistoryRoute: typeof PricesHistoryRoute
   PricingRoute: typeof PricingRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  RulesCatalogRoute: typeof RulesCatalogRoute
   SalaryZakatRoute: typeof SalaryZakatRoute
   SecurityRoute: typeof SecurityRoute
   ShariaChangelogRoute: typeof ShariaChangelogRoute
@@ -1504,6 +1517,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rules-catalog': {
+      id: '/rules-catalog'
+      path: '/rules-catalog'
+      fullPath: '/rules-catalog'
+      preLoaderRoute: typeof RulesCatalogRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/salary-zakat': {
@@ -2014,6 +2034,7 @@ const rootRouteChildren: RootRouteChildren = {
   PricesHistoryRoute: PricesHistoryRoute,
   PricingRoute: PricingRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  RulesCatalogRoute: RulesCatalogRoute,
   SalaryZakatRoute: SalaryZakatRoute,
   SecurityRoute: SecurityRoute,
   ShariaChangelogRoute: ShariaChangelogRoute,
