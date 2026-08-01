@@ -58,6 +58,7 @@ import AIStatementOCR from "./AIStatementOCR";
 import { PurificationCalculator } from "./PurificationCalculator";
 import { RikazSection } from "./RikazSection";
 import { TakafulSection } from "./TakafulSection";
+import { PrepaidExpensesSection } from "./PrepaidExpensesSection";
 import { TaxZakatReconciliation } from "./TaxZakatReconciliation";
 // RealEstateZakatSection: مدمج داخل النموذج القطاعي (SectoralModels → tab="mustaghal")
 import { WaqfZakatSection } from "./WaqfZakatSection";

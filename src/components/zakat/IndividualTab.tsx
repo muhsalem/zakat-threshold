@@ -116,6 +116,7 @@ import { TradeGoodsSubsection } from "./individual/trade/TradeGoodsSubsection";
 import { CropsAccordionSection } from "./individual/crops/CropsAccordionSection";
 import { LivestockAccordionSection } from "./individual/livestock/LivestockAccordionSection";
 import { DebtsAccordionSection } from "./individual/debts/DebtsAccordionSection";
+import { PrepaidExpensesSection } from "./PrepaidExpensesSection";
 import { SecuritiesAccordionSection } from "./individual/securities/SecuritiesAccordionSection";
 import {
   EcommerceItemsTable,
