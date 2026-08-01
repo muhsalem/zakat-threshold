@@ -58,6 +58,7 @@ import AIStatementOCR from "./AIStatementOCR";
 import { PurificationCalculator } from "./PurificationCalculator";
 import { RikazSection } from "./RikazSection";
 import { TakafulSection } from "./TakafulSection";
+import { PrepaidExpensesSection } from "./PrepaidExpensesSection";
 import { TaxZakatReconciliation } from "./TaxZakatReconciliation";
 // RealEstateZakatSection: مدمج داخل النموذج القطاعي (SectoralModels → tab="mustaghal")
 import { WaqfZakatSection } from "./WaqfZakatSection";
@@ -2854,6 +2855,11 @@ export function CompanyTab() {
                 if (d.shortTermDebt > 0) setStPayables(String(d.shortTermDebt));
               }}
             />
+
+            {/* ====== المصروفات المدفوعة مقدماً وأثرها الزكوي ====== */}
+            <PrepaidExpensesSection scope="company" currencyName={currencyName} />
+
+
 
             {/* زكاة المستغلات (عقارات/مصانع/فنادق) أصبحت مدمجة داخل النموذج القطاعي التفصيلي (تبويب المستغلات) */}
 

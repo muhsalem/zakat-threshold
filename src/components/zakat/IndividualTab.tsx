@@ -116,6 +116,7 @@ import { TradeGoodsSubsection } from "./individual/trade/TradeGoodsSubsection";
 import { CropsAccordionSection } from "./individual/crops/CropsAccordionSection";
 import { LivestockAccordionSection } from "./individual/livestock/LivestockAccordionSection";
 import { DebtsAccordionSection } from "./individual/debts/DebtsAccordionSection";
+import { PrepaidExpensesSection } from "./PrepaidExpensesSection";
 import { SecuritiesAccordionSection } from "./individual/securities/SecuritiesAccordionSection";
 import {
   EcommerceItemsTable,
@@ -1849,6 +1850,11 @@ export function IndividualTab() {
                   setExpenses={setExpenses}
                 />
               </Accordion>
+
+              {/* ====== المصروفات المدفوعة مقدماً ====== */}
+              <div className="mt-4">
+                <PrepaidExpensesSection scope="individual" currencyName={currencyName} />
+              </div>
             </div>
 
             {/* ملخص النتيجة */}
