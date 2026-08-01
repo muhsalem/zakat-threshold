@@ -1850,6 +1850,11 @@ export function IndividualTab() {
                   setExpenses={setExpenses}
                 />
               </Accordion>
+
+              {/* ====== المصروفات المدفوعة مقدماً ====== */}
+              <div className="mt-4">
+                <PrepaidExpensesSection scope="individual" currencyName={currencyName} />
+              </div>
             </div>
 
             {/* ملخص النتيجة */}
