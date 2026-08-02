@@ -19,6 +19,7 @@ import {
   type PrepaidMethodology,
   type PrepaidExpensesResult,
 } from "@/lib/zakat/prepaid-expenses";
+import { PrepaidResultsSummary } from "./PrepaidResultsSummary";
 
 const fmt = (n: number) => n.toLocaleString("ar-EG", { maximumFractionDigits: 2 });
 
@@ -295,28 +296,5 @@ export function PrepaidExpensesSection({
 
       </CardContent>
     </Card>
-  );
-}
-
-function Summary({
-  label,
-  value,
-  currency,
-  tone,
-}: {
-  label: string;
-  value: number;
-  currency: string;
-  tone?: "primary";
-}) {
-  return (
-    <div
-      className={`rounded-lg border p-3 ${tone === "primary" ? "border-primary/30 bg-primary/5" : "bg-muted/40"}`}
-    >
-      <div className="text-[11px] text-muted-foreground">{label}</div>
-      <div className={`text-sm font-semibold ${tone === "primary" ? "text-primary" : ""}`}>
-        {fmt(value)} {currency}
-      </div>
-    </div>
   );
 }
