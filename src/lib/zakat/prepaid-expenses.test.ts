@@ -80,3 +80,146 @@ describe("Prepaid Expenses — الحواف والتوثيق", () => {
     expect(new Set(PREPAID_PRESETS.map((p) => p.key)).size).toBe(PREPAID_PRESETS.length);
   });
 });
+
+const TODAY = new Date("2026-01-01T00:00:00Z");
+const iso = (monthsAhead: number) =>
+  new Date(TODAY.getTime() + monthsAhead * 30.4375 * 86400000).toISOString().slice(0, 10);
+
+describe("Prepaid Expenses — تاريخ التحصيل والمدة", () => {
+  it("المسترد المتوقع تحصيله داخل الحول يُضاف للوعاء", () => {
+    const r = runPrepaidExpenses(
+      [{ id: "a", label: "تأمين مسترد", unusedBalance: 10_000, recoverability: "refundable", expectedDurationMonths: 6 }],
+      "aaoifi-35",
+      TODAY,
+    );
+    expect(r.lines[0].treatment).toBe("add_full");
+    expect(r.lines[0].beyondHawl).toBe(false);
+    expect(r.netBaseEffect).toBe(10_000);
+  });
+
+  it("المسترد بعد أكثر من 12 شهراً يُؤجَّل حتى القبض", () => {
+    const r = runPrepaidExpenses(
+      [{ id: "a", label: "دفعة مورد", unusedBalance: 10_000, recoverability: "refundable", expectedDurationMonths: 24 }],
+      "aaoifi-35",
+      TODAY,
+    );
+    expect(r.lines[0].ruleId).toBe("ZR-PPE-011");
+    expect(r.totalDeferred).toBe(10_000);
+    expect(r.netBaseEffect).toBe(0);
+  });
+
+  it("يشتق المدة من تاريخ التحصيل عند غياب عدد الأشهر", () => {
+    const r = runPrepaidExpenses(
+      [{ id: "a", label: "دفعة", unusedBalance: 5_000, recoverability: "refundable", expectedRecoveryDate: iso(18) }],
+      "aaoifi-35",
+      TODAY,
+    );
+    expect(r.lines[0].beyondHawl).toBe(true);
+    expect(r.totalDeferred).toBe(5_000);
+  });
+
+  it("تغيّر الفترة بين الأعوام يقلب المعالجة من تأجيل إلى إضافة", () => {
+    const item: PrepaidExpenseInput = {
+      id: "a",
+      label: "دفعة",
+      unusedBalance: 8_000,
+      recoverability: "refundable",
+      expectedRecoveryDate: iso(18),
+    };
+    const y1 = runPrepaidExpenses([item], "aaoifi-35", TODAY);
+    const y2 = runPrepaidExpenses([item], "aaoifi-35", new Date("2027-01-01T00:00:00Z"));
+    expect(y1.totalDeferred).toBe(8_000);
+    expect(y2.totalAddable).toBe(8_000);
+  });
+});
+
+describe("Prepaid Expenses — التحقق من التعارض", () => {
+  it("يمنع منفعة غير مستردّة مع تاريخ تحصيل", () => {
+    const r = runPrepaidExpenses(
+      [{ id: "a", label: "إيجار", unusedBalance: 1_000, recoverability: "service_only", expectedRecoveryDate: iso(3) }],
+      "aaoifi-35",
+      TODAY,
+    );
+    expect(r.issues.some((i) => i.code === "PPE-V-010" && i.level === "error")).toBe(true);
+  });
+
+  it("ينبّه على المسترد بلا تاريخ ولا مدة", () => {
+    const r = runPrepaidExpenses(
+      [{ id: "a", label: "تأمين", unusedBalance: 1_000, recoverability: "refundable" }],
+      "aaoifi-35",
+      TODAY,
+    );
+    expect(r.issues.some((i) => i.code === "PPE-V-011")).toBe(true);
+  });
+
+  it("ينبّه على تاريخ تحصيل فائت", () => {
+    const r = runPrepaidExpenses(
+      [{ id: "a", label: "دفعة", unusedBalance: 1_000, recoverability: "refundable", expectedDurationMonths: -4 }],
+      "aaoifi-35",
+      TODAY,
+    );
+    expect(r.issues.some((i) => i.code === "PPE-V-012")).toBe(true);
+  });
+
+  it("ينبّه على مشكوك فيه رغم تحصيل وشيك", () => {
+    const r = runPrepaidExpenses(
+      [{ id: "a", label: "نزاع", unusedBalance: 1_000, recoverability: "doubtful", expectedDurationMonths: 2 }],
+      "aaoifi-35",
+      TODAY,
+    );
+    expect(r.issues.some((i) => i.code === "PPE-V-013")).toBe(true);
+  });
+
+  it("يرفض المدة خارج النطاق والتاريخ غير الصالح", () => {
+    const r = runPrepaidExpenses(
+      [
+        { id: "a", label: "x", unusedBalance: 1, recoverability: "refundable", expectedDurationMonths: 900 },
+        { id: "b", label: "y", unusedBalance: 1, recoverability: "refundable", expectedRecoveryDate: "غير-تاريخ" },
+      ],
+      "aaoifi-35",
+      TODAY,
+    );
+    expect(r.issues.some((i) => i.code === "PPE-V-002")).toBe(true);
+    expect(r.issues.some((i) => i.code === "PPE-V-003")).toBe(true);
+  });
+});
+
+describe("Prepaid Expenses — حواف القيم", () => {
+  it("القيم الصفرية لا تغيّر الوعاء", () => {
+    const r = runPrepaidExpenses(
+      [{ id: "a", label: "صفر", unusedBalance: 0, recoverability: "refundable", expectedDurationMonths: 1 }],
+      "aaoifi-35",
+      TODAY,
+    );
+    expect(r.netBaseEffect).toBe(0);
+    expect(r.totalBalances).toBe(0);
+  });
+
+  it("القيم السالبة الكبيرة تُصفَّر ويُرفع خطأ", () => {
+    const r = runPrepaidExpenses(
+      [{ id: "a", label: "خطأ", unusedBalance: -9_999_999_999, recoverability: "refundable", expectedDurationMonths: 3 }],
+      "aaoifi-35",
+      TODAY,
+    );
+    expect(r.netBaseEffect).toBe(0);
+    expect(r.totalBalances).toBe(0);
+    expect(r.issues.some((i) => i.code === "PPE-V-001" && i.level === "error")).toBe(true);
+  });
+
+  it("القيم غير الرقمية (NaN/Infinity) تُصفَّر", () => {
+    const r = runPrepaidExpenses(
+      [
+        { id: "a", label: "n", unusedBalance: Number.NaN, recoverability: "refundable", expectedDurationMonths: 1 },
+        { id: "b", label: "i", unusedBalance: Number.POSITIVE_INFINITY, recoverability: "refundable", expectedDurationMonths: 1 },
+      ],
+      "aaoifi-35",
+      TODAY,
+    );
+    expect(r.totalBalances).toBe(0);
+  });
+
+  it("إجمالي الأرصدة يساوي مجموع الفئات الثلاث", () => {
+    const r = runPrepaidExpenses(items, "aaoifi-35", TODAY);
+    expect(r.totalBalances).toBe(r.totalAddable + r.totalDeferred + r.totalIgnored);
+  });
+});
