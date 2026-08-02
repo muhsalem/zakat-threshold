@@ -21,8 +21,6 @@ import {
 } from "@/lib/zakat/prepaid-expenses";
 import { PrepaidResultsSummary } from "./PrepaidResultsSummary";
 
-const fmt = (n: number) => n.toLocaleString("ar-EG", { maximumFractionDigits: 2 });
-
 const RECOVERABILITY_LABELS: Record<PrepaidRecoverability, string> = {
   refundable: "قابل للاسترداد نقداً",
   service_only: "منفعة/خدمة لا تُردّ",
