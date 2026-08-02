@@ -117,6 +117,8 @@ import { CropsAccordionSection } from "./individual/crops/CropsAccordionSection"
 import { LivestockAccordionSection } from "./individual/livestock/LivestockAccordionSection";
 import { DebtsAccordionSection } from "./individual/debts/DebtsAccordionSection";
 import { PrepaidExpensesSection } from "./PrepaidExpensesSection";
+import { PrepaidResultsSummary } from "./PrepaidResultsSummary";
+import type { PrepaidExpensesResult } from "@/lib/zakat/prepaid-expenses";
 import { SecuritiesAccordionSection } from "./individual/securities/SecuritiesAccordionSection";
 import {
   EcommerceItemsTable,
@@ -164,6 +166,7 @@ export function IndividualTab() {
   const [includeAuditReport, setIncludeAuditReport] = useState(false);
   const { entries: auditEntries, loading: auditLoading } = useAuditEntries(includeAuditReport);
   // الزكاة المعجَّلة المدفوعة مقدماً (تُخصم من الواجب)
+  const [prepaidResult, setPrepaidResult] = useState<PrepaidExpensesResult | null>(null);
   const [prepaidZakat, setPrepaidZakat] = useState("");
   const [prepaidYears, setPrepaidYears] = useState("1");
 
@@ -1853,12 +1856,23 @@ export function IndividualTab() {
 
               {/* ====== المصروفات المدفوعة مقدماً ====== */}
               <div className="mt-4">
-                <PrepaidExpensesSection scope="individual" currencyName={currencyName} />
+                <PrepaidExpensesSection
+                  scope="individual"
+                  currencyName={currencyName}
+                  onResult={setPrepaidResult}
+                />
               </div>
             </div>
 
             {/* ملخص النتيجة */}
             <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">
+              {prepaidResult && prepaidResult.lines.length > 0 && (
+                <PrepaidResultsSummary
+                  result={prepaidResult}
+                  currencyName={currencyName}
+                  scope="individual"
+                />
+              )}
               <Card className="bg-gradient-primary text-primary-foreground shadow-gold border-0">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-primary-foreground">
