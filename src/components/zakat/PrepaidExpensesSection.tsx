@@ -102,7 +102,9 @@ export function PrepaidExpensesSection({
               value={methodology}
               onValueChange={(v) => {
                 setMethodology(v as PrepaidMethodology);
-                onChange?.(runPrepaidExpenses(items, v as PrepaidMethodology).netBaseEffect);
+                const r = runPrepaidExpenses(items, v as PrepaidMethodology);
+                onChange?.(r.netBaseEffect);
+                onResult?.(r);
               }}
             >
               <SelectTrigger className="h-8 text-xs">
