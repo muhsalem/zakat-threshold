@@ -59,6 +59,8 @@ import { PurificationCalculator } from "./PurificationCalculator";
 import { RikazSection } from "./RikazSection";
 import { TakafulSection } from "./TakafulSection";
 import { PrepaidExpensesSection } from "./PrepaidExpensesSection";
+import { PrepaidResultsSummary } from "./PrepaidResultsSummary";
+import type { PrepaidExpensesResult } from "@/lib/zakat/prepaid-expenses";
 import { TaxZakatReconciliation } from "./TaxZakatReconciliation";
 // RealEstateZakatSection: مدمج داخل النموذج القطاعي (SectoralModels → tab="mustaghal")
 import { WaqfZakatSection } from "./WaqfZakatSection";
@@ -922,6 +924,7 @@ function FinancialUpload() {
 }
 
 export function CompanyTab() {
+  const [prepaidResult, setPrepaidResult] = useState<PrepaidExpensesResult | null>(null);
   // ---- بيانات الشركة + الدولة والإطار القانوني ----
   const [countryCode, setCountryCode] = useState<string>("SA");
   // إدراج سجل المراجعة والتدقيق الشرعي ضمن تقرير الشركة
@@ -2857,7 +2860,11 @@ export function CompanyTab() {
             />
 
             {/* ====== المصروفات المدفوعة مقدماً وأثرها الزكوي ====== */}
-            <PrepaidExpensesSection scope="company" currencyName={currencyName} />
+            <PrepaidExpensesSection
+              scope="company"
+              currencyName={currencyName}
+              onResult={setPrepaidResult}
+            />
 
 
 
@@ -2892,6 +2899,13 @@ export function CompanyTab() {
 
           {/* النتيجة الجانبية */}
           <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">
+            {prepaidResult && prepaidResult.lines.length > 0 && (
+              <PrepaidResultsSummary
+                result={prepaidResult}
+                currencyName={currencyName}
+                scope="company"
+              />
+            )}
             {/* خيار دمج سجل المراجعة والتدقيق ضمن التقرير */}
             <Card className="shadow-soft border-primary/30 print:hidden">
               <CardContent className="pt-4 pb-4 space-y-2">

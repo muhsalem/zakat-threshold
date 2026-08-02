@@ -21,6 +21,10 @@ export type PrepaidExpenseInput = {
   recoverability: PrepaidRecoverability;
   /** هل يستهلك خلال الحول القادم؟ (معلومة عرضية للتقرير) */
   consumedWithinHawl?: boolean;
+  /** تاريخ التحصيل/الاسترداد المتوقع (ISO: YYYY-MM-DD) */
+  expectedRecoveryDate?: string;
+  /** المدة المتوقعة للاستهلاك أو التحصيل بالأشهر */
+  expectedDurationMonths?: number;
 };
 
 export type PrepaidTreatment = "add_full" | "defer_until_received" | "no_effect";
@@ -34,6 +38,10 @@ export type PrepaidExpenseLine = {
   rationale: string;
   /** الأثر على الوعاء (موجب = إضافة) */
   baseEffect: number;
+  /** عدد الأشهر حتى التحصيل المتوقع (محسوب من التاريخ أو المدة) */
+  monthsToRecovery?: number;
+  /** هل يتجاوز التحصيل الحول الحالي */
+  beyondHawl?: boolean;
 };
 
 export type PrepaidExpensesResult = {
@@ -45,7 +53,20 @@ export type PrepaidExpensesResult = {
   /** ما لا أثر له */
   totalIgnored: number;
   netBaseEffect: number;
+  /** إجمالي الأرصدة المدخلة (بعد تصفير السالب) */
+  totalBalances: number;
+  issues: PrepaidIssue[];
 };
+
+export type PrepaidIssueLevel = "error" | "warning";
+
+export type PrepaidIssue = {
+  id: string;
+  level: PrepaidIssueLevel;
+  code: string;
+  message: string;
+};
+
 
 /** منهجية المعالجة عند اختلاف الرأي الفقهي */
 export type PrepaidMethodology =
@@ -55,12 +76,116 @@ export type PrepaidMethodology =
 
 const clamp = (n: number) => (Number.isFinite(n) && n > 0 ? n : 0);
 
+const MONTH_MS = 30.4375 * 24 * 60 * 60 * 1000;
+
+/** عدد الأشهر حتى التحصيل المتوقع: المدة المصرّح بها أولاً ثم فرق التاريخ */
+export function monthsUntilRecovery(
+  item: Pick<PrepaidExpenseInput, "expectedDurationMonths" | "expectedRecoveryDate">,
+  today: Date = new Date(),
+): number | undefined {
+  if (
+    typeof item.expectedDurationMonths === "number" &&
+    Number.isFinite(item.expectedDurationMonths)
+  ) {
+    return item.expectedDurationMonths;
+  }
+  if (!item.expectedRecoveryDate) return undefined;
+  const t = Date.parse(item.expectedRecoveryDate);
+  if (Number.isNaN(t)) return undefined;
+  return Math.round(((t - today.getTime()) / MONTH_MS) * 10) / 10;
+}
+
+/** قواعد تحقّق تمنع الحالات المتعارضة وتشرح السبب للمستخدم */
+export function validatePrepaidExpenses(
+  items: PrepaidExpenseInput[],
+  today: Date = new Date(),
+): PrepaidIssue[] {
+  const issues: PrepaidIssue[] = [];
+  for (const item of items) {
+    const name = item.label?.trim() || "بند بلا اسم";
+    const months = monthsUntilRecovery(item, today);
+
+    if (!item.label?.trim()) {
+      issues.push({
+        id: item.id,
+        level: "warning",
+        code: "PPE-V-000",
+        message: "أدخل اسماً واضحاً للبند حتى يظهر في التقرير الزكوي.",
+      });
+    }
+    if (!Number.isFinite(item.unusedBalance) || item.unusedBalance < 0) {
+      issues.push({
+        id: item.id,
+        level: "error",
+        code: "PPE-V-001",
+        message: `«${name}»: الرصيد غير المستهلك لا يصحّ أن يكون سالباً أو غير رقمي؛ تم تصفيره في الحساب.`,
+      });
+    }
+    if (
+      typeof item.expectedDurationMonths === "number" &&
+      (item.expectedDurationMonths < 0 || item.expectedDurationMonths > 600)
+    ) {
+      issues.push({
+        id: item.id,
+        level: "error",
+        code: "PPE-V-002",
+        message: `«${name}»: المدة المتوقعة يجب أن تكون بين 0 و600 شهراً.`,
+      });
+    }
+    if (item.expectedRecoveryDate && Number.isNaN(Date.parse(item.expectedRecoveryDate))) {
+      issues.push({
+        id: item.id,
+        level: "error",
+        code: "PPE-V-003",
+        message: `«${name}»: تاريخ التحصيل غير صالح.`,
+      });
+    }
+    if (item.recoverability === "service_only" && (item.expectedRecoveryDate || months)) {
+      issues.push({
+        id: item.id,
+        level: "error",
+        code: "PPE-V-010",
+        message: `«${name}»: تعارض — صُنّف كمنفعة لا تُردّ نقداً ومع ذلك حُدّد له تاريخ/مدة تحصيل. إمّا أن تحذف تاريخ التحصيل أو تُعيد تصنيفه «قابلاً للاسترداد».`,
+      });
+    }
+    if (item.recoverability === "refundable" && months === undefined) {
+      issues.push({
+        id: item.id,
+        level: "warning",
+        code: "PPE-V-011",
+        message: `«${name}»: حدّد تاريخ التحصيل أو المدة المتوقعة لتحديد ما إذا كان الاسترداد داخل الحول أم بعده.`,
+      });
+    }
+    if (item.recoverability === "refundable" && months !== undefined && months < 0) {
+      issues.push({
+        id: item.id,
+        level: "warning",
+        code: "PPE-V-012",
+        message: `«${name}»: تاريخ التحصيل قد مضى ولم يُقبض؛ الأولى تصنيفه «مشكوكاً في استرداده» حتى القبض.`,
+      });
+    }
+    if (item.recoverability === "doubtful" && months !== undefined && months >= 0 && months <= 3) {
+      issues.push({
+        id: item.id,
+        level: "warning",
+        code: "PPE-V-013",
+        message: `«${name}»: تعارض محتمل — تحصيل مؤكّد خلال ${months} شهراً مع تصنيفه مشكوكاً فيه؛ راجع التصنيف.`,
+      });
+    }
+  }
+  return issues;
+}
+
 export function runPrepaidExpenses(
   items: PrepaidExpenseInput[],
   methodology: PrepaidMethodology = "aaoifi-35",
+  today: Date = new Date(),
 ): PrepaidExpensesResult {
   const lines: PrepaidExpenseLine[] = items.map((item) => {
     const amount = clamp(item.unusedBalance);
+    const months = monthsUntilRecovery(item, today);
+    const beyondHawl = months !== undefined ? months > 12 : undefined;
+    const meta = { monthsToRecovery: months, beyondHawl };
 
     if (methodology === "none") {
       return {
@@ -72,6 +197,7 @@ export function runPrepaidExpenses(
         rationale:
           "منهجية عدم الإضافة: يُعدّ المدفوع مقدماً منفعة مستقبلية لا مالاً حاضراً، فلا يدخل الوعاء.",
         baseEffect: 0,
+        ...meta,
       };
     }
 
@@ -85,11 +211,24 @@ export function runPrepaidExpenses(
         rationale:
           "منهجية الاحتياط: كل رصيد غير مستهلك يُعدّ أصلاً متداولاً زكوياً ويُضاف للوعاء كاملاً.",
         baseEffect: amount,
+        ...meta,
       };
     }
 
     switch (item.recoverability) {
       case "refundable":
+        if (beyondHawl) {
+          return {
+            id: item.id,
+            label: item.label,
+            amount,
+            treatment: "defer_until_received" as const,
+            ruleId: "ZR-PPE-011",
+            rationale: `التحصيل المتوقع بعد ${months} شهراً أي خارج الحول الحالي، فيُؤجَّل حتى القبض ثم يُزكّى لسنة واحدة.`,
+            baseEffect: 0,
+            ...meta,
+          };
+        }
         return {
           id: item.id,
           label: item.label,
@@ -99,6 +238,7 @@ export function runPrepaidExpenses(
           rationale:
             "رصيد قابل للاسترداد نقداً = دَين مرجوّ لدى الغير، فيُضاف للوعاء الزكوي (AAOIFI 35).",
           baseEffect: amount,
+          ...meta,
         };
       case "doubtful":
         return {
@@ -110,6 +250,7 @@ export function runPrepaidExpenses(
           rationale:
             "رصيد مشكوك في استرداده يُؤجَّل حتى القبض، ثم يُزكّى لسنة واحدة على الرأي المختار.",
           baseEffect: 0,
+          ...meta,
         };
       default:
         return {
@@ -121,6 +262,7 @@ export function runPrepaidExpenses(
           rationale:
             "منفعة أو خدمة لا تُردّ قيمتها نقداً (إيجار/اشتراك/تأمين) فلا تُعدّ مالاً حاضراً ولا تدخل الوعاء.",
           baseEffect: 0,
+          ...meta,
         };
     }
   });
@@ -138,8 +280,11 @@ export function runPrepaidExpenses(
     totalDeferred,
     totalIgnored,
     netBaseEffect: totalAddable,
+    totalBalances: totalAddable + totalDeferred + totalIgnored,
+    issues: validatePrepaidExpenses(items, today),
   };
 }
+
 
 /** أنواع شائعة جاهزة للاختيار في الواجهة */
 export const PREPAID_PRESETS: {

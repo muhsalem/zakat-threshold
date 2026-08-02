@@ -10,16 +10,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Trash2, CalendarClock } from "lucide-react";
+import { Plus, Trash2, CalendarClock, AlertTriangle, Info } from "lucide-react";
 import {
   runPrepaidExpenses,
   PREPAID_PRESETS,
   type PrepaidExpenseInput,
   type PrepaidRecoverability,
   type PrepaidMethodology,
+  type PrepaidExpensesResult,
 } from "@/lib/zakat/prepaid-expenses";
-
-const fmt = (n: number) => n.toLocaleString("ar-EG", { maximumFractionDigits: 2 });
+import { PrepaidResultsSummary } from "./PrepaidResultsSummary";
 
 const RECOVERABILITY_LABELS: Record<PrepaidRecoverability, string> = {
   refundable: "قابل للاسترداد نقداً",
@@ -45,11 +45,15 @@ const TREATMENT_BADGE: Record<string, { label: string; cls: string }> = {
 export function PrepaidExpensesSection({
   scope = "both",
   currencyName = "ر.س",
+  zakatRate = 0.025,
   onChange,
+  onResult,
 }: {
   scope?: "individual" | "company" | "both";
   currencyName?: string;
+  zakatRate?: number;
   onChange?: (netBaseEffect: number) => void;
+  onResult?: (result: PrepaidExpensesResult) => void;
 }) {
   const presets = useMemo(
     () => PREPAID_PRESETS.filter((p) => p.scope === "both" || p.scope === scope || scope === "both"),
@@ -63,8 +67,11 @@ export function PrepaidExpensesSection({
 
   const emit = (next: PrepaidExpenseInput[], m: PrepaidMethodology = methodology) => {
     setItems(next);
-    onChange?.(runPrepaidExpenses(next, m).netBaseEffect);
+    const r = runPrepaidExpenses(next, m);
+    onChange?.(r.netBaseEffect);
+    onResult?.(r);
   };
+
 
   const update = (id: string, patch: Partial<PrepaidExpenseInput>) =>
     emit(items.map((d) => (d.id === id ? { ...d, ...patch } : d)));
@@ -94,7 +101,9 @@ export function PrepaidExpensesSection({
               value={methodology}
               onValueChange={(v) => {
                 setMethodology(v as PrepaidMethodology);
-                onChange?.(runPrepaidExpenses(items, v as PrepaidMethodology).netBaseEffect);
+                const r = runPrepaidExpenses(items, v as PrepaidMethodology);
+                onChange?.(r.netBaseEffect);
+                onResult?.(r);
               }}
             >
               <SelectTrigger className="h-8 text-xs">
@@ -193,55 +202,97 @@ export function PrepaidExpensesSection({
                       <Trash2 className="h-3.5 w-3.5" />
                     </Button>
                   </div>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    <div className="space-y-1">
+                      <label className="text-[11px] text-muted-foreground" htmlFor={`d-${item.id}`}>
+                        تاريخ التحصيل/الاسترداد المتوقع
+                      </label>
+                      <Input
+                        id={`d-${item.id}`}
+                        className="h-8 text-xs"
+                        type="date"
+                        value={item.expectedRecoveryDate ?? ""}
+                        onChange={(e) =>
+                          update(item.id, { expectedRecoveryDate: e.target.value || undefined })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[11px] text-muted-foreground" htmlFor={`m-${item.id}`}>
+                        المدة المتوقعة (بالأشهر)
+                      </label>
+                      <Input
+                        id={`m-${item.id}`}
+                        className="h-8 text-xs"
+                        type="number"
+                        inputMode="numeric"
+                        min={0}
+                        max={600}
+                        value={item.expectedDurationMonths ?? ""}
+                        placeholder="مثال: 6"
+                        onChange={(e) =>
+                          update(item.id, {
+                            expectedDurationMonths:
+                              e.target.value === "" ? undefined : Number(e.target.value),
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
                   {line && (
                     <div className="flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
                       <Badge variant="outline" className={badge.cls}>
                         {badge.label}
                       </Badge>
                       <span className="font-mono">{line.ruleId}</span>
+                      {line.monthsToRecovery !== undefined && (
+                        <span>
+                          {line.beyondHawl ? "خارج الحول" : "داخل الحول"} · {line.monthsToRecovery}{" "}
+                          شهراً
+                        </span>
+                      )}
                       <span className="flex-1 min-w-[12rem] leading-relaxed">{line.rationale}</span>
                     </div>
                   )}
+                  {result.issues
+                    .filter((i) => i.id === item.id)
+                    .map((i) => (
+                      <div
+                        key={i.code}
+                        className={`flex items-start gap-2 rounded-md border p-2 text-[11px] leading-relaxed ${
+                          i.level === "error"
+                            ? "border-destructive/40 bg-destructive/5 text-destructive"
+                            : "border-amber-500/30 bg-amber-500/5 text-amber-600"
+                        }`}
+                        role={i.level === "error" ? "alert" : "status"}
+                      >
+                        {i.level === "error" ? (
+                          <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                        ) : (
+                          <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                        )}
+                        <span>{i.message}</span>
+                      </div>
+                    ))}
                 </div>
               );
             })}
           </div>
         )}
 
-        <div className="grid gap-2 sm:grid-cols-3 text-xs">
-          <Summary label="يُضاف للوعاء" value={result.totalAddable} currency={currencyName} tone="primary" />
-          <Summary label="مؤجَّل حتى القبض" value={result.totalDeferred} currency={currencyName} />
-          <Summary label="خارج الوعاء" value={result.totalIgnored} currency={currencyName} />
-        </div>
+        <PrepaidResultsSummary
+          result={result}
+          currencyName={currencyName}
+          zakatRate={zakatRate}
+          scope={scope}
+        />
 
         <p className="text-[11px] text-muted-foreground leading-relaxed">
           المرجع: معيار AAOIFI رقم 35 (الزكاة) — الأصول الزكوية تشمل الحقوق المالية القابلة
           للاسترداد؛ وقرار مجمع الفقه الإسلامي في زكاة الديون المرجوّة والمشكوك فيها.
         </p>
+
       </CardContent>
     </Card>
-  );
-}
-
-function Summary({
-  label,
-  value,
-  currency,
-  tone,
-}: {
-  label: string;
-  value: number;
-  currency: string;
-  tone?: "primary";
-}) {
-  return (
-    <div
-      className={`rounded-lg border p-3 ${tone === "primary" ? "border-primary/30 bg-primary/5" : "bg-muted/40"}`}
-    >
-      <div className="text-[11px] text-muted-foreground">{label}</div>
-      <div className={`text-sm font-semibold ${tone === "primary" ? "text-primary" : ""}`}>
-        {fmt(value)} {currency}
-      </div>
-    </div>
   );
 }
