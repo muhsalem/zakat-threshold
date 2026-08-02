@@ -46,11 +46,15 @@ const TREATMENT_BADGE: Record<string, { label: string; cls: string }> = {
 export function PrepaidExpensesSection({
   scope = "both",
   currencyName = "ر.س",
+  zakatRate = 0.025,
   onChange,
+  onResult,
 }: {
   scope?: "individual" | "company" | "both";
   currencyName?: string;
+  zakatRate?: number;
   onChange?: (netBaseEffect: number) => void;
+  onResult?: (result: PrepaidExpensesResult) => void;
 }) {
   const presets = useMemo(
     () => PREPAID_PRESETS.filter((p) => p.scope === "both" || p.scope === scope || scope === "both"),
@@ -64,8 +68,11 @@ export function PrepaidExpensesSection({
 
   const emit = (next: PrepaidExpenseInput[], m: PrepaidMethodology = methodology) => {
     setItems(next);
-    onChange?.(runPrepaidExpenses(next, m).netBaseEffect);
+    const r = runPrepaidExpenses(next, m);
+    onChange?.(r.netBaseEffect);
+    onResult?.(r);
   };
+
 
   const update = (id: string, patch: Partial<PrepaidExpenseInput>) =>
     emit(items.map((d) => (d.id === id ? { ...d, ...patch } : d)));
