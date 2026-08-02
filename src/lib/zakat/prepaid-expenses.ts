@@ -21,6 +21,10 @@ export type PrepaidExpenseInput = {
   recoverability: PrepaidRecoverability;
   /** هل يستهلك خلال الحول القادم؟ (معلومة عرضية للتقرير) */
   consumedWithinHawl?: boolean;
+  /** تاريخ التحصيل/الاسترداد المتوقع (ISO: YYYY-MM-DD) */
+  expectedRecoveryDate?: string;
+  /** المدة المتوقعة للاستهلاك أو التحصيل بالأشهر */
+  expectedDurationMonths?: number;
 };
 
 export type PrepaidTreatment = "add_full" | "defer_until_received" | "no_effect";
@@ -34,6 +38,10 @@ export type PrepaidExpenseLine = {
   rationale: string;
   /** الأثر على الوعاء (موجب = إضافة) */
   baseEffect: number;
+  /** عدد الأشهر حتى التحصيل المتوقع (محسوب من التاريخ أو المدة) */
+  monthsToRecovery?: number;
+  /** هل يتجاوز التحصيل الحول الحالي */
+  beyondHawl?: boolean;
 };
 
 export type PrepaidExpensesResult = {
@@ -45,7 +53,20 @@ export type PrepaidExpensesResult = {
   /** ما لا أثر له */
   totalIgnored: number;
   netBaseEffect: number;
+  /** إجمالي الأرصدة المدخلة (بعد تصفير السالب) */
+  totalBalances: number;
+  issues: PrepaidIssue[];
 };
+
+export type PrepaidIssueLevel = "error" | "warning";
+
+export type PrepaidIssue = {
+  id: string;
+  level: PrepaidIssueLevel;
+  code: string;
+  message: string;
+};
+
 
 /** منهجية المعالجة عند اختلاف الرأي الفقهي */
 export type PrepaidMethodology =
