@@ -846,7 +846,6 @@ const STATEMENT_LABELS: Record<StatementKey, { title: string; desc: string }> = 
 };
 
 function FinancialUpload() {
-  const [prepaidResult, setPrepaidResult] = useState<PrepaidExpensesResult | null>(null);
   const [files, setFiles] = useState<Record<StatementKey, File | null>>({
     bs: null,
     is: null,
@@ -925,6 +924,7 @@ function FinancialUpload() {
 }
 
 export function CompanyTab() {
+  const [prepaidResult, setPrepaidResult] = useState<PrepaidExpensesResult | null>(null);
   // ---- بيانات الشركة + الدولة والإطار القانوني ----
   const [countryCode, setCountryCode] = useState<string>("SA");
   // إدراج سجل المراجعة والتدقيق الشرعي ضمن تقرير الشركة
