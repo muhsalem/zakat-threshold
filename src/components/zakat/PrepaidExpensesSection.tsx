@@ -10,13 +10,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Trash2, CalendarClock } from "lucide-react";
+import { Plus, Trash2, CalendarClock, AlertTriangle, Info } from "lucide-react";
 import {
   runPrepaidExpenses,
   PREPAID_PRESETS,
   type PrepaidExpenseInput,
   type PrepaidRecoverability,
   type PrepaidMethodology,
+  type PrepaidExpensesResult,
 } from "@/lib/zakat/prepaid-expenses";
 
 const fmt = (n: number) => n.toLocaleString("ar-EG", { maximumFractionDigits: 2 });
