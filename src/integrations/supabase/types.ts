@@ -1217,6 +1217,151 @@ export type Database = {
           },
         ]
       }
+      sharia_review_comments: {
+        Row: {
+          author_id: string
+          body: string
+          created_at: string
+          id: string
+          is_internal: boolean
+          request_id: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          body: string
+          created_at?: string
+          id?: string
+          is_internal?: boolean
+          request_id: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          body?: string
+          created_at?: string
+          id?: string
+          is_internal?: boolean
+          request_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sharia_review_comments_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "sharia_review_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sharia_review_events: {
+        Row: {
+          actor_id: string | null
+          created_at: string
+          detail: Json
+          event_type: string
+          from_status:
+            | Database["public"]["Enums"]["sharia_review_status"]
+            | null
+          id: string
+          request_id: string
+          to_status: Database["public"]["Enums"]["sharia_review_status"] | null
+        }
+        Insert: {
+          actor_id?: string | null
+          created_at?: string
+          detail?: Json
+          event_type: string
+          from_status?:
+            | Database["public"]["Enums"]["sharia_review_status"]
+            | null
+          id?: string
+          request_id: string
+          to_status?: Database["public"]["Enums"]["sharia_review_status"] | null
+        }
+        Update: {
+          actor_id?: string | null
+          created_at?: string
+          detail?: Json
+          event_type?: string
+          from_status?:
+            | Database["public"]["Enums"]["sharia_review_status"]
+            | null
+          id?: string
+          request_id?: string
+          to_status?: Database["public"]["Enums"]["sharia_review_status"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sharia_review_events_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "sharia_review_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sharia_review_requests: {
+        Row: {
+          created_at: string
+          decided_at: string | null
+          decision_note: string | null
+          fingerprint: string | null
+          id: string
+          madhab: string | null
+          question: string | null
+          requester_id: string
+          reviewer_id: string | null
+          sharia_refs: string[]
+          snapshot: Json
+          status: Database["public"]["Enums"]["sharia_review_status"]
+          subject_kind: string
+          submitted_at: string | null
+          title: string
+          updated_at: string
+          zakat_record_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          decided_at?: string | null
+          decision_note?: string | null
+          fingerprint?: string | null
+          id?: string
+          madhab?: string | null
+          question?: string | null
+          requester_id: string
+          reviewer_id?: string | null
+          sharia_refs?: string[]
+          snapshot?: Json
+          status?: Database["public"]["Enums"]["sharia_review_status"]
+          subject_kind?: string
+          submitted_at?: string | null
+          title: string
+          updated_at?: string
+          zakat_record_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          decided_at?: string | null
+          decision_note?: string | null
+          fingerprint?: string | null
+          id?: string
+          madhab?: string | null
+          question?: string | null
+          requester_id?: string
+          reviewer_id?: string | null
+          sharia_refs?: string[]
+          snapshot?: Json
+          status?: Database["public"]["Enums"]["sharia_review_status"]
+          subject_kind?: string
+          submitted_at?: string | null
+          title?: string
+          updated_at?: string
+          zakat_record_id?: string | null
+        }
+        Relationships: []
+      }
       user_report_archive: {
         Row: {
           created_at: string
@@ -1556,6 +1701,14 @@ export type Database = {
       app_role: "admin" | "moderator" | "user" | "accountant"
       approval_status: "pending" | "approved" | "rejected"
       org_role: "owner" | "admin" | "maker" | "checker" | "auditor" | "viewer"
+      sharia_review_status:
+        | "draft"
+        | "submitted"
+        | "in_review"
+        | "changes_requested"
+        | "approved"
+        | "rejected"
+        | "withdrawn"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1687,6 +1840,15 @@ export const Constants = {
       app_role: ["admin", "moderator", "user", "accountant"],
       approval_status: ["pending", "approved", "rejected"],
       org_role: ["owner", "admin", "maker", "checker", "auditor", "viewer"],
+      sharia_review_status: [
+        "draft",
+        "submitted",
+        "in_review",
+        "changes_requested",
+        "approved",
+        "rejected",
+        "withdrawn",
+      ],
     },
   },
 } as const
