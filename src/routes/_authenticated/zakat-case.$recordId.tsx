@@ -180,12 +180,29 @@ const ACTION_LABEL: Record<string, string> = {
   DELETE: "حذف",
 };
 
+interface LinkedReviewRow {
+  id: string;
+  status: string;
+  title: string;
+}
+
+const SHARIA_REVIEW_STATUS_LABEL: Record<string, string> = {
+  draft: "مسودة",
+  submitted: "مُقدَّم للمراجعة",
+  in_review: "قيد المراجعة",
+  changes_requested: "مطلوب تعديل",
+  approved: "معتمد شرعاً",
+  rejected: "مرفوض",
+  withdrawn: "مسحوب",
+};
+
 function ZakatCaseDetail() {
   const { recordId } = Route.useParams();
   const [record, setRecord] = useState<RecordRow | null>(null);
   const [sharia, setSharia] = useState<AuditRow[]>([]);
   const [org, setOrg] = useState<OrgAuditRow[]>([]);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [linkedReview, setLinkedReview] = useState<LinkedReviewRow | null>(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
 
@@ -200,6 +217,7 @@ function ZakatCaseDetail() {
           { data: shariaRows },
           { data: orgRows },
           { data: atts },
+          { data: reviewRows },
         ] = await Promise.all([
           supabase.from("zakat_records").select("*").eq("id", recordId).maybeSingle(),
           supabase
@@ -219,6 +237,14 @@ function ZakatCaseDetail() {
             .select("id,file_name,category,label,size_bytes,created_at")
             .eq("zakat_record_id", recordId)
             .order("created_at", { ascending: false }),
+          // مراجعة شرعية بشرية مرتبطة بهذا السجل تحديداً (سير عمل sharia-review، لا سجل التدقيق الآلي أعلاه)
+          supabase
+            .from("sharia_review_requests")
+            .select("id,status,title")
+            .eq("zakat_record_id", recordId)
+            .order("created_at", { ascending: false })
+            .limit(1)
+            .maybeSingle(),
         ]);
 
         if (cancelled) return;
@@ -230,6 +256,7 @@ function ZakatCaseDetail() {
         }
         setSharia((shariaRows as AuditRow[] | null) || []);
         setOrg((orgRows as OrgAuditRow[] | null) || []);
+        setLinkedReview((reviewRows as LinkedReviewRow | null) ?? null);
         setAttachments((atts as Attachment[] | null) || []);
       } catch (e) {
         if (!cancelled) setErr(e instanceof Error ? e.message : String(e));
@@ -401,7 +428,32 @@ function ZakatCaseDetail() {
           <ChangeHistoryPanel rows={org} />
         </TabsContent>
 
-        <TabsContent value="sharia" className="mt-4">
+        <TabsContent value="sharia" className="mt-4 space-y-4">
+          <Card>
+            <CardContent className="pt-4 flex items-center justify-between gap-3 flex-wrap">
+              <div className="text-sm">
+                <div className="font-semibold flex items-center gap-1.5">
+                  <ScrollText className="w-4 h-4 text-primary" /> طلب مراجعة شرعية بشرية
+                </div>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {linkedReview
+                    ? linkedReview.title
+                    : "لا يوجد طلب مراجعة شرعية بشرية مرتبط بهذا السجل بعد."}
+                </p>
+              </div>
+              {linkedReview ? (
+                <Badge variant="outline">
+                  {SHARIA_REVIEW_STATUS_LABEL[linkedReview.status] ?? linkedReview.status}
+                </Badge>
+              ) : (
+                <Link to="/sharia-review">
+                  <Button size="sm" variant="outline">
+                    اطلب مراجعة شرعية
+                  </Button>
+                </Link>
+              )}
+            </CardContent>
+          </Card>
           <ShariaLogPanel rows={sharia} />
         </TabsContent>
 
