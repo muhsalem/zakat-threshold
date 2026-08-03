@@ -75,6 +75,7 @@ import { Route as AuthenticatedErpSetupRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedPdfTemplatesRouteImport } from './routes/_authenticated/pdf-templates'
 import { Route as AuthenticatedPricesAuditRouteImport } from './routes/_authenticated/prices-audit'
 import { Route as AuthenticatedReportsHistoryRouteImport } from './routes/_authenticated/reports-history'
+import { Route as AuthenticatedReviewsRouteImport } from './routes/_authenticated/reviews'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedShariaReviewRouteImport } from './routes/_authenticated/sharia-review'
 import { Route as AuthenticatedShariaStockScreeningRouteImport } from './routes/_authenticated/sharia-stock-screening'
@@ -444,6 +445,11 @@ const AuthenticatedReportsHistoryRoute =
     path: '/reports-history',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedReviewsRoute = AuthenticatedReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -667,6 +673,7 @@ export interface FileRoutesByFullPath {
   '/pdf-templates': typeof AuthenticatedPdfTemplatesRoute
   '/prices-audit': typeof AuthenticatedPricesAuditRoute
   '/reports-history': typeof AuthenticatedReportsHistoryRoute
+  '/reviews': typeof AuthenticatedReviewsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/sharia-review': typeof AuthenticatedShariaReviewRoute
   '/sharia-stock-screening': typeof AuthenticatedShariaStockScreeningRoute
@@ -763,6 +770,7 @@ export interface FileRoutesByTo {
   '/pdf-templates': typeof AuthenticatedPdfTemplatesRoute
   '/prices-audit': typeof AuthenticatedPricesAuditRoute
   '/reports-history': typeof AuthenticatedReportsHistoryRoute
+  '/reviews': typeof AuthenticatedReviewsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/sharia-review': typeof AuthenticatedShariaReviewRoute
   '/sharia-stock-screening': typeof AuthenticatedShariaStockScreeningRoute
@@ -861,6 +869,7 @@ export interface FileRoutesById {
   '/_authenticated/pdf-templates': typeof AuthenticatedPdfTemplatesRoute
   '/_authenticated/prices-audit': typeof AuthenticatedPricesAuditRoute
   '/_authenticated/reports-history': typeof AuthenticatedReportsHistoryRoute
+  '/_authenticated/reviews': typeof AuthenticatedReviewsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/sharia-review': typeof AuthenticatedShariaReviewRoute
   '/_authenticated/sharia-stock-screening': typeof AuthenticatedShariaStockScreeningRoute
@@ -959,6 +968,7 @@ export interface FileRouteTypes {
     | '/pdf-templates'
     | '/prices-audit'
     | '/reports-history'
+    | '/reviews'
     | '/settings'
     | '/sharia-review'
     | '/sharia-stock-screening'
@@ -1055,6 +1065,7 @@ export interface FileRouteTypes {
     | '/pdf-templates'
     | '/prices-audit'
     | '/reports-history'
+    | '/reviews'
     | '/settings'
     | '/sharia-review'
     | '/sharia-stock-screening'
@@ -1152,6 +1163,7 @@ export interface FileRouteTypes {
     | '/_authenticated/pdf-templates'
     | '/_authenticated/prices-audit'
     | '/_authenticated/reports-history'
+    | '/_authenticated/reviews'
     | '/_authenticated/settings'
     | '/_authenticated/sharia-review'
     | '/_authenticated/sharia-stock-screening'
@@ -1722,6 +1734,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedReportsHistoryRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/reviews': {
+      id: '/_authenticated/reviews'
+      path: '/reviews'
+      fullPath: '/reviews'
+      preLoaderRoute: typeof AuthenticatedReviewsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
       path: '/settings'
@@ -1957,6 +1976,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedPdfTemplatesRoute: typeof AuthenticatedPdfTemplatesRoute
   AuthenticatedPricesAuditRoute: typeof AuthenticatedPricesAuditRoute
   AuthenticatedReportsHistoryRoute: typeof AuthenticatedReportsHistoryRoute
+  AuthenticatedReviewsRoute: typeof AuthenticatedReviewsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedShariaReviewRoute: typeof AuthenticatedShariaReviewRoute
   AuthenticatedShariaStockScreeningRoute: typeof AuthenticatedShariaStockScreeningRoute
@@ -1981,6 +2001,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedPdfTemplatesRoute: AuthenticatedPdfTemplatesRoute,
   AuthenticatedPricesAuditRoute: AuthenticatedPricesAuditRoute,
   AuthenticatedReportsHistoryRoute: AuthenticatedReportsHistoryRoute,
+  AuthenticatedReviewsRoute: AuthenticatedReviewsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedShariaReviewRoute: AuthenticatedShariaReviewRoute,
   AuthenticatedShariaStockScreeningRoute:
