@@ -209,11 +209,17 @@ function GovernancePage() {
       </Card>
 
       <div className="flex flex-wrap gap-2 justify-center">
+        <Button asChild size="sm">
+          <Link to="/rules-catalog">
+            كتالوج القواعد الشرعية <ArrowRight className="h-4 w-4 me-1" />
+          </Link>
+        </Button>
         <Button asChild variant="outline" size="sm">
           <Link to="/sharia-changelog">
             سجل تحديث الفتاوى <ArrowRight className="h-4 w-4 me-1" />
           </Link>
         </Button>
+
         <Button asChild variant="outline" size="sm">
           <Link to="/legal/privacy">سياسة الخصوصية</Link>
         </Button>

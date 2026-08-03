@@ -46,16 +46,9 @@ export function SaveToHistoryCard({ payload }: { payload: Payload }) {
       .single();
     if (!error && data) {
       setSavedId(data.id);
-      const fp = `${user.id}-${data.id}-${payload.zakat_due}`.slice(0, 32);
-      await supabase.from("sharia_audit_log").insert({
-        user_id: user.id,
-        zakat_record_id: data.id,
-        action: "create_zakat_record",
-        fingerprint: fp,
-        payload: payload as any,
-        sharia_refs: ["AAOIFI-35", "MAJMAA-FIQHI-3/1", "QURAN-9:60"],
-        user_agent: navigator.userAgent.slice(0, 200),
-      });
+      // ملاحظة: تسجيل التدقيق يتم تلقائيًا عبر مُشغِّل قاعدة البيانات
+      // (trg_log_zakat_record_change) الذي يلتقط INSERT/UPDATE/DELETE
+      // ويكتب في sharia_audit_log مع مرجع الفتوى المستخرَج من snapshot.
     }
     setBusy(false);
     if (error) setError(error.message);

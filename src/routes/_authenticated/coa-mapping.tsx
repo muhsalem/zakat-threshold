@@ -22,6 +22,7 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Trash2, Plus, Download, Upload, MapPin } from "lucide-react";
+import { DebtEnginePanel } from "@/components/zakat/DebtEnginePanel";
 
 export const Route = createFileRoute("/_authenticated/coa-mapping")({
   head: () => ({
@@ -342,6 +343,8 @@ function CoaMappingPage() {
           </Table>
         </CardContent>
       </Card>
+
+      <DebtEnginePanel />
     </div>
   );
 }

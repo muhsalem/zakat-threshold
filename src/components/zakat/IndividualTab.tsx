@@ -74,6 +74,7 @@ import {
   ZAKAT_RECIPIENTS,
 } from "@/lib/zakat";
 import { SaveToHistoryCard } from "./SaveToHistoryCard";
+import { ZakatBreakdownChart, type CategoryValue } from "./ZakatBreakdownChart";
 import SalaryZakatCalculator from "./SalaryZakatCalculator";
 import RibaPurificationCalc from "./RibaPurificationCalc";
 import { CashBankSection } from "./CashBankSection";
@@ -117,6 +118,9 @@ import { TradeGoodsSubsection } from "./individual/trade/TradeGoodsSubsection";
 import { CropsAccordionSection } from "./individual/crops/CropsAccordionSection";
 import { LivestockAccordionSection } from "./individual/livestock/LivestockAccordionSection";
 import { DebtsAccordionSection } from "./individual/debts/DebtsAccordionSection";
+import { PrepaidExpensesSection } from "./PrepaidExpensesSection";
+import { PrepaidResultsSummary } from "./PrepaidResultsSummary";
+import type { PrepaidExpensesResult } from "@/lib/zakat/prepaid-expenses";
 import { SecuritiesAccordionSection } from "./individual/securities/SecuritiesAccordionSection";
 import {
   EcommerceItemsTable,
@@ -164,6 +168,7 @@ export function IndividualTab() {
   const [includeAuditReport, setIncludeAuditReport] = useState(false);
   const { entries: auditEntries, loading: auditLoading } = useAuditEntries(includeAuditReport);
   // الزكاة المعجَّلة المدفوعة مقدماً (تُخصم من الواجب)
+  const [prepaidResult, setPrepaidResult] = useState<PrepaidExpensesResult | null>(null);
   const [prepaidZakat, setPrepaidZakat] = useState("");
   const [prepaidYears, setPrepaidYears] = useState("1");
 
@@ -1856,10 +1861,26 @@ export function IndividualTab() {
                   setExpenses={setExpenses}
                 />
               </Accordion>
+
+              {/* ====== المصروفات المدفوعة مقدماً ====== */}
+              <div className="mt-4">
+                <PrepaidExpensesSection
+                  scope="individual"
+                  currencyName={currencyName}
+                  onResult={setPrepaidResult}
+                />
+              </div>
             </div>
 
             {/* ملخص النتيجة */}
             <div className="space-y-4 lg:sticky lg:top-4 lg:self-start">
+              {prepaidResult && prepaidResult.lines.length > 0 && (
+                <PrepaidResultsSummary
+                  result={prepaidResult}
+                  currencyName={currencyName}
+                  scope="individual"
+                />
+              )}
               <Card className="bg-gradient-primary text-primary-foreground shadow-gold border-0">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-primary-foreground">
@@ -1915,6 +1936,85 @@ export function IndividualTab() {
                   })()}
                 </CardContent>
               </Card>
+
+              {/* توزيع الزكاة حسب الفئات */}
+              {(() => {
+                const rate = effectiveRate;
+                const monBase = Math.max(0, calc.monetaryBase);
+                const monGross = Math.max(1e-9, calc.monetaryGross);
+                const share = (v: number) =>
+                  calc.hawlBlocks ? 0 : Math.max(0, (v / monGross) * monBase * rate);
+                const cats: CategoryValue[] = [
+                  {
+                    key: "gold",
+                    label: "الذهب",
+                    base: calc.totalGoldValue,
+                    zakat: calc.goldZakat,
+                    color: "#eab308",
+                  },
+                  {
+                    key: "silver",
+                    label: "الفضة",
+                    base: calc.silverValue,
+                    zakat: calc.silverZakat,
+                    color: "#94a3b8",
+                  },
+                  {
+                    key: "cash",
+                    label: "نقد وأرصدة بنكية",
+                    base: calc.cashTotal + calc.billsTotal,
+                    zakat: share(calc.cashTotal + calc.billsTotal),
+                    color: "#10b981",
+                  },
+                  {
+                    key: "securities",
+                    label: "استثمارات وأوراق مالية",
+                    base: calc.securitiesTotal,
+                    zakat: share(calc.securitiesTotal),
+                    color: "#3b82f6",
+                  },
+                  {
+                    key: "trade",
+                    label: "عروض تجارة",
+                    base: calc.tradeTotal,
+                    zakat: share(calc.tradeTotal),
+                    color: "#f97316",
+                  },
+                  {
+                    key: "realestate",
+                    label: "عقارات استثمارية",
+                    base: calc.realEstateZakatable,
+                    zakat: share(calc.realEstateZakatable),
+                    color: "#a855f7",
+                  },
+                  {
+                    key: "crops",
+                    label: "زروع وثمار",
+                    base: calc.cropsValue,
+                    zakat: calc.cropsZakat,
+                    color: "#65a30d",
+                  },
+                  {
+                    key: "professions",
+                    label: "دخل المهن",
+                    base: professionsZakatTotal / (rate || 1),
+                    zakat: professionsZakatTotal,
+                    color: "#0ea5e9",
+                  },
+                ];
+                return (
+                  <ZakatBreakdownChart
+                    currencyName={currencyName}
+                    categories={cats}
+                    livestock={{
+                      camels: calc.camelsN,
+                      cows: calc.cowsN,
+                      sheep: calc.sheepN,
+                    }}
+                  />
+                );
+              })()}
+
 
               {/* خطة توزيع الزكاة على المصارف الثمانية */}
               <EightChannelsDistribution

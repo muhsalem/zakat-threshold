@@ -25,6 +25,7 @@ import { Route as ComplianceRouteImport } from './routes/compliance'
 import { Route as CropsRouteImport } from './routes/crops'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as DevelopersRouteImport } from './routes/developers'
+import { Route as DiagnosticsRouteImport } from './routes/diagnostics'
 import { Route as EightChannelsRouteImport } from './routes/eight-channels'
 import { Route as EnterpriseRouteImport } from './routes/enterprise'
 import { Route as EnterprisePricingRouteImport } from './routes/enterprise-pricing'
@@ -47,6 +48,7 @@ import { Route as PortalSigninRouteImport } from './routes/portal-signin'
 import { Route as PricesHistoryRouteImport } from './routes/prices-history'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as RulesCatalogRouteImport } from './routes/rules-catalog'
 import { Route as SalaryZakatRouteImport } from './routes/salary-zakat'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as ShariaChangelogRouteImport } from './routes/sharia-changelog'
@@ -70,8 +72,11 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedDistributionPlanRouteImport } from './routes/_authenticated/distribution-plan'
 import { Route as AuthenticatedDraftsRouteImport } from './routes/_authenticated/drafts'
 import { Route as AuthenticatedErpSetupRouteImport } from './routes/_authenticated/erp-setup'
+import { Route as AuthenticatedPdfTemplatesRouteImport } from './routes/_authenticated/pdf-templates'
 import { Route as AuthenticatedPricesAuditRouteImport } from './routes/_authenticated/prices-audit'
+import { Route as AuthenticatedReportsHistoryRouteImport } from './routes/_authenticated/reports-history'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedShariaReviewRouteImport } from './routes/_authenticated/sharia-review'
 import { Route as AuthenticatedShariaStockScreeningRouteImport } from './routes/_authenticated/sharia-stock-screening'
 import { Route as AuthenticatedSubscriptionRouteImport } from './routes/_authenticated/subscription'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
@@ -81,6 +86,7 @@ import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
 import { Route as LegalTermsRouteImport } from './routes/legal.terms'
 import { Route as RTokenRouteImport } from './routes/r.$token'
+import { Route as VerifyReportUidRouteImport } from './routes/verify.$reportUid'
 import { Route as AuthenticatedAccountantClientIdRouteImport } from './routes/_authenticated/accountant.$clientId'
 import { Route as AuthenticatedCertifiedReportRecordIdRouteImport } from './routes/_authenticated/certified-report.$recordId'
 import { Route as AuthenticatedComplianceReportRecordIdRouteImport } from './routes/_authenticated/compliance-report.$recordId'
@@ -176,6 +182,11 @@ const DemoRoute = DemoRouteImport.update({
 const DevelopersRoute = DevelopersRouteImport.update({
   id: '/developers',
   path: '/developers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiagnosticsRoute = DiagnosticsRouteImport.update({
+  id: '/diagnostics',
+  path: '/diagnostics',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EightChannelsRoute = EightChannelsRouteImport.update({
@@ -287,6 +298,11 @@ const PricingRoute = PricingRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RulesCatalogRoute = RulesCatalogRouteImport.update({
+  id: '/rules-catalog',
+  path: '/rules-catalog',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SalaryZakatRoute = SalaryZakatRouteImport.update({
@@ -410,10 +426,22 @@ const AuthenticatedErpSetupRoute = AuthenticatedErpSetupRouteImport.update({
   path: '/erp-setup',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPdfTemplatesRoute =
+  AuthenticatedPdfTemplatesRouteImport.update({
+    id: '/pdf-templates',
+    path: '/pdf-templates',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedPricesAuditRoute =
   AuthenticatedPricesAuditRouteImport.update({
     id: '/prices-audit',
     path: '/prices-audit',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedReportsHistoryRoute =
+  AuthenticatedReportsHistoryRouteImport.update({
+    id: '/reports-history',
+    path: '/reports-history',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
@@ -421,6 +449,12 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedShariaReviewRoute =
+  AuthenticatedShariaReviewRouteImport.update({
+    id: '/sharia-review',
+    path: '/sharia-review',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedShariaStockScreeningRoute =
   AuthenticatedShariaStockScreeningRouteImport.update({
     id: '/sharia-stock-screening',
@@ -467,6 +501,11 @@ const RTokenRoute = RTokenRouteImport.update({
   id: '/r/$token',
   path: '/r/$token',
   getParentRoute: () => rootRouteImport,
+} as any)
+const VerifyReportUidRoute = VerifyReportUidRouteImport.update({
+  id: '/$reportUid',
+  path: '/$reportUid',
+  getParentRoute: () => VerifyRoute,
 } as any)
 const AuthenticatedAccountantClientIdRoute =
   AuthenticatedAccountantClientIdRouteImport.update({
@@ -578,6 +617,7 @@ export interface FileRoutesByFullPath {
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
+  '/diagnostics': typeof DiagnosticsRoute
   '/eight-channels': typeof EightChannelsRoute
   '/enterprise': typeof EnterpriseRoute
   '/enterprise-pricing': typeof EnterprisePricingRoute
@@ -600,6 +640,7 @@ export interface FileRoutesByFullPath {
   '/prices-history': typeof PricesHistoryRoute
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/rules-catalog': typeof RulesCatalogRoute
   '/salary-zakat': typeof SalaryZakatRoute
   '/security': typeof SecurityRoute
   '/sharia-changelog': typeof ShariaChangelogRoute
@@ -607,7 +648,7 @@ export interface FileRoutesByFullPath {
   '/software-recommendations': typeof SoftwareRecommendationsRoute
   '/status': typeof StatusRoute
   '/subscription-confirmation': typeof SubscriptionConfirmationRoute
-  '/verify': typeof VerifyRoute
+  '/verify': typeof VerifyRouteWithChildren
   '/welcome': typeof WelcomeRoute
   '/zakat-company': typeof ZakatCompanyRoute
   '/zakat-fitr': typeof ZakatFitrRoute
@@ -623,8 +664,11 @@ export interface FileRoutesByFullPath {
   '/distribution-plan': typeof AuthenticatedDistributionPlanRoute
   '/drafts': typeof AuthenticatedDraftsRoute
   '/erp-setup': typeof AuthenticatedErpSetupRoute
+  '/pdf-templates': typeof AuthenticatedPdfTemplatesRoute
   '/prices-audit': typeof AuthenticatedPricesAuditRoute
+  '/reports-history': typeof AuthenticatedReportsHistoryRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/sharia-review': typeof AuthenticatedShariaReviewRoute
   '/sharia-stock-screening': typeof AuthenticatedShariaStockScreeningRoute
   '/subscription': typeof AuthenticatedSubscriptionRoute
   '/api/chat': typeof ApiChatRoute
@@ -634,6 +678,7 @@ export interface FileRoutesByFullPath {
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/r/$token': typeof RTokenRoute
+  '/verify/$reportUid': typeof VerifyReportUidRoute
   '/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
   '/certified-report/$recordId': typeof AuthenticatedCertifiedReportRecordIdRoute
   '/compliance-report/$recordId': typeof AuthenticatedComplianceReportRecordIdRoute
@@ -668,6 +713,7 @@ export interface FileRoutesByTo {
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
+  '/diagnostics': typeof DiagnosticsRoute
   '/eight-channels': typeof EightChannelsRoute
   '/enterprise': typeof EnterpriseRoute
   '/enterprise-pricing': typeof EnterprisePricingRoute
@@ -690,6 +736,7 @@ export interface FileRoutesByTo {
   '/prices-history': typeof PricesHistoryRoute
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/rules-catalog': typeof RulesCatalogRoute
   '/salary-zakat': typeof SalaryZakatRoute
   '/security': typeof SecurityRoute
   '/sharia-changelog': typeof ShariaChangelogRoute
@@ -697,7 +744,7 @@ export interface FileRoutesByTo {
   '/software-recommendations': typeof SoftwareRecommendationsRoute
   '/status': typeof StatusRoute
   '/subscription-confirmation': typeof SubscriptionConfirmationRoute
-  '/verify': typeof VerifyRoute
+  '/verify': typeof VerifyRouteWithChildren
   '/welcome': typeof WelcomeRoute
   '/zakat-company': typeof ZakatCompanyRoute
   '/zakat-fitr': typeof ZakatFitrRoute
@@ -713,8 +760,11 @@ export interface FileRoutesByTo {
   '/distribution-plan': typeof AuthenticatedDistributionPlanRoute
   '/drafts': typeof AuthenticatedDraftsRoute
   '/erp-setup': typeof AuthenticatedErpSetupRoute
+  '/pdf-templates': typeof AuthenticatedPdfTemplatesRoute
   '/prices-audit': typeof AuthenticatedPricesAuditRoute
+  '/reports-history': typeof AuthenticatedReportsHistoryRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/sharia-review': typeof AuthenticatedShariaReviewRoute
   '/sharia-stock-screening': typeof AuthenticatedShariaStockScreeningRoute
   '/subscription': typeof AuthenticatedSubscriptionRoute
   '/api/chat': typeof ApiChatRoute
@@ -724,6 +774,7 @@ export interface FileRoutesByTo {
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/r/$token': typeof RTokenRoute
+  '/verify/$reportUid': typeof VerifyReportUidRoute
   '/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
   '/certified-report/$recordId': typeof AuthenticatedCertifiedReportRecordIdRoute
   '/compliance-report/$recordId': typeof AuthenticatedComplianceReportRecordIdRoute
@@ -760,6 +811,7 @@ export interface FileRoutesById {
   '/crops': typeof CropsRoute
   '/demo': typeof DemoRoute
   '/developers': typeof DevelopersRoute
+  '/diagnostics': typeof DiagnosticsRoute
   '/eight-channels': typeof EightChannelsRoute
   '/enterprise': typeof EnterpriseRoute
   '/enterprise-pricing': typeof EnterprisePricingRoute
@@ -782,6 +834,7 @@ export interface FileRoutesById {
   '/prices-history': typeof PricesHistoryRoute
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/rules-catalog': typeof RulesCatalogRoute
   '/salary-zakat': typeof SalaryZakatRoute
   '/security': typeof SecurityRoute
   '/sharia-changelog': typeof ShariaChangelogRoute
@@ -789,7 +842,7 @@ export interface FileRoutesById {
   '/software-recommendations': typeof SoftwareRecommendationsRoute
   '/status': typeof StatusRoute
   '/subscription-confirmation': typeof SubscriptionConfirmationRoute
-  '/verify': typeof VerifyRoute
+  '/verify': typeof VerifyRouteWithChildren
   '/welcome': typeof WelcomeRoute
   '/zakat-company': typeof ZakatCompanyRoute
   '/zakat-fitr': typeof ZakatFitrRoute
@@ -805,8 +858,11 @@ export interface FileRoutesById {
   '/_authenticated/distribution-plan': typeof AuthenticatedDistributionPlanRoute
   '/_authenticated/drafts': typeof AuthenticatedDraftsRoute
   '/_authenticated/erp-setup': typeof AuthenticatedErpSetupRoute
+  '/_authenticated/pdf-templates': typeof AuthenticatedPdfTemplatesRoute
   '/_authenticated/prices-audit': typeof AuthenticatedPricesAuditRoute
+  '/_authenticated/reports-history': typeof AuthenticatedReportsHistoryRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/sharia-review': typeof AuthenticatedShariaReviewRoute
   '/_authenticated/sharia-stock-screening': typeof AuthenticatedShariaStockScreeningRoute
   '/_authenticated/subscription': typeof AuthenticatedSubscriptionRoute
   '/api/chat': typeof ApiChatRoute
@@ -816,6 +872,7 @@ export interface FileRoutesById {
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/r/$token': typeof RTokenRoute
+  '/verify/$reportUid': typeof VerifyReportUidRoute
   '/_authenticated/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
   '/_authenticated/certified-report/$recordId': typeof AuthenticatedCertifiedReportRecordIdRoute
   '/_authenticated/compliance-report/$recordId': typeof AuthenticatedComplianceReportRecordIdRoute
@@ -852,6 +909,7 @@ export interface FileRouteTypes {
     | '/crops'
     | '/demo'
     | '/developers'
+    | '/diagnostics'
     | '/eight-channels'
     | '/enterprise'
     | '/enterprise-pricing'
@@ -874,6 +932,7 @@ export interface FileRouteTypes {
     | '/prices-history'
     | '/pricing'
     | '/reset-password'
+    | '/rules-catalog'
     | '/salary-zakat'
     | '/security'
     | '/sharia-changelog'
@@ -897,8 +956,11 @@ export interface FileRouteTypes {
     | '/distribution-plan'
     | '/drafts'
     | '/erp-setup'
+    | '/pdf-templates'
     | '/prices-audit'
+    | '/reports-history'
     | '/settings'
+    | '/sharia-review'
     | '/sharia-stock-screening'
     | '/subscription'
     | '/api/chat'
@@ -908,6 +970,7 @@ export interface FileRouteTypes {
     | '/legal/privacy'
     | '/legal/terms'
     | '/r/$token'
+    | '/verify/$reportUid'
     | '/accountant/$clientId'
     | '/certified-report/$recordId'
     | '/compliance-report/$recordId'
@@ -942,6 +1005,7 @@ export interface FileRouteTypes {
     | '/crops'
     | '/demo'
     | '/developers'
+    | '/diagnostics'
     | '/eight-channels'
     | '/enterprise'
     | '/enterprise-pricing'
@@ -964,6 +1028,7 @@ export interface FileRouteTypes {
     | '/prices-history'
     | '/pricing'
     | '/reset-password'
+    | '/rules-catalog'
     | '/salary-zakat'
     | '/security'
     | '/sharia-changelog'
@@ -987,8 +1052,11 @@ export interface FileRouteTypes {
     | '/distribution-plan'
     | '/drafts'
     | '/erp-setup'
+    | '/pdf-templates'
     | '/prices-audit'
+    | '/reports-history'
     | '/settings'
+    | '/sharia-review'
     | '/sharia-stock-screening'
     | '/subscription'
     | '/api/chat'
@@ -998,6 +1066,7 @@ export interface FileRouteTypes {
     | '/legal/privacy'
     | '/legal/terms'
     | '/r/$token'
+    | '/verify/$reportUid'
     | '/accountant/$clientId'
     | '/certified-report/$recordId'
     | '/compliance-report/$recordId'
@@ -1033,6 +1102,7 @@ export interface FileRouteTypes {
     | '/crops'
     | '/demo'
     | '/developers'
+    | '/diagnostics'
     | '/eight-channels'
     | '/enterprise'
     | '/enterprise-pricing'
@@ -1055,6 +1125,7 @@ export interface FileRouteTypes {
     | '/prices-history'
     | '/pricing'
     | '/reset-password'
+    | '/rules-catalog'
     | '/salary-zakat'
     | '/security'
     | '/sharia-changelog'
@@ -1078,8 +1149,11 @@ export interface FileRouteTypes {
     | '/_authenticated/distribution-plan'
     | '/_authenticated/drafts'
     | '/_authenticated/erp-setup'
+    | '/_authenticated/pdf-templates'
     | '/_authenticated/prices-audit'
+    | '/_authenticated/reports-history'
     | '/_authenticated/settings'
+    | '/_authenticated/sharia-review'
     | '/_authenticated/sharia-stock-screening'
     | '/_authenticated/subscription'
     | '/api/chat'
@@ -1089,6 +1163,7 @@ export interface FileRouteTypes {
     | '/legal/privacy'
     | '/legal/terms'
     | '/r/$token'
+    | '/verify/$reportUid'
     | '/_authenticated/accountant/$clientId'
     | '/_authenticated/certified-report/$recordId'
     | '/_authenticated/compliance-report/$recordId'
@@ -1125,6 +1200,7 @@ export interface RootRouteChildren {
   CropsRoute: typeof CropsRoute
   DemoRoute: typeof DemoRoute
   DevelopersRoute: typeof DevelopersRoute
+  DiagnosticsRoute: typeof DiagnosticsRoute
   EightChannelsRoute: typeof EightChannelsRoute
   EnterpriseRoute: typeof EnterpriseRoute
   EnterprisePricingRoute: typeof EnterprisePricingRoute
@@ -1147,6 +1223,7 @@ export interface RootRouteChildren {
   PricesHistoryRoute: typeof PricesHistoryRoute
   PricingRoute: typeof PricingRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  RulesCatalogRoute: typeof RulesCatalogRoute
   SalaryZakatRoute: typeof SalaryZakatRoute
   SecurityRoute: typeof SecurityRoute
   ShariaChangelogRoute: typeof ShariaChangelogRoute
@@ -1154,7 +1231,7 @@ export interface RootRouteChildren {
   SoftwareRecommendationsRoute: typeof SoftwareRecommendationsRoute
   StatusRoute: typeof StatusRoute
   SubscriptionConfirmationRoute: typeof SubscriptionConfirmationRoute
-  VerifyRoute: typeof VerifyRoute
+  VerifyRoute: typeof VerifyRouteWithChildren
   WelcomeRoute: typeof WelcomeRoute
   ZakatCompanyRoute: typeof ZakatCompanyRoute
   ZakatFitrRoute: typeof ZakatFitrRoute
@@ -1292,6 +1369,13 @@ declare module '@tanstack/react-router' {
       path: '/developers'
       fullPath: '/developers'
       preLoaderRoute: typeof DevelopersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/diagnostics': {
+      id: '/diagnostics'
+      path: '/diagnostics'
+      fullPath: '/diagnostics'
+      preLoaderRoute: typeof DiagnosticsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/eight-channels': {
@@ -1446,6 +1530,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rules-catalog': {
+      id: '/rules-catalog'
+      path: '/rules-catalog'
+      fullPath: '/rules-catalog'
+      preLoaderRoute: typeof RulesCatalogRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/salary-zakat': {
@@ -1609,6 +1700,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedErpSetupRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/pdf-templates': {
+      id: '/_authenticated/pdf-templates'
+      path: '/pdf-templates'
+      fullPath: '/pdf-templates'
+      preLoaderRoute: typeof AuthenticatedPdfTemplatesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/prices-audit': {
       id: '/_authenticated/prices-audit'
       path: '/prices-audit'
@@ -1616,11 +1714,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPricesAuditRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/reports-history': {
+      id: '/_authenticated/reports-history'
+      path: '/reports-history'
+      fullPath: '/reports-history'
+      preLoaderRoute: typeof AuthenticatedReportsHistoryRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/sharia-review': {
+      id: '/_authenticated/sharia-review'
+      path: '/sharia-review'
+      fullPath: '/sharia-review'
+      preLoaderRoute: typeof AuthenticatedShariaReviewRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/sharia-stock-screening': {
@@ -1685,6 +1797,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/r/$token'
       preLoaderRoute: typeof RTokenRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/verify/$reportUid': {
+      id: '/verify/$reportUid'
+      path: '/$reportUid'
+      fullPath: '/verify/$reportUid'
+      preLoaderRoute: typeof VerifyReportUidRouteImport
+      parentRoute: typeof VerifyRoute
     }
     '/_authenticated/accountant/$clientId': {
       id: '/_authenticated/accountant/$clientId'
@@ -1834,8 +1953,11 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDistributionPlanRoute: typeof AuthenticatedDistributionPlanRoute
   AuthenticatedDraftsRoute: typeof AuthenticatedDraftsRoute
   AuthenticatedErpSetupRoute: typeof AuthenticatedErpSetupRoute
+  AuthenticatedPdfTemplatesRoute: typeof AuthenticatedPdfTemplatesRoute
   AuthenticatedPricesAuditRoute: typeof AuthenticatedPricesAuditRoute
+  AuthenticatedReportsHistoryRoute: typeof AuthenticatedReportsHistoryRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedShariaReviewRoute: typeof AuthenticatedShariaReviewRoute
   AuthenticatedShariaStockScreeningRoute: typeof AuthenticatedShariaStockScreeningRoute
   AuthenticatedSubscriptionRoute: typeof AuthenticatedSubscriptionRoute
   AuthenticatedCertifiedReportRecordIdRoute: typeof AuthenticatedCertifiedReportRecordIdRoute
@@ -1855,8 +1977,11 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDistributionPlanRoute: AuthenticatedDistributionPlanRoute,
   AuthenticatedDraftsRoute: AuthenticatedDraftsRoute,
   AuthenticatedErpSetupRoute: AuthenticatedErpSetupRoute,
+  AuthenticatedPdfTemplatesRoute: AuthenticatedPdfTemplatesRoute,
   AuthenticatedPricesAuditRoute: AuthenticatedPricesAuditRoute,
+  AuthenticatedReportsHistoryRoute: AuthenticatedReportsHistoryRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedShariaReviewRoute: AuthenticatedShariaReviewRoute,
   AuthenticatedShariaStockScreeningRoute:
     AuthenticatedShariaStockScreeningRoute,
   AuthenticatedSubscriptionRoute: AuthenticatedSubscriptionRoute,
@@ -1880,6 +2005,17 @@ const BlogRouteChildren: BlogRouteChildren = {
 
 const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
 
+interface VerifyRouteChildren {
+  VerifyReportUidRoute: typeof VerifyReportUidRoute
+}
+
+const VerifyRouteChildren: VerifyRouteChildren = {
+  VerifyReportUidRoute: VerifyReportUidRoute,
+}
+
+const VerifyRouteWithChildren =
+  VerifyRoute._addFileChildren(VerifyRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -1897,6 +2033,7 @@ const rootRouteChildren: RootRouteChildren = {
   CropsRoute: CropsRoute,
   DemoRoute: DemoRoute,
   DevelopersRoute: DevelopersRoute,
+  DiagnosticsRoute: DiagnosticsRoute,
   EightChannelsRoute: EightChannelsRoute,
   EnterpriseRoute: EnterpriseRoute,
   EnterprisePricingRoute: EnterprisePricingRoute,
@@ -1919,6 +2056,7 @@ const rootRouteChildren: RootRouteChildren = {
   PricesHistoryRoute: PricesHistoryRoute,
   PricingRoute: PricingRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  RulesCatalogRoute: RulesCatalogRoute,
   SalaryZakatRoute: SalaryZakatRoute,
   SecurityRoute: SecurityRoute,
   ShariaChangelogRoute: ShariaChangelogRoute,
@@ -1926,7 +2064,7 @@ const rootRouteChildren: RootRouteChildren = {
   SoftwareRecommendationsRoute: SoftwareRecommendationsRoute,
   StatusRoute: StatusRoute,
   SubscriptionConfirmationRoute: SubscriptionConfirmationRoute,
-  VerifyRoute: VerifyRoute,
+  VerifyRoute: VerifyRouteWithChildren,
   WelcomeRoute: WelcomeRoute,
   ZakatCompanyRoute: ZakatCompanyRoute,
   ZakatFitrRoute: ZakatFitrRoute,
@@ -1955,13 +2093,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
