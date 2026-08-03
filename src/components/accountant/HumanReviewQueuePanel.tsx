@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -50,7 +50,6 @@ export function HumanReviewQueuePanel() {
   const updateFn = useServerFn(updateReviewItem);
 
   const [items, setItems] = useState<ReviewQueueItem[]>([]);
-  const [loaded, setLoaded] = useState(false);
   const [busy, setBusy] = useState(false);
   const [notAccountant, setNotAccountant] = useState(false);
   const [filter, setFilter] = useState<ReviewStatus | "all">("queued");
@@ -70,11 +69,13 @@ export function HumanReviewQueuePanel() {
       }
     } finally {
       setBusy(false);
-      setLoaded(true);
     }
   };
 
-  if (!loaded) void load(filter);
+  useEffect(() => {
+    void load(filter);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const changeFilter = (v: ReviewStatus | "all") => {
     setFilter(v);

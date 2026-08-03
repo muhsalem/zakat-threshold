@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -163,7 +163,6 @@ function ShariaStockScreeningPage() {
     meta: { fileName: string; hash: string };
   } | null>(null);
   const [archive, setArchive] = useState<ScreeningListItem[]>([]);
-  const [archiveLoaded, setArchiveLoaded] = useState(false);
   const [archiveOffset, setArchiveOffset] = useState(0);
   const [archiveHasMore, setArchiveHasMore] = useState(false);
   const [archiveLoadingMore, setArchiveLoadingMore] = useState(false);
@@ -178,11 +177,12 @@ function ShariaStockScreeningPage() {
       setArchiveHasMore(hasMore);
     } catch {
       /* لا أرشيف بعد أو غير مسجّل دخول */
-    } finally {
-      setArchiveLoaded(true);
     }
   };
-  if (!archiveLoaded) void loadArchive();
+  useEffect(() => {
+    void loadArchive();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const loadMoreArchive = async () => {
     setArchiveLoadingMore(true);
