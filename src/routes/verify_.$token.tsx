@@ -6,24 +6,25 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { verifyPdfReport } from "@/lib/pdf/reports.functions";
 
-export const Route = createFileRoute("/verify/$reportUid")({
-  head: ({ params }) => ({
+export const Route = createFileRoute("/verify_/$token")({
+  head: () => ({
     meta: [
-      { title: `تحقق من التقرير ${params.reportUid} · نِصاب` },
+      { title: "تحقق من التقرير · نِصاب" },
       { name: "description", content: "صفحة التحقق من أصالة تقرير زكاة صادر عن منصة نِصاب." },
-      { property: "og:title", content: `تحقق من التقرير ${params.reportUid}` },
+      { property: "og:title", content: "تحقق من التقرير" },
       { property: "og:description", content: "التحقق من التقارير الصادرة عن نِصاب." },
+      { name: "robots", content: "noindex" },
     ],
   }),
   component: VerifyReportPage,
 });
 
 function VerifyReportPage() {
-  const { reportUid } = Route.useParams();
+  const { token } = Route.useParams();
   const verifyFn = useServerFn(verifyPdfReport);
   const { data, isLoading } = useQuery({
-    queryKey: ["verify-report", reportUid],
-    queryFn: () => verifyFn({ data: { report_uid: reportUid } }),
+    queryKey: ["verify-report", token],
+    queryFn: () => verifyFn({ data: { token } }),
   });
 
   return (
@@ -38,7 +39,7 @@ function VerifyReportPage() {
           ) : !data?.found ? (
             <div className="flex items-center gap-2 text-red-600">
               <XCircle className="h-5 w-5" />
-              <span>لم يُعثر على تقرير بهذا الرقم.</span>
+              <span>لم يُعثر على تقرير بهذا الرمز.</span>
             </div>
           ) : (
             <>

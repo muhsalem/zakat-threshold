@@ -227,7 +227,7 @@ export const getReportAudit = createServerFn({ method: "GET" })
 // ============ Public verify (unauthenticated) ============
 
 export const verifyPdfReport = createServerFn({ method: "GET" })
-  .inputValidator((data: { report_uid: string }) => data)
+  .inputValidator((data: { token: string }) => data)
   .handler(async ({ data }) => {
     const { createClient } = await import("@supabase/supabase-js");
     const key = process.env.SUPABASE_PUBLISHABLE_KEY!;
@@ -246,10 +246,10 @@ export const verifyPdfReport = createServerFn({ method: "GET" })
     });
     // read via service role since RLS restricts pdf_reports to owner
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: row } = await supabaseAdmin
-      .from("pdf_reports")
+    // verify_token غير مُدرج بعد في الأنواع المولَّدة (هجرة حديثة) — from<any> مؤقت
+    const { data: row } = await (supabaseAdmin.from("pdf_reports") as any)
       .select("report_uid, kind, title, content_hash, status, version, created_at, issuer_display:created_by")
-      .eq("report_uid", data.report_uid)
+      .eq("verify_token", data.token)
       .maybeSingle();
     void client;
     if (!row) return { found: false as const };

@@ -43,6 +43,7 @@ export const Route = createFileRoute("/_authenticated/pdf-templates")({
 
 const SAMPLE_PAYLOAD = {
   report_uid: "RPT-2026-000001",
+  verify_token: "00000000-0000-0000-0000-000000000000",
   kind: "declaration" as TemplateKind,
   title: "تقرير الزكاة السنوي",
   issued_at: new Date().toISOString(),

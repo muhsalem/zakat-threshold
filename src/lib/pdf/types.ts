@@ -76,6 +76,8 @@ export interface PdfTemplate {
 /** بيانات جاهزة للتوليد — مبنية من zakat_records + snapshot. */
 export interface ReportPayload {
   report_uid: string;
+  /** رمز عشوائي غير قابل للتخمين — هو مفتاح رابط/رمز QR التحقق العام، لا report_uid التسلسلي. */
+  verify_token: string;
   kind: TemplateKind;
   title: string;
   issued_at: string;

@@ -94,14 +94,14 @@ async function urlToDataUrl(url: string): Promise<string | null> {
   }
 }
 
-/** يبني QR للتحقق ويعيده كـ dataURL PNG. */
-async function buildVerifyQr(reportUid: string): Promise<string | null> {
+/** يبني QR للتحقق ويعيده كـ dataURL PNG — يستخدم verify_token العشوائي، لا report_uid التسلسلي القابل للتخمين. */
+async function buildVerifyQr(verifyToken: string): Promise<string | null> {
   try {
     const QR = (await import("qrcode")) as unknown as {
       toDataURL: (text: string, opts?: unknown) => Promise<string>;
     };
     const origin = typeof window !== "undefined" ? window.location.origin : "";
-    const url = `${origin}/verify/${reportUid}`;
+    const url = `${origin}/verify/${verifyToken}`;
     return await QR.toDataURL(url, { margin: 0, width: 140 });
   } catch {
     return null;
@@ -143,7 +143,7 @@ export async function generateReportBlob(
     config.stamp.enabled && config.stamp.image_url
       ? urlToDataUrl(config.stamp.image_url)
       : Promise.resolve(null),
-    config.sections.verify_qr ? buildVerifyQr(data.report_uid) : Promise.resolve(null),
+    config.sections.verify_qr ? buildVerifyQr(data.verify_token) : Promise.resolve(null),
   ]);
 
   const primary = config.brand.primary_color;

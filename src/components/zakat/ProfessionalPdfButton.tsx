@@ -20,7 +20,7 @@ export interface ProfessionalPdfButtonProps {
   zakatRecordId?: string | null;
   kind: TemplateKind;
   title: string;
-  payload: Omit<ReportPayload, "content_hash" | "version" | "report_uid" | "kind" | "title" | "issued_at" | "issuer_name">;
+  payload: Omit<ReportPayload, "content_hash" | "version" | "report_uid" | "verify_token" | "kind" | "title" | "issued_at" | "issuer_name">;
   issuerName?: string;
   label?: string;
   variant?: "default" | "outline" | "secondary";
@@ -63,11 +63,13 @@ export function ProfessionalPdfButton({
         },
       });
       const reportUid = (inserted as { report_uid: string }).report_uid;
+      const verifyToken = (inserted as unknown as { verify_token: string }).verify_token;
       const version = (inserted as { version: number }).version;
 
       // 2) generate PDF
       const fullPayload: ReportPayload = {
         report_uid: reportUid,
+        verify_token: verifyToken,
         kind,
         title,
         issued_at: new Date().toISOString(),

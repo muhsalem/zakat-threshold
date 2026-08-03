@@ -86,7 +86,7 @@ import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
 import { Route as LegalTermsRouteImport } from './routes/legal.terms'
 import { Route as RTokenRouteImport } from './routes/r.$token'
-import { Route as VerifyReportUidRouteImport } from './routes/verify.$reportUid'
+import { Route as VerifyTokenRouteImport } from './routes/verify_.$token'
 import { Route as AuthenticatedAccountantClientIdRouteImport } from './routes/_authenticated/accountant.$clientId'
 import { Route as AuthenticatedCertifiedReportRecordIdRouteImport } from './routes/_authenticated/certified-report.$recordId'
 import { Route as AuthenticatedComplianceReportRecordIdRouteImport } from './routes/_authenticated/compliance-report.$recordId'
@@ -502,10 +502,10 @@ const RTokenRoute = RTokenRouteImport.update({
   path: '/r/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
-const VerifyReportUidRoute = VerifyReportUidRouteImport.update({
-  id: '/$reportUid',
-  path: '/$reportUid',
-  getParentRoute: () => VerifyRoute,
+const VerifyTokenRoute = VerifyTokenRouteImport.update({
+  id: '/verify_/$token',
+  path: '/verify/$token',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAccountantClientIdRoute =
   AuthenticatedAccountantClientIdRouteImport.update({
@@ -648,7 +648,7 @@ export interface FileRoutesByFullPath {
   '/software-recommendations': typeof SoftwareRecommendationsRoute
   '/status': typeof StatusRoute
   '/subscription-confirmation': typeof SubscriptionConfirmationRoute
-  '/verify': typeof VerifyRouteWithChildren
+  '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
   '/zakat-company': typeof ZakatCompanyRoute
   '/zakat-fitr': typeof ZakatFitrRoute
@@ -678,7 +678,7 @@ export interface FileRoutesByFullPath {
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/r/$token': typeof RTokenRoute
-  '/verify/$reportUid': typeof VerifyReportUidRoute
+  '/verify/$token': typeof VerifyTokenRoute
   '/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
   '/certified-report/$recordId': typeof AuthenticatedCertifiedReportRecordIdRoute
   '/compliance-report/$recordId': typeof AuthenticatedComplianceReportRecordIdRoute
@@ -744,7 +744,7 @@ export interface FileRoutesByTo {
   '/software-recommendations': typeof SoftwareRecommendationsRoute
   '/status': typeof StatusRoute
   '/subscription-confirmation': typeof SubscriptionConfirmationRoute
-  '/verify': typeof VerifyRouteWithChildren
+  '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
   '/zakat-company': typeof ZakatCompanyRoute
   '/zakat-fitr': typeof ZakatFitrRoute
@@ -774,7 +774,7 @@ export interface FileRoutesByTo {
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/r/$token': typeof RTokenRoute
-  '/verify/$reportUid': typeof VerifyReportUidRoute
+  '/verify/$token': typeof VerifyTokenRoute
   '/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
   '/certified-report/$recordId': typeof AuthenticatedCertifiedReportRecordIdRoute
   '/compliance-report/$recordId': typeof AuthenticatedComplianceReportRecordIdRoute
@@ -842,7 +842,7 @@ export interface FileRoutesById {
   '/software-recommendations': typeof SoftwareRecommendationsRoute
   '/status': typeof StatusRoute
   '/subscription-confirmation': typeof SubscriptionConfirmationRoute
-  '/verify': typeof VerifyRouteWithChildren
+  '/verify': typeof VerifyRoute
   '/welcome': typeof WelcomeRoute
   '/zakat-company': typeof ZakatCompanyRoute
   '/zakat-fitr': typeof ZakatFitrRoute
@@ -872,7 +872,7 @@ export interface FileRoutesById {
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
   '/r/$token': typeof RTokenRoute
-  '/verify/$reportUid': typeof VerifyReportUidRoute
+  '/verify_/$token': typeof VerifyTokenRoute
   '/_authenticated/accountant/$clientId': typeof AuthenticatedAccountantClientIdRoute
   '/_authenticated/certified-report/$recordId': typeof AuthenticatedCertifiedReportRecordIdRoute
   '/_authenticated/compliance-report/$recordId': typeof AuthenticatedComplianceReportRecordIdRoute
@@ -970,7 +970,7 @@ export interface FileRouteTypes {
     | '/legal/privacy'
     | '/legal/terms'
     | '/r/$token'
-    | '/verify/$reportUid'
+    | '/verify/$token'
     | '/accountant/$clientId'
     | '/certified-report/$recordId'
     | '/compliance-report/$recordId'
@@ -1066,7 +1066,7 @@ export interface FileRouteTypes {
     | '/legal/privacy'
     | '/legal/terms'
     | '/r/$token'
-    | '/verify/$reportUid'
+    | '/verify/$token'
     | '/accountant/$clientId'
     | '/certified-report/$recordId'
     | '/compliance-report/$recordId'
@@ -1163,7 +1163,7 @@ export interface FileRouteTypes {
     | '/legal/privacy'
     | '/legal/terms'
     | '/r/$token'
-    | '/verify/$reportUid'
+    | '/verify_/$token'
     | '/_authenticated/accountant/$clientId'
     | '/_authenticated/certified-report/$recordId'
     | '/_authenticated/compliance-report/$recordId'
@@ -1231,7 +1231,7 @@ export interface RootRouteChildren {
   SoftwareRecommendationsRoute: typeof SoftwareRecommendationsRoute
   StatusRoute: typeof StatusRoute
   SubscriptionConfirmationRoute: typeof SubscriptionConfirmationRoute
-  VerifyRoute: typeof VerifyRouteWithChildren
+  VerifyRoute: typeof VerifyRoute
   WelcomeRoute: typeof WelcomeRoute
   ZakatCompanyRoute: typeof ZakatCompanyRoute
   ZakatFitrRoute: typeof ZakatFitrRoute
@@ -1242,6 +1242,7 @@ export interface RootRouteChildren {
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   LegalTermsRoute: typeof LegalTermsRoute
   RTokenRoute: typeof RTokenRoute
+  VerifyTokenRoute: typeof VerifyTokenRoute
   ApiPublicCalcRoute: typeof ApiPublicCalcRoute
   ApiPublicGeoRoute: typeof ApiPublicGeoRoute
   ApiPublicHealthRoute: typeof ApiPublicHealthRoute
@@ -1798,12 +1799,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/verify/$reportUid': {
-      id: '/verify/$reportUid'
-      path: '/$reportUid'
-      fullPath: '/verify/$reportUid'
-      preLoaderRoute: typeof VerifyReportUidRouteImport
-      parentRoute: typeof VerifyRoute
+    '/verify_/$token': {
+      id: '/verify_/$token'
+      path: '/verify/$token'
+      fullPath: '/verify/$token'
+      preLoaderRoute: typeof VerifyTokenRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/accountant/$clientId': {
       id: '/_authenticated/accountant/$clientId'
@@ -2005,17 +2006,6 @@ const BlogRouteChildren: BlogRouteChildren = {
 
 const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
 
-interface VerifyRouteChildren {
-  VerifyReportUidRoute: typeof VerifyReportUidRoute
-}
-
-const VerifyRouteChildren: VerifyRouteChildren = {
-  VerifyReportUidRoute: VerifyReportUidRoute,
-}
-
-const VerifyRouteWithChildren =
-  VerifyRoute._addFileChildren(VerifyRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -2064,7 +2054,7 @@ const rootRouteChildren: RootRouteChildren = {
   SoftwareRecommendationsRoute: SoftwareRecommendationsRoute,
   StatusRoute: StatusRoute,
   SubscriptionConfirmationRoute: SubscriptionConfirmationRoute,
-  VerifyRoute: VerifyRouteWithChildren,
+  VerifyRoute: VerifyRoute,
   WelcomeRoute: WelcomeRoute,
   ZakatCompanyRoute: ZakatCompanyRoute,
   ZakatFitrRoute: ZakatFitrRoute,
@@ -2075,6 +2065,7 @@ const rootRouteChildren: RootRouteChildren = {
   LegalPrivacyRoute: LegalPrivacyRoute,
   LegalTermsRoute: LegalTermsRoute,
   RTokenRoute: RTokenRoute,
+  VerifyTokenRoute: VerifyTokenRoute,
   ApiPublicCalcRoute: ApiPublicCalcRoute,
   ApiPublicGeoRoute: ApiPublicGeoRoute,
   ApiPublicHealthRoute: ApiPublicHealthRoute,
