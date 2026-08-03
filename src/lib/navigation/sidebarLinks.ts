@@ -57,6 +57,7 @@ export const PRO_TOOLS: ProItem[] = [
 
 export const PRO_RECORDS: ProItem[] = [
   { title: "السجل", url: "/history", icon: BookOpen },
+  { title: "المراجعة الشرعية", url: "/sharia-review", icon: ShieldCheck },
   { title: "سجل تقارير PDF", url: "/reports-history", icon: Files },
   { title: "قوالب تقارير PDF", url: "/pdf-templates", icon: FileText },
   { title: "ربط دليل الحسابات", url: "/coa-mapping", icon: MapPin },
