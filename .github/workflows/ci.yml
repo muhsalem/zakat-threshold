@@ -131,8 +131,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      # الثلاثة متصفحات فقط عند pull_request (قبل الدمج) — push مباشر لـ main
+      # يكتفي بـ chromium لتقليل استهلاك دقائق Actions (كان سبباً رئيسياً
+      # لنفاد الحصة هذه الجلسة مع عشرات الدفعات المباشرة على main).
       matrix:
-        browser: [chromium, firefox, webkit]
+        browser: ${{ fromJSON(github.event_name == 'pull_request' && '["chromium","firefox","webkit"]' || '["chromium"]') }}
     steps:
       - uses: actions/checkout@v4
 
