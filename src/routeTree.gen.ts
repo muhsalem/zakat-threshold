@@ -76,6 +76,7 @@ import { Route as AuthenticatedPdfTemplatesRouteImport } from './routes/_authent
 import { Route as AuthenticatedPricesAuditRouteImport } from './routes/_authenticated/prices-audit'
 import { Route as AuthenticatedReportsHistoryRouteImport } from './routes/_authenticated/reports-history'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedShariaReviewRouteImport } from './routes/_authenticated/sharia-review'
 import { Route as AuthenticatedShariaStockScreeningRouteImport } from './routes/_authenticated/sharia-stock-screening'
 import { Route as AuthenticatedSubscriptionRouteImport } from './routes/_authenticated/subscription'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
@@ -448,6 +449,12 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedShariaReviewRoute =
+  AuthenticatedShariaReviewRouteImport.update({
+    id: '/sharia-review',
+    path: '/sharia-review',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedShariaStockScreeningRoute =
   AuthenticatedShariaStockScreeningRouteImport.update({
     id: '/sharia-stock-screening',
@@ -661,6 +668,7 @@ export interface FileRoutesByFullPath {
   '/prices-audit': typeof AuthenticatedPricesAuditRoute
   '/reports-history': typeof AuthenticatedReportsHistoryRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/sharia-review': typeof AuthenticatedShariaReviewRoute
   '/sharia-stock-screening': typeof AuthenticatedShariaStockScreeningRoute
   '/subscription': typeof AuthenticatedSubscriptionRoute
   '/api/chat': typeof ApiChatRoute
@@ -756,6 +764,7 @@ export interface FileRoutesByTo {
   '/prices-audit': typeof AuthenticatedPricesAuditRoute
   '/reports-history': typeof AuthenticatedReportsHistoryRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/sharia-review': typeof AuthenticatedShariaReviewRoute
   '/sharia-stock-screening': typeof AuthenticatedShariaStockScreeningRoute
   '/subscription': typeof AuthenticatedSubscriptionRoute
   '/api/chat': typeof ApiChatRoute
@@ -853,6 +862,7 @@ export interface FileRoutesById {
   '/_authenticated/prices-audit': typeof AuthenticatedPricesAuditRoute
   '/_authenticated/reports-history': typeof AuthenticatedReportsHistoryRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/sharia-review': typeof AuthenticatedShariaReviewRoute
   '/_authenticated/sharia-stock-screening': typeof AuthenticatedShariaStockScreeningRoute
   '/_authenticated/subscription': typeof AuthenticatedSubscriptionRoute
   '/api/chat': typeof ApiChatRoute
@@ -950,6 +960,7 @@ export interface FileRouteTypes {
     | '/prices-audit'
     | '/reports-history'
     | '/settings'
+    | '/sharia-review'
     | '/sharia-stock-screening'
     | '/subscription'
     | '/api/chat'
@@ -1045,6 +1056,7 @@ export interface FileRouteTypes {
     | '/prices-audit'
     | '/reports-history'
     | '/settings'
+    | '/sharia-review'
     | '/sharia-stock-screening'
     | '/subscription'
     | '/api/chat'
@@ -1141,6 +1153,7 @@ export interface FileRouteTypes {
     | '/_authenticated/prices-audit'
     | '/_authenticated/reports-history'
     | '/_authenticated/settings'
+    | '/_authenticated/sharia-review'
     | '/_authenticated/sharia-stock-screening'
     | '/_authenticated/subscription'
     | '/api/chat'
@@ -1715,6 +1728,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/sharia-review': {
+      id: '/_authenticated/sharia-review'
+      path: '/sharia-review'
+      fullPath: '/sharia-review'
+      preLoaderRoute: typeof AuthenticatedShariaReviewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/sharia-stock-screening': {
       id: '/_authenticated/sharia-stock-screening'
       path: '/sharia-stock-screening'
@@ -1937,6 +1957,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedPricesAuditRoute: typeof AuthenticatedPricesAuditRoute
   AuthenticatedReportsHistoryRoute: typeof AuthenticatedReportsHistoryRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedShariaReviewRoute: typeof AuthenticatedShariaReviewRoute
   AuthenticatedShariaStockScreeningRoute: typeof AuthenticatedShariaStockScreeningRoute
   AuthenticatedSubscriptionRoute: typeof AuthenticatedSubscriptionRoute
   AuthenticatedCertifiedReportRecordIdRoute: typeof AuthenticatedCertifiedReportRecordIdRoute
@@ -1960,6 +1981,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedPricesAuditRoute: AuthenticatedPricesAuditRoute,
   AuthenticatedReportsHistoryRoute: AuthenticatedReportsHistoryRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedShariaReviewRoute: AuthenticatedShariaReviewRoute,
   AuthenticatedShariaStockScreeningRoute:
     AuthenticatedShariaStockScreeningRoute,
   AuthenticatedSubscriptionRoute: AuthenticatedSubscriptionRoute,
