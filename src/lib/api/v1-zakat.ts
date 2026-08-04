@@ -87,14 +87,15 @@ export const RULE_BINDINGS: Array<{
   ruleId: string;
 }> = [
   { field: "cashAndBank", assetType: "cash", ruleId: "ZR-CASH-001" },
-  { field: "goldGrams24", assetType: "gold", ruleId: "ZR-GOLD-001" },
-  { field: "silverGramsPure", assetType: "silver", ruleId: "ZR-SILVER-001" },
-  { field: "tradeInventory", assetType: "inventory", ruleId: "ZR-INV-001" },
+  { field: "goldGrams24", assetType: "gold", ruleId: "ZR-GOLD-INVEST-001" },
+  // الفضة من الأثمان (النقدان) — تحكمها قاعدة النقود والأرصدة نفسها
+  { field: "silverGramsPure", assetType: "cash", ruleId: "ZR-CASH-001" },
+  { field: "tradeInventory", assetType: "inventory", ruleId: "ZR-INV-TRADE-001" },
   { field: "tradeReceivables", assetType: "receivables", ruleId: "ZR-RECV-001" },
-  { field: "stocksTrading", assetType: "stocks", ruleId: "ZR-STOCK-001" },
-  { field: "stocksLongTermZakatable", assetType: "stocks", ruleId: "ZR-STOCK-002" },
+  { field: "stocksTrading", assetType: "stocks", ruleId: "ZR-STOCKS-TRADE-001" },
+  { field: "stocksLongTermZakatable", assetType: "stocks", ruleId: "ZR-STOCKS-HOLD-001" },
   { field: "cryptoAssets", assetType: "crypto", ruleId: "ZR-CRYPTO-001" },
-  { field: "shortTermLiabilities", assetType: "debt", ruleId: "ZR-DEBT-001" },
+  { field: "shortTermLiabilities", assetType: "debt", ruleId: "ZR-DEBT-SHORT-001" },
 ];
 
 export interface RuleCheck {
