@@ -2,7 +2,7 @@
 
 ## المتطلبات
 
-- Node.js 18+
+- [Bun](https://bun.sh) (لا npm/yarn — المشروع مبني حول `bun.lock`)
 - حساب Supabase
 - حساب Stripe
 - حساب Resend (للبريد)
@@ -14,7 +14,7 @@
 ### أ) تشغيل الـ Migrations
 
 ```bash
-npx supabase db push
+bunx supabase db push
 ```
 
 أو عبر لوحة Supabase > SQL Editor > شغّل ملفات `supabase/migrations/` بالترتيب.
@@ -22,9 +22,9 @@ npx supabase db push
 ### ب) نشر Edge Functions
 
 ```bash
-npx supabase functions deploy create-checkout
-npx supabase functions deploy stripe-webhook
-npx supabase functions deploy send-report-email
+bunx supabase functions deploy create-checkout
+bunx supabase functions deploy stripe-webhook
+bunx supabase functions deploy send-report-email
 ```
 
 ### ج) إضافة Secrets للـ Edge Functions (Supabase Dashboard > Edge Functions > Secrets)
@@ -33,7 +33,7 @@ npx supabase functions deploy send-report-email
 STRIPE_SECRET_KEY=sk_live_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 RESEND_API_KEY=re_...
-SITE_URL=https://nisab.app
+SITE_URL=https://your-domain.example   # الدومين الفعلي المنشور
 ```
 
 ---
@@ -66,9 +66,10 @@ Stripe Dashboard > Developers > Webhooks > Add endpoint:
 ## 3. Resend (البريد الإلكتروني)
 
 1. سجّل في resend.com
-2. أضف دومينك (nisab.app) وتحقق منه
+2. أضف دومينك الفعلي وتحقق منه
 3. أنشئ API Key وضعه في Supabase Secrets كـ `RESEND_API_KEY`
-4. في `send-report-email/index.ts`، غيّر `reports@nisab.app` لبريدك المتحقق
+4. في `supabase/functions/send-report-email/index.ts`، غيّر `reports@nisab.app`
+   (بريد افتراضي في الكود حالياً) لبريدك المتحقَّق فعلياً
 
 ---
 
@@ -115,5 +116,8 @@ KV namespace، أسرار Wrangler، CI/CD، وقائمة تحقق ما بعد �
 ## ملاحظات
 
 - Stripe يعمل في وضع **test** بـ `sk_test_...` — لا يخصم مبالغ حقيقية
-- لاختبار الـ Webhook محلياً: `stripe listen --forward-to localhost:8080/api/stripe-webhook`
+- الـ Webhook دالة Supabase Edge Function لا مسار محلي في التطبيق —
+  لاختباره محلياً: شغّل `bunx supabase functions serve stripe-webhook`
+  ثم `stripe listen --forward-to localhost:54321/functions/v1/stripe-webhook`
+  (المنفذ الافتراضي لـ`supabase functions serve` — تحقق من مخرَج الأمر نفسه لتأكيد الرقم)
 - بيانات تجريبية موجودة في الـ DB — احذفها قبل الإنتاج عبر Supabase Dashboard

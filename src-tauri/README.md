@@ -6,18 +6,23 @@
 
 ## قبل أول تشغيل
 
-1. **ثبّت Rust** (مطلوب لبناء الغلاف الأصلي): https://rustup.rs
-   تحقق: `cargo --version`
-2. **استبدل الرابط المؤقت** في `tauri.conf.json` (كل من `build.frontendDist`
+1. **ثبّت Rust**: https://rustup.rs — تحقق: `cargo --version`
+2. **على ويندوز تحديداً، ثبّت Visual Studio Build Tools بحمل "C++ build
+   tools"** — Rust وحده لا يكفي، يحتاج رابط MSVC حقيقياً:
+   https://aka.ms/vs/17/release/vs_buildtools.exe
+   ثم: `vs_buildtools.exe --add Microsoft.VisualStudio.Workload.VCTools`
+
+   ⚠️ **قيد حقيقي مُختبَر**: مثبِّت Visual Studio يتطلب **3.5+ جيجا فعلية
+   على قرص C نفسه** (لملفات المثبِّت والكتالوج المشترك)، **حتى لو حدَّدت
+   `--installPath` لقرص مختلف** أو أعدت توجيه `%TEMP%`/`%TMP%` — لا توجد
+   طريقة موثَّقة لتفادي هذا الشرط. تأكد من مساحة C الفعلية أولاً، لا D
+   أو أي قرص آخر.
+3. **استبدل الرابط المؤقت** في `tauri.conf.json` (كل من `build.frontendDist`
    و`app.windows[0].url`) بدومين نِصاب المنشور فعلياً بدل
    `https://REPLACE-WITH-YOUR-DEPLOYED-DOMAIN.example`.
-3. **الأيقونات**: `bundle.icon` يشير لملفات PNG/ICO/ICNS غير موجودة بعد
-   (المتاح حالياً `public/icon-192.svg` فقط، وTauri يحتاج صيغاً مرسومة
-   نقطياً لا SVG). ولّدها من الشعار الحالي عبر:
-   ```
-   bunx tauri icon public/icon-512.svg
-   ```
-   (يُنشئ مجلد `src-tauri/icons/` تلقائياً بكل المقاسات المطلوبة.)
+4. **الأيقونات**: ✅ مولَّدة بالفعل في `src-tauri/icons/` من الشعار الحالي
+   (عبر `bunx tauri icon public/icon-512.svg`) — لا حاجة لإعادة توليدها
+   إلا لو تغيّر الشعار.
 
 ## التشغيل
 
@@ -29,6 +34,15 @@
   ```
   bun run tauri:build
   ```
+
+## الحالة الحالية
+
+- ✅ سقالة Tauri 2 كاملة وسليمة (Cargo.toml، capabilities، lib.rs/main.rs)
+- ✅ الأيقونات مولَّدة لكل المنصات (سطح مكتب/iOS/Android)
+- ✅ `cargo`/`rustc` يُثبَّتان وتُنزَّل كل التبعيات (418 حزمة) بنجاح
+- ❌ **لم يكتمل أي بناء فعلي محلياً على ويندوز بعد** — آخر محاولة توقفت
+  عند تثبيت VS Build Tools بسبب نقص مساحة C (انظر التحذير أعلاه). لم
+  يُختبَر الربط (`link.exe`) نفسه بعد.
 
 ## القرار المعماري: لماذا رابط بعيد لا حزمة ثابتة؟
 
