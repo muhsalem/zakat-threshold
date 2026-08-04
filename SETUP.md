@@ -95,21 +95,20 @@ Stripe Dashboard > Developers > Webhooks > Add endpoint:
 ```bash
 cp .env.example .env
 # عبّئ القيم في .env
-npm install
-npm run dev
+bun install
+bun run dev
 ```
 
 الموقع على: http://localhost:8080
 
 ---
 
-## 7. النشر (Vercel / Netlify / Cloudflare)
+## 7. النشر
 
-```bash
-npm run build
-```
-
-ارفع مجلد `.output` أو استخدم الـ adapter المناسب في `vite.config.ts`.
+المنصة هدفها **Cloudflare Workers** تحديداً (`wrangler.jsonc` + `src/server.ts`)،
+لا Vercel/Netlify. راجع الدليل الشامل [`DEPLOYMENT.md`](DEPLOYMENT.md) للخطوات
+الكاملة: قائمة متغيرات البيئة الدقيقة (هذا الملف ناقص عدة متغيرات خادم حقيقية)،
+KV namespace، أسرار Wrangler، CI/CD، وقائمة تحقق ما بعد النشر.
 
 ---
 
