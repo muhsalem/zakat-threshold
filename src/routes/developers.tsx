@@ -27,6 +27,62 @@ function DevPage() {
         <Card>
           <CardHeader>
             <CardTitle>
+              <code className="text-sm">POST /api/public/v1/zakat-calc</code> — نتائج معتمدة
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm mb-2">
+              حساب v1 مع تحقق صارم من المدخلات، وتحقق من كتالوج القواعد الشرعية (لا تُصدر شهادة
+              «معتمدة» إن كانت قاعدة أي بند محجوبة أو الحول غير مكتمل)، وبصمة محتوى قابلة لإعادة
+              التحقق.
+            </p>
+            <pre dir="ltr" className="bg-muted rounded p-3 text-xs overflow-x-auto">
+              <code>{`curl -X POST "https://your-domain.com/api/public/v1/zakat-calc" \\
+  -H "Content-Type: application/json" \\
+  -d '{"goldPricePerGram24":80,"silverPricePerGramPure":1,
+       "cashAndBank":100000,"shortTermLiabilities":10000}'
+
+{
+  "apiVersion": "v1",
+  "data": { "assessment": { "zakatDue": 2250, "reachesNisab": true } },
+  "rules": { "certified": true, "catalogVersion": "2026.1.0", "checks": [...] },
+  "certificate": { "status": "certified", "contentHash": "816b...", "versions": {...} }
+}`}</code>
+            </pre>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              <code className="text-sm">GET /api/public/v1/rules</code>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm mb-2">
+              كتالوج القواعد الشرعية: الحالة (مفعّلة/محجوبة مع السبب)، المصدر المتحقَّق، الإصدار.
+              فلترة اختيارية بـ <code>?assetType=cash</code>.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              <code className="text-sm">POST /api/public/v1/verify</code>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm mb-2">
+              إعادة إنتاج نتيجة سابقة ومطابقة بصمتها: أرسل <code>{"{ input, contentHash }"}</code>{" "}
+              ويعيد <code>valid</code> مع النتيجة والإصدارات المستخدمة.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>
               <code className="text-sm">GET /api/public/nisab</code>
             </CardTitle>
           </CardHeader>
