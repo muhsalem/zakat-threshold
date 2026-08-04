@@ -105,6 +105,7 @@ import { Route as ApiPublicHooksSnapshotDailyPricesRouteImport } from './routes/
 import { Route as ApiPublicHooksSnapshotPricesRouteImport } from './routes/api/public/hooks/snapshot-prices'
 import { Route as ApiPublicPricesHistoryRouteImport } from './routes/api/public/prices/history'
 import { Route as ApiPublicV1RulesRouteImport } from './routes/api/public/v1/rules'
+import { Route as ApiPublicV1VerifyRouteImport } from './routes/api/public/v1/verify'
 import { Route as ApiPublicV1ZakatCalcRouteImport } from './routes/api/public/v1/zakat-calc'
 
 const IndexRoute = IndexRouteImport.update({
@@ -607,6 +608,11 @@ const ApiPublicV1RulesRoute = ApiPublicV1RulesRouteImport.update({
   path: '/api/public/v1/rules',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicV1VerifyRoute = ApiPublicV1VerifyRouteImport.update({
+  id: '/api/public/v1/verify',
+  path: '/api/public/v1/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicV1ZakatCalcRoute = ApiPublicV1ZakatCalcRouteImport.update({
   id: '/api/public/v1/zakat-calc',
   path: '/api/public/v1/zakat-calc',
@@ -709,6 +715,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
   '/api/public/prices/history': typeof ApiPublicPricesHistoryRoute
   '/api/public/v1/rules': typeof ApiPublicV1RulesRoute
+  '/api/public/v1/verify': typeof ApiPublicV1VerifyRoute
   '/api/public/v1/zakat-calc': typeof ApiPublicV1ZakatCalcRoute
 }
 export interface FileRoutesByTo {
@@ -807,6 +814,7 @@ export interface FileRoutesByTo {
   '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
   '/api/public/prices/history': typeof ApiPublicPricesHistoryRoute
   '/api/public/v1/rules': typeof ApiPublicV1RulesRoute
+  '/api/public/v1/verify': typeof ApiPublicV1VerifyRoute
   '/api/public/v1/zakat-calc': typeof ApiPublicV1ZakatCalcRoute
 }
 export interface FileRoutesById {
@@ -907,6 +915,7 @@ export interface FileRoutesById {
   '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
   '/api/public/prices/history': typeof ApiPublicPricesHistoryRoute
   '/api/public/v1/rules': typeof ApiPublicV1RulesRoute
+  '/api/public/v1/verify': typeof ApiPublicV1VerifyRoute
   '/api/public/v1/zakat-calc': typeof ApiPublicV1ZakatCalcRoute
 }
 export interface FileRouteTypes {
@@ -1007,6 +1016,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/snapshot-prices'
     | '/api/public/prices/history'
     | '/api/public/v1/rules'
+    | '/api/public/v1/verify'
     | '/api/public/v1/zakat-calc'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -1105,6 +1115,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/snapshot-prices'
     | '/api/public/prices/history'
     | '/api/public/v1/rules'
+    | '/api/public/v1/verify'
     | '/api/public/v1/zakat-calc'
   id:
     | '__root__'
@@ -1204,6 +1215,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/snapshot-prices'
     | '/api/public/prices/history'
     | '/api/public/v1/rules'
+    | '/api/public/v1/verify'
     | '/api/public/v1/zakat-calc'
   fileRoutesById: FileRoutesById
 }
@@ -1280,6 +1292,7 @@ export interface RootRouteChildren {
   ApiPublicHooksSnapshotPricesRoute: typeof ApiPublicHooksSnapshotPricesRoute
   ApiPublicPricesHistoryRoute: typeof ApiPublicPricesHistoryRoute
   ApiPublicV1RulesRoute: typeof ApiPublicV1RulesRoute
+  ApiPublicV1VerifyRoute: typeof ApiPublicV1VerifyRoute
   ApiPublicV1ZakatCalcRoute: typeof ApiPublicV1ZakatCalcRoute
 }
 
@@ -1957,6 +1970,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1RulesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/verify': {
+      id: '/api/public/v1/verify'
+      path: '/api/public/v1/verify'
+      fullPath: '/api/public/v1/verify'
+      preLoaderRoute: typeof ApiPublicV1VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/v1/zakat-calc': {
       id: '/api/public/v1/zakat-calc'
       path: '/api/public/v1/zakat-calc'
@@ -2121,6 +2141,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicHooksSnapshotPricesRoute: ApiPublicHooksSnapshotPricesRoute,
   ApiPublicPricesHistoryRoute: ApiPublicPricesHistoryRoute,
   ApiPublicV1RulesRoute: ApiPublicV1RulesRoute,
+  ApiPublicV1VerifyRoute: ApiPublicV1VerifyRoute,
   ApiPublicV1ZakatCalcRoute: ApiPublicV1ZakatCalcRoute,
 }
 export const routeTree = rootRouteImport
