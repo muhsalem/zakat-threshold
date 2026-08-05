@@ -67,6 +67,6 @@ describe("buildZakatReportPayload", () => {
   it("يعنون تقرير الشركات بالطريقة المختارة", () => {
     const p = buildZakatReportPayload({ ...base, entity: "company", method: "صافي الأصول" });
     expect(p.inputs.some((i) => i.value === "صافي الأصول")).toBe(true);
-    expect(p.sources[0]?.value).toContain("صافي الأصول");
+    expect(p.sources?.[0]?.value).toContain("صافي الأصول");
   });
 });
