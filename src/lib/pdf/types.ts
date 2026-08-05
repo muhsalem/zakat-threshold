@@ -46,6 +46,9 @@ export interface SectionsConfig {
   results: boolean;
   notes: boolean;
   sharia_refs: boolean;
+  sources: boolean;
+  exceptions: boolean;
+
   legal_notice: boolean;
   verify_qr: boolean;
 }
