@@ -283,6 +283,67 @@ export async function generateReportBlob(
     );
   }
 
+  if (config.sections.sources && data.sources && data.sources.length) {
+    content.push(
+      ...section("توثيق المصادر والأسعار المعتمدة", {
+        table: {
+          widths: ["*", "auto", "*"],
+          body: [
+            [
+              { text: "البند", style: "th", alignment: "right" },
+              { text: "القيمة", style: "th", alignment: "left" },
+              { text: "المصدر", style: "th", alignment: "right" },
+            ],
+            ...data.sources.map((s) => [
+              { text: s.label, fontSize: 9, alignment: "right" },
+              { text: s.value, fontSize: 9, alignment: "left", bold: true },
+              { text: s.origin ?? "—", fontSize: 8, alignment: "right", color: "#6b7280" },
+            ]),
+          ],
+        },
+        layout: { hLineColor: () => "#e5e7eb", vLineColor: () => "#e5e7eb" },
+      }),
+    );
+  }
+
+  if (config.sections.exceptions && data.exceptions && data.exceptions.length) {
+    const sevLabel = (s: string) =>
+      s === "excluded" ? "مستبعد" : s === "warning" ? "تنبيه" : "إفصاح";
+    const sevColor = (s: string) =>
+      s === "excluded" ? "#dc2626" : s === "warning" ? "#d97706" : "#2563eb";
+    content.push(
+      ...section("الاستثناءات والبنود المستبعدة", {
+        table: {
+          widths: [55, "*", "auto"],
+          body: [
+            [
+              { text: "التصنيف", style: "th", alignment: "center" },
+              { text: "البيان والتعليل", style: "th", alignment: "right" },
+              { text: "الأثر", style: "th", alignment: "left" },
+            ],
+            ...data.exceptions.map((e) => [
+              {
+                text: sevLabel(e.severity),
+                fontSize: 8,
+                alignment: "center",
+                color: sevColor(e.severity),
+                bold: true,
+              },
+              {
+                stack: [
+                  { text: `${e.label} [${e.code}]`, fontSize: 9, bold: true, alignment: "right" },
+                  { text: e.reason, fontSize: 8, color: "#4b5563", alignment: "right" },
+                ],
+              },
+              { text: e.impact ?? "—", fontSize: 8, alignment: "left" },
+            ]),
+          ],
+        },
+        layout: { hLineColor: () => "#e5e7eb", vLineColor: () => "#e5e7eb" },
+      }),
+    );
+  }
+
   if (config.sections.legal_notice && config.legal_notice_text) {
     content.push({
       text: config.legal_notice_text,

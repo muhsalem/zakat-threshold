@@ -46,6 +46,9 @@ export interface SectionsConfig {
   results: boolean;
   notes: boolean;
   sharia_refs: boolean;
+  sources: boolean;
+  exceptions: boolean;
+
   legal_notice: boolean;
   verify_qr: boolean;
 }
@@ -99,9 +102,20 @@ export interface ReportPayload {
   deductions: Array<{ label: string; value: string; included: boolean }>;
   results: Array<{ label: string; value: string; emphasize?: boolean }>;
   sharia_refs: Array<{ ref: string; note?: string }>;
+  /** توثيق مصادر الأسعار وأسعار الصرف والمنهجية. */
+  sources?: Array<{ label: string; value: string; origin?: string }>;
+  /** الاستثناءات والبنود المستبعدة مع تعليلها. */
+  exceptions?: Array<{
+    code: string;
+    label: string;
+    reason: string;
+    impact?: string;
+    severity: "info" | "warning" | "excluded";
+  }>;
   content_hash: string;
   version: number;
 }
+
 
 export const DEFAULT_CONFIG: TemplateConfig = {
   layout: "classic",
@@ -141,6 +155,8 @@ export const DEFAULT_CONFIG: TemplateConfig = {
     results: true,
     notes: true,
     sharia_refs: true,
+    sources: true,
+    exceptions: true,
     legal_notice: true,
     verify_qr: true,
   },
