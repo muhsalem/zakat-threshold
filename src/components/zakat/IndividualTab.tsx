@@ -92,6 +92,7 @@ import ComplianceChecklist from "./ComplianceChecklist";
 import { FileSpreadsheet } from "lucide-react";
 import { IncomeUsufructSection } from "./IncomeUsufructSection";
 import { PrintReport } from "./PrintReport";
+import { ZakatResultsPdfButton } from "./ZakatResultsPdfButton";
 import { RikazSection } from "./RikazSection";
 import { DigitalAssetsSection } from "./DigitalAssetsSection";
 import { CryptoFatwasCard } from "./CryptoFatwasCard";
@@ -2871,6 +2872,78 @@ export function IndividualTab() {
                     <FileText className="h-4 w-4 ms-2" />
                     تحميل التقرير PDF
                   </Button>
+                  <div className="w-full [&>button]:w-full">
+                    <ZakatResultsPdfButton
+                      input={{
+                        entity: "individual",
+                        name,
+                        profession,
+                        countryCode,
+                        currencyName,
+                        calendarBasis,
+                        effectiveRate,
+                        rows: [
+                          {
+                            label: "زكاة الذهب",
+                            gross: calc.totalGoldValue,
+                            nisab: calc.goldNisabValue,
+                            eligible: calc.goldEligible,
+                            zakat: calc.goldZakat,
+                          },
+                          {
+                            label: "زكاة الفضة",
+                            gross: calc.silverValue,
+                            nisab: calc.silverNisabValue,
+                            eligible: calc.silverEligible,
+                            zakat: calc.silverZakat,
+                          },
+                          {
+                            label: "النقد والحسابات البنكية والمحافظ الرقمية",
+                            gross: calc.cashTotal,
+                            eligible: true,
+                            zakat: 0,
+                          },
+                          {
+                            label: "الأوراق المالية ووثائق التأمين",
+                            gross: calc.securitiesTotal,
+                            eligible: true,
+                            zakat: 0,
+                          },
+                          {
+                            label: "عروض التجارة والمستغلات",
+                            gross: calc.tradeTotal + calc.realEstateZakatable,
+                            eligible: true,
+                            zakat: 0,
+                          },
+                          {
+                            label: "زكاة الزروع والثمار",
+                            gross: calc.cropsValue,
+                            eligible: calc.cropsEligible,
+                            zakat: calc.cropsZakat,
+                          },
+                          {
+                            label: "زكاة الركاز والمعادن",
+                            gross: rikazTotal,
+                            eligible: rikazTotal > 0,
+                            zakat: rikazTotal,
+                          },
+                        ],
+                        monetaryGross: calc.monetaryGross,
+                        debts: calc.debts,
+                        monetaryBase: calc.monetaryBase,
+                        moneyNisab: calc.moneyNisab,
+                        totalZakat: calc.total,
+                        hawlComplete: hawl ? hawl.hawlComplete : null,
+                        hawlDate: nisabStartDate,
+                        goldPricePerGram: num(goldPrice),
+                        silverPricePerGram: num(silverPrice),
+                        deductions: buildDeductionsList(),
+                        fx: buildFxPayload(),
+                      }}
+                      variant="outline"
+                      size="lg"
+                    />
+                  </div>
                   <Button
                     variant="secondary"
                     className="w-full"
