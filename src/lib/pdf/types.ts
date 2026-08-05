@@ -155,6 +155,8 @@ export const DEFAULT_CONFIG: TemplateConfig = {
     results: true,
     notes: true,
     sharia_refs: true,
+    sources: true,
+    exceptions: true,
     legal_notice: true,
     verify_qr: true,
   },
