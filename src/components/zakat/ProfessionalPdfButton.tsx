@@ -41,6 +41,7 @@ export function ProfessionalPdfButton({
   const [loading, setLoading] = useState(false);
   const getDefault = useServerFn(getDefaultTemplate);
   const createReport = useServerFn(createPdfReport);
+  const fetchAuditRef = useServerFn(getRecordAuditRef);
 
   async function handleClick() {
     setLoading(true);
