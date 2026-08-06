@@ -344,6 +344,86 @@ export async function generateReportBlob(
     );
   }
 
+  if (config.sections.audit_trail && data.audit) {
+    const a = data.audit;
+    const fmt = (iso?: string | null) =>
+      iso
+        ? new Date(iso).toLocaleString("ar-EG", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+          })
+        : "—";
+    const decisionLabel =
+      a.decision === "approved" ? "معتمد" : a.decision === "rejected" ? "مرفوض" : "قيد المراجعة";
+    const decisionColor =
+      a.decision === "approved" ? "#059669" : a.decision === "rejected" ? "#dc2626" : "#d97706";
+    content.push(
+      { text: "مرجع سجل التدقيق وقرار الاعتماد", style: "h2", color: primary, margin: [0, 12, 0, 6] },
+      {
+        table: {
+          widths: ["*", "auto"],
+          body: [
+            [
+              { text: "الرقم المرجعي لسجل التدقيق", alignment: "right", fontSize: 10 },
+              { text: a.ref_no, alignment: "left", fontSize: 10, bold: true },
+            ],
+            [
+              { text: "حالة القرار", alignment: "right", fontSize: 10 },
+              {
+                text: decisionLabel,
+                alignment: "left",
+                fontSize: 10,
+                bold: true,
+                color: decisionColor,
+              },
+            ],
+            [
+              {
+                text: a.decision === "rejected" ? "تاريخ الرفض" : "تاريخ الاعتماد",
+                alignment: "right",
+                fontSize: 10,
+              },
+              { text: fmt(a.decided_at), alignment: "left", fontSize: 10, bold: true },
+            ],
+            ...(a.submitted_at
+              ? [
+                  [
+                    { text: "تاريخ الرفع للمراجعة", alignment: "right", fontSize: 10 },
+                    { text: fmt(a.submitted_at), alignment: "left", fontSize: 10 },
+                  ],
+                ]
+              : []),
+            ...(a.decided_by
+              ? [
+                  [
+                    { text: "صاحب القرار", alignment: "right", fontSize: 10 },
+                    { text: a.decided_by, alignment: "left", fontSize: 10 },
+                  ],
+                ]
+              : []),
+            ...(a.note
+              ? [
+                  [
+                    { text: "ملاحظة المراجع", alignment: "right", fontSize: 10 },
+                    { text: a.note, alignment: "left", fontSize: 9 },
+                  ],
+                ]
+              : []),
+          ],
+        },
+        layout: {
+          hLineColor: () => "#e5e7eb",
+          vLineColor: () => "#e5e7eb",
+          hLineWidth: () => 0.5,
+          vLineWidth: () => 0.5,
+        },
+      },
+    );
+  }
+
   if (config.sections.legal_notice && config.legal_notice_text) {
     content.push({
       text: config.legal_notice_text,
