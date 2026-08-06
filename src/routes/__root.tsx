@@ -26,6 +26,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { DirectionProvider } from "@radix-ui/react-direction";
 import { ArchiveMigrationDialog } from "@/components/archive/ArchiveMigrationDialog";
+import { CONTENT_SECURITY_POLICY } from "@/lib/securityHeaders";
 
 function NotFoundComponent() {
   return (
@@ -100,26 +101,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      // R6: تشديد رؤوس الأمان عبر meta http-equiv (المدعومة في المتصفح)
+      // R6: تشديد رؤوس الأمان. المصدر الفعّال الآن هو رؤوس HTTP الحقيقية
+      // في src/server.ts (src/lib/securityHeaders.ts) — frame-ancestors وHSTS
+      // لا يعملان عبر meta بحسب مواصفة المتصفح. هذه نسخة احتياطية إضافية فقط.
       {
         httpEquiv: "Content-Security-Policy",
-        content: [
-          "default-src 'self'",
-          // Vite HMR وscripts داخلية — نُبقي unsafe-inline لتوافق shadcn/toaster
-          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.gpteng.co",
-          "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-          "font-src 'self' data: https://fonts.gstatic.com",
-          "img-src 'self' data: blob: https:",
-          "media-src 'self' blob: data: https:",
-          "connect-src 'self' https: wss: data: blob:",
-          "worker-src 'self' blob:",
-          "manifest-src 'self'",
-          "object-src 'none'",
-          "base-uri 'self'",
-          "form-action 'self'",
-          "frame-ancestors 'none'",
-          "upgrade-insecure-requests",
-        ].join("; "),
+        content: CONTENT_SECURITY_POLICY,
       },
       { httpEquiv: "X-Content-Type-Options", content: "nosniff" },
       { name: "referrer", content: "strict-origin-when-cross-origin" },

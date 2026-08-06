@@ -1,4 +1,18 @@
 /**
+ * يهرب نصاً حراً يدخله المستخدم قبل إدراجه داخل قالب HTML مبني بـ template
+ * literal (اسم/ملاحظة مستفيد وما شابه) — القالب يُمرَّر لاحقاً لـ innerHTML
+ * ولفتح نافذة طباعة كاملة، فأي وسم/سكربت غير مُهرَّب يُنفَّذ فعلياً هناك.
+ */
+export function escapeHtml(s: string): string {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+/**
  * تصدير PDF من HTML جاهز (يدعم العربية RTL عبر html2canvas raster).
  * dynamic import لتقليل حجم الحزمة الأساسية.
  */

@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Trash2, Plus, HeartHandshake, Download, CalendarIcon, FileDown } from "lucide-react";
-import { exportHtmlToPdf, pdfWrap } from "@/lib/export/pdf";
+import { escapeHtml, exportHtmlToPdf, pdfWrap } from "@/lib/export/pdf";
 
 export const Route = createFileRoute("/_authenticated/distribution-plan")({
   head: () => ({
@@ -198,12 +198,12 @@ function DistributionPlanPage() {
         ${recipients
           .map(
             (r) => `<tr>
-          <td style="border:1px solid #ddd;padding:6px">${r.name || "—"}</td>
+          <td style="border:1px solid #ddd;padding:6px">${r.name ? escapeHtml(r.name) : "—"}</td>
           <td style="border:1px solid #ddd;padding:6px">${CHANNELS.find((c) => c.id === r.channel)?.label}</td>
           <td style="border:1px solid #ddd;padding:6px;text-align:center">${r.mode === "percent" ? r.sharePct + "٪ من المصرف" : "مبلغ ثابت"}</td>
           <td style="border:1px solid #ddd;padding:6px;text-align:center">${effectiveAmount(r).toLocaleString("ar-EG")}</td>
-          <td style="border:1px solid #ddd;padding:6px;text-align:center">${r.disburseDate ?? "—"}</td>
-          <td style="border:1px solid #ddd;padding:6px">${r.note ?? ""}</td>
+          <td style="border:1px solid #ddd;padding:6px;text-align:center">${r.disburseDate ? escapeHtml(r.disburseDate) : "—"}</td>
+          <td style="border:1px solid #ddd;padding:6px">${r.note ? escapeHtml(r.note) : ""}</td>
         </tr>`,
           )
           .join("")}
