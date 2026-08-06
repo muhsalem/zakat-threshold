@@ -48,6 +48,7 @@ export interface SectionsConfig {
   sharia_refs: boolean;
   sources: boolean;
   exceptions: boolean;
+  audit_trail: boolean;
 
   legal_notice: boolean;
   verify_qr: boolean;
