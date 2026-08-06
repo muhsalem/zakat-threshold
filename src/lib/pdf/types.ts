@@ -169,6 +169,7 @@ export const DEFAULT_CONFIG: TemplateConfig = {
     sharia_refs: true,
     sources: true,
     exceptions: true,
+    audit_trail: true,
     legal_notice: true,
     verify_qr: true,
   },
