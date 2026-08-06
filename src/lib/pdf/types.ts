@@ -113,6 +113,17 @@ export interface ReportPayload {
     impact?: string;
     severity: "info" | "warning" | "excluded";
   }>;
+  /** المرجع الرسمي لسجل التدقيق وقرار الاعتماد/الرفض. */
+  audit?: {
+    /** رقم مرجعي فريد لسجل التدقيق (يُطبع في التقرير وفي ترويسته). */
+    ref_no: string;
+    decision?: "approved" | "rejected" | "pending";
+    /** تاريخ الاعتماد أو الرفض (ISO). */
+    decided_at?: string | null;
+    decided_by?: string | null;
+    submitted_at?: string | null;
+    note?: string | null;
+  };
   content_hash: string;
   version: number;
 }
