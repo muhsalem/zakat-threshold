@@ -551,7 +551,9 @@ export async function generateReportBlob(
             : { text: "" },
           config.header.show_report_no
             ? {
-                text: `${data.title} · رقم ${data.report_uid}`,
+                text: `${data.title} · رقم ${data.report_uid}${
+                  data.audit?.ref_no ? ` · مرجع التدقيق ${data.audit.ref_no}` : ""
+                }`,
                 fontSize: 9,
                 color: "#6b7280",
                 alignment: "center",
