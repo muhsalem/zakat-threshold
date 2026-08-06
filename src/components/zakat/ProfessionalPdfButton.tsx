@@ -11,6 +11,7 @@ import { useServerFn } from "@tanstack/react-start";
 import {
   createPdfReport,
   getDefaultTemplate,
+  getRecordAuditRef,
   makeDefaultConfig,
 } from "@/lib/pdf/reports.functions";
 import { generateReportBlob, computeContentHash } from "@/lib/pdf/engine";
