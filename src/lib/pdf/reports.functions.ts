@@ -224,6 +224,47 @@ export const getReportAudit = createServerFn({ method: "GET" })
     return rows ?? [];
   });
 
+/**
+ * يُرجع الرقم المرجعي لسجل التدقيق وتاريخ الاعتماد/الرفض لإقرار معيّن،
+ * ليُطبع داخل تقرير PDF.
+ */
+export const getRecordAuditRef = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { zakat_record_id: string }) => data)
+  .handler(async ({ data, context }) => {
+    const { data: approval } = await context.supabase
+      .from("zakat_approvals")
+      .select("id, status, decided_at, submitted_at, checker_note")
+      .eq("zakat_record_id", data.zakat_record_id)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    const { data: logRow } = await context.supabase
+      .from("org_audit_log")
+      .select("id, created_at")
+      .eq("entity_id", data.zakat_record_id)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    const seed =
+      (logRow?.id as string | undefined) ??
+      (approval?.id as string | undefined) ??
+      data.zakat_record_id;
+    const ref_no = `AUD-${seed.replace(/-/g, "").slice(0, 10).toUpperCase()}`;
+
+    const status = approval?.status as string | undefined;
+    return {
+      ref_no,
+      decision:
+        status === "approved" ? "approved" : status === "rejected" ? "rejected" : "pending",
+      decided_at: (approval?.decided_at as string | null | undefined) ?? null,
+      submitted_at: (approval?.submitted_at as string | null | undefined) ?? null,
+      note: (approval?.checker_note as string | null | undefined) ?? null,
+    } as const;
+  });
+
 // ============ Public verify (unauthenticated) ============
 
 export const verifyPdfReport = createServerFn({ method: "GET" })
