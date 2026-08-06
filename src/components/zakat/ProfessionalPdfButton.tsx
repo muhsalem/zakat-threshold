@@ -11,6 +11,7 @@ import { useServerFn } from "@tanstack/react-start";
 import {
   createPdfReport,
   getDefaultTemplate,
+  getRecordAuditRef,
   makeDefaultConfig,
 } from "@/lib/pdf/reports.functions";
 import { generateReportBlob, computeContentHash } from "@/lib/pdf/engine";
@@ -40,6 +41,7 @@ export function ProfessionalPdfButton({
   const [loading, setLoading] = useState(false);
   const getDefault = useServerFn(getDefaultTemplate);
   const createReport = useServerFn(createPdfReport);
+  const fetchAuditRef = useServerFn(getRecordAuditRef);
 
   async function handleClick() {
     setLoading(true);
@@ -66,7 +68,26 @@ export function ProfessionalPdfButton({
       const verifyToken = (inserted as unknown as { verify_token: string }).verify_token;
       const version = (inserted as { version: number }).version;
 
-      // 2) generate PDF
+      // 2) رقم مرجع سجل التدقيق + تاريخ الاعتماد/الرفض (إن وُجد إقرار مرتبط)
+      let audit: ReportPayload["audit"] = payload.audit;
+      if (!audit) {
+        if (zakatRecordId) {
+          try {
+            audit = await fetchAuditRef({ data: { zakat_record_id: zakatRecordId } });
+          } catch {
+            audit = undefined;
+          }
+        }
+        if (!audit) {
+          audit = {
+            ref_no: `AUD-${reportUid}`,
+            decision: "pending",
+            decided_at: null,
+          };
+        }
+      }
+
+      // 3) generate PDF
       const fullPayload: ReportPayload = {
         report_uid: reportUid,
         verify_token: verifyToken,
@@ -77,6 +98,7 @@ export function ProfessionalPdfButton({
         content_hash: contentHash,
         version,
         ...payload,
+        audit,
       };
       const blob = await generateReportBlob(fullPayload, config);
       const url = URL.createObjectURL(blob);
