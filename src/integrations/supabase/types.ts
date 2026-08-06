@@ -1695,6 +1695,16 @@ export type Database = {
         Returns: boolean
       }
       next_pdf_report_uid: { Args: never; Returns: string }
+      notify_sharia_review_recipient: {
+        Args: {
+          _body: string
+          _link: string
+          _title: string
+          _type: string
+          _user_id: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       account_type: "individual" | "company" | "institution" | "admin"

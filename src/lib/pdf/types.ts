@@ -46,6 +46,10 @@ export interface SectionsConfig {
   results: boolean;
   notes: boolean;
   sharia_refs: boolean;
+  sources: boolean;
+  exceptions: boolean;
+  audit_trail: boolean;
+
   legal_notice: boolean;
   verify_qr: boolean;
 }
@@ -99,9 +103,31 @@ export interface ReportPayload {
   deductions: Array<{ label: string; value: string; included: boolean }>;
   results: Array<{ label: string; value: string; emphasize?: boolean }>;
   sharia_refs: Array<{ ref: string; note?: string }>;
+  /** توثيق مصادر الأسعار وأسعار الصرف والمنهجية. */
+  sources?: Array<{ label: string; value: string; origin?: string }>;
+  /** الاستثناءات والبنود المستبعدة مع تعليلها. */
+  exceptions?: Array<{
+    code: string;
+    label: string;
+    reason: string;
+    impact?: string;
+    severity: "info" | "warning" | "excluded";
+  }>;
+  /** المرجع الرسمي لسجل التدقيق وقرار الاعتماد/الرفض. */
+  audit?: {
+    /** رقم مرجعي فريد لسجل التدقيق (يُطبع في التقرير وفي ترويسته). */
+    ref_no: string;
+    decision?: "approved" | "rejected" | "pending";
+    /** تاريخ الاعتماد أو الرفض (ISO). */
+    decided_at?: string | null;
+    decided_by?: string | null;
+    submitted_at?: string | null;
+    note?: string | null;
+  };
   content_hash: string;
   version: number;
 }
+
 
 export const DEFAULT_CONFIG: TemplateConfig = {
   layout: "classic",
@@ -141,6 +167,9 @@ export const DEFAULT_CONFIG: TemplateConfig = {
     results: true,
     notes: true,
     sharia_refs: true,
+    sources: true,
+    exceptions: true,
+    audit_trail: true,
     legal_notice: true,
     verify_qr: true,
   },

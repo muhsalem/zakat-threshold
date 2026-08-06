@@ -76,6 +76,7 @@ import CompanyTradeClassification, {
 
 import { Button } from "@/components/ui/button";
 import { downloadZakatPdf } from "./ReactPdfReport";
+import { ZakatResultsPdfButton } from "./ZakatResultsPdfButton";
 import { downloadReportExcel } from "@/lib/exportExcel";
 import AdvancedToolsHub from "./AdvancedToolsHub";
 import { MethodsComparison } from "./MethodsComparison";
@@ -3027,6 +3028,49 @@ export function CompanyTab() {
                     >
                       <FileText className="h-3.5 w-3.5" /> تحميل التقرير
                     </Button>
+                    <div className="flex-1 min-w-[180px] [&>button]:w-full">
+                      <ZakatResultsPdfButton
+                        input={{
+                          entity: "company",
+                          name: companyName || country.name,
+                          profession: `${companyType} — ${sector.label}`,
+                          countryCode,
+                          currencyName,
+                          calendarBasis:
+                            solarYear === "hijri" ? ("hijri" as const) : ("gregorian" as const),
+                          effectiveRate: calc.rate,
+                          method: METHOD_LABELS[method],
+                          rows: [
+                            {
+                              label: `الوعاء الزكوي (${METHOD_LABELS[method]})`,
+                              gross: calc.baseGross,
+                              nisab: calc.nisabValue,
+                              eligible: calc.reachesNisab,
+                              zakat: calc.zakat,
+                            },
+                          ],
+                          monetaryGross: calc.baseGross,
+                          debts: calc.curLiabs,
+                          monetaryBase: calc.base,
+                          moneyNisab: calc.nisabValue,
+                          totalZakat: calc.zakat,
+                          goldPricePerGram: num(goldGramPrice),
+                          nisabBasis: "gold",
+                          valuationBasis: "market",
+                          deductions,
+                          fx: fxInfo,
+                          extraExceptions: (calc.warnings ?? []).map(
+                            (w: { ar: string; en: string }) => ({
+                              code: "ENGINE-WARNING",
+                              label: "تنبيه من محرك الحساب",
+                              reason: w.ar,
+                              severity: "warning" as const,
+                            }),
+                          ),
+                        }}
+                        size="sm"
+                      />
+                    </div>
                     <Button
                       variant="secondary"
                       size="sm"
