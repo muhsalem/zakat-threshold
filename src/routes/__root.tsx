@@ -26,6 +26,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { DirectionProvider } from "@radix-ui/react-direction";
 import { ArchiveMigrationDialog } from "@/components/archive/ArchiveMigrationDialog";
+import { CookieConsentBanner } from "@/components/CookieConsentBanner";
 import { CONTENT_SECURITY_POLICY } from "@/lib/securityHeaders";
 
 function NotFoundComponent() {
@@ -206,6 +207,7 @@ function RootComponent() {
             <PWAInstallPrompt />
             <MobileBottomNav />
             <ArchiveMigrationDialog />
+            <CookieConsentBanner />
             <SonnerToaster />
           </MadhabProvider>
         </LanguageProvider>

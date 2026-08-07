@@ -1,26 +1,24 @@
 import { Button } from "@/components/ui/button";
 import { Languages } from "lucide-react";
-import { useI18n } from "@/lib/i18n";
+import { toast } from "sonner";
 
+/**
+ * الترجمة الفعلية للمنصة (40+ أداة) غير مكتملة — فقط ~20 مفتاحاً مترجَماً
+ * بـsrc/lib/i18n.tsx تُستخدَم في مكوّنين اثنين فقط. تفعيل تبديل اللغة هنا
+ * كان يغيّر lang/dir دون أي تغيير فعلي بمحتوى الشاشات — تجربة مكسورة
+ * موحية بدعم لغوي غير موجود. عُطِّل التبديل حتى تكتمل الترجمة فعلياً.
+ */
 export default function LanguageToggle() {
-  const { lang, cycleLang } = useI18n();
-  const labels: Record<string, string> = {
-    ar: "العربية",
-    en: "English",
-    fr: "Français",
-    ur: "اردو",
-    id: "Bahasa",
-  };
   return (
     <Button
       variant="ghost"
       size="sm"
-      onClick={cycleLang}
-      aria-label="Change language"
+      onClick={() => toast.info("دعم اللغات الأخرى قيد التطوير — المنصة عربية بالكامل حالياً")}
+      aria-label="Change language (coming soon)"
       className="gap-1.5"
     >
       <Languages className="h-4 w-4" aria-hidden="true" />
-      <span className="text-xs">{labels[lang]}</span>
+      <span className="text-xs">العربية</span>
     </Button>
   );
 }

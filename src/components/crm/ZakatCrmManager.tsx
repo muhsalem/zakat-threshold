@@ -4,7 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Users,
@@ -54,69 +60,12 @@ export function ZakatCrmManager() {
   const [searchQuery, setSearchQuery] = useState("");
   const [stageFilter, setStageFilter] = useState<string>("all");
 
-  // قاعدة بيانات العُملاء (CRM Data Store)
-  const [clients, setClients] = useState<CrmClient[]>([
-    {
-      id: "crm-1",
-      name: "شركة الأفق للتجارة والاستثمار",
-      category: "company",
-      phone: "+966501234567",
-      email: "info@alofok-trade.com",
-      stage: "audit",
-      zakatableBase: 3500000,
-      zakatDue: 90195,
-      hawlDate: "2026-08-15",
-      daysUntilHawl: 21,
-      assignedAccountant: "أ. محمد سعيد سالم",
-      lastContact: "2026-07-24",
-      notes: "تم استلام ميزان المراجعة من Odoo، جاري تدقيق المخزون والذمم.",
-    },
-    {
-      id: "crm-2",
-      name: "د. عبد الله المنصوري (طبيب حُر)",
-      category: "individual",
-      phone: "+966559876543",
-      email: "dr.mansouri@gmail.com",
-      stage: "sharia",
-      zakatableBase: 650000,
-      zakatDue: 16250,
-      hawlDate: "2026-08-01",
-      daysUntilHawl: 7,
-      assignedAccountant: "أ. أحمد محمود",
-      lastContact: "2026-07-25",
-      notes: "تم إدراج دخل العيادة الخاصة وتدقيق عدم الازدواج مع الحساب البنكي.",
-    },
-    {
-      id: "crm-3",
-      name: "مؤسسة النور للخدمات الرقمية",
-      category: "institution",
-      phone: "+201001122334",
-      email: "contact@alnoor-digital.net",
-      stage: "renew_due",
-      zakatableBase: 1200000,
-      zakatDue: 30000,
-      hawlDate: "2026-07-28",
-      daysUntilHawl: 3,
-      assignedAccountant: "أ. محمد سعيد سالم",
-      lastContact: "2026-07-20",
-      notes: "استحقاق الحول الهجري القادم — إرسال تنبيه تجديد آلي.",
-    },
-    {
-      id: "crm-4",
-      name: "أ. فاطمة الزهراء (معلمة)",
-      category: "individual",
-      phone: "+201223344556",
-      email: "fatima.z@yahoo.com",
-      stage: "issued",
-      zakatableBase: 180000,
-      zakatDue: 4500,
-      hawlDate: "2026-09-10",
-      daysUntilHawl: 47,
-      assignedAccountant: "أ. سارة الحسين",
-      lastContact: "2026-07-22",
-      notes: "تم إصدار الشهادة التقديرية الموقعة رقمياً بـ SHA-256.",
-    },
-  ]);
+  // قاعدة بيانات العُملاء (CRM Data Store) — لا يوجد بعد ربط فعلي بجدول
+  // accountant_clients أو آلية إضافة عميل جديد؛ هذه واجهة معاينة (preview)
+  // للتصميم المستهدَف. كانت تُملأ سابقاً ببيانات عملاء وهمية بالكامل
+  // (أسماء/هواتف/بريد مُختلَقة) تظهر لكل محاسب — أُزيلت لأنها إيحاء غير
+  // صادق ببيانات حقيقية داخل حساب مدفوع فعلياً.
+  const [clients, setClients] = useState<CrmClient[]>([]);
 
   // إحصائيات الـ CRM
   const stats = useMemo(() => {
@@ -124,7 +73,9 @@ export function ZakatCrmManager() {
     const individualsCount = clients.filter((c) => c.category === "individual").length;
     const corporateCount = clients.filter((c) => c.category !== "individual").length;
     const totalZakatManaged = clients.reduce((s, c) => s + c.zakatDue, 0);
-    const renewDueCount = clients.filter((c) => c.stage === "renew_due" || c.daysUntilHawl <= 7).length;
+    const renewDueCount = clients.filter(
+      (c) => c.stage === "renew_due" || c.daysUntilHawl <= 7,
+    ).length;
 
     return {
       totalClients,
@@ -162,8 +113,8 @@ export function ZakatCrmManager() {
   const exportCrmExcel = () => {
     const rows = filteredClients.map((c) => ({
       "اسم العميل": c.name,
-      "الفئة": c.category === "individual" ? "فرد" : c.category === "company" ? "شركة" : "مؤسسة",
-      "الهاتف": c.phone,
+      الفئة: c.category === "individual" ? "فرد" : c.category === "company" ? "شركة" : "مؤسسة",
+      الهاتف: c.phone,
       "البريد الإلكتروني": c.email,
       "مرحلة التدقيق":
         c.stage === "new"
@@ -183,7 +134,7 @@ export function ZakatCrmManager() {
       "الأيام المتبقية": c.daysUntilHawl + " يوم",
       "المحاسب المسؤول": c.assignedAccountant,
       "آخر تواصل": c.lastContact,
-      "ملاحظات": c.notes,
+      ملاحظات: c.notes,
     }));
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet(rows);
@@ -195,6 +146,10 @@ export function ZakatCrmManager() {
 
   return (
     <div className="space-y-6" dir="rtl">
+      <div className="rounded-lg border border-amber-300/50 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-800/50 p-3 text-xs text-amber-800 dark:text-amber-300">
+        معاينة تصميم — هذه اللوحة لا تُخزِّن عملاءك بعد بشكل دائم ولا تتيح إضافة عميل جديد؛ الربط
+        الفعلي بسجلات عملائك قادم قريباً.
+      </div>
       {/* 1. الترويسة والعنوان الرئيسي */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-l from-slate-900 via-indigo-950 to-slate-900 p-6 text-white shadow-xl">
         <div className="absolute -left-10 -top-10 h-40 w-40 rounded-full bg-indigo-500/20 blur-3xl pointer-events-none" />
@@ -202,7 +157,8 @@ export function ZakatCrmManager() {
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <Badge className="bg-indigo-500/30 text-indigo-200 border-indigo-400/40 text-xs px-2.5 py-0.5 backdrop-blur">
-                <Sparkles className="h-3.5 w-3.5 ms-1 inline" /> إدارة علاقات عملاء الزكاة (Zakat CRM)
+                <Sparkles className="h-3.5 w-3.5 ms-1 inline" /> إدارة علاقات عملاء الزكاة (Zakat
+                CRM)
               </Badge>
               <Badge variant="outline" className="text-indigo-100 border-indigo-300/30 text-xs">
                 الأفراد والشركات والمؤسسات
@@ -213,12 +169,18 @@ export function ZakatCrmManager() {
               لوحة إدارة دورة حياة المزكين (Zakat Client Lifecycle CRM)
             </h1>
             <p className="text-sm text-indigo-100/90 max-w-2xl leading-relaxed">
-              منظومة متكاملة لمتابعة عُملاء الزكاة، حوكمة المراحل، أتمتة تنبيهات تجديد الحول، وتصدير التقارير الإدارية والمحاسبية.
+              منظومة متكاملة لمتابعة عُملاء الزكاة، حوكمة المراحل، أتمتة تنبيهات تجديد الحول، وتصدير
+              التقارير الإدارية والمحاسبية.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <Button onClick={exportCrmExcel} variant="secondary" size="sm" className="bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur gap-1.5 text-xs">
+            <Button
+              onClick={exportCrmExcel}
+              variant="secondary"
+              size="sm"
+              className="bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur gap-1.5 text-xs"
+            >
               <FileSpreadsheet className="h-4 w-4 text-emerald-300" /> تصدير CRM Excel
             </Button>
           </div>
@@ -233,7 +195,9 @@ export function ZakatCrmManager() {
               <Users className="h-5 w-5" />
             </div>
             <div>
-              <div className="text-xs text-muted-foreground font-medium">إجمالي العُملاء المسجلين</div>
+              <div className="text-xs text-muted-foreground font-medium">
+                إجمالي العُملاء المسجلين
+              </div>
               <div className="text-lg font-bold text-foreground">{stats.totalClients} عميل</div>
             </div>
           </CardContent>
@@ -259,8 +223,12 @@ export function ZakatCrmManager() {
               <Clock className="h-5 w-5" />
             </div>
             <div>
-              <div className="text-xs text-muted-foreground font-medium">مواشِك استحقاق الحول (&lt; 7 أيام)</div>
-              <div className="text-lg font-bold text-amber-600 dark:text-amber-400">{stats.renewDueCount} عملاء</div>
+              <div className="text-xs text-muted-foreground font-medium">
+                مواشِك استحقاق الحول (&lt; 7 أيام)
+              </div>
+              <div className="text-lg font-bold text-amber-600 dark:text-amber-400">
+                {stats.renewDueCount} عملاء
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -271,8 +239,12 @@ export function ZakatCrmManager() {
               <TrendingUp className="h-5 w-5" />
             </div>
             <div>
-              <div className="text-xs text-muted-foreground font-medium">إجمالي الزكاة المُدارة</div>
-              <div className="text-lg font-bold text-foreground">{fmt(stats.totalZakatManaged)} ر.س</div>
+              <div className="text-xs text-muted-foreground font-medium">
+                إجمالي الزكاة المُدارة
+              </div>
+              <div className="text-lg font-bold text-foreground">
+                {fmt(stats.totalZakatManaged)} ر.س
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -282,12 +254,24 @@ export function ZakatCrmManager() {
       <Card className="shadow-sm">
         <CardHeader className="pb-3">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-            <Tabs defaultValue="all" className="w-full md:w-auto" onValueChange={(v) => setSelectedCategory(v as ClientCategory)}>
+            <Tabs
+              defaultValue="all"
+              className="w-full md:w-auto"
+              onValueChange={(v) => setSelectedCategory(v as ClientCategory)}
+            >
               <TabsList className="grid grid-cols-4 w-full md:w-auto text-xs">
-                <TabsTrigger value="all" className="px-3">الكل</TabsTrigger>
-                <TabsTrigger value="individual" className="px-3">الأفراد</TabsTrigger>
-                <TabsTrigger value="company" className="px-3">الشركات</TabsTrigger>
-                <TabsTrigger value="institution" className="px-3">المؤسسات</TabsTrigger>
+                <TabsTrigger value="all" className="px-3">
+                  الكل
+                </TabsTrigger>
+                <TabsTrigger value="individual" className="px-3">
+                  الأفراد
+                </TabsTrigger>
+                <TabsTrigger value="company" className="px-3">
+                  الشركات
+                </TabsTrigger>
+                <TabsTrigger value="institution" className="px-3">
+                  المؤسسات
+                </TabsTrigger>
               </TabsList>
             </Tabs>
 
@@ -307,13 +291,27 @@ export function ZakatCrmManager() {
                   <SelectValue placeholder="كل المراحل" />
                 </SelectTrigger>
                 <SelectContent dir="rtl">
-                  <SelectItem value="all" className="text-xs">كل المراحل</SelectItem>
-                  <SelectItem value="new" className="text-xs">جديد</SelectItem>
-                  <SelectItem value="documents" className="text-xs">جمع المستندات</SelectItem>
-                  <SelectItem value="audit" className="text-xs">تدقيق محاسبي</SelectItem>
-                  <SelectItem value="sharia" className="text-xs">مراجعة شرعية</SelectItem>
-                  <SelectItem value="issued" className="text-xs">شهادة مُصدرة</SelectItem>
-                  <SelectItem value="renew_due" className="text-xs">تجديد الحول</SelectItem>
+                  <SelectItem value="all" className="text-xs">
+                    كل المراحل
+                  </SelectItem>
+                  <SelectItem value="new" className="text-xs">
+                    جديد
+                  </SelectItem>
+                  <SelectItem value="documents" className="text-xs">
+                    جمع المستندات
+                  </SelectItem>
+                  <SelectItem value="audit" className="text-xs">
+                    تدقيق محاسبي
+                  </SelectItem>
+                  <SelectItem value="sharia" className="text-xs">
+                    مراجعة شرعية
+                  </SelectItem>
+                  <SelectItem value="issued" className="text-xs">
+                    شهادة مُصدرة
+                  </SelectItem>
+                  <SelectItem value="renew_due" className="text-xs">
+                    تجديد الحول
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -352,7 +350,11 @@ export function ZakatCrmManager() {
                       </td>
                       <td className="p-3">
                         <Badge variant="outline" className="text-[10px]">
-                          {c.category === "individual" ? "فرد" : c.category === "company" ? "شركة" : "مؤسسة"}
+                          {c.category === "individual"
+                            ? "فرد"
+                            : c.category === "company"
+                              ? "شركة"
+                              : "مؤسسة"}
                         </Badge>
                       </td>
                       <td className="p-3">
@@ -382,13 +384,17 @@ export function ZakatCrmManager() {
                       </td>
                       <td className="p-3">
                         <div className="font-semibold">{fmt(c.zakatDue)} ر.س</div>
-                        <div className="text-[10px] text-muted-foreground">وعاء: {fmt(c.zakatableBase)} ر.س</div>
+                        <div className="text-[10px] text-muted-foreground">
+                          وعاء: {fmt(c.zakatableBase)} ر.س
+                        </div>
                       </td>
                       <td className="p-3">
                         <div className="flex items-center gap-1 text-foreground font-mono">
                           <Calendar className="h-3.5 w-3.5 text-muted-foreground" /> {c.hawlDate}
                         </div>
-                        <div className={`text-[10px] font-bold ${c.daysUntilHawl <= 7 ? "text-rose-600" : "text-emerald-600"}`}>
+                        <div
+                          className={`text-[10px] font-bold ${c.daysUntilHawl <= 7 ? "text-rose-600" : "text-emerald-600"}`}
+                        >
                           متبقي {c.daysUntilHawl} يوم
                         </div>
                       </td>

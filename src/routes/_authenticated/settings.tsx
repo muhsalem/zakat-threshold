@@ -9,7 +9,17 @@ import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { BellRing, Loader2, Info, Mail, MessageSquare, Smartphone, Eye } from "lucide-react";
+import {
+  BellRing,
+  Loader2,
+  Info,
+  Mail,
+  MessageSquare,
+  Smartphone,
+  Eye,
+  Download,
+  ShieldAlert,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -125,6 +135,53 @@ function SettingsPage() {
     setSaving(false);
     if (error) toast.error("تعذّر حفظ التفضيلات");
     else toast.success("تم حفظ التفضيلات");
+  }
+
+  const [exporting, setExporting] = useState(false);
+
+  /**
+   * تصدير ذاتي لبياناتك — يقرأ فقط صفوفك أنت (auth.uid() = user_id عبر RLS)
+   * من الجداول الجوهرية. لا يشمل كل جدول محتمَل بالمنصة (أرشيف PDF الثنائي،
+   * سجلات المحاسب لعملائه...) — لطلب نسخة كاملة راسل privacy@nisab.app.
+   */
+  async function exportMyData() {
+    if (!user?.id) return;
+    setExporting(true);
+    try {
+      const [profileRes, recordsRes, notificationsRes] = await Promise.all([
+        supabase.from("profiles").select("*").eq("user_id", user.id).maybeSingle(),
+        supabase.from("zakat_records").select("*").eq("user_id", user.id),
+        supabase.from("notifications").select("*").eq("user_id", user.id),
+      ]);
+      const payload = {
+        exported_at: new Date().toISOString(),
+        account_email: user.email ?? null,
+        profile: profileRes.data ?? null,
+        zakat_records: recordsRes.data ?? [],
+        notifications: notificationsRes.data ?? [],
+        note: "تصدير جزئي للجداول الجوهرية. لنسخة كاملة (تقارير PDF، بيانات عملاء بوابة المحاسب) راسل privacy@nisab.app.",
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `nisab-my-data-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success("تم تصدير بياناتك بنجاح");
+    } catch {
+      toast.error("تعذّر تصدير البيانات");
+    } finally {
+      setExporting(false);
+    }
+  }
+
+  function requestAccountDeletion() {
+    const subject = encodeURIComponent("طلب حذف الحساب والبيانات");
+    const body = encodeURIComponent(
+      `أطلب حذف حسابي وكل بياناتي المرتبطة به.\nالبريد المسجَّل: ${user?.email ?? ""}\nمعرّف الحساب: ${user?.id ?? ""}`,
+    );
+    window.location.href = `mailto:privacy@nisab.app?subject=${subject}&body=${body}`;
   }
 
   if (loading) {
@@ -312,6 +369,48 @@ function SettingsPage() {
             <Button onClick={save} disabled={saving}>
               {saving && <Loader2 className="h-4 w-4 animate-spin ms-2" />}
               حفظ التفضيلات
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <ShieldAlert className="h-5 w-5 text-primary" />
+            <CardTitle>الخصوصية وبياناتي</CardTitle>
+          </div>
+          <CardDescription>
+            وفق سياسة الخصوصية: حقّك في الوصول لبياناتك وطلب حذفها. الحذف يُعالَج يدوياً حالياً عبر
+            التواصل — نعمل على إتاحته ذاتياً بالكامل لاحقاً.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex items-center justify-between rounded-lg border p-4">
+            <div className="space-y-0.5">
+              <Label className="text-base font-medium">تصدير بياناتي</Label>
+              <p className="text-xs text-muted-foreground">
+                ملف JSON يحوي ملفك الشخصي وسجلات زكاتك وإشعاراتك.
+              </p>
+            </div>
+            <Button variant="outline" onClick={exportMyData} disabled={exporting}>
+              {exporting ? (
+                <Loader2 className="h-4 w-4 animate-spin ms-2" />
+              ) : (
+                <Download className="h-4 w-4 ms-2" />
+              )}
+              تصدير
+            </Button>
+          </div>
+          <div className="flex items-center justify-between rounded-lg border border-destructive/30 p-4">
+            <div className="space-y-0.5">
+              <Label className="text-base font-medium">حذف الحساب والبيانات</Label>
+              <p className="text-xs text-muted-foreground">
+                يفتح رسالة بريد جاهزة إلى فريق الخصوصية لتنفيذ الحذف.
+              </p>
+            </div>
+            <Button variant="destructive" onClick={requestAccountDeletion}>
+              طلب الحذف
             </Button>
           </div>
         </CardContent>

@@ -16,6 +16,7 @@
  * (تحليلات لا يجب أن تكسر تجربة المستخدم أبداً).
  */
 import { supabase } from "@/integrations/supabase/client";
+import { hasAnalyticsConsent } from "@/lib/consent";
 
 export type ProductEventName =
   | "landing_view"
@@ -43,6 +44,7 @@ function getSessionId(): string {
 /** يسجّل حدث قمع — fire-and-forget، لا يرمي أبداً، لا يعطّل واجهة المستخدم */
 export function trackEvent(name: ProductEventName, properties: Record<string, unknown> = {}): void {
   if (typeof window === "undefined") return; // SSR — لا تسجيل من الخادم
+  if (!hasAnalyticsConsent()) return; // لا كتابة قبل موافقة صريحة (بانر الموافقة)
   try {
     void supabase.auth
       .getUser()
