@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -40,16 +41,18 @@ interface Props {
 }
 
 export default function HijriDateField({ label, value, onChange, hint, compact, id }: Props) {
+  const autoId = useId();
+  const fieldId = id ?? autoId;
   const hijri = toHijri(value);
 
   if (compact) {
     return (
       <div className="space-y-1.5">
-        <Label className="text-xs flex items-center gap-1.5">
+        <Label htmlFor={fieldId} className="text-xs flex items-center gap-1.5">
           <CalendarCheck2 className="h-3.5 w-3.5 text-primary" />
           {label}
         </Label>
-        <Input id={id} type="date" value={value} onChange={(e) => onChange(e.target.value)} />
+        <Input id={fieldId} type="date" value={value} onChange={(e) => onChange(e.target.value)} />
         <div className="text-[10px] text-muted-foreground flex items-center justify-between gap-2">
           <span>
             هجري: <b className="text-primary">{hijri || "—"}</b>
@@ -72,8 +75,15 @@ export default function HijriDateField({ label, value, onChange, hint, compact, 
       </Label>
       <div className="grid md:grid-cols-2 gap-3">
         <div>
-          <Label className="text-[11px] text-muted-foreground">ميلادي</Label>
-          <Input id={id} type="date" value={value} onChange={(e) => onChange(e.target.value)} />
+          <Label htmlFor={fieldId} className="text-[11px] text-muted-foreground">
+            ميلادي
+          </Label>
+          <Input
+            id={fieldId}
+            type="date"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+          />
         </div>
         <div>
           <Label className="text-[11px] text-muted-foreground">ما يقابله بالهجري</Label>

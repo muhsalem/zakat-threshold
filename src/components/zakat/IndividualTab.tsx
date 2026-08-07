@@ -60,6 +60,9 @@ import {
   GOLD_NISAB_GRAMS,
   SILVER_NISAB_GRAMS,
   CROPS_NISAB_KG,
+  CROPS_RATE_NATURAL,
+  CROPS_RATE_IRRIGATED,
+  CROPS_RATE_MIXED,
   HAWL_DAYS_HIJRI,
   num,
   fmt,
@@ -388,7 +391,7 @@ export function IndividualTab() {
   const [ownsFarmland, setOwnsFarmland] = useState(false);
   const [cropsKg, setCropsKg] = useState("");
   const [cropsValuePerKg, setCropsValuePerKg] = useState("");
-  const [cropsIrrigation, setCropsIrrigation] = useState<"rain" | "irrigated">("rain");
+  const [cropsIrrigation, setCropsIrrigation] = useState<"rain" | "irrigated" | "mixed">("rain");
 
   // الأنعام — هل يملك مواشي
   const [ownsLivestock, setOwnsLivestock] = useState(false);
@@ -636,11 +639,19 @@ export function IndividualTab() {
     const monetaryEligible = athmanEligible;
     const monetaryZakat = athmanEligible ? monetaryBase * effectiveRate : 0;
 
-    // الزروع (لا يُشترط لها حول) — تُحسب فقط إذا كان يملك أرضاً زراعية
+    // الزروع (لا يُشترط لها حول) — تُحسب فقط إذا كان يملك أرضاً زراعية.
+    // النصاب يتبع المذهب المختار (الحنفية: لا نصاب، تجب في القليل والكثير)
+    // والمعدّل يتبع طريقة الري الثلاث (طبيعي/بكلفة/مختلط) — مطابقةً لـ CropsZakatSection.
     const cropsKgN = ownsFarmland ? num(cropsKg) : 0;
     const cropsValue = cropsKgN * num(cropsValuePerKg);
-    const cropsRate = cropsIrrigation === "rain" ? 0.1 : 0.05;
-    const cropsEligible = ownsFarmland && cropsKgN >= CROPS_NISAB_KG;
+    const cropsRate =
+      cropsIrrigation === "rain"
+        ? CROPS_RATE_NATURAL
+        : cropsIrrigation === "irrigated"
+          ? CROPS_RATE_IRRIGATED
+          : CROPS_RATE_MIXED;
+    const cropsEligible =
+      ownsFarmland && (madhabRules.cropsRequireNisab ? cropsKgN >= CROPS_NISAB_KG : cropsKgN > 0);
     const cropsZakat = cropsEligible ? cropsValue * cropsRate : 0;
 
     // إذا اختار المزكي معاملة الأنعام كعروض تجارة، فلا تُحسب عيناً (لتفادي الازدواج)
@@ -767,6 +778,7 @@ export function IndividualTab() {
     cropsKg,
     cropsValuePerKg,
     cropsIrrigation,
+    madhabRules.cropsRequireNisab,
     camels,
     cows,
     sheep,

@@ -20,6 +20,7 @@ export const Route = createFileRoute("/compliance")({
       { property: "og:type", content: "article" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "/compliance" }],
   }),
   component: CompliancePage,
 });
@@ -209,7 +210,7 @@ function CompliancePage() {
   );
 
   return (
-    <main className="container mx-auto max-w-6xl px-4 py-8 space-y-6" rel="canonical">
+    <main className="container mx-auto max-w-6xl px-4 py-8 space-y-6">
       <header className="space-y-2">
         <h1 className="text-3xl font-bold flex items-center gap-2">
           <Lock className="h-7 w-7 text-primary" />

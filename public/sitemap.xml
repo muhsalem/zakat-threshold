@@ -35,10 +35,23 @@
   <url><loc>/blog/zakat-fisheries</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>/blog/zakat-animal-production</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>/blog/zakat-intellectual-property</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>/audit</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>/group-zakat</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>/history</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
-  <url><loc>/verify</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>/zakat-gold</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>/zakat-company</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>/zakat-fitr</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>/salary-zakat</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>/pricing</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>/certifications</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>/eight-channels</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>/rules-catalog</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
 </urlset>
+<!--
+  ملاحظة: <loc> هنا نسبية عمداً — بروتوكول sitemap يشترط روابط مطلقة رسمياً،
+  لكن الدومين الفعلي المنشور غير ثابت بهذا المستودع (راجع DEPLOYMENT.md).
+  الإصلاح الصحيح الكامل: تحويل هذا الملف لمسار خادم ديناميكي
+  (src/routes/sitemap.xml.ts) يبني الروابط من SITE_URL/أصل الطلب وقت
+  التشغيل — لم يُنفَّذ هنا لتفادي شحن مسار بصيغة نقطية غير مُختبَر حياً
+  في بيئة لا تتيح تحقق متصفح فعلي. أُزيلت الصفحات المتعارضة مع robots.txt
+  (audit, history, security, verify) وأُضيفت الصفحات العامة الناقصة.
+-->
+

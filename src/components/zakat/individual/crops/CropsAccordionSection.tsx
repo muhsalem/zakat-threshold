@@ -15,8 +15,8 @@ export interface CropsAccordionSectionProps {
   setCropsKg: (v: string) => void;
   cropsValuePerKg: string;
   setCropsValuePerKg: (v: string) => void;
-  cropsIrrigation: "rain" | "irrigated";
-  setCropsIrrigation: (v: "rain" | "irrigated") => void;
+  cropsIrrigation: "rain" | "irrigated" | "mixed";
+  setCropsIrrigation: (v: "rain" | "irrigated" | "mixed") => void;
   cropsCalc: { cropsEligible: boolean; cropsValue: number; cropsRate: number };
   setAgriTradeBase: (v: number) => void;
   cur: (v: number) => string;
@@ -73,7 +73,7 @@ export function CropsAccordionSection({
               <Label className="mb-2 block">طريقة الري</Label>
               <RadioGroup
                 value={cropsIrrigation}
-                onValueChange={(v) => setCropsIrrigation(v as "rain" | "irrigated")}
+                onValueChange={(v) => setCropsIrrigation(v as "rain" | "irrigated" | "mixed")}
                 className="flex flex-col md:flex-row gap-4"
               >
                 <div className="flex items-center gap-2">
@@ -83,6 +83,10 @@ export function CropsAccordionSection({
                 <div className="flex items-center gap-2">
                   <RadioGroupItem value="irrigated" id="irr" />
                   <Label htmlFor="irr">سُقي بكلفة (آلات/شراء) — 5%</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <RadioGroupItem value="mixed" id="mixed" />
+                  <Label htmlFor="mixed">ري مشترك (نصف/نصف) — 7.5%</Label>
                 </div>
               </RadioGroup>
             </div>
