@@ -77,19 +77,35 @@ jobs:
       - name: Wait for dev server
         run: npx --yes wait-on http://localhost:8080 -t 120000
 
-      # طلب تحفيزي يدفئ ترجمة الصفحة الأولى قبل فحص axe
-      - name: Warm up first page
-        run: curl -s -o /dev/null --max-time 90 http://localhost:8080/ || true
+      # طلب تحفيزي يدفئ ترجمة كل صفحة ستُفحَص (أول طلب لكل مسار بطيء في وضع dev)
+      - name: Warm up pages
+        run: |
+          for p in / /zakat-gold /zakat-company /salary-zakat /pricing /blog /certifications /compliance /legal/privacy; do
+            curl -s -o /dev/null --max-time 90 "http://localhost:8080$p" || true
+          done
 
       # كروم وChromeDriver متطابقا الإصدار (نسختا الرنر تتنافران دورياً)
       - name: Install matched Chrome + ChromeDriver
         run: npx --yes browser-driver-manager install chrome
 
-      # فحص axe — --exit يعيد كود خروج ≠ 0 عند أي انتهاك، فيفشل CI
+      # فحص axe — --exit يعيد كود خروج ≠ 0 عند أي انتهاك، فيفشل CI.
+      # عيّنة من مسارات عامة (بلا تسجيل دخول) تمثّل أنواع صفحات مختلفة:
+      # رئيسية، نماذج حاسبة، تسعير، مدونة، صفحات قانونية — كان الفحص يغطي
+      # الصفحة الرئيسية فقط (~1% من ~80 مساراً)، الآن يغطي عينة حقيقية.
       - name: Axe accessibility scan
         run: |
           source ~/.browser-driver-manager/.env 2>/dev/null || true
-          npx --yes @axe-core/cli http://localhost:8080 --exit \
+          npx --yes @axe-core/cli \
+            http://localhost:8080/ \
+            http://localhost:8080/zakat-gold \
+            http://localhost:8080/zakat-company \
+            http://localhost:8080/salary-zakat \
+            http://localhost:8080/pricing \
+            http://localhost:8080/blog \
+            http://localhost:8080/certifications \
+            http://localhost:8080/compliance \
+            http://localhost:8080/legal/privacy \
+            --exit \
             ${CHROMEDRIVER_TEST_PATH:+--chromedriver-path "$CHROMEDRIVER_TEST_PATH"}
 
       - name: Preview server logs (on failure)
