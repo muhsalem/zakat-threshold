@@ -529,8 +529,6 @@ export function IndividualTab() {
 
     const totalGold24 = sabaikGrams24 + coinsGrams24 + jewelryGrams24 + otherGrams24;
     const totalGoldValue = totalGold24 * gp;
-    const goldEligible = totalGold24 >= GOLD_NISAB_GRAMS;
-    const goldZakat = goldEligible ? totalGoldValue * effectiveRate : 0;
 
     // ====== الفضة: تحويل كل العيارات إلى ما يكافئها بعيار 999 ======
     const OUNCE_SV = 31.1035;
@@ -567,8 +565,6 @@ export function IndividualTab() {
 
     const silverGrams = svSabaikG999 + svCoinsG999 + svJewelryG999;
     const silverValue = silverGrams * sp;
-    const silverEligible = silverGrams >= SILVER_NISAB_GRAMS;
-    const silverZakat = silverEligible ? silverValue * effectiveRate : 0;
 
     const cashTotal = cashTotalFromSection;
     const securitiesTotal = securitiesTotalFromSection;
@@ -625,8 +621,20 @@ export function IndividualTab() {
       realEstateZakatable +
       incomeUsufruct;
     const monetaryBase = monetaryGross - debts;
-    const monetaryEligible = monetaryBase >= moneyNisab && monetaryBase > 0;
-    const monetaryZakat = monetaryEligible ? monetaryBase * effectiveRate : 0;
+
+    // ضم الأثمان: يُختبر بلوغ النصاب على مجموع (ذهب + فضة + نقد وما في حكمه)
+    // قيمةً نقدية واحدة مقارنةً بالنصاب الأنفع للفقراء — لا كل صنف منفرداً
+    // بنصابه الوزني الخاص (وإلا أُعفي مَن يملك ذهباً دون 85غ مع نقد وافر خطأً).
+    // نفس المبدأ مطبَّق في المسار البديل: individual-calcs.ts (effectiveMoneyNisab/monetaryZakat).
+    const athmanBase = totalGoldValue + silverValue + monetaryBase;
+    const athmanEligible = athmanBase >= moneyNisab && athmanBase > 0;
+
+    const goldEligible = athmanEligible;
+    const goldZakat = athmanEligible ? totalGoldValue * effectiveRate : 0;
+    const silverEligible = athmanEligible;
+    const silverZakat = athmanEligible ? silverValue * effectiveRate : 0;
+    const monetaryEligible = athmanEligible;
+    const monetaryZakat = athmanEligible ? monetaryBase * effectiveRate : 0;
 
     // الزروع (لا يُشترط لها حول) — تُحسب فقط إذا كان يملك أرضاً زراعية
     const cropsKgN = ownsFarmland ? num(cropsKg) : 0;

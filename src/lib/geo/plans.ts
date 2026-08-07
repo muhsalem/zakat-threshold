@@ -101,7 +101,7 @@ export const PLANS: Plan[] = [
       "ختم شرعي إلكتروني وتوقيع رقمي",
       "دعم فني بريدي",
     ],
-    ctaTo: "/auth",
+    ctaHref: "mailto:sales@nisab.app?subject=Nisab%20-%20التقرير%20الشامل%20($19)",
   },
   {
     id: "family-annual",
@@ -118,7 +118,7 @@ export const PLANS: Plan[] = [
       "خزنة مستندات عائلية مشتركة",
       "استشارة شرعية سنوية (30 دقيقة)",
     ],
-    ctaTo: "/auth",
+    ctaHref: "mailto:sales@nisab.app?subject=Nisab%20-%20Family%20Plan",
   },
   {
     id: "personal-lifetime",
@@ -138,7 +138,7 @@ export const PLANS: Plan[] = [
       'شارة "عضو مؤسِّس" في حسابك',
       "ينتقل لورثتك — لا يُلغى بالوفاة",
     ],
-    ctaTo: "/auth",
+    ctaHref: "mailto:sales@nisab.app?subject=Nisab%20-%20Lifetime%20Plan",
   },
 
   // ============ شركات (سنوي — إدارة زكاة الشركة طوال العام) ============
@@ -160,7 +160,7 @@ export const PLANS: Plan[] = [
       "حتى 3 مستخدمين",
       "دعم بريدي خلال 48 ساعة",
     ],
-    ctaTo: "/auth",
+    ctaHref: "mailto:sales@nisab.app?subject=Nisab%20-%20شركة%20صغيرة%20(Startup)",
   },
   {
     id: "growth",
@@ -182,7 +182,7 @@ export const PLANS: Plan[] = [
       "دعم أولوية خلال 24 ساعة",
       "API أساسي (2K req/day)",
     ],
-    ctaTo: "/auth",
+    ctaHref: "mailto:sales@nisab.app?subject=Nisab%20-%20شركة%20متوسطة%20(Growth)",
   },
   {
     id: "business",
@@ -205,7 +205,7 @@ export const PLANS: Plan[] = [
       "دعم أولوية خلال 8 ساعات",
       "API مؤسسي (10K req/day)",
     ],
-    ctaTo: "/auth",
+    ctaHref: "mailto:sales@nisab.app?subject=Nisab%20-%20شركة%20كبيرة%20(Business)",
   },
   {
     id: "enterprise",
@@ -248,7 +248,7 @@ export const PLANS: Plan[] = [
       "أرشيف موحّد لعملاء المكتب",
       "دعم بريدي خلال 24 ساعة",
     ],
-    ctaTo: "/auth",
+    ctaHref: "mailto:sales@nisab.app?subject=Nisab%20-%20محاسب%20مستقل",
   },
   {
     id: "accountant-firm",
@@ -270,7 +270,7 @@ export const PLANS: Plan[] = [
       "استشارة شرعية شهرية للمكتب",
       "دعم أولوية خلال 8 ساعات",
     ],
-    ctaTo: "/auth",
+    ctaHref: "mailto:sales@nisab.app?subject=Nisab%20-%20مكتب%20محاسبة",
   },
   {
     id: "accountant-unlimited",
@@ -291,7 +291,7 @@ export const PLANS: Plan[] = [
       "مدير حساب مخصّص + SLA",
       "استشارات شرعية غير محدودة",
     ],
-    ctaTo: "/auth",
+    ctaHref: "mailto:sales@nisab.app?subject=Nisab%20-%20غير%20محدود%20(Accountant)",
   },
 ];
 

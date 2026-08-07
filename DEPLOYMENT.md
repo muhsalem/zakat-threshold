@@ -58,7 +58,7 @@
 | `RESEND_API_KEY` | ✅ للبريد | Edge Function `send-report-email` | resend.com |
 | `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` / `LOVABLE_API_KEY` | ✅ (واحد على الأقل) | المستشار الذكي، استخراج المستندات، الفرز الشرعي للأسهم | لوحة كل مزوّد |
 | `ACCOUNTANT_MASTER_PASSWORD` | ✅ | منح دور `accountant` عبر `/a-console` | تولّده أنت (32+ حرف عشوائي) |
-| `CRON_SECRET` | ✅ للتذكيرات المجدولة | `POST /api/public/hooks/hawl-reminders` (ترويسة `X-Cron-Secret`) | تولّده أنت |
+| `CRON_SECRET` | ✅ لكل كرون-هوكس pg_cron | `hawl-reminders`, `snapshot-prices`, `snapshot-daily-prices`, `snapshot-daily-nisab` تحت `/api/public/hooks/*` (ترويسة `X-Cron-Secret`) | تولّده أنت |
 | `ERP_WEBHOOK_SECRET` | مطلوب لتكامل ERP الخارجي | `POST /api/public/erp/webhook` (HMAC-SHA256) | تولّده أنت |
 | `SITE_URL` | ✅ | روابط التحقق، QR، البريد | الدومين الفعلي المنشور، مثال: `https://your-domain.example` |
 | `VITE_SENTRY_DSN` | اختياري | مراقبة الأخطاء | sentry.io — بدونه Sentry معطَّل تماماً بصمت، لا خطأ |
@@ -96,6 +96,18 @@ bunx supabase db push
 **تحقق بعد التطبيق**: كل جدول جديد يجب أن يظهر بـ RLS مفعَّلة —
 راجع Database → Tables → أي جدول → Row Level Security يجب أن يكون "Enabled".
 هذا تحقّقنا منه فعلياً لكل الهجرات حتى الآن (بلا استثناء).
+
+⚠️ **خطوة يدوية إلزامية بعد `db push`** — الهجرة
+`20260807133000_cron_hooks_add_secret_header.sql` تُعيد جدولة كرون-هوكس
+أسعار المعادن لترسل ترويسة `X-Cron-Secret`، لكنها تقرأ قيمته من **Supabase
+Vault** لا من متغيرات بيئة Cloudflare. لازم تضيفها يدوياً بنفس قيمة
+`CRON_SECRET` المستخدَمة بأسرار Cloudflare Workers، عبر SQL Editor:
+
+```sql
+select vault.create_secret('<نفس-قيمة-CRON_SECRET>', 'CRON_SECRET');
+```
+
+بدون هذه الخطوة تفشل الكرون-هوكس الثلاثة بـ401 (وأسعار النصاب لن تُحدَّث تلقائياً).
 
 ### نشر Edge Functions
 

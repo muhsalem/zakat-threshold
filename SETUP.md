@@ -53,6 +53,14 @@ SITE_URL=https://your-domain.example   # الدومين الفعلي المنش�
 
 انسخ الـ `price_id` لكل منتج وضعه في `src/lib/payments.ts` داخل كائن `PLANS`.
 
+⚠️ **ملاحظة مهمة**: هذا الجدول هو الكتالوج الوحيد الموصول فعلياً بـStripe
+عبر `create-checkout` حالياً. الكتالوج الأوسع المعروض بصفحة `/pricing`
+والصفحة الرئيسية (`src/lib/geo/plans.ts`، 10 خطط) هو تصوّر منتج أحدث لم
+يُربط بعد بأسعار Stripe فعلية — لذلك أزرار تلك الخطط توجّه لـ"تواصل مع
+المبيعات" بدل شراء فوري، لتجنّب الإيحاء بشراء غير فعلي. توحيد الكتالوجين
+قرار منتج/تسعير يحتاج قراراً بشرياً + إنشاء Price IDs حقيقية بـStripe، ثم
+تحديث `create-checkout` (Supabase Edge Function) لدعمها.
+
 ### ب) إعداد Webhook
 
 Stripe Dashboard > Developers > Webhooks > Add endpoint:

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { rateLimit, rateLimitResponse } from "@/lib/rate-limit.server";
+import { cronUnauthorizedResponse, isCronAuthorized } from "@/lib/cronAuth.server";
 import { JURISDICTIONS } from "@/lib/jurisdictions";
 
 const GOLD_NISAB_GRAMS = 85;
@@ -89,6 +90,7 @@ export const Route = createFileRoute("/api/public/hooks/snapshot-daily-nisab")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        if (!isCronAuthorized(request)) return cronUnauthorizedResponse();
         const rl = await rateLimit(request, {
           key: "snapshot-daily-nisab",
           limit: 6,

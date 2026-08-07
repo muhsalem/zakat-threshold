@@ -1,14 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { rateLimit, rateLimitResponse } from "@/lib/rate-limit.server";
+import { cronUnauthorizedResponse, isCronAuthorized } from "@/lib/cronAuth.server";
 
 /**
  * Snapshot يومي لأسعار الذهب/الفضة بالدولار/جرام إلى جدول metal_prices_daily.
- * يُستدعى من pg_cron مرة يومياً.
+ * يُستدعى من pg_cron مرة يومياً. محميّة بـCRON_SECRET — كانت مكشوفة بصلاحية
+ * service-role بلا حماية.
  */
 export const Route = createFileRoute("/api/public/hooks/snapshot-daily-prices")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        if (!isCronAuthorized(request)) return cronUnauthorizedResponse();
         const rl = await rateLimit(request, { key: "snapshot-daily", limit: 6, windowMs: 60_000 });
         if (!rl.ok) return rateLimitResponse(rl.retryAfter);
 

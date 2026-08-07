@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Building, Info, Calculator, Scale } from "lucide-react";
-import { num, fmt, ZAKAT_RATE, CROPS_RATE_IRRIGATED } from "@/lib/zakat";
+import { num, fmt, ZAKAT_RATE, CROPS_RATE_NATURAL } from "@/lib/zakat";
 
 interface Props {
   currencyName?: string;
@@ -52,8 +52,8 @@ export function RealEstateZakatSection({ currencyName = "ج.م" }: Props) {
     if (model === "abuZahra") {
       return {
         base: netIncome,
-        rate: CROPS_RATE_IRRIGATED,
-        zakat: netIncome * CROPS_RATE_IRRIGATED,
+        rate: CROPS_RATE_NATURAL,
+        zakat: netIncome * CROPS_RATE_NATURAL,
         netIncome,
         expenses,
         label: "صافي الغلة × 10% (قياسًا على الزروع)",
