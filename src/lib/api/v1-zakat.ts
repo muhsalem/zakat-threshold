@@ -24,6 +24,7 @@ import {
   type AssetType,
 } from "@/lib/zakat/rules-catalog";
 import { createVersionStamp, type VersionStamp } from "@/lib/zakat/version-freeze";
+import { detail, v1Error, type V1ErrorDetail } from "@/lib/api/v1-errors";
 
 /* ------------------------------- المدخلات ------------------------------- */
 
@@ -59,22 +60,27 @@ export const ZakatCalcV1Schema = z
 
 export type ZakatCalcV1Input = z.infer<typeof ZakatCalcV1Schema>;
 
-export interface FieldError {
-  field: string;
-  message: string;
-}
+/** تفصيل خطأ حقلي بالمغلّف الموحّد (ZKT-1010) */
+export type FieldError = V1ErrorDetail;
 
 export function parseZakatCalcV1(
   body: unknown,
-): { ok: true; data: ZakatCalcV1Input } | { ok: false; errors: FieldError[] } {
+): { ok: true; data: ZakatCalcV1Input } | { ok: false; errors: V1ErrorDetail[] } {
   const parsed = ZakatCalcV1Schema.safeParse(body ?? {});
   if (parsed.success) return { ok: true, data: parsed.data };
   return {
     ok: false,
-    errors: parsed.error.issues.map((i) => ({
-      field: i.path.join(".") || "(root)",
-      message: i.message,
-    })),
+    errors: parsed.error.issues.map((i) => {
+      const field = i.path.join(".") || "(root)";
+      return detail("ZKT-1010", {
+        field,
+        message: `الحقل «${field}»: ${i.message}`,
+        remediation:
+          i.code === "unrecognized_keys"
+            ? "أزل الحقول غير المعرّفة — الواجهة ترفض المفاتيح الزائدة (strict)."
+            : "راجع نوع القيمة ومداها في توثيق /developers.",
+      });
+    }),
   };
 }
 
@@ -114,6 +120,8 @@ export interface RulesValidation {
   catalogIssues: Array<{ ruleId: string; issue: string }>;
   checks: RuleCheck[];
   warnings: string[];
+  /** أسباب تفصيلية موحّدة الأكواد لعدم اعتماد النتيجة (ZKT-2xxx) */
+  failures: V1ErrorDetail[];
   requiresHumanReview: boolean;
 }
 
@@ -124,6 +132,7 @@ export function validateRulesForInput(
   const catalogIssues = validateCatalog();
   const checks: RuleCheck[] = [];
   const warnings: string[] = [];
+  const failures: V1ErrorDetail[] = [];
   let requiresHumanReview = false;
 
   for (const binding of RULE_BINDINGS) {
@@ -138,6 +147,14 @@ export function validateRulesForInput(
         reasons: ["القاعدة غير مسجَّلة في الكتالوج"],
       });
       warnings.push(`لا توجد قاعدة معتمدة للبند «${binding.field}» — النتيجة غير معتمدة.`);
+      failures.push(
+        detail("ZKT-2001", {
+          field: binding.field,
+          ruleId: binding.ruleId,
+          message: `البند «${binding.field}» بقيمة ${value} لا تحكمه أي قاعدة مسجَّلة في الكتالوج (${binding.ruleId} غير موجودة).`,
+          remediation: "راجع GET /api/public/v1/rules أو أزل البند من الطلب.",
+        }),
+      );
       continue;
     }
     const activation = evaluateRuleActivation(rule, asOf);
@@ -151,14 +168,51 @@ export function validateRulesForInput(
     });
     if (!activation.active) {
       warnings.push(`القاعدة ${rule.ruleId} محجوبة: ${activation.reasons.join("، ")}`);
+      failures.push(
+        detail("ZKT-2002", {
+          field: binding.field,
+          ruleId: rule.ruleId,
+          reasons: activation.reasons,
+          message: `القاعدة ${rule.ruleId} («${rule.name}») الحاكمة للبند «${binding.field}» غير مفعّلة: ${activation.reasons.join("، ")}.`,
+          remediation: "انتظر اعتماد/نفاذ القاعدة أو استبعد البند للحصول على نتيجة معتمدة.",
+        }),
+      );
+    }
+    if (activation.active && rule.requiresHumanReview) {
+      failures.push(
+        detail("ZKT-2005", {
+          field: binding.field,
+          ruleId: rule.ruleId,
+          severity: "warning",
+          message: `البند «${binding.field}» تحكمه القاعدة ${rule.ruleId} التي تستلزم مراجعة شرعية بشرية قبل الاعتماد النهائي.`,
+          remediation: "أرسل الحالة إلى مسار المراجعة الشرعية قبل الاعتماد.",
+        }),
+      );
     }
   }
 
   if (!input.hawlComplete) {
     warnings.push("لم يكتمل الحول — المبلغ تقديري ولا يُعتمد للإقرار.");
+    failures.push(
+      detail("ZKT-2004", {
+        field: "hawlComplete",
+        message:
+          "hawlComplete = false: لم يمضِ حول هجري كامل على بلوغ النصاب، فلا تُصدر شهادة معتمدة.",
+        remediation: "أرسل hawlComplete = true بعد اكتمال الحول لإصدار نتيجة معتمدة.",
+      }),
+    );
   }
   if (catalogIssues.length) {
     warnings.push(`كتالوج القواعد يحتوي ${catalogIssues.length} ملاحظة سلامة.`);
+    for (const issue of catalogIssues) {
+      failures.push(
+        detail("ZKT-2003", {
+          ruleId: issue.ruleId,
+          message: `سلامة الكتالوج — القاعدة ${issue.ruleId}: ${issue.issue}`,
+          remediation: "أصلح تعريف القاعدة في كتالوج القواعد قبل إصدار نتائج معتمدة.",
+        }),
+      );
+    }
   }
 
   const certified =
@@ -173,6 +227,7 @@ export function validateRulesForInput(
     catalogIssues,
     checks,
     warnings,
+    failures,
     requiresHumanReview,
   };
 }
@@ -322,21 +377,12 @@ export async function certifyResult(params: {
 /** استجابة v1 الموحّدة */
 export async function runZakatCalcV1(
   body: unknown,
-  opts: { asOf?: Date; issuedAt?: string } = {},
+  opts: { asOf?: Date; issuedAt?: string; requestId?: string } = {},
 ) {
   const parsed = parseZakatCalcV1(body);
   if (!parsed.ok) {
-    return {
-      ok: false as const,
-      status: 422,
-      payload: {
-        apiVersion: "v1",
-        status: "error",
-        code: 422,
-        error: "validation_failed",
-        errors: parsed.errors,
-      },
-    };
+    const err = v1Error("ZKT-1010", { details: parsed.errors, requestId: opts.requestId });
+    return { ok: false as const, status: err.status, payload: err.payload };
   }
   const input = parsed.data;
   const rules = validateRulesForInput(input, opts.asOf);
@@ -353,6 +399,7 @@ export async function runZakatCalcV1(
       data: result,
       rules,
       certificate,
+      ...(opts.requestId ? { requestId: opts.requestId } : {}),
       timestamp: certificate.issuedAt,
     },
   };
