@@ -977,11 +977,17 @@ export function IndividualTab() {
         <TabsContent value="calc" className="mt-0">
           <div className="grid lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
-              {/* تجهيز وتكوين تطبيق نِصاب لسطح المكتب */}
-              <DesktopAppConfigurator />
-
               {/* محدد التشريعات والولايات القضائية الزكوية */}
-              <MultiJurisdictionSelector />
+              <MultiJurisdictionSelector
+                selectedCode={
+                  COUNTRY_PRICES.some((c) => c.code === countryCode) ? countryCode : "GLOBAL"
+                }
+                onSelectJurisdiction={(config) => {
+                  if (COUNTRY_PRICES.some((c) => c.code === config.code)) {
+                    setCountryCode(config.code);
+                  }
+                }}
+              />
 
               {/* بوابة حوكمة وتدقيق بيوت ومؤسسات الزكاة */}
               <ZakatInstitutionPortal />
