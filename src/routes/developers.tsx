@@ -153,6 +153,82 @@ function DevPage() {
           </CardContent>
         </Card>
 
+        <Card id="errors">
+          <CardHeader>
+            <CardTitle>أكواد الأخطاء الموحّدة (v1)</CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm space-y-3">
+            <p>
+              كل خطأ في <code>/api/public/v1/*</code> يعود بالهيكل نفسه، مع كود ثابت{" "}
+              <code>ZKT-xxxx</code> ورسالة عربية/إنجليزية وتفاصيل لكل سبب فشل. الكتالوج الحيّ متاح في{" "}
+              <code>GET /api/public/v1/rules</code> ضمن الحقل <code>errorCodes</code>.
+            </p>
+            <pre dir="ltr" className="bg-muted rounded p-3 text-xs overflow-x-auto">
+              <code>{`{
+  "apiVersion": "v1",
+  "status": "error",
+  "code": 422,
+  "error": {
+    "code": "ZKT-1010",
+    "type": "validation_failed",
+    "httpStatus": 422,
+    "message": "فشل تحقق المدخلات — راجع تفاصيل الحقول.",
+    "messageEn": "Input validation failed — see field details.",
+    "details": [
+      {
+        "code": "ZKT-1010",
+        "type": "validation_failed",
+        "field": "goldPricePerGram24",
+        "message": "الحقل «goldPricePerGram24»: Number must be greater than 0",
+        "remediation": "راجع نوع القيمة ومداها في توثيق /developers.",
+        "severity": "error"
+      }
+    ],
+    "docs": ".../developers#errors"
+  },
+  "errors": [ ...same as details (legacy)... ],
+  "requestId": "6f0b…",
+  "timestamp": "2026-08-08T07:40:00.000Z"
+}`}</code>
+            </pre>
+            <ul className="space-y-1 leading-6">
+              <li>
+                <code>ZKT-1001</code> — جسم الطلب ليس JSON صالحاً (400).
+              </li>
+              <li>
+                <code>ZKT-1010</code> — فشل تحقق المدخلات مع تفصيل لكل حقل (422).
+              </li>
+              <li>
+                <code>ZKT-1030</code> — بصمة <code>contentHash</code> بصيغة غير صحيحة (422).
+              </li>
+              <li>
+                <code>ZKT-1040</code> — تجاوز حد الطلبات مع ترويسة <code>Retry-After</code> (429).
+              </li>
+              <li>
+                <code>ZKT-2001</code> — لا توجد قاعدة مسجَّلة تحكم البند.
+              </li>
+              <li>
+                <code>ZKT-2002</code> — القاعدة الحاكمة محجوبة/لم تنفذ، مع أسبابها.
+              </li>
+              <li>
+                <code>ZKT-2003</code> — خلل في سلامة كتالوج القواعد.
+              </li>
+              <li>
+                <code>ZKT-2004</code> — الحول غير مكتمل.
+              </li>
+              <li>
+                <code>ZKT-2005</code> — القاعدة تستلزم مراجعة شرعية بشرية (تحذير).
+              </li>
+            </ul>
+            <p>
+              أخطاء القواعد (<code>ZKT-2xxx</code>) لا تُفشل الطلب: يعود 200 بشهادة{" "}
+              <code>provisional</code> وتظهر أسبابها التفصيلية في <code>rules.failures</code> بنفس
+              بنية <code>details</code>. كل استجابة تحمل <code>requestId</code> وترويسة{" "}
+              <code>X-Request-Id</code> لتتبّع الحالة.
+            </p>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle>Rate limits & SLA</CardTitle>
