@@ -108,8 +108,7 @@ import { ZakatHealthScoreBadge } from "./ZakatHealthScoreBadge";
 import { VoiceZakatAssistant } from "./VoiceZakatAssistant";
 import { ZakatJournalEntriesGenerator } from "./ZakatJournalEntriesGenerator";
 import { ZakatInstitutionPortal } from "./ZakatInstitutionPortal";
-import { MultiJurisdictionSelector } from "./MultiJurisdictionSelector";
-import { DesktopAppConfigurator } from "./DesktopAppConfigurator";
+import { MultiJurisdictionSelector, JURISDICTIONS } from "./MultiJurisdictionSelector";
 import { useAuditEntries } from "@/hooks/useAuditEntries";
 import { useMadhab } from "@/lib/madhabContext";
 import {
@@ -980,7 +979,7 @@ export function IndividualTab() {
               {/* محدد التشريعات والولايات القضائية الزكوية */}
               <MultiJurisdictionSelector
                 selectedCode={
-                  COUNTRY_PRICES.some((c) => c.code === countryCode) ? countryCode : "GLOBAL"
+                  JURISDICTIONS.some((j) => j.code === countryCode) ? countryCode : "GLOBAL"
                 }
                 onSelectJurisdiction={(config) => {
                   if (COUNTRY_PRICES.some((c) => c.code === config.code)) {

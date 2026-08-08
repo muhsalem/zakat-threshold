@@ -73,11 +73,18 @@ export const JURISDICTIONS: JurisdictionConfig[] = [
 ];
 
 interface MultiJurisdictionSelectorProps {
+  /** اختياري: يجعل المكوّن مُتحكَّماً به من الحاسبة (دولة الحساب الفعلية) */
+  selectedCode?: string;
   onSelectJurisdiction?: (config: JurisdictionConfig) => void;
 }
 
-export function MultiJurisdictionSelector({ onSelectJurisdiction }: MultiJurisdictionSelectorProps) {
-  const [selectedCode, setSelectedCode] = useState<string>("SA");
+export function MultiJurisdictionSelector({
+  selectedCode: controlledCode,
+  onSelectJurisdiction,
+}: MultiJurisdictionSelectorProps) {
+  const [internalCode, setInternalCode] = useState<string>("SA");
+  const selectedCode = controlledCode ?? internalCode;
+  const setSelectedCode = setInternalCode;
 
   const currentConfig = JURISDICTIONS.find((j) => j.code === selectedCode) || JURISDICTIONS[0];
 
