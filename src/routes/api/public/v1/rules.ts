@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { rateLimit, rateLimitResponse } from "@/lib/rate-limit.server";
+import { rateLimit } from "@/lib/rate-limit.server";
+import { detail, listV1ErrorCodes, v1ErrorResponse } from "@/lib/api/v1-errors";
 import {
   ZAKAT_RULES,
   evaluateRuleActivation,
@@ -22,7 +23,16 @@ export const Route = createFileRoute("/api/public/v1/rules")({
       OPTIONS: async () => new Response(null, { status: 204, headers: CORS }),
       GET: async ({ request }) => {
         const rl = await rateLimit(request, { key: "rules-v1", limit: 60, windowMs: 60_000 });
-        if (!rl.ok) return rateLimitResponse(rl.retryAfter, CORS);
+        if (!rl.ok) {
+          return v1ErrorResponse("ZKT-1040", CORS, {
+            details: [
+              detail("ZKT-1040", {
+                message: `تجاوزت 60 طلباً في الدقيقة — أعد المحاولة بعد ${rl.retryAfter} ثانية.`,
+              }),
+            ],
+            extraHeaders: { "Retry-After": String(rl.retryAfter) },
+          });
+        }
 
         const url = new URL(request.url);
         const assetType = url.searchParams.get("assetType");
@@ -63,6 +73,8 @@ export const Route = createFileRoute("/api/public/v1/rules")({
               blocked: rules.filter((r) => !r.active).length,
             },
             rules,
+            /** كتالوج أكواد الأخطاء الموحّدة لواجهة v1 */
+            errorCodes: listV1ErrorCodes(),
             timestamp: new Date().toISOString(),
           }),
           { status: 200, headers: CORS },
