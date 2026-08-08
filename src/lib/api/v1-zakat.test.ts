@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
+import { listV1ErrorCodes } from "@/lib/api/v1-errors";
   parseZakatCalcV1,
   validateRulesForInput,
   computeZakatV1,
@@ -116,5 +117,48 @@ describe("Zakat API v1 — شهادة النتيجة", () => {
     expect(canonicalize({ b: 1, a: [2, { d: 4, c: 3 }] })).toBe(
       canonicalize({ a: [2, { c: 3, d: 4 }], b: 1 }),
     );
+  });
+});
+
+describe("أكواد الأخطاء الموحّدة v1", () => {
+  it("مدخلات غير صالحة → مغلّف ZKT-1010 بتفاصيل حقلية", async () => {
+    const out = await runZakatCalcV1({ goldPricePerGram24: -1, silverPricePerGramPure: 1 });
+    expect(out.ok).toBe(false);
+    const p = out.payload as any;
+    expect(p.status).toBe("error");
+    expect(p.error.code).toBe("ZKT-1010");
+    expect(p.error.type).toBe("validation_failed");
+    expect(p.error.httpStatus).toBe(422);
+    expect(typeof p.requestId).toBe("string");
+    expect(p.error.details[0].code).toBe("ZKT-1010");
+    expect(p.error.details[0].field).toBe("goldPricePerGram24");
+    expect(p.errors).toEqual(p.error.details);
+  });
+
+  it("حول غير مكتمل → سبب تفصيلي ZKT-2004 داخل rules.failures", async () => {
+    const out = await runZakatCalcV1({
+      goldPricePerGram24: 80,
+      silverPricePerGramPure: 1,
+      cashAndBank: 100000,
+      hawlComplete: false,
+    });
+    expect(out.ok).toBe(true);
+    const rules = (out.payload as any).rules;
+    expect(rules.certified).toBe(false);
+    const f = rules.failures.find((x: any) => x.code === "ZKT-2004");
+    expect(f).toBeTruthy();
+    expect(f.field).toBe("hawlComplete");
+    expect(f.remediation).toContain("hawlComplete");
+  });
+
+  it("كتالوج الأكواد يعرض رمز HTTP ورسالتين لكل كود", () => {
+    const codes = listV1ErrorCodes();
+    expect(codes.length).toBeGreaterThan(5);
+    for (const c of codes) {
+      expect(c.code).toMatch(/^ZKT-\d{4}$/);
+      expect(c.httpStatus).toBeGreaterThanOrEqual(400);
+      expect(c.message.length).toBeGreaterThan(5);
+      expect(c.messageEn.length).toBeGreaterThan(5);
+    }
   });
 });
