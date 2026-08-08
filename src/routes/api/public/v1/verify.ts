@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { rateLimit, rateLimitResponse } from "@/lib/rate-limit.server";
+import { rateLimit } from "@/lib/rate-limit.server";
 import { runZakatCalcV1 } from "@/lib/api/v1-zakat";
+import { detail, v1ErrorResponse } from "@/lib/api/v1-errors";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -8,6 +9,14 @@ const CORS = {
   "Access-Control-Allow-Headers": "Content-Type",
   "Content-Type": "application/json; charset=utf-8",
 };
+
+function newRequestId(): string {
+  try {
+    return crypto.randomUUID();
+  } catch {
+    return `req_${Date.now().toString(36)}`;
+  }
+}
 
 /**
  * إعادة إنتاج نتيجة سابقة والتحقق من بصمتها.
@@ -18,43 +27,51 @@ export const Route = createFileRoute("/api/public/v1/verify")({
     handlers: {
       OPTIONS: async () => new Response(null, { status: 204, headers: CORS }),
       POST: async ({ request }) => {
-        const rl = await rateLimit(request, { key: "verify-v1", limit: 60, windowMs: 60_000 });
-        if (!rl.ok) return rateLimitResponse(rl.retryAfter, CORS);
+        const requestId = newRequestId();
+        const headers = { ...CORS, "X-Request-Id": requestId };
 
-        let body: any;
+        const rl = await rateLimit(request, { key: "verify-v1", limit: 60, windowMs: 60_000 });
+        if (!rl.ok) {
+          return v1ErrorResponse("ZKT-1040", headers, {
+            requestId,
+            details: [
+              detail("ZKT-1040", {
+                message: `تجاوزت 60 طلباً في الدقيقة — أعد المحاولة بعد ${rl.retryAfter} ثانية.`,
+              }),
+            ],
+            extraHeaders: { "Retry-After": String(rl.retryAfter) },
+          });
+        }
+
+        let body: { input?: unknown; contentHash?: unknown; issuedAt?: unknown };
         try {
-          body = await request.json();
+          body = (await request.json()) as typeof body;
         } catch {
-          return new Response(
-            JSON.stringify({
-              apiVersion: "v1",
-              status: "error",
-              code: 400,
-              error: "invalid_json_payload",
-            }),
-            { status: 400, headers: CORS },
-          );
+          return v1ErrorResponse("ZKT-1001", headers, { requestId });
         }
 
         const claimedHash = typeof body?.contentHash === "string" ? body.contentHash : "";
         if (!/^[0-9a-f]{64}$/.test(claimedHash)) {
-          return new Response(
-            JSON.stringify({
-              apiVersion: "v1",
-              status: "error",
-              code: 422,
-              error: "validation_failed",
-              errors: [{ field: "contentHash", message: "expected a 64-char sha256 hex digest" }],
-            }),
-            { status: 422, headers: CORS },
-          );
+          return v1ErrorResponse("ZKT-1030", headers, {
+            requestId,
+            details: [
+              detail("ZKT-1030", {
+                field: "contentHash",
+                message: claimedHash
+                  ? `القيمة المرسلة (${claimedHash.length} محرفاً) ليست بصمة SHA-256 بصيغة hex صغيرة من 64 محرفاً.`
+                  : "الحقل contentHash مفقود — أرسل البصمة الصادرة مع الشهادة السابقة.",
+                remediation: "انسخ certificate.contentHash من استجابة /api/public/v1/zakat-calc.",
+              }),
+            ],
+          });
         }
 
         const out = await runZakatCalcV1(body?.input, {
           issuedAt: typeof body?.issuedAt === "string" ? body.issuedAt : undefined,
+          requestId,
         });
         if (!out.ok) {
-          return new Response(JSON.stringify(out.payload), { status: out.status, headers: CORS });
+          return new Response(JSON.stringify(out.payload), { status: out.status, headers });
         }
 
         const recomputed = out.payload.certificate.contentHash;
@@ -72,8 +89,9 @@ export const Route = createFileRoute("/api/public/v1/verify")({
             data: out.payload.data,
             rules: out.payload.rules,
             certificate: out.payload.certificate,
+            requestId,
           }),
-          { status: 200, headers: CORS },
+          { status: 200, headers },
         );
       },
     },
