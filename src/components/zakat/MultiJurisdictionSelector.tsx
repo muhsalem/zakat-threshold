@@ -91,9 +91,11 @@ export function MultiJurisdictionSelector({
   const handleChange = (code: string) => {
     setSelectedCode(code);
     const config = JURISDICTIONS.find((j) => j.code === code) || JURISDICTIONS[0];
-    toast.success(`تم ضبط التشريعات والأنصبة بحسب ${config.name} ${config.flag}`);
     if (onSelectJurisdiction) {
       onSelectJurisdiction(config);
+      toast.success(`تم ضبط التشريعات والأنصبة بحسب ${config.name} ${config.flag}`);
+    } else {
+      toast.info(`عرض مرجعي للتشريعات المعتمدة في ${config.name} ${config.flag}`);
     }
   };
 
