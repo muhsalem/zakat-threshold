@@ -31,14 +31,18 @@ export const Route = createFileRoute("/api/public/v1/rules")({
         const rl = await rateLimit(request, { key: "rules-v1", limit: 120, windowMs: 60_000 });
         const headers = { ...CORS, ...rateLimitHeaders(rl) };
         if (!rl.ok) {
-          return v1ErrorResponse("ZKT-1040", { ...headers, "Cache-Control": "no-store" }, {
-            details: [
-              detail("ZKT-1040", {
-                message: `تجاوزت 120 طلباً في الدقيقة — أعد المحاولة بعد ${rl.retryAfter} ثانية.`,
-              }),
-            ],
-            extraHeaders: { "Retry-After": String(rl.retryAfter) },
-          });
+          return v1ErrorResponse(
+            "ZKT-1040",
+            { ...headers, "Cache-Control": "no-store" },
+            {
+              details: [
+                detail("ZKT-1040", {
+                  message: `تجاوزت 120 طلباً في الدقيقة — أعد المحاولة بعد ${rl.retryAfter} ثانية.`,
+                }),
+              ],
+              extraHeaders: { "Retry-After": String(rl.retryAfter) },
+            },
+          );
         }
 
         const url = new URL(request.url);
@@ -58,42 +62,49 @@ export const Route = createFileRoute("/api/public/v1/rules")({
           });
         }
 
-        const rules = ZAKAT_RULES.filter((r) => !assetType || r.assetType === assetType).map((r) => {
-          const activation = evaluateRuleActivation(r, now);
-          const src = getSource(r.sourceId);
-          return {
-            ruleId: r.ruleId,
-            name: r.name,
-            assetType: r.assetType,
-            zakatStatus: r.zakatStatus,
-            madhab: r.madhab,
-            methodology: r.methodology,
-            reference: r.reference,
-            requiresHumanReview: r.requiresHumanReview,
-            approval: r.approval,
-            effectiveDate: r.effectiveDate,
-            version: r.version,
-            active: activation.active,
-            blockedReasons: activation.active ? undefined : activation.reasons,
-            source: src
-              ? { id: src.id, kind: src.kind, citation: src.citation, verification: src.verification }
-              : null,
-          };
-        });
+        const rules = ZAKAT_RULES.filter((r) => !assetType || r.assetType === assetType).map(
+          (r) => {
+            const activation = evaluateRuleActivation(r, now);
+            const src = getSource(r.sourceId);
+            return {
+              ruleId: r.ruleId,
+              name: r.name,
+              assetType: r.assetType,
+              zakatStatus: r.zakatStatus,
+              madhab: r.madhab,
+              methodology: r.methodology,
+              reference: r.reference,
+              requiresHumanReview: r.requiresHumanReview,
+              approval: r.approval,
+              effectiveDate: r.effectiveDate,
+              version: r.version,
+              active: activation.active,
+              blockedReasons: activation.active ? undefined : activation.reasons,
+              source: src
+                ? {
+                    id: src.id,
+                    kind: src.kind,
+                    citation: src.citation,
+                    verification: src.verification,
+                  }
+                : null,
+            };
+          },
+        );
 
         const body = JSON.stringify({
-            apiVersion: "v1",
-            status: "success",
-            catalogVersion: RULES_CATALOG_VERSION,
-            catalogIssues: validateCatalog(),
-            counts: {
-              total: rules.length,
-              active: rules.filter((r) => r.active).length,
-              blocked: rules.filter((r) => !r.active).length,
-            },
-            rules,
-            /** كتالوج أكواد الأخطاء الموحّدة لواجهة v1 */
-            errorCodes: listV1ErrorCodes(),
+          apiVersion: "v1",
+          status: "success",
+          catalogVersion: RULES_CATALOG_VERSION,
+          catalogIssues: validateCatalog(),
+          counts: {
+            total: rules.length,
+            active: rules.filter((r) => r.active).length,
+            blocked: rules.filter((r) => !r.active).length,
+          },
+          rules,
+          /** كتالوج أكواد الأخطاء الموحّدة لواجهة v1 */
+          errorCodes: listV1ErrorCodes(),
           timestamp: new Date().toISOString(),
         });
 
