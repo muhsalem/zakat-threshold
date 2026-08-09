@@ -8,6 +8,19 @@
 // وليس بديلاً عن WAF لهجمات DDoS الحقيقية.
 
 type Bucket = { count: number; resetAt: number };
+
+export type RateLimitResult =
+  | { ok: true; limit: number; remaining: number; resetAt: number }
+  | { ok: false; retryAfter: number; limit: number; remaining: 0; resetAt: number };
+
+/** ترويسات معيارية تُرفق مع كل استجابة v1 (نجاح أو رفض) */
+export function rateLimitHeaders(r: RateLimitResult): Record<string, string> {
+  return {
+    "X-RateLimit-Limit": String(r.limit),
+    "X-RateLimit-Remaining": String(r.remaining),
+    "X-RateLimit-Reset": String(Math.ceil(r.resetAt / 1000)),
+  };
+}
 const buckets = new Map<string, Bucket>();
 
 interface KvLike {
@@ -46,7 +59,7 @@ async function rateLimitKv(
   id: string,
   limit: number,
   windowMs: number,
-): Promise<{ ok: true } | { ok: false; retryAfter: number }> {
+): Promise<RateLimitResult> {
   const now = Date.now();
   const raw = await kv.get(id);
   const bucket = raw ? (JSON.parse(raw) as Bucket) : null;
@@ -56,39 +69,48 @@ async function rateLimitKv(
     await kv.put(id, JSON.stringify({ count: 1, resetAt }), {
       expirationTtl: Math.ceil(windowMs / 1000) + 5,
     });
-    return { ok: true };
+    return { ok: true, limit, remaining: limit - 1, resetAt };
   }
   if (bucket.count >= limit) {
-    return { ok: false, retryAfter: Math.ceil((bucket.resetAt - now) / 1000) };
+    return {
+      ok: false,
+      retryAfter: Math.max(1, Math.ceil((bucket.resetAt - now) / 1000)),
+      limit,
+      remaining: 0,
+      resetAt: bucket.resetAt,
+    };
   }
   await kv.put(id, JSON.stringify({ count: bucket.count + 1, resetAt: bucket.resetAt }), {
     expirationTtl: Math.ceil((bucket.resetAt - now) / 1000) + 5,
   });
-  return { ok: true };
+  return { ok: true, limit, remaining: limit - bucket.count - 1, resetAt: bucket.resetAt };
 }
 
-function rateLimitMemory(
-  id: string,
-  limit: number,
-  windowMs: number,
-): { ok: true } | { ok: false; retryAfter: number } {
+function rateLimitMemory(id: string, limit: number, windowMs: number): RateLimitResult {
   const now = Date.now();
   const b = buckets.get(id);
   if (!b || b.resetAt < now) {
-    buckets.set(id, { count: 1, resetAt: now + windowMs });
-    return { ok: true };
+    const resetAt = now + windowMs;
+    buckets.set(id, { count: 1, resetAt });
+    return { ok: true, limit, remaining: limit - 1, resetAt };
   }
   if (b.count >= limit) {
-    return { ok: false, retryAfter: Math.ceil((b.resetAt - now) / 1000) };
+    return {
+      ok: false,
+      retryAfter: Math.max(1, Math.ceil((b.resetAt - now) / 1000)),
+      limit,
+      remaining: 0,
+      resetAt: b.resetAt,
+    };
   }
   b.count++;
-  return { ok: true };
+  return { ok: true, limit, remaining: Math.max(0, limit - b.count), resetAt: b.resetAt };
 }
 
 export async function rateLimit(
   request: Request,
   opts: { key: string; limit: number; windowMs: number },
-): Promise<{ ok: true } | { ok: false; retryAfter: number }> {
+): Promise<RateLimitResult> {
   const id = `rl:${opts.key}:${clientIp(request)}`;
   const kv = getKv();
   if (kv) {

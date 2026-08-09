@@ -1,13 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { rateLimit } from "@/lib/rate-limit.server";
+import { rateLimit, rateLimitHeaders } from "@/lib/rate-limit.server";
 import { runZakatCalcV1 } from "@/lib/api/v1-zakat";
 import { detail, v1ErrorResponse } from "@/lib/api/v1-errors";
+import { NO_STORE } from "@/lib/api/v1-cache";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Expose-Headers":
+    "X-Request-Id, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, Retry-After",
   "Content-Type": "application/json; charset=utf-8",
+  // التحقق لا يُخزَّن أبداً — يُعاد حسابه من الصفر في كل طلب حفاظاً على صحّته
+  "Cache-Control": NO_STORE,
 };
 
 function newRequestId(): string {
@@ -28,9 +33,8 @@ export const Route = createFileRoute("/api/public/v1/verify")({
       OPTIONS: async () => new Response(null, { status: 204, headers: CORS }),
       POST: async ({ request }) => {
         const requestId = newRequestId();
-        const headers = { ...CORS, "X-Request-Id": requestId };
-
         const rl = await rateLimit(request, { key: "verify-v1", limit: 60, windowMs: 60_000 });
+        const headers = { ...CORS, "X-Request-Id": requestId, ...rateLimitHeaders(rl) };
         if (!rl.ok) {
           return v1ErrorResponse("ZKT-1040", headers, {
             requestId,
