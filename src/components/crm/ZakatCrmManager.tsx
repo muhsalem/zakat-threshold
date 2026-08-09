@@ -146,7 +146,7 @@ export function ZakatCrmManager() {
 
   return (
     <div className="space-y-6" dir="rtl">
-      <div className="rounded-lg border border-amber-300/50 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-800/50 p-3 text-xs text-amber-800 dark:text-amber-300">
+      <div className="rounded-lg border border-warning/50 bg-warning/10 p-3 text-xs text-warning-foreground">
         معاينة تصميم — هذه اللوحة لا تُخزِّن عملاءك بعد بشكل دائم ولا تتيح إضافة عميل جديد؛ الربط
         الفعلي بسجلات عملائك قادم قريباً.
       </div>
@@ -217,16 +217,16 @@ export function ZakatCrmManager() {
           </CardContent>
         </Card>
 
-        <Card className="border-amber-500/20 bg-amber-500/5">
+        <Card className="border-warning/20 bg-warning/5">
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-600">
+            <div className="p-2.5 rounded-xl bg-warning/10 text-warning-foreground">
               <Clock className="h-5 w-5" />
             </div>
             <div>
               <div className="text-xs text-muted-foreground font-medium">
                 مواشِك استحقاق الحول (&lt; 7 أيام)
               </div>
-              <div className="text-lg font-bold text-amber-600 dark:text-amber-400">
+              <div className="text-lg font-bold text-warning-foreground">
                 {stats.renewDueCount} عملاء
               </div>
             </div>
@@ -361,9 +361,9 @@ export function ZakatCrmManager() {
                         <Badge
                           className={`text-[10px] border-none ${
                             c.stage === "renew_due"
-                              ? "bg-amber-500 text-white"
+                              ? "bg-warning text-warning-foreground"
                               : c.stage === "issued"
-                                ? "bg-emerald-600 text-white"
+                                ? "bg-success text-success-foreground"
                                 : c.stage === "audit"
                                   ? "bg-indigo-600 text-white"
                                   : "bg-slate-600 text-white"
@@ -393,7 +393,7 @@ export function ZakatCrmManager() {
                           <Calendar className="h-3.5 w-3.5 text-muted-foreground" /> {c.hawlDate}
                         </div>
                         <div
-                          className={`text-[10px] font-bold ${c.daysUntilHawl <= 7 ? "text-rose-600" : "text-emerald-600"}`}
+                          className={`text-[10px] font-bold ${c.daysUntilHawl <= 7 ? "text-destructive" : "text-success"}`}
                         >
                           متبقي {c.daysUntilHawl} يوم
                         </div>

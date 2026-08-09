@@ -377,7 +377,7 @@ export function KpiCompliancePanel() {
           hint={`آخر ${stats.total} سجل`}
         />
         <KpiCard
-          icon={<ShieldCheck className="h-4 w-4 text-emerald-600" />}
+          icon={<ShieldCheck className="h-4 w-4 text-success" />}
           label="نسبة الامتثال"
           value={`${stats.complianceRate}%`}
           progress={stats.complianceRate}
@@ -414,9 +414,9 @@ export function KpiCompliancePanel() {
             draft={stats.byStatus.draft}
           />
           <div className="flex flex-wrap gap-2 text-xs">
-            <Legend color="bg-emerald-500" label={`معتمد (${stats.byStatus.approved})`} />
-            <Legend color="bg-amber-500" label={`قيد المراجعة (${stats.byStatus.pending})`} />
-            <Legend color="bg-red-500" label={`مرفوض (${stats.byStatus.rejected})`} />
+            <Legend color="bg-success" label={`معتمد (${stats.byStatus.approved})`} />
+            <Legend color="bg-warning" label={`قيد المراجعة (${stats.byStatus.pending})`} />
+            <Legend color="bg-destructive" label={`مرفوض (${stats.byStatus.rejected})`} />
             <Legend color="bg-slate-400" label={`مسودة (${stats.byStatus.draft})`} />
           </div>
         </CardContent>
@@ -426,13 +426,13 @@ export function KpiCompliancePanel() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
-            <FileWarning className="h-4 w-4 text-amber-600" /> الأخطاء الشائعة عبر الإقرارات
+            <FileWarning className="h-4 w-4 text-warning" /> الأخطاء الشائعة عبر الإقرارات
           </CardTitle>
         </CardHeader>
         <CardContent>
           {stats.topErrors.length === 0 ? (
             <p className="text-sm text-muted-foreground flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" /> لا توجد أخطاء متكررة — كل
+              <CheckCircle2 className="h-4 w-4 text-success" /> لا توجد أخطاء متكررة — كل
               السجلات ضمن معايير الامتثال.
             </p>
           ) : (
@@ -446,9 +446,9 @@ export function KpiCompliancePanel() {
                   >
                     <div className="flex items-center gap-2 min-w-0">
                       {e.level === "error" ? (
-                        <XCircle className="h-4 w-4 text-red-600 shrink-0" />
+                        <XCircle className="h-4 w-4 text-destructive shrink-0" />
                       ) : (
-                        <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" />
+                        <AlertTriangle className="h-4 w-4 text-warning shrink-0" />
                       )}
                       <span className="text-sm truncate">{e.label}</span>
                     </div>
@@ -472,7 +472,7 @@ export function KpiCompliancePanel() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 text-amber-600" /> حالات تحتاج انتباه
+            <AlertTriangle className="h-4 w-4 text-warning" /> حالات تحتاج انتباه
             <span className="text-xs font-normal text-muted-foreground">
               (أعلى 12 سجلاً بحاجة إلى مراجعة)
             </span>
@@ -481,7 +481,7 @@ export function KpiCompliancePanel() {
         <CardContent>
           {attentionRows.length === 0 ? (
             <p className="text-sm text-muted-foreground flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" /> جميع الإقرارات ضمن الامتثال.
+              <CheckCircle2 className="h-4 w-4 text-success" /> جميع الإقرارات ضمن الامتثال.
             </p>
           ) : (
             <div className="border rounded-lg overflow-x-auto">
@@ -638,9 +638,9 @@ function StatusBar({
   const pct = (n: number) => (n / total) * 100;
   return (
     <div className="flex h-3 w-full overflow-hidden rounded-full bg-muted">
-      <div className="bg-emerald-500" style={{ width: `${pct(approved)}%` }} />
-      <div className="bg-amber-500" style={{ width: `${pct(pending)}%` }} />
-      <div className="bg-red-500" style={{ width: `${pct(rejected)}%` }} />
+      <div className="bg-success" style={{ width: `${pct(approved)}%` }} />
+      <div className="bg-warning" style={{ width: `${pct(pending)}%` }} />
+      <div className="bg-destructive" style={{ width: `${pct(rejected)}%` }} />
       <div className="bg-slate-400" style={{ width: `${pct(draft)}%` }} />
     </div>
   );
