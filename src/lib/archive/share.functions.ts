@@ -1,5 +1,20 @@
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+
+const idSchema = z.object({ id: z.string().uuid() });
+const createShareSchema = z.object({
+  id: z.string().uuid(),
+  expiresInDays: z.number().finite().positive().max(3650).nullish(),
+});
+const tokenSchema = z.object({
+  token: z
+    .string()
+    .trim()
+    .min(12)
+    .max(64)
+    .regex(/^[A-Z0-9]+$/),
+});
 
 // Base32 (Crockford-ish) 24-char token = ~120 bits entropy
 function generateToken(): string {
@@ -13,7 +28,7 @@ function generateToken(): string {
 
 export const createShareLink = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { id: string; expiresInDays?: number | null }) => data)
+  .inputValidator((data: unknown) => createShareSchema.parse(data))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { data: row, error: findErr } = await supabase
@@ -50,7 +65,7 @@ export const createShareLink = createServerFn({ method: "POST" })
 
 export const revokeShareLink = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { id: string }) => data)
+  .inputValidator((data: unknown) => idSchema.parse(data))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { error } = await supabase
@@ -63,12 +78,9 @@ export const revokeShareLink = createServerFn({ method: "POST" })
   });
 
 export const getSharedReport = createServerFn({ method: "GET" })
-  .inputValidator((data: { token: string }) => data)
+  .inputValidator((data: unknown) => tokenSchema.parse(data))
   .handler(async ({ data }) => {
-    const token = (data.token || "").trim();
-    if (!token || token.length < 12 || token.length > 64 || !/^[A-Z0-9]+$/.test(token)) {
-      throw new Error("Invalid token");
-    }
+    const token = data.token;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: row, error } = await supabaseAdmin
       .from("user_report_archive")
@@ -97,7 +109,7 @@ export const getSharedReport = createServerFn({ method: "GET" })
 
 export const getMyShareInfo = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { id: string }) => data)
+  .inputValidator((data: unknown) => idSchema.parse(data))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { data: row, error } = await supabase
