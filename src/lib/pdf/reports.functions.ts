@@ -4,8 +4,75 @@
  */
 
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { DEFAULT_CONFIG, type TemplateConfig, type TemplateKind } from "./types";
+
+const uuid = z.string().uuid();
+const templateKind = z.enum(["declaration", "compliance", "certified"]);
+const reportStatusEnum = z.enum(["generated", "downloaded", "sent", "approved", "canceled"]);
+/** يُصدَّر لتفادي اشتقاق النوع من توقيع server function داخلياً بملفات الاستدعاء. */
+export type ReportStatus = z.infer<typeof reportStatusEnum>;
+
+const brandConfigSchema = z.object({
+  logo_url: z.string().url().nullable(),
+  org_name: z.string().max(200),
+  primary_color: z.string().max(20),
+  accent_color: z.string().max(20),
+  font_family: z.enum(["Cairo", "Amiri", "Tajawal"]),
+  heading_size: z.number().min(10).max(40),
+});
+const headerConfigSchema = z.object({
+  show_logo: z.boolean(),
+  show_org: z.boolean(),
+  show_report_no: z.boolean(),
+  custom_text: z.string().max(500),
+});
+const footerConfigSchema = z.object({
+  show_page_numbers: z.boolean(),
+  show_issuer: z.boolean(),
+  custom_text: z.string().max(500),
+});
+const stampConfigSchema = z.object({
+  enabled: z.boolean(),
+  image_url: z.string().url().nullable(),
+  position: z.enum(["tl", "tr", "bl", "br", "center"]),
+  opacity: z.number().min(0.1).max(1),
+  signer_name: z.string().max(200),
+  signer_license: z.string().max(200),
+});
+const sectionsConfigSchema = z.object({
+  owner_info: z.boolean(),
+  inputs: z.boolean(),
+  assets: z.boolean(),
+  calc_steps: z.boolean(),
+  deductions: z.boolean(),
+  results: z.boolean(),
+  notes: z.boolean(),
+  sharia_refs: z.boolean(),
+  sources: z.boolean(),
+  exceptions: z.boolean(),
+  audit_trail: z.boolean(),
+  legal_notice: z.boolean(),
+  verify_qr: z.boolean(),
+});
+const templateConfigSchema = z.object({
+  layout: z.enum(["classic", "modern", "minimal"]),
+  brand: brandConfigSchema,
+  header: headerConfigSchema,
+  footer: footerConfigSchema,
+  stamp: stampConfigSchema,
+  sections: sectionsConfigSchema,
+  legal_notice_text: z.string().max(5000),
+  notes_text: z.string().max(5000),
+});
+
+/** يهرب رموز PostgREST الخاصة (,()) قبل إدراج بحث حر داخل .or() — كانت
+ * تُمرَّر خاماً، فيقدر المستخدم يُدرج شروط .or() إضافية على سجلاته هو
+ * (RLS يمنع الوصول لسجلات غيره، لكن يبقى تلاعباً بمنطق الفلترة المقصود). */
+function escapePostgrestPattern(s: string): string {
+  return s.replace(/[,()]/g, "");
+}
 
 // ============ Templates ============
 
@@ -23,7 +90,7 @@ export const listPdfTemplates = createServerFn({ method: "GET" })
 
 export const getDefaultTemplate = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { kind: TemplateKind }) => data)
+  .inputValidator((data: unknown) => z.object({ kind: templateKind }).parse(data))
   .handler(async ({ data, context }) => {
     const { data: rows } = await context.supabase
       .from("pdf_templates")
@@ -37,15 +104,17 @@ export const getDefaultTemplate = createServerFn({ method: "GET" })
 
 export const savePdfTemplate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator(
-    (data: {
-      id?: string;
-      name: string;
-      kind: TemplateKind;
-      is_default: boolean;
-      config: TemplateConfig;
-      organization_id?: string | null;
-    }) => data,
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        id: uuid.optional(),
+        name: z.string().min(1).max(200),
+        kind: templateKind,
+        is_default: z.boolean(),
+        config: templateConfigSchema,
+        organization_id: uuid.nullish(),
+      })
+      .parse(data),
   )
   .handler(async ({ data, context }) => {
     // إن كان الافتراضي → أزل الافتراضي عن غيره لنفس النوع
@@ -86,7 +155,7 @@ export const savePdfTemplate = createServerFn({ method: "POST" })
 
 export const deletePdfTemplate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { id: string }) => data)
+  .inputValidator((data: unknown) => z.object({ id: uuid }).parse(data))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("pdf_templates")
@@ -101,15 +170,24 @@ export const deletePdfTemplate = createServerFn({ method: "POST" })
 
 export const listPdfReports = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator(
-    (data: {
-      status?: string;
-      kind?: TemplateKind;
-      from?: string;
-      to?: string;
-      search?: string;
-      limit?: number;
-    }) => data ?? {},
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        status: reportStatusEnum.optional(),
+        kind: templateKind.optional(),
+        // حقول <input type="date"> تبعث "YYYY-MM-DD"، لا ISO كامل
+        from: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}/)
+          .optional(),
+        to: z
+          .string()
+          .regex(/^\d{4}-\d{2}-\d{2}/)
+          .optional(),
+        search: z.string().max(200).optional(),
+        limit: z.number().int().positive().max(500).optional(),
+      })
+      .parse(data ?? {}),
   )
   .handler(async ({ data, context }) => {
     let q = context.supabase
@@ -121,7 +199,10 @@ export const listPdfReports = createServerFn({ method: "GET" })
     if (data.kind) q = q.eq("kind", data.kind);
     if (data.from) q = q.gte("created_at", data.from);
     if (data.to) q = q.lte("created_at", data.to);
-    if (data.search) q = q.or(`title.ilike.%${data.search}%,report_uid.ilike.%${data.search}%`);
+    if (data.search) {
+      const s = escapePostgrestPattern(data.search);
+      q = q.or(`title.ilike.%${s}%,report_uid.ilike.%${s}%`);
+    }
     const { data: rows, error } = await q;
     if (error) throw new Error(error.message);
     return rows ?? [];
@@ -129,17 +210,19 @@ export const listPdfReports = createServerFn({ method: "GET" })
 
 export const createPdfReport = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator(
-    (data: {
-      zakat_record_id?: string | null;
-      template_id?: string | null;
-      kind: TemplateKind;
-      title: string;
-      snapshot: Record<string, unknown>;
-      content_hash: string;
-      storage_path?: string | null;
-      organization_id?: string | null;
-    }) => data,
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        zakat_record_id: uuid.nullish(),
+        template_id: uuid.nullish(),
+        kind: templateKind,
+        title: z.string().min(1).max(300),
+        snapshot: z.record(z.string(), z.unknown()),
+        content_hash: z.string().min(1).max(200),
+        storage_path: z.string().max(500).nullish(),
+        organization_id: uuid.nullish(),
+      })
+      .parse(data),
   )
   .handler(async ({ data, context }) => {
     // نسخة تلقائية إذا كان لنفس الإقرار سجل سابق
@@ -177,11 +260,13 @@ export const createPdfReport = createServerFn({ method: "POST" })
 
 export const updateReportStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator(
-    (data: {
-      id: string;
-      status: "generated" | "downloaded" | "sent" | "approved" | "canceled";
-    }) => data,
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        id: uuid,
+        status: reportStatusEnum,
+      })
+      .parse(data),
   )
   .handler(async ({ data, context }) => {
     const patch: Record<string, unknown> = { status: data.status };
@@ -200,7 +285,7 @@ export const updateReportStatus = createServerFn({ method: "POST" })
 
 export const deletePdfReport = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { id: string }) => data)
+  .inputValidator((data: unknown) => z.object({ id: uuid }).parse(data))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("pdf_reports")
@@ -213,7 +298,7 @@ export const deletePdfReport = createServerFn({ method: "POST" })
 
 export const getReportAudit = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { report_id: string }) => data)
+  .inputValidator((data: unknown) => z.object({ report_id: uuid }).parse(data))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("pdf_report_audit")
@@ -230,7 +315,7 @@ export const getReportAudit = createServerFn({ method: "GET" })
  */
 export const getRecordAuditRef = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { zakat_record_id: string }) => data)
+  .inputValidator((data: unknown) => z.object({ zakat_record_id: uuid }).parse(data))
   .handler(async ({ data, context }) => {
     const { data: approval } = await context.supabase
       .from("zakat_approvals")
@@ -257,8 +342,7 @@ export const getRecordAuditRef = createServerFn({ method: "GET" })
     const status = approval?.status as string | undefined;
     return {
       ref_no,
-      decision:
-        status === "approved" ? "approved" : status === "rejected" ? "rejected" : "pending",
+      decision: status === "approved" ? "approved" : status === "rejected" ? "rejected" : "pending",
       decided_at: (approval?.decided_at as string | null | undefined) ?? null,
       submitted_at: (approval?.submitted_at as string | null | undefined) ?? null,
       note: (approval?.checker_note as string | null | undefined) ?? null,
@@ -268,7 +352,7 @@ export const getRecordAuditRef = createServerFn({ method: "GET" })
 // ============ Public verify (unauthenticated) ============
 
 export const verifyPdfReport = createServerFn({ method: "GET" })
-  .inputValidator((data: { token: string }) => data)
+  .inputValidator((data: unknown) => z.object({ token: uuid }).parse(data))
   .handler(async ({ data }) => {
     const { createClient } = await import("@supabase/supabase-js");
     const key = process.env.SUPABASE_PUBLISHABLE_KEY!;
@@ -289,7 +373,9 @@ export const verifyPdfReport = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     // verify_token غير مُدرج بعد في الأنواع المولَّدة (هجرة حديثة) — from<any> مؤقت
     const { data: row } = await (supabaseAdmin.from("pdf_reports") as any)
-      .select("report_uid, kind, title, content_hash, status, version, created_at, issuer_display:created_by")
+      .select(
+        "report_uid, kind, title, content_hash, status, version, created_at, issuer_display:created_by",
+      )
       .eq("verify_token", data.token)
       .maybeSingle();
     void client;

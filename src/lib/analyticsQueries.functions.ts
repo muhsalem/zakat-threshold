@@ -4,8 +4,13 @@
  * النجم الشمالي: عدد التقارير المعتمدة المطلوبة خلال آخر 30 يوماً.
  */
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { ProductEventName } from "./analytics";
+
+const funnelInputSchema = z.object({
+  windowDays: z.number().int().min(1).max(365).default(30),
+});
 
 export interface FunnelStats {
   windowDays: number;
@@ -25,7 +30,7 @@ const EVENT_NAMES: ProductEventName[] = [
 
 export const getFunnelStats = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: { windowDays?: number }) => ({ windowDays: d?.windowDays ?? 30 }))
+  .inputValidator((d: unknown) => funnelInputSchema.parse(d ?? {}))
   .handler(async ({ data, context }): Promise<FunnelStats> => {
     const since = new Date(Date.now() - data.windowDays * 86_400_000).toISOString();
     // جدول product_events غير مُدرج بعد في الأنواع المولَّدة تلقائياً

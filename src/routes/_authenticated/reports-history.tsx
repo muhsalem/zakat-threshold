@@ -28,6 +28,7 @@ import {
   listPdfReports,
   updateReportStatus,
   deletePdfReport,
+  type ReportStatus,
 } from "@/lib/pdf/reports.functions";
 import type { TemplateKind } from "@/lib/pdf/types";
 
@@ -78,8 +79,7 @@ function ReportsHistoryPage() {
   });
 
   const upd = useMutation({
-    mutationFn: (v: { id: string; status: Parameters<typeof updateReportStatus>[0]["data"]["status"] }) =>
-      updFn({ data: v }),
+    mutationFn: (v: { id: string; status: ReportStatus }) => updFn({ data: v }),
     onSuccess: () => {
       toast.success("تم تحديث الحالة");
       qc.invalidateQueries({ queryKey: ["pdf-reports"] });
@@ -200,9 +200,7 @@ function ReportsHistoryPage() {
                           size="icon"
                           variant="ghost"
                           title="تحديث كمُنزَّل"
-                          onClick={() =>
-                            upd.mutate({ id: r.id, status: "downloaded" })
-                          }
+                          onClick={() => upd.mutate({ id: r.id, status: "downloaded" })}
                         >
                           <Download className="h-3.5 w-3.5" />
                         </Button>
