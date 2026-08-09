@@ -73,20 +73,29 @@ export const JURISDICTIONS: JurisdictionConfig[] = [
 ];
 
 interface MultiJurisdictionSelectorProps {
+  /** اختياري: يجعل المكوّن مُتحكَّماً به من الحاسبة (دولة الحساب الفعلية) */
+  selectedCode?: string;
   onSelectJurisdiction?: (config: JurisdictionConfig) => void;
 }
 
-export function MultiJurisdictionSelector({ onSelectJurisdiction }: MultiJurisdictionSelectorProps) {
-  const [selectedCode, setSelectedCode] = useState<string>("SA");
+export function MultiJurisdictionSelector({
+  selectedCode: controlledCode,
+  onSelectJurisdiction,
+}: MultiJurisdictionSelectorProps) {
+  const [internalCode, setInternalCode] = useState<string>("SA");
+  const selectedCode = controlledCode ?? internalCode;
+  const setSelectedCode = setInternalCode;
 
   const currentConfig = JURISDICTIONS.find((j) => j.code === selectedCode) || JURISDICTIONS[0];
 
   const handleChange = (code: string) => {
     setSelectedCode(code);
     const config = JURISDICTIONS.find((j) => j.code === code) || JURISDICTIONS[0];
-    toast.success(`تم ضبط التشريعات والأنصبة بحسب ${config.name} ${config.flag}`);
     if (onSelectJurisdiction) {
       onSelectJurisdiction(config);
+      toast.success(`تم ضبط التشريعات والأنصبة بحسب ${config.name} ${config.flag}`);
+    } else {
+      toast.info(`عرض مرجعي للتشريعات المعتمدة في ${config.name} ${config.flag}`);
     }
   };
 
