@@ -1,6 +1,17 @@
 import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
+import { z } from "zod";
 import type { Database } from "@/integrations/supabase/types";
+
+const currencySchema = z.object({
+  // ISO 4217 حرفياً 3 أحرف — كانت تصل بلا أي تحقق شكل/طول وتُدرَج مباشرة
+  // بعنوان URL خارجي (frankfurter.app)، فيقدر أي مستدعٍ يُرسل قيمة حرة.
+  currency: z
+    .string()
+    .regex(/^[A-Za-z]{3}$/, "currency must be a 3-letter ISO code")
+    .optional()
+    .transform((v) => (v ?? "USD").toUpperCase()),
+});
 
 const OUNCE_TO_GRAM = 31.1034768;
 
@@ -75,9 +86,7 @@ async function fetchDbFallback(
 }
 
 export const getLivePrices = createServerFn({ method: "GET" })
-  .inputValidator((data: { currency?: string }) => ({
-    currency: (data?.currency ?? "USD").toUpperCase(),
-  }))
+  .inputValidator((data: unknown) => currencySchema.parse(data ?? {}))
   .handler(async ({ data }): Promise<LivePrices> => {
     const currency = data.currency;
 
