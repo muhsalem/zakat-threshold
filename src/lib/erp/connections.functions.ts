@@ -3,10 +3,17 @@
  * Uses requireSupabaseAuth so all rows are scoped to auth.uid() via RLS.
  */
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { buildNormalizedJournal, type ZakatCalcInput } from "./journal";
 import { testConnection, pushJournal, type Provider, type ErpCreds } from "./providers.server";
 import { checkUrlSafe } from "./ssrfGuard";
+
+const idSchema = z.object({ id: z.string().uuid() });
+const pushSchema = z.object({
+  connection_id: z.string().uuid(),
+  zakat_record_id: z.string().uuid(),
+});
 
 export interface ErpConnectionInput {
   id?: string;
@@ -64,7 +71,7 @@ export const saveErpConnection = createServerFn({ method: "POST" })
 
 export const deleteErpConnection = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: { id: string }) => d)
+  .inputValidator((d: unknown) => idSchema.parse(d))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase.from("erp_connections").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
@@ -73,7 +80,7 @@ export const deleteErpConnection = createServerFn({ method: "POST" })
 
 export const testErpConnection = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: { id: string }) => d)
+  .inputValidator((d: unknown) => idSchema.parse(d))
   .handler(async ({ data, context }) => {
     const { data: c, error } = await context.supabase
       .from("erp_connections")
@@ -118,7 +125,7 @@ export const listErpSyncLog = createServerFn({ method: "GET" })
 
 export const pushZakatRecordToErp = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: { connection_id: string; zakat_record_id: string }) => d)
+  .inputValidator((d: unknown) => pushSchema.parse(d))
   .handler(async ({ data, context }) => {
     const [{ data: conn, error: e1 }, { data: rec, error: e2 }] = await Promise.all([
       context.supabase.from("erp_connections").select("*").eq("id", data.connection_id).single(),

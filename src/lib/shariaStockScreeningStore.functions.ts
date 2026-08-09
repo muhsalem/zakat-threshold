@@ -3,8 +3,11 @@
  * window.storage (خاص ببيئة Claude Artifacts) بجدول Supabase حقيقي.
  */
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { ComputedStockAudit } from "./shariaStockScreening";
+
+const idSchema = z.object({ id: z.string().uuid() });
 
 export interface ContractAnswer {
   status: string;
@@ -51,7 +54,7 @@ export const listShariaStockScreenings = createServerFn({ method: "GET" })
 
 export const getShariaStockScreening = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: { id: string }) => d)
+  .inputValidator((d: unknown) => idSchema.parse(d))
   .handler(async ({ data, context }): Promise<ScreeningPayload> => {
     const { data: row, error } = await (
       context.supabase.from("sharia_stock_screenings" as never) as any
@@ -93,7 +96,11 @@ export const saveShariaStockScreening = createServerFn({ method: "POST" })
 
 export const updateShariaStockScreeningAnswers = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: { id: string; payload: ScreeningPayload }) => d)
+  .inputValidator((d: { id: string; payload: ScreeningPayload }) => {
+    if (!z.string().uuid().safeParse(d.id).success) throw new Error("id_invalid");
+    if (!d.payload?.meta?.id) throw new Error("payload_invalid");
+    return d;
+  })
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     const { error } = await (context.supabase.from("sharia_stock_screenings" as never) as any)
       .update({ payload: JSON.parse(JSON.stringify(data.payload)) })
@@ -104,7 +111,7 @@ export const updateShariaStockScreeningAnswers = createServerFn({ method: "POST"
 
 export const deleteShariaStockScreening = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: { id: string }) => d)
+  .inputValidator((d: unknown) => idSchema.parse(d))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     const { error } = await (context.supabase.from("sharia_stock_screenings" as never) as any)
       .delete()

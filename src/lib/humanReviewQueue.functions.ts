@@ -5,15 +5,26 @@
  * أول محاسب حقيقي — لا حاجة لبناء أي بنية تحتية وقتها.
  */
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
+const idSchema = z.object({ id: z.string().uuid() });
+const REVIEW_STATUSES = [
+  "queued",
+  "claimed",
+  "in_review",
+  "needs_info",
+  "completed",
+  "cancelled",
+] as const;
+const updateReviewSchema = z.object({
+  id: z.string().uuid(),
+  status: z.enum(REVIEW_STATUSES),
+  reviewerNotes: z.string().max(5000).optional(),
+});
+
 export type ReviewStatus =
-  | "queued"
-  | "claimed"
-  | "in_review"
-  | "needs_info"
-  | "completed"
-  | "cancelled";
+  "queued" | "claimed" | "in_review" | "needs_info" | "completed" | "cancelled";
 
 export interface ReviewQueueItem {
   id: string;
@@ -82,9 +93,7 @@ export const submitReviewRequest = createServerFn({ method: "POST" })
 export const listMyReviewRequests = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<ReviewQueueItem[]> => {
-    const { data, error } = await (
-      context.supabase.from("human_review_queue" as never) as any
-    )
+    const { data, error } = await (context.supabase.from("human_review_queue" as never) as any)
       .select("*")
       .eq("requester_user_id", context.userId)
       .order("created_at", { ascending: false })
@@ -97,29 +106,27 @@ export const listMyReviewRequests = createServerFn({ method: "GET" })
 export const listReviewQueue = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: { status?: ReviewStatus; offset?: number } | undefined) => d ?? {})
-  .handler(
-    async ({ data, context }): Promise<{ rows: ReviewQueueItem[]; hasMore: boolean }> => {
-      if (!(await isAccountant(context.supabase, context.userId))) {
-        throw new Error("accountant_role_required");
-      }
-      const PAGE = 25;
-      const offset = data.offset ?? 0;
-      let q = (context.supabase.from("human_review_queue" as never) as any)
-        .select("*")
-        .order("created_at", { ascending: true })
-        .range(offset, offset + PAGE - 1);
-      if (data.status) q = q.eq("status", data.status);
-      const { data: rows, error } = await q;
-      if (error) throw new Error((error as { message: string }).message);
-      const list = (rows ?? []) as ReviewQueueItem[];
-      return { rows: list, hasMore: list.length === PAGE };
-    },
-  );
+  .handler(async ({ data, context }): Promise<{ rows: ReviewQueueItem[]; hasMore: boolean }> => {
+    if (!(await isAccountant(context.supabase, context.userId))) {
+      throw new Error("accountant_role_required");
+    }
+    const PAGE = 25;
+    const offset = data.offset ?? 0;
+    let q = (context.supabase.from("human_review_queue" as never) as any)
+      .select("*")
+      .order("created_at", { ascending: true })
+      .range(offset, offset + PAGE - 1);
+    if (data.status) q = q.eq("status", data.status);
+    const { data: rows, error } = await q;
+    if (error) throw new Error((error as { message: string }).message);
+    const list = (rows ?? []) as ReviewQueueItem[];
+    return { rows: list, hasMore: list.length === PAGE };
+  });
 
 /** مطالبة (claim) بطلب — شرط أن يكون لا يزال queued كي لا يتصادم محاسبان. */
 export const claimReviewItem = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: { id: string }) => d)
+  .inputValidator((d: unknown) => idSchema.parse(d))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     if (!(await isAccountant(context.supabase, context.userId))) {
       throw new Error("accountant_role_required");
@@ -145,9 +152,7 @@ export const claimReviewItem = createServerFn({ method: "POST" })
 /** تحديث حالة/ملاحظات طلب — للمحاسب الذي طالب به. */
 export const updateReviewItem = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator(
-    (d: { id: string; status: ReviewStatus; reviewerNotes?: string }) => d,
-  )
+  .inputValidator((d: unknown) => updateReviewSchema.parse(d))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     if (!(await isAccountant(context.supabase, context.userId))) {
       throw new Error("accountant_role_required");
@@ -169,7 +174,7 @@ export const updateReviewItem = createServerFn({ method: "POST" })
 /** إلغاء طلب — للطالب نفسه، وطالما لم يُطالَب به بعد. */
 export const cancelReviewRequest = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: { id: string }) => d)
+  .inputValidator((d: unknown) => idSchema.parse(d))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     const { error } = await (context.supabase.from("human_review_queue" as never) as any)
       .update({ status: "cancelled", updated_at: new Date().toISOString() })
