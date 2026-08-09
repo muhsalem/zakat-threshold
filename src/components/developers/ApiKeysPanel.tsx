@@ -10,12 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { KeyRound, Copy, Trash2, Power } from "lucide-react";
-import {
-  listApiKeys,
-  createApiKey,
-  setApiKeyActive,
-  deleteApiKey,
-} from "@/lib/apiKeys.functions";
+import { listApiKeys, createApiKey, setApiKeyActive, deleteApiKey } from "@/lib/apiKeys.functions";
 import { useAuth } from "@/hooks/useAuth";
 
 const SCOPES = [
