@@ -1,0 +1,2 @@
+INSERT INTO public.api_keys (user_id, name, key_prefix, key_hash)
+VALUES ('41686b02-4328-4165-b11c-9ee6a904807f', 'مفتاح اختبار داخلي', 'nsb_live_testk', 'a9f4693d7645b261753fefd794936848221d49924822083b74e7d36d53d66d0a');
