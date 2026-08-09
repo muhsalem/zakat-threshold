@@ -182,6 +182,7 @@ const SPEC = {
         description:
           "نواة الحساب المعتمدة v1: تحقق zod صارم، تحقق من كتالوج القواعد الشرعية المفعّلة لكل بند، بصمة محتوى SHA-256 قابلة للتحقق لاحقاً عبر /verify. يختلف عن /api/public/calc (v0 المبسّط) بغلاف الخطأ الموحَّد (أكواد ZKT-xxxx) وبربط كل بند بقاعدة شرعية صريحة.",
         tags: ["Calculation v1"],
+        security: [{ ApiKeyBearer: [] }, { ApiKeyHeader: [] }],
         requestBody: {
           required: true,
           content: {
@@ -193,6 +194,13 @@ const SPEC = {
             description: "Certified or preliminary result — see rules.status",
             content: {
               "application/json": { schema: { $ref: "#/components/schemas/ZakatCalcV1Result" } },
+            },
+          },
+          "401": {
+            description:
+              "Missing/invalid/revoked API key, or key lacks required scope (ZKT-1020..1023)",
+            content: {
+              "application/json": { schema: { $ref: "#/components/schemas/V1ErrorEnvelope" } },
             },
           },
           "422": {
@@ -216,6 +224,7 @@ const SPEC = {
         description:
           "يعيد حساب نفس المدخلات (body.input) ويقارن بصمة SHA-256 الناتجة مع body.contentHash المُقدَّم — يثبت أن نتيجة سابقة لم تُعدَّل.",
         tags: ["Calculation v1"],
+        security: [{ ApiKeyBearer: [] }, { ApiKeyHeader: [] }],
         requestBody: {
           required: true,
           content: {
@@ -227,6 +236,13 @@ const SPEC = {
             description: "Verification result (matched: true/false)",
             content: {
               "application/json": { schema: { $ref: "#/components/schemas/V1VerifyResult" } },
+            },
+          },
+          "401": {
+            description:
+              "Missing/invalid/revoked API key, or key lacks required scope (ZKT-1020..1023)",
+            content: {
+              "application/json": { schema: { $ref: "#/components/schemas/V1ErrorEnvelope" } },
             },
           },
           "422": {
@@ -278,6 +294,21 @@ const SPEC = {
     },
   },
   components: {
+    securitySchemes: {
+      ApiKeyBearer: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "nsb_live_...",
+        description:
+          "مفتاح API يُنشأ من /developers، يبدأ بـnsb_live_. مطلوب لـv1/zakat-calc وv1/verify فقط — v1/rules عام بلا مفتاح.",
+      },
+      ApiKeyHeader: {
+        type: "apiKey",
+        in: "header",
+        name: "X-Api-Key",
+        description: "بديل عن Authorization: Bearer — نفس المفتاح، ترويسة مختلفة.",
+      },
+    },
     schemas: {
       CalcInput: {
         type: "object",
