@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { rateLimit, rateLimitHeaders } from "@/lib/rate-limit.server";
 import { runZakatCalcV1 } from "@/lib/api/v1-zakat";
+import { authenticateApiKey } from "@/lib/api/v1-auth.server";
 import { detail, v1ErrorResponse } from "@/lib/api/v1-errors";
 import { etagOf, fastHash, ifNoneMatch, memoGet, memoSet, notModified } from "@/lib/api/v1-cache";
 
@@ -47,6 +48,30 @@ export const Route = createFileRoute("/api/public/v1/zakat-calc")({
           });
         }
 
+        const auth = await authenticateApiKey(request, "zakat:calc");
+        if (!auth.ok) {
+          const code =
+            auth.reason === "missing"
+              ? "ZKT-1020"
+              : auth.reason === "invalid"
+                ? "ZKT-1021"
+                : auth.reason === "revoked"
+                  ? "ZKT-1022"
+                  : "ZKT-1023";
+          return v1ErrorResponse(
+            code,
+            { ...headers, "Cache-Control": "no-store" },
+            {
+              requestId,
+              details: [detail(code, { message: auth.message })],
+              extraHeaders:
+                auth.reason === "missing" || auth.reason === "invalid"
+                  ? { "WWW-Authenticate": 'Bearer realm="nisab-v1"' }
+                  : {},
+            },
+          );
+        }
+
         let raw: string;
         try {
           raw = await request.text();
@@ -61,7 +86,7 @@ export const Route = createFileRoute("/api/public/v1/zakat-calc")({
           return v1ErrorResponse("ZKT-1001", headers, { requestId });
         }
 
-        const cacheKey = `calc:${fastHash(raw)}`;
+        const cacheKey = `calc:${auth.principal.keyId}:${fastHash(raw)}`;
         const cached = memoGet<{ payload: Record<string, unknown>; etag: string }>(cacheKey);
 
         if (cached) {

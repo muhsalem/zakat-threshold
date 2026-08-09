@@ -101,7 +101,10 @@ export async function authenticateApiKey(
   // تحديث آخر استخدام — أفضل جهد، لا يفشل الطلب إن تعذّر
   void supabaseAdmin
     .from("api_keys")
-    .update({ last_used_at: new Date().toISOString(), request_count: (data.request_count ?? 0) + 1 })
+    .update({
+      last_used_at: new Date().toISOString(),
+      request_count: (data.request_count ?? 0) + 1,
+    })
     .eq("id", data.id)
     .then(
       () => undefined,
