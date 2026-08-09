@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ApiKeysPanel } from "@/components/developers/ApiKeysPanel";
 
 export const Route = createFileRoute("/developers")({
   head: () => ({
@@ -8,7 +9,7 @@ export const Route = createFileRoute("/developers")({
       {
         name: "description",
         content:
-          "Public REST API for Zakat nisab lookup and calculation. AAOIFI 35-aligned, CORS-enabled, no auth required.",
+          "REST API for Zakat nisab lookup and certified calculation. AAOIFI 35-aligned, CORS-enabled, API-key authenticated.",
       },
     ],
   }),
@@ -24,6 +25,18 @@ function DevPage() {
       </p>
 
       <div className="space-y-6">
+        <section id="auth" className="space-y-3">
+          <ApiKeysPanel />
+          <p className="text-sm text-muted-foreground">
+            نقاط <code>/v1/zakat-calc</code> و<code>/v1/verify</code> تتطلّب مفتاحاً صالحاً في
+            ترويسة
+            <code dir="ltr"> Authorization: Bearer &lt;key&gt;</code> أو <code>X-API-Key</code>.
+            بدون مفتاح تُعاد <code>401 ZKT-1020</code>، وبمفتاح ملغى <code>403 ZKT-1022</code>،
+            وبصلاحية ناقصة <code>403 ZKT-1023</code>. كتالوج القواعد <code>/v1/rules</code> يبقى
+            قراءةً عامة.
+          </p>
+        </section>
+
         <Card>
           <CardHeader>
             <CardTitle>
@@ -39,6 +52,7 @@ function DevPage() {
             <pre dir="ltr" className="bg-muted rounded p-3 text-xs overflow-x-auto">
               <code>{`curl -X POST "https://your-domain.com/api/public/v1/zakat-calc" \\
   -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer nsb_live_xxx" \\
   -d '{"goldPricePerGram24":80,"silverPricePerGramPure":1,
        "cashAndBank":100000,"shortTermLiabilities":10000}'
 
@@ -115,6 +129,7 @@ function DevPage() {
             <pre dir="ltr" className="bg-muted rounded p-3 text-xs overflow-x-auto">
               <code>{`curl -X POST "https://your-domain.com/api/public/calc" \\
   -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer nsb_live_xxx" \\
   -d '{"assets": 100000, "liabilities": 5000, "nisab": 20000, "rate": 0.025}'
 
 {
@@ -160,8 +175,8 @@ function DevPage() {
           <CardContent className="text-sm space-y-3">
             <p>
               كل خطأ في <code>/api/public/v1/*</code> يعود بالهيكل نفسه، مع كود ثابت{" "}
-              <code>ZKT-xxxx</code> ورسالة عربية/إنجليزية وتفاصيل لكل سبب فشل. الكتالوج الحيّ متاح في{" "}
-              <code>GET /api/public/v1/rules</code> ضمن الحقل <code>errorCodes</code>.
+              <code>ZKT-xxxx</code> ورسالة عربية/إنجليزية وتفاصيل لكل سبب فشل. الكتالوج الحيّ متاح
+              في <code>GET /api/public/v1/rules</code> ضمن الحقل <code>errorCodes</code>.
             </p>
             <pre dir="ltr" className="bg-muted rounded p-3 text-xs overflow-x-auto">
               <code>{`{
