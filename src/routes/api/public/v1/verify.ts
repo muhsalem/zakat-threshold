@@ -2,12 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { rateLimit, rateLimitHeaders } from "@/lib/rate-limit.server";
 import { runZakatCalcV1 } from "@/lib/api/v1-zakat";
 import { detail, v1ErrorResponse } from "@/lib/api/v1-errors";
+import { authenticateApiKey } from "@/lib/api/v1-auth.server";
 import { NO_STORE } from "@/lib/api/v1-cache";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-API-Key",
   "Access-Control-Expose-Headers":
     "X-Request-Id, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, Retry-After",
   "Content-Type": "application/json; charset=utf-8",
@@ -45,6 +46,30 @@ export const Route = createFileRoute("/api/public/v1/verify")({
             ],
             extraHeaders: { "Retry-After": String(rl.retryAfter) },
           });
+        }
+
+        const auth = await authenticateApiKey(request, "zakat:verify");
+        if (!auth.ok) {
+          const code =
+            auth.reason === "missing"
+              ? "ZKT-1020"
+              : auth.reason === "invalid"
+                ? "ZKT-1021"
+                : auth.reason === "revoked"
+                  ? "ZKT-1022"
+                  : "ZKT-1023";
+          return v1ErrorResponse(
+            code,
+            { ...headers, "Cache-Control": "no-store" },
+            {
+              requestId,
+              details: [detail(code, { message: auth.message })],
+              extraHeaders:
+                auth.reason === "missing" || auth.reason === "invalid"
+                  ? { "WWW-Authenticate": 'Bearer realm="nisab-v1"' }
+                  : {},
+            },
+          );
         }
 
         let body: { input?: unknown; contentHash?: unknown; issuedAt?: unknown };

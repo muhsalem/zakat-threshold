@@ -33,6 +33,10 @@ export type V1ErrorCode =
   | "ZKT-1001" // JSON غير صالح
   | "ZKT-1002" // نوع محتوى غير مدعوم
   | "ZKT-1010" // فشل تحقق المدخلات
+  | "ZKT-1020" // مفتاح وصول مفقود
+  | "ZKT-1021" // مفتاح وصول غير صالح
+  | "ZKT-1022" // مفتاح موقوف أو ملغى
+  | "ZKT-1023" // صلاحية غير كافية
   | "ZKT-1030" // بصمة محتوى بصيغة غير صحيحة
   | "ZKT-1040" // تجاوز حد الطلبات
   // 2xxx — تحقق القواعد الشرعية
@@ -73,6 +77,30 @@ export const V1_ERRORS: Record<V1ErrorCode, ErrorSpec> = {
     httpStatus: 422,
     message: "فشل تحقق المدخلات — راجع تفاصيل الحقول.",
     messageEn: "Input validation failed — see field details.",
+  },
+  "ZKT-1020": {
+    type: "api_key_missing",
+    httpStatus: 401,
+    message: "مفتاح الوصول مفقود — أرسل Authorization: Bearer <key> أو X-API-Key.",
+    messageEn: "Missing API key — send Authorization: Bearer <key> or X-API-Key.",
+  },
+  "ZKT-1021": {
+    type: "api_key_invalid",
+    httpStatus: 401,
+    message: "مفتاح الوصول غير صالح.",
+    messageEn: "Invalid API key.",
+  },
+  "ZKT-1022": {
+    type: "api_key_revoked",
+    httpStatus: 403,
+    message: "مفتاح الوصول موقوف أو ملغى.",
+    messageEn: "API key is disabled or revoked.",
+  },
+  "ZKT-1023": {
+    type: "insufficient_scope",
+    httpStatus: 403,
+    message: "المفتاح لا يملك الصلاحية المطلوبة لهذه العملية.",
+    messageEn: "API key lacks the required scope for this operation.",
   },
   "ZKT-1030": {
     type: "invalid_content_hash",
