@@ -142,7 +142,7 @@ export default function SensitivityProjection({
                           {fmt(r.zakat)} {currencyName}
                         </td>
                         <td
-                          className={`p-2 font-mono ${r.delta > 0 ? "text-emerald-600" : r.delta < 0 ? "text-red-600" : ""}`}
+                          className={`p-2 font-mono ${r.delta > 0 ? "text-success" : r.delta < 0 ? "text-destructive" : ""}`}
                         >
                           {r.delta > 0 ? "+" : ""}
                           {fmt(r.delta)} {currencyName}

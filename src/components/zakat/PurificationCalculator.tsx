@@ -146,8 +146,8 @@ export function PurificationCalculator({ currencyName = "ج.م" }: { currencyNam
           </div>
         </div>
 
-        <Alert className="border-amber-500/30 bg-amber-500/5">
-          <Info className="h-4 w-4 text-amber-600" />
+        <Alert className="border-warning/30 bg-warning/5">
+          <Info className="h-4 w-4 text-warning" />
           <AlertDescription className="text-xs leading-relaxed">
             <b>تنبيه شرعي:</b> مبلغ التطهير <b>لا يُحسب من الزكاة</b>، بل يُصرف في وجوه الخير العامة
             (إصلاحات عامة، فقراء بنية صدقة لا زكاة) — لأنه مال خبيث لا يصح إخراجه قربة لله ولا تبرأ

@@ -167,8 +167,8 @@ export function LivePricesCard({ currency, onApply }: Props) {
         </Button>
 
         {error && (
-          <Alert variant={usingCache ? "default" : "destructive"} className={usingCache ? "border-amber-500/40 bg-amber-500/5" : undefined}>
-            {usingCache && <WifiOff className="h-4 w-4 text-amber-600" />}
+          <Alert variant={usingCache ? "default" : "destructive"} className={usingCache ? "border-warning/40 bg-warning/5" : undefined}>
+            {usingCache && <WifiOff className="h-4 w-4 text-warning" />}
             <AlertDescription className="text-xs">{error}</AlertDescription>
           </Alert>
         )}
@@ -178,10 +178,10 @@ export function LivePricesCard({ currency, onApply }: Props) {
             className={
               cacheVeryStale
                 ? "border-destructive/40 bg-destructive/5"
-                : "border-amber-500/40 bg-amber-500/5"
+                : "border-warning/40 bg-warning/5"
             }
           >
-            <WifiOff className={`h-4 w-4 ${cacheVeryStale ? "text-destructive" : "text-amber-600"}`} />
+            <WifiOff className={`h-4 w-4 ${cacheVeryStale ? "text-destructive" : "text-warning"}`} />
             <AlertDescription className="text-xs leading-relaxed">
               أسعار مخزَّنة محلياً من آخر اتصال ناجح بتاريخ{" "}
               <b>{new Date(data.updatedAt).toLocaleString("ar-EG")}</b> — ليست لحظية.

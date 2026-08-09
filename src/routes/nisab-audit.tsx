@@ -62,15 +62,15 @@ function reliabilityBadge(r: Row["reliability"]) {
   const map = {
     direct: {
       label: "مباشر",
-      cls: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30",
+      cls: "bg-success/15 text-success dark:text-success border-success/30",
     },
     derived: {
       label: "مشتق",
-      cls: "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30",
+      cls: "bg-warning/15 text-warning dark:text-warning border-warning/30",
     },
     estimated: {
       label: "تقديري",
-      cls: "bg-rose-500/15 text-rose-700 dark:text-rose-400 border-rose-500/30",
+      cls: "bg-destructive/15 text-destructive dark:text-destructive border-destructive/30",
     },
   } as const;
   const m = map[r];
@@ -250,9 +250,9 @@ function NisabAuditPage() {
                   <TableRow key={cc}>
                     <TableCell className="font-semibold">{cc}</TableCell>
                     <TableCell>{s.total}</TableCell>
-                    <TableCell className="text-emerald-600">{s.direct}</TableCell>
-                    <TableCell className="text-amber-600">{s.derived}</TableCell>
-                    <TableCell className="text-rose-600">{s.estimated}</TableCell>
+                    <TableCell className="text-success">{s.direct}</TableCell>
+                    <TableCell className="text-warning">{s.derived}</TableCell>
+                    <TableCell className="text-destructive">{s.estimated}</TableCell>
                     <TableCell>{conf}%</TableCell>
                     <TableCell>
                       {s.drifts === 0 ? "✓" : <span className="text-destructive">{s.drifts}</span>}
@@ -261,7 +261,7 @@ function NisabAuditPage() {
                       {s.zeros === 0 ? "✓" : <span className="text-destructive">{s.zeros}</span>}
                     </TableCell>
                     <TableCell>
-                      {s.jumps === 0 ? "✓" : <span className="text-amber-600">{s.jumps}</span>}
+                      {s.jumps === 0 ? "✓" : <span className="text-warning">{s.jumps}</span>}
                     </TableCell>
                   </TableRow>
                 );
@@ -284,7 +284,7 @@ function NisabAuditPage() {
             </CardHeader>
             <CardContent>
               {audit.issues.length === 0 ? (
-                <p className="text-emerald-600">لا توجد اختلافات — جميع الصفوف متّسقة. ✓</p>
+                <p className="text-success">لا توجد اختلافات — جميع الصفوف متّسقة. ✓</p>
               ) : (
                 <Table>
                   <TableHeader>

@@ -72,9 +72,9 @@ function RuleCard({ rule, blockedReasons }: { rule: ZakatRule; blockedReasons?: 
       <AccordionTrigger className="hover:no-underline">
         <div className="flex flex-1 flex-wrap items-center gap-2 text-right">
           {blocked ? (
-            <ShieldAlert className="h-4 w-4 shrink-0 text-amber-600" />
+            <ShieldAlert className="h-4 w-4 shrink-0 text-warning" />
           ) : (
-            <ShieldCheck className="h-4 w-4 shrink-0 text-emerald-600" />
+            <ShieldCheck className="h-4 w-4 shrink-0 text-success" />
           )}
           <span className="text-sm font-semibold">{rule.name}</span>
           <Badge variant="outline" className="font-mono text-[10px]">
@@ -84,7 +84,7 @@ function RuleCard({ rule, blockedReasons }: { rule: ZakatRule; blockedReasons?: 
             {STATUS_LABELS[rule.zakatStatus]}
           </Badge>
           {rule.requiresHumanReview && (
-            <Badge variant="outline" className="border-amber-500/40 text-[10px] text-amber-600">
+            <Badge variant="outline" className="border-warning/40 text-[10px] text-warning">
               يحتاج مراجعة بشرية
             </Badge>
           )}
@@ -94,8 +94,8 @@ function RuleCard({ rule, blockedReasons }: { rule: ZakatRule; blockedReasons?: 
         <p className="text-muted-foreground">{rule.description}</p>
 
         {blocked && (
-          <Alert className="border-amber-500/40 bg-amber-500/5">
-            <AlertTriangle className="h-4 w-4 text-amber-600" />
+          <Alert className="border-warning/40 bg-warning/5">
+            <AlertTriangle className="h-4 w-4 text-warning" />
             <AlertDescription className="text-[11px]">
               <span className="font-semibold">هذه القاعدة غير مفعّلة في الإنتاج:</span>
               <ul className="mt-1 list-disc pr-4">
@@ -278,14 +278,14 @@ function RulesCatalogPage() {
                   <div key={s.id} className="rounded border p-2 text-xs">
                     <div className="flex flex-wrap items-center gap-2">
                       {ok ? (
-                        <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+                        <ShieldCheck className="h-3.5 w-3.5 text-success" />
                       ) : (
-                        <ShieldAlert className="h-3.5 w-3.5 text-amber-600" />
+                        <ShieldAlert className="h-3.5 w-3.5 text-warning" />
                       )}
                       <span className="font-mono text-[10px]">{s.id}</span>
                       <Badge
                         variant="outline"
-                        className={`text-[10px] ${ok ? "text-emerald-600" : "text-amber-600"}`}
+                        className={`text-[10px] ${ok ? "text-success" : "text-warning"}`}
                       >
                         {ok ? "متحقَّق" : "قيد التحقق"}
                       </Badge>
@@ -321,7 +321,7 @@ function Stat({
   tone?: "neutral" | "ok" | "warn";
 }) {
   const cls =
-    tone === "ok" ? "text-emerald-600" : tone === "warn" ? "text-amber-600" : "text-foreground";
+    tone === "ok" ? "text-success" : tone === "warn" ? "text-warning" : "text-foreground";
   return (
     <Card>
       <CardContent className="p-4 text-center">

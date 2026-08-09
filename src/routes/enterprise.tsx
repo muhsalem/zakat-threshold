@@ -286,9 +286,9 @@ const STATUS_META: Record<
   available: {
     label: "Available",
     label_ar: "متاح",
-    dot: "bg-emerald-500",
+    dot: "bg-success",
     badge:
-      "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/30",
+      "bg-success text-success border-success dark:bg-success/10 dark:text-success dark:border-success/30",
     icon: CheckCircle2,
   },
   beta: {
@@ -302,9 +302,9 @@ const STATUS_META: Record<
   development: {
     label: "In Development",
     label_ar: "قيد التطوير",
-    dot: "bg-amber-500",
+    dot: "bg-warning",
     badge:
-      "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/30",
+      "bg-warning text-warning border-warning dark:bg-warning/10 dark:text-warning dark:border-warning/30",
     icon: Clock,
   },
   planned: {
@@ -569,7 +569,7 @@ function EnterprisePage() {
                 </span>
                 <span>Enterprise Integrations</span>
                 <span className="text-muted-foreground">·</span>
-                <span className="text-[#0F766E] dark:text-emerald-400">التكامل المؤسسي</span>
+                <span className="text-[#0F766E] dark:text-success">التكامل المؤسسي</span>
               </h1>
               <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-base">
                 جاهزون للتكامل مع أشهر أنظمة ERP والمحاسبة والبنوك ومنصات الأعمال عبر REST API و
@@ -667,11 +667,11 @@ function EnterprisePage() {
                 className={cn(
                   "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-all duration-200",
                   availOnly
-                    ? "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
-                    : "border-border/60 bg-background text-muted-foreground hover:border-emerald-500/40",
+                    ? "border-success bg-success/10 text-success dark:text-success"
+                    : "border-border/60 bg-background text-muted-foreground hover:border-success/40",
                 )}
               >
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                <span className="h-1.5 w-1.5 rounded-full bg-success" />
                 المتاح فقط
               </button>
               <button
@@ -682,11 +682,11 @@ function EnterprisePage() {
                 className={cn(
                   "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-all duration-200",
                   comingOnly
-                    ? "border-amber-500 bg-amber-500/10 text-amber-700 dark:text-amber-300"
-                    : "border-border/60 bg-background text-muted-foreground hover:border-amber-500/40",
+                    ? "border-warning bg-warning/10 text-warning dark:text-warning"
+                    : "border-border/60 bg-background text-muted-foreground hover:border-warning/40",
                 )}
               >
-                <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                <span className="h-1.5 w-1.5 rounded-full bg-warning" />
                 قريباً
               </button>
             </div>

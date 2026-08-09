@@ -221,8 +221,8 @@ export default function LivestockDetailedForm() {
         </div>
 
         {!state.hasWaterAccess && (
-          <Alert variant="default" className="border-amber-500/40">
-            <AlertTriangle className="h-4 w-4 text-amber-600" />
+          <Alert variant="default" className="border-warning/40">
+            <AlertTriangle className="h-4 w-4 text-warning" />
             <AlertDescription className="text-sm">
               الأنعام التي تُشترى لها مياه بمصاريف مستمرة قد تخرج عن وصف السوم عند بعض الفقهاء —
               راجع مفتيك.
@@ -292,11 +292,11 @@ export default function LivestockDetailedForm() {
             <div className="text-xs text-muted-foreground pt-2 border-t">
               وصف الوعاء:{" "}
               {isGrazing ? (
-                <span className="text-emerald-600 font-medium">سائمة (تجب زكاة الأنعام)</span>
+                <span className="text-success font-medium">سائمة (تجب زكاة الأنعام)</span>
               ) : state.isForTrade ? (
                 <span className="text-blue-600 font-medium">عروض تجارة (2.5%)</span>
               ) : (
-                <span className="text-amber-600 font-medium">معلوفة (لا زكاة أنعام)</span>
+                <span className="text-warning font-medium">معلوفة (لا زكاة أنعام)</span>
               )}
             </div>
           </div>

@@ -309,11 +309,11 @@ export function OrgOverviewPanel({ orgId, orgName, currency }: Props) {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-xs font-normal text-muted-foreground flex items-center gap-1.5">
-                <UserCheck className="size-4 text-emerald-600" /> نشطون (30 يوم)
+                <UserCheck className="size-4 text-success" /> نشطون (30 يوم)
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-emerald-600">{kpis.activeLast30d}</div>
+              <div className="text-2xl font-bold text-success">{kpis.activeLast30d}</div>
               <p className="text-xs text-muted-foreground mt-1">
                 {kpis.members > 0
                   ? `${Math.round((kpis.activeLast30d / kpis.members) * 100)}٪ من الفريق`
@@ -349,21 +349,21 @@ export function OrgOverviewPanel({ orgId, orgName, currency }: Props) {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-xs font-normal text-muted-foreground flex items-center gap-1.5">
-                <Clock className="size-4 text-amber-600" /> معلَّقة
+                <Clock className="size-4 text-warning" /> معلَّقة
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-amber-600">{kpis.approvalsPending}</div>
+              <div className="text-2xl font-bold text-warning">{kpis.approvalsPending}</div>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-xs font-normal text-muted-foreground flex items-center gap-1.5">
-                <CheckCircle2 className="size-4 text-emerald-600" /> معتمَدة
+                <CheckCircle2 className="size-4 text-success" /> معتمَدة
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-emerald-600">{kpis.approvalsApproved}</div>
+              <div className="text-2xl font-bold text-success">{kpis.approvalsApproved}</div>
             </CardContent>
           </Card>
           <Card>
@@ -429,11 +429,11 @@ export function OrgOverviewPanel({ orgId, orgName, currency }: Props) {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-xs font-normal text-muted-foreground flex items-center gap-1.5">
-                <Clock className="size-4 text-amber-600" /> قيد الاعتماد
+                <Clock className="size-4 text-warning" /> قيد الاعتماد
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-amber-600">
+              <div className="text-2xl font-bold text-warning">
                 {fmtMoney.format(kpis.totalZakatPending)}
               </div>
               <p className="text-xs text-muted-foreground mt-1">
@@ -500,32 +500,32 @@ export function OrgOverviewPanel({ orgId, orgName, currency }: Props) {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-xs font-normal text-muted-foreground flex items-center gap-1.5">
-                <Clock className="size-4 text-amber-600" /> مرفقات قيد المراجعة
+                <Clock className="size-4 text-warning" /> مرفقات قيد المراجعة
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-amber-600">{kpis.attachmentsPending}</div>
+              <div className="text-2xl font-bold text-warning">{kpis.attachmentsPending}</div>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-xs font-normal text-muted-foreground flex items-center gap-1.5">
-                <FileCheck2 className="size-4 text-emerald-600" /> شهادات شرعية سارية
+                <FileCheck2 className="size-4 text-success" /> شهادات شرعية سارية
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-emerald-600">{kpis.attestationsValid}</div>
+              <div className="text-2xl font-bold text-success">{kpis.attestationsValid}</div>
               <p className="text-xs text-muted-foreground mt-1">خلال 12 شهر</p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-xs font-normal text-muted-foreground flex items-center gap-1.5">
-                <AlertTriangle className="size-4 text-amber-600" /> تنبيهات الحول
+                <AlertTriangle className="size-4 text-warning" /> تنبيهات الحول
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-amber-600">{kpis.hawlRemindersOpen}</div>
+              <div className="text-2xl font-bold text-warning">{kpis.hawlRemindersOpen}</div>
               <p className="text-xs text-muted-foreground mt-1">غير مقروءة</p>
             </CardContent>
           </Card>

@@ -180,13 +180,13 @@ function CoaMappingPage() {
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">{stats.mapped}</div>
+            <div className="text-2xl font-bold text-success">{stats.mapped}</div>
             <div className="text-xs text-muted-foreground">مربوطة</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-amber-600">{stats.missing}</div>
+            <div className="text-2xl font-bold text-warning">{stats.missing}</div>
             <div className="text-xs text-muted-foreground">تحتاج تصنيف</div>
           </CardContent>
         </Card>

@@ -31,11 +31,11 @@ const STATUS_LABEL: Record<ReviewStatus, string> = {
   cancelled: "ملغى",
 };
 const STATUS_COLOR: Record<ReviewStatus, string> = {
-  queued: "text-amber-600 border-amber-500/40",
+  queued: "text-warning border-warning/40",
   claimed: "text-primary border-primary/40",
   in_review: "text-primary border-primary/40",
   needs_info: "text-destructive border-destructive/40",
-  completed: "text-emerald-600 border-emerald-500/40",
+  completed: "text-success border-success/40",
   cancelled: "text-muted-foreground border-muted",
 };
 const KIND_LABEL: Record<string, string> = {
@@ -104,8 +104,8 @@ export function HumanReviewQueuePanel() {
 
   if (notAccountant) {
     return (
-      <Alert className="border-amber-500/40 bg-amber-500/5">
-        <Info className="h-4 w-4 text-amber-600" />
+      <Alert className="border-warning/40 bg-warning/5">
+        <Info className="h-4 w-4 text-warning" />
         <AlertDescription className="text-xs">
           طابور المراجعة البشرية متاح فقط لمن يحمل دور "محاسب" — لا تملك هذا الدور حالياً.
         </AlertDescription>

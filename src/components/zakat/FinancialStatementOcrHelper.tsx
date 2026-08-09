@@ -123,8 +123,8 @@ export function FinancialStatementOcrHelper({ onParsedData }: FinancialStatement
           </div>
         ) : (
           <div className="space-y-4">
-            <Alert className="border-emerald-500/40 bg-emerald-500/10">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+            <Alert className="border-success/40 bg-success/10">
+              <CheckCircle2 className="h-4 w-4 text-success" />
               <AlertDescription className="text-xs">
                 تم استخراج العناصر الزكوية التالية وفق المعيار المحاسبي AAOIFI FAS 9:
               </AlertDescription>
@@ -145,12 +145,12 @@ export function FinancialStatementOcrHelper({ onParsedData }: FinancialStatement
               </div>
               <div className="p-3 rounded-lg border bg-background">
                 <span className="text-muted-foreground">الالتزامات قصيرة الأجل (خصماً):</span>
-                <div className="font-bold text-sm text-rose-500 font-mono mt-0.5">-{fmt(parsed.shortTermLiabilities)} ر.س</div>
+                <div className="font-bold text-sm text-destructive font-mono mt-0.5">-{fmt(parsed.shortTermLiabilities)} ر.س</div>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
-              <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5" onClick={applyData}>
+              <Button size="sm" className="bg-success hover:bg-success text-white gap-1.5" onClick={applyData}>
                 <CheckCircle2 className="h-4 w-4" /> تطبيق البيانات في وعاء زكاة الشركة
               </Button>
               <Button size="sm" variant="outline" onClick={() => setParsed(null)}>

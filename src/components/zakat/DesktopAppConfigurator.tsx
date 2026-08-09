@@ -19,7 +19,7 @@ export function DesktopAppConfigurator() {
     >
       <CardHeader className="border-b bg-indigo-500/5 pb-4">
         <div className="flex items-center gap-2 mb-1">
-          <Badge className="bg-amber-600 text-white text-xs px-2.5 py-0.5">
+          <Badge className="bg-warning text-white text-xs px-2.5 py-0.5">
             <Laptop className="h-3.5 w-3.5 ms-1 inline" /> تطبيق سطح المكتب: قيد التطوير
           </Badge>
         </div>
@@ -33,8 +33,8 @@ export function DesktopAppConfigurator() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4 pt-5">
-        <Alert className="border-amber-500/40 bg-amber-500/5">
-          <Info className="h-4 w-4 text-amber-600" />
+        <Alert className="border-warning/40 bg-warning/5">
+          <Info className="h-4 w-4 text-warning" />
           <AlertDescription className="text-xs leading-relaxed">
             لا توجد بعد حزمة قابلة للتنزيل لأي نظام تشغيل. الجدول أدناه يعكس الحالة الفعلية فقط.
           </AlertDescription>
@@ -43,9 +43,9 @@ export function DesktopAppConfigurator() {
           {STATUS.map((s) => (
             <div key={s.label} className="flex items-center gap-2 rounded-lg border p-3">
               {s.done ? (
-                <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                <CheckCircle2 className="h-4 w-4 text-success shrink-0" />
               ) : (
-                <Clock className="h-4 w-4 text-amber-600 shrink-0" />
+                <Clock className="h-4 w-4 text-warning shrink-0" />
               )}
               <span className={s.done ? "text-foreground" : "text-muted-foreground"}>
                 {s.label}

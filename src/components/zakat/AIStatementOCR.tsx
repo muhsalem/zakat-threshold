@@ -210,7 +210,7 @@ export default function AIStatementOCR() {
               className="block w-full text-sm file:me-3 file:py-2 file:px-3 file:rounded-md file:border-0 file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
             />
             {imageBase64 && (
-              <div className="text-xs text-emerald-600 flex items-center gap-1">
+              <div className="text-xs text-success flex items-center gap-1">
                 <CheckCircle2 className="w-3.5 h-3.5" /> جاهزة للإرسال (
                 {Math.round((imageBase64.length * 3) / 4 / 1024)}KB)
               </div>
@@ -272,7 +272,7 @@ export default function AIStatementOCR() {
                       <td className="p-2 text-start tabular-nums">{fmt(it.amount)}</td>
                       <td className="p-2 text-center">
                         {it.zakatable ? (
-                          <CheckCircle2 className="w-4 h-4 text-emerald-600 inline" />
+                          <CheckCircle2 className="w-4 h-4 text-success inline" />
                         ) : (
                           <XCircle className="w-4 h-4 text-muted-foreground inline" />
                         )}
@@ -315,9 +315,9 @@ function Metric({
 }) {
   const cls =
     tone === "ok"
-      ? "bg-emerald-50 border-emerald-200 text-emerald-800"
+      ? "bg-success border-success text-success"
       : tone === "warn"
-        ? "bg-amber-50 border-amber-200 text-amber-800"
+        ? "bg-warning border-warning text-warning"
         : tone === "primary"
           ? "bg-primary/5 border-primary/40 text-primary"
           : "bg-muted/40 border-muted";

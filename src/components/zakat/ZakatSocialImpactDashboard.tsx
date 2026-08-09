@@ -46,12 +46,12 @@ export function ZakatSocialImpactDashboard({
   }, [totalZakatCollected]);
 
   return (
-    <Card className="border-emerald-600/30 shadow-md bg-card" dir="rtl">
-      <CardHeader className="bg-emerald-500/5 border-b pb-4">
+    <Card className="border-success/30 shadow-md bg-card" dir="rtl">
+      <CardHeader className="bg-success/5 border-b pb-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <CardTitle className="text-lg font-bold flex items-center gap-2">
-              <HeartHandshake className="h-5 w-5 text-emerald-600" />
+              <HeartHandshake className="h-5 w-5 text-success" />
               لوحة الأثر الاجتماعي والتنموي للزكاة (Impact Dashboard)
             </CardTitle>
             <CardDescription className="text-xs mt-0.5">
@@ -91,11 +91,11 @@ export function ZakatSocialImpactDashboard({
         {activeTab === "overview" && (
           <div className="space-y-5">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <div className="p-3.5 rounded-xl border bg-emerald-500/10 border-emerald-500/30">
-                <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 text-xs font-semibold mb-1">
-                  <Home className="h-4 w-4 text-emerald-600" /> أسر تم نقلها للإنتاج
+              <div className="p-3.5 rounded-xl border bg-success/10 border-success/30">
+                <div className="flex items-center gap-2 text-success dark:text-success text-xs font-semibold mb-1">
+                  <Home className="h-4 w-4 text-success" /> أسر تم نقلها للإنتاج
                 </div>
-                <div className="text-xl font-black text-emerald-600 dark:text-emerald-400">
+                <div className="text-xl font-black text-success dark:text-success">
                   {fmt(impactStats.familiesEmpowered)} <span className="text-xs font-normal">أسرة</span>
                 </div>
               </div>
@@ -132,9 +132,9 @@ export function ZakatSocialImpactDashboard({
             <div className="p-4 rounded-xl border space-y-3 bg-muted/20">
               <div className="flex items-center justify-between text-xs">
                 <span className="font-bold text-foreground">نسبة وصول الزكاة المباشرة للمستحقين (Direct Delivery Rate):</span>
-                <span className="font-extrabold text-emerald-600">98.5% (صفر اقتطاع إداري)</span>
+                <span className="font-extrabold text-success">98.5% (صفر اقتطاع إداري)</span>
               </div>
-              <Progress value={98.5} className="h-2 bg-emerald-200 dark:bg-emerald-950" />
+              <Progress value={98.5} className="h-2 bg-success dark:bg-success" />
               <p className="text-[11px] text-muted-foreground leading-relaxed">
                 يتم توجيه أموال الزكاة بالكامل إلى حسابات الجمعيات المعتمدة والمستحقين الفعليين دون احتساب أي مصاريف تشغيلية من أصل الزكاة.
               </p>
@@ -146,7 +146,7 @@ export function ZakatSocialImpactDashboard({
         {activeTab === "recipients" && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
             <div className="p-3 rounded-lg border bg-background space-y-1">
-              <div className="font-bold text-emerald-700 dark:text-emerald-300">1. الفقراء والمساكين (45%)</div>
+              <div className="font-bold text-success dark:text-success">1. الفقراء والمساكين (45%)</div>
               <p className="text-muted-foreground">تغطية الاحتياجات الأساسية للطعام والسكن والخدمات الطبية.</p>
             </div>
 
@@ -171,21 +171,21 @@ export function ZakatSocialImpactDashboard({
         {activeTab === "sdg" && (
           <div className="p-4 rounded-xl border bg-muted/30 space-y-3 text-xs">
             <h4 className="font-bold text-foreground flex items-center gap-1.5">
-              <Globe className="h-4 w-4 text-emerald-600" />
+              <Globe className="h-4 w-4 text-success" />
               التوافق مع أهداف التنمية المستدامة للأمم المتحدة (UN SDGs)
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-              <div className="p-2.5 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-900 dark:text-rose-200">
+              <div className="p-2.5 rounded-lg bg-destructive/10 border border-destructive/30 text-destructive dark:text-destructive">
                 <strong>SDG 1: القضاء على الفقر</strong>
                 <p className="text-[10px] mt-0.5">تحويل الأسر المعوزة إلى عناصر منتجة عبر القروض الحسنة والمشاريع.</p>
               </div>
 
-              <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-200">
+              <div className="p-2.5 rounded-lg bg-warning/10 border border-warning/30 text-warning dark:text-warning">
                 <strong>SDG 4: التعليم الجيد</strong>
                 <p className="text-[10px] mt-0.5">تمويل المنح الدراسية والمستلزمات التعليمية لطلاب الأسر العفيفة.</p>
               </div>
 
-              <div className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-900 dark:text-emerald-200">
+              <div className="p-2.5 rounded-lg bg-success/10 border border-success/30 text-success dark:text-success">
                 <strong>SDG 8: العمل اللائق والنمو</strong>
                 <p className="text-[10px] mt-0.5">تنمية المهارات الحرفية وتأسيس مشروعات صغيرة مستدامة.</p>
               </div>

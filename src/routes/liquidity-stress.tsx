@@ -117,11 +117,11 @@ function LiquidityStress() {
                     <td className="p-2 text-start tabular-nums">{x.runway.toFixed(1)}</td>
                     <td className="p-2 text-center">
                       {x.safe ? (
-                        <span className="inline-flex items-center gap-1 text-emerald-700 text-xs">
+                        <span className="inline-flex items-center gap-1 text-success text-xs">
                           <CheckCircle2 className="w-3.5 h-3.5" /> آمن
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 text-amber-700 text-xs">
+                        <span className="inline-flex items-center gap-1 text-warning text-xs">
                           <AlertTriangle className="w-3.5 h-3.5" /> تحذير
                         </span>
                       )}

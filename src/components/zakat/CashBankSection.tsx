@@ -1070,8 +1070,8 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
 
           {/* تطهير فوائد البطاقات الائتمانية */}
           {ccType === "traditional" && !ccUseWindow && (
-            <div className="rounded-md border border-amber-500/40 bg-amber-50 dark:bg-amber-950/20 p-3 space-y-2">
-              <div className="flex items-center gap-2 text-xs font-semibold text-amber-700 dark:text-amber-400">
+            <div className="rounded-md border border-warning/40 bg-warning dark:bg-warning/20 p-3 space-y-2">
+              <div className="flex items-center gap-2 text-xs font-semibold text-warning dark:text-warning">
                 💧 تطهير الفوائد الربوية (مستقل عن الزكاة)
               </div>
               <div className="space-y-1.5">
@@ -1096,10 +1096,10 @@ export function CashBankSection({ countryCode, currencyName, onTotalChange }: Pr
                 </div>
               </div>
               {num(ccInterestPaid) > 0 && (
-                <div className="rounded bg-amber-100 dark:bg-amber-900/30 px-3 py-2 text-xs space-y-1">
+                <div className="rounded bg-warning dark:bg-warning/30 px-3 py-2 text-xs space-y-1">
                   <div className="flex justify-between">
                     <span>المبلغ الواجب تطهيره (صرفه في وجوه الخير):</span>
-                    <b className="text-amber-700 dark:text-amber-400">{cur(num(ccInterestPaid))}</b>
+                    <b className="text-warning dark:text-warning">{cur(num(ccInterestPaid))}</b>
                   </div>
                   <p className="text-[11px] text-muted-foreground leading-relaxed">
                     <b>تنبيه شرعي:</b> هذا المبلغ لا يُحتسب من الزكاة. يُصرف في وجوه الخير العامة
@@ -1328,7 +1328,7 @@ function WalletGroup({
                   placeholder="اسم البنك المرتبط (للتوثيق)"
                   className="text-xs"
                 />
-                <div className="text-[11px] text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 rounded px-2 py-1 mt-1">
+                <div className="text-[11px] text-warning dark:text-warning bg-warning dark:bg-warning/30 rounded px-2 py-1 mt-1">
                   ⓘ مربوطة بحساب بنكي — لن تُحتسب هنا، تأكَّد من إدراج رصيد البنك في القسم المناسب.
                 </div>
               </div>

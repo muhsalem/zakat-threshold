@@ -271,7 +271,7 @@ export function TrialBalanceImport({ onMapped }: Props) {
               <Row label="ديون قصيرة الأجل" v={result.shortTermDebt} negative />
             </div>
             {unmapped.length > 0 && (
-              <div className="rounded-md border border-amber-500/40 bg-amber-500/5 p-2 text-[11px]">
+              <div className="rounded-md border border-warning/40 bg-warning/5 p-2 text-[11px]">
                 <b>حسابات لم تُصنَّف ({unmapped.length}):</b> {unmapped.join(" · ")}
               </div>
             )}

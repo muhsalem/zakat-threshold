@@ -12,7 +12,7 @@ import { ZAKAT_CATEGORIES, type ClassifiedRow } from "@/lib/erp/zakatMapping";
 
 const SEVERITY_STYLE: Record<ExceptionSeverity, { label: string; className: string }> = {
   blocking: { label: "حاجب للاعتماد", className: "bg-destructive/10 text-destructive border-destructive/30" },
-  warning: { label: "تنبيه", className: "bg-amber-500/10 text-amber-700 border-amber-500/30" },
+  warning: { label: "تنبيه", className: "bg-warning/10 text-warning border-warning/30" },
   info: { label: "معلومة", className: "bg-muted text-muted-foreground" },
 };
 
@@ -44,8 +44,8 @@ export function ExceptionsQueuePanel({ rows }: ExceptionsQueuePanelProps) {
       </CardHeader>
       <CardContent className="space-y-3">
         {result.canApprove ? (
-          <Alert className="border-emerald-500/30 bg-emerald-500/5">
-            <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+          <Alert className="border-success/30 bg-success/5">
+            <CheckCircle2 className="h-4 w-4 text-success" />
             <AlertDescription className="text-xs">
               لا توجد استثناءات حاجبة — يجوز عرض الحساب على الاعتماد.
             </AlertDescription>

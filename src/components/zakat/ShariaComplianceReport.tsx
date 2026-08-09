@@ -31,9 +31,9 @@ const SEVERITY_META: Record<
   FindingSeverity,
   { label: string; icon: typeof CheckCircle2; cls: string }
 > = {
-  pass: { label: "مطابق", icon: CheckCircle2, cls: "text-emerald-600" },
+  pass: { label: "مطابق", icon: CheckCircle2, cls: "text-success" },
   info: { label: "ملاحظة", icon: Info, cls: "text-sky-600" },
-  warning: { label: "تنبيه", icon: AlertTriangle, cls: "text-amber-600" },
+  warning: { label: "تنبيه", icon: AlertTriangle, cls: "text-warning" },
   violation: { label: "مخالفة", icon: XCircle, cls: "text-destructive" },
 };
 
@@ -68,9 +68,9 @@ export function ShariaComplianceReport({ review }: { review: ShariaReviewResult 
   return (
     <div className="space-y-3" dir="rtl">
       <div
-        className={`flex items-center gap-3 rounded-lg border p-3 ${ok ? "border-emerald-500/40 bg-emerald-500/5" : "border-destructive/40 bg-destructive/5"}`}
+        className={`flex items-center gap-3 rounded-lg border p-3 ${ok ? "border-success/40 bg-success/5" : "border-destructive/40 bg-destructive/5"}`}
       >
-        <ShieldIcon className={`h-8 w-8 ${ok ? "text-emerald-600" : "text-destructive"}`} />
+        <ShieldIcon className={`h-8 w-8 ${ok ? "text-success" : "text-destructive"}`} />
         <div className="flex-1">
           <div className="text-sm font-bold">المراجعة الشرعية الشاملة — {review.grade}</div>
           <div className="text-[11px] text-muted-foreground">
@@ -80,7 +80,7 @@ export function ShariaComplianceReport({ review }: { review: ShariaReviewResult 
         </div>
         <div className="text-center">
           <div
-            className={`text-2xl font-black tabular-nums ${ok ? "text-emerald-600" : "text-destructive"}`}
+            className={`text-2xl font-black tabular-nums ${ok ? "text-success" : "text-destructive"}`}
           >
             {review.score}
           </div>

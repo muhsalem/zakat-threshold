@@ -59,7 +59,7 @@ export default function InflationAdjusterCard({ currencyName = "ج.م" }: Props)
           </div>
           <div>
             <div className="text-muted-foreground">فرق التضخم</div>
-            <div className="font-bold text-lg text-amber-600">
+            <div className="font-bold text-lg text-warning">
               {fmt(result.realLoss)} {currencyName}
             </div>
           </div>

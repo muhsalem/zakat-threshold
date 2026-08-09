@@ -181,7 +181,7 @@ export function ZakatCrmManager() {
               size="sm"
               className="bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur gap-1.5 text-xs"
             >
-              <FileSpreadsheet className="h-4 w-4 text-emerald-300" /> تصدير CRM Excel
+              <FileSpreadsheet className="h-4 w-4 text-success" /> تصدير CRM Excel
             </Button>
           </div>
         </div>
@@ -203,9 +203,9 @@ export function ZakatCrmManager() {
           </CardContent>
         </Card>
 
-        <Card className="border-emerald-500/20 bg-emerald-500/5">
+        <Card className="border-success/20 bg-success/5">
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-600">
+            <div className="p-2.5 rounded-xl bg-success/10 text-success">
               <User className="h-5 w-5" />
             </div>
             <div>

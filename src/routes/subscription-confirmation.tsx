@@ -230,7 +230,7 @@ function SubscriptionConfirmationPage() {
         {phase === "pending" && (
           <Card>
             <CardContent className="pt-10 pb-8 text-center space-y-3">
-              <Loader2 className="h-12 w-12 animate-spin text-amber-500 mx-auto" />
+              <Loader2 className="h-12 w-12 animate-spin text-warning mx-auto" />
               <h1 className="text-xl font-bold">جارٍ معالجة الدفع</h1>
               <p className="text-sm text-muted-foreground">
                 قد يستغرق التأكيد بضع دقائق — ستصلك رسالة عند اكتماله.
@@ -259,10 +259,10 @@ function SubscriptionConfirmationPage() {
 
         {phase === "ready" && (
           <>
-            <Card className="border-emerald-500/40 bg-emerald-500/5">
+            <Card className="border-success/40 bg-success/5">
               <CardContent className="pt-8 pb-6 text-center space-y-3">
-                <CheckCircle2 className="h-14 w-14 text-emerald-600 mx-auto" />
-                <h1 className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">
+                <CheckCircle2 className="h-14 w-14 text-success mx-auto" />
+                <h1 className="text-2xl font-bold text-success dark:text-success">
                   تم تأكيد اشتراكك بنجاح 🎉
                 </h1>
                 <p className="text-sm text-muted-foreground">

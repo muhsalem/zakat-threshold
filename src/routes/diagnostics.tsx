@@ -47,8 +47,8 @@ export const Route = createFileRoute("/diagnostics")({
 });
 
 const ICONS = {
-  ok: <CheckCircle2 className="h-4 w-4 text-emerald-600" />,
-  warn: <AlertTriangle className="h-4 w-4 text-amber-500" />,
+  ok: <CheckCircle2 className="h-4 w-4 text-success" />,
+  warn: <AlertTriangle className="h-4 w-4 text-warning" />,
   fail: <XCircle className="h-4 w-4 text-destructive" />,
   running: <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />,
 };
@@ -98,7 +98,7 @@ function DiagnosticsPage() {
                 <Loader2 className="h-3.5 w-3.5 animate-spin" /> جارٍ الفحص
               </Badge>
             ) : healthy ? (
-              <Badge className="bg-emerald-600 hover:bg-emerald-600 gap-1">
+              <Badge className="bg-success hover:bg-success gap-1">
                 <CheckCircle2 className="h-3.5 w-3.5" /> كل شيء سليم
               </Badge>
             ) : (

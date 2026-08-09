@@ -72,19 +72,19 @@ export function VoiceZakatAssistant({ onVoiceCommand }: VoiceZakatAssistantProps
   };
 
   return (
-    <Card className="border-emerald-500/30 bg-card shadow-sm" dir="rtl">
-      <CardHeader className="bg-emerald-500/5 border-b pb-3">
+    <Card className="border-success/30 bg-card shadow-sm" dir="rtl">
+      <CardHeader className="bg-success/5 border-b pb-3">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
             <CardTitle className="text-sm font-bold flex items-center gap-2">
-              <Mic className="h-4 w-4 text-emerald-600" />
+              <Mic className="h-4 w-4 text-success" />
               المساعد والتوجيه الصوتي الآلي (Voice Assistant)
             </CardTitle>
             <CardDescription className="text-xs">
               تحدث بمدخراتك أو استفسارك الفقهي ليقوم النظام بإدخالها وتوجيهك آلياً.
             </CardDescription>
           </div>
-          <Badge variant="outline" className="text-emerald-700 border-emerald-500/40 text-[10px]">
+          <Badge variant="outline" className="text-success border-success/40 text-[10px]">
             سهولة الاستخدام لكبار السن
           </Badge>
         </div>
@@ -95,7 +95,7 @@ export function VoiceZakatAssistant({ onVoiceCommand }: VoiceZakatAssistantProps
             size="sm"
             onClick={toggleListening}
             className={`gap-2 text-xs font-bold ${
-              isListening ? "bg-rose-600 hover:bg-rose-700 animate-pulse text-white" : "bg-emerald-600 hover:bg-emerald-700 text-white"
+              isListening ? "bg-destructive hover:bg-destructive animate-pulse text-white" : "bg-success hover:bg-success text-white"
             }`}
           >
             {isListening ? (
@@ -110,12 +110,12 @@ export function VoiceZakatAssistant({ onVoiceCommand }: VoiceZakatAssistantProps
           </Button>
 
           <Button size="sm" variant="outline" onClick={speakGuide} className="gap-1.5 text-xs">
-            <Volume2 className="h-4 w-4 text-emerald-600" /> استمع للشرح الصوتي
+            <Volume2 className="h-4 w-4 text-success" /> استمع للشرح الصوتي
           </Button>
         </div>
 
         {transcript && (
-          <div className="text-xs p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-900 dark:text-emerald-200">
+          <div className="text-xs p-2 rounded-lg bg-success/10 border border-success/30 text-success dark:text-success">
             <strong>النص الملتقط:</strong> "{transcript}"
           </div>
         )}

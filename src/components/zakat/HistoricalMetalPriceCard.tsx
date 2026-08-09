@@ -24,9 +24,9 @@ function fmt(n: number, d = 2) {
 }
 
 const REL_STYLE = {
-  direct: "bg-emerald-500/15 text-emerald-700 border-emerald-500/40",
-  derived: "bg-amber-500/15 text-amber-700 border-amber-500/40",
-  estimated: "bg-rose-500/15 text-rose-700 border-rose-500/40",
+  direct: "bg-success/15 text-success border-success/40",
+  derived: "bg-warning/15 text-warning border-warning/40",
+  estimated: "bg-destructive/15 text-destructive border-destructive/40",
 } as const;
 
 const REL_LABEL = { direct: "مباشر", derived: "مشتق", estimated: "تقديري" } as const;

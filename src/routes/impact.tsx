@@ -94,7 +94,7 @@ function Stat({
     tone === "primary"
       ? "border-primary/40 bg-primary/5"
       : tone === "ok"
-        ? "border-emerald-300 bg-emerald-50"
+        ? "border-success bg-success"
         : "";
   return (
     <Card className={cls}>

@@ -98,7 +98,7 @@ function kindMeta(kind: ChangeEntry["kind"]) {
       return {
         label: "إضافة",
         icon: Plus,
-        className: "bg-emerald-500/10 text-emerald-700 border-emerald-500/20",
+        className: "bg-success/10 text-success border-success/20",
       };
     case "updated":
       return {
@@ -110,7 +110,7 @@ function kindMeta(kind: ChangeEntry["kind"]) {
       return {
         label: "نسخ",
         icon: AlertTriangle,
-        className: "bg-amber-500/10 text-amber-700 border-amber-500/20",
+        className: "bg-warning/10 text-warning border-warning/20",
       };
   }
 }

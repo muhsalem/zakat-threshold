@@ -2067,8 +2067,8 @@ export function CompanyTab() {
             </Card>
 
             {orgKind === "nonprofit" && (
-              <Alert className="border-amber-500/30 bg-amber-500/5">
-                <Info className="h-4 w-4 text-amber-600" />
+              <Alert className="border-warning/30 bg-warning/5">
+                <Info className="h-4 w-4 text-warning" />
                 <AlertDescription className="text-xs">
                   المؤسسات غير الربحية لا تجب عليها الزكاة في الأصل (لانتفاء الملك التام والقصد
                   التجاري). يبقى التدقيق الشرعي لازماً لمواردها ومصارفها، مع وجوب زكاة عروض التجارة
@@ -2162,8 +2162,8 @@ export function CompanyTab() {
                   </div>
 
                   {calc.warnings.length > 0 && (
-                    <Alert className="border-amber-500/40 bg-amber-500/5 mb-3">
-                      <AlertTriangle className="h-4 w-4 text-amber-600" />
+                    <Alert className="border-warning/40 bg-warning/5 mb-3">
+                      <AlertTriangle className="h-4 w-4 text-warning" />
                       <AlertDescription className="text-xs space-y-1">
                         <div className="font-semibold">
                           تنبيهات تحقق المدخلات / Input validation warnings:
@@ -2441,8 +2441,8 @@ export function CompanyTab() {
                           />
                         </div>
                         {num(loanInterest) > 0 && (
-                          <Alert className="border-amber-500/30 bg-amber-500/5 mt-2">
-                            <AlertTriangle className="h-4 w-4 text-amber-600" />
+                          <Alert className="border-warning/30 bg-warning/5 mt-2">
+                            <AlertTriangle className="h-4 w-4 text-warning" />
                             <AlertDescription className="text-xs">
                               الفوائد الربوية ({cFmt(num(loanInterest), currencyName)}) لا يُعتد بها
                               شرعاً ولا تُخصم من الوعاء — الراجح خصم أصل القرض فقط.

@@ -153,12 +153,12 @@ const ORG = {
 function StatusBadge({ s }: { s: string }) {
   if (s === "approved")
     return (
-      <Badge className="bg-emerald-500">
+      <Badge className="bg-success">
         <CheckCircle2 className="h-3 w-3 ms-1" />
         معتمد
       </Badge>
     );
-  if (s === "pending") return <Badge className="bg-amber-500">قيد المراجعة</Badge>;
+  if (s === "pending") return <Badge className="bg-warning">قيد المراجعة</Badge>;
   return <Badge variant="outline">{s}</Badge>;
 }
 
@@ -243,7 +243,7 @@ function DemoPage() {
                       </TableRow>
                       <TableRow>
                         <TableCell>الالتزامات</TableCell>
-                        <TableCell className="text-start text-rose-600">
+                        <TableCell className="text-start text-destructive">
                           −{fmt(p.liabilities, p.currency)}
                         </TableCell>
                       </TableRow>
@@ -291,7 +291,7 @@ function DemoPage() {
                       <TableRow key={i}>
                         <TableCell>{b.item}</TableCell>
                         <TableCell
-                          className={"text-start " + (b.amount < 0 ? "text-rose-600" : "")}
+                          className={"text-start " + (b.amount < 0 ? "text-destructive" : "")}
                         >
                           {fmt(b.amount, c.currency)}
                         </TableCell>
@@ -325,7 +325,7 @@ function DemoPage() {
                     مدققون شرعيون
                   </div>
                 </div>
-                <Badge className="bg-emerald-500">
+                <Badge className="bg-success">
                   <FileCheck className="h-3 w-3 ms-1" />
                   موزّعة بالكامل
                 </Badge>
@@ -339,9 +339,9 @@ function DemoPage() {
                     {fmt(ORG.collected, ORG.currency)}
                   </div>
                 </div>
-                <div className="rounded-lg border p-4 text-center bg-emerald-500/5">
+                <div className="rounded-lg border p-4 text-center bg-success/5">
                   <div className="text-xs text-muted-foreground">إجمالي الموزَّع</div>
-                  <div className="text-3xl font-bold text-emerald-600 mt-1">
+                  <div className="text-3xl font-bold text-success mt-1">
                     {fmt(
                       Object.values(ORG.distributed).reduce((a, b) => a + b, 0),
                       ORG.currency,

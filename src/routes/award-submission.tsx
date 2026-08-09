@@ -198,7 +198,7 @@ function AwardSubmissionPage() {
 
       {/* Hero */}
       <section className="container mx-auto px-4 pt-10 pb-6 text-center">
-        <Badge className="mb-4 bg-amber-500/15 text-amber-700 border-amber-500/30">
+        <Badge className="mb-4 bg-warning/15 text-warning border-warning/30">
           <Award className="h-3.5 w-3.5 ms-1" /> جائزة الابتكار في الاقتصاد الإسلامي — قطر
         </Badge>
         <h1 className="text-3xl md:text-5xl font-bold mb-3 leading-tight">
@@ -214,8 +214,8 @@ function AwardSubmissionPage() {
 
       <main className="container mx-auto px-4 pb-16 space-y-6">
         {/* Innovation Isolation Alert */}
-        <Alert className="border-amber-500/40 bg-amber-500/5">
-          <Lightbulb className="h-4 w-4 text-amber-600" />
+        <Alert className="border-warning/40 bg-warning/5">
+          <Lightbulb className="h-4 w-4 text-warning" />
           <AlertTitle className="font-bold">
             المكوّن المبتكر المرشَّح (الجديد غير المطبَّق سابقاً)
           </AlertTitle>
@@ -307,9 +307,9 @@ function AwardSubmissionPage() {
             </Card>
 
             <Card className="shadow-soft">
-              <CardHeader className="bg-gradient-to-l from-emerald-500/10 to-transparent">
+              <CardHeader className="bg-gradient-to-l from-success/10 to-transparent">
                 <CardTitle className="flex items-center gap-2 text-base">
-                  <Globe className="h-5 w-5 text-emerald-600" />
+                  <Globe className="h-5 w-5 text-success" />
                   Executive Summary — One Page (English)
                 </CardTitle>
               </CardHeader>
@@ -366,7 +366,7 @@ function AwardSubmissionPage() {
                   <ul className="space-y-1.5 text-sm">
                     {a.points.map((p, i) => (
                       <li key={i} className="flex gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />{" "}
+                        <CheckCircle2 className="h-4 w-4 text-success shrink-0 mt-0.5" />{" "}
                         <span>{p}</span>
                       </li>
                     ))}
@@ -399,7 +399,7 @@ function AwardSubmissionPage() {
                           <Badge variant="outline" className="text-[10px]">
                             وزن {c.weight}٪
                           </Badge>
-                          <Badge className="bg-emerald-500/15 text-emerald-700 border-emerald-500/30">
+                          <Badge className="bg-success/15 text-success border-success/30">
                             {c.score} / {c.weight}
                           </Badge>
                         </div>
@@ -408,8 +408,8 @@ function AwardSubmissionPage() {
                     </div>
                   ))}
                 </div>
-                <Alert className="mt-4 border-emerald-500/30 bg-emerald-500/5">
-                  <TrendingUp className="h-4 w-4 text-emerald-600" />
+                <Alert className="mt-4 border-success/30 bg-success/5">
+                  <TrendingUp className="h-4 w-4 text-success" />
                   <AlertDescription className="text-xs">
                     <b>التقدير الذاتي:</b> {weightedTotal}/100 — مرشّح جدّي للمراكز الأولى بعد
                     استكمال خطاب المراجعة الأكاديمية وتحديث ShariaBoardCard.
@@ -504,9 +504,9 @@ function AwardSubmissionPage() {
                   ].map((it, i) => (
                     <li key={i} className="flex items-start gap-2">
                       <CheckCircle2
-                        className={`h-4 w-4 mt-0.5 shrink-0 ${it.ok ? "text-emerald-600" : "text-amber-500"}`}
+                        className={`h-4 w-4 mt-0.5 shrink-0 ${it.ok ? "text-success" : "text-warning"}`}
                       />
-                      <span className={it.ok ? "" : "text-amber-700"}>{it.t}</span>
+                      <span className={it.ok ? "" : "text-warning"}>{it.t}</span>
                     </li>
                   ))}
                 </ul>

@@ -603,7 +603,7 @@ function ZakatFitrPage() {
                                 {e.totalCash.toLocaleString("ar-EG", { maximumFractionDigits: 2 })}
                               </td>
                               <td
-                                className={`border p-2 text-xs ${d > 0 ? "text-emerald-600" : d < 0 ? "text-destructive" : "text-muted-foreground"}`}
+                                className={`border p-2 text-xs ${d > 0 ? "text-success" : d < 0 ? "text-destructive" : "text-muted-foreground"}`}
                               >
                                 {prev ? `${d >= 0 ? "+" : ""}${p.toFixed(1)}%` : "—"}
                               </td>

@@ -170,27 +170,27 @@ export function ProfessionsZakatSection({
   }, [calcs, selectedProfession, onZakatChange]);
 
   return (
-    <Card className="border-emerald-600/30 bg-card shadow-sm" dir="rtl">
-      <CardHeader className="bg-emerald-500/5 border-b pb-4">
+    <Card className="border-success/30 bg-card shadow-sm" dir="rtl">
+      <CardHeader className="bg-success/5 border-b pb-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <CardTitle className="text-base font-bold flex items-center gap-2">
-              <Briefcase className="h-5 w-5 text-emerald-600" />
+              <Briefcase className="h-5 w-5 text-success" />
               تبويب زكاة دخل المهن والأنشطة الإضافية
             </CardTitle>
             <CardDescription className="text-xs mt-0.5">
               اختر مهنتك أو نشاطك الشخصي لحساب زكاة الدخل والبدلات والمكافآت التخصصية مع ضابط منع الازدواج.
             </CardDescription>
           </div>
-          <Badge variant="outline" className="text-emerald-700 border-emerald-500/40 text-xs w-fit flex items-center gap-1">
-            <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" /> حماية عدم الازدواج الشرعي
+          <Badge variant="outline" className="text-success border-success/40 text-xs w-fit flex items-center gap-1">
+            <ShieldCheck className="h-3.5 w-3.5 text-success" /> حماية عدم الازدواج الشرعي
           </Badge>
         </div>
       </CardHeader>
       <CardContent className="space-y-5 pt-5">
         {/* شريط تنبيه شرعي لمنع الازدواج */}
-        <Alert className="border-emerald-500/40 bg-emerald-500/10 text-emerald-950 dark:text-emerald-100">
-          <ShieldCheck className="h-4 w-4 text-emerald-600 mt-0.5" />
+        <Alert className="border-success/40 bg-success/10 text-success dark:text-success">
+          <ShieldCheck className="h-4 w-4 text-success mt-0.5" />
           <AlertTitle className="text-xs font-bold">ضابط الفقه الشرعي لمنع الازدواج الزكوي (AAOIFI 35):</AlertTitle>
           <AlertDescription className="text-[11px] leading-relaxed mt-0.5">
             قال النبي ﷺ: <em>«لا تُثَنَّى الصَّدَقَةُ فِي عَامٍ»</em>. المال المدخر من المهنة يُزكى مرة واحدة فقط عن السنة؛ إما ضمن رصيدك بالبنك في قسم السيولة أو هنا فور استلامه، لضمان عدم الخصم أو التثنية المزدوجة.
@@ -206,11 +206,11 @@ export function ProfessionsZakatSection({
               onClick={() => setSelectedProfession("teacher")}
               className={`p-2.5 rounded-xl border text-center flex flex-col items-center gap-1.5 transition-all text-xs ${
                 selectedProfession === "teacher"
-                  ? "border-emerald-600 bg-emerald-500/10 font-bold text-emerald-900 dark:text-emerald-200 ring-2 ring-emerald-500/30"
+                  ? "border-success bg-success/10 font-bold text-success dark:text-success ring-2 ring-success/30"
                   : "hover:bg-muted/60 text-muted-foreground"
               }`}
             >
-              <GraduationCap className="h-5 w-5 text-emerald-600" />
+              <GraduationCap className="h-5 w-5 text-success" />
               <span>المعلمون والتربويون</span>
             </button>
 
@@ -219,7 +219,7 @@ export function ProfessionsZakatSection({
               onClick={() => setSelectedProfession("doctor")}
               className={`p-2.5 rounded-xl border text-center flex flex-col items-center gap-1.5 transition-all text-xs ${
                 selectedProfession === "doctor"
-                  ? "border-emerald-600 bg-emerald-500/10 font-bold text-emerald-900 dark:text-emerald-200 ring-2 ring-emerald-500/30"
+                  ? "border-success bg-success/10 font-bold text-success dark:text-success ring-2 ring-success/30"
                   : "hover:bg-muted/60 text-muted-foreground"
               }`}
             >
@@ -232,7 +232,7 @@ export function ProfessionsZakatSection({
               onClick={() => setSelectedProfession("engineer")}
               className={`p-2.5 rounded-xl border text-center flex flex-col items-center gap-1.5 transition-all text-xs ${
                 selectedProfession === "engineer"
-                  ? "border-emerald-600 bg-emerald-500/10 font-bold text-emerald-900 dark:text-emerald-200 ring-2 ring-emerald-500/30"
+                  ? "border-success bg-success/10 font-bold text-success dark:text-success ring-2 ring-success/30"
                   : "hover:bg-muted/60 text-muted-foreground"
               }`}
             >
@@ -245,11 +245,11 @@ export function ProfessionsZakatSection({
               onClick={() => setSelectedProfession("lawyer")}
               className={`p-2.5 rounded-xl border text-center flex flex-col items-center gap-1.5 transition-all text-xs ${
                 selectedProfession === "lawyer"
-                  ? "border-emerald-600 bg-emerald-500/10 font-bold text-emerald-900 dark:text-emerald-200 ring-2 ring-emerald-500/30"
+                  ? "border-success bg-success/10 font-bold text-success dark:text-success ring-2 ring-success/30"
                   : "hover:bg-muted/60 text-muted-foreground"
               }`}
             >
-              <Scale className="h-5 w-5 text-amber-600" />
+              <Scale className="h-5 w-5 text-warning" />
               <span>المحاماة والقانون</span>
             </button>
 
@@ -258,7 +258,7 @@ export function ProfessionsZakatSection({
               onClick={() => setSelectedProfession("freelancer")}
               className={`p-2.5 rounded-xl border text-center flex flex-col items-center gap-1.5 transition-all text-xs ${
                 selectedProfession === "freelancer"
-                  ? "border-emerald-600 bg-emerald-500/10 font-bold text-emerald-900 dark:text-emerald-200 ring-2 ring-emerald-500/30"
+                  ? "border-success bg-success/10 font-bold text-success dark:text-success ring-2 ring-success/30"
                   : "hover:bg-muted/60 text-muted-foreground"
               }`}
             >
@@ -271,7 +271,7 @@ export function ProfessionsZakatSection({
               onClick={() => setSelectedProfession("craftsman")}
               className={`p-2.5 rounded-xl border text-center flex flex-col items-center gap-1.5 transition-all text-xs ${
                 selectedProfession === "craftsman"
-                  ? "border-emerald-600 bg-emerald-500/10 font-bold text-emerald-900 dark:text-emerald-200 ring-2 ring-emerald-500/30"
+                  ? "border-success bg-success/10 font-bold text-success dark:text-success ring-2 ring-success/30"
                   : "hover:bg-muted/60 text-muted-foreground"
               }`}
             >
@@ -302,7 +302,7 @@ export function ProfessionsZakatSection({
           {/* 1. حقول المعلمين */}
           {selectedProfession === "teacher" && (
             <div className="space-y-3">
-              <h4 className="text-xs font-bold flex items-center gap-1.5 text-emerald-800 dark:text-emerald-300">
+              <h4 className="text-xs font-bold flex items-center gap-1.5 text-success dark:text-success">
                 <GraduationCap className="h-4 w-4" /> بنود دخل المعلم والتربوي
               </h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
@@ -425,7 +425,7 @@ export function ProfessionsZakatSection({
           {/* 4. حقول المحامين */}
           {selectedProfession === "lawyer" && (
             <div className="space-y-3">
-              <h4 className="text-xs font-bold flex items-center gap-1.5 text-amber-800 dark:text-amber-300">
+              <h4 className="text-xs font-bold flex items-center gap-1.5 text-warning dark:text-warning">
                 <Scale className="h-4 w-4" /> بنود دخل المحامي والاستشارة القانونية
               </h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -512,12 +512,12 @@ export function ProfessionsZakatSection({
           {/* المدخر الفعلي عند الحول للمهنة */}
           {!alreadyInCashBank && (
             <div className="border-t pt-3 mt-2 space-y-1.5">
-              <Label className="text-xs font-semibold text-emerald-800 dark:text-emerald-300">
+              <Label className="text-xs font-semibold text-success dark:text-success">
                 المدخرات والسيولة القائمة المتبقية من دخل المهنة عند حلول الحول (إن لم تكن مدخلة بالبنك):
               </Label>
               <Input
                 type="number"
-                className="border-emerald-500/40 font-bold"
+                className="border-success/40 font-bold"
                 placeholder="مثال: أدخل رصيد الحساب الادخاري المتبقي نهاية العام"
                 value={professionSavedCapital}
                 onChange={(e) => setProfessionSavedCapital(e.target.value)}
@@ -530,12 +530,12 @@ export function ProfessionsZakatSection({
         </div>
 
         {/* نتيجة الوعاء للمهنة */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 rounded-xl bg-success/10 border border-success/30">
           <div className="space-y-0.5 text-right w-full sm:w-auto">
             <div className="text-xs text-muted-foreground font-medium flex items-center gap-1">
               الوعاء الزكوي لـ ({calcs.title}):
               {calcs.isDoubleCountGuarded && (
-                <Badge variant="secondary" className="text-[10px] bg-emerald-600 text-white">
+                <Badge variant="secondary" className="text-[10px] bg-success text-white">
                   محمي من الازدواج
                 </Badge>
               )}
@@ -547,10 +547,10 @@ export function ProfessionsZakatSection({
           </div>
 
           <div className="text-left w-full sm:w-auto border-t sm:border-t-0 pt-2 sm:pt-0">
-            <div className="text-xs text-emerald-800 dark:text-emerald-300 font-semibold">
+            <div className="text-xs text-success dark:text-success font-semibold">
               الزكاة المحسوبة للمهنة (2.5%):
             </div>
-            <div className="text-lg font-black text-emerald-600 dark:text-emerald-400">
+            <div className="text-lg font-black text-success dark:text-success">
               {fmt(calcs.zakatDue)} {currencyName}
             </div>
           </div>

@@ -202,7 +202,7 @@ function PdfTemplatesPage() {
               >
                 <div className="min-w-0">
                   <div className="text-sm font-medium truncate flex items-center gap-1">
-                    {t.is_default && <Star className="h-3 w-3 text-amber-500 fill-amber-500" />}
+                    {t.is_default && <Star className="h-3 w-3 text-warning fill-warning" />}
                     {t.name}
                   </div>
                   <Badge variant="secondary" className="text-xs mt-1">

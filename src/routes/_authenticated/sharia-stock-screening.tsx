@@ -78,26 +78,26 @@ export const Route = createFileRoute("/_authenticated/sharia-stock-screening")({
 });
 
 const toneColor = {
-  pass: "text-emerald-600",
-  warn: "text-amber-600",
+  pass: "text-success",
+  warn: "text-warning",
   fail: "text-destructive",
 } as const;
 const toneBg = {
-  pass: "border-emerald-500/40 bg-emerald-500/5",
-  warn: "border-amber-500/40 bg-amber-500/5",
+  pass: "border-success/40 bg-success/5",
+  warn: "border-warning/40 bg-warning/5",
   fail: "border-destructive/40 bg-destructive/5",
 } as const;
 const statusLabel = { pass: "ضمن الحد", warning: "قرب الحد", fail: "تجاوز الحد" } as const;
 const statusColor = {
-  pass: "text-emerald-600",
-  warning: "text-amber-600",
+  pass: "text-success",
+  warning: "text-warning",
   fail: "text-destructive",
 } as const;
 const sevLabel = { high: "جوهرية", medium: "متوسطة", low: "ثانوية" } as const;
 const sevColor = {
   high: "text-destructive",
-  medium: "text-amber-600",
-  low: "text-emerald-600",
+  medium: "text-warning",
+  low: "text-success",
 } as const;
 
 function fileToBase64(file: File): Promise<string> {
@@ -369,8 +369,8 @@ function ShariaStockScreeningPage() {
           </div>
         </header>
 
-        <Alert className="border-amber-500/40 bg-amber-500/5">
-          <Info className="h-4 w-4 text-amber-600" />
+        <Alert className="border-warning/40 bg-warning/5">
+          <Info className="h-4 w-4 text-warning" />
           <AlertDescription className="text-xs leading-relaxed">
             أداة فرز آلية استرشادية مكمّلة لحاسبة الزكاة، لا بديل عنها ولا عن هيئة رقابة شرعية
             معتمدة. الأرقام تُستخرج بالذكاء الاصطناعي من ملف PDF ثم تُحسب النسب والأحكام برمجياً
@@ -694,8 +694,8 @@ function ShariaStockScreeningPage() {
               <Button onClick={() => setStage("idle")}>ملف جديد</Button>
             </div>
 
-            <Alert className="border-amber-500/40 bg-amber-500/5">
-              <AlertTriangle className="h-4 w-4 text-amber-600" />
+            <Alert className="border-warning/40 bg-warning/5">
+              <AlertTriangle className="h-4 w-4 text-warning" />
               <AlertDescription className="text-xs">
                 نطاق التدقيق: فرز شرعي كمي ونوعي لما تُظهره القوائم، مُكمَّل باستبيان فحص العقود
                 أدناه. المنهجية المطبقة: <b>{audit.methodology.name}</b> (المقام:{" "}
@@ -706,8 +706,8 @@ function ShariaStockScreeningPage() {
             {audit.verification &&
               !audit.verification.singlePass &&
               audit.verification.unconfirmed.length === 0 && (
-                <Alert className="border-emerald-500/40 bg-emerald-500/5">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                <Alert className="border-success/40 bg-success/5">
+                  <CheckCircle2 className="h-4 w-4 text-success" />
                   <AlertDescription className="text-xs">
                     نجح التحقق بالاستخراج المزدوج — تطابقت جميع الأرقام الجوهرية (فارق أقل من ١٪).
                   </AlertDescription>
@@ -742,8 +742,8 @@ function ShariaStockScreeningPage() {
               </Alert>
             )}
             {audit.ex.statementType === "مستقلة" && (
-              <Alert className="border-amber-500/40 bg-amber-500/5">
-                <AlertTriangle className="h-4 w-4 text-amber-600" />
+              <Alert className="border-warning/40 bg-warning/5">
+                <AlertTriangle className="h-4 w-4 text-warning" />
                 <AlertDescription className="text-xs">
                   قوائم مستقلة لا مجمعة — النتائج تخص الشركة الأم فقط وقد تختلف جوهرياً على مستوى
                   المجموعة.
@@ -867,7 +867,7 @@ function ShariaStockScreeningPage() {
                             className={
                               c.debt > c.methodology.debtLimit
                                 ? "text-destructive font-bold"
-                                : "text-emerald-600 font-bold"
+                                : "text-success font-bold"
                             }
                           >
                             {fmtNum(c.debt)}٪{" "}
@@ -879,7 +879,7 @@ function ShariaStockScreeningPage() {
                             className={
                               c.dep > c.methodology.depLimit
                                 ? "text-destructive font-bold"
-                                : "text-emerald-600 font-bold"
+                                : "text-success font-bold"
                             }
                           >
                             {fmtNum(c.dep)}٪{" "}
@@ -891,7 +891,7 @@ function ShariaStockScreeningPage() {
                             className={
                               c.inc > c.methodology.incLimit
                                 ? "text-destructive font-bold"
-                                : "text-emerald-600 font-bold"
+                                : "text-success font-bold"
                             }
                           >
                             {fmtNum(c.inc)}٪{" "}
@@ -904,7 +904,7 @@ function ShariaStockScreeningPage() {
                               {c.passAll ? "مجتازة" : "غير مجتازة"}
                             </Badge>
                             {c.needsMarket && (
-                              <div className="text-[10px] text-amber-600 mt-1">
+                              <div className="text-[10px] text-warning mt-1">
                                 تتطلب متوسط القيمة السوقية — احتُسبت ببديل
                               </div>
                             )}
@@ -955,7 +955,7 @@ function ShariaStockScreeningPage() {
                                 وديعة بفائدة
                               </Badge>
                             </TableCell>
-                            <TableCell className="text-amber-600 font-bold">
+                            <TableCell className="text-warning font-bold">
                               {fmtNum(d.amount)}
                             </TableCell>
                             <TableCell className="text-muted-foreground text-xs">
@@ -1000,8 +1000,8 @@ function ShariaStockScreeningPage() {
                                   it.classification === "غير متوافقة"
                                     ? "text-destructive"
                                     : it.classification === "تحتاج فحصاً"
-                                      ? "text-amber-600"
-                                      : "text-emerald-600"
+                                      ? "text-warning"
+                                      : "text-success"
                                 }
                               >
                                 {it.classification}
@@ -1019,7 +1019,7 @@ function ShariaStockScreeningPage() {
               </Card>
             )}
 
-            <Card className="border-amber-500/40 bg-amber-500/5">
+            <Card className="border-warning/40 bg-warning/5">
               <CardHeader>
                 <CardTitle className="text-base">خامساً: التطهير الواجب</CardTitle>
               </CardHeader>
@@ -1062,7 +1062,7 @@ function ShariaStockScreeningPage() {
                       <div className="flex justify-between gap-2">
                         <span className="font-semibold text-sm">{g.item}</span>
                         <span
-                          className={`text-xs font-bold ${g.status === "yes" ? "text-emerald-600" : g.status === "partial" ? "text-amber-600" : "text-destructive"}`}
+                          className={`text-xs font-bold ${g.status === "yes" ? "text-success" : g.status === "partial" ? "text-warning" : "text-destructive"}`}
                         >
                           {g.status === "yes"
                             ? "متوفر"
@@ -1186,7 +1186,7 @@ function ShariaStockScreeningPage() {
                 رقم التقرير: <b>{current.payload.meta.id}</b> · التاريخ:{" "}
                 <b>{current.payload.meta.time}</b> · الملف: <b>{current.payload.meta.fileName}</b>
                 {current.payload.meta.edited && (
-                  <Badge variant="outline" className="mr-2 text-amber-600 text-[10px]">
+                  <Badge variant="outline" className="mr-2 text-warning text-[10px]">
                     عُدِّلت أرقام مستخرَجة يدوياً قبل الاحتساب
                   </Badge>
                 )}

@@ -43,10 +43,10 @@ const ACTION_LABEL: Record<string, string> = {
 
 const ACTION_STYLE: Record<string, string> = {
   insert: "bg-blue-100 text-blue-800 border-blue-300",
-  update: "bg-amber-100 text-amber-800 border-amber-300",
-  delete: "bg-red-100 text-red-800 border-red-300",
-  approve: "bg-emerald-100 text-emerald-800 border-emerald-300",
-  reject: "bg-rose-100 text-rose-800 border-rose-300",
+  update: "bg-warning text-warning border-warning",
+  delete: "bg-destructive text-destructive border-destructive",
+  approve: "bg-success text-success border-success",
+  reject: "bg-destructive text-destructive border-destructive",
   reopen: "bg-purple-100 text-purple-800 border-purple-300",
 };
 
@@ -342,13 +342,13 @@ export function OrgAuditLogPanel({ orgId }: { orgId: string }) {
                           <div className="grid grid-cols-2 gap-2">
                             <div>
                               <div className="text-[10px] text-muted-foreground">قبل</div>
-                              <pre className="bg-red-50 text-red-900 p-1.5 rounded text-[10px] overflow-auto max-h-40">
+                              <pre className="bg-destructive text-destructive p-1.5 rounded text-[10px] overflow-auto max-h-40">
                                 {formatVal(detail.before_state?.[f])}
                               </pre>
                             </div>
                             <div>
                               <div className="text-[10px] text-muted-foreground">بعد</div>
-                              <pre className="bg-emerald-50 text-emerald-900 p-1.5 rounded text-[10px] overflow-auto max-h-40">
+                              <pre className="bg-success text-success p-1.5 rounded text-[10px] overflow-auto max-h-40">
                                 {formatVal(detail.after_state?.[f])}
                               </pre>
                             </div>

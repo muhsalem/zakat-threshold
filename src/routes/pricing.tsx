@@ -55,7 +55,7 @@ function PlanCard({ plan, countryCode }: { plan: Plan; countryCode: string | nul
         )}
         <p className="text-sm text-muted-foreground">{plan.tagline}</p>
         {plan.ribbon && (
-          <div className="text-xs font-medium text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 rounded px-2 py-1">
+          <div className="text-xs font-medium text-warning dark:text-warning bg-warning dark:bg-warning/30 border border-warning dark:border-warning rounded px-2 py-1">
             ★ {plan.ribbon}
           </div>
         )}

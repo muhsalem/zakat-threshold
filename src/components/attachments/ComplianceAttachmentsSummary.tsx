@@ -67,8 +67,8 @@ export default function ComplianceAttachmentsSummary({
     coverage.missingRequired > 0
       ? { color: "text-destructive", label: "غير مكتمل — مستندات إلزامية ناقصة" }
       : coverage.score === 100
-        ? { color: "text-emerald-600", label: "مكتمل الامتثال" }
-        : { color: "text-amber-600", label: "مقبول — يوجد مستندات موصى بها ناقصة" };
+        ? { color: "text-success", label: "مكتمل الامتثال" }
+        : { color: "text-warning", label: "مقبول — يوجد مستندات موصى بها ناقصة" };
 
   return (
     <Card>
@@ -125,11 +125,11 @@ export default function ComplianceAttachmentsSummary({
 function CoverageItem({ row, items }: { row: CoverageRow; items: AttachmentLite[] }) {
   const icon =
     row.status === "covered" ? (
-      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+      <CheckCircle2 className="w-4 h-4 text-success" />
     ) : row.status === "missing_required" ? (
       <XCircle className="w-4 h-4 text-destructive" />
     ) : (
-      <AlertCircle className="w-4 h-4 text-amber-600" />
+      <AlertCircle className="w-4 h-4 text-warning" />
     );
 
   return (

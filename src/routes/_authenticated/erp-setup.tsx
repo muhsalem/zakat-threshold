@@ -350,7 +350,7 @@ function ErpSetupPage() {
                     variant={c.last_test_status.startsWith("ok") ? "default" : "destructive"}
                     className={
                       c.last_test_status.startsWith("ok")
-                        ? "bg-emerald-600 hover:bg-emerald-600 gap-1"
+                        ? "bg-success hover:bg-success gap-1"
                         : "gap-1"
                     }
                   >
@@ -410,7 +410,7 @@ function ErpSetupPage() {
                       {l.amount?.toFixed(2)} {l.currency}
                     </span>
                     {l.status === "success" ? (
-                      <Badge className="bg-emerald-600 hover:bg-emerald-600 gap-1">
+                      <Badge className="bg-success hover:bg-success gap-1">
                         <CheckCircle2 className="h-3 w-3" />
                         {l.external_id}
                       </Badge>

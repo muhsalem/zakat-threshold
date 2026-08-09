@@ -138,8 +138,8 @@ export function ShariaStandardsCard({ defaultSector = "general" }: Props) {
           </Accordion>
 
           {std.note && (
-            <div className="rounded-md border border-amber-500/40 bg-amber-500/5 p-2.5 text-[11px] leading-relaxed flex items-start gap-2">
-              <Info className="h-3.5 w-3.5 text-amber-600 mt-0.5 shrink-0" />
+            <div className="rounded-md border border-warning/40 bg-warning/5 p-2.5 text-[11px] leading-relaxed flex items-start gap-2">
+              <Info className="h-3.5 w-3.5 text-warning mt-0.5 shrink-0" />
               <span>
                 <b>تنبيه — موضع اجتهاد/خلاف:</b> {std.note}
               </span>

@@ -47,17 +47,17 @@ const JOB_LABEL: Record<string, string> = {
 const STATUS_META: Record<string, { label: string; className: string; icon: any }> = {
   success: {
     label: "نجاح",
-    className: "bg-emerald-500/10 text-emerald-600 border-emerald-500/30",
+    className: "bg-success/10 text-success border-success/30",
     icon: CheckCircle2,
   },
   partial: {
     label: "جزئي",
-    className: "bg-amber-500/10 text-amber-600 border-amber-500/30",
+    className: "bg-warning/10 text-warning border-warning/30",
     icon: AlertTriangle,
   },
   error: {
     label: "خطأ",
-    className: "bg-red-500/10 text-red-600 border-red-500/30",
+    className: "bg-destructive/10 text-destructive border-destructive/30",
     icon: AlertCircle,
   },
 };
@@ -211,7 +211,7 @@ function PricesAuditPage() {
                           {r.fallback_used ? (
                             <Badge
                               variant="outline"
-                              className="bg-amber-500/10 text-amber-700 border-amber-500/30"
+                              className="bg-warning/10 text-warning border-warning/30"
                             >
                               {r.fallback_source ?? "used"}
                             </Badge>
@@ -297,7 +297,7 @@ function AuditDetailsDialog({ row, onClose }: { row: AuditRow | null; onClose: (
             </div>
 
             {row.error_message && (
-              <div className="rounded-md border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-700">
+              <div className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive">
                 <div className="font-semibold mb-1">رسالة الخطأ</div>
                 <div className="break-words" dir="ltr">
                   {row.error_message}
@@ -344,8 +344,8 @@ function AuditDetailsDialog({ row, onClose }: { row: AuditRow | null; onClose: (
                             variant="outline"
                             className={
                               Number(req.status) >= 400
-                                ? "bg-red-500/10 text-red-600 border-red-500/30"
-                                : "bg-emerald-500/10 text-emerald-600 border-emerald-500/30"
+                                ? "bg-destructive/10 text-destructive border-destructive/30"
+                                : "bg-success/10 text-success border-success/30"
                             }
                           >
                             {req.status}
@@ -359,7 +359,7 @@ function AuditDetailsDialog({ row, onClose }: { row: AuditRow | null; onClose: (
                         {req.url ?? req.endpoint ?? "—"}
                       </div>
                       {req.error && (
-                        <div className="mt-1 text-red-600 break-words">{String(req.error)}</div>
+                        <div className="mt-1 text-destructive break-words">{String(req.error)}</div>
                       )}
                     </div>
                   ))}
@@ -426,11 +426,11 @@ function StatCard({
 }) {
   const toneClass =
     tone === "emerald"
-      ? "text-emerald-600"
+      ? "text-success"
       : tone === "amber"
-        ? "text-amber-600"
+        ? "text-warning"
         : tone === "red"
-          ? "text-red-600"
+          ? "text-destructive"
           : "text-foreground";
   return (
     <Card>

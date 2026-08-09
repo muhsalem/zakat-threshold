@@ -73,7 +73,7 @@ export function ZakatFinancialSimulator({
             <div className="space-y-2">
               <div className="flex justify-between text-xs">
                 <Label className="font-bold">تسديد ديون وخصومات قبل الحول:</Label>
-                <span className="font-mono text-rose-500 font-bold">-{fmt(debtAdjustment)} {currencyName}</span>
+                <span className="font-mono text-destructive font-bold">-{fmt(debtAdjustment)} {currencyName}</span>
               </div>
               <Slider
                 value={[debtAdjustment]}
@@ -96,18 +96,18 @@ export function ZakatFinancialSimulator({
 
             <div className="space-y-1 border-t pt-2">
               <span className="text-xs text-muted-foreground">الزكاة المستحقة المحاكاة (2.5%):</span>
-              <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono">
+              <div className="text-2xl font-black text-success dark:text-success font-mono">
                 {fmt(simulatedZakat.zakatDue)} {currencyName}
               </div>
             </div>
 
             <div className="flex items-center gap-1.5 text-xs font-semibold pt-1">
               {simulatedZakat.deltaZakat < 0 ? (
-                <div className="flex items-center gap-1 text-emerald-600">
+                <div className="flex items-center gap-1 text-success">
                   <TrendingDown className="h-4 w-4" /> توفير في الزكاة بمقدار {fmt(Math.abs(simulatedZakat.deltaZakat))} {currencyName}
                 </div>
               ) : simulatedZakat.deltaZakat > 0 ? (
-                <div className="flex items-center gap-1 text-amber-600">
+                <div className="flex items-center gap-1 text-warning">
                   <TrendingUp className="h-4 w-4" /> زيادة في الزكاة بمقدار {fmt(simulatedZakat.deltaZakat)} {currencyName}
                 </div>
               ) : (

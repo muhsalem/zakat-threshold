@@ -202,7 +202,7 @@ function CertifiedReportPage() {
 
           <section className="border-t pt-4">
             <h3 className="font-bold mb-2 flex items-center gap-1.5">
-              <ShieldCheck className="h-4 w-4 text-emerald-600" /> البصمة الشرعية
+              <ShieldCheck className="h-4 w-4 text-success" /> البصمة الشرعية
             </h3>
             <div className="grid md:grid-cols-2 gap-3 text-xs">
               <div>

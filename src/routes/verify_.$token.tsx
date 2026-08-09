@@ -37,13 +37,13 @@ function VerifyReportPage() {
           {isLoading ? (
             <p>جاري التحقق…</p>
           ) : !data?.found ? (
-            <div className="flex items-center gap-2 text-red-600">
+            <div className="flex items-center gap-2 text-destructive">
               <XCircle className="h-5 w-5" />
               <span>لم يُعثر على تقرير بهذا الرمز.</span>
             </div>
           ) : (
             <>
-              <div className="flex items-center gap-2 text-emerald-700">
+              <div className="flex items-center gap-2 text-success">
                 <CheckCircle2 className="h-5 w-5" />
                 <span className="font-medium">تقرير أصلي صادر عن منصة نِصاب</span>
               </div>

@@ -264,7 +264,7 @@ function DistributionPlanPage() {
         <Card>
           <CardContent className="p-4 text-center">
             <div
-              className={`text-2xl font-bold ${sumPct === 100 ? "text-green-600" : "text-amber-600"}`}
+              className={`text-2xl font-bold ${sumPct === 100 ? "text-success" : "text-warning"}`}
             >
               {sumPct}%
             </div>
@@ -280,7 +280,7 @@ function DistributionPlanPage() {
         <Card>
           <CardContent className="p-4 text-center">
             <div
-              className={`text-2xl font-bold ${remaining === 0 ? "text-green-600" : "text-primary"}`}
+              className={`text-2xl font-bold ${remaining === 0 ? "text-success" : "text-primary"}`}
             >
               {remaining.toLocaleString()}
             </div>

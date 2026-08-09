@@ -143,7 +143,7 @@ export function MultiJurisdictionSelector({
           <p className="text-indigo-900 dark:text-indigo-200 font-semibold">{currentConfig.authority}</p>
 
           <div className="pt-1 border-t text-[11px] text-muted-foreground leading-relaxed flex items-center gap-1.5">
-            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+            <CheckCircle2 className="h-3.5 w-3.5 text-success shrink-0" />
             <span>{currentConfig.taxExemptNote}</span>
           </div>
         </div>

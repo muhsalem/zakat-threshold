@@ -405,8 +405,8 @@ function AccountantPortal() {
           <TabsTrigger value="crm" className="gap-1.5 bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 font-bold border border-indigo-500/30">
             <Users className="h-3.5 w-3.5 text-indigo-600" /> إدارة علاقات العُملاء (CRM)
           </TabsTrigger>
-          <TabsTrigger value="review-queue" className="gap-1.5 bg-amber-500/10 text-amber-700 dark:text-amber-300 font-bold border border-amber-500/30">
-            <Inbox className="h-3.5 w-3.5 text-amber-600" /> طابور المراجعة البشرية
+          <TabsTrigger value="review-queue" className="gap-1.5 bg-warning/10 text-warning dark:text-warning font-bold border border-warning/30">
+            <Inbox className="h-3.5 w-3.5 text-warning" /> طابور المراجعة البشرية
           </TabsTrigger>
           <TabsTrigger value="clients" className="gap-1.5">
             <Users className="h-3.5 w-3.5" /> العملاء والمحفظة
@@ -473,7 +473,7 @@ function AccountantPortal() {
               note="تجاوزوا موعد الحول"
             />
             <Kpi
-              icon={<AlertTriangle className="h-4 w-4 text-amber-500" />}
+              icon={<AlertTriangle className="h-4 w-4 text-warning" />}
               label="تحتاج تدخل"
               value={String(totals.needsAttention)}
               note="نواقص بيانات"
@@ -668,9 +668,9 @@ function AccountantPortal() {
                               {errors > 0 ? (
                                 <AlertTriangle className="h-3.5 w-3.5 text-destructive" />
                               ) : warns > 0 ? (
-                                <AlertTriangle className="h-3.5 w-3.5 text-amber-500" />
+                                <AlertTriangle className="h-3.5 w-3.5 text-warning" />
                               ) : (
-                                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                                <CheckCircle2 className="h-3.5 w-3.5 text-success" />
                               )}
                               <span className="text-xs">{score}%</span>
                             </div>
@@ -861,9 +861,9 @@ function FilterSelect({
 function StatusBadge({ status }: { status: ClientStatus }) {
   const styles: Record<ClientStatus, string> = {
     new: "bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/30",
-    in_progress: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30",
+    in_progress: "bg-warning/10 text-warning dark:text-warning border-warning/30",
     review: "bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/30",
-    completed: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30",
+    completed: "bg-success/10 text-success dark:text-success border-success/30",
     archived: "bg-muted text-muted-foreground border-border",
   };
   return (
@@ -1030,15 +1030,15 @@ function CalcModeGate() {
             onClick={() => setMode("individual")}
           />
           <GateCard
-            color="from-emerald-500/15 to-emerald-500/5 border-emerald-500/30"
-            icon={<Building2 className="h-6 w-6 text-emerald-600" />}
+            color="from-success/15 to-success/5 border-success/30"
+            icon={<Building2 className="h-6 w-6 text-success" />}
             title="زكاة الشركات والمؤسسات"
             desc="عروض التجارة، المخزون، الذمم، الالتزامات."
             onClick={() => setMode("company")}
           />
           <GateCard
-            color="from-amber-500/15 to-amber-500/5 border-amber-500/30"
-            icon={<Calculator className="h-6 w-6 text-amber-600" />}
+            color="from-warning/15 to-warning/5 border-warning/30"
+            icon={<Calculator className="h-6 w-6 text-warning" />}
             title="زكاة الفطر"
             desc="حسب عدد أفراد الأسرة قبيل عيد الفطر."
             onClick={() => setMode("fitr")}

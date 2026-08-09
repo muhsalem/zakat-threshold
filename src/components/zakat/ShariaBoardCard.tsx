@@ -18,23 +18,23 @@ const VERIFIED_SHARIA_BOARD: VerifiedShariaBoardEntry[] = [];
 export function ShariaBoardCard() {
   const hasVerifiedBoard = VERIFIED_SHARIA_BOARD.length > 0;
   return (
-    <Card className="border-emerald-600/40 bg-gradient-to-br from-emerald-950/20 via-background to-teal-950/10 shadow-lg" dir="rtl">
-      <CardHeader className="border-b bg-emerald-500/5 pb-4">
+    <Card className="border-success/40 bg-gradient-to-br from-success/20 via-background to-teal-950/10 shadow-lg" dir="rtl">
+      <CardHeader className="border-b bg-success/5 pb-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <Badge
-                className={hasVerifiedBoard ? "bg-emerald-600 text-white text-xs px-2.5 py-0.5" : "bg-amber-600 text-white text-xs px-2.5 py-0.5"}
+                className={hasVerifiedBoard ? "bg-success text-white text-xs px-2.5 py-0.5" : "bg-warning text-white text-xs px-2.5 py-0.5"}
               >
                 <ShieldCheck className="h-3.5 w-3.5 ms-1 inline" />
                 {hasVerifiedBoard ? "معتمد شرعياً موثَّقاً" : "الاعتماد الشرعي المؤسسي: قيد الإجراء"}
               </Badge>
-              <Badge variant="outline" className="border-emerald-500/40 text-emerald-700 dark:text-emerald-300 text-xs">
+              <Badge variant="outline" className="border-success/40 text-success dark:text-success text-xs">
                 خوارزميات مبنية وفق AAOIFI Standard 35
               </Badge>
             </div>
             <CardTitle className="text-xl font-bold flex items-center gap-2 text-foreground">
-              <Award className="h-6 w-6 text-emerald-600" />
+              <Award className="h-6 w-6 text-success" />
               الاعتماد الفقهي والهيئة الشرعية المستقلة
             </CardTitle>
             <CardDescription className="text-xs leading-relaxed">
@@ -47,7 +47,7 @@ export function ShariaBoardCard() {
       </CardHeader>
       <CardContent className="space-y-6 pt-6">
         {!hasVerifiedBoard && (
-          <div className="rounded-xl border border-amber-500/40 bg-amber-500/5 p-4 text-xs leading-relaxed text-muted-foreground">
+          <div className="rounded-xl border border-warning/40 bg-warning/5 p-4 text-xs leading-relaxed text-muted-foreground">
             <b className="text-foreground">للمستخدم: </b>
             هذه المنصة تطبّق خوارزمياً معايير AAOIFI 35 وAAOIFI 9 وقرارات مجمع الفقه الإسلامي الدولي كما هي منشورة،
             لكنها لا تحمل حتى الآن اعتماداً من هيئة رقابة شرعية مستقلة موقِّعة. لا تُغني نتائج الحاسبة عن مراجعة مفتٍ
@@ -58,7 +58,7 @@ export function ShariaBoardCard() {
         {hasVerifiedBoard && (
           <div className="space-y-3">
             <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-              <Users className="h-4 w-4 text-emerald-600" /> أعضاء الهيئة الشرعية الموثَّقون
+              <Users className="h-4 w-4 text-success" /> أعضاء الهيئة الشرعية الموثَّقون
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {VERIFIED_SHARIA_BOARD.map((m) => (
@@ -69,7 +69,7 @@ export function ShariaBoardCard() {
                     href={m.contractUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-[11px] text-emerald-600 hover:underline flex items-center gap-1"
+                    className="text-[11px] text-success hover:underline flex items-center gap-1"
                   >
                     <FileCheck className="h-3 w-3" /> عقد التعاقد الموقَّع ({m.contractSignedAt})
                   </a>
@@ -82,33 +82,33 @@ export function ShariaBoardCard() {
         {/* المرجعيات والقرارات المعتمدة */}
         <div className="rounded-xl border p-4 bg-muted/20 space-y-3">
           <h4 className="text-xs font-bold flex items-center gap-1.5 text-foreground">
-            <BookOpen className="h-4 w-4 text-emerald-600" />
+            <BookOpen className="h-4 w-4 text-success" />
             القرارات والمراجع الفقهية والمحاسبية المعتمدة في النظام
           </h4>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 text-xs">
             <div className="flex items-center gap-1.5 p-2 rounded-lg bg-background border">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+              <CheckCircle2 className="h-4 w-4 text-success shrink-0" />
               <span>معيار AAOIFI رقم 35 (زكاة الأنشطة)</span>
             </div>
             <div className="flex items-center gap-1.5 p-2 rounded-lg bg-background border">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+              <CheckCircle2 className="h-4 w-4 text-success shrink-0" />
               <span>معيار AAOIFI المحاسبي رقم 9</span>
             </div>
             <div className="flex items-center gap-1.5 p-2 rounded-lg bg-background border">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+              <CheckCircle2 className="h-4 w-4 text-success shrink-0" />
               <span>قرارات مجمع الفقه الإسلامي الدولي</span>
             </div>
             <div className="flex items-center gap-1.5 p-2 rounded-lg bg-background border">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+              <CheckCircle2 className="h-4 w-4 text-success shrink-0" />
               <span>توصيات ندوات قضايا الزكاة المعاصرة</span>
             </div>
           </div>
         </div>
 
         {/* التعهّد الفقهي والمحاسبي */}
-        <div className="p-4 rounded-xl bg-emerald-600/10 border border-emerald-600/30 text-xs leading-relaxed space-y-1">
-          <div className="font-bold text-emerald-900 dark:text-emerald-200 flex items-center gap-1.5">
-            <ShieldCheck className="h-4 w-4 text-emerald-600" /> تعهد الأمانة الشرعية والمحاسبية
+        <div className="p-4 rounded-xl bg-success/10 border border-success/30 text-xs leading-relaxed space-y-1">
+          <div className="font-bold text-success dark:text-success flex items-center gap-1.5">
+            <ShieldCheck className="h-4 w-4 text-success" /> تعهد الأمانة الشرعية والمحاسبية
           </div>
           <p className="text-muted-foreground">
             نتعهد أمام الله تعالى بأن جميع المعادلت الحسابية الصادرة من منصة نِصاب تعمل بدقة دون أي تدخل ربحي أو اقتطاع من أموال الزكاة، وتخضع لمراجعة خوارزميات التدقيق المستمرة للحفاظ على براءة ذمة المزكي أمام الله.

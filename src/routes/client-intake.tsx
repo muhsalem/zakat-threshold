@@ -405,7 +405,7 @@ function ClientIntakePage() {
     const isComp = submitted === "comprehensive";
     return (
       <main className="container mx-auto max-w-2xl px-4 py-16 text-center space-y-4" dir="rtl">
-        <CheckCircle2 className="h-16 w-16 text-emerald-500 mx-auto" />
+        <CheckCircle2 className="h-16 w-16 text-success mx-auto" />
         <h1 className="text-3xl font-bold">تم استلام بياناتك بنجاح</h1>
         <p className="text-muted-foreground leading-relaxed">
           {isComp

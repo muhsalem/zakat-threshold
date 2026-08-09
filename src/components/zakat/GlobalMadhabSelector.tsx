@@ -44,7 +44,7 @@ export default function GlobalMadhabSelector({ compact = false }: Props) {
   const Row = ({ ok, text }: { ok: boolean; text: string }) => (
     <div className="flex items-center gap-2 text-xs">
       {ok ? (
-        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+        <CheckCircle2 className="w-3.5 h-3.5 text-success shrink-0" />
       ) : (
         <XCircle className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
       )}

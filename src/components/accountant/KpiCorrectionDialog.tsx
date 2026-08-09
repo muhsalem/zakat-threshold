@@ -271,7 +271,7 @@ export function KpiCorrectionDialog({
         {suggestions.length === 0 ? (
           <Alert>
             <AlertDescription className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+              <CheckCircle2 className="h-4 w-4 text-success" />
               لا توجد ملاحظات لهذا الإقرار.
             </AlertDescription>
           </Alert>
@@ -313,7 +313,7 @@ export function KpiCorrectionDialog({
                         {s.before}
                       </div>
                     </div>
-                    <div className="rounded bg-emerald-500/10 p-2">
+                    <div className="rounded bg-success/10 p-2">
                       <div className="text-muted-foreground">بعد</div>
                       <div dir="ltr" className="font-medium">
                         {s.after}
@@ -327,7 +327,7 @@ export function KpiCorrectionDialog({
         )}
 
         {chosen.length > 0 && (
-          <label className="flex items-start gap-2 rounded-md border p-3 bg-amber-500/5">
+          <label className="flex items-start gap-2 rounded-md border p-3 bg-warning/5">
             <Checkbox
               id="confirm-accountant"
               checked={confirmed}
@@ -335,7 +335,7 @@ export function KpiCorrectionDialog({
             />
             <div className="text-xs leading-relaxed">
               <div className="font-medium flex items-center gap-1.5">
-                <AlertTriangle className="h-3.5 w-3.5 text-amber-600" /> تأكيد المحاسب
+                <AlertTriangle className="h-3.5 w-3.5 text-warning" /> تأكيد المحاسب
               </div>
               أُقرّ بأنني راجعتُ التعديلات المقترحة وأوافق على تطبيقها وإعادة احتساب الزكاة على هذا
               الإقرار.

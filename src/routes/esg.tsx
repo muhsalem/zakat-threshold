@@ -37,7 +37,7 @@ function EsgPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
-              <Leaf className="h-4 w-4 text-green-600" /> البيئي
+              <Leaf className="h-4 w-4 text-success" /> البيئي
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-1">

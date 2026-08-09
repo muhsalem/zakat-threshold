@@ -191,7 +191,7 @@ function Hero() {
           </div>
           <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground pt-2">
             <span className="inline-flex items-center gap-1">
-              <ShieldCheck className="h-4 w-4 text-emerald-500" /> بيانات مشفّرة
+              <ShieldCheck className="h-4 w-4 text-success" /> بيانات مشفّرة
             </span>
             <span className="inline-flex items-center gap-1">
               <Clock className="h-4 w-4 text-primary" /> تقرير فوري
@@ -209,7 +209,7 @@ function Hero() {
               <div className="text-sm font-semibold flex items-center gap-2">
                 <FileText className="h-4 w-4 text-primary" /> تقرير الزكاة السنوي
               </div>
-              <Badge className="bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border-0">
+              <Badge className="bg-success/15 text-success dark:text-success border-0">
                 جاهز للتنزيل
               </Badge>
             </div>
@@ -222,7 +222,7 @@ function Hero() {
             <div className="border-t pt-3 flex items-center justify-between text-xs text-muted-foreground">
               <span>حساب آلي حتمي — لا اجتهاد بشري في الأرقام</span>
               <span className="inline-flex items-center gap-1">
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> مطابق AAOIFI 35
+                <CheckCircle2 className="h-3.5 w-3.5 text-success" /> مطابق AAOIFI 35
               </span>
             </div>
           </div>
@@ -246,7 +246,7 @@ function StatMini({
       ? "text-primary"
       : tone === "gold"
         ? // درجة أدكن نهاراً لتحقيق تباين WCAG AA؛ الذهبي الفاتح يبقى للوضع الداكن
-          "text-amber-700 dark:text-gold"
+          "text-warning dark:text-gold"
         : "text-foreground";
   return (
     <div className="rounded-lg border bg-background/50 p-3">
@@ -268,7 +268,7 @@ function TrustBar() {
         <span className="font-semibold text-foreground/70">نطبّق فعلياً:</span>
         {items.map((i) => (
           <span key={i} className="inline-flex items-center gap-1.5">
-            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+            <CheckCircle2 className="h-3.5 w-3.5 text-success" />
             {i}
           </span>
         ))}
@@ -515,7 +515,7 @@ function AudienceCard({
         <ul className="space-y-2 text-sm">
           {points.map((p) => (
             <li key={p} className="flex items-start gap-2">
-              <CheckCircle2 className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" />
+              <CheckCircle2 className="h-4 w-4 text-success mt-0.5 shrink-0" />
               <span>{p}</span>
             </li>
           ))}
@@ -723,7 +723,7 @@ function PlanCardHome({ plan }: { plan: CatalogPlan }) {
         )}
         <p className="text-xs text-muted-foreground">{plan.tagline}</p>
         {plan.ribbon && (
-          <div className="text-[11px] font-medium text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 rounded px-2 py-0.5">
+          <div className="text-[11px] font-medium text-warning dark:text-warning bg-warning dark:bg-warning/30 border border-warning dark:border-warning rounded px-2 py-0.5">
             ★ {plan.ribbon}
           </div>
         )}
@@ -732,7 +732,7 @@ function PlanCardHome({ plan }: { plan: CatalogPlan }) {
         <ul className="space-y-1.5 text-xs flex-1">
           {plan.features.map((f) => (
             <li key={f} className="flex items-start gap-2">
-              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />
+              <CheckCircle2 className="h-3.5 w-3.5 text-success mt-0.5 shrink-0" />
               <span>{f}</span>
             </li>
           ))}
@@ -808,7 +808,7 @@ function PriceCard({
         <ul className="space-y-2 text-sm">
           {features.map((f) => (
             <li key={f} className="flex items-start gap-2">
-              <CheckCircle2 className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" />
+              <CheckCircle2 className="h-4 w-4 text-success mt-0.5 shrink-0" />
               <span>{f}</span>
             </li>
           ))}

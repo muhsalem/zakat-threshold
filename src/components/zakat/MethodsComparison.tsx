@@ -124,13 +124,13 @@ export function MethodsComparison({
                 ? {
                     icon: <TrendingUp className="h-3 w-3" />,
                     tag: "الأعلى",
-                    cls: "bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/30",
+                    cls: "bg-destructive/10 text-destructive dark:text-destructive border-destructive/30",
                   }
                 : it.zakat === rows.minZ && rows.positiveCount > 1 && it.zakat > 0
                   ? {
                       icon: <TrendingDown className="h-3 w-3" />,
                       tag: "الأدنى",
-                      cls: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30",
+                      cls: "bg-success/10 text-success dark:text-success border-success/30",
                     }
                   : null;
 

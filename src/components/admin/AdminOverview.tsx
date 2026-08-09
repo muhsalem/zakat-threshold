@@ -285,7 +285,7 @@ function Kpi({
   tone?: "ok" | "warn";
 }) {
   const toneCls =
-    tone === "ok" ? "text-emerald-600" : tone === "warn" ? "text-amber-600" : "text-primary";
+    tone === "ok" ? "text-success" : tone === "warn" ? "text-warning" : "text-primary";
   return (
     <Card>
       <CardContent className="p-3">

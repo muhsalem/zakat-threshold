@@ -127,9 +127,9 @@ export const SHARIA_CERTIFICATIONS: ShariaCertification[] = [
 export const CERT_STATUS_LABEL: Record<CertStatus, { ar: string; className: string }> = {
   certified: {
     ar: "معتمد رسمياً",
-    className: "bg-emerald-100 text-emerald-800 border-emerald-300",
+    className: "bg-success text-success border-success",
   },
-  in_review: { ar: "قيد المراجعة", className: "bg-amber-100 text-amber-800 border-amber-300" },
+  in_review: { ar: "قيد المراجعة", className: "bg-warning text-warning border-warning" },
   planned: { ar: "مخطّط", className: "bg-sky-100 text-sky-800 border-sky-300" },
   informational: { ar: "استناد معياري", className: "bg-slate-100 text-slate-700 border-slate-300" },
 };

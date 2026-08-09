@@ -89,7 +89,7 @@ export default function ZakatStatsDashboard() {
                   icon={<TrendingUp />}
                   label="نمو الوعاء"
                   value={`${growth >= 0 ? "+" : ""}${growth.toFixed(1)}%`}
-                  className={growth >= 0 ? "text-emerald-600" : "text-destructive"}
+                  className={growth >= 0 ? "text-success" : "text-destructive"}
                 />
               </div>
               <div className="text-xs space-y-1 pt-2 border-t">

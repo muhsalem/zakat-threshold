@@ -405,9 +405,9 @@ const RISKS = [
 ];
 
 function scoreBadge(pct: number) {
-  if (pct >= 90) return <Badge className="bg-emerald-500 hover:bg-emerald-600">ممتاز</Badge>;
+  if (pct >= 90) return <Badge className="bg-success hover:bg-success">ممتاز</Badge>;
   if (pct >= 80) return <Badge className="bg-sky-500 hover:bg-sky-600">جيد جداً</Badge>;
-  if (pct >= 70) return <Badge className="bg-amber-500 hover:bg-amber-600">جيد</Badge>;
+  if (pct >= 70) return <Badge className="bg-warning hover:bg-warning">جيد</Badge>;
   return <Badge variant="destructive">يحتاج تحسين</Badge>;
 }
 
@@ -537,14 +537,14 @@ function EvaluationPage() {
               {
                 k: "S",
                 title: "نقاط القوة",
-                color: "border-emerald-500/40 bg-emerald-500/5",
+                color: "border-success/40 bg-success/5",
                 items: SWOT.S,
                 icon: CheckCircle2,
               },
               {
                 k: "W",
                 title: "نقاط الضعف",
-                color: "border-amber-500/40 bg-amber-500/5",
+                color: "border-warning/40 bg-warning/5",
                 items: SWOT.W,
                 icon: AlertTriangle,
               },
@@ -558,7 +558,7 @@ function EvaluationPage() {
               {
                 k: "T",
                 title: "التهديدات",
-                color: "border-rose-500/40 bg-rose-500/5",
+                color: "border-destructive/40 bg-destructive/5",
                 items: SWOT.T,
                 icon: ShieldCheck,
               },

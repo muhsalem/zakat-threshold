@@ -20,9 +20,9 @@ const META_LABEL: Record<ReviewMetaStatus, string> = {
 };
 const META_CLASS: Record<ReviewMetaStatus, string> = {
   needs_action: "text-destructive border-destructive/40",
-  pending: "text-amber-600 border-amber-500/40",
+  pending: "text-warning border-warning/40",
   in_progress: "text-primary border-primary/40",
-  done: "text-emerald-600 border-emerald-500/40",
+  done: "text-success border-success/40",
   cancelled: "text-muted-foreground border-muted",
 };
 const KIND_LABEL: Record<UnifiedReviewItem["kind"], string> = {

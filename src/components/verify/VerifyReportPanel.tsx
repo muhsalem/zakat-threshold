@@ -152,7 +152,7 @@ export function VerifyReportPanel({ syncUrl = false }: VerifyReportPanelProps) {
                         : "غير معروف"}
                 </Badge>
                 {sigVerified && (
-                  <Badge className="bg-emerald-600 hover:bg-emerald-600 text-white gap-1">
+                  <Badge className="bg-success hover:bg-success text-white gap-1">
                     <BadgeCheck className="h-3.5 w-3.5" /> توقيع رقمي صحيح
                   </Badge>
                 )}

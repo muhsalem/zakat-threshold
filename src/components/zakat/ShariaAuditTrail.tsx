@@ -72,10 +72,10 @@ const ROWS: Row[] = [
 
 export function ShariaAuditTrail() {
   return (
-    <Card className="shadow-soft border-emerald-500/30">
-      <CardHeader className="bg-gradient-to-l from-emerald-500/10 to-transparent pb-3">
+    <Card className="shadow-soft border-success/30">
+      <CardHeader className="bg-gradient-to-l from-success/10 to-transparent pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
-          <ShieldCheck className="h-4 w-4 text-emerald-600" />
+          <ShieldCheck className="h-4 w-4 text-success" />
           سجل التدقيق الشرعي للأوعية الزكوية
           <Badge variant="outline" className="text-[10px] me-auto">
             AAOIFI · المجامع الفقهية · بيت الزكاة

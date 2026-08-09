@@ -133,10 +133,10 @@ function KycAml() {
 
   const badge = (l: string) => {
     const map: Record<string, string> = {
-      low: "bg-emerald-100 text-emerald-800 border-emerald-300",
-      medium: "bg-amber-100 text-amber-800 border-amber-300",
+      low: "bg-success text-success border-success",
+      medium: "bg-warning text-warning border-warning",
       high: "bg-orange-100 text-orange-800 border-orange-300",
-      reject: "bg-red-100 text-red-800 border-red-300",
+      reject: "bg-destructive text-destructive border-destructive",
     };
     return map[l] || "bg-muted";
   };

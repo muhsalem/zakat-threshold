@@ -124,12 +124,12 @@ export function DebtsAccordionSection({
         </div>
 
         {/* ② الديون المؤجلة */}
-        <div className="rounded-lg border border-amber-500/40 bg-amber-50/40 dark:bg-amber-950/20 p-4 space-y-3">
-          <div className="text-sm font-semibold text-amber-700 dark:text-amber-400 flex items-center gap-2">
-            <Badge className="bg-amber-500 text-white">②</Badge>
+        <div className="rounded-lg border border-warning/40 bg-warning/40 dark:bg-warning/20 p-4 space-y-3">
+          <div className="text-sm font-semibold text-warning dark:text-warning flex items-center gap-2">
+            <Badge className="bg-warning text-white">②</Badge>
             الديون المؤجلة (طويلة الأجل) — على خلاف بين العلماء
           </div>
-          <Alert className="border-amber-500/30 bg-background">
+          <Alert className="border-warning/30 bg-background">
             <Info className="h-4 w-4" />
             <AlertDescription className="text-xs leading-relaxed">
               <b>الجمهور:</b> يُخصم كل الدين حالًّا ومؤجلًا. <b>الأحوط:</b> يُخصم قسط السنة فقط.{" "}

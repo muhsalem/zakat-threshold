@@ -272,7 +272,7 @@ function ClientDetail() {
             onClick={issueAndSendReport}
             disabled={sendingReport}
             variant="outline"
-            className="gap-1.5 border-emerald-500 text-emerald-700 hover:bg-emerald-50"
+            className="gap-1.5 border-success text-success hover:bg-success"
           >
             {sendingReport ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -303,7 +303,7 @@ function ClientDetail() {
             <div className="text-2xl font-bold" dir="ltr">
               {fmt(client.nisab)}
             </div>
-            <div className={`text-[10px] ${above ? "text-emerald-600" : "text-amber-600"}`}>
+            <div className={`text-[10px] ${above ? "text-success" : "text-warning"}`}>
               {above ? "✓ بلغ النصاب" : "لم يبلغ النصاب"}
             </div>
           </CardContent>
@@ -337,14 +337,14 @@ function ClientDetail() {
             <Alert
               key={idx}
               variant={i.level === "error" ? "destructive" : "default"}
-              className={i.level === "ok" ? "border-emerald-500/40 bg-emerald-500/5" : ""}
+              className={i.level === "ok" ? "border-success/40 bg-success/5" : ""}
             >
               {i.level === "error" ? (
                 <AlertTriangle className="h-4 w-4" />
               ) : i.level === "warn" ? (
-                <AlertTriangle className="h-4 w-4 text-amber-500" />
+                <AlertTriangle className="h-4 w-4 text-warning" />
               ) : (
-                <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                <CheckCircle2 className="h-4 w-4 text-success" />
               )}
               <AlertDescription className="text-sm">{i.message}</AlertDescription>
             </Alert>

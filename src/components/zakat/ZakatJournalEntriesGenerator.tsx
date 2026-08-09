@@ -81,7 +81,7 @@ export function ZakatJournalEntriesGenerator({
                 <TableRow key={idx}>
                   <TableCell className="font-mono font-bold">{e.accountCode}</TableCell>
                   <TableCell className="font-semibold text-foreground">{e.accountName}</TableCell>
-                  <TableCell className="font-mono font-bold text-emerald-600">{e.debit > 0 ? `${fmt(e.debit)} ${currencyName}` : "—"}</TableCell>
+                  <TableCell className="font-mono font-bold text-success">{e.debit > 0 ? `${fmt(e.debit)} ${currencyName}` : "—"}</TableCell>
                   <TableCell className="font-mono font-bold text-indigo-600">{e.credit > 0 ? `${fmt(e.credit)} ${currencyName}` : "—"}</TableCell>
                   <TableCell className="text-muted-foreground">{e.description}</TableCell>
                 </TableRow>

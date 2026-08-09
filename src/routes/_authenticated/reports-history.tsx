@@ -45,9 +45,9 @@ export const Route = createFileRoute("/_authenticated/reports-history")({
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   generated: { label: "تم الإنشاء", color: "bg-blue-100 text-blue-800" },
-  downloaded: { label: "تم التنزيل", color: "bg-green-100 text-green-800" },
+  downloaded: { label: "تم التنزيل", color: "bg-success text-success" },
   sent: { label: "تم الإرسال", color: "bg-purple-100 text-purple-800" },
-  approved: { label: "معتمد", color: "bg-emerald-100 text-emerald-800" },
+  approved: { label: "معتمد", color: "bg-success text-success" },
   canceled: { label: "ملغى", color: "bg-gray-200 text-gray-700" },
 };
 
@@ -212,7 +212,7 @@ function ReportsHistoryPage() {
                           title="اعتماد"
                           onClick={() => upd.mutate({ id: r.id, status: "approved" })}
                         >
-                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+                          <CheckCircle2 className="h-3.5 w-3.5 text-success" />
                         </Button>
                         <Button
                           size="icon"
@@ -238,7 +238,7 @@ function ReportsHistoryPage() {
                             if (confirm("حذف التقرير؟")) del.mutate(r.id);
                           }}
                         >
-                          <Trash2 className="h-3.5 w-3.5 text-red-500" />
+                          <Trash2 className="h-3.5 w-3.5 text-destructive" />
                         </Button>
                       </div>
                     </TableCell>

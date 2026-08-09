@@ -28,20 +28,20 @@ export function ZakatInstitutionPortal() {
   };
 
   return (
-    <Card className="border-emerald-600/40 bg-gradient-to-br from-emerald-950/20 via-background to-teal-950/10 shadow-lg" dir="rtl">
-      <CardHeader className="border-b bg-emerald-500/5 pb-4">
+    <Card className="border-success/40 bg-gradient-to-br from-success/20 via-background to-teal-950/10 shadow-lg" dir="rtl">
+      <CardHeader className="border-b bg-success/5 pb-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <Badge className="bg-emerald-600 text-white text-xs px-2.5 py-0.5">
+              <Badge className="bg-success text-white text-xs px-2.5 py-0.5">
                 <Building2 className="h-3.5 w-3.5 ms-1 inline" /> بوابة مؤسسات الزكاة والبيوت الخيرية
               </Badge>
-              <Badge variant="outline" className="border-emerald-500/40 text-emerald-700 dark:text-emerald-300 text-xs">
+              <Badge variant="outline" className="border-success/40 text-success dark:text-success text-xs">
                 براءة الذمة والتحقق الميداني
               </Badge>
             </div>
             <CardTitle className="text-xl font-bold flex items-center gap-2 text-foreground">
-              <ShieldCheck className="h-6 w-6 text-emerald-600" />
+              <ShieldCheck className="h-6 w-6 text-success" />
               لوحة حوكمة وتدقيق بيوت ومؤسسات الزكاة (Zakat Institution Portal)
             </CardTitle>
             <CardDescription className="text-xs leading-relaxed">
@@ -49,7 +49,7 @@ export function ZakatInstitutionPortal() {
             </CardDescription>
           </div>
 
-          <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5 text-xs" onClick={issueClearanceCertificate}>
+          <Button size="sm" className="bg-success hover:bg-success text-white gap-1.5 text-xs" onClick={issueClearanceCertificate}>
             <FileCheck className="h-4 w-4" /> إصدار شهادة براءة ذمة زكوية
           </Button>
         </div>
@@ -66,14 +66,14 @@ export function ZakatInstitutionPortal() {
           <TabsContent value="verification" className="space-y-3">
             <div className="p-4 rounded-xl border bg-background space-y-3">
               <h4 className="font-bold text-xs text-foreground flex items-center gap-1.5">
-                <Users className="h-4 w-4 text-emerald-600" />
+                <Users className="h-4 w-4 text-success" />
                 دراسة استحقاق الحالات وفق المصارف القرآنية الثمانية
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                <div className="p-3 rounded-lg border bg-emerald-500/5 border-emerald-500/20">
-                  <div className="font-bold text-emerald-800 dark:text-emerald-300">مصرف الفقراء والمساكين</div>
+                <div className="p-3 rounded-lg border bg-success/5 border-success/20">
+                  <div className="font-bold text-success dark:text-success">مصرف الفقراء والمساكين</div>
                   <p className="text-[11px] text-muted-foreground mt-1">التحقق من معدل الدخل وتغطية الاحتياج المالي الأساسي.</p>
-                  <Badge className="bg-emerald-600 text-white text-[10px] mt-2">مستوفاة 100%</Badge>
+                  <Badge className="bg-success text-white text-[10px] mt-2">مستوفاة 100%</Badge>
                 </div>
 
                 <div className="p-3 rounded-lg border bg-teal-500/5 border-teal-500/20">
@@ -96,14 +96,14 @@ export function ZakatInstitutionPortal() {
             <div className="p-4 rounded-xl border bg-background space-y-2 text-xs">
               <div className="flex items-center justify-between">
                 <span className="font-bold text-foreground">الشهادة الحالية:</span>
-                <span className="font-mono text-emerald-600 font-bold">ZAKAT-CERT-2026-8891</span>
+                <span className="font-mono text-success font-bold">ZAKAT-CERT-2026-8891</span>
               </div>
               <p className="text-muted-foreground leading-relaxed">
                 تشهد المنصة والمؤسسة الزكوية المعتمدة بأن المكلف قد أدى زكاته الواجبة شرعاً عن الحول المالي المعتمد وفق معيار AAOIFI 35 وتم تسليم الإقرار الرسمي.
               </p>
               <div className="pt-2 flex items-center gap-2">
-                <Button size="sm" variant="outline" className="text-xs gap-1 border-emerald-500/40" onClick={() => window.print()}>
-                  <FileCheck className="h-3.5 w-3.5 text-emerald-600" /> طباعة شهادة براءة الذمة (PDF)
+                <Button size="sm" variant="outline" className="text-xs gap-1 border-success/40" onClick={() => window.print()}>
+                  <FileCheck className="h-3.5 w-3.5 text-success" /> طباعة شهادة براءة الذمة (PDF)
                 </Button>
               </div>
             </div>
@@ -113,14 +113,14 @@ export function ZakatInstitutionPortal() {
           <TabsContent value="settlement" className="space-y-3">
             <div className="p-4 rounded-xl border bg-background space-y-3 text-xs">
               <h4 className="font-bold text-foreground flex items-center gap-1.5">
-                <Coins className="h-4 w-4 text-emerald-600" />
+                <Coins className="h-4 w-4 text-success" />
                 تسوية وتحويل زكاوات العملات الأجنبية والعملات الرقمية
               </h4>
               <p className="text-muted-foreground">
                 تصفية وتسوية المبالغ المحصلة من الأسهم أو الأصول المشفرة وتحويلها بالعملة المحلية المقبولة شرعاً لمستحقي الزكاة.
               </p>
               <div className="flex items-center gap-2">
-                <Badge className="bg-emerald-600 text-white text-xs">تسوية فورية (Instant FX Settlement)</Badge>
+                <Badge className="bg-success text-white text-xs">تسوية فورية (Instant FX Settlement)</Badge>
               </div>
             </div>
           </TabsContent>

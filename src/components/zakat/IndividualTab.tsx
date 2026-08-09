@@ -1784,9 +1784,9 @@ export function IndividualTab() {
                     </div>
 
                     {/* خامساً: زكاة المهن والأنشطة الإضافية — تبويب مخصص يظهر حسب المهنة */}
-                    <div className="rounded-lg border border-emerald-600/30 bg-emerald-500/5 p-4 space-y-3">
-                      <div className="flex items-center gap-2 text-sm font-semibold text-emerald-800 dark:text-emerald-300">
-                        <Briefcase className="h-4 w-4 text-emerald-600" /> خامساً: تبويب زكاة المهن والأنشطة الإضافية (تخصيص المعلمين، الأطباء، المهندسين...)
+                    <div className="rounded-lg border border-success/30 bg-success/5 p-4 space-y-3">
+                      <div className="flex items-center gap-2 text-sm font-semibold text-success dark:text-success">
+                        <Briefcase className="h-4 w-4 text-success" /> خامساً: تبويب زكاة المهن والأنشطة الإضافية (تخصيص المعلمين، الأطباء، المهندسين...)
                       </div>
                       <ProfessionsZakatSection
                         currencyName={currencyName}
@@ -2653,13 +2653,13 @@ export function IndividualTab() {
                     const ok = matches && debtOnce;
                     return (
                       <div
-                        className={`rounded-lg border p-3 text-xs ${ok ? "border-emerald-500/40 bg-emerald-500/5" : "border-amber-500/40 bg-amber-500/5"}`}
+                        className={`rounded-lg border p-3 text-xs ${ok ? "border-success/40 bg-success/5" : "border-warning/40 bg-warning/5"}`}
                       >
                         <div className="font-bold flex items-center gap-1.5 mb-1">
                           {ok ? (
-                            <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                            <CheckCircle2 className="h-4 w-4 text-success" />
                           ) : (
-                            <AlertTriangle className="h-4 w-4 text-amber-600" />
+                            <AlertTriangle className="h-4 w-4 text-warning" />
                           )}
                           التحقق التلقائي للوعاء والخصومات
                         </div>
@@ -2674,7 +2674,7 @@ export function IndividualTab() {
                         <div className="flex justify-between">
                           <span>الفرق</span>
                           <b
-                            className={`tabular-nums ${matches ? "text-emerald-600" : "text-amber-700"}`}
+                            className={`tabular-nums ${matches ? "text-success" : "text-warning"}`}
                           >
                             {matches ? "مُطابق ✓" : cur(diff)}
                           </b>
@@ -2691,7 +2691,7 @@ export function IndividualTab() {
                         <div className="flex justify-between">
                           <span>الفرق</span>
                           <b
-                            className={`tabular-nums ${debtOnce ? "text-emerald-600" : "text-amber-700"}`}
+                            className={`tabular-nums ${debtOnce ? "text-success" : "text-warning"}`}
                           >
                             {debtOnce ? "خُصمت مرة واحدة ✓" : cur(netDiff)}
                           </b>

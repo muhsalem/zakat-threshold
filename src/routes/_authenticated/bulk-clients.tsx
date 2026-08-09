@@ -175,7 +175,7 @@ function BulkClientsPage() {
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">{totals.done}</div>
+            <div className="text-2xl font-bold text-success">{totals.done}</div>
             <div className="text-xs text-muted-foreground">تم الحساب</div>
           </CardContent>
         </Card>

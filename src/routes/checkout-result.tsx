@@ -58,8 +58,8 @@ function CheckoutResultPage() {
           )}
           {status === "paid" && (
             <>
-              <CheckCircle2 className="h-14 w-14 text-emerald-500 mx-auto" />
-              <h1 className="text-xl font-bold text-emerald-700 dark:text-emerald-400">
+              <CheckCircle2 className="h-14 w-14 text-success mx-auto" />
+              <h1 className="text-xl font-bold text-success dark:text-success">
                 تم الدفع بنجاح 🎉
               </h1>
               <p className="text-sm text-muted-foreground">
@@ -74,7 +74,7 @@ function CheckoutResultPage() {
           )}
           {status === "pending" && (
             <>
-              <Loader2 className="h-14 w-14 animate-spin text-amber-500 mx-auto" />
+              <Loader2 className="h-14 w-14 animate-spin text-warning mx-auto" />
               <h1 className="text-xl font-bold">جارٍ معالجة الدفع</h1>
               <p className="text-sm text-muted-foreground">
                 قد يستغرق هذا بضع دقائق. ستصلك رسالة بريد إلكتروني عند التأكيد.

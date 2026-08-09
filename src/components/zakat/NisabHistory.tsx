@@ -526,11 +526,11 @@ export function NisabHistory() {
                       العرض: {dbCountry.name} ({dbCountry.currency})
                     </Badge>
                     {isForecast ? (
-                      <Badge className="bg-amber-100 text-amber-900 border border-amber-300 gap-1">
+                      <Badge className="bg-warning text-warning border border-warning gap-1">
                         <TrendingUp className="h-3 w-3" /> توقع مستقبلي
                       </Badge>
                     ) : (
-                      <Badge className="bg-emerald-100 text-emerald-900 border border-emerald-300">
+                      <Badge className="bg-success text-success border border-success">
                         سعر فعلي مسجل
                       </Badge>
                     )}
@@ -594,7 +594,7 @@ export function NisabHistory() {
                         </b>{" "}
                         <span
                           className={
-                            dbCountry.gold24 > goldLocal ? "text-amber-700" : "text-emerald-700"
+                            dbCountry.gold24 > goldLocal ? "text-warning" : "text-success"
                           }
                         >
                           ({dbCountry.gold24 > goldLocal ? "+" : ""}
@@ -626,7 +626,7 @@ export function NisabHistory() {
                   )}
 
                   {isForecast && (
-                    <div className="rounded-md border border-amber-300 bg-amber-50 p-3 text-xs leading-relaxed text-amber-900">
+                    <div className="rounded-md border border-warning bg-warning p-3 text-xs leading-relaxed text-warning">
                       <div className="font-bold mb-1 flex items-center gap-1">
                         <TrendingUp className="h-3.5 w-3.5" /> كيف تم احتساب هذا التوقع؟
                       </div>
@@ -690,13 +690,13 @@ export function NisabHistory() {
                           <td className="border px-2 py-1.5 text-end font-semibold">
                             {MONTHS_AR[m - 1]}
                           </td>
-                          <td className="border px-2 py-1.5 text-center text-emerald-700">
+                          <td className="border px-2 py-1.5 text-center text-success">
                             {fmt(gC, 2)}
                           </td>
                           <td className="border px-2 py-1.5 text-center font-bold text-primary">
                             {fmt(gB, 2)}
                           </td>
-                          <td className="border px-2 py-1.5 text-center text-amber-700">
+                          <td className="border px-2 py-1.5 text-center text-warning">
                             {fmt(gO, 2)}
                           </td>
                           <td className="border px-2 py-1.5 text-center">{fmt(sB, 3)}</td>
@@ -723,7 +723,7 @@ export function NisabHistory() {
               </div>
 
               <div className="grid sm:grid-cols-3 gap-2 text-[11px]">
-                <div className="rounded-md border border-emerald-300 bg-emerald-50 p-2 text-emerald-900">
+                <div className="rounded-md border border-success bg-success p-2 text-success">
                   <b>محافظ (Conservative)</b> — يفترض تباطؤ النمو (50% من الاتجاه). الأكثر احتياطًا
                   لحماية الفقير.
                 </div>
@@ -731,7 +731,7 @@ export function NisabHistory() {
                   <b>أساسي (Base)</b> — استمرار الاتجاه الحالي كما هو. هو السيناريو المعتمد
                   افتراضيًا.
                 </div>
-                <div className="rounded-md border border-amber-300 bg-amber-50 p-2 text-amber-900">
+                <div className="rounded-md border border-warning bg-warning p-2 text-warning">
                   <b>متفائل (Optimistic)</b> — تسارع الاتجاه (150%). للتخطيط الأقصى.
                 </div>
               </div>

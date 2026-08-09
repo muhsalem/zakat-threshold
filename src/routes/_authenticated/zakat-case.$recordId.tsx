@@ -508,9 +508,9 @@ function ViolationsPanel({ inputs }: { inputs: ComplianceInputs }) {
 
   if (bad.length === 0) {
     return (
-      <Alert className="border-emerald-300 bg-emerald-50">
-        <ClipboardCheck className="w-4 h-4 text-emerald-700" />
-        <AlertDescription className="text-emerald-800">
+      <Alert className="border-success bg-success">
+        <ClipboardCheck className="w-4 h-4 text-success" />
+        <AlertDescription className="text-success">
           لا توجد مخالفات — جميع الشروط الشرعية المطبّقة على هذه الحالة مجتازة.
         </AlertDescription>
       </Alert>
@@ -521,7 +521,7 @@ function ViolationsPanel({ inputs }: { inputs: ComplianceInputs }) {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
-          <ShieldAlert className="w-5 h-5 text-amber-600" />
+          <ShieldAlert className="w-5 h-5 text-warning" />
           المخالفات المكتشفة ({bad.length})
         </CardTitle>
       </CardHeader>
@@ -531,14 +531,14 @@ function ViolationsPanel({ inputs }: { inputs: ComplianceInputs }) {
             key={c.id}
             className={`rounded-lg border p-4 ${
               c.status === "fail"
-                ? "bg-rose-50/50 border-rose-200"
-                : "bg-amber-50/50 border-amber-200"
+                ? "bg-destructive/50 border-destructive"
+                : "bg-warning/50 border-warning"
             }`}
           >
             <div className="flex items-start gap-3">
               <AlertTriangle
                 className={`w-5 h-5 mt-0.5 shrink-0 ${
-                  c.status === "fail" ? "text-rose-600" : "text-amber-600"
+                  c.status === "fail" ? "text-destructive" : "text-warning"
                 }`}
               />
               <div className="flex-1 space-y-2">
@@ -547,8 +547,8 @@ function ViolationsPanel({ inputs }: { inputs: ComplianceInputs }) {
                   <Badge
                     className={
                       c.status === "fail"
-                        ? "bg-rose-100 text-rose-800 border-rose-300"
-                        : "bg-amber-100 text-amber-800 border-amber-300"
+                        ? "bg-destructive text-destructive border-destructive"
+                        : "bg-warning text-warning border-warning"
                     }
                   >
                     {c.status === "fail" ? "مخالفة" : "تنبيه"}

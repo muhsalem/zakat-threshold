@@ -81,7 +81,7 @@ function StatusPage() {
           <CardHeader className="flex-row items-center justify-between space-y-0">
             <CardTitle>الحالة الإجمالية</CardTitle>
             {healthy ? (
-              <Badge className="bg-emerald-600 hover:bg-emerald-600 gap-1">
+              <Badge className="bg-success hover:bg-success gap-1">
                 <CheckCircle2 className="h-3.5 w-3.5" /> Operational
               </Badge>
             ) : (
@@ -115,7 +115,7 @@ function StatusPage() {
                 <span className="font-mono">{k}</span>
                 <Badge
                   variant={v === "ok" ? "default" : "secondary"}
-                  className={v === "ok" ? "bg-emerald-600 hover:bg-emerald-600" : ""}
+                  className={v === "ok" ? "bg-success hover:bg-success" : ""}
                 >
                   {v}
                 </Badge>

@@ -25,7 +25,7 @@ const ACTION_META: Record<string, { label: string; icon: React.ReactNode; tone: 
   restore_draft_version: {
     label: "استعادة إصدار مسودة",
     icon: <RotateCcw className="h-3.5 w-3.5" />,
-    tone: "text-amber-600",
+    tone: "text-warning",
   },
   snapshot_daily_nisab: {
     label: "لقطة نصاب يومية",
@@ -115,9 +115,9 @@ export function SystemAuditPanel() {
     <div className="space-y-4" dir="rtl">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Kpi label="إجمالي الأحداث" value={kpis.total} tone="text-primary" />
-        <Kpi label="استعادات إصدارات" value={kpis.restores} tone="text-amber-600" />
+        <Kpi label="استعادات إصدارات" value={kpis.restores} tone="text-warning" />
         <Kpi label="لقطات (snapshots)" value={kpis.snapshots} tone="text-sky-600" />
-        <Kpi label="أحداث النظام" value={kpis.system} tone="text-emerald-600" />
+        <Kpi label="أحداث النظام" value={kpis.system} tone="text-success" />
       </div>
 
       <Card>

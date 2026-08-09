@@ -109,17 +109,17 @@ const STATUS_META: Record<AttachmentStatus, { label: string; cls: string; icon: 
     },
     pending: {
       label: "قيد المراجعة",
-      cls: "bg-amber-500/15 text-amber-700 border-amber-500/30",
+      cls: "bg-warning/15 text-warning border-warning/30",
       icon: <Clock className="h-3 w-3" />,
     },
     approved: {
       label: "معتمد",
-      cls: "bg-emerald-500/15 text-emerald-700 border-emerald-500/30",
+      cls: "bg-success/15 text-success border-success/30",
       icon: <CheckCircle2 className="h-3 w-3" />,
     },
     rejected: {
       label: "مرفوض",
-      cls: "bg-red-500/15 text-red-700 border-red-500/30",
+      cls: "bg-destructive/15 text-destructive border-destructive/30",
       icon: <XCircle className="h-3 w-3" />,
     },
   };

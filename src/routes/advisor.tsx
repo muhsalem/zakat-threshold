@@ -94,7 +94,7 @@ function AdvisorPage() {
       </p>
 
       {!authLoading && !user && (
-        <Card className="border-amber-500/40 bg-amber-500/5">
+        <Card className="border-warning/40 bg-warning/5">
           <CardContent className="flex items-center justify-between gap-3 py-4">
             <p className="text-sm">
               يلزم تسجيل الدخول لاستخدام المستشار (لحماية استهلاك الذكاء الاصطناعي).

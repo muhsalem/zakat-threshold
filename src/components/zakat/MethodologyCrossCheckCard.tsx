@@ -76,7 +76,7 @@ export function MethodologyCrossCheckCard({ rows }: MethodologyCrossCheckCardPro
         <Alert
           className={
             check.matched
-              ? "border-emerald-500/30 bg-emerald-500/5"
+              ? "border-success/30 bg-success/5"
               : "border-destructive/30 bg-destructive/5"
           }
         >

@@ -244,9 +244,9 @@ const CATEGORIES: Category[] = [
 ];
 
 const LEVEL_STYLE: Record<ShariaReference["level"], string> = {
-  ijma: "bg-emerald-100 text-emerald-800 border-emerald-300",
+  ijma: "bg-success text-success border-success",
   majority: "bg-blue-100 text-blue-800 border-blue-300",
-  majma: "bg-amber-100 text-amber-800 border-amber-300",
+  majma: "bg-warning text-warning border-warning",
   ijtihad: "bg-purple-100 text-purple-800 border-purple-300",
 };
 
@@ -391,7 +391,7 @@ function ComplianceReportPage() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-base">
-            <ScrollText className="h-4 w-4 text-emerald-600" />
+            <ScrollText className="h-4 w-4 text-success" />
             بصمة الحوكمة والتدقيق
           </CardTitle>
         </CardHeader>
@@ -485,7 +485,7 @@ function CategorySection({
 
         {/* الأسس الشرعية */}
         <div>
-          <h4 className="text-xs font-bold mb-1.5 flex items-center gap-1 text-emerald-700">
+          <h4 className="text-xs font-bold mb-1.5 flex items-center gap-1 text-success">
             <BookOpenCheck className="h-3.5 w-3.5" /> الأسس الشرعية المعتمدة
           </h4>
           {refs.length === 0 ? (

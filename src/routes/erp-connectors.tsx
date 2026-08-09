@@ -96,12 +96,12 @@ const PROVIDERS: Provider[] = [
 function StatusBadge({ status }: { status: Provider["status"] }) {
   if (status === "live")
     return (
-      <Badge className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-400">
+      <Badge className="bg-success/15 text-success dark:text-success">
         <CheckCircle2 className="mr-1 h-3 w-3" /> مفعّل الآن
       </Badge>
     );
   if (status === "beta")
-    return <Badge className="bg-amber-500/15 text-amber-700 dark:text-amber-400">تجريبي</Badge>;
+    return <Badge className="bg-warning/15 text-warning dark:text-warning">تجريبي</Badge>;
   return (
     <Badge variant="outline">
       <Clock className="mr-1 h-3 w-3" /> قريباً

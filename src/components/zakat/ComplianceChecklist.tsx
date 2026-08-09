@@ -62,16 +62,16 @@ export interface ComplianceInputs {
 }
 
 const StatusIcon = ({ status }: { status: CheckStatus }) => {
-  if (status === "pass") return <CheckCircle2 className="w-5 h-5 text-emerald-600" />;
-  if (status === "fail") return <XCircle className="w-5 h-5 text-rose-600" />;
-  if (status === "warn") return <AlertTriangle className="w-5 h-5 text-amber-600" />;
+  if (status === "pass") return <CheckCircle2 className="w-5 h-5 text-success" />;
+  if (status === "fail") return <XCircle className="w-5 h-5 text-destructive" />;
+  if (status === "warn") return <AlertTriangle className="w-5 h-5 text-warning" />;
   return <MinusCircle className="w-5 h-5 text-muted-foreground" />;
 };
 
 const STATUS_LABEL: Record<CheckStatus, { ar: string; className: string }> = {
-  pass: { ar: "مجتاز", className: "bg-emerald-100 text-emerald-800 border-emerald-300" },
-  fail: { ar: "متعثّر", className: "bg-rose-100 text-rose-800 border-rose-300" },
-  warn: { ar: "تنبيه", className: "bg-amber-100 text-amber-800 border-amber-300" },
+  pass: { ar: "مجتاز", className: "bg-success text-success border-success" },
+  fail: { ar: "متعثّر", className: "bg-destructive text-destructive border-destructive" },
+  warn: { ar: "تنبيه", className: "bg-warning text-warning border-warning" },
   na: { ar: "لا ينطبق", className: "bg-muted text-muted-foreground border-muted-foreground/20" },
 };
 
@@ -337,16 +337,16 @@ export default function ComplianceChecklist({ inputs, compact = false }: Props) 
             قائمة تحقّق الامتثال الشرعي
           </CardTitle>
           <div className="flex items-center gap-1.5 flex-wrap">
-            <Badge className="bg-emerald-100 text-emerald-800 border-emerald-300">
+            <Badge className="bg-success text-success border-success">
               {totals.pass} مجتاز
             </Badge>
             {totals.fail > 0 && (
-              <Badge className="bg-rose-100 text-rose-800 border-rose-300">
+              <Badge className="bg-destructive text-destructive border-destructive">
                 {totals.fail} متعثّر
               </Badge>
             )}
             {totals.warn > 0 && (
-              <Badge className="bg-amber-100 text-amber-800 border-amber-300">
+              <Badge className="bg-warning text-warning border-warning">
                 {totals.warn} تنبيه
               </Badge>
             )}
@@ -368,11 +368,11 @@ export default function ComplianceChecklist({ inputs, compact = false }: Props) 
               key={c.id}
               className={`rounded-md border p-3 flex items-start gap-3 ${
                 c.status === "fail"
-                  ? "bg-rose-50/50 border-rose-200"
+                  ? "bg-destructive/50 border-destructive"
                   : c.status === "warn"
-                    ? "bg-amber-50/50 border-amber-200"
+                    ? "bg-warning/50 border-warning"
                     : c.status === "pass"
-                      ? "bg-emerald-50/30 border-emerald-200/60"
+                      ? "bg-success/30 border-success/60"
                       : "bg-muted/20"
               }`}
             >

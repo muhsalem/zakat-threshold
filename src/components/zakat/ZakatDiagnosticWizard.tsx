@@ -142,9 +142,9 @@ export function ZakatDiagnosticWizard({ onSelectPath }: ZakatDiagnosticWizardPro
         {step === 3 && (
           <div className="space-y-4">
             <Label className="text-sm font-bold text-foreground">3. حالة الحول والنصاب الشرعي</Label>
-            <div className="p-4 rounded-xl border bg-emerald-500/10 border-emerald-500/30 text-xs space-y-2">
-              <div className="font-bold text-emerald-900 dark:text-emerald-200 flex items-center gap-1.5">
-                <CheckCircle2 className="h-4 w-4 text-emerald-600" /> ملخص التوجيه التشخيصي
+            <div className="p-4 rounded-xl border bg-success/10 border-success/30 text-xs space-y-2">
+              <div className="font-bold text-success dark:text-success flex items-center gap-1.5">
+                <CheckCircle2 className="h-4 w-4 text-success" /> ملخص التوجيه التشخيصي
               </div>
               <p className="text-muted-foreground leading-relaxed">
                 بناءً على إجاباتك، تم تحديد خوارزميات الحساب المناسبة لك وفق معايير هيئة AAOIFI وتوصيات ندوات الزكاة المعاصرة.
@@ -167,7 +167,7 @@ export function ZakatDiagnosticWizard({ onSelectPath }: ZakatDiagnosticWizardPro
               التالي <ArrowLeft className="h-4 w-4" />
             </Button>
           ) : (
-            <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5" onClick={handleComplete}>
+            <Button size="sm" className="bg-success hover:bg-success text-white gap-1.5" onClick={handleComplete}>
               <Calculator className="h-4 w-4" /> التوجه لحساب الزكاة
             </Button>
           )}

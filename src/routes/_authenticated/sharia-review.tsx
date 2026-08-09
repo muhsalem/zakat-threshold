@@ -33,10 +33,10 @@ const STATUS_LABEL: Record<ShariaReviewStatus, string> = {
 };
 const STATUS_CLASS: Record<ShariaReviewStatus, string> = {
   draft: "text-muted-foreground border-muted",
-  submitted: "text-amber-600 border-amber-500/40",
+  submitted: "text-warning border-warning/40",
   in_review: "text-primary border-primary/40",
   changes_requested: "text-destructive border-destructive/40",
-  approved: "text-emerald-600 border-emerald-500/40",
+  approved: "text-success border-success/40",
   rejected: "text-destructive border-destructive/40",
   withdrawn: "text-muted-foreground border-muted",
 };
@@ -383,7 +383,7 @@ function RequestDetail({ id }: { id: string }) {
               <div className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
                 <span>{new Date(c.created_at).toLocaleString("ar-EG")}</span>
                 {c.is_internal && (
-                  <Badge variant="outline" className="text-[10px] text-amber-600 border-amber-500/40">
+                  <Badge variant="outline" className="text-[10px] text-warning border-warning/40">
                     داخلي
                   </Badge>
                 )}

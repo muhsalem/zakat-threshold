@@ -280,7 +280,7 @@ export function YearlyComparison() {
                             <div
                               className={`text-[11px] ${
                                 d > 0
-                                  ? "text-emerald-600"
+                                  ? "text-success"
                                   : d < 0
                                     ? "text-destructive"
                                     : "text-muted-foreground"
@@ -308,7 +308,7 @@ export function YearlyComparison() {
                           <div
                             className={`text-[11px] ${
                               d > 0
-                                ? "text-emerald-600"
+                                ? "text-success"
                                 : d < 0
                                   ? "text-destructive"
                                   : "text-muted-foreground"

@@ -1498,8 +1498,8 @@ export function SectoralModels({
         </CardHeader>
         <CardContent>
           {orgKind === "nonprofit" && (
-            <Alert className="border-amber-500/30 bg-amber-500/5 mb-3">
-              <Info className="h-4 w-4 text-amber-600" />
+            <Alert className="border-warning/30 bg-warning/5 mb-3">
+              <Info className="h-4 w-4 text-warning" />
               <AlertDescription className="text-xs">
                 المؤسسة غير ربحية — النماذج للعرض والتدقيق والإفصاح فقط، ولا تجب الزكاة على رأس
                 مالها.

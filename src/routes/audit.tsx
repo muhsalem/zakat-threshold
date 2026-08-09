@@ -186,7 +186,7 @@ function AuditPage() {
                     {r.payload.changed_fields.map((f) => (
                       <span
                         key={f}
-                        className="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-400 text-[10px] font-bold"
+                        className="px-2 py-0.5 rounded-md bg-warning/10 text-warning dark:text-warning text-[10px] font-bold"
                       >
                         {FIELD_LABEL[f] ?? f}
                       </span>
@@ -207,7 +207,7 @@ function AuditPage() {
                         key={ref}
                         className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
                           ref.startsWith("FATWA:")
-                            ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+                            ? "bg-success/10 text-success dark:text-success"
                             : "bg-primary/10 text-primary"
                         }`}
                       >

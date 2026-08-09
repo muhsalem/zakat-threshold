@@ -46,8 +46,8 @@ export function VersionStampCard({
         <Alert
           className={
             check.reproducible
-              ? "border-emerald-500/30 bg-emerald-500/5"
-              : "border-amber-500/40 bg-amber-500/5"
+              ? "border-success/30 bg-success/5"
+              : "border-warning/40 bg-warning/5"
           }
         >
           <AlertDescription className="leading-relaxed">{check.message}</AlertDescription>
@@ -66,7 +66,7 @@ export function VersionStampCard({
         </div>
 
         {check.drift.length > 0 && (
-          <ul className="space-y-1 rounded-md border border-amber-500/30 p-2 text-[11px]">
+          <ul className="space-y-1 rounded-md border border-warning/30 p-2 text-[11px]">
             {check.drift.map((d) => (
               <li key={d.field} className="flex justify-between gap-2">
                 <span className="text-muted-foreground">{d.field}</span>

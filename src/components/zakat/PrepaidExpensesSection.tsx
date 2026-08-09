@@ -37,7 +37,7 @@ const TREATMENT_BADGE: Record<string, { label: string; cls: string }> = {
   add_full: { label: "يُضاف للوعاء", cls: "bg-primary/10 text-primary border-primary/30" },
   defer_until_received: {
     label: "يؤجَّل حتى القبض",
-    cls: "bg-amber-500/10 text-amber-600 border-amber-500/30",
+    cls: "bg-warning/10 text-warning border-warning/30",
   },
   no_effect: { label: "لا أثر", cls: "bg-muted text-muted-foreground" },
 };
@@ -262,7 +262,7 @@ export function PrepaidExpensesSection({
                         className={`flex items-start gap-2 rounded-md border p-2 text-[11px] leading-relaxed ${
                           i.level === "error"
                             ? "border-destructive/40 bg-destructive/5 text-destructive"
-                            : "border-amber-500/30 bg-amber-500/5 text-amber-600"
+                            : "border-warning/30 bg-warning/5 text-warning"
                         }`}
                         role={i.level === "error" ? "alert" : "status"}
                       >
