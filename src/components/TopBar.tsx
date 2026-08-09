@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
+import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { CommandPalette } from "@/components/CommandPalette";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -20,6 +21,7 @@ import LanguageToggle from "@/components/LanguageToggle";
 
 export function TopBar() {
   const { user, loading } = useAuth();
+  const { t } = useI18n();
 
   async function signOut() {
     await supabase.auth.signOut();
@@ -53,7 +55,7 @@ export function TopBar() {
               <Button asChild size="sm" className="h-8 gap-1.5">
                 <Link to="/auth">
                   <LogIn className="h-3.5 w-3.5" aria-hidden="true" />
-                  <span className="hidden sm:inline">دخول / تسجيل</span>
+                  <span className="hidden sm:inline">{t("auth.login")}</span>
                 </Link>
               </Button>
             )}
@@ -68,7 +70,7 @@ export function TopBar() {
                 <Button asChild size="sm" variant="outline" className="h-8 gap-1.5">
                   <Link to="/dashboard">
                     <LayoutDashboard className="h-3.5 w-3.5" aria-hidden="true" />
-                    <span className="hidden md:inline">لوحتي</span>
+                    <span className="hidden md:inline">{t("nav.dashboard")}</span>
                   </Link>
                 </Button>
                 <Button
@@ -76,10 +78,10 @@ export function TopBar() {
                   variant="ghost"
                   className="h-8 gap-1.5"
                   onClick={signOut}
-                  aria-label="تسجيل الخروج"
+                  aria-label={t("auth.logout")}
                 >
                   <LogOut className="h-3.5 w-3.5" aria-hidden="true" />
-                  <span className="hidden md:inline">خروج</span>
+                  <span className="hidden md:inline">{t("auth.logoutShort")}</span>
                 </Button>
               </>
             )}
@@ -87,7 +89,7 @@ export function TopBar() {
 
           {/* الموبايل: زر دخول مختصر + قائمة منسدلة تجمع التفضيلات والحساب */}
           {!loading && !user && (
-            <Button asChild size="icon" className="h-8 w-8 sm:hidden" aria-label="دخول / تسجيل">
+            <Button asChild size="icon" className="h-8 w-8 sm:hidden" aria-label={t("auth.login")}>
               <Link to="/auth">
                 <LogIn className="h-4 w-4" aria-hidden="true" />
               </Link>
@@ -100,13 +102,13 @@ export function TopBar() {
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 sm:hidden"
-                aria-label="خيارات وتفضيلات"
+                aria-label={t("topbar.preferencesAria")}
               >
                 <MoreVertical className="h-4 w-4" aria-hidden="true" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>التفضيلات</DropdownMenuLabel>
+              <DropdownMenuLabel>{t("topbar.preferences")}</DropdownMenuLabel>
               <div className="flex items-center justify-around px-1 pb-1">
                 <LanguageToggle />
                 <FontSizeToggle />
@@ -121,12 +123,12 @@ export function TopBar() {
                   <DropdownMenuItem asChild>
                     <Link to="/dashboard">
                       <LayoutDashboard className="me-2 h-4 w-4" aria-hidden="true" />
-                      لوحتي
+                      {t("nav.dashboard")}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem onSelect={() => void signOut()}>
                     <LogOut className="me-2 h-4 w-4" aria-hidden="true" />
-                    تسجيل الخروج
+                    {t("auth.logout")}
                   </DropdownMenuItem>
                 </>
               )}
@@ -137,4 +139,3 @@ export function TopBar() {
     </header>
   );
 }
-

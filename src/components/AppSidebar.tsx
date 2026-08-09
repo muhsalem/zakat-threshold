@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Search, Calculator, HelpCircle, HeartHandshake } from "lucide-react";
 import { searchEntries } from "@/lib/searchIndex";
 import { useAuth, type AccountType } from "@/hooks/useAuth";
+import { useI18n } from "@/lib/i18n";
 import {
   NAV,
   CALCS,
@@ -29,6 +30,7 @@ export function AppSidebar() {
   const collapsed = state === "collapsed";
   const currentPath = useRouterState({ select: (r) => r.location.pathname });
   const { accountType, isAccountant } = useAuth();
+  const { t } = useI18n();
   const [q, setQ] = useState("");
   const results = useMemo(() => searchEntries(q), [q]);
   const isActive = (p: string) => currentPath === p;
@@ -50,16 +52,15 @@ export function AppSidebar() {
               <Input
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                placeholder="ابحث في المنصة…"
+                placeholder={t("search.placeholder")}
                 className="pe-8 h-9 text-sm"
-                dir="rtl"
-                aria-label="بحث"
+                aria-label={t("search.aria")}
               />
             </div>
             {q && (
               <div className="mt-2 rounded-md border bg-card">
                 {results.length === 0 ? (
-                  <div className="p-2 text-xs text-muted-foreground">لا نتائج مطابقة</div>
+                  <div className="p-2 text-xs text-muted-foreground">{t("search.noResults")}</div>
                 ) : (
                   <ul className="max-h-72 overflow-auto text-sm">
                     {results.map((r) => (
@@ -84,7 +85,7 @@ export function AppSidebar() {
         )}
 
         <SidebarGroup>
-          <SidebarGroupLabel>التنقّل</SidebarGroupLabel>
+          <SidebarGroupLabel>{t("group.nav")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map((item) => (
@@ -92,7 +93,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild isActive={isActive(item.url)}>
                     <Link to={item.url} className="flex items-center gap-2">
                       <item.icon className="h-4 w-4" />
-                      {!collapsed && <span className="whitespace-nowrap">{item.title}</span>}
+                      {!collapsed && <span className="whitespace-nowrap">{t(item.titleKey)}</span>}
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -105,12 +106,12 @@ export function AppSidebar() {
           <SidebarGroup>
             <SidebarGroupLabel>
               {isAccountant
-                ? "كل الحاسبات"
+                ? t("group.calcsAll")
                 : accountType === "company"
-                  ? "حاسبات الشركات"
+                  ? t("group.calcsCompany")
                   : accountType === "institution"
-                    ? "حاسبات المؤسسات"
-                    : "حاسبات الأفراد"}
+                    ? t("group.calcsInstitution")
+                    : t("group.calcsIndividual")}
             </SidebarGroupLabel>
 
             <SidebarGroupContent>
@@ -120,7 +121,7 @@ export function AppSidebar() {
                     <SidebarMenuButton asChild isActive={isActive(i.url)}>
                       <Link to={i.url} className="flex items-center gap-2">
                         <Calculator className="h-4 w-4" />
-                        {!collapsed && <span className="whitespace-nowrap">{i.title}</span>}
+                        {!collapsed && <span className="whitespace-nowrap">{t(i.titleKey)}</span>}
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -133,7 +134,7 @@ export function AppSidebar() {
         {isAccountant && (
           <>
             <SidebarGroup>
-              <SidebarGroupLabel>أدوات المحاسب</SidebarGroupLabel>
+              <SidebarGroupLabel>{t("group.proTools")}</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
                   {PRO_TOOLS.map((i) => (
@@ -141,7 +142,7 @@ export function AppSidebar() {
                       <SidebarMenuButton asChild isActive={isActive(i.url)}>
                         <Link to={i.url} className="flex items-center gap-2">
                           <i.icon className="h-4 w-4" />
-                          {!collapsed && <span className="whitespace-nowrap">{i.title}</span>}
+                          {!collapsed && <span className="whitespace-nowrap">{t(i.titleKey)}</span>}
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -151,7 +152,7 @@ export function AppSidebar() {
             </SidebarGroup>
 
             <SidebarGroup>
-              <SidebarGroupLabel>سجلات ومحفوظات</SidebarGroupLabel>
+              <SidebarGroupLabel>{t("group.proRecords")}</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
                   {PRO_RECORDS.map((i) => (
@@ -159,7 +160,7 @@ export function AppSidebar() {
                       <SidebarMenuButton asChild isActive={isActive(i.url)}>
                         <Link to={i.url} className="flex items-center gap-2">
                           <i.icon className="h-4 w-4" />
-                          {!collapsed && <span className="whitespace-nowrap">{i.title}</span>}
+                          {!collapsed && <span className="whitespace-nowrap">{t(i.titleKey)}</span>}
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -169,7 +170,7 @@ export function AppSidebar() {
             </SidebarGroup>
 
             <SidebarGroup>
-              <SidebarGroupLabel>الأنصبة والأسعار</SidebarGroupLabel>
+              <SidebarGroupLabel>{t("group.proReferences")}</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
                   {PRO_REFERENCES.map((i) => (
@@ -177,7 +178,7 @@ export function AppSidebar() {
                       <SidebarMenuButton asChild isActive={isActive(i.url)}>
                         <Link to={i.url} className="flex items-center gap-2">
                           <i.icon className="h-4 w-4" />
-                          {!collapsed && <span className="whitespace-nowrap">{i.title}</span>}
+                          {!collapsed && <span className="whitespace-nowrap">{t(i.titleKey)}</span>}
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>

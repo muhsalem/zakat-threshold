@@ -113,7 +113,10 @@
   * {
     border-color: var(--color-border);
   }
-  html {
+  /* العربية افتراضية (SSR ولا-JS)، لكن تُحترَم dir="ltr" عند تفعيلها فعلياً
+     (LanguageProvider يضبطها بعد الترطيب — كانت هذه القاعدة تتجاهلها سابقاً
+     فتبقى الصفحة RTL دائماً بصرياً حتى مع تبديل اللغة للإنجليزية). */
+  html:not([dir="ltr"]) {
     direction: rtl;
   }
   body {

@@ -11,7 +11,7 @@ import {
 
 import appCss from "../styles.css?url";
 import { initSentry } from "@/lib/sentry";
-import { LanguageProvider } from "@/lib/i18n";
+import { LanguageProvider, useI18n } from "@/lib/i18n";
 import { MadhabProvider } from "@/lib/madhabContext";
 import { AdminFloatingLinks } from "@/components/AdminFloatingLinks";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
@@ -185,24 +185,17 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <DirectionProvider dir="rtl">
-        <LanguageProvider>
+      <LanguageProvider>
+        <DirectionAwareShell>
           <MadhabProvider>
             {/* داخل nav landmark كي لا يقع الرابط خارج معالم الصفحة (axe: region) */}
-            <nav aria-label="روابط التخطي">
-              <a
-                href="#main"
-                className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:right-2 focus:z-50 focus:rounded focus:bg-primary focus:text-primary-foreground focus:px-3 focus:py-1.5 focus:text-sm"
-              >
-                تخطَّ إلى المحتوى الرئيسي
-              </a>
-            </nav>
+            <SkipLinkNav />
             <SidebarProvider>
               <AppShell />
             </SidebarProvider>
             <FloatingDock />
             <AdminFloatingLinks />
-            
+
             <OnboardingWizard />
             <PWAInstallPrompt />
             <MobileBottomNav />
@@ -210,16 +203,43 @@ function RootComponent() {
             <CookieConsentBanner />
             <SonnerToaster />
           </MadhabProvider>
-        </LanguageProvider>
-      </DirectionProvider>
+        </DirectionAwareShell>
+      </LanguageProvider>
     </QueryClientProvider>
+  );
+}
+
+/**
+ * dir الفعلي يتبع اللغة النشطة الآن (كان "rtl" ثابتاً حتى مع تفعيل
+ * الإنجليزية عبر LanguageToggle — يشمل هذا Radix DirectionProvider
+ * الذي يتحكم باتجاه كل مكوّنات Radix المتداخلة، لا الـCSS فقط).
+ */
+function DirectionAwareShell({ children }: { children: React.ReactNode }) {
+  const { lang } = useI18n();
+  const dir = lang === "ar" || lang === "ur" ? "rtl" : "ltr";
+  return <DirectionProvider dir={dir}>{children}</DirectionProvider>;
+}
+
+function SkipLinkNav() {
+  const { t, lang } = useI18n();
+  return (
+    <nav aria-label={lang === "ar" ? "روابط التخطي" : "Skip links"}>
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:right-2 focus:z-50 focus:rounded focus:bg-primary focus:text-primary-foreground focus:px-3 focus:py-1.5 focus:text-sm"
+      >
+        {t("a11y.skip")}
+      </a>
+    </nav>
   );
 }
 
 function AppShell() {
   const { user } = useAuth();
+  const { lang } = useI18n();
+  const dir = lang === "ar" || lang === "ur" ? "rtl" : "ltr";
   return (
-    <div className="min-h-screen flex w-full" dir="rtl">
+    <div className="min-h-screen flex w-full" dir={dir}>
       {user && <AppSidebar />}
       <div className="flex-1 flex flex-col min-w-0">
         <TopBar />

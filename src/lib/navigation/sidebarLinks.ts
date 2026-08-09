@@ -16,11 +16,13 @@ import {
   ListChecks,
 } from "lucide-react";
 import type { AccountType } from "@/hooks/useAuth";
+import type { Key as I18nKey } from "@/lib/i18n";
 
 export type SidebarRole = AccountType | "guest" | "accountant";
 
 export type NavItem = {
   title: string;
+  titleKey: I18nKey;
   url: string;
   icon: any;
   audience: Array<AccountType | "all">;
@@ -28,47 +30,134 @@ export type NavItem = {
 
 export type CalcItem = {
   title: string;
+  titleKey: I18nKey;
   url: string;
   audience: Array<AccountType | "all">;
 };
 
-export type ProItem = { title: string; url: string; icon: any };
+export type ProItem = { title: string; titleKey: I18nKey; url: string; icon: any };
 
 export const NAV: NavItem[] = [
-  { title: "الرئيسية", url: "/", icon: Home, audience: ["all"] },
-  { title: "لوحتي", url: "/dashboard", icon: LayoutDashboard, audience: ["all"] },
-  { title: "المستشار الذكي", url: "/advisor", icon: Sparkles, audience: ["all"] },
-  { title: "السجل", url: "/history", icon: BookOpen, audience: ["all"] },
-  { title: "الإشعارات", url: "/analytics", icon: Bell, audience: ["all"] },
-  { title: "اشتراكي", url: "/subscription", icon: Sparkles, audience: ["all"] },
-  { title: "الإعدادات", url: "/settings", icon: Settings, audience: ["all"] },
+  { title: "الرئيسية", titleKey: "nav.home", url: "/", icon: Home, audience: ["all"] },
+  {
+    title: "لوحتي",
+    titleKey: "nav.dashboard",
+    url: "/dashboard",
+    icon: LayoutDashboard,
+    audience: ["all"],
+  },
+  {
+    title: "المستشار الذكي",
+    titleKey: "nav.advisor",
+    url: "/advisor",
+    icon: Sparkles,
+    audience: ["all"],
+  },
+  {
+    title: "السجل",
+    titleKey: "nav.history",
+    url: "/history",
+    icon: BookOpen,
+    audience: ["all"],
+  },
+  {
+    title: "الإشعارات",
+    titleKey: "nav.notifications",
+    url: "/analytics",
+    icon: Bell,
+    audience: ["all"],
+  },
+  {
+    title: "اشتراكي",
+    titleKey: "nav.subscription",
+    url: "/subscription",
+    icon: Sparkles,
+    audience: ["all"],
+  },
+  {
+    title: "الإعدادات",
+    titleKey: "nav.settings",
+    url: "/settings",
+    icon: Settings,
+    audience: ["all"],
+  },
 ];
 
 export const CALCS: CalcItem[] = [
-  { title: "زكاة الفطر", url: "/zakat-fitr", audience: ["individual"] },
-  { title: "زكاة الشركات", url: "/zakat-company", audience: ["company"] },
-  { title: "زكاة المؤسسات", url: "/enterprise", audience: ["institution"] },
-  { title: "خطة توزيع الزكاة", url: "/distribution-plan", audience: ["individual"] },
+  { title: "زكاة الفطر", titleKey: "calc.fitr", url: "/zakat-fitr", audience: ["individual"] },
+  {
+    title: "زكاة الشركات",
+    titleKey: "calc.company",
+    url: "/zakat-company",
+    audience: ["company"],
+  },
+  {
+    title: "زكاة المؤسسات",
+    titleKey: "calc.enterprise",
+    url: "/enterprise",
+    audience: ["institution"],
+  },
+  {
+    title: "خطة توزيع الزكاة",
+    titleKey: "calc.distribution",
+    url: "/distribution-plan",
+    audience: ["individual"],
+  },
 ];
 
 export const PRO_TOOLS: ProItem[] = [
-  { title: "الحاسبة الشاملة", url: "/client-intake", icon: Calculator },
-  { title: "معالجة عملاء دفعة", url: "/bulk-clients", icon: Users },
+  { title: "الحاسبة الشاملة", titleKey: "pro.intake", url: "/client-intake", icon: Calculator },
+  {
+    title: "معالجة عملاء دفعة",
+    titleKey: "pro.bulkClients",
+    url: "/bulk-clients",
+    icon: Users,
+  },
 ];
 
 export const PRO_RECORDS: ProItem[] = [
-  { title: "السجل", url: "/history", icon: BookOpen },
-  { title: "مركز المراجعات", url: "/reviews", icon: ListChecks },
-  { title: "المراجعة الشرعية", url: "/sharia-review", icon: ShieldCheck },
-  { title: "سجل تقارير PDF", url: "/reports-history", icon: Files },
-  { title: "قوالب تقارير PDF", url: "/pdf-templates", icon: FileText },
-  { title: "ربط دليل الحسابات", url: "/coa-mapping", icon: MapPin },
+  { title: "السجل", titleKey: "nav.history", url: "/history", icon: BookOpen },
+  { title: "مركز المراجعات", titleKey: "pro.reviews", url: "/reviews", icon: ListChecks },
+  {
+    title: "المراجعة الشرعية",
+    titleKey: "pro.shariaReview",
+    url: "/sharia-review",
+    icon: ShieldCheck,
+  },
+  {
+    title: "سجل تقارير PDF",
+    titleKey: "pro.reportsHistory",
+    url: "/reports-history",
+    icon: Files,
+  },
+  {
+    title: "قوالب تقارير PDF",
+    titleKey: "pro.pdfTemplates",
+    url: "/pdf-templates",
+    icon: FileText,
+  },
+  {
+    title: "ربط دليل الحسابات",
+    titleKey: "pro.coaMapping",
+    url: "/coa-mapping",
+    icon: MapPin,
+  },
 ];
 
 export const PRO_REFERENCES: ProItem[] = [
-  { title: "الأنصبة", url: "/nisab-audit", icon: Landmark },
-  { title: "سجل الأسعار", url: "/prices-history", icon: LineChart },
-  { title: "تدقيق سحب الأسعار", url: "/prices-audit", icon: ShieldCheck },
+  { title: "الأنصبة", titleKey: "pro.nisabAudit", url: "/nisab-audit", icon: Landmark },
+  {
+    title: "سجل الأسعار",
+    titleKey: "pro.pricesHistory",
+    url: "/prices-history",
+    icon: LineChart,
+  },
+  {
+    title: "تدقيق سحب الأسعار",
+    titleKey: "pro.pricesAudit",
+    url: "/prices-audit",
+    icon: ShieldCheck,
+  },
 ];
 
 export function isVisible(audience: Array<AccountType | "all">, type: AccountType | null) {
