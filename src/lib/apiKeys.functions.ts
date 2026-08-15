@@ -24,7 +24,9 @@ export const createApiKey = createServerFn({ method: "POST" })
       .object({
         name: z.string().min(1).max(80),
         scopes: z.array(z.enum(ALL_SCOPES)).min(1).default(["zakat:calc", "zakat:verify"]),
-        rateLimitPerMin: z.number().int().min(1).max(6000).default(60),
+        // rateLimitPerMin لا يُقبل من العميل: كان يسمح بـ1..6000 والواجهة لا
+        // ترسل سوى 60، لكن دوال الخادم نقاط HTTP يستدعيها المستخدم مباشرةً —
+        // فكان بوسعه منح مفتاحه 6000/دقيقة. الحد الآن من DEFAULT في المخطط.
       })
       .parse(input),
   )
@@ -40,7 +42,6 @@ export const createApiKey = createServerFn({ method: "POST" })
         key_prefix: prefix,
         key_hash: hash,
         scopes: data.scopes,
-        rate_limit_per_min: data.rateLimitPerMin,
       })
       .select("id, name, key_prefix, scopes, rate_limit_per_min, created_at")
       .single();

@@ -286,7 +286,7 @@ export function DigitalAssetsSection({ currencyName, onTotalChange }: Props) {
       {/* محفظة الأسهم — استثمار طويل */}
       <div className="rounded-lg border border-gold/30 bg-gold/5 p-4 space-y-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm font-semibold text-gold-dark">
+          <div className="flex items-center gap-2 text-sm font-semibold text-gold">
             <TrendingUp className="h-4 w-4" /> ثالثاً: أسهم الاستثمار طويل الأجل
           </div>
           <Badge variant="outline" className="text-[10px]">

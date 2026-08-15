@@ -26,7 +26,7 @@ function fmt(n: number, d = 2) {
 const REL_STYLE = {
   direct: "bg-success/15 text-success border-success/40",
   derived: "bg-warning/15 text-warning border-warning/40",
-  estimated: "bg-destructive/15 text-destructive border-destructive/40",
+  estimated: "bg-destructive/10 text-destructive border-destructive/40",
 } as const;
 
 const REL_LABEL = { direct: "مباشر", derived: "مشتق", estimated: "تقديري" } as const;

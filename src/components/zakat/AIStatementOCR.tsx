@@ -315,9 +315,9 @@ function Metric({
 }) {
   const cls =
     tone === "ok"
-      ? "bg-success border-success text-success"
+      ? "bg-success/10 border-success text-success"
       : tone === "warn"
-        ? "bg-warning border-warning text-warning"
+        ? "bg-warning/10 border-warning text-warning"
         : tone === "primary"
           ? "bg-primary/5 border-primary/40 text-primary"
           : "bg-muted/40 border-muted";

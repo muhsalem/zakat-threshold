@@ -119,7 +119,7 @@ const STATUS_META: Record<AttachmentStatus, { label: string; cls: string; icon: 
     },
     rejected: {
       label: "مرفوض",
-      cls: "bg-destructive/15 text-destructive border-destructive/30",
+      cls: "bg-destructive/10 text-destructive border-destructive/30",
       icon: <XCircle className="h-3 w-3" />,
     },
   };

@@ -723,7 +723,7 @@ function PlanCardHome({ plan }: { plan: CatalogPlan }) {
         )}
         <p className="text-xs text-muted-foreground">{plan.tagline}</p>
         {plan.ribbon && (
-          <div className="text-[11px] font-medium text-warning dark:text-warning bg-warning dark:bg-warning/30 border border-warning dark:border-warning rounded px-2 py-0.5">
+          <div className="text-[11px] font-medium text-warning dark:text-warning bg-warning/10 dark:bg-warning/30 border border-warning dark:border-warning rounded px-2 py-0.5">
             ★ {plan.ribbon}
           </div>
         )}

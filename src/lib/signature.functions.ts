@@ -10,9 +10,22 @@ const signInputSchema = z.object({
 });
 const verifyInputSchema = signInputSchema.extend({ sig: z.string().min(1).max(64) });
 
+/**
+ * مفتاح توقيع الشهادات — سرّ خادم بحت.
+ *
+ * كان هذا يتراجع سابقاً إلى `SUPABASE_URL` ثم إلى النص الحرفي "nisab-fallback"
+ * عند غياب مفتاح الخدمة. وSUPABASE_URL **مرئي للعميل** (يُرسَل للمتصفح)، أي أن
+ * أي شخص كان يستطيع اشتقاق مفتاح التوقيع وتزوير شهادات زكاة "موثَّقة" تجتاز
+ * verifyReport. الآن يفشل التوقيع بصوت عالٍ بدل أن يوقّع بمفتاح قابل للتخمين.
+ *
+ * الأولوية لسرّ توقيع مستقل (REPORT_SIGNING_SECRET) كما في السطر أدناه، حتى لا
+ * يُبطل تدوير مفتاح قاعدة البيانات كل التواقيع السابقة. والتراجع إلى
+ * SUPABASE_SERVICE_ROLE_KEY مؤقت لبيئات لم تضبط السرّ بعد — وهو خادمي بحت،
+ * لكن تدويره يُبطل ما وُقِّع به. اضبط REPORT_SIGNING_SECRET في الإنتاج.
+ */
 function getKey(): Buffer {
-  const k = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_URL || "nisab-fallback";
-  // derive a stable key from server-only env (never exposed to client)
+  const k = process.env.REPORT_SIGNING_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!k) throw new Error("signing_secret_not_configured");
   return createHmac("sha256", "nisab-signing-v1").update(k).digest();
 }
 

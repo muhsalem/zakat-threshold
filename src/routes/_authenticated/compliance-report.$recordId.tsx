@@ -244,9 +244,9 @@ const CATEGORIES: Category[] = [
 ];
 
 const LEVEL_STYLE: Record<ShariaReference["level"], string> = {
-  ijma: "bg-success text-success border-success",
+  ijma: "bg-success/10 text-success border-success",
   majority: "bg-blue-100 text-blue-800 border-blue-300",
-  majma: "bg-warning text-warning border-warning",
+  majma: "bg-warning/10 text-warning border-warning",
   ijtihad: "bg-purple-100 text-purple-800 border-purple-300",
 };
 

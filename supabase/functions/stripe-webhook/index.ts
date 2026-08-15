@@ -7,6 +7,7 @@
 
 import Stripe from "https://esm.sh/stripe@14.21.0?target=deno";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { deriveSubscriptionRow } from "../_shared/subscriptionRow.ts";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*" };
 
@@ -62,6 +63,60 @@ Deno.serve(async (req) => {
     if (error) console.error("upsertPayment error:", error);
   }
 
+  /**
+   * تحديث صف الاشتراك المعروض (user_subscriptions).
+   *
+   * لماذا من Stripe لا من كتالوج التطبيق: يوجد كتالوجان متعارضان — payments.ts
+   * يعرّف startup بـ$149 شهرياً وplans.ts يعرّفه بـ$99 سنوياً لنفس المعرّف.
+   * الكتابة من أيّهما تُنتج صفّاً محاسبياً كاذباً تُبنى منه فاتورة PDF في صفحة
+   * التأكيد. لذا نكتب ما شحنته Stripe فعلاً: المبلغ والعملة والدورية من الجلسة
+   * نفسها. واسم الخطة يُشتق للعرض من plan_id في الواجهة (subscription.tsx)،
+   * فنخزّن هنا اسم منتج Stripe كسجل لما رآه العميل وقت الدفع.
+   *
+   * ملاحظة: هذا الجدول للعرض ودورة حياة الاشتراك فقط. بوابة الميزات تبقى
+   * profiles.plan — لا تُشتق صلاحية من هنا.
+   */
+  async function upsertSubscriptionRow(opts: {
+    userId: string;
+    planId: string;
+    planName: string;
+    amount: number;
+    currency: string;
+    billingPeriod: "monthly" | "yearly" | "lifetime" | "one_time";
+    renewsAt: string | null;
+    status: "active" | "canceled";
+  }) {
+    const { error } = await supabase.from("user_subscriptions").upsert(
+      {
+        user_id: opts.userId,
+        plan_id: opts.planId,
+        plan_name: opts.planName,
+        status: opts.status,
+        billing_period: opts.billingPeriod,
+        amount: opts.amount,
+        currency: opts.currency.toUpperCase(),
+        started_at: new Date().toISOString(),
+        renews_at: opts.renewsAt,
+        canceled_at: null,
+        cancel_at_period_end: false,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "user_id" },
+    );
+    if (error) console.error("upsertSubscriptionRow error:", error);
+  }
+
+  /** اسم المنتج كما عرضته Stripe للعميل؛ يتراجع لمعرّف الخطة إن تعذّر. */
+  async function stripeProductName(sessionId: string, fallback: string): Promise<string> {
+    try {
+      const items = await stripe.checkout.sessions.listLineItems(sessionId, { limit: 1 });
+      return items.data[0]?.description || fallback;
+    } catch (err) {
+      console.error("listLineItems failed:", err);
+      return fallback;
+    }
+  }
+
   switch (event.type) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session;
@@ -76,7 +131,7 @@ Deno.serve(async (req) => {
         amountPaid: (session.amount_total ?? 0) / 100,
         currency: session.currency ?? "usd",
       });
-      // ترقية الخطة في ملف المستخدم
+      // ترقية الخطة في ملف المستخدم — هذه هي بوابة الميزات الفعلية
       if (userId && planId) {
         await supabase
           .from("profiles")
@@ -86,6 +141,32 @@ Deno.serve(async (req) => {
               planId === "vip_annual" ? new Date(Date.now() + 365 * 864e5).toISOString() : null,
           })
           .eq("user_id", userId);
+
+        // صف العرض/دورة الحياة — الاشتقاق في وحدة نقية مختبَرة (_shared)
+        let recurringInterval: string | null = null;
+        let currentPeriodEndSec: number | null = null;
+        if (session.mode === "subscription" && session.subscription) {
+          const s = await stripe.subscriptions.retrieve(session.subscription as string);
+          recurringInterval = s.items.data[0]?.price?.recurring?.interval ?? null;
+          currentPeriodEndSec = s.current_period_end ?? null;
+        }
+
+        const derived = deriveSubscriptionRow({
+          mode: session.mode,
+          amountTotalMinor: session.amount_total,
+          currency: session.currency,
+          prepayYears: session.metadata?.prepayYears,
+          recurringInterval,
+          currentPeriodEndSec,
+        });
+
+        await upsertSubscriptionRow({
+          userId,
+          planId,
+          planName: await stripeProductName(session.id, planId),
+          status: "active",
+          ...derived,
+        });
       }
       break;
     }
@@ -104,6 +185,23 @@ Deno.serve(async (req) => {
           amountPaid: (invoice.amount_paid ?? 0) / 100,
           currency: invoice.currency ?? "usd",
         });
+
+        // تجديد: ندفع تاريخ التجديد للأمام فقط — لا نمسّ started_at ولا plan_id
+        if (userId) {
+          const { error } = await supabase
+            .from("user_subscriptions")
+            .update({
+              status: "active",
+              renews_at: subscription.current_period_end
+                ? new Date(subscription.current_period_end * 1000).toISOString()
+                : null,
+              cancel_at_period_end: false,
+              canceled_at: null,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("user_id", userId);
+          if (error) console.error("renewal update error:", error);
+        }
       }
       break;
     }
@@ -115,6 +213,17 @@ Deno.serve(async (req) => {
           .from("profiles")
           .update({ plan: "free", plan_expires_at: null })
           .eq("user_id", userId);
+
+        const { error } = await supabase
+          .from("user_subscriptions")
+          .update({
+            status: "canceled",
+            canceled_at: new Date().toISOString(),
+            renews_at: null,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("user_id", userId);
+        if (error) console.error("cancellation update error:", error);
       }
       break;
     }

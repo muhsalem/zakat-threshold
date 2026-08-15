@@ -70,7 +70,7 @@ function reliabilityBadge(r: Row["reliability"]) {
     },
     estimated: {
       label: "تقديري",
-      cls: "bg-destructive/15 text-destructive dark:text-destructive border-destructive/30",
+      cls: "bg-destructive/10 text-destructive dark:text-destructive border-destructive/30",
     },
   } as const;
   const m = map[r];

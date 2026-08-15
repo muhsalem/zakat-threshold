@@ -46,9 +46,9 @@ export const Route = createFileRoute("/_authenticated/reports-history")({
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   generated: { label: "تم الإنشاء", color: "bg-blue-100 text-blue-800" },
-  downloaded: { label: "تم التنزيل", color: "bg-success text-success" },
+  downloaded: { label: "تم التنزيل", color: "bg-success/10 text-success" },
   sent: { label: "تم الإرسال", color: "bg-purple-100 text-purple-800" },
-  approved: { label: "معتمد", color: "bg-success text-success" },
+  approved: { label: "معتمد", color: "bg-success/10 text-success" },
   canceled: { label: "ملغى", color: "bg-gray-200 text-gray-700" },
 };
 

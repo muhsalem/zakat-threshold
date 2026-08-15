@@ -45,6 +45,7 @@ import {
 } from "lucide-react";
 import {
   ZAKAT_RATE,
+  ZAKAT_RATE_GREGORIAN,
   GOLD_NISAB_GRAMS,
   num,
   fmt,
@@ -669,7 +670,7 @@ const COMPLIANCE_SECTIONS: { title: string; items: { id: string; label: string }
     items: [
       { id: "h_hawl", label: "التحقق من حولان الحول الكامل على الموجودات الزكوية" },
       { id: "h_nisab", label: "التحقق من بلوغ الوعاء النصاب (85 جراماً من الذهب)" },
-      { id: "h_rate", label: "تطبيق النسبة الصحيحة: 2.5% قمري — 2.5775% شمسي" },
+      { id: "h_rate", label: "تطبيق النسبة الصحيحة: 2.5% قمري — 2.577% شمسي" },
       { id: "h_unified_hawl", label: "توحيد تاريخ حول الزكاة سنوياً وعدم تأخيره" },
     ],
   },
@@ -1362,7 +1363,7 @@ export function CompanyTab() {
     const nisabValue = num(goldGramPrice) * GOLD_NISAB_GRAMS;
     const reachesNisab = base >= nisabValue && nisabValue > 0;
 
-    const rate = solarYear === "solar" ? 0.025775 : ZAKAT_RATE;
+    const rate = solarYear === "solar" ? ZAKAT_RATE_GREGORIAN : ZAKAT_RATE;
     const zakatOneYear = orgKind === "nonprofit" || !reachesNisab ? 0 : base > 0 ? base * rate : 0;
     const years = 1 + Math.min(2, Math.max(0, Math.round(num(accelerateYears))));
     const zakat = zakatOneYear * years;
@@ -1808,7 +1809,7 @@ export function CompanyTab() {
                         <div className="flex items-center gap-1.5">
                           <RadioGroupItem value="solar" id="sol" />
                           <Label htmlFor="sol" className="text-xs">
-                            شمسية 2.5775%
+                            شمسية 2.577%
                           </Label>
                         </div>
                       </RadioGroup>

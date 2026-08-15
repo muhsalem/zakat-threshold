@@ -69,9 +69,9 @@ const StatusIcon = ({ status }: { status: CheckStatus }) => {
 };
 
 const STATUS_LABEL: Record<CheckStatus, { ar: string; className: string }> = {
-  pass: { ar: "مجتاز", className: "bg-success text-success border-success" },
-  fail: { ar: "متعثّر", className: "bg-destructive text-destructive border-destructive" },
-  warn: { ar: "تنبيه", className: "bg-warning text-warning border-warning" },
+  pass: { ar: "مجتاز", className: "bg-success/10 text-success border-success" },
+  fail: { ar: "متعثّر", className: "bg-destructive/10 text-destructive border-destructive" },
+  warn: { ar: "تنبيه", className: "bg-warning/10 text-warning border-warning" },
   na: { ar: "لا ينطبق", className: "bg-muted text-muted-foreground border-muted-foreground/20" },
 };
 
@@ -337,16 +337,16 @@ export default function ComplianceChecklist({ inputs, compact = false }: Props) 
             قائمة تحقّق الامتثال الشرعي
           </CardTitle>
           <div className="flex items-center gap-1.5 flex-wrap">
-            <Badge className="bg-success text-success border-success">
+            <Badge className="bg-success/10 text-success border-success">
               {totals.pass} مجتاز
             </Badge>
             {totals.fail > 0 && (
-              <Badge className="bg-destructive text-destructive border-destructive">
+              <Badge className="bg-destructive/10 text-destructive border-destructive">
                 {totals.fail} متعثّر
               </Badge>
             )}
             {totals.warn > 0 && (
-              <Badge className="bg-warning text-warning border-warning">
+              <Badge className="bg-warning/10 text-warning border-warning">
                 {totals.warn} تنبيه
               </Badge>
             )}

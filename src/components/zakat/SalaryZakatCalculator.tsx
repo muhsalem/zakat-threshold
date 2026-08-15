@@ -133,7 +133,7 @@ export default function SalaryZakatCalculator({ currencyName = "ج.م", nisabVal
         </div>
 
         {nisabValue > 0 && !reachesNisab && (
-          <div className="text-xs text-warning dark:text-warning flex items-start gap-2 bg-warning dark:bg-warning/30 p-2 rounded">
+          <div className="text-xs text-warning dark:text-warning flex items-start gap-2 bg-warning/10 dark:bg-warning/30 p-2 rounded">
             <Info className="h-4 w-4 mt-0.5 shrink-0" />
             الوعاء أقل من النصاب ({fmt(nisabValue)} {currencyName})، لا تجب الزكاة في الطرق التي
             تشترط النصاب.

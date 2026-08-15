@@ -22,12 +22,12 @@ type Status = "active" | "in_progress" | "planned";
 const S: Record<Status, { label: string; cls: string; icon: typeof CheckCircle2 }> = {
   active: {
     label: "معتمد",
-    cls: "bg-success text-success border-success",
+    cls: "bg-success/10 text-success border-success",
     icon: CheckCircle2,
   },
   in_progress: {
     label: "قيد التقييم",
-    cls: "bg-warning text-warning border-warning",
+    cls: "bg-warning/10 text-warning border-warning",
     icon: Clock,
   },
   planned: { label: "مُخطَّط", cls: "bg-muted text-muted-foreground", icon: Clock },

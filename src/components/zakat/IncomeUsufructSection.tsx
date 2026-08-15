@@ -358,7 +358,7 @@ export function IncomeUsufructSection({ currencyName, onTotalChange }: Props) {
                 </span>
               </div>
               {(!r.halal || !r.owned) && (
-                <div className="col-span-12 flex items-start gap-2 text-[11px] text-warning dark:text-warning bg-warning dark:bg-warning/30 rounded px-2 py-1">
+                <div className="col-span-12 flex items-start gap-2 text-[11px] text-warning dark:text-warning bg-warning/10 dark:bg-warning/30 rounded px-2 py-1">
                   <AlertTriangle className="h-3 w-3 mt-0.5 flex-shrink-0" />
                   <span>
                     {!r.halal

@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Building2, Calculator, ShieldCheck, BookOpen, ArrowLeft } from "lucide-react";
-import { FinancialStatementOcrHelper } from "@/components/zakat/FinancialStatementOcrHelper";
 import { ShariaBoardCard } from "@/components/zakat/ShariaBoardCard";
 
 export const Route = createFileRoute("/zakat-company")({
@@ -72,8 +71,11 @@ function ZakatCompanyPage() {
         </CardContent>
       </Card>
 
-      {/* القراءة الآلية للميزانيات العمومية عبر AI Financial OCR */}
-      <FinancialStatementOcrHelper />
+      {/* القراءة الآلية للقوائم المالية: الأداة الحقيقية تعمل داخل حاسبة الشركات
+          (AIStatementOCR عبر /api/extract-statement). كان هنا سابقاً مكوّن
+          "AI OCR" يعرض أرقاماً ثابتة مُختلَقة لأي ملف يُرفَع ويخبر المستخدم أن
+          قائمته "قُرئت وحُلِّلت بنجاح" — أُزيل بالكامل. لا نعرض قدرة محاكاة
+          كأنها حقيقية، خاصةً على بيانات المستخدم المالية. */}
 
       {/* بطاقة الاعتماد الفكهي والمحاسبي للهيئة */}
       <ShariaBoardCard />

@@ -55,7 +55,7 @@ const REL_META = {
   estimated: {
     label: "تقديري",
     icon: HelpCircle,
-    cls: "bg-destructive/15 text-destructive border-destructive/40",
+    cls: "bg-destructive/10 text-destructive border-destructive/40",
     dot: "bg-destructive",
   },
 } as const;

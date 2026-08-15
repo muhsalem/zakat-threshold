@@ -1524,7 +1524,7 @@ export function SectoralModels({
               سعر جرام الذهب: <b>{fmt(num(goldGram))}</b>
             </span>
             <span>
-              نوع السنة: <b>{yearMode === "hijri" ? "قمرية 2.5%" : "شمسية 2.5775%"}</b>
+              نوع السنة: <b>{yearMode === "hijri" ? "قمرية 2.5%" : "شمسية 2.577%"}</b>
             </span>
             <span>
               النصاب:{" "}

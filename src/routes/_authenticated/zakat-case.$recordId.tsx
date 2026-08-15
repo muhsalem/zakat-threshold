@@ -547,8 +547,8 @@ function ViolationsPanel({ inputs }: { inputs: ComplianceInputs }) {
                   <Badge
                     className={
                       c.status === "fail"
-                        ? "bg-destructive text-destructive border-destructive"
-                        : "bg-warning text-warning border-warning"
+                        ? "bg-destructive/10 text-destructive border-destructive"
+                        : "bg-warning/10 text-warning border-warning"
                     }
                   >
                     {c.status === "fail" ? "مخالفة" : "تنبيه"}

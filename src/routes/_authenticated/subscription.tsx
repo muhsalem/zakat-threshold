@@ -112,7 +112,6 @@ function SubscriptionPage() {
   const [loading, setLoading] = useState(true);
   const [sub, setSub] = useState<Subscription | null>(null);
   const [payments, setPayments] = useState<Payment[]>([]);
-  const [switching, setSwitching] = useState<string | null>(null);
   const [canceling, setCanceling] = useState(false);
 
   useEffect(() => {
@@ -142,86 +141,56 @@ function SubscriptionPage() {
   const audience = currentPlan?.audience ?? "individual";
   const availablePlans = PLANS.filter((p) => p.audience === audience);
 
-  async function switchPlan(target: Plan) {
-    if (!user || !sub) return;
-    setSwitching(target.id);
-    const nowIso = new Date().toISOString();
-    const renews =
-      target.billing === "lifetime" || target.billing === "one_time"
-        ? null
-        : new Date(
-            Date.now() + (target.billing === "monthly" ? 30 : 365) * 86400_000,
-          ).toISOString();
-
-    const { error } = await supabase
-      .from("user_subscriptions")
-      .update({
-        plan_id: target.id,
-        plan_name: target.name,
-        status: "active",
-        billing_period: target.billing === "custom" ? "yearly" : target.billing,
-        amount: target.usdPrice ?? 0,
-        currency: "USD",
-        started_at: nowIso,
-        renews_at: renews,
-        canceled_at: null,
-        cancel_at_period_end: false,
-      })
-      .eq("user_id", user.id);
-
-    setSwitching(null);
-    if (error) {
-      toast.error("تعذّر تحديث الخطة");
-      return;
-    }
-    toast.success(`تم التحويل إلى خطة ${target.name}`);
+  async function refreshSub() {
+    if (!user) return;
     const { data } = await supabase
       .from("user_subscriptions")
       .select("*")
       .eq("user_id", user.id)
       .maybeSingle();
     setSub(data as Subscription | null);
+  }
+
+  /**
+   * تغيير الخطة لم يعد يحدث من المتصفح. كانت هذه الدالة تكتب plan_id وamount
+   * وstatus مباشرة على صف المستخدم، وسياسة RLS كانت تسمح بذلك — أي أن أي
+   * مستخدم كان يمنح نفسه Enterprise بصفر تكلفة. الاستحقاق الآن يكتبه مصدر
+   * الدفع وحده. وبما أنه لا يوجد مسار دفع يعمل طرفاً لطرف بعد، نوجّه للمبيعات
+   * صراحةً بدل إيهام المستخدم بترقية فورية.
+   */
+  function requestPlanChange(target: Plan) {
+    const subject = encodeURIComponent(`طلب تغيير الخطة إلى: ${target.name}`);
+    const body = encodeURIComponent(
+      `أرغب في التحويل إلى خطة ${target.name}.\nالبريد المسجَّل: ${user?.email ?? ""}\nالخطة الحالية: ${sub?.plan_name ?? "—"}`,
+    );
+    window.location.href = `mailto:sales@nisab.app?subject=${subject}&body=${body}`;
   }
 
   async function cancelSubscription() {
     if (!user || !sub) return;
     setCanceling(true);
-    const { error } = await supabase
-      .from("user_subscriptions")
-      .update({
-        cancel_at_period_end: true,
-        canceled_at: new Date().toISOString(),
-        status: sub.renews_at ? "active" : "canceled",
-      })
-      .eq("user_id", user.id);
-    setCanceling(false);
-    if (error) {
-      toast.error("تعذّر إلغاء الاشتراك");
-      return;
+    try {
+      const { setSubscriptionCancelState } = await import("@/lib/subscription.functions");
+      await setSubscriptionCancelState({ data: { intent: "cancel" } });
+      toast.success("تم جدولة الإلغاء — سيبقى وصولك حتى نهاية الفترة الحالية");
+      await refreshSub();
+    } catch {
+      toast.error("تعذّر إلغاء الاشتراك", { description: "حاول مجدداً أو راسل الدعم." });
+    } finally {
+      setCanceling(false);
     }
-    toast.success("تم جدولة الإلغاء — سيبقى وصولك حتى نهاية الفترة الحالية");
-    const { data } = await supabase
-      .from("user_subscriptions")
-      .select("*")
-      .eq("user_id", user.id)
-      .maybeSingle();
-    setSub(data as Subscription | null);
   }
 
   async function resumeSubscription() {
     if (!user || !sub) return;
-    const { error } = await supabase
-      .from("user_subscriptions")
-      .update({ cancel_at_period_end: false, canceled_at: null, status: "active" })
-      .eq("user_id", user.id);
-    if (error) return toast.error("تعذّر استئناف الاشتراك");
-    toast.success("تم استئناف الاشتراك");
-    const { data } = await supabase
-      .from("user_subscriptions")
-      .select("*")
-      .eq("user_id", user.id)
-      .maybeSingle();
-    setSub(data as Subscription | null);
+    try {
+      const { setSubscriptionCancelState } = await import("@/lib/subscription.functions");
+      await setSubscriptionCancelState({ data: { intent: "resume" } });
+      toast.success("تم استئناف الاشتراك");
+      await refreshSub();
+    } catch {
+      toast.error("تعذّر استئناف الاشتراك", { description: "حاول مجدداً أو راسل الدعم." });
+    }
   }
 
   if (loading) {
@@ -252,8 +221,14 @@ function SubscriptionPage() {
         <CardHeader>
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
+              {/*
+                الاسم من صف الاشتراك أولاً — وهو اسم منتج Stripe كما رآه العميل
+                وقت الدفع — لا من الكتالوج. الكتالوجان يتعارضان في معرّفَي
+                startup وbusiness، فمن اشترى «Startup» كان يُعرض له «شركة صغيرة».
+                الكتالوج تراجعٌ فقط للخطة المجانية ولمن لا صفّ له.
+              */}
               <CardTitle className="text-2xl flex items-center gap-3">
-                {currentPlan?.name ?? sub?.plan_name}
+                {sub?.plan_name ?? currentPlan?.name}
                 <Badge variant={statusBadge.variant}>{statusBadge.label}</Badge>
               </CardTitle>
               <CardDescription className="mt-1">
@@ -264,8 +239,15 @@ function SubscriptionPage() {
               <div className="text-3xl font-bold">
                 {(sub?.amount ?? 0) === 0 ? "مجاناً" : `$${Number(sub?.amount).toFixed(0)}`}
               </div>
+              {/*
+                الدورية من صف الاشتراك لا من الكتالوج — لتطابق المبلغ أعلاه.
+                كلاهما الآن من جلسة Stripe (يكتبها stripe-webhook). الكتالوجان
+                يتعارضان: plans.ts يعرّف startup سنوياً بينما payments.ts يبيعه
+                شهرياً، فقراءة الدورية منه كانت تُنتج «$149 / سنة» لاشتراك
+                شهري فعلي. الكتالوج يبقى تراجعاً فقط حين لا يوجد صف.
+              */}
               <div className="text-xs text-muted-foreground">
-                {billingPeriodLabel(currentPlan?.billing ?? "yearly")}
+                {billingPeriodLabel(sub?.billing_period ?? currentPlan?.billing ?? "yearly")}
               </div>
             </div>
           </div>
@@ -394,17 +376,14 @@ function SubscriptionPage() {
                     <Button
                       className="w-full gap-2"
                       variant={direction === "upgrade" ? "default" : "outline"}
-                      disabled={switching === p.id}
-                      onClick={() => switchPlan(p)}
+                      onClick={() => requestPlanChange(p)}
                     >
-                      {switching === p.id ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : direction === "upgrade" ? (
+                      {direction === "upgrade" ? (
                         <ArrowUpCircle className="w-4 h-4" />
                       ) : (
                         <ArrowDownCircle className="w-4 h-4" />
                       )}
-                      {direction === "upgrade" ? "ترقية" : "تخفيض"}
+                      {direction === "upgrade" ? "اطلب الترقية" : "اطلب التخفيض"}
                     </Button>
                   )}
                 </CardContent>

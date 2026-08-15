@@ -40,7 +40,7 @@ export function ApiKeysPanel() {
   const createMutation = useMutation({
     mutationFn: () =>
       create({
-        data: { name: name.trim(), scopes: scopes as never, rateLimitPerMin: 60 },
+        data: { name: name.trim(), scopes: scopes as never },
       }),
     onSuccess: (res) => {
       setFreshKey(res.key);

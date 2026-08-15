@@ -59,15 +59,24 @@
   --accent-foreground: oklch(0.28 0.06 160);
   --destructive: oklch(0.55 0.22 27);
   --destructive-foreground: oklch(0.98 0.01 95);
-  --success: oklch(0.6 0.15 145);
+  /* دُكِّنت هذه القيم لتجتاز WCAG AA (4.5:1) على خلفية فاتحة. القيم السابقة
+     (success .6 / warning .75) كانت تعطي 3.71:1 و2.25:1 — أي راسبة، وهي
+     مطبَّقة على مئات المواضع. القيم أدناه محسوبة لتتجاوز 4.5:1 على #fff
+     مع بقاء الدلالة اللونية واضحة. الوضع الداكن يعرَّف أدناه بقيم أفتح. */
+  --success: oklch(0.47 0.13 145);
   --success-foreground: oklch(0.98 0.01 145);
-  --warning: oklch(0.75 0.15 85);
-  --warning-foreground: oklch(0.25 0.05 85);
+  --warning: oklch(0.48 0.11 75);
+  --warning-foreground: oklch(0.98 0.02 85);
   --border: oklch(0.88 0.02 150);
   --input: oklch(0.92 0.015 150);
   --ring: oklch(0.55 0.09 160);
   --gold: oklch(0.78 0.13 85);
   --gold-foreground: oklch(0.25 0.05 85);
+  /* ذهب النصوص منفصل عن ذهب التعبئة. الأول (0.78) هوية بصرية ممتازة كخلفية
+     وتدرّج وظل، لكنه 2.02:1 كنصّ على أبيض — راسب بشدة، و20 موضعاً تعرض به
+     أرقاماً فعلية (جرامات الذهب والفضة). هذا المتغيّر للنص وحده: 4.89:1،
+     ويبقى ذهباً. في الوضع الداكن يساوي --gold لأنه هناك 8.51:1 أصلاً. */
+  --gold-text: oklch(0.55 0.13 85);
   --chart-1: oklch(0.55 0.12 160);
   --chart-2: oklch(0.78 0.13 85);
   --chart-3: oklch(0.6 0.05 250);
@@ -102,11 +111,18 @@
   --success-foreground: oklch(0.18 0.03 145);
   --warning: oklch(0.78 0.15 85);
   --warning-foreground: oklch(0.25 0.05 85);
+  /* كان .dark يغفل --destructive فيرث أحمر :root الداكن (L=0.55)، فيعطي
+     3.09:1 لنمط `bg-destructive/10 text-destructive` على البطاقة — راسب.
+     هذه القيمة تعطي 5.26:1 على البطاقة و6.44:1 على خلفية الصفحة. */
+  --destructive: oklch(0.7 0.19 27);
+  --destructive-foreground: oklch(0.18 0.03 27);
   --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.7 0.12 150);
   --gold: oklch(0.78 0.13 85);
   --gold-foreground: oklch(0.25 0.05 85);
+  /* على خلفية داكنة الذهب الفاتح مقروء (8.51:1) فلا يتغيّر */
+  --gold-text: oklch(0.78 0.13 85);
 }
 
 @layer base {
@@ -146,7 +162,7 @@
 
 @layer utilities {
   .text-gold {
-    color: var(--gold);
+    color: var(--gold-text);
   }
   .bg-gold {
     background-color: var(--gold);
@@ -264,6 +280,10 @@
   --ring: #2d6a52;
   --gold: #d4a13a;
   --gold-foreground: #3b2d10;
+  /* ذهب النص في الطباعة مثبَّت صراحةً لا موروثاً. الذهب أعلاه (#d4a13a)
+     مقصود للتعبئة، لكنه 2.34:1 كنصّ على ورق أبيض — والورق لا يُعدَّل سطوعه.
+     هذه القيمة 6.37:1 وتبقى ذهبية. */
+  --gold-text: #7a5a12;
   background-image: none !important;
 }
 .pdf-export-mode #print-report,

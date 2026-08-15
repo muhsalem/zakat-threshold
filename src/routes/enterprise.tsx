@@ -288,7 +288,7 @@ const STATUS_META: Record<
     label_ar: "متاح",
     dot: "bg-success",
     badge:
-      "bg-success text-success border-success dark:bg-success/10 dark:text-success dark:border-success/30",
+      "bg-success/10 text-success border-success dark:bg-success/10 dark:text-success dark:border-success/30",
     icon: CheckCircle2,
   },
   beta: {
@@ -304,7 +304,7 @@ const STATUS_META: Record<
     label_ar: "قيد التطوير",
     dot: "bg-warning",
     badge:
-      "bg-warning text-warning border-warning dark:bg-warning/10 dark:text-warning dark:border-warning/30",
+      "bg-warning/10 text-warning border-warning dark:bg-warning/10 dark:text-warning dark:border-warning/30",
     icon: Clock,
   },
   planned: {

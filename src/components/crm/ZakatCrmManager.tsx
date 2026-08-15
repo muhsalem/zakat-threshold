@@ -219,7 +219,7 @@ export function ZakatCrmManager() {
 
         <Card className="border-warning/20 bg-warning/5">
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-warning/10 text-warning-foreground">
+            <div className="p-2.5 rounded-xl bg-warning/10 text-warning">
               <Clock className="h-5 w-5" />
             </div>
             <div>

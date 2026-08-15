@@ -526,11 +526,11 @@ export function NisabHistory() {
                       العرض: {dbCountry.name} ({dbCountry.currency})
                     </Badge>
                     {isForecast ? (
-                      <Badge className="bg-warning text-warning border border-warning gap-1">
+                      <Badge className="bg-warning/10 text-warning border border-warning gap-1">
                         <TrendingUp className="h-3 w-3" /> توقع مستقبلي
                       </Badge>
                     ) : (
-                      <Badge className="bg-success text-success border border-success">
+                      <Badge className="bg-success/10 text-success border border-success">
                         سعر فعلي مسجل
                       </Badge>
                     )}
@@ -626,7 +626,7 @@ export function NisabHistory() {
                   )}
 
                   {isForecast && (
-                    <div className="rounded-md border border-warning bg-warning p-3 text-xs leading-relaxed text-warning">
+                    <div className="rounded-md border border-warning bg-warning/10 p-3 text-xs leading-relaxed text-warning">
                       <div className="font-bold mb-1 flex items-center gap-1">
                         <TrendingUp className="h-3.5 w-3.5" /> كيف تم احتساب هذا التوقع؟
                       </div>
@@ -723,7 +723,7 @@ export function NisabHistory() {
               </div>
 
               <div className="grid sm:grid-cols-3 gap-2 text-[11px]">
-                <div className="rounded-md border border-success bg-success p-2 text-success">
+                <div className="rounded-md border border-success bg-success/10 p-2 text-success">
                   <b>محافظ (Conservative)</b> — يفترض تباطؤ النمو (50% من الاتجاه). الأكثر احتياطًا
                   لحماية الفقير.
                 </div>
@@ -731,7 +731,7 @@ export function NisabHistory() {
                   <b>أساسي (Base)</b> — استمرار الاتجاه الحالي كما هو. هو السيناريو المعتمد
                   افتراضيًا.
                 </div>
-                <div className="rounded-md border border-warning bg-warning p-2 text-warning">
+                <div className="rounded-md border border-warning bg-warning/10 p-2 text-warning">
                   <b>متفائل (Optimistic)</b> — تسارع الاتجاه (150%). للتخطيط الأقصى.
                 </div>
               </div>
