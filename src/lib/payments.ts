@@ -1,21 +1,16 @@
 import { supabase } from "@/integrations/supabase/client";
 
+/**
+ * معرّفات الخطط القابلة للشراء عبر Stripe — تطابق مفاتيح PLANS في
+ * supabase/functions/create-checkout، وكل معرّف مربوط بـ STRIPE_PRICE_* .
+ *
+ * كتالوج الأسعار الوحيد هو src/lib/geo/plans.ts. كان هنا سابقاً مصفوفة
+ * PLANS ثانية تعرّف startup بـ$149 شهرياً وbusiness بـ$499 شهرياً، بينما
+ * كتالوج العرض يعرّف نفس المعرّفين بـ$99 و$999 سنوياً — رقمان متعارضان
+ * لنفس المعرّف. حُذفت لأنها لم تكن مستوردة في أي مكان (بيانات ميتة)، فبقي
+ * مصدر واحد ولم يتغيّر أي سعر معروض.
+ */
 export type PlanId = "certified" | "vip_annual" | "startup" | "business";
-
-export type PlanMeta = {
-  id: PlanId;
-  name: string;
-  priceUSD: number;
-  period: string;
-  audience: "individual" | "company";
-};
-
-export const PLANS: PlanMeta[] = [
-  { id: "certified", name: "معتمد", priceUSD: 19, period: "/ تقرير", audience: "individual" },
-  { id: "vip_annual", name: "سنوي VIP", priceUSD: 79, period: "/ سنة", audience: "individual" },
-  { id: "startup", name: "Startup", priceUSD: 149, period: "/ شهر", audience: "company" },
-  { id: "business", name: "Business", priceUSD: 499, period: "/ شهر", audience: "company" },
-];
 
 import type { DiscountOptions } from "@/lib/pricing/discounts";
 
