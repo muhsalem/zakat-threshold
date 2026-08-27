@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Calendar, Clock, User } from "lucide-react";
 import { BLOG_POSTS, getPost } from "@/lib/blogPosts";
+import { renderInline } from "@/lib/blog/renderInline";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => {
@@ -35,12 +36,7 @@ export const Route = createFileRoute("/blog/$slug")({
   notFoundComponent: NotFoundPost,
 });
 
-function renderInline(s: string) {
-  const escaped = s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  return escaped
-    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-primary underline">$1</a>');
-}
+
 
 function renderBody(md: string) {
   const blocks = md.trim().split(/\n\n+/);
