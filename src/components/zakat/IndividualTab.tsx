@@ -1140,29 +1140,48 @@ export function IndividualTab() {
                           setNisabSaving(true);
                           const hijri_label =
                             toHijri(nisabStartDate) || (hawl ? formatHijri(hawl.hijriStart) : null);
+                          // الملكية تُرسَل صراحةً: سياسة RLS تشترط user_id = auth.uid()،
+                          // والاعتماد على DEFAULT وحده يفشل لو أرسل العميل الحقل فارغاً.
+                          const { data: authData } = await supabase.auth.getUser();
+                          const uid = authData?.user?.id;
+                          if (!uid) {
+                            setNisabSaveMsg("سجّل الدخول أولاً لحفظ السجل");
+                            setNisabSaving(false);
+                            setTimeout(() => setNisabSaveMsg(""), 3000);
+                            return;
+                          }
                           const payload = {
+                            user_id: uid,
                             owner_label: name || "بدون اسم",
                             unified_nisab_date: nisabStartDate,
                             hijri_label,
                             calendar_basis: calendarBasis,
                             notes: notes || null,
                           };
+                          // user_id عمود جديد لم يدخل الأنواع المولَّدة بعد (هجرة
+                          // 20260813140000). نفس نمط product_events القائم؛ يُزال الـcast
+                          // عند إعادة توليد أنواع Supabase.
+                          const nisabTable = () => supabase.from("nisab_records") as any;
                           const { data, error } = nisabRecordId
-                            ? await supabase
-                                .from("nisab_records")
+                            ? await nisabTable()
                                 .update(payload)
                                 .eq("id", nisabRecordId)
                                 .select()
                                 .single()
-                            : await supabase
-                                .from("nisab_records")
+                            : await nisabTable()
                                 .insert(payload)
                                 .select()
                                 .single();
                           if (!error && data) {
                             setNisabRecordId(data.id);
                             setNisabSaveMsg("تم الحفظ ✓");
-                          } else setNisabSaveMsg("تعذّر الحفظ");
+                          } else {
+                          // كانت رسالة صمّاء بلا سبب، فيظن المستخدم أن العطل عابر
+                          // بينما قد يكون رفض صلاحية دائماً.
+                          setNisabSaveMsg(
+                            error?.message ? `تعذّر الحفظ — ${error.message}` : "تعذّر الحفظ",
+                          );
+                        }
                           setNisabSaving(false);
                           setTimeout(() => setNisabSaveMsg(""), 2500);
                         }}
