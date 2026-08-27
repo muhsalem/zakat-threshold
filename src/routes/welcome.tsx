@@ -18,6 +18,7 @@ import {
   Lock,
   Users,
 } from "lucide-react";
+import { OG_IMAGE } from "@/lib/siteUrl";
 
 export const Route = createFileRoute("/welcome")({
   head: () => ({
@@ -37,11 +38,11 @@ export const Route = createFileRoute("/welcome")({
       { property: "og:url", content: "/welcome" },
       {
         property: "og:image",
-        content: "https://project--c0035707-4e26-4f8b-ac7b-8485d608f9ce.lovable.app/og-image.jpg",
+        content: OG_IMAGE,
       },
       {
         name: "twitter:image",
-        content: "https://project--c0035707-4e26-4f8b-ac7b-8485d608f9ce.lovable.app/og-image.jpg",
+        content: OG_IMAGE,
       },
     ],
     links: [{ rel: "canonical", href: "/welcome" }],

@@ -21,6 +21,7 @@ import {
 import videoAsset from "@/assets/media/zakat-marketing.mp4.asset.json";
 import videoAsset480p from "@/assets/media/zakat-marketing-480p.mp4.asset.json";
 import pptxAsset from "@/assets/media/zakat-jury-presentation.pptx.asset.json";
+import { OG_IMAGE } from "@/lib/siteUrl";
 
 function formatBytes(bytes: number, decimals = 1) {
   if (bytes === 0) return "0 B";
@@ -46,11 +47,11 @@ export const Route = createFileRoute("/showcase")({
       { property: "og:url", content: "/showcase" },
       {
         property: "og:image",
-        content: "https://project--c0035707-4e26-4f8b-ac7b-8485d608f9ce.lovable.app/og-image.jpg",
+        content: OG_IMAGE,
       },
       {
         name: "twitter:image",
-        content: "https://project--c0035707-4e26-4f8b-ac7b-8485d608f9ce.lovable.app/og-image.jpg",
+        content: OG_IMAGE,
       },
     ],
     links: [{ rel: "canonical", href: "/showcase" }],

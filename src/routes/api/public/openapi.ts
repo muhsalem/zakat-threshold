@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { SITE_URL } from "@/lib/siteUrl";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -21,14 +22,12 @@ const SPEC = {
     license: { name: "Proprietary" },
     "x-shariah-standards": ["AAOIFI-35", "AAOIFI-59", "IFA-OIC"],
   },
+  // مُخدِّم واحد يُشتق من VITE_SITE_URL. كان هنا مُخدِّمان مثبَّتان على
+  // نطاقَي معاينة (أساسي وdev)، فيُعلَن للمستهلكين عنوانٌ غير عنوان الإنتاج.
   servers: [
     {
-      url: "https://project--c0035707-4e26-4f8b-ac7b-8485d608f9ce.lovable.app",
-      description: "Production",
-    },
-    {
-      url: "https://project--c0035707-4e26-4f8b-ac7b-8485d608f9ce-dev.lovable.app",
-      description: "Preview",
+      url: SITE_URL,
+      description: "Zakat API",
     },
   ],
   paths: {

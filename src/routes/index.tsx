@@ -40,6 +40,7 @@ import nisabLogo from "@/assets/nisab-logo.png.asset.json";
 import { PayButton } from "@/components/PayButton";
 import type { PlanId } from "@/lib/payments";
 import { PLANS as PLANS_CATALOG, type Plan as CatalogPlan } from "@/lib/geo/plans";
+import { OG_IMAGE } from "@/lib/siteUrl";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -58,13 +59,13 @@ export const Route = createFileRoute("/")({
       { property: "og:type", content: "website" },
       {
         property: "og:image",
-        content: "https://project--c0035707-4e26-4f8b-ac7b-8485d608f9ce.lovable.app/og-image.jpg",
+        content: OG_IMAGE,
       },
       { property: "og:url", content: "/" },
       { name: "twitter:card", content: "summary_large_image" },
       {
         name: "twitter:image",
-        content: "https://project--c0035707-4e26-4f8b-ac7b-8485d608f9ce.lovable.app/og-image.jpg",
+        content: OG_IMAGE,
       },
     ],
     links: [{ rel: "canonical", href: "/" }],
