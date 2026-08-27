@@ -35,6 +35,17 @@ Deno.serve(async (req) => {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
   );
 
+  // كانت كل أخطاء الكتابة تُبتلع بـconsole.error ثم تُعاد 200 دون قيد.
+  // Stripe يفهم 200 على أنه "عولج بنجاح" فلا يعيد المحاولة أبداً — فيدفع
+  // العميل ولا يُكتب اشتراكه ولا استحقاقه، بلا مسار تعافٍ ولا إشعار.
+  // الآن نتتبّع الفشل ونُعيد 5xx ليعيد Stripe المحاولة (تصاعدياً حتى 3 أيام).
+  // الإعادة آمنة: الكتابات upsert على مفتاح تعارض، أي عديمة أثر تراكمي.
+  const writeFailures: string[] = [];
+  const noteFailure = (where: string, err: unknown) => {
+    console.error(`${where}:`, err);
+    writeFailures.push(where);
+  };
+
   // تسجيل الحدث في جدول payments للمراجعة والتدقيق
   async function upsertPayment(opts: {
     stripeSessionId?: string;
@@ -60,7 +71,7 @@ Deno.serve(async (req) => {
       },
       { onConflict: "stripe_session_id" },
     );
-    if (error) console.error("upsertPayment error:", error);
+    if (error) noteFailure("upsertPayment", error);
   }
 
   /**
@@ -103,7 +114,7 @@ Deno.serve(async (req) => {
       },
       { onConflict: "user_id" },
     );
-    if (error) console.error("upsertSubscriptionRow error:", error);
+    if (error) noteFailure("upsertSubscriptionRow", error);
   }
 
   /** اسم المنتج كما عرضته Stripe للعميل؛ يتراجع لمعرّف الخطة إن تعذّر. */
@@ -133,14 +144,19 @@ Deno.serve(async (req) => {
       });
       // ترقية الخطة في ملف المستخدم — هذه هي بوابة الميزات الفعلية
       if (userId && planId) {
-        await supabase
-          .from("profiles")
-          .update({
-            plan: planId,
-            plan_expires_at:
-              planId === "vip_annual" ? new Date(Date.now() + 365 * 864e5).toISOString() : null,
-          })
-          .eq("user_id", userId);
+        // كانت نتيجة هذه الكتابة مُهمَلة كلياً — وهي منح الخطة بعد الدفع،
+        // أخطر كتابة في المسار: فشلها صامتاً يعني عميلاً دفع بلا خطة.
+        {
+          const { error } = await supabase
+            .from("profiles")
+            .update({
+              plan: planId,
+              plan_expires_at:
+                planId === "vip_annual" ? new Date(Date.now() + 365 * 864e5).toISOString() : null,
+            })
+            .eq("user_id", userId);
+          if (error) noteFailure("profile plan grant", error);
+        }
 
         // صف العرض/دورة الحياة — الاشتقاق في وحدة نقية مختبَرة (_shared)
         let recurringInterval: string | null = null;
@@ -200,7 +216,7 @@ Deno.serve(async (req) => {
               updated_at: new Date().toISOString(),
             })
             .eq("user_id", userId);
-          if (error) console.error("renewal update error:", error);
+          if (error) noteFailure("renewal update", error);
         }
       }
       break;
@@ -209,10 +225,15 @@ Deno.serve(async (req) => {
       const subscription = event.data.object as Stripe.Subscription;
       const userId = subscription.metadata?.userId;
       if (userId) {
-        await supabase
-          .from("profiles")
-          .update({ plan: "free", plan_expires_at: null })
-          .eq("user_id", userId);
+        // كذلك نتيجة الإنزال للخطة المجانية كانت مُهمَلة: فشلها يُبقي
+        // مستخدماً ملغى اشتراكه على امتيازات مدفوعة.
+        {
+          const { error } = await supabase
+            .from("profiles")
+            .update({ plan: "free", plan_expires_at: null })
+            .eq("user_id", userId);
+          if (error) noteFailure("profile downgrade", error);
+        }
 
         const { error } = await supabase
           .from("user_subscriptions")
@@ -223,12 +244,21 @@ Deno.serve(async (req) => {
             updated_at: new Date().toISOString(),
           })
           .eq("user_id", userId);
-        if (error) console.error("cancellation update error:", error);
+        if (error) noteFailure("cancellation update", error);
       }
       break;
     }
     default:
       console.log("Unhandled event:", event.type);
+  }
+
+  if (writeFailures.length > 0) {
+    // 500 مقصود: يدفع Stripe لإعادة الإرسال بدل ضياع الدفعة صامتاً.
+    // لا نُسرّب تفاصيل الخطأ في الجسم — تكفي أسماء المواضع للتشخيص من السجل.
+    return new Response(
+      JSON.stringify({ received: false, failed: writeFailures }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+    );
   }
 
   return new Response(JSON.stringify({ received: true }), {

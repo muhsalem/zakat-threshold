@@ -91,11 +91,15 @@ export const Route = createFileRoute("/api/public/hooks/snapshot-daily-prices")(
           metadata: { date: today },
         });
 
-        await supabaseAdmin.from("sharia_audit_log").insert({
+        // نتيجة كتابة سجلّ التدقيق كانت مُهمَلة كلياً: فشلها يترك فجوة
+        // صامتة في سجلٍّ وُجد ليُثبت ما جرى. لا نُسقط العملية الأصلية
+        // بسببه — الرصد نجح — لكن يجب أن يظهر في السجل.
+        const { error: auditErr } = await supabaseAdmin.from("sharia_audit_log").insert({
           user_id: null,
           action: "snapshot_daily_prices",
           payload: { date: today, source: res.source, rows: rows.length },
         });
+        if (auditErr) console.error("audit log write failed (sharia_audit_log):", auditErr);
 
         return new Response(
           JSON.stringify({ ok: true, date: today, source: res.source, rows: rows.length }),

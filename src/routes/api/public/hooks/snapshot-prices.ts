@@ -63,7 +63,10 @@ export const Route = createFileRoute("/api/public/hooks/snapshot-prices")({
           });
         }
 
-        await supabaseAdmin.from("sharia_audit_log").insert({
+        // نتيجة كتابة سجلّ التدقيق كانت مُهمَلة كلياً: فشلها يترك فجوة
+        // صامتة في سجلٍّ وُجد ليُثبت ما جرى. لا نُسقط العملية الأصلية
+        // بسببه — الرصد نجح — لكن يجب أن يظهر في السجل.
+        const { error: auditErr } = await supabaseAdmin.from("sharia_audit_log").insert({
           user_id: null,
           action: "snapshot_nisab_prices",
           payload: {
@@ -74,6 +77,7 @@ export const Route = createFileRoute("/api/public/hooks/snapshot-prices")({
             silver: row.silver_price,
           },
         });
+        if (auditErr) console.error("audit log write failed (sharia_audit_log):", auditErr);
 
         return new Response(
           JSON.stringify({

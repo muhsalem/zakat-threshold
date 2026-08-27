@@ -35,13 +35,17 @@ export const Route = createFileRoute("/api/public/hooks/tick-prices")({
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
         if (!res.ok) {
-          await supabaseAdmin.from("price_fetch_audit").insert({
+          // نتيجة كتابة سجلّ التدقيق كانت مُهمَلة كلياً: فشلها يترك فجوة
+          // صامتة في سجلٍّ وُجد ليُثبت ما جرى. لا نُسقط العملية الأصلية
+          // بسببه — الرصد نجح — لكن يجب أن يظهر في السجل.
+          const { error: auditErr } = await supabaseAdmin.from("price_fetch_audit").insert({
             job_name: "metal-price-tick",
             status: "error",
             error_message: res.error,
             duration_ms: Date.now() - startedAt,
             metadata: { tried: res.tried },
           });
+          if (auditErr) console.error("audit log write failed (price_fetch_audit):", auditErr);
           return new Response(JSON.stringify({ ok: false, error: res.error, tried: res.tried }), {
             status: 502,
             headers: { "Content-Type": "application/json" },
@@ -75,13 +79,17 @@ export const Route = createFileRoute("/api/public/hooks/tick-prices")({
           .upsert(ticks, { onConflict: "bucket_5m,metal,currency" });
 
         if (tickErr) {
-          await supabaseAdmin.from("price_fetch_audit").insert({
+          // نتيجة كتابة سجلّ التدقيق كانت مُهمَلة كلياً: فشلها يترك فجوة
+          // صامتة في سجلٍّ وُجد ليُثبت ما جرى. لا نُسقط العملية الأصلية
+          // بسببه — الرصد نجح — لكن يجب أن يظهر في السجل.
+          const { error: auditErr } = await supabaseAdmin.from("price_fetch_audit").insert({
             job_name: "metal-price-tick",
             status: "error",
             primary_source: res.source,
             error_message: tickErr.message,
             duration_ms: Date.now() - startedAt,
           });
+          if (auditErr) console.error("audit log write failed (price_fetch_audit):", auditErr);
           return new Response(JSON.stringify({ ok: false, error: tickErr.message }), {
             status: 500,
             headers: { "Content-Type": "application/json" },
@@ -103,7 +111,10 @@ export const Route = createFileRoute("/api/public/hooks/tick-prices")({
           { onConflict: "price_date,metal,currency" },
         );
 
-        await supabaseAdmin.from("price_fetch_audit").insert({
+        // نتيجة كتابة سجلّ التدقيق كانت مُهمَلة كلياً: فشلها يترك فجوة
+        // صامتة في سجلٍّ وُجد ليُثبت ما جرى. لا نُسقط العملية الأصلية
+        // بسببه — الرصد نجح — لكن يجب أن يظهر في السجل.
+        const { error: auditErr } = await supabaseAdmin.from("price_fetch_audit").insert({
           job_name: "metal-price-tick",
           status: dailyErr ? "partial" : "success",
           primary_source: res.source,
@@ -113,6 +124,7 @@ export const Route = createFileRoute("/api/public/hooks/tick-prices")({
           error_message: dailyErr?.message ?? null,
           metadata: { bucket_5m: bucket },
         });
+        if (auditErr) console.error("audit log write failed (price_fetch_audit):", auditErr);
 
         return new Response(
           JSON.stringify({
