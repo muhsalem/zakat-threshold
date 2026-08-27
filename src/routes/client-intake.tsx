@@ -363,14 +363,27 @@ function ClientIntakePage() {
         return;
       }
     } else {
-      // لا يوجد جلسة — احفظ الطلب محلياً كمسودة استلام حتى يستوردها المحاسب
+      // لا يوجد جلسة — احفظ الطلب محلياً كمسودة استلام حتى يستوردها المحاسب.
+      //
+      // كان الفشل هنا يُبتلع بـcatch {} ثم يمضي الكود إلى toast.success،
+      // فيُقال للزائر "تم استلام بياناتك" وهي لم تُحفَظ في أي مكان:
+      // localStorage يرمي عند امتلاء الحصة أو في التصفح الخاص أو حين
+      // يُعطَّل التخزين. المسار المسجَّل أعلاه يتعامل بأمانة (خطأ ثم
+      // return)، فوجب أن يتساوى معه هذا المسار.
       try {
         const key = "public_intake_queue_v1";
         const raw = localStorage.getItem(key);
         const list = raw ? JSON.parse(raw) : [];
         list.push({ ...payload, at: new Date().toISOString() });
         localStorage.setItem(key, JSON.stringify(list));
-      } catch {}
+      } catch (e) {
+        toast.error("تعذّر حفظ طلبك", {
+          description:
+            "متصفحك يمنع التخزين المحلي أو مساحته ممتلئة. سجّل الدخول أو جرّب متصفحاً آخر.",
+        });
+        console.error("public intake local store failed:", e);
+        return;
+      }
     }
     try {
       localStorage.removeItem(DRAFT_KEY);
