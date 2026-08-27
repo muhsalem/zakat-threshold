@@ -28,6 +28,15 @@ export const Route = createFileRoute("/api/public/prices/history")({
         const from = url.searchParams.get("from");
         const to = url.searchParams.get("to");
         const limit = Math.min(Math.max(Number(url.searchParams.get("limit") || 500), 1), 5000);
+        // resolution=tick يقرأ السجل اللحظي (كل 5 دقائق) بدل التجميعة اليومية.
+        // الافتراضي daily حفاظاً على توافق المستهلكين الحاليين للواجهة.
+        const resolution = (url.searchParams.get("resolution") || "daily").toLowerCase();
+        if (!["daily", "tick"].includes(resolution)) {
+          return new Response(
+            JSON.stringify({ ok: false, error: "resolution must be daily|tick" }),
+            { status: 400, headers: CORS },
+          );
+        }
         const dateRe = /^\d{4}-\d{2}-\d{2}$/;
         if (metal && !["gold", "silver"].includes(metal)) {
           return new Response(JSON.stringify({ ok: false, error: "metal must be gold|silver" }), {
@@ -48,14 +57,28 @@ export const Route = createFileRoute("/api/public/prices/history")({
           { auth: { storage: undefined, persistSession: false, autoRefreshToken: false } },
         );
 
-        let q = supabase
-          .from("metal_prices_daily")
-          .select("price_date, metal, price_usd_per_gram, currency, source, reliability")
-          .order("price_date", { ascending: false })
-          .limit(limit);
+        // metal_price_ticks ليس ضمن الأنواع المولَّدة بعد (هجرة جديدة)
+        let q: any =
+          resolution === "tick"
+            ? (supabase.from("metal_price_ticks" as never) as any)
+                .select("observed_at, bucket_5m, metal, price_per_gram, price_per_ounce, currency, source, reliability")
+                .order("observed_at", { ascending: false })
+                .limit(limit)
+            : supabase
+                .from("metal_prices_daily")
+                .select("price_date, metal, price_usd_per_gram, currency, source, reliability")
+                .order("price_date", { ascending: false })
+                .limit(limit);
+
         if (metal) q = q.eq("metal", metal);
-        if (from) q = q.gte("price_date", from);
-        if (to) q = q.lte("price_date", to);
+        if (resolution === "tick") {
+          // الحدود تشمل اليوم كاملاً: من بدايته إلى نهايته بتوقيت UTC
+          if (from) q = q.gte("observed_at", `${from}T00:00:00.000Z`);
+          if (to) q = q.lte("observed_at", `${to}T23:59:59.999Z`);
+        } else {
+          if (from) q = q.gte("price_date", from);
+          if (to) q = q.lte("price_date", to);
+        }
 
         const { data, error } = await q;
         if (error) {
@@ -68,6 +91,7 @@ export const Route = createFileRoute("/api/public/prices/history")({
         return new Response(
           JSON.stringify({
             ok: true,
+            resolution,
             count: data?.length ?? 0,
             gold_nisab_grams: 85,
             silver_nisab_grams: 595,

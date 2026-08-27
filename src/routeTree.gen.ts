@@ -103,6 +103,7 @@ import { Route as ApiPublicHooksHawlRemindersRouteImport } from './routes/api/pu
 import { Route as ApiPublicHooksSnapshotDailyNisabRouteImport } from './routes/api/public/hooks/snapshot-daily-nisab'
 import { Route as ApiPublicHooksSnapshotDailyPricesRouteImport } from './routes/api/public/hooks/snapshot-daily-prices'
 import { Route as ApiPublicHooksSnapshotPricesRouteImport } from './routes/api/public/hooks/snapshot-prices'
+import { Route as ApiPublicHooksTickPricesRouteImport } from './routes/api/public/hooks/tick-prices'
 import { Route as ApiPublicPricesHistoryRouteImport } from './routes/api/public/prices/history'
 import { Route as ApiPublicV1RulesRouteImport } from './routes/api/public/v1/rules'
 import { Route as ApiPublicV1VerifyRouteImport } from './routes/api/public/v1/verify'
@@ -598,6 +599,12 @@ const ApiPublicHooksSnapshotPricesRoute =
     path: '/api/public/hooks/snapshot-prices',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksTickPricesRoute =
+  ApiPublicHooksTickPricesRouteImport.update({
+    id: '/api/public/hooks/tick-prices',
+    path: '/api/public/hooks/tick-prices',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicPricesHistoryRoute = ApiPublicPricesHistoryRouteImport.update({
   id: '/api/public/prices/history',
   path: '/api/public/prices/history',
@@ -713,6 +720,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/snapshot-daily-nisab': typeof ApiPublicHooksSnapshotDailyNisabRoute
   '/api/public/hooks/snapshot-daily-prices': typeof ApiPublicHooksSnapshotDailyPricesRoute
   '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
+  '/api/public/hooks/tick-prices': typeof ApiPublicHooksTickPricesRoute
   '/api/public/prices/history': typeof ApiPublicPricesHistoryRoute
   '/api/public/v1/rules': typeof ApiPublicV1RulesRoute
   '/api/public/v1/verify': typeof ApiPublicV1VerifyRoute
@@ -812,6 +820,7 @@ export interface FileRoutesByTo {
   '/api/public/hooks/snapshot-daily-nisab': typeof ApiPublicHooksSnapshotDailyNisabRoute
   '/api/public/hooks/snapshot-daily-prices': typeof ApiPublicHooksSnapshotDailyPricesRoute
   '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
+  '/api/public/hooks/tick-prices': typeof ApiPublicHooksTickPricesRoute
   '/api/public/prices/history': typeof ApiPublicPricesHistoryRoute
   '/api/public/v1/rules': typeof ApiPublicV1RulesRoute
   '/api/public/v1/verify': typeof ApiPublicV1VerifyRoute
@@ -913,6 +922,7 @@ export interface FileRoutesById {
   '/api/public/hooks/snapshot-daily-nisab': typeof ApiPublicHooksSnapshotDailyNisabRoute
   '/api/public/hooks/snapshot-daily-prices': typeof ApiPublicHooksSnapshotDailyPricesRoute
   '/api/public/hooks/snapshot-prices': typeof ApiPublicHooksSnapshotPricesRoute
+  '/api/public/hooks/tick-prices': typeof ApiPublicHooksTickPricesRoute
   '/api/public/prices/history': typeof ApiPublicPricesHistoryRoute
   '/api/public/v1/rules': typeof ApiPublicV1RulesRoute
   '/api/public/v1/verify': typeof ApiPublicV1VerifyRoute
@@ -1014,6 +1024,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/snapshot-daily-nisab'
     | '/api/public/hooks/snapshot-daily-prices'
     | '/api/public/hooks/snapshot-prices'
+    | '/api/public/hooks/tick-prices'
     | '/api/public/prices/history'
     | '/api/public/v1/rules'
     | '/api/public/v1/verify'
@@ -1113,6 +1124,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/snapshot-daily-nisab'
     | '/api/public/hooks/snapshot-daily-prices'
     | '/api/public/hooks/snapshot-prices'
+    | '/api/public/hooks/tick-prices'
     | '/api/public/prices/history'
     | '/api/public/v1/rules'
     | '/api/public/v1/verify'
@@ -1213,6 +1225,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/snapshot-daily-nisab'
     | '/api/public/hooks/snapshot-daily-prices'
     | '/api/public/hooks/snapshot-prices'
+    | '/api/public/hooks/tick-prices'
     | '/api/public/prices/history'
     | '/api/public/v1/rules'
     | '/api/public/v1/verify'
@@ -1290,6 +1303,7 @@ export interface RootRouteChildren {
   ApiPublicHooksSnapshotDailyNisabRoute: typeof ApiPublicHooksSnapshotDailyNisabRoute
   ApiPublicHooksSnapshotDailyPricesRoute: typeof ApiPublicHooksSnapshotDailyPricesRoute
   ApiPublicHooksSnapshotPricesRoute: typeof ApiPublicHooksSnapshotPricesRoute
+  ApiPublicHooksTickPricesRoute: typeof ApiPublicHooksTickPricesRoute
   ApiPublicPricesHistoryRoute: typeof ApiPublicPricesHistoryRoute
   ApiPublicV1RulesRoute: typeof ApiPublicV1RulesRoute
   ApiPublicV1VerifyRoute: typeof ApiPublicV1VerifyRoute
@@ -1956,6 +1970,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksSnapshotPricesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/tick-prices': {
+      id: '/api/public/hooks/tick-prices'
+      path: '/api/public/hooks/tick-prices'
+      fullPath: '/api/public/hooks/tick-prices'
+      preLoaderRoute: typeof ApiPublicHooksTickPricesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/prices/history': {
       id: '/api/public/prices/history'
       path: '/api/public/prices/history'
@@ -2139,6 +2160,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicHooksSnapshotDailyPricesRoute:
     ApiPublicHooksSnapshotDailyPricesRoute,
   ApiPublicHooksSnapshotPricesRoute: ApiPublicHooksSnapshotPricesRoute,
+  ApiPublicHooksTickPricesRoute: ApiPublicHooksTickPricesRoute,
   ApiPublicPricesHistoryRoute: ApiPublicPricesHistoryRoute,
   ApiPublicV1RulesRoute: ApiPublicV1RulesRoute,
   ApiPublicV1VerifyRoute: ApiPublicV1VerifyRoute,
