@@ -47,6 +47,7 @@ import { aggregateIntake, type IntakeDetails } from "@/lib/intakeMapping";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
 import { submitReviewRequest } from "@/lib/humanReviewQueue.functions";
+import { submitPublicIntake } from "@/lib/intakeQueue.functions";
 
 export const Route = createFileRoute("/client-intake")({
   head: () => ({
@@ -159,13 +160,17 @@ const emptyForm: FormState = {
 function ClientIntakePage() {
   const navigate = useNavigate();
   const submitReview = useServerFn(submitReviewRequest);
+  const submitIntake = useServerFn(submitPublicIntake);
   const [mode, setMode] = useState<ReportMode>("quick");
   const [signedIn, setSignedIn] = useState(false);
   const [form, setForm] = useState<FormState>(emptyForm);
   const [submitted, setSubmitted] = useState<null | ReportMode>(null);
-  // هل وصل الطلب فعلاً إلى السحابة؟ الزائر غير المسجَّل لا يصل طلبه
-  // إلى أي خادم، فلا يجوز أن نعده بتقرير على بريده.
-  const [persisted, setPersisted] = useState(false);
+  // مصير الطلب — ثلاث حالات لكل منها وعد مختلف، ولا يجوز خلطها:
+  //   cloud  مستخدم مسجَّل: حُفظ في clients ويُرسَل له تقرير بالبريد.
+  //   queued زائر: وصل intake_queue ويطّلع عليه محاسب — لا بريد آلي له،
+  //          لأن send-report-email يشترط جلسة ولا توليد آلي للطابور.
+  //   local  لم يصل الخادم: نسخة على جهازه وحده.
+  const [outcome, setOutcome] = useState<"cloud" | "queued" | "local">("local");
   const [draftSavedAt, setDraftSavedAt] = useState<string | null>(null);
 
   const DRAFT_KEY = "client_intake_draft_v1";
@@ -341,6 +346,7 @@ function ClientIntakePage() {
 
     // إذا كان المستخدم مسجّل الدخول: احفظ في Lovable Cloud مباشرة
     const { data: userRes } = await supabase.auth.getUser();
+    let reachedServer = false;
     const didPersist = !!userRes.user;
     if (userRes.user) {
       try {
@@ -375,17 +381,34 @@ function ClientIntakePage() {
       // يُعطَّل التخزين. المسار المسجَّل أعلاه يتعامل بأمانة (خطأ ثم
       // return)، فوجب أن يتساوى معه هذا المسار.
       try {
-        const key = "public_intake_queue_v1";
-        const raw = localStorage.getItem(key);
-        const list = raw ? JSON.parse(raw) : [];
-        list.push({ ...payload, at: new Date().toISOString() });
-        localStorage.setItem(key, JSON.stringify(list));
-      } catch (e) {
-        toast.error("تعذّر حفظ طلبك", {
-          description:
-            "متصفحك يمنع التخزين المحلي أو مساحته ممتلئة. سجّل الدخول أو جرّب متصفحاً آخر.",
+        await submitIntake({
+          data: {
+            name: form.name,
+            email: form.email,
+            kind: form.kind,
+            country: form.country || "SA",
+            madhab: form.madhab || "mixed",
+            hawlDate: form.hawlDate || undefined,
+            notes: payload.notes,
+            breakdown: payload as unknown as Record<string, unknown>,
+            hp: honeypotRef.current?.value || undefined,
+          },
         });
-        console.error("public intake local store failed:", e);
+        reachedServer = true;
+      } catch (e) {
+        console.error("public intake submit failed:", e);
+        // الخادم لم يستقبل — احفظ نسخة محلية كي لا يضيع ما كتبه الزائر،
+        // ثم أبلغه بالحقيقة بدل ادّعاء الاستلام.
+        try {
+          const key = "public_intake_queue_v1";
+          const raw = localStorage.getItem(key);
+          const list = raw ? JSON.parse(raw) : [];
+          list.push({ ...payload, at: new Date().toISOString() });
+          localStorage.setItem(key, JSON.stringify(list));
+        } catch {}
+        toast.error("تعذّر إرسال طلبك", {
+          description: "احتفظنا بنسخة على هذا الجهاز. تحقّق من اتصالك وأعد المحاولة.",
+        });
         return;
       }
     }
@@ -393,13 +416,13 @@ function ClientIntakePage() {
       localStorage.removeItem(DRAFT_KEY);
     } catch {}
     setDraftSavedAt(null);
-    setPersisted(didPersist);
+    setOutcome(didPersist ? "cloud" : reachedServer ? "queued" : "local");
     setSubmitted(mode);
     trackEvent("intake_form_submitted", { mode, kind: form.kind });
     if (mode === "comprehensive") trackEvent("certified_report_requested", { kind: form.kind });
     toast.success(
       !didPersist
-        ? "حُفظت بياناتك على هذا الجهاز"
+        ? "تم استلام طلبك"
         : mode === "comprehensive"
           ? "تم إرسال طلب التقرير الشامل"
           : "تم استلام بياناتك وجارٍ الاحتساب",
@@ -428,7 +451,7 @@ function ClientIntakePage() {
   if (submitted) {
     const isComp = submitted === "comprehensive";
     // الزائر غير المسجَّل: طلبه لم يغادر متصفحه. لا وعد بتقرير ولا ببريد.
-    if (!persisted) {
+    if (outcome === "local") {
       return (
         <main className="container mx-auto max-w-2xl px-4 py-16 text-center space-y-4" dir="rtl">
           <AlertTriangle className="h-16 w-16 text-warning mx-auto" />
@@ -459,6 +482,41 @@ function ClientIntakePage() {
         </main>
       );
     }
+    // زائر وصل طلبه الطابور: استلام حقيقي، لكن لا بريد آلي ولا تقرير
+    // خلال دقائق — الوعد الوحيد الصادق هنا هو اطّلاع محاسب.
+    if (outcome === "queued") {
+      return (
+        <main className="container mx-auto max-w-2xl px-4 py-16 text-center space-y-4" dir="rtl">
+          <CheckCircle2 className="h-16 w-16 text-success mx-auto" />
+          <h1 className="text-3xl font-bold">تم استلام طلبك</h1>
+          <p className="text-muted-foreground leading-relaxed">
+            وصل طلبك إلى المنصة وسيطّلع عليه محاسب مرخّص.
+            <br />
+            <b>لن يصلك تقرير آلي على بريدك</b> ما دمت غير مسجَّل الدخول — سجّل الدخول
+            بالبريد نفسه لتتابع طلبك ويصلك التقرير عند جاهزيته.
+          </p>
+          <div className="rounded-lg border bg-primary/5 p-4 text-sm text-end space-y-2">
+            <div className="font-semibold flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-primary" /> ما التالي؟
+            </div>
+            <ol className="list-decimal pe-6 space-y-1 text-muted-foreground">
+              <li>يظهر طلبك في صندوق وارد المحاسبين.</li>
+              <li>يراجع المحاسب بياناتك ويحوّلها إلى ملف عميل.</li>
+              <li>سجّل الدخول لمتابعة الحالة واستلام التقرير.</li>
+            </ol>
+          </div>
+          <div className="flex justify-center gap-2 pt-2">
+            <Button asChild>
+              <Link to="/auth">تسجيل الدخول</Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link to="/">العودة للرئيسية</Link>
+            </Button>
+          </div>
+        </main>
+      );
+    }
+
     return (
       <main className="container mx-auto max-w-2xl px-4 py-16 text-center space-y-4" dir="rtl">
         <CheckCircle2 className="h-16 w-16 text-success mx-auto" />
