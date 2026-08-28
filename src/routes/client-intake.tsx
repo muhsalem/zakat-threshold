@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { Progress } from "@/components/ui/progress";
-import { Save, RotateCcw } from "lucide-react";
+import { AlertTriangle, RotateCcw, Save } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -163,6 +163,9 @@ function ClientIntakePage() {
   const [signedIn, setSignedIn] = useState(false);
   const [form, setForm] = useState<FormState>(emptyForm);
   const [submitted, setSubmitted] = useState<null | ReportMode>(null);
+  // هل وصل الطلب فعلاً إلى السحابة؟ الزائر غير المسجَّل لا يصل طلبه
+  // إلى أي خادم، فلا يجوز أن نعده بتقرير على بريده.
+  const [persisted, setPersisted] = useState(false);
   const [draftSavedAt, setDraftSavedAt] = useState<string | null>(null);
 
   const DRAFT_KEY = "client_intake_draft_v1";
@@ -338,6 +341,7 @@ function ClientIntakePage() {
 
     // إذا كان المستخدم مسجّل الدخول: احفظ في Lovable Cloud مباشرة
     const { data: userRes } = await supabase.auth.getUser();
+    const didPersist = !!userRes.user;
     if (userRes.user) {
       try {
         const savedClient = await createAccountantClient(payload);
@@ -389,15 +393,22 @@ function ClientIntakePage() {
       localStorage.removeItem(DRAFT_KEY);
     } catch {}
     setDraftSavedAt(null);
+    setPersisted(didPersist);
     setSubmitted(mode);
     trackEvent("intake_form_submitted", { mode, kind: form.kind });
     if (mode === "comprehensive") trackEvent("certified_report_requested", { kind: form.kind });
     toast.success(
-      mode === "comprehensive" ? "تم إرسال طلب التقرير الشامل" : "تم استلام بياناتك وجارٍ الاحتساب",
+      !didPersist
+        ? "حُفظت بياناتك على هذا الجهاز"
+        : mode === "comprehensive"
+          ? "تم إرسال طلب التقرير الشامل"
+          : "تم استلام بياناتك وجارٍ الاحتساب",
     );
 
-    // إرسال بريد تأكيد للعميل عبر Edge Function
-    if (form.email) {
+    // إرسال بريد تأكيد للعميل عبر Edge Function.
+    // مشروط بالحفظ السحابي: send-report-email يشترط Authorization ويرد 401
+    // بلا جلسة، وكان الاستدعاء يُطلَق للزائر ثم يُبتلع فشله بصمت.
+    if (form.email && didPersist) {
       supabase.functions
         .invoke("send-report-email", {
           body: {
@@ -416,6 +427,38 @@ function ClientIntakePage() {
 
   if (submitted) {
     const isComp = submitted === "comprehensive";
+    // الزائر غير المسجَّل: طلبه لم يغادر متصفحه. لا وعد بتقرير ولا ببريد.
+    if (!persisted) {
+      return (
+        <main className="container mx-auto max-w-2xl px-4 py-16 text-center space-y-4" dir="rtl">
+          <AlertTriangle className="h-16 w-16 text-warning mx-auto" />
+          <h1 className="text-3xl font-bold">حُفظت بياناتك على هذا الجهاز</h1>
+          <p className="text-muted-foreground leading-relaxed">
+            لم تُرسل بياناتك إلى المنصة بعد لأنك غير مسجَّل الدخول، وهي محفوظة في متصفحك
+            على هذا الجهاز وحده.
+            <br />
+            <b>سجّل الدخول من هذا المتصفح</b> ثم أعد الإرسال ليصلك التقرير على بريدك.
+          </p>
+          <div className="rounded-lg border bg-warning/5 p-4 text-sm text-end space-y-2">
+            <div className="font-semibold flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-warning" /> انتبه
+            </div>
+            <ul className="list-disc pe-6 space-y-1 text-muted-foreground">
+              <li>مسح بيانات المتصفح أو استخدام جهاز آخر يفقد ما أدخلته.</li>
+              <li>لن يصلك بريد ولن يطّلع محاسب على بياناتك قبل تسجيل الدخول.</li>
+            </ul>
+          </div>
+          <div className="flex justify-center gap-2 pt-2">
+            <Button asChild>
+              <Link to="/auth">تسجيل الدخول</Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link to="/">العودة للرئيسية</Link>
+            </Button>
+          </div>
+        </main>
+      );
+    }
     return (
       <main className="container mx-auto max-w-2xl px-4 py-16 text-center space-y-4" dir="rtl">
         <CheckCircle2 className="h-16 w-16 text-success mx-auto" />
