@@ -12,7 +12,9 @@
  * الدالة مباشرة، فلا يُعوَّل عليهما.
  */
 import { createServerFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
+import { rateLimit } from "@/lib/rate-limit.server";
 
 // حدود الحقول مطابقة لـintakeSchema في الواجهة، ومكرَّرة عمداً: تلك تحمي
 // تجربة المستخدم، وهذه تحمي قاعدة البيانات.
@@ -38,6 +40,16 @@ const MAX_BREAKDOWN_BYTES = 64 * 1024;
 export const submitPublicIntake = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => intakeInput.parse(d))
   .handler(async ({ data }): Promise<{ id: string }> => {
+    // نقطة كتابة مجهولة الهوية — بلا حدّ معدّل يُغرَق الجدول بلا كلفة على
+    // المُرسِل. خمسة طلبات في الساعة لكل عنوان: أكرم من حاجة زائر صادق
+    // (يرسل مرة) وأضيق من أن تُجدي آلة.
+    const rl = await rateLimit(getRequest(), {
+      key: "public-intake",
+      limit: 5,
+      windowMs: 60 * 60_000,
+    });
+    if (!rl.ok) throw new Error("rate_limited");
+
     const breakdown = JSON.parse(JSON.stringify(data.breakdown ?? {}));
     if (JSON.stringify(breakdown).length > MAX_BREAKDOWN_BYTES) {
       throw new Error("breakdown_too_large");

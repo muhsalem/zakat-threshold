@@ -406,8 +406,11 @@ function ClientIntakePage() {
           list.push({ ...payload, at: new Date().toISOString() });
           localStorage.setItem(key, JSON.stringify(list));
         } catch {}
-        toast.error("تعذّر إرسال طلبك", {
-          description: "احتفظنا بنسخة على هذا الجهاز. تحقّق من اتصالك وأعد المحاولة.",
+        const tooMany = (e as Error)?.message?.includes("rate_limited");
+        toast.error(tooMany ? "طلبات كثيرة" : "تعذّر إرسال طلبك", {
+          description: tooMany
+            ? "أرسلت عدة طلبات خلال وقت قصير. انتظر قليلاً ثم أعد المحاولة."
+            : "احتفظنا بنسخة على هذا الجهاز. تحقّق من اتصالك وأعد المحاولة.",
         });
         return;
       }
