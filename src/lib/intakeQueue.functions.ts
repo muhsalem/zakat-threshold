@@ -15,6 +15,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { rateLimit } from "@/lib/rate-limit.server";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { INTAKE_STATUSES, type IntakeQueueRow, type IntakeStatus } from "@/lib/intakeQueueMapping";
 
 // حدود الحقول مطابقة لـintakeSchema في الواجهة، ومكرَّرة عمداً: تلك تحمي
 // تجربة المستخدم، وهذه تحمي قاعدة البيانات.
@@ -75,4 +77,93 @@ export const submitPublicIntake = createServerFn({ method: "POST" })
 
     if (error) throw new Error((error as { message: string }).message);
     return { id: (saved as { id: string }).id };
+  });
+
+// ─────────────────────────────────────────────────────────────────────────
+// جانب المحاسب: قراءة الطابور وإسناده وختمه. كلها بجلسة المستخدم (RLS
+// طبقة ثانية) مع فحص دور صريح — سياسة الهجرة تسمح لـaccountant وadmin.
+// ─────────────────────────────────────────────────────────────────────────
+
+async function isAccountantOrAdmin(supabase: any, userId: string): Promise<boolean> {
+  const { data } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .in("role", ["accountant", "admin"])
+    .limit(1);
+  return Array.isArray(data) && data.length > 0;
+}
+
+const idSchema = z.object({ id: z.string().uuid() });
+// غير اختياري عمداً: .optional() يُدخل undefined في نوع data فيضيع الاستدلال
+// عند TanStack وتصير نتيجة الاستدعاء unknown في المكوّن. الغياب يُعالَج قبل parse.
+const listSchema = z.object({
+  status: z.enum(INTAKE_STATUSES).optional(),
+  offset: z.number().int().min(0).optional(),
+});
+const completeSchema = z.object({
+  id: z.string().uuid(),
+  clientId: z.string().uuid().optional(),
+});
+
+export const listIntakeQueue = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => listSchema.parse(d ?? {}))
+  .handler(async ({ data, context }): Promise<{ rows: IntakeQueueRow[]; hasMore: boolean }> => {
+    if (!(await isAccountantOrAdmin(context.supabase, context.userId))) {
+      throw new Error("accountant_role_required");
+    }
+    const PAGE = 25;
+    const offset = data.offset ?? 0;
+    let q = (context.supabase.from("intake_queue" as never) as any)
+      .select("*")
+      .order("created_at", { ascending: false })
+      .range(offset, offset + PAGE - 1);
+    if (data.status) q = q.eq("status", data.status);
+    const { data: rows, error } = await q;
+    if (error) throw new Error((error as { message: string }).message);
+    const list = (rows ?? []) as IntakeQueueRow[];
+    return { rows: list, hasMore: list.length === PAGE };
+  });
+
+/** إسناد طلب لهذا المحاسب — شرط أن يكون لا يزال pending كي لا يتصادم اثنان. */
+export const assignIntakeItem = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => idSchema.parse(d))
+  .handler(async ({ data, context }): Promise<{ ok: true }> => {
+    if (!(await isAccountantOrAdmin(context.supabase, context.userId))) {
+      throw new Error("accountant_role_required");
+    }
+    const { data: updated, error } = await (context.supabase.from("intake_queue" as never) as any)
+      .update({ status: "assigned" satisfies IntakeStatus, assigned_to: context.userId })
+      .eq("id", data.id)
+      .eq("status", "pending")
+      .select("id")
+      .maybeSingle();
+    if (error) throw new Error((error as { message: string }).message);
+    if (!updated) throw new Error("تعذّر الإسناد — ربما أسنده محاسب آخر للتو");
+    return { ok: true };
+  });
+
+/**
+ * ختم طلب بعد استيراده كعميل — للمحاسب المُسنَد إليه وحده.
+ * clientId اختياري للتوثيق في notes؛ لا عمود مخصّص له في الجدول.
+ */
+export const completeIntakeItem = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => completeSchema.parse(d))
+  .handler(async ({ data, context }): Promise<{ ok: true }> => {
+    if (!(await isAccountantOrAdmin(context.supabase, context.userId))) {
+      throw new Error("accountant_role_required");
+    }
+    const { data: updated, error } = await (context.supabase.from("intake_queue" as never) as any)
+      .update({ status: "done" satisfies IntakeStatus })
+      .eq("id", data.id)
+      .eq("assigned_to", context.userId)
+      .eq("status", "assigned")
+      .select("id")
+      .maybeSingle();
+    if (error) throw new Error((error as { message: string }).message);
+    if (!updated) throw new Error("الطلب ليس مُسنَداً إليك أو سبق ختمه");
+    return { ok: true };
   });

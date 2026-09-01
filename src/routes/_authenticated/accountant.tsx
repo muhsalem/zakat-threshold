@@ -41,6 +41,7 @@ import {
   LineChart,
   Clock,
   Inbox,
+  UserPlus,
 } from "lucide-react";
 import { PricesHistoryPanel } from "@/components/zakat/PricesHistoryPanel";
 import { NisabHistory } from "@/components/zakat/NisabHistory";
@@ -61,6 +62,7 @@ import { KpiCompliancePanel } from "@/components/accountant/KpiCompliancePanel";
 import { ProductFunnelPanel } from "@/components/accountant/ProductFunnelPanel";
 import { ZakatCrmManager } from "@/components/crm/ZakatCrmManager";
 import { HumanReviewQueuePanel } from "@/components/accountant/HumanReviewQueuePanel";
+import { IntakeQueuePanel } from "@/components/accountant/IntakeQueuePanel";
 
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -408,6 +410,9 @@ function AccountantPortal() {
           <TabsTrigger value="review-queue" className="gap-1.5 bg-warning/10 text-warning dark:text-warning font-bold border border-warning/30">
             <Inbox className="h-3.5 w-3.5 text-warning" /> طابور المراجعة البشرية
           </TabsTrigger>
+          <TabsTrigger value="intake" className="gap-1.5">
+            <UserPlus className="h-3.5 w-3.5" /> طلبات الزوّار
+          </TabsTrigger>
           <TabsTrigger value="clients" className="gap-1.5">
             <Users className="h-3.5 w-3.5" /> العملاء والمحفظة
           </TabsTrigger>
@@ -433,6 +438,9 @@ function AccountantPortal() {
         </TabsContent>
         <TabsContent value="review-queue" className="mt-0">
           <HumanReviewQueuePanel />
+        </TabsContent>
+        <TabsContent value="intake" className="mt-0">
+          <IntakeQueuePanel />
         </TabsContent>
         <TabsContent value="kpis" className="mt-0 space-y-6">
           <KpiCompliancePanel />
