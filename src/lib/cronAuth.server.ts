@@ -1,4 +1,7 @@
-import { timingSafeEqual } from "node:crypto";
+// لا node:crypto: خمسة مسارات hooks تستورد هذا الملف في أعلاها، وrouteTree.gen.ts
+// يحمّل كل المسارات في حزمة العميل — فكان الاستيراد يرمي في المتصفح على كل
+// صفحة. المقارنة الثابتة الآن JavaScript خالص (constantTimeEqual.ts).
+import { constantTimeEqualStrings } from "@/lib/constantTimeEqual";
 
 /**
  * تحقق موحَّد لكل كرون-هوكس (pg_cron) — مفتاح مشترك CRON_SECRET عبر ترويسة
@@ -15,9 +18,7 @@ export function isCronAuthorized(request: Request): boolean {
     "";
   if (!header) return false;
 
-  const a = Buffer.from(header);
-  const b = Buffer.from(secret);
-  return a.length === b.length && timingSafeEqual(a, b);
+  return constantTimeEqualStrings(header, secret);
 }
 
 export function cronUnauthorizedResponse(): Response {

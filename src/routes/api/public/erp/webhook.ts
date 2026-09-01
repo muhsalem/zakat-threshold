@@ -1,5 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { createHmac, timingSafeEqual } from "node:crypto";
+// لا node:crypto هنا: routeTree.gen.ts يستورد هذا الملف في حزمة العميل أيضاً،
+// وتُجرَّد كتلة server: لكن الاستيراد يبقى ويرمي في المتصفح عند التقييم.
+// Web Crypto يعمل في المتصفح وNode وWorkers معاً — انظر webhookSignature.ts.
+import { verifyHmacSha256Hex } from "@/lib/erp/webhookSignature";
 import { rateLimit, rateLimitResponse } from "@/lib/rate-limit.server";
 
 const CORS = {
@@ -43,10 +46,8 @@ export const Route = createFileRoute("/api/public/erp/webhook")({
           );
         }
 
-        const expected = createHmac("sha256", secret).update(`${ts}.${raw}`).digest("hex");
-        const sigBuf = Buffer.from(signature, "hex");
-        const expBuf = Buffer.from(expected, "hex");
-        if (sigBuf.length !== expBuf.length || !timingSafeEqual(sigBuf, expBuf)) {
+        // crypto.subtle.verify يقارن بزمن ثابت بالمواصفة؛ التوقيع المشوَّه يرجع false لا رمياً.
+        if (!(await verifyHmacSha256Hex(secret, `${ts}.${raw}`, signature))) {
           return Response.json(
             { ok: false, error: "invalid_signature" },
             { status: 401, headers: CORS },
