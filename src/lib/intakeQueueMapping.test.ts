@@ -1,9 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  intakeRowToClientInput,
-  INTAKE_STATUSES,
-  type IntakeQueueRow,
-} from "./intakeQueueMapping";
+import { intakeRowToClientInput, INTAKE_STATUSES, type IntakeQueueRow } from "./intakeQueueMapping";
 
 const base: IntakeQueueRow = {
   id: "00000000-0000-0000-0000-000000000001",
@@ -70,7 +66,10 @@ describe("intakeRowToClientInput — لا ثقة بمصدر مجهول", () => {
     const r1 = intakeRowToClientInput({ ...base, breakdown: null });
     expect(r1.breakdown).toEqual({});
     expect(r1.intakeDetails).toBeNull();
-    const r2 = intakeRowToClientInput({ ...base, breakdown: { breakdown: "str", intakeDetails: [1] } });
+    const r2 = intakeRowToClientInput({
+      ...base,
+      breakdown: { breakdown: "str", intakeDetails: [1] },
+    });
     expect(r2.breakdown).toEqual({});
     expect(r2.intakeDetails).toBeNull();
   });
