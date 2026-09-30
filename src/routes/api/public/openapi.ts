@@ -62,6 +62,7 @@ const SPEC = {
       get: {
         summary: "Get current Nisab",
         description: "قيمة النصاب الحالية بالذهب (85 جم) والفضة (595 جم).",
+        parameters: [{ name: "currency", in: "query", schema: { type: "string", default: "USD" } }],
         tags: ["Reference Data"],
         responses: {
           "200": {
@@ -340,22 +341,29 @@ const SPEC = {
       Nisab: {
         type: "object",
         properties: {
-          gold: {
+          ok: { type: "boolean" },
+          currency: { type: "string", example: "USD" },
+          zakat_rate: { type: "number", example: 0.025 },
+          gold_grams: { type: "number", example: 85 },
+          silver_grams: { type: "number", example: 595 },
+          latest: {
             type: "object",
+            nullable: true,
+            description:
+              "آخر لقطة يومية محفوظة (لا المتوسطات السنوية التاريخية)؛ null إن لم تُحفظ لقطةٌ بهذه العملة (اللقطات بالدولار).",
             properties: {
-              grams: { type: "number" },
-              price_usd: { type: "number" },
-              value_usd: { type: "number" },
+              currency: { type: "string" },
+              gold_price_per_gram: { type: "number", description: "سعر جرام الذهب عيار 24" },
+              silver_price_per_gram: { type: "number" },
+              gold_nisab: { type: "number" },
+              silver_nisab: { type: "number" },
+              recorded_at: { type: "string", format: "date-time" },
+              source: { type: "string", nullable: true },
+              reliability: { type: "string", nullable: true },
             },
           },
-          silver: {
-            type: "object",
-            properties: {
-              grams: { type: "number" },
-              price_usd: { type: "number" },
-              value_usd: { type: "number" },
-            },
-          },
+          source: { type: "string" },
+          generated_at: { type: "string", format: "date-time" },
         },
       },
       PriceHistory: {

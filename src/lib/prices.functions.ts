@@ -2,6 +2,12 @@ import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import type { Database } from "@/integrations/supabase/types";
+import {
+  NISAB_PRICES_COLUMNS,
+  NISAB_PRICES_LIVE_EVENT,
+  NISAB_PRICES_ORDER_COLUMN,
+  toPublicNisab,
+} from "@/lib/nisabPrices";
 
 const currencySchema = z.object({
   // ISO 4217 حرفياً 3 أحرف — كانت تصل بلا أي تحقق شكل/طول وتُدرَج مباشرة
@@ -59,10 +65,15 @@ async function fetchMetalsLive(): Promise<{ gold: number; silver: number } | nul
   }
 }
 
-// أخير: قيمة محفوظة في قاعدة البيانات (آخر nisab_prices)
-async function fetchDbFallback(
-  currency: string,
-): Promise<{ goldPerGram: number; silverPerGram: number } | null> {
+// أخير: قيمة محفوظة في قاعدة البيانات (آخر nisab_prices).
+// اللقطات تُحفظ بالدولار، فتُرجع بالدولار ويحوّلها المستدعي بسعر الصرف.
+// كان الترتيب بعمود recorded_at غير الموجود فيسقط الاستعلام بصمت، وكانت
+// القيمة الدولارية تُعرض كأنها بالعملة المطلوبة.
+async function fetchDbFallback(): Promise<{
+  goldUsdPerGram: number;
+  silverUsdPerGram: number;
+  recordedAt: string;
+} | null> {
   try {
     const sb = createClient<Database>(
       process.env.SUPABASE_URL!,
@@ -71,14 +82,18 @@ async function fetchDbFallback(
     );
     const { data } = await sb
       .from("nisab_prices")
-      .select("gold_price, silver_price")
-      .order("recorded_at", { ascending: false })
+      .select(NISAB_PRICES_COLUMNS)
+      .eq("currency", "USD")
+      .eq("event", NISAB_PRICES_LIVE_EVENT)
+      .order(NISAB_PRICES_ORDER_COLUMN, { ascending: false, nullsFirst: false })
       .limit(1)
       .maybeSingle();
-    if (!data) return null;
+    const latest = toPublicNisab(data);
+    if (!latest) return null;
     return {
-      goldPerGram: Number(data.gold_price),
-      silverPerGram: Number(data.silver_price),
+      goldUsdPerGram: latest.gold_price_per_gram,
+      silverUsdPerGram: latest.silver_price_per_gram,
+      recordedAt: latest.recorded_at,
     };
   } catch {
     return null;
@@ -133,16 +148,17 @@ export const getLivePrices = createServerFn({ method: "GET" })
     }
 
     // 3) خط دفاع أخير: آخر قيمة محفوظة في قاعدة البيانات
-    const db = await fetchDbFallback(currency);
+    // لعملة غير الدولار بلا سعر صرف لا نعرض الرقم الدولاري كأنه بعملتها
+    const db = currency === "USD" || fxSource !== "fixed" ? await fetchDbFallback() : null;
     if (db) {
       return {
         currency,
-        goldPerGram: db.goldPerGram,
-        silverPerGram: db.silverPerGram,
-        goldUsdPerOunce: (db.goldPerGram / fxRate) * OUNCE_TO_GRAM,
-        silverUsdPerOunce: (db.silverPerGram / fxRate) * OUNCE_TO_GRAM,
+        goldPerGram: db.goldUsdPerGram * fxRate,
+        silverPerGram: db.silverUsdPerGram * fxRate,
+        goldUsdPerOunce: db.goldUsdPerGram * OUNCE_TO_GRAM,
+        silverUsdPerOunce: db.silverUsdPerGram * OUNCE_TO_GRAM,
         fxRate,
-        fetchedAt: new Date().toISOString(),
+        fetchedAt: db.recordedAt,
         source: "cached:nisab_prices",
         fallback: true,
       };

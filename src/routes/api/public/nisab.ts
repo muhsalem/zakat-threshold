@@ -2,6 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
 import { rateLimit, rateLimitResponse } from "@/lib/rate-limit.server";
 import type { Database } from "@/integrations/supabase/types";
+import {
+  GOLD_NISAB_GRAMS,
+  NISAB_PRICES_COLUMNS,
+  NISAB_PRICES_LIVE_EVENT,
+  NISAB_PRICES_ORDER_COLUMN,
+  SILVER_NISAB_GRAMS,
+  toPublicNisab,
+} from "@/lib/nisabPrices";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -29,11 +37,10 @@ export const Route = createFileRoute("/api/public/nisab")({
 
         const { data, error } = await supabase
           .from("nisab_prices")
-          .select(
-            "currency, gold_price_per_gram, silver_price_per_gram, gold_nisab, silver_nisab, recorded_at",
-          )
+          .select(NISAB_PRICES_COLUMNS)
           .eq("currency", currency)
-          .order("recorded_at", { ascending: false })
+          .eq("event", NISAB_PRICES_LIVE_EVENT)
+          .order(NISAB_PRICES_ORDER_COLUMN, { ascending: false, nullsFirst: false })
           .limit(1)
           .maybeSingle();
 
@@ -49,9 +56,9 @@ export const Route = createFileRoute("/api/public/nisab")({
             ok: true,
             currency,
             zakat_rate: 0.025,
-            gold_grams: 85,
-            silver_grams: 595,
-            latest: data ?? null,
+            gold_grams: GOLD_NISAB_GRAMS,
+            silver_grams: SILVER_NISAB_GRAMS,
+            latest: toPublicNisab(data),
             source: "AAOIFI 35 / Bayt al-Zakat",
             generated_at: new Date().toISOString(),
           }),
