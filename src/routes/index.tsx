@@ -140,7 +140,7 @@ function Home() {
             ))}
           </section>
 
-           <div className="mt-5"><ShareDailyNisab values={values} money={money} silverWeight={silverWeight} day={daily.window?.today} sources={`${s.updated}: ${quote?.at ?? data?.metalsUpdatedAt ?? "—"} · ${priceSource?.gold === "local" || priceSource?.silver === "local" ? quote?.source : data?.metalsSource}`} /></div>
+           <div className="mt-5"><ShareDailyNisab values={values} money={money} silverWeight={silverWeight} day={daily.window?.today} sources={(["gold", "silver"] as const).map(metal => { const origin = priceSource?.[metal]; const label = origin === "manual" ? s.manual : origin === "local" ? `${s.local}: ${quote?.source ?? "—"}` : `${s.global}: ${data?.metalsSource ?? "—"}`; const at = origin === "manual" ? data?.manualUpdatedAt : origin === "local" ? quote?.at : data?.metalsUpdatedAt; return `${t(metal)} · ${label} · ${s.updated}: ${at ?? "—"}`; }).join("\n")} /></div>
            <section className="mt-5 border-b border-border pb-5">
              <label className="flex flex-wrap items-center gap-3 text-sm text-foreground"><span>{s.standard}</span><select aria-label={s.standard} value={weight} onChange={e => setWeight(Number(e.target.value))} className="rounded-lg border border-input bg-card px-3 py-2"><option value={595}>595 g</option><option value={612.36}>612.36 g · {s.alternative}</option></select></label>
              <p className="mt-3 text-xs leading-6 text-muted-foreground">{s.basis}</p>
