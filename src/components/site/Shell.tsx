@@ -11,6 +11,7 @@ import {
 import { useMemo, useState, type ReactNode } from "react";
 
 import { LANGS, useI18n } from "@/lib/i18n";
+import { useAuth } from "@/lib/auth";
 import { COUNTRIES, countryName, flagOf } from "@/lib/countries";
 import { citiesOf, cityName } from "@/lib/cities";
 import { ThemePicker } from "./ThemePicker";
