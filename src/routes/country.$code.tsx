@@ -206,6 +206,7 @@ function CountryPage() {
           <SourceQuality currency={country.currency} />
           <CountryVerificationSection country={country} lang={lang} spotGoldGram={spotGold} spotSilverGram={spotSilver} spotGoldNisab={spotGold * GOLD_NISAB_G} spotSilverNisab={spotSilver * SILVER_NISAB_G} />
           <ShareNisab
+            silverWeight={silverWeight}
             countryName={country.ar}
             goldText={money(gold)}
             silverText={money(silver)}
