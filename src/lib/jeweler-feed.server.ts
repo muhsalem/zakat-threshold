@@ -43,12 +43,6 @@ async function iSaghaSilver(path = ""): Promise<{ sell: number | null; buy: numb
 }
 const egyptSilver = () => iSaghaSilver();
 
-/** Kuwait: iSagha publishes a local silver board only (no gold), so gold stays on spot. */
-async function kuwait(): Promise<FeedRow> {
-  const s = await iSaghaSilver("/kw");
-  return { country: "KW", currency: "KWD", source: "iSagha الكويت (فضة)", source_url: "https://market.isagha.com/prices/silver/kw", gold_gram: null, buyback_gram: null, silver_gram: s.sell, silver_buyback_gram: s.buy };
-}
-
 async function egypt(): Promise<FeedRow> {
   const url = "https://edahabapp.com/";
   const t = await text(url);
