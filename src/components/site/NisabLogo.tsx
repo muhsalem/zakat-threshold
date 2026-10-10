@@ -269,7 +269,7 @@ export function NisabBrand({
 
         {showTagline && (
           <span className="text-[0.68rem] sm:text-[0.72rem] leading-tight text-muted-foreground font-medium flex items-center gap-1.5 mt-0.5">
-            <span className="text-primary font-semibold">حاسبة وموازين الزكاة</span>
+            <span className="text-primary font-semibold">حاسبة نصاب الزكاة</span>
             <span className="text-border">·</span>
             <span className="text-foreground/75 font-mono text-[0.62rem]">
               ذهب ٨٥جم | فضة ٥٩٥جم

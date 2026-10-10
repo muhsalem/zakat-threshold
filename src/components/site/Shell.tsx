@@ -11,6 +11,7 @@ import {
 import { useMemo, useState, type ReactNode } from "react";
 
 import { LANGS, useI18n } from "@/lib/i18n";
+import { useAuth } from "@/lib/auth";
 import { COUNTRIES, countryName, flagOf } from "@/lib/countries";
 import { citiesOf, cityName } from "@/lib/cities";
 import { ThemePicker } from "./ThemePicker";
@@ -69,6 +70,49 @@ const NAV_GROUPS = [
 const NAV_PRIMARY = NAV_GROUPS[0].items;
 /** Everything else lives under the "More" dropdown. */
 const NAV_MORE = NAV_GROUPS.slice(1);
+
+/** Condensed drawer: merged groups, fewer links than the full footer map. */
+const NAV_MOBILE = [
+  {
+    key: "nav.group.live",
+    items: [
+      { to: "/today", key: "nav.today" },
+      { to: "/countries", key: "nav.countries" },
+      { to: "/history", key: "nav.history" },
+      { to: "/compare", key: "nav.compare" },
+    ],
+  },
+  {
+    key: "nav.group.tools",
+    items: [
+      { to: "/calculator", key: "nav.calculator" },
+      { to: "/alerts", key: "nav.alerts" },
+      { to: "/outlook", key: "nav.outlook" },
+    ],
+  },
+  {
+    key: "nav.group.reference",
+    items: [
+      { to: "/types", key: "nav.types" },
+      { to: "/fiqh", key: "nav.fiqh" },
+      { to: "/faq", key: "nav.faq" },
+      { to: "/sources", key: "nav.sources" },
+    ],
+  },
+  {
+    key: "nav.group.about",
+    items: [
+      { to: "/partners", key: "nav.partners" },
+      { to: "/auth", key: "nav.account" },
+    ],
+  },
+] as const;
+
+/** Admin console links, shown in the drawer only for admins. */
+const NAV_MOBILE_ADMIN = [
+  { to: "/moderation", key: "nav.moderation" },
+  { to: "/control", key: "nav.control" },
+] as const;
 
 export function CountryPicker({ compact = false }: { compact?: boolean }) {
   const { t, lang, country, setCountry } = useI18n();
@@ -213,6 +257,7 @@ function LangPicker() {
 
 function MobileNav() {
   const { t, rtl } = useI18n();
+  const { isAdmin } = useAuth();
   const [open, setOpen] = useState(false);
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -233,7 +278,7 @@ function MobileNav() {
         </SheetHeader>
         <div className="flex flex-wrap gap-2 px-4"><ThemePicker /><LangPicker /></div>
         <nav aria-label={t("nav.menu")} className="mt-2 flex flex-col gap-5 px-4 pb-8">
-          {NAV_GROUPS.map((group) => (
+          {NAV_MOBILE.map((group) => (
             <div key={group.key}>
               <p className="eyebrow text-muted-foreground">{t(group.key)}</p>
               <div className="mt-2 flex flex-col">
@@ -252,6 +297,25 @@ function MobileNav() {
               </div>
             </div>
           ))}
+          {isAdmin && (
+            <div>
+              <p className="eyebrow text-muted-foreground">{t("nav.group.admin")}</p>
+              <div className="mt-2 flex flex-col">
+                {NAV_MOBILE_ADMIN.map((item) => (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    onClick={() => setOpen(false)}
+                    activeOptions={{ exact: true }}
+                    activeProps={{ className: "text-foreground font-medium" }}
+                    className="rounded-lg px-2 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  >
+                    {t(item.key)}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </nav>
       </SheetContent>
     </Sheet>

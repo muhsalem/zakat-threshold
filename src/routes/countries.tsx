@@ -56,15 +56,23 @@ function CountriesPage() {
       <h1 className="mt-2 text-3xl text-foreground sm:text-4xl">{t("countries.title")}</h1>
       <p className="mt-3 max-w-2xl text-muted-foreground">{t("countries.sub")}</p>
 
-      <label className="mt-6 block max-w-md text-sm">
-        <span className="text-muted-foreground">{t("countries.search")}</span>
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder={t("countries.searchHint")}
-          className="mt-1 w-full rounded-lg border border-input bg-card px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring"
-        />
-      </label>
+      <div className="mt-6 flex flex-wrap items-end justify-between gap-3">
+        <label className="block max-w-md flex-1 text-sm">
+          <span className="text-muted-foreground">{t("countries.search")}</span>
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder={t("countries.searchHint")}
+            className="mt-1 w-full rounded-lg border border-input bg-card px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring"
+          />
+        </label>
+        <Link
+          to="/map"
+          className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition-colors hover:bg-secondary"
+        >
+          {t("nav.map")}
+        </Link>
+      </div>
 
       {([
         ["country.group.muslim", groups.muslim],
