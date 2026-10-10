@@ -257,6 +257,7 @@ function LangPicker() {
 
 function MobileNav() {
   const { t, rtl } = useI18n();
+  const { isAdmin } = useAuth();
   const [open, setOpen] = useState(false);
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -277,7 +278,7 @@ function MobileNav() {
         </SheetHeader>
         <div className="flex flex-wrap gap-2 px-4"><ThemePicker /><LangPicker /></div>
         <nav aria-label={t("nav.menu")} className="mt-2 flex flex-col gap-5 px-4 pb-8">
-          {NAV_GROUPS.map((group) => (
+          {NAV_MOBILE.map((group) => (
             <div key={group.key}>
               <p className="eyebrow text-muted-foreground">{t(group.key)}</p>
               <div className="mt-2 flex flex-col">
@@ -296,6 +297,25 @@ function MobileNav() {
               </div>
             </div>
           ))}
+          {isAdmin && (
+            <div>
+              <p className="eyebrow text-muted-foreground">{t("nav.group.admin")}</p>
+              <div className="mt-2 flex flex-col">
+                {NAV_MOBILE_ADMIN.map((item) => (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    onClick={() => setOpen(false)}
+                    activeOptions={{ exact: true }}
+                    activeProps={{ className: "text-foreground font-medium" }}
+                    className="rounded-lg px-2 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  >
+                    {t(item.key)}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </nav>
       </SheetContent>
     </Sheet>
