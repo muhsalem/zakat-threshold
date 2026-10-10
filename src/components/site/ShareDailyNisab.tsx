@@ -14,7 +14,7 @@ export function ShareDailyNisab({ values, money, silverWeight = 595, day, source
   const s = homeCopy(lang);
   const [status, setStatus] = useState("");
   const location = countryName(findCountry(country), lang);
-  const path = nisabSharePath(country);
+  const path = nisabSharePath(country, silverWeight);
   const message = () => nisabShareMessage({ title: s.now, location, day: day ?? "—", goldLabel: t("nisab.gold"), silverLabel: t("nisab.silver"), gold: money(values.gold), silver: money(values.silver), silverWeight, sources, note: s.note, url: new URL(path, window.location.origin).href });
   const copy = async (link = false) => { try { await navigator.clipboard.writeText(link ? new URL(path, window.location.origin).href : message()); setStatus(s.copied); } catch { setStatus(s.failed); } };
   const social = (network: "whatsapp" | "telegram" | "x" | "facebook") => {

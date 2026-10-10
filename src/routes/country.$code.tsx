@@ -22,6 +22,7 @@ import {
 } from "@/lib/nisab";
 
 export const Route = createFileRoute("/country/$code")({
+  validateSearch: (search: Record<string, unknown>) => ({ silverWeight: Number(search.silverWeight) === 612.36 ? 612.36 : undefined }),
   loader: ({ params }) => {
     const country = COUNTRIES.find((c) => c.code.toLowerCase() === params.code.toLowerCase());
     if (!country) throw notFound();
@@ -53,7 +54,8 @@ function CountryPage() {
   const { t, lang, setCountry } = useI18n();
   const { data, overrides, isLoading, isError, refetch } = usePrices();
   const { data: quote } = useLocalQuote(country.code, country.currency);
-  const { weight: silverWeight } = useSilverStandard();
+  const { weight: preferredSilverWeight } = useSilverStandard();
+  const silverWeight = Route.useSearch().silverWeight ?? preferredSilverWeight;
 
   const scope = overrides.scopes?.[scopeKey(country.code, "")];
   const rate = scope?.rate ?? data?.rates?.[country.currency];
@@ -210,7 +212,7 @@ function CountryPage() {
             countryName={country.ar}
             goldText={money(gold)}
             silverText={money(silver)}
-            url={`/country/${country.code.toLowerCase()}`}
+            url={`/country/${country.code.toLowerCase()}${silverWeight === 612.36 ? "?silverWeight=612.36" : ""}`}
           />
         </>
       )}

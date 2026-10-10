@@ -113,6 +113,7 @@ export function useNisab(prefer: PricePreference = "local") {
       silverUsdOz,
       rates,
       manual: base.manual || Boolean(scope),
+      manualUpdatedAt: scope?.updatedAt ?? base.manualUpdatedAt,
     };
   }, [base, scope, currency]);
 
