@@ -121,7 +121,7 @@ async function northAmerica(): Promise<FeedRow[]> {
 }
 
 export async function collectFeed(): Promise<{ rows: FeedRow[]; errors: string[] }> {
-  const jobs: Promise<FeedRow | FeedRow[]>[] = [egypt(), saudi(), uae(), northAmerica(), kuwait()];
+  const jobs: Promise<FeedRow | FeedRow[]>[] = [egypt(), saudi(), uae(), northAmerica()];
   const settled = await Promise.allSettled(jobs);
   const rows: FeedRow[] = [];
   const errors: string[] = [];
