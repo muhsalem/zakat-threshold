@@ -1,1 +1,0 @@
-ALTER TABLE public.jeweler_feed ADD COLUMN IF NOT EXISTS silver_buyback_gram numeric;
