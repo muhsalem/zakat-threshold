@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/integrations/supabase/client";
+import { PRICE_REFRESH_MS } from "./daily-nisab";
 
 /** A local jeweller quote is considered current for 72 hours after approval. */
 export const LOCAL_QUOTE_MAX_AGE_MS = 72 * 60 * 60 * 1000;
@@ -31,7 +32,9 @@ export function useLocalQuote(country: string, currency: string) {
   return useQuery<LocalQuote | null>({
     queryKey: ["local-quote", country, currency],
     enabled: Boolean(country && currency),
-    staleTime: 15 * 60 * 1000,
+    staleTime: PRICE_REFRESH_MS,
+    refetchInterval: PRICE_REFRESH_MS,
+    refetchOnWindowFocus: true,
     queryFn: async () => {
       const since = new Date(Date.now() - LOCAL_QUOTE_MAX_AGE_MS).toISOString();
       const { data: feed } = await supabase
