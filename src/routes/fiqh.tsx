@@ -125,6 +125,18 @@ function Fiqh() {
         </Button>
       </section>
 
+      <p className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
+        <Link to="/methodology" className="underline underline-offset-4 hover:text-foreground">
+          {t("nav.methodology")}
+        </Link>
+        <Link to="/faq" className="underline underline-offset-4 hover:text-foreground">
+          {t("nav.faq")}
+        </Link>
+        <Link to="/sources" className="underline underline-offset-4 hover:text-foreground">
+          {t("nav.sources")}
+        </Link>
+      </p>
+
       <p className="mt-6 text-xs leading-6 text-muted-foreground">{t("fiqh.note")}</p>
     </Page>
   );
