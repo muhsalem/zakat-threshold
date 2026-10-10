@@ -57,6 +57,7 @@ const NAV_GROUPS = [
     items: [
       { to: "/partners", key: "nav.partners" },
       { to: "/moderation", key: "nav.moderation" },
+      { to: "/control", key: "nav.control" },
       { to: "/developers", key: "nav.api" },
       { to: "/auth", key: "nav.account" },
       { to: "/waqf", key: "nav.about" },
@@ -217,7 +218,7 @@ function MobileNav() {
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger
         aria-label={t("nav.menu")}
-        className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground md:hidden"
+        className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground lg:hidden"
       >
         <Menu aria-hidden="true" className="size-4" />
         <span className="sr-only sm:not-sr-only">{t("nav.menu")}</span>
@@ -267,25 +268,33 @@ export function Shell({ children }: { children: ReactNode }) {
 
           <nav
             aria-label={t("nav.group.live")}
-            className="hidden flex-1 flex-wrap items-center justify-center gap-1 md:flex"
+            className="hidden min-w-0 flex-1 flex-nowrap items-center justify-center gap-0.5 lg:flex"
           >
-            {NAV_PRIMARY.map((item) => (
+            {NAV_PRIMARY.map((item, i) => (
               <Link
                 key={item.to}
                 to={item.to}
                 activeOptions={{ exact: true }}
                 activeProps={{ className: "bg-secondary text-foreground" }}
-                className="rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                className={`${i >= 3 ? "hidden 2xl:inline-flex" : "inline-flex"} whitespace-nowrap rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring`}
               >
                 {t(item.key)}
               </Link>
             ))}
             <DropdownMenu>
-              <DropdownMenuTrigger className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">
+              <DropdownMenuTrigger className="inline-flex shrink-0 whitespace-nowrap items-center gap-1 rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">
                 {t("nav.more")}
                 <ChevronDown aria-hidden="true" className="size-3.5" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
+                <div className="2xl:hidden">
+                  {NAV_PRIMARY.slice(3).map((item) => (
+                    <DropdownMenuItem key={item.to} asChild>
+                      <Link to={item.to}>{t(item.key)}</Link>
+                    </DropdownMenuItem>
+                  ))}
+                  <DropdownMenuSeparator />
+                </div>
                 {NAV_MORE.map((group, gi) => (
                   <div key={group.key}>
                     {gi > 0 && <DropdownMenuSeparator />}
@@ -305,10 +314,10 @@ export function Shell({ children }: { children: ReactNode }) {
             </DropdownMenu>
           </nav>
 
-          <div className="ms-auto flex items-center gap-2">
+          <div className="ms-auto flex shrink-0 items-center gap-2">
             <GlobalSearch />
-            <div className="hidden sm:block"><ThemePicker /></div>
-            <div className="hidden sm:block"><LangPicker /></div>
+            <div className="hidden xl:block"><ThemePicker /></div>
+            <div className="hidden lg:block"><LangPicker /></div>
             <MobileNav />
           </div>
         </div>

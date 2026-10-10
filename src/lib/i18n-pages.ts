@@ -1036,6 +1036,7 @@ for (const [lang, dict] of Object.entries(EXTRA9)) {
 const EXTRA10: Record<string, Record<string, string>> = {
   ar: {
     "nav.alerts": "تنبيهاتي",
+    "nav.control": "لوحة التحكم",
     "nav.moderation": "مراجعة الأسعار",
     "nav.account": "حسابي",
     "auth.eyebrow": "حساب نِصاب",
@@ -1165,6 +1166,7 @@ const EXTRA10: Record<string, Record<string, string>> = {
   },
   en: {
     "nav.alerts": "My alerts",
+    "nav.control": "Admin console",
     "nav.moderation": "Price review",
     "nav.account": "My account",
     "auth.eyebrow": "Nisab account",
@@ -1297,6 +1299,7 @@ const EXTRA10: Record<string, Record<string, string>> = {
 const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
   fr: {
     "nav.alerts": "Mes alertes",
+    "nav.control": "Console d’administration",
     "nav.moderation": "Révision des prix",
     "nav.account": "Mon compte",
     "auth.eyebrow": "Compte Nisab",
@@ -1426,6 +1429,7 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
   },
   tr: {
     "nav.alerts": "Uyarılarım",
+    "nav.control": "Yönetim paneli",
     "nav.moderation": "Fiyat incelemesi",
     "nav.account": "Hesabım",
     "auth.eyebrow": "Nisab hesabı",
@@ -1555,6 +1559,7 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
   },
   id: {
     "nav.alerts": "Notifikasi saya",
+    "nav.control": "Konsol admin",
     "nav.moderation": "Tinjauan harga",
     "nav.account": "Akun saya",
     "auth.eyebrow": "Akun Nisab",
@@ -1684,6 +1689,7 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
   },
   ur: {
     "nav.alerts": "میری اطلاعات",
+    "nav.control": "انتظامی پینل",
     "nav.moderation": "قیمتوں کا جائزہ",
     "nav.account": "میرا کھاتہ",
     "auth.eyebrow": "نصاب اکاؤنٹ",
