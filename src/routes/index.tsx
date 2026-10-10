@@ -22,6 +22,10 @@ import { HawlReminder } from "@/components/site/Reminders";
 import { useI18n } from "@/lib/i18n";
 import { GOLD_NISAB_G, KARATS, SILVER_NISAB_G, formatNumber } from "@/lib/nisab";
 import { usePrices } from "@/lib/use-prices";
+import { homeCopy } from "@/lib/home-copy";
+import { countryName, findCountry, flagOf } from "@/lib/countries";
+import { isCurrentUtcDay } from "@/lib/daily-nisab";
+import { useSilverStandard } from "@/lib/use-silver-standard";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -47,8 +51,11 @@ export const Route = createFileRoute("/")({
 const TYPES = ["cash", "gold", "trade", "crops", "livestock", "fitr"] as const;
 
 function Home() {
-  const { t } = useI18n();
-  const { values, money, isLoading, isError, refetch, currency, data, priceSource } = useNisab();
+  const { t, lang, country } = useI18n();
+  const s = homeCopy(lang);
+  const countryTitle = countryName(findCountry(country), lang);
+  const { weight, setWeight } = useSilverStandard();
+  const { values, money, isLoading, isError, refetch, currency, data, priceSource, quote, silverWeight, localFetching, localError, localCheckedAt } = useNisab();
   const daily = useDailyNisab();
   const { isFetching } = usePrices();
   const sourceAt = priceSource?.gold === "local" || priceSource?.silver === "local" ? priceSource.at : data?.metalsUpdatedAt;
@@ -61,7 +68,7 @@ function Home() {
       <section className="rise home-intro">
         <p className="home-eyebrow flex items-center gap-3 text-sm font-medium text-primary"><span className="h-px w-8 bg-accent" aria-hidden="true" />{t("hero.eyebrow")}</p>
         <h1 className="home-title mt-3 max-w-4xl text-3xl font-semibold text-foreground sm:text-4xl">
-          {t("hero.title")}
+          {s.now} <span className="text-primary">· {countryTitle}</span>
         </h1>
         <p className="mt-2 max-w-2xl text-base leading-8 text-muted-foreground">{t("hero.sub")}</p>
         <div className="home-controls mt-5 grid max-w-2xl gap-4 sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
@@ -70,7 +77,8 @@ function Home() {
         </div>
       </section>
 
-      <div className="mt-5"><DailyNisabStatus daily={daily} at={sourceAt} fetchedAt={data?.fetchedAt} manual={Boolean(data?.manual)} fetching={isFetching} /></div>
+       <div className="mt-5"><DailyNisabStatus daily={daily} at={sourceAt} fetchedAt={localCheckedAt ?? data?.fetchedAt} manual={Boolean(data?.manual)} fetching={isFetching || localFetching} /></div>
+       {localError && <p role="alert" className="mt-2 text-sm text-negative">{s.unavailable}</p>}
 
       {(isLoading || isError) && (
         <div className="mt-8">
@@ -95,7 +103,7 @@ function Home() {
               {
                 label: t("nisab.silver"),
                 metal: t("silver"),
-                grams: SILVER_NISAB_G,
+                 grams: silverWeight,
                 total: values.silver,
                 gram: values.silverGram,
                 lower: values.silver < values.gold,
@@ -120,16 +128,26 @@ function Home() {
                     </span>
                   )}
                 </div>
-                <p className="num nisab-total mt-6 text-3xl font-medium text-foreground sm:text-4xl">{money(c.total)}</p>
+                 <p className="num nisab-total mt-6 text-3xl font-medium text-foreground sm:text-4xl" aria-live="polite" data-testid={`nisab-total-${c.kind}`}>{money(c.total)}</p>
+                 <p className="mt-2 text-xs text-primary">{flagOf(country)} {countryTitle} · {currency}</p>
+                 <p className="mt-2 text-xs leading-6 text-muted-foreground">{priceSource?.[c.kind] === "manual" ? s.manual : priceSource?.[c.kind] === "local" ? `${s.local} · ${quote?.source ?? ""}` : s.global}</p>
+                 <p className="text-xs leading-6 text-muted-foreground">{s.updated}: {(() => { const at = priceSource?.[c.kind] === "local" ? quote?.at : priceSource?.[c.kind] === "manual" ? data?.manualUpdatedAt : data?.metalsUpdatedAt; return at ? `${new Intl.DateTimeFormat(lang, { dateStyle: "medium", timeStyle: "short", timeZone: "UTC" }).format(new Date(at))} UTC · ${daily.window && isCurrentUtcDay(at, daily.window.today) ? s.today : s.older}` : "—"; })()}</p>
                 <p className="mt-5 border-t border-border pt-3 text-sm text-muted-foreground">
                   {t("perGram")}: <span className="num">{money(c.gram)}</span>
                 </p>
-                <DailyComparison current={c.total} metal={c.kind} money={money} daily={daily} />
+                 {c.kind === "silver" && silverWeight !== SILVER_NISAB_G ? <p className="mt-4 border-t border-border pt-3 text-xs text-muted-foreground">{s.history}</p> : <DailyComparison current={c.total} metal={c.kind} money={money} daily={daily} />}
               </article>
             ))}
           </section>
 
-          <section className="mt-5 border-y border-border py-4">
+           <div className="mt-5"><ShareDailyNisab values={values} money={money} silverWeight={silverWeight} day={daily.window?.today} sources={`${s.updated}: ${quote?.at ?? data?.metalsUpdatedAt ?? "—"} · ${priceSource?.gold === "local" || priceSource?.silver === "local" ? quote?.source : data?.metalsSource}`} /></div>
+           <section className="mt-5 border-b border-border pb-5">
+             <label className="flex flex-wrap items-center gap-3 text-sm text-foreground"><span>{s.standard}</span><select aria-label={s.standard} value={weight} onChange={e => setWeight(Number(e.target.value))} className="rounded-lg border border-input bg-card px-3 py-2"><option value={595}>595 g</option><option value={612.36}>612.36 g · {s.alternative}</option></select></label>
+             <p className="mt-3 text-xs leading-6 text-muted-foreground">{s.basis}</p>
+             <p className="mt-1 text-xs leading-6 text-muted-foreground">{s.note} <Link to="/methodology" className="text-primary underline underline-offset-4">{t("nav.fiqh")}</Link></p>
+             <div className="mt-4 overflow-x-auto"><table className="w-full text-start text-sm"><thead><tr className="border-b border-border text-muted-foreground"><th className="py-2 text-start font-normal">{t("karat.title")}</th><th className="py-2 text-start font-normal">{s.bid}</th><th className="py-2 text-start font-normal">{s.ask}</th></tr></thead><tbody>{[{ label: `${t("gold")} 24K`, bid: quote?.buybackGram, ask: quote?.goldGram }, { label: `${t("silver")} 999`, bid: quote?.silverBuybackGram, ask: quote?.silverGram }].map(row => <tr key={row.label} className="border-b border-border"><td className="py-3">{row.label}</td><td className="num py-3">{row.bid == null ? s.unknown : money(row.bid)}</td><td className="num py-3">{row.ask == null ? s.unknown : money(row.ask)}</td></tr>)}</tbody></table></div>
+           </section>
+           <section className="mt-5 border-y border-border py-4">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <p className="text-sm text-muted-foreground">{t("ratio.label")}</p>
               <p className="num text-xl text-foreground">{formatNumber(values.ratio, 1)}</p>
@@ -180,7 +198,6 @@ function Home() {
           <SourceQuality />
           <HawlReminder />
           <UpdateMeta />
-          <div className="mt-4"><ShareDailyNisab values={values} money={money} /></div>
         </>
       )}
 
