@@ -22,7 +22,7 @@ import {
 } from "@/lib/nisab";
 
 export const Route = createFileRoute("/country/$code")({
-  validateSearch: (search: Record<string, unknown>) => ({ silverWeight: Number(search.silverWeight) === 612.36 ? 612.36 : undefined }),
+  validateSearch: (search: Record<string, unknown>): { silverWeight?: number } => Number(search["silverWeight"]) === 612.36 ? { silverWeight: 612.36 } : {},
   loader: ({ params }) => {
     const country = COUNTRIES.find((c) => c.code.toLowerCase() === params.code.toLowerCase());
     if (!country) throw notFound();
