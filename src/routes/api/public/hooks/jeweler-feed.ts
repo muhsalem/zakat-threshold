@@ -50,8 +50,9 @@ async function recordNisabHistory(
         currency: c.currency,
         day: today,
         gold_gram: feed.gold_gram,
-        silver_gram: feed.silver_gram,
-        source: feed.source,
+        // Local board without silver: fall back to converted global spot.
+        silver_gram: feed.silver_gram ?? (silverOz && rate0 ? (silverOz / OZ) * rate0 : null),
+        source: feed.silver_gram ? feed.source : `${feed.source} + spot silver`,
         source_url: feed.source_url,
       });
       continue;

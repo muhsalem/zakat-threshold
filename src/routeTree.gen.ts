@@ -29,6 +29,7 @@ import { Route as TodayRouteImport } from './routes/today'
 import { Route as TypesRouteImport } from './routes/types'
 import { Route as WaqfRouteImport } from './routes/waqf'
 import { Route as AuthenticatedAlertsRouteImport } from './routes/_authenticated/alerts'
+import { Route as AuthenticatedControlRouteImport } from './routes/_authenticated/control'
 import { Route as AuthenticatedModerationRouteImport } from './routes/_authenticated/moderation'
 import { Route as CountryCodeRouteImport } from './routes/country.$code'
 import { Route as ApiPublicHooksJewelerFeedRouteImport } from './routes/api/public/hooks/jeweler-feed'
@@ -134,6 +135,11 @@ const AuthenticatedAlertsRoute = AuthenticatedAlertsRouteImport.update({
   path: '/alerts',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedControlRoute = AuthenticatedControlRouteImport.update({
+  id: '/control',
+  path: '/control',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedModerationRoute = AuthenticatedModerationRouteImport.update({
   id: '/moderation',
   path: '/moderation',
@@ -181,6 +187,7 @@ export interface FileRoutesByFullPath {
   '/types': typeof TypesRoute
   '/waqf': typeof WaqfRoute
   '/alerts': typeof AuthenticatedAlertsRoute
+  '/control': typeof AuthenticatedControlRoute
   '/moderation': typeof AuthenticatedModerationRoute
   '/country/$code': typeof CountryCodeRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
@@ -207,6 +214,7 @@ export interface FileRoutesByTo {
   '/types': typeof TypesRoute
   '/waqf': typeof WaqfRoute
   '/alerts': typeof AuthenticatedAlertsRoute
+  '/control': typeof AuthenticatedControlRoute
   '/moderation': typeof AuthenticatedModerationRoute
   '/country/$code': typeof CountryCodeRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
@@ -235,6 +243,7 @@ export interface FileRoutesById {
   '/types': typeof TypesRoute
   '/waqf': typeof WaqfRoute
   '/_authenticated/alerts': typeof AuthenticatedAlertsRoute
+  '/_authenticated/control': typeof AuthenticatedControlRoute
   '/_authenticated/moderation': typeof AuthenticatedModerationRoute
   '/country/$code': typeof CountryCodeRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
@@ -263,6 +272,7 @@ export interface FileRouteTypes {
     | '/types'
     | '/waqf'
     | '/alerts'
+    | '/control'
     | '/moderation'
     | '/country/$code'
     | '/api/public/hooks/jeweler-feed'
@@ -289,6 +299,7 @@ export interface FileRouteTypes {
     | '/types'
     | '/waqf'
     | '/alerts'
+    | '/control'
     | '/moderation'
     | '/country/$code'
     | '/api/public/hooks/jeweler-feed'
@@ -316,6 +327,7 @@ export interface FileRouteTypes {
     | '/types'
     | '/waqf'
     | '/_authenticated/alerts'
+    | '/_authenticated/control'
     | '/_authenticated/moderation'
     | '/country/$code'
     | '/api/public/hooks/jeweler-feed'
@@ -491,6 +503,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAlertsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/control': {
+      id: '/_authenticated/control'
+      path: '/control'
+      fullPath: '/control'
+      preLoaderRoute: typeof AuthenticatedControlRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/moderation': {
       id: '/_authenticated/moderation'
       path: '/moderation'
@@ -531,11 +550,13 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAlertsRoute: typeof AuthenticatedAlertsRoute
+  AuthenticatedControlRoute: typeof AuthenticatedControlRoute
   AuthenticatedModerationRoute: typeof AuthenticatedModerationRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAlertsRoute: AuthenticatedAlertsRoute,
+  AuthenticatedControlRoute: AuthenticatedControlRoute,
   AuthenticatedModerationRoute: AuthenticatedModerationRoute,
 }
 

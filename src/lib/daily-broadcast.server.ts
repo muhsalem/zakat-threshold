@@ -48,9 +48,25 @@ export async function notifyNisabChanges(db: SupabaseClient, today: string) {
 }
 
 /** Post today's nisab summary to the owner's Facebook Page, if configured. */
-export async function postDailyToFacebook(db: SupabaseClient, today: string) {
-  const pageId = process.env["FACEBOOK_PAGE_ID"];
-  const token = process.env["FACEBOOK_PAGE_ACCESS_TOKEN"];
+export async function postDailyToFacebook(db: SupabaseClient, today: string, force = false) {
+  const result = await doPost(db, today, force);
+  if (result.reason !== "disabled") {
+    const { data: cur } = await db.from("app_settings").select("value").eq("key", "facebook").maybeSingle();
+    await db.from("app_settings").upsert({
+      key: "facebook",
+      value: { ...((cur?.value as object) ?? {}), last_run: new Date().toISOString(), last_posted: result.posted, last_reason: result.reason ?? "" },
+      updated_at: new Date().toISOString(),
+    });
+  }
+  return result;
+}
+
+async function doPost(db: SupabaseClient, today: string, force: boolean): Promise<{ posted: boolean; reason?: string }> {
+  const { data: row } = await db.from("app_settings").select("value").eq("key", "facebook").maybeSingle();
+  const cfg = (row?.value ?? {}) as { page_id?: string; token?: string; enabled?: boolean };
+  if (row && cfg.enabled === false && !force) return { posted: false, reason: "disabled" };
+  const pageId = cfg.page_id || process.env["FACEBOOK_PAGE_ID"];
+  const token = cfg.token || process.env["FACEBOOK_PAGE_ACCESS_TOKEN"];
   if (!pageId || !token) return { posted: false, reason: "not configured" };
   const featured = ["EG", "SA", "AE", "KW", "MY", "US"];
   const { data } = await db.from("nisab_history")
