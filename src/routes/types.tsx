@@ -18,6 +18,8 @@ export const Route = createFileRoute("/types")({
         property: "og:description",
         content: "جداول أنصبة الإبل والبقر والغنم، ونصاب الزروع، ومقدار زكاة الفطر.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Types,
