@@ -5,6 +5,10 @@ import { useI18n } from "@/lib/i18n";
 import { usePrices } from "@/lib/use-prices";
 import { scopeKey } from "@/lib/cities";
 import { useLocalQuote } from "@/lib/local-quotes";
+import { manualMetals, nisabTotals, resolveGram, valuationQuote, type PriceOrigin, type PricePreference } from "@/lib/nisab-valuation";
+import { useSilverStandard } from "@/lib/use-silver-standard";
+export { resolveGram } from "@/lib/nisab-valuation";
+export type { PriceOrigin, PricePreference } from "@/lib/nisab-valuation";
 
 const LQ = {
   ar: {
@@ -69,9 +73,6 @@ import {
   silverNisabValue,
 } from "@/lib/nisab";
 
-export type PriceOrigin = "manual" | "local" | "global";
-export type PricePreference = "local" | "global";
-
 const PS = {
   ar: { local: "سعر صاغة محلي", global: "سعر عالمي محوَّل", manual: "سعر أدخلته بنفسك", gold: "الذهب", silver: "الفضة", toggleLocal: "سعر السوق المحلي", toggleGlobal: "السعر العالمي" },
   en: { local: "Local jeweller price", global: "Converted global price", manual: "Your own price", gold: "Gold", silver: "Silver", toggleLocal: "Local market price", toggleGlobal: "Global price" },
@@ -88,22 +89,13 @@ export function priceStrings(lang: string) {
  * Resolves the gram price per metal. Precedence:
  * visitor's own device override > approved local quote > global spot.
  */
-export function resolveGram(
-  spot: number,
-  manual: boolean,
-  local: number | null | undefined,
-  prefer: PricePreference = "local",
-): { gram: number; origin: PriceOrigin } {
-  if (manual) return { gram: spot, origin: "manual" };
-  if (prefer === "local" && local != null && local > 0) return { gram: local, origin: "local" };
-  return { gram: spot, origin: "global" };
-}
-
 /** Live prices resolved into the current country's currency (and city, if set). */
 export function useNisab(prefer: PricePreference = "local") {
   const { currency, lang, country, city } = useI18n();
   const { data: base, overrides, isLoading, isError, refetch } = usePrices();
-  const { data: quote } = useLocalQuote(country, currency);
+  const localQuery = useLocalQuote(country, currency);
+  const quote = localQuery.data;
+  const { weight: silverWeight } = useSilverStandard();
 
   const scope =
     overrides?.scopes?.[scopeKey(country, city)] ?? overrides?.scopes?.[scopeKey(country, "")];
@@ -131,27 +123,16 @@ export function useNisab(prefer: PricePreference = "local") {
 
   const resolved = useMemo(() => {
     if (!data || !ready) return null;
-    const manual = Boolean(data.manual);
-    const g = resolveGram(perGram(data.goldUsdOz, r), manual, quote?.goldGram, prefer);
-    const s = resolveGram(perGram(data.silverUsdOz, r), manual, quote?.silverGram, prefer);
+    const manual = manualMetals(overrides, scope, currency);
+    const g = resolveGram(perGram(data.goldUsdOz, r), manual.gold, valuationQuote(quote?.buybackGram, quote?.goldGram), prefer);
+    const s = resolveGram(perGram(data.silverUsdOz, r), manual.silver, valuationQuote(quote?.silverBuybackGram, quote?.silverGram), prefer);
     return { g, s };
-  }, [data, r, ready, quote, prefer]);
+  }, [data, r, ready, quote, prefer, overrides, scope, currency]);
 
   const values = useMemo(() => {
     if (!resolved) return null;
-    const goldGram = resolved.g.gram;
-    const silverGram = resolved.s.gram;
-    const gold = goldGram * GOLD_NISAB_G;
-    const silver = silverGram * SILVER_NISAB_G;
-    return {
-      goldGram,
-      silverGram,
-      gold,
-      silver,
-      lower: Math.min(gold, silver),
-      ratio: goldGram / silverGram,
-    };
-  }, [resolved]);
+    return nisabTotals(resolved.g.gram, resolved.s.gram, silverWeight);
+  }, [resolved, silverWeight]);
 
   const priceSource = resolved
     ? {
@@ -167,6 +148,11 @@ export function useNisab(prefer: PricePreference = "local") {
     market: base,
     values,
     priceSource,
+    quote,
+    silverWeight,
+    localFetching: localQuery.isFetching,
+    localError: localQuery.isError,
+    localCheckedAt: localQuery.dataUpdatedAt ? new Date(localQuery.dataUpdatedAt).toISOString() : undefined,
     money,
     rate: r,
     isLoading,
@@ -221,12 +207,12 @@ export function StateNote({
     return (
       <div className="card-surface p-6 text-sm">
         <p className="text-foreground">{t("common.error")}</p>
-        <button
+        <Button
           onClick={() => refetch()}
-          className="mt-3 rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground"
+          className="mt-3"
         >
           {t("common.retry")}
-        </button>
+        </Button>
       </div>
     );
   return null;
