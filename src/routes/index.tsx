@@ -1,7 +1,7 @@
 import { ShareDailyNisab } from "@/components/site/ShareDailyNisab";
 import { InvitationCard } from "@/components/site/InvitationCard";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Calculator, ChartNoAxesCombined, Coins, Gem, ShieldCheck, Clock3, MapPin } from "lucide-react";
+import { Calculator, ChartNoAxesCombined, Coins, Gem, ShieldCheck, Clock3 } from "lucide-react";
 
 import { CityPicker, CountryPicker } from "@/components/site/Shell";
 import {
