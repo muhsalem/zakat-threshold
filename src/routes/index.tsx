@@ -1,7 +1,7 @@
 import { ShareDailyNisab } from "@/components/site/ShareDailyNisab";
 import { InvitationCard } from "@/components/site/InvitationCard";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Calculator, ChartNoAxesCombined } from "lucide-react";
+import { Calculator, ChartNoAxesCombined, Coins, Gem, ShieldCheck, Clock3, MapPin } from "lucide-react";
 
 import { CityPicker, CountryPicker } from "@/components/site/Shell";
 import {
@@ -48,22 +48,28 @@ function Home() {
   const { values, money, isLoading, isError, refetch, currency } = useNisab();
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
+    <div className="nisab-home mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
       <ManualNotice />
       <NisabAlert value={values?.lower} />
 
-      <section className="rise">
-        <p className="eyebrow text-muted-foreground">{t("hero.eyebrow")}</p>
-        <h1 className="mt-2 max-w-3xl text-3xl leading-tight text-foreground sm:text-5xl">
+      <section className="rise home-intro">
+        <p className="home-eyebrow flex items-center gap-3 text-sm font-medium text-primary"><span className="h-px w-8 bg-accent" aria-hidden="true" />{t("hero.eyebrow")}</p>
+        <h1 className="home-title mt-4 max-w-4xl text-3xl font-semibold text-foreground sm:text-5xl">
           {t("hero.title")}
         </h1>
-        <p className="mt-3 max-w-2xl text-muted-foreground">{t("hero.sub")}</p>
-        <div className="mt-5 flex flex-wrap items-center gap-3">
-          <CountryPicker />
-          <CityPicker />
+        <p className="mt-4 max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg">{t("hero.sub")}</p>
+        <div className="home-controls mt-7 grid max-w-2xl gap-4 sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+          <div className="min-w-0"><CountryPicker /></div>
+          <div className="min-w-0"><CityPicker /></div>
         </div>
-        <AsOf className="mt-3" />
-        <Disclaimer className="mt-2 max-w-2xl" />
+        <div className="mt-6 grid grid-cols-[auto_minmax(0,1fr)] items-start gap-2.5 border-t border-border pt-4">
+          <Clock3 className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
+          <AsOf className="home-update min-w-0" />
+        </div>
+        <div className="mt-3 grid max-w-3xl grid-cols-[auto_minmax(0,1fr)] items-start gap-2.5">
+          <ShieldCheck className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+          <Disclaimer className="leading-6" />
+        </div>
       </section>
 
       {(isLoading || isError) && (
@@ -74,7 +80,7 @@ function Home() {
 
       {values && (
         <>
-          <section className="mt-8 grid gap-4 md:grid-cols-2">
+          <section className="mt-7 grid gap-4 md:grid-cols-2">
             {[
               {
                 label: t("nisab.gold"),
@@ -83,6 +89,8 @@ function Home() {
                 total: values.gold,
                 gram: values.goldGram,
                 lower: values.gold <= values.silver,
+                 kind: "gold",
+                 Icon: Coins,
               },
               {
                 label: t("nisab.silver"),
@@ -91,24 +99,29 @@ function Home() {
                 total: values.silver,
                 gram: values.silverGram,
                 lower: values.silver < values.gold,
+                 kind: "silver",
+                 Icon: Gem,
               },
             ].map((c) => (
-              <article key={c.label} className="card-surface rise p-6 sm:p-8">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="eyebrow text-muted-foreground">{c.label}</p>
+              <article key={c.label} className={`nisab-summary nisab-summary-${c.kind} rise min-w-0 rounded-lg border border-border p-5 sm:p-7`}>
+                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <span className="metal-symbol grid size-11 shrink-0 place-items-center rounded-lg"><c.Icon className="size-5" aria-hidden="true" /></span>
+                    <div className="min-w-0">
+                    <h2 className="text-lg font-semibold text-foreground">{c.label}</h2>
                     <p className="mt-1 text-sm text-muted-foreground">
                       <span className="num">{c.grams}</span> {t("grams")} · {c.metal}
                     </p>
+                    </div>
                   </div>
                   {c.lower && (
-                    <span className="rounded-full bg-accent/25 px-3 py-1 text-xs text-foreground">
+                    <span className="max-w-28 rounded-md border border-border bg-card/70 px-2 py-1 text-center text-xs leading-5 text-primary">
                       {t("home.lower")}
                     </span>
                   )}
                 </div>
-                <p className="num mt-6 text-3xl text-foreground sm:text-4xl">{money(c.total)}</p>
-                <p className="mt-2 text-sm text-muted-foreground">
+                <p className="num nisab-total mt-6 text-3xl font-medium text-foreground sm:text-4xl">{money(c.total)}</p>
+                <p className="mt-5 border-t border-border pt-3 text-sm text-muted-foreground">
                   {t("perGram")}: <span className="num">{money(c.gram)}</span>
                 </p>
               </article>
