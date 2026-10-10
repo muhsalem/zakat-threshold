@@ -255,27 +255,27 @@
   --summary-shadow: 0 4px 18px color-mix(in oklch, var(--foreground) 4%, transparent);
 }
 
-.home-title { line-height: 1.5; text-wrap: balance; letter-spacing: 0; }
-.home-controls label { display: grid; gap: 8px; min-width: 0; }
-.home-controls label > span { font-size: 13px; font-weight: 500; }
-.home-controls select {
+.nisab-home .home-title { line-height: 1.5; text-wrap: balance; letter-spacing: 0; }
+.nisab-home .home-controls label { display: grid; gap: 8px; min-width: 0; }
+.nisab-home .home-controls label > span { font-size: 13px; font-weight: 500; }
+.nisab-home .home-controls select {
   width: 100%; min-width: 0; height: 52px; padding-inline: 14px 32px;
   font-size: 15px; border-radius: 8px; transition: border-color 180ms ease, box-shadow 180ms ease;
 }
-.home-controls select:hover { border-color: var(--primary); }
-.home-update p { line-height: 1.9; overflow-wrap: anywhere; }
-.home-update [data-testid="price-source"] { color: var(--primary); }
-.nisab-summary { box-shadow: var(--summary-shadow); border-top-width: 3px; }
-.nisab-summary-gold { background: var(--summary-gold); border-top-color: var(--gold); }
-.nisab-summary-silver { background: var(--summary-silver); border-top-color: var(--muted-foreground); }
-.nisab-summary-gold .metal-symbol { background: var(--symbol-gold); color: var(--accent-foreground); }
-.nisab-summary-silver .metal-symbol { background: var(--symbol-silver); color: var(--primary); }
-.nisab-total { overflow-wrap: anywhere; line-height: 1.4; }
+.nisab-home .home-controls select:hover { border-color: var(--primary); }
+.nisab-home .home-update p { line-height: 1.9; overflow-wrap: anywhere; }
+.nisab-home .home-update [data-testid="price-source"] { color: var(--primary); }
+.nisab-home .nisab-summary { box-shadow: var(--summary-shadow); border-top-width: 3px; }
+.nisab-home .nisab-summary-gold { background: var(--summary-gold); border-top-color: var(--gold); }
+.nisab-home .nisab-summary-silver { background: var(--summary-silver); border-top-color: var(--muted-foreground); }
+.nisab-home .nisab-summary-gold .metal-symbol { background: var(--symbol-gold); color: var(--accent-foreground); }
+.nisab-home .nisab-summary-silver .metal-symbol { background: var(--symbol-silver); color: var(--primary); }
+.nisab-home .nisab-total { overflow-wrap: anywhere; line-height: 1.4; }
 @media (max-width: 639px) {
-  .home-title { font-size: 30px; line-height: 1.6; }
-  .nisab-total { font-size: 28px; }
+  .nisab-home .home-title { font-size: 30px; line-height: 1.6; }
+  .nisab-home .nisab-total { font-size: 28px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .rise { animation: none; }
-  .home-controls select { transition: none; }
+  .nisab-home .home-controls select { transition: none; }
 }
