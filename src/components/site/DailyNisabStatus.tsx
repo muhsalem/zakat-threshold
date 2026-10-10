@@ -21,8 +21,8 @@ export function useDailyNisab() {
   useEffect(() => {
     const tick = () => setNow(new Date());
     tick();
-    const timer = window.setInterval(tick, 1000);
-    return () => window.clearInterval(timer);
+    const timer = globalThis.setInterval(tick, 1000);
+    return () => globalThis.clearInterval(timer);
   }, []);
   const window = now ? dailyWindow(now) : null;
   const day = window?.today;
