@@ -58,7 +58,7 @@ export function useDailyNisab() {
 }
 
 export function DailyNisabStatus({ daily, at, fetchedAt, manual, fetching }: {
-  daily: ReturnType<typeof useDailyNisab>; at?: string; fetchedAt?: string; manual: boolean; fetching: boolean;
+  daily: ReturnType<typeof useDailyNisab>; at: string | undefined; fetchedAt: string | undefined; manual: boolean; fetching: boolean;
 }) {
   const { lang } = useI18n();
   const s = TEXT[lang as keyof typeof TEXT] ?? TEXT.en;
