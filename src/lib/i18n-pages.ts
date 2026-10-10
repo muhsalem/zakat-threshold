@@ -700,6 +700,42 @@ const EXTRA3: Record<string, Record<string, string>> = {
     "trust.disclaimer": "These figures are indicative for nisab calculation, not a fatwa; ask a trusted scholar for rulings.",
     "trust.asof": "Data as of",
   },
+  fr: {
+    "nav.group.live": "Données en direct",
+    "nav.group.tools": "Outils",
+    "nav.group.reference": "Référence du fiqh",
+    "nav.group.about": "À propos",
+    "nav.group.admin": "Administration",
+    "nav.menu": "Menu",
+    "nav.more": "Plus",
+  },
+  tr: {
+    "nav.group.live": "Canlı veriler",
+    "nav.group.tools": "Araçlar",
+    "nav.group.reference": "Fıkıh kaynağı",
+    "nav.group.about": "Hakkında",
+    "nav.group.admin": "Yönetim",
+    "nav.menu": "Menü",
+    "nav.more": "Daha fazla",
+  },
+  id: {
+    "nav.group.live": "Data langsung",
+    "nav.group.tools": "Alat",
+    "nav.group.reference": "Rujukan fikih",
+    "nav.group.about": "Tentang",
+    "nav.group.admin": "Administrasi",
+    "nav.menu": "Menu",
+    "nav.more": "Lainnya",
+  },
+  ur: {
+    "nav.group.live": "لائیو ڈیٹا",
+    "nav.group.tools": "آلات",
+    "nav.group.reference": "فقہی حوالہ",
+    "nav.group.about": "تعارف",
+    "nav.group.admin": "انتظام",
+    "nav.menu": "فہرست",
+    "nav.more": "مزید",
+  },
 };
 
 for (const [lang, dict] of Object.entries(EXTRA3)) {
