@@ -5,6 +5,7 @@ import { Page } from "@/components/site/Page";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
 import { GOLD_NISAB_G, SILVER_NISAB_G, TROY_OUNCE_G } from "@/lib/nisab";
+import { homeCopy } from "@/lib/home-copy";
 
 export const Route = createFileRoute("/methodology")({
   head: () => ({
@@ -21,7 +22,8 @@ export const Route = createFileRoute("/methodology")({
 });
 
 function MethodologyPage() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
+  const s = homeCopy(lang);
   const sections = [
     { n: "01", icon: BookOpen, title: t("method.fiqh.title"), body: t("method.fiqh.body") },
     { n: "02", icon: Database, title: t("method.data.title"), body: t("method.data.body") },
@@ -49,7 +51,7 @@ function MethodologyPage() {
         <article className="card-surface p-6"><p className="eyebrow text-muted-foreground">SILVER</p><h2 className="mt-3 text-2xl text-foreground">{SILVER_NISAB_G}g</h2><p className="num mt-4 rounded-md bg-secondary p-4 text-sm text-secondary-foreground">(USD/oz ÷ {TROY_OUNCE_G}) × FX × {SILVER_NISAB_G}</p><p className="mt-4 text-sm leading-7 text-muted-foreground">{t("method.silverNote")}</p></article>
       </section>
 
-      <section className="mt-10 border-s-2 border-accent bg-card p-6"><h2 className="text-xl text-foreground">{t("method.difference.title")}</h2><p className="mt-3 max-w-4xl leading-8 text-muted-foreground">{t("method.difference.body")}</p></section>
+      <section className="mt-10 border-s-2 border-accent bg-card p-6"><h2 className="text-xl text-foreground">{t("method.difference.title")}</h2><p className="mt-3 max-w-4xl leading-8 text-muted-foreground">{t("method.difference.body")}</p><p className="mt-3 leading-8 text-muted-foreground">595g / 612.36g · {s.note}</p><p className="mt-3 leading-8 text-muted-foreground">{s.basis}</p></section>
       <div className="mt-8 flex flex-wrap gap-3"><Button asChild><Link to="/today">{t("nav.today")}</Link></Button><Button asChild variant="outline"><Link to="/fiqh">{t("nav.fiqh")}</Link></Button></div>
     </Page>
   );

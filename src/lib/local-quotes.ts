@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { PRICE_REFRESH_MS } from "./daily-nisab";
@@ -21,7 +22,9 @@ function median(values: number[]): number | null {
   if (!values.length) return null;
   const s = [...values].sort((a, b) => a - b);
   const m = Math.floor(s.length / 2);
-  return s.length % 2 ? s[m]! : (s[m - 1]! + s[m]!) / 2;
+  const middle = s[m];
+  if (middle == null) return null;
+  return s.length % 2 ? middle : ((s[m - 1] ?? middle) + middle) / 2;
 }
 
 /**
@@ -29,6 +32,15 @@ function median(values: number[]): number | null {
  * or null when no current local quote exists.
  */
 export function useLocalQuote(country: string, currency: string) {
+  const client = useQueryClient();
+  useEffect(() => {
+    const refresh = () => { void client.invalidateQueries({ queryKey: ["local-quote", country, currency] }); };
+    const channel = supabase.channel(`nisab-quotes-${country}-${currency}-${crypto.randomUUID()}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "jeweler_feed", filter: `country=eq.${country}` }, refresh)
+      .subscribe();
+    window.addEventListener("online", refresh);
+    return () => { void supabase.removeChannel(channel); window.removeEventListener("online", refresh); };
+  }, [client, country, currency]);
   return useQuery<LocalQuote | null>({
     queryKey: ["local-quote", country, currency],
     enabled: Boolean(country && currency),
@@ -37,7 +49,7 @@ export function useLocalQuote(country: string, currency: string) {
     refetchOnWindowFocus: true,
     queryFn: async () => {
       const since = new Date(Date.now() - LOCAL_QUOTE_MAX_AGE_MS).toISOString();
-      const { data: feed } = await supabase
+      const { data: feed, error: feedError } = await supabase
         .from("jeweler_feed")
         .select("gold_gram, silver_gram, buyback_gram, silver_buyback_gram, source, fetched_at")
         .eq("country", country)
@@ -67,10 +79,13 @@ export function useLocalQuote(country: string, currency: string) {
         .gte("created_at", since)
         .order("created_at", { ascending: false })
         .limit(20);
-      if (error || !data?.length) return null;
+      if (error) throw error;
+      if (feedError) throw feedError;
+      if (!data?.length) return null;
       const nums = (k: "gold_gram" | "silver_gram" | "buyback_gram") =>
         data.map((r) => r[k]).filter((v): v is number => typeof v === "number" && v > 0);
-      const latest = data[0]!;
+      const latest = data[0];
+      if (!latest) return null;
       return {
         goldGram: median(nums("gold_gram")),
         silverGram: median(nums("silver_gram")),

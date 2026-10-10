@@ -92,7 +92,7 @@ export function DailyComparison({ current, metal, money, daily }: {
     <p className="text-muted-foreground">{s.previous} · {daily.window?.yesterday ?? "—"}</p>
     {change ? <>
       <p className="mt-2 flex flex-wrap items-center gap-2 font-medium text-foreground"><Icon className="size-4 text-primary" aria-hidden="true" /><span className="num">{change.percent > 0 ? "+" : ""}{change.percent.toFixed(2)}%</span><span className="text-muted-foreground">{change.difference === 0 ? s.unchanged : money(change.difference)}</span></p>
-      <p className="mt-1 text-muted-foreground">{s.previousValue}: <span className="num">{money(previous ?? 0)}</span></p>
+      <p className="mt-1 text-muted-foreground">{s.previousValue}: <span className="num">{money(previous ?? 0)}</span> · {record?.source}</p>
     </> : <p className="mt-2 text-muted-foreground">{daily.previous.isFetching ? s.checking : daily.previous.isError ? s.error : s.missing}</p>}
   </div>;
 }

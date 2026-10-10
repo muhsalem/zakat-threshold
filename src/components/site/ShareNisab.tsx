@@ -1,30 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Share2, Copy, Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-type Props = { countryName: string; goldText: string; silverText: string; url: string };
+type Props = { countryName: string; goldText: string; silverText: string; url: string; silverWeight?: number };
 
-export function ShareNisab({ countryName, goldText, silverText, url }: Props) {
+export function ShareNisab({ countryName, goldText, silverText, url, silverWeight = 595 }: Props) {
   const [copied, setCopied] = useState(false);
-  const date = new Date().toLocaleDateString("ar-EG", { day: "numeric", month: "long", year: "numeric" });
-  const text = `نصاب الزكاة في ${countryName} اليوم (${date}):\n• الذهب ٨٥غ عيار ٢٤: ${goldText}\n• الفضة ٥٩٥غ: ${silverText}\nأرقام استرشادية وليست فتوى — نِصاب`;
+  const [date, setDate] = useState("—");
+  const [shareUrl, setShareUrl] = useState("");
+  useEffect(() => {
+    setDate(new Date().toISOString().slice(0, 10));
+    setShareUrl(new URL(url, window.location.origin).href);
+  }, [url]);
+  const text = `نصاب الزكاة في ${countryName} (${date} UTC):\n• الذهب ٨٥غ عيار ٢٤: ${goldText}\n• الفضة ${silverWeight}غ: ${silverText}\nأرقام استرشادية وليست إعلانًا رسميًا أو فتوى — نِصاب`;
   const enc = encodeURIComponent;
   const links = [
-    { name: "واتساب", href: `https://wa.me/?text=${enc(`${text}\n${url}`)}` },
-    { name: "X", href: `https://twitter.com/intent/tweet?text=${enc(text)}&url=${enc(url)}` },
-    { name: "فيسبوك", href: `https://www.facebook.com/sharer/sharer.php?u=${enc(url)}&quote=${enc(text)}` },
-    { name: "تيليجرام", href: `https://t.me/share/url?url=${enc(url)}&text=${enc(text)}` },
-    { name: "لينكدإن", href: `https://www.linkedin.com/sharing/share-offsite/?url=${enc(url)}` },
+    { name: "واتساب", href: `https://wa.me/?text=${enc(`${text}\n${shareUrl}`)}` },
+    { name: "X", href: `https://twitter.com/intent/tweet?text=${enc(text)}&url=${enc(shareUrl)}` },
+    { name: "فيسبوك", href: `https://www.facebook.com/sharer/sharer.php?u=${enc(shareUrl)}&quote=${enc(text)}` },
+    { name: "تيليجرام", href: `https://t.me/share/url?url=${enc(shareUrl)}&text=${enc(text)}` },
+    { name: "لينكدإن", href: `https://www.linkedin.com/sharing/share-offsite/?url=${enc(shareUrl)}` },
   ];
 
   const copy = async () => {
-    await navigator.clipboard.writeText(`${text}\n${url}`);
+    await navigator.clipboard.writeText(`${text}\n${shareUrl}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
   const native = async () => {
-    if (navigator.share) await navigator.share({ title: `نصاب الزكاة في ${countryName}`, text, url }).catch(() => {});
+    if (navigator.share) await navigator.share({ title: `نصاب الزكاة في ${countryName}`, text, url: shareUrl }).catch(() => {});
     else await copy();
   };
 
