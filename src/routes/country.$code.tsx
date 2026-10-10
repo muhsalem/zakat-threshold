@@ -7,6 +7,8 @@ import { usePrices } from "@/lib/use-prices";
 import { StateNote, Disclaimer, LocalMarket, SourceQuality, PriceSourceLine, resolveGram } from "@/components/site/Prices";
 import { useLocalQuote } from "@/lib/local-quotes";
 import { scopeKey } from "@/lib/cities";
+import { manualMetals, valuationQuote } from "@/lib/nisab-valuation";
+import { useSilverStandard } from "@/lib/use-silver-standard";
 import { OfficialNisab } from "@/components/site/OfficialNisab";
 import { ShareNisab } from "@/components/site/ShareNisab";
 import {
@@ -51,21 +53,23 @@ function CountryPage() {
   const { t, lang, setCountry } = useI18n();
   const { data, overrides, isLoading, isError, refetch } = usePrices();
   const { data: quote } = useLocalQuote(country.code, country.currency);
+  const { weight: silverWeight } = useSilverStandard();
 
-  const rate = data?.rates?.[country.currency];
+  const scope = overrides.scopes?.[scopeKey(country.code, "")];
+  const rate = scope?.rate ?? data?.rates?.[country.currency];
   const ready = Boolean(data && Number.isFinite(rate));
   const r = rate ?? 1;
   const money = (v: number) => formatMoney(v, country.currency, lang);
 
-  const manual = Boolean(data?.manual || overrides?.scopes?.[scopeKey(country.code, "")]);
-  const spotGold = data ? perGram(data.goldUsdOz, r) : 0;
-  const spotSilver = data ? perGram(data.silverUsdOz, r) : 0;
-  const g = resolveGram(spotGold, manual, quote?.goldGram);
-  const s = resolveGram(spotSilver, manual, quote?.silverGram);
+  const manual = manualMetals(overrides, scope, country.currency);
+  const spotGold = data ? perGram(scope?.goldUsdOz ?? data.goldUsdOz, r) : 0;
+  const spotSilver = data ? perGram(scope?.silverUsdOz ?? data.silverUsdOz, r) : 0;
+  const g = resolveGram(spotGold, manual.gold, valuationQuote(quote?.buybackGram, quote?.goldGram));
+  const s = resolveGram(spotSilver, manual.silver, valuationQuote(quote?.silverBuybackGram, quote?.silverGram));
   const goldGram = g.gram;
   const silverGram = s.gram;
   const gold = goldGram * GOLD_NISAB_G;
-  const silver = silverGram * SILVER_NISAB_G;
+  const silver = silverGram * silverWeight;
   const priceSource = data
     ? { gold: g.origin, silver: s.origin, name: quote?.source ?? "", at: quote?.at ?? "" }
     : null;
@@ -121,7 +125,7 @@ function CountryPage() {
               {
                 label: t("nisab.silver"),
                 metal: t("silver"),
-                grams: SILVER_NISAB_G,
+                grams: silverWeight,
                 total: silver,
                 gram: silverGram,
                 oz: data.silverUsdOz,
@@ -151,8 +155,7 @@ function CountryPage() {
                     {t("country.how")}
                   </summary>
                   <p className="num mt-2 text-muted-foreground">
-                    ({formatNumber(c.oz, 2)} USD/oz ÷ {formatNumber(TROY_OUNCE_G, 4)}) ×{" "}
-                    {formatNumber(r, 4)} {country.currency} × {c.grams} g ={" "}
+                    {money(c.gram)} / g × {c.grams} g ={" "}
                     {money(c.total)}
                   </p>
                 </details>
@@ -164,7 +167,7 @@ function CountryPage() {
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <p className="text-sm text-muted-foreground">{t("ratio.label")}</p>
               <p className="num text-xl text-foreground">
-                {formatNumber(data.goldUsdOz / data.silverUsdOz, 1)}
+                {formatNumber(goldGram / silverGram, 1)}
               </p>
             </div>
             <p className="mt-2 text-sm text-muted-foreground">{t("ratio.note")}</p>
@@ -206,7 +209,7 @@ function CountryPage() {
             countryName={country.ar}
             goldText={money(gold)}
             silverText={money(silver)}
-            url={`https://nissab-rates.lovable.app/country/${country.code.toLowerCase()}`}
+            url={`/country/${country.code.toLowerCase()}`}
           />
         </>
       )}

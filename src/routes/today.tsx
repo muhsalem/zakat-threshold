@@ -27,7 +27,7 @@ function TodayPage() {
   const { t, currency, lang } = useI18n();
   const [prefer, setPrefer] = useState<PricePreference>("local");
   const ps = priceStrings(lang);
-  const { values, data, rate, money, isLoading, isError, refetch } = useNisab(prefer);
+  const { values, data, rate, money, isLoading, isError, refetch, silverWeight } = useNisab(prefer);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
@@ -39,7 +39,7 @@ function TodayPage() {
           <p className="mt-3 max-w-2xl text-muted-foreground">{t("today.sub")}</p>
           <div role="group" className="mt-4 inline-flex rounded-lg border border-border bg-card p-1 text-sm">
             {(["local", "global"] as const).map((p) => (
-              <button
+              <Button
                 key={p}
                 type="button"
                 aria-pressed={prefer === p}
@@ -47,7 +47,7 @@ function TodayPage() {
                 className={`rounded-md px-3 py-1.5 ${prefer === p ? "bg-primary text-primary-foreground" : "text-foreground hover:bg-muted"}`}
               >
                 {p === "local" ? ps.toggleLocal : ps.toggleGlobal}
-              </button>
+              </Button>
             ))}
           </div>
           <AsOf className="mt-4" prefer={prefer} />
@@ -65,7 +65,7 @@ function TodayPage() {
           <section className="mt-8 grid overflow-hidden rounded-lg border border-border bg-card lg:grid-cols-2">
             {[
               { key: "gold", title: t("nisab.gold"), grams: GOLD_NISAB_G, gram: values.goldGram, total: values.gold, oz: data.goldUsdOz },
-              { key: "silver", title: t("nisab.silver"), grams: SILVER_NISAB_G, gram: values.silverGram, total: values.silver, oz: data.silverUsdOz },
+              { key: "silver", title: t("nisab.silver"), grams: silverWeight, gram: values.silverGram, total: values.silver, oz: data.silverUsdOz },
             ].map((item, index) => (
               <article key={item.key} className={`p-6 sm:p-8 ${index === 1 ? "border-t border-border lg:border-s lg:border-t-0" : ""}`}>
                 <div className="flex items-center justify-between gap-4">
@@ -79,7 +79,7 @@ function TodayPage() {
                 </div>
                 <details className="mt-5 border-t border-border pt-4 text-sm">
                   <summary className="cursor-pointer font-medium text-foreground">{t("country.how")}</summary>
-                  <p className="num mt-3 leading-7 text-muted-foreground">({formatNumber(item.oz, 2)} USD/oz ÷ {formatNumber(TROY_OUNCE_G, 4)}) × {formatNumber(rate, 4)} {currency} × {item.grams}g = {money(item.total)}</p>
+                  <p className="num mt-3 leading-7 text-muted-foreground">{money(item.gram)} / g × {item.grams}g = {money(item.total)}</p>
                 </details>
               </article>
             ))}

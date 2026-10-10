@@ -8,7 +8,7 @@ import type { NisabValues } from "@/lib/share-nisab";
 import { nisabShareMessage, nisabSharePath } from "@/lib/share-nisab";
 export type { NisabValues } from "@/lib/share-nisab";
 
-type Props = { values: NisabValues; money: (n: number) => string; silverWeight?: number; day?: string; sources?: string };
+type Props = { values: NisabValues; money: (n: number) => string; silverWeight?: number; day?: string | undefined; sources?: string };
 export function ShareDailyNisab({ values, money, silverWeight = 595, day, sources = "" }: Props) {
   const { country, lang, t } = useI18n();
   const s = homeCopy(lang);
