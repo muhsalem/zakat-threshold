@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { getLivePrices, type LivePrices } from "./prices.functions";
 import { readOverrides, type Overrides } from "./overrides";
+import { PRICE_REFRESH_MS } from "./daily-nisab";
 
 export const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -13,8 +14,8 @@ export function usePrices() {
   const query = useQuery<LivePrices>({
     queryKey: ["live-prices"],
     queryFn: () => fetchPrices({}),
-    staleTime: 60 * 60 * 1000,
-    refetchInterval: DAY_MS,
+    staleTime: PRICE_REFRESH_MS,
+    refetchInterval: PRICE_REFRESH_MS,
     refetchOnWindowFocus: true,
     retry: 1,
   });

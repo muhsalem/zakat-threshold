@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { annualSince } from "./long-history";
+import { PRICE_REFRESH_MS, HISTORY_CACHE_MS } from "./daily-nisab";
 
 /** How trustworthy a figure on screen is right now. */
 export type Quality = "live" | "delayed" | "stale";
@@ -31,8 +32,8 @@ type Cache = { data: LivePrices; at: number } | null;
 let cache: Cache = null;
 /** Last successful payload, kept so an outage shows real stale data instead of nothing. */
 let lastGood: Cache = null;
-/** Prices refresh at most once an hour on the server; the client polls daily. */
-const TTL_MS = 60 * 60 * 1000;
+/** Price checks are minute-based; the historical series keeps its own hourly cache. */
+const TTL_MS = PRICE_REFRESH_MS;
 
 async function fetchJson(url: string) {
   const res = await fetch(url, { headers: { accept: "application/json" } });
@@ -164,7 +165,7 @@ export const getLivePrices = createServerFn({ method: "GET" }).handler(
           source: metals.value.label,
           url: metals.value.url,
           market: "International spot / futures (USD per troy ounce)",
-          frequency: metals.depth === 0 ? "Continuous, cached hourly" : "Daily close",
+          frequency: metals.depth === 0 ? "Checked every minute; source timestamps apply" : "Daily close",
           quality: metals.depth === 0 ? ageQuality(metals.value.updatedAt) : "delayed",
           fallbackDepth: metals.depth,
         },
@@ -298,7 +299,7 @@ export const getHistory = createServerFn({ method: "GET" })
 
     const cacheKey = `${data.range}:${data.currency}`;
     const hit = histCache.get(cacheKey);
-    if (hit && Date.now() - hit.at < TTL_MS) {
+    if (hit && Date.now() - hit.at < HISTORY_CACHE_MS) {
       return {
 
         points: hit.data,
