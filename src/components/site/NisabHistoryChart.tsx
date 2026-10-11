@@ -19,8 +19,8 @@ import { getHistory, type HistoryRange, type HistoryResponse } from "@/lib/price
 import { askHistory } from "@/lib/history-ask.functions";
 import { countryName, findCountry } from "@/lib/countries";
 
-const RANGES: HistoryRange[] = ["1mo", "6mo", "1y", "5y", "10y", "20y", "30y", "50y", "75y", "100y", "1000y"];
-const VIEWS = [
+export const RANGES: HistoryRange[] = ["1mo", "6mo", "1y", "5y", "10y", "20y", "30y", "50y", "75y", "100y", "1000y"];
+export const VIEWS = [
   { id: "ng", metal: "gold", grams: GOLD_NISAB_G, label: { ar: "نصاب الذهب (٨٥ جم)", en: "Gold nisab (85 g)" } },
   { id: "ns", metal: "silver", grams: SILVER_NISAB_G, label: { ar: "نصاب الفضة (٥٩٥ جم)", en: "Silver nisab (595 g)" } },
   { id: "g24", metal: "gold", grams: 1, label: { ar: "ذهب 24K / جم", en: "Gold 24K / g" } },
