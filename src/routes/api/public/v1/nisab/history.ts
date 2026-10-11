@@ -6,7 +6,7 @@ import { GOLD_NISAB_G, SILVER_NISAB_G, TROY_OUNCE_G } from "@/lib/nisab";
 import { getHistory, type HistoryRange } from "@/lib/prices.functions";
 import { CORS, json } from "@/lib/public-api.server";
 
-const RANGES = ["1mo", "6mo", "1y", "5y", "10y", "20y", "30y", "40y", "50y", "100y"] as const;
+const RANGES = ["1mo", "6mo", "1y", "5y", "10y", "20y", "30y", "40y", "50y", "75y", "100y", "1000y"] as const;
 const Query = z.object({
   country: z.string().regex(/^[A-Za-z]{2}$/),
   range: z.enum(RANGES).default("1y"),

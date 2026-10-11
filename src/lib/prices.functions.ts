@@ -206,7 +206,9 @@ export type HistoryRange =
   | "30y"
   | "40y"
   | "50y"
-  | "100y";
+  | "75y"
+  | "100y"
+  | "1000y";
 export type HistoryPoint = { t: number; gold: number; silver: number; rate: number };
 export type HistoryResponse = {
   points: HistoryPoint[];
@@ -223,7 +225,9 @@ export const LONG_RANGES: Record<string, number> = {
   "30y": 30,
   "40y": 40,
   "50y": 50,
+  "75y": 75,
   "100y": 100,
+  "1000y": 1000,
 };
 
 const histCache = new Map<string, { data: HistoryPoint[]; at: number }>();
@@ -252,7 +256,7 @@ async function yahooSeries(symbol: string, range: HistoryRange) {
 export const getHistory = createServerFn({ method: "GET" })
   .inputValidator((data: { range: HistoryRange; currency: string }) => {
     const allowed: HistoryRange[] = [
-      "1mo", "6mo", "1y", "5y", "10y", "1448", "20y", "30y", "40y", "50y", "100y",
+      "1mo", "6mo", "1y", "5y", "10y", "1448", "20y", "30y", "40y", "50y", "75y", "100y", "1000y",
     ];
     const range = allowed.includes(data?.range) ? data.range : "1y";
     const currency = /^[A-Z]{3}$/.test(data?.currency) ? data.currency : "USD";

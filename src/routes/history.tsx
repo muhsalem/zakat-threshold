@@ -58,7 +58,7 @@ export const Route = createFileRoute("/history")({
 });
 
 const RANGES: HistoryRange[] = [
-  "1mo", "6mo", "1y", "5y", "10y", "20y", "30y", "40y", "50y", "100y",
+  "1mo", "6mo", "1y", "5y", "10y", "20y", "30y", "40y", "50y", "75y", "100y", "1000y",
 ];
 
 const GOLD_VIEWS = [

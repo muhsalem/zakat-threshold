@@ -544,6 +544,8 @@ const EXTRA: Record<string, Record<string, string>> = {
     "history.range.40y": "٤٠ سنة",
     "history.range.50y": "٥٠ سنة",
     "history.range.100y": "١٠٠ سنة",
+    "history.range.75y": "٧٥ سنة",
+    "history.range.1000y": "١٠٠٠ سنة",
     "history.approx": "المدى الطويل يعتمد متوسطات سنوية للسعر، ويُحوَّل بسعر الصرف الحالي لبلدك.",
     "city.label": "المدينة",
     "city.all": "كل المدن",
@@ -572,6 +574,8 @@ const EXTRA: Record<string, Record<string, string>> = {
     "history.range.40y": "40 years",
     "history.range.50y": "50 years",
     "history.range.100y": "100 years",
+    "history.range.75y": "75 years",
+    "history.range.1000y": "1000 years",
     "history.approx": "Long ranges use annual average metal prices converted with today's exchange rate.",
     "city.label": "City",
     "city.all": "All cities",
@@ -592,6 +596,8 @@ const EXTRA: Record<string, Record<string, string>> = {
     "history.range.40y": "40 ans",
     "history.range.50y": "50 ans",
     "history.range.100y": "100 ans",
+    "history.range.75y": "75 ans",
+    "history.range.1000y": "1000 ans",
   },
   tr: {
     "nav.fiqh": "Fıkıh ansiklopedisi",
@@ -603,6 +609,8 @@ const EXTRA: Record<string, Record<string, string>> = {
     "history.range.40y": "40 yıl",
     "history.range.50y": "50 yıl",
     "history.range.100y": "100 yıl",
+    "history.range.75y": "75 yıl",
+    "history.range.1000y": "1000 yıl",
   },
   id: {
     "nav.fiqh": "Ensiklopedia fikih",
@@ -614,6 +622,8 @@ const EXTRA: Record<string, Record<string, string>> = {
     "history.range.40y": "40 tahun",
     "history.range.50y": "50 tahun",
     "history.range.100y": "100 tahun",
+    "history.range.75y": "75 tahun",
+    "history.range.1000y": "1000 tahun",
   },
   ur: {
     "nav.fiqh": "فقہی انسائیکلوپیڈیا",
@@ -625,6 +635,8 @@ const EXTRA: Record<string, Record<string, string>> = {
     "history.range.40y": "40 سال",
     "history.range.50y": "50 سال",
     "history.range.100y": "100 سال",
+    "history.range.75y": "75 سال",
+    "history.range.1000y": "1000 سال",
   },
 };
 
