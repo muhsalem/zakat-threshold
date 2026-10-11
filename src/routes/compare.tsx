@@ -14,6 +14,7 @@ import {
 
 import { Page } from "@/components/site/Page";
 import { StateNote, useNisab } from "@/components/site/Prices";
+import { CompareHistory } from "@/components/site/CompareHistory";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
 import { COUNTRIES, countryName, flagOf } from "@/lib/countries";
@@ -228,6 +229,7 @@ function Compare() {
           {t("compare.note")} · {GOLD_NISAB_G}g / {SILVER_NISAB_G}g
         </p>
       </section>
+      <CompareHistory picked={picked} />
     </Page>
   );
 }
