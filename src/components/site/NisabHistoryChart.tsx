@@ -3,7 +3,13 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
-import { Download } from "lucide-react";
+import { Download, Loader2 } from "lucide-react";
+import { aiErrorMessage } from "@/lib/ai-errors";
+
+const EXAMPLES = {
+  ar: ["كم تغيّر النصاب خلال هذه المدة؟", "متى كانت أعلى وأدنى قيمة؟", "هل الاتجاه صاعد أم هابط مؤخرًا؟", "ما متوسط التغيّر السنوي؟"],
+  en: ["How much did the nisab change in this period?", "When were the highest and lowest values?", "Is the recent trend up or down?", "What is the average yearly change?"],
+};
 import ReactMarkdown from "react-markdown";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,8 +19,8 @@ import { getHistory, type HistoryRange, type HistoryResponse } from "@/lib/price
 import { askHistory } from "@/lib/history-ask.functions";
 import { countryName, findCountry } from "@/lib/countries";
 
-const RANGES: HistoryRange[] = ["1mo", "6mo", "1y", "5y", "10y", "20y", "30y", "50y", "75y", "100y", "1000y"];
-const VIEWS = [
+export const RANGES: HistoryRange[] = ["1mo", "6mo", "1y", "5y", "10y", "20y", "30y", "50y", "75y", "100y", "1000y"];
+export const VIEWS = [
   { id: "ng", metal: "gold", grams: GOLD_NISAB_G, label: { ar: "نصاب الذهب (٨٥ جم)", en: "Gold nisab (85 g)" } },
   { id: "ns", metal: "silver", grams: SILVER_NISAB_G, label: { ar: "نصاب الفضة (٥٩٥ جم)", en: "Silver nisab (595 g)" } },
   { id: "g24", metal: "gold", grams: 1, label: { ar: "ذهب 24K / جم", en: "Gold 24K / g" } },
@@ -63,16 +69,20 @@ export function NisabHistoryChart({ money }: { money: (v: number) => string }) {
   const [answer, setAnswer] = useState<string | null>(null);
   const [askError, setAskError] = useState<string | null>(null);
   const [asking, setAsking] = useState(false);
-  const submitQuestion = async () => {
-    if (question.trim().length < 3 || series.length < 2 || asking) return;
+  const submitQuestion = async (preset?: string) => {
+    const q = (preset ?? question).trim();
+    if (preset) setQuestion(preset);
+    if (asking) return;
+    if (q.length < 3) { setAskError(aiErrorMessage("QUESTION_SHORT", ar)); return; }
+    if (series.length < 2) { setAskError(aiErrorMessage("NO_DATA", ar)); return; }
     setAsking(true); setAskError(null); setAnswer(null);
     const step = Math.max(1, Math.ceil(series.length / 150));
     const sampled = series.filter((_, i) => i % step === 0 || i === series.length - 1);
     try {
-      const res = await ask({ data: { question, country: cName, currency, range, view: view.label.en, lang, points: sampled.map((p) => ({ d: new Date(p.t).toISOString().slice(0, 10), v: p.value })) } });
+      const res = await ask({ data: { question: q, country: cName, currency, range, view: view.label.en, lang, points: sampled.map((p) => ({ d: new Date(p.t).toISOString().slice(0, 10), v: p.value })) } });
       setAnswer(res.text);
     } catch (e) {
-      setAskError(e instanceof Error ? e.message : String(e));
+      setAskError(aiErrorMessage(e, ar));
     } finally {
       setAsking(false);
     }
@@ -126,13 +136,30 @@ export function NisabHistoryChart({ money }: { money: (v: number) => string }) {
       <div className="mt-5 border-t border-border pt-4">
         <h3 className="text-sm font-semibold text-foreground">{ar ? "اسأل عن هذه البيانات" : "Ask about this data"}</h3>
         <p className="text-xs text-muted-foreground">{ar ? `الإجابة مبنية فقط على: ${viewLabel} · ${cName} · ${t(`history.range.${range}`)}` : `Answers use only: ${viewLabel} · ${cName} · ${t(`history.range.${range}`)}`}</p>
+        <div className="mt-2 flex flex-wrap gap-2">
+          {(ar ? EXAMPLES.ar : EXAMPLES.en).map((q) => (
+            <button key={q} type="button" disabled={asking} onClick={() => void submitQuestion(q)} className="rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-primary hover:text-foreground disabled:opacity-50">{q}</button>
+          ))}
+        </div>
         <form className="mt-2 flex flex-col gap-2 sm:flex-row" onSubmit={(e) => { e.preventDefault(); void submitQuestion(); }}>
-          <Textarea value={question} maxLength={500} rows={2} onChange={(e) => setQuestion(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void submitQuestion(); } }} placeholder={ar ? "مثال: كم تغيّر النصاب خلال هذه المدة؟ ومتى كان أعلى قيمة؟" : "e.g. How much did the nisab change, and when did it peak?"} className="flex-1" />
+          <Textarea value={question} maxLength={500} rows={2} disabled={asking} onChange={(e) => setQuestion(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void submitQuestion(); } }} placeholder={ar ? "مثال: كم تغيّر النصاب خلال هذه المدة؟ ومتى كان أعلى قيمة؟" : "e.g. How much did the nisab change, and when did it peak?"} className="flex-1" />
           <Button type="submit" disabled={asking || series.length < 2 || question.trim().length < 3}>
-            {asking ? (ar ? "جارٍ التحليل…" : "Analyzing…") : (ar ? "اسأل" : "Ask")}
+            {asking ? <><Loader2 className="h-4 w-4 animate-spin" />{ar ? "جارٍ التحليل…" : "Analyzing…"}</> : (ar ? "اسأل" : "Ask")}
           </Button>
         </form>
-        {askError && <p className="mt-2 text-sm text-negative">{askError}</p>}
+        {series.length < 2 && !isLoading && <p className="mt-2 text-xs text-muted-foreground">{ar ? "لا توجد بيانات معروضة لتحليلها في هذه المدة." : "No chart data to analyze for this period."}</p>}
+        {asking && (
+          <div className="mt-3 space-y-2" aria-live="polite">
+            <p className="text-xs text-muted-foreground">{ar ? "يحلّل النموذج البيانات المعروضة، قد يستغرق ذلك حتى 30 ثانية…" : "Analyzing the displayed data, this may take up to 30 seconds…"}</p>
+            <div className="h-3 w-3/4 animate-pulse rounded bg-muted" /><div className="h-3 w-1/2 animate-pulse rounded bg-muted" />
+          </div>
+        )}
+        {askError && (
+          <div role="alert" className="mt-3 flex flex-wrap items-center gap-3 rounded-md border border-negative/40 bg-negative/10 p-3 text-sm text-negative">
+            <span className="flex-1">{askError}</span>
+            <Button size="sm" variant="outline" onClick={() => void submitQuestion()}>{t("common.retry")}</Button>
+          </div>
+        )}
         {answer && <div className="prose prose-sm mt-3 max-w-none text-foreground"><ReactMarkdown>{answer}</ReactMarkdown></div>}
       </div>
     </section>
