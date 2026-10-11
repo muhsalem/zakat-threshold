@@ -3,10 +3,14 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
+import { Download } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { useI18n } from "@/lib/i18n";
 import { GOLD_NISAB_G, SILVER_NISAB_G, TROY_OUNCE_G } from "@/lib/nisab";
 import { getHistory, type HistoryRange, type HistoryResponse } from "@/lib/prices.functions";
+import { askHistory } from "@/lib/history-ask.functions";
 import { countryName, findCountry } from "@/lib/countries";
 
 const RANGES: HistoryRange[] = ["1mo", "6mo", "1y", "5y", "10y", "20y", "30y", "50y", "75y", "100y", "1000y"];
@@ -39,15 +43,54 @@ export function NisabHistoryChart({ money }: { money: (v: number) => string }) {
   );
   const change = series.length > 1 ? ((series[series.length - 1]!.value - series[0]!.value) / series[0]!.value) * 100 : null;
   const fmt = (v: number) => new Intl.DateTimeFormat(ar ? "en" : lang, { month: "short", year: "2-digit" }).format(new Date(v));
+  const cName = countryName(findCountry(country), lang);
+  const viewLabel = ar ? view.label.ar : view.label.en;
+
+  const downloadCsv = () => {
+    const rows = [["date", "country", "currency", "series", "range", "value"].join(",")];
+    for (const p of series) rows.push([new Date(p.t).toISOString().slice(0, 10), country, currency, `"${view.label.en}"`, range, p.value.toFixed(4)].join(","));
+    const blob = new Blob(["\uFEFF" + rows.join("\n")], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `nisab-${country}-${view.id}-${range}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const ask = useServerFn(askHistory);
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState<string | null>(null);
+  const [askError, setAskError] = useState<string | null>(null);
+  const [asking, setAsking] = useState(false);
+  const submitQuestion = async () => {
+    if (question.trim().length < 3 || series.length < 2 || asking) return;
+    setAsking(true); setAskError(null); setAnswer(null);
+    const step = Math.max(1, Math.ceil(series.length / 150));
+    const sampled = series.filter((_, i) => i % step === 0 || i === series.length - 1);
+    try {
+      const res = await ask({ data: { question, country: cName, currency, range, view: view.label.en, lang, points: sampled.map((p) => ({ d: new Date(p.t).toISOString().slice(0, 10), v: p.value })) } });
+      setAnswer(res.text);
+    } catch (e) {
+      setAskError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setAsking(false);
+    }
+  };
 
   return (
     <section className="mt-6 rounded-lg border border-border bg-card p-4 sm:p-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold text-foreground">{ar ? "تغيّر النصاب والأسعار تاريخيًا" : "Historical nisab & prices"}</h2>
-          <p className="text-xs text-muted-foreground">{countryName(findCountry(country), lang)} · {currency}{data?.approx ? ` · ${t("history.approx")}` : ""}</p>
+          <p className="text-xs text-muted-foreground">{cName} · {currency}{data?.approx ? ` · ${t("history.approx")}` : ""}</p>
         </div>
-        {change != null && <p className={`num text-sm ${change >= 0 ? "text-primary" : "text-negative"}`}>{change >= 0 ? "+" : ""}{change.toFixed(1)}%</p>}
+        <div className="flex items-center gap-3">
+          {change != null && <p className={`num text-sm ${change >= 0 ? "text-primary" : "text-negative"}`}>{change >= 0 ? "+" : ""}{change.toFixed(1)}%</p>}
+          <Button size="sm" variant="outline" disabled={series.length === 0} onClick={downloadCsv}>
+            <Download className="h-4 w-4" /> CSV
+          </Button>
+        </div>
       </div>
       <div className="mt-4 flex flex-wrap gap-2">
         <select aria-label={t("karat.purity")} value={viewId} onChange={(e) => setViewId(e.target.value as typeof viewId)} className="rounded-lg border border-input bg-background px-3 py-2 text-sm">
@@ -80,6 +123,18 @@ export function NisabHistoryChart({ money }: { money: (v: number) => string }) {
         )}
       </div>
       {data && <p className="mt-3 text-xs text-muted-foreground">{t("update.source")}: {data.metalsSource} · {data.ratesSource}</p>}
+      <div className="mt-5 border-t border-border pt-4">
+        <h3 className="text-sm font-semibold text-foreground">{ar ? "اسأل عن هذه البيانات" : "Ask about this data"}</h3>
+        <p className="text-xs text-muted-foreground">{ar ? `الإجابة مبنية فقط على: ${viewLabel} · ${cName} · ${t(`history.range.${range}`)}` : `Answers use only: ${viewLabel} · ${cName} · ${t(`history.range.${range}`)}`}</p>
+        <form className="mt-2 flex flex-col gap-2 sm:flex-row" onSubmit={(e) => { e.preventDefault(); void submitQuestion(); }}>
+          <Textarea value={question} maxLength={500} rows={2} onChange={(e) => setQuestion(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void submitQuestion(); } }} placeholder={ar ? "مثال: كم تغيّر النصاب خلال هذه المدة؟ ومتى كان أعلى قيمة؟" : "e.g. How much did the nisab change, and when did it peak?"} className="flex-1" />
+          <Button type="submit" disabled={asking || series.length < 2 || question.trim().length < 3}>
+            {asking ? (ar ? "جارٍ التحليل…" : "Analyzing…") : (ar ? "اسأل" : "Ask")}
+          </Button>
+        </form>
+        {askError && <p className="mt-2 text-sm text-negative">{askError}</p>}
+        {answer && <div className="prose prose-sm mt-3 max-w-none text-foreground"><ReactMarkdown>{answer}</ReactMarkdown></div>}
+      </div>
     </section>
   );
 }
