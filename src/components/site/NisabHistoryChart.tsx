@@ -9,7 +9,7 @@ import { GOLD_NISAB_G, SILVER_NISAB_G, TROY_OUNCE_G } from "@/lib/nisab";
 import { getHistory, type HistoryRange, type HistoryResponse } from "@/lib/prices.functions";
 import { countryName, findCountry } from "@/lib/countries";
 
-const RANGES: HistoryRange[] = ["1mo", "6mo", "1y", "5y", "10y"];
+const RANGES: HistoryRange[] = ["1mo", "6mo", "1y", "5y", "10y", "20y", "30y", "50y", "75y", "100y", "1000y"];
 const VIEWS = [
   { id: "ng", metal: "gold", grams: GOLD_NISAB_G, label: { ar: "نصاب الذهب (٨٥ جم)", en: "Gold nisab (85 g)" } },
   { id: "ns", metal: "silver", grams: SILVER_NISAB_G, label: { ar: "نصاب الفضة (٥٩٥ جم)", en: "Silver nisab (595 g)" } },
