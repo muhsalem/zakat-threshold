@@ -1,8 +1,16 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { DEFAULT_COUNTRY, findCountry } from "./countries";
 import { PAGE_STRINGS } from "./i18n-pages";
+import bn from "./locales/bn.json";
+import fa from "./locales/fa.json";
+import ms from "./locales/ms.json";
+import sw from "./locales/sw.json";
+import ha from "./locales/ha.json";
+import uz from "./locales/uz.json";
+import so from "./locales/so.json";
+import ps from "./locales/ps.json";
 
-export type Lang = "ar" | "en" | "fr" | "tr" | "id" | "ur";
+export type Lang = "ar" | "en" | "fr" | "tr" | "id" | "ur" | "bn" | "fa" | "ms" | "sw" | "ha" | "uz" | "so" | "ps";
 
 export const LANGS: { code: Lang; label: string; rtl: boolean }[] = [
   { code: "ar", label: "العربية", rtl: true },
@@ -11,6 +19,14 @@ export const LANGS: { code: Lang; label: string; rtl: boolean }[] = [
   { code: "tr", label: "Türkçe", rtl: false },
   { code: "id", label: "Indonesia", rtl: false },
   { code: "ur", label: "اردو", rtl: true },
+  { code: "bn", label: "বাংলা", rtl: false },
+  { code: "fa", label: "فارسی", rtl: true },
+  { code: "ms", label: "Bahasa Melayu", rtl: false },
+  { code: "sw", label: "Kiswahili", rtl: false },
+  { code: "ha", label: "Hausa", rtl: false },
+  { code: "uz", label: "Oʻzbekcha", rtl: false },
+  { code: "so", label: "Soomaali", rtl: false },
+  { code: "ps", label: "پښتو", rtl: true },
 ];
 
 const en: Record<string, string> = {
@@ -413,7 +429,7 @@ const ur: Record<string, string> = {
   "common.retry": "دوبارہ کوشش",
 };
 
-const DICTS: Record<Lang, Record<string, string>> = { ar, en, fr, tr, id, ur };
+const DICTS: Record<Lang, Record<string, string>> = { ar, en, fr, tr, id, ur, bn, fa, ms, sw, ha, uz, so, ps };
 
 type Ctx = {
   lang: Lang;
