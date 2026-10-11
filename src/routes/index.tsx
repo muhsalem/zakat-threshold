@@ -1,4 +1,5 @@
 import { ShareDailyNisab } from "@/components/site/ShareDailyNisab";
+import { NisabHistoryChart } from "@/components/site/NisabHistoryChart";
 import { InvitationCard } from "@/components/site/InvitationCard";
 import { DailyComparison, DailyNisabStatus, useDailyNisab } from "@/components/site/DailyNisabStatus";
 import { Button } from "@/components/ui/button";
@@ -131,6 +132,7 @@ function Home() {
                  <p className="num nisab-total mt-6 text-3xl font-medium text-foreground sm:text-4xl" aria-live="polite" data-testid={`nisab-total-${c.kind}`}>{money(c.total)}</p>
                  <p className="mt-2 text-xs text-primary">{flagOf(country)} {countryTitle} · {currency}</p>
                  <p className="mt-2 text-xs leading-6 text-muted-foreground">{priceSource?.[c.kind] === "manual" ? s.manual : priceSource?.[c.kind] === "local" ? `${s.local} · ${quote?.source ?? ""}` : s.global}</p>
+                 {(() => { const at = priceSource?.[c.kind] === "local" ? quote?.at : priceSource?.[c.kind] === "manual" ? data?.manualUpdatedAt : data?.metalsUpdatedAt; const ar = lang === "ar" || lang === "ur"; const fresh = at && daily.window && isCurrentUtcDay(at, daily.window.today); const st = !at ? { cls: "bg-negative", l: ar ? "غير متوفر" : "Unavailable" } : fresh ? { cls: "bg-primary", l: ar ? "متوفر · محدّث اليوم" : "Available · today" } : { cls: "bg-accent", l: ar ? "متوفر · قديم" : "Available · stale" }; const src = priceSource?.[c.kind] === "manual" ? s.manual : priceSource?.[c.kind] === "local" ? s.local : s.global; return <p className="mt-2 inline-flex items-center gap-2 rounded-md border border-border bg-card/70 px-2 py-1 text-xs text-foreground" data-testid={`status-${c.kind}`}><span className={`size-2 rounded-full ${st.cls}`} aria-hidden="true" />{st.l} · {src}</p>; })()}
                  <p className="text-xs leading-6 text-muted-foreground">{s.updated}: {(() => { const at = priceSource?.[c.kind] === "local" ? quote?.at : priceSource?.[c.kind] === "manual" ? data?.manualUpdatedAt : data?.metalsUpdatedAt; return at ? `${new Intl.DateTimeFormat(lang, { dateStyle: "medium", timeStyle: "short", timeZone: "UTC" }).format(new Date(at))} UTC · ${daily.window && isCurrentUtcDay(at, daily.window.today) ? s.today : s.older}` : "—"; })()}</p>
                 <p className="mt-5 border-t border-border pt-3 text-sm text-muted-foreground">
                   {t("perGram")}: <span className="num">{money(c.gram)}</span>
@@ -140,6 +142,7 @@ function Home() {
             ))}
           </section>
 
+           <NisabHistoryChart money={money} />
            <div className="mt-5"><ShareDailyNisab values={values} money={money} silverWeight={silverWeight} day={daily.window?.today} sources={(["gold", "silver"] as const).map(metal => { const origin = priceSource?.[metal]; const label = origin === "manual" ? s.manual : origin === "local" ? `${s.local}: ${quote?.source ?? "—"}` : `${s.global}: ${data?.metalsSource ?? "—"}`; const at = origin === "manual" ? data?.manualUpdatedAt : origin === "local" ? quote?.at : data?.metalsUpdatedAt; return `${t(metal)} · ${label} · ${s.updated}: ${at ?? "—"}`; }).join("\n")} /></div>
            <section className="mt-5 border-b border-border pb-5">
              <label className="flex flex-wrap items-center gap-3 text-sm text-foreground"><span>{s.standard}</span><select aria-label={s.standard} value={weight} onChange={e => setWeight(Number(e.target.value))} className="rounded-lg border border-input bg-card px-3 py-2"><option value={595}>595 g</option><option value={612.36}>612.36 g · {s.alternative}</option></select></label>
