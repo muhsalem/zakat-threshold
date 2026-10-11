@@ -3,10 +3,14 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
+import { Download } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { useI18n } from "@/lib/i18n";
 import { GOLD_NISAB_G, SILVER_NISAB_G, TROY_OUNCE_G } from "@/lib/nisab";
 import { getHistory, type HistoryRange, type HistoryResponse } from "@/lib/prices.functions";
+import { askHistory } from "@/lib/history-ask.functions";
 import { countryName, findCountry } from "@/lib/countries";
 
 const RANGES: HistoryRange[] = ["1mo", "6mo", "1y", "5y", "10y", "20y", "30y", "50y", "75y", "100y", "1000y"];
@@ -119,6 +123,18 @@ export function NisabHistoryChart({ money }: { money: (v: number) => string }) {
         )}
       </div>
       {data && <p className="mt-3 text-xs text-muted-foreground">{t("update.source")}: {data.metalsSource} · {data.ratesSource}</p>}
+      <div className="mt-5 border-t border-border pt-4">
+        <h3 className="text-sm font-semibold text-foreground">{ar ? "اسأل عن هذه البيانات" : "Ask about this data"}</h3>
+        <p className="text-xs text-muted-foreground">{ar ? `الإجابة مبنية فقط على: ${viewLabel} · ${cName} · ${t(`history.range.${range}`)}` : `Answers use only: ${viewLabel} · ${cName} · ${t(`history.range.${range}`)}`}</p>
+        <form className="mt-2 flex flex-col gap-2 sm:flex-row" onSubmit={(e) => { e.preventDefault(); void submitQuestion(); }}>
+          <Textarea value={question} maxLength={500} rows={2} onChange={(e) => setQuestion(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void submitQuestion(); } }} placeholder={ar ? "مثال: كم تغيّر النصاب خلال هذه المدة؟ ومتى كان أعلى قيمة؟" : "e.g. How much did the nisab change, and when did it peak?"} className="flex-1" />
+          <Button type="submit" disabled={asking || series.length < 2 || question.trim().length < 3}>
+            {asking ? (ar ? "جارٍ التحليل…" : "Analyzing…") : (ar ? "اسأل" : "Ask")}
+          </Button>
+        </form>
+        {askError && <p className="mt-2 text-sm text-negative">{askError}</p>}
+        {answer && <div className="prose prose-sm mt-3 max-w-none text-foreground"><ReactMarkdown>{answer}</ReactMarkdown></div>}
+      </div>
     </section>
   );
 }
