@@ -55,7 +55,7 @@ export function CompareHistory({ picked }: { picked: string[] }) {
         map.set(p.t, row);
       });
     });
-    return [...map.values()].sort((a, b) => a.t! - b.t!);
+    return [...map.values()].sort((a, b) => (a["t"] ?? 0) - (b["t"] ?? 0));
   }, [perCountry]);
   const fmt = (v: number) => new Intl.DateTimeFormat("en", { month: "short", year: "2-digit" }).format(new Date(v));
 
