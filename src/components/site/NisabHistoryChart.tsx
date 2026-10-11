@@ -6,10 +6,6 @@ import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YA
 import { Download, Loader2 } from "lucide-react";
 import { aiErrorMessage } from "@/lib/ai-errors";
 
-const EXAMPLES = {
-  ar: ["كم تغيّر النصاب خلال هذه المدة؟", "متى كانت أعلى وأدنى قيمة؟", "هل الاتجاه صاعد أم هابط مؤخرًا؟", "ما متوسط التغيّر السنوي؟"],
-  en: ["How much did the nisab change in this period?", "When were the highest and lowest values?", "Is the recent trend up or down?", "What is the average yearly change?"],
-};
 import ReactMarkdown from "react-markdown";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -50,7 +46,7 @@ export function NisabHistoryChart({ money }: { money: (v: number) => string }) {
   const change = series.length > 1 ? ((series[series.length - 1]!.value - series[0]!.value) / series[0]!.value) * 100 : null;
   const fmt = (v: number) => new Intl.DateTimeFormat(ar ? "en" : lang, { month: "short", year: "2-digit" }).format(new Date(v));
   const cName = countryName(findCountry(country), lang);
-  const viewLabel = ar ? view.label.ar : view.label.en;
+  const viewLabel = t(`view.${view.id}`);
 
   const downloadCsv = () => {
     const rows = [["date", "country", "currency", "series", "range", "value"].join(",")];
@@ -73,8 +69,8 @@ export function NisabHistoryChart({ money }: { money: (v: number) => string }) {
     const q = (preset ?? question).trim();
     if (preset) setQuestion(preset);
     if (asking) return;
-    if (q.length < 3) { setAskError(aiErrorMessage("QUESTION_SHORT", ar)); return; }
-    if (series.length < 2) { setAskError(aiErrorMessage("NO_DATA", ar)); return; }
+    if (q.length < 3) { setAskError(aiErrorMessage("QUESTION_SHORT", t)); return; }
+    if (series.length < 2) { setAskError(aiErrorMessage("NO_DATA", t)); return; }
     setAsking(true); setAskError(null); setAnswer(null);
     const step = Math.max(1, Math.ceil(series.length / 150));
     const sampled = series.filter((_, i) => i % step === 0 || i === series.length - 1);
@@ -82,7 +78,7 @@ export function NisabHistoryChart({ money }: { money: (v: number) => string }) {
       const res = await ask({ data: { question: q, country: cName, currency, range, view: view.label.en, lang, points: sampled.map((p) => ({ d: new Date(p.t).toISOString().slice(0, 10), v: p.value })) } });
       setAnswer(res.text);
     } catch (e) {
-      setAskError(aiErrorMessage(e, ar));
+      setAskError(aiErrorMessage(e, t));
     } finally {
       setAsking(false);
     }
@@ -92,7 +88,7 @@ export function NisabHistoryChart({ money }: { money: (v: number) => string }) {
     <section className="mt-6 rounded-lg border border-border bg-card p-4 sm:p-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold text-foreground">{ar ? "تغيّر النصاب والأسعار تاريخيًا" : "Historical nisab & prices"}</h2>
+          <h2 className="text-lg font-semibold text-foreground">{t("hc.title")}</h2>
           <p className="text-xs text-muted-foreground">{cName} · {currency}{data?.approx ? ` · ${t("history.approx")}` : ""}</p>
         </div>
         <div className="flex items-center gap-3">
@@ -104,7 +100,7 @@ export function NisabHistoryChart({ money }: { money: (v: number) => string }) {
       </div>
       <div className="mt-4 flex flex-wrap gap-2">
         <select aria-label={t("karat.purity")} value={viewId} onChange={(e) => setViewId(e.target.value as typeof viewId)} className="rounded-lg border border-input bg-background px-3 py-2 text-sm">
-          {VIEWS.map((v) => <option key={v.id} value={v.id}>{ar ? v.label.ar : v.label.en}</option>)}
+          {VIEWS.map((v) => <option key={v.id} value={v.id}>{t(`view.${v.id}`)}</option>)}
         </select>
         <div className="flex flex-wrap gap-1">
           {RANGES.map((r) => <Button key={r} size="sm" variant={r === range ? "default" : "outline"} onClick={() => setRange(r)}>{t(`history.range.${r}`)}</Button>)}
@@ -126,7 +122,7 @@ export function NisabHistoryChart({ money }: { money: (v: number) => string }) {
               <CartesianGrid stroke="var(--color-border)" vertical={false} />
               <XAxis dataKey="t" tickFormatter={fmt} tickLine={false} axisLine={false} minTickGap={40} tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }} />
               <YAxis width={70} tickLine={false} axisLine={false} tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }} tickFormatter={(v: number) => Intl.NumberFormat("en", { notation: "compact" }).format(v)} />
-              <Tooltip labelFormatter={(v) => fmt(Number(v))} formatter={(v: number) => [money(v), ar ? view.label.ar : view.label.en]} contentStyle={{ background: "var(--color-card)", border: "1px solid var(--color-border)", borderRadius: 12, color: "var(--color-foreground)" }} />
+              <Tooltip labelFormatter={(v) => fmt(Number(v))} formatter={(v: number) => [money(v), viewLabel]} contentStyle={{ background: "var(--color-card)", border: "1px solid var(--color-border)", borderRadius: 12, color: "var(--color-foreground)" }} />
               <Area type="monotone" dataKey="value" stroke="var(--color-chart-1)" strokeWidth={2} fill="url(#homeHistFill)" />
             </AreaChart>
           </ResponsiveContainer>
@@ -134,23 +130,23 @@ export function NisabHistoryChart({ money }: { money: (v: number) => string }) {
       </div>
       {data && <p className="mt-3 text-xs text-muted-foreground">{t("update.source")}: {data.metalsSource} · {data.ratesSource}</p>}
       <div className="mt-5 border-t border-border pt-4">
-        <h3 className="text-sm font-semibold text-foreground">{ar ? "اسأل عن هذه البيانات" : "Ask about this data"}</h3>
-        <p className="text-xs text-muted-foreground">{ar ? `الإجابة مبنية فقط على: ${viewLabel} · ${cName} · ${t(`history.range.${range}`)}` : `Answers use only: ${viewLabel} · ${cName} · ${t(`history.range.${range}`)}`}</p>
+        <h3 className="text-sm font-semibold text-foreground">{t("hc.ask.title")}</h3>
+        <p className="text-xs text-muted-foreground">{t("hc.ask.basis").replace("{basis}", `${viewLabel} · ${cName} · ${t(`history.range.${range}`)}`)}</p>
         <div className="mt-2 flex flex-wrap gap-2">
-          {(ar ? EXAMPLES.ar : EXAMPLES.en).map((q) => (
+          {["hc.ex1", "hc.ex2", "hc.ex3", "hc.ex4"].map((k) => t(k)).map((q) => (
             <button key={q} type="button" disabled={asking} onClick={() => void submitQuestion(q)} className="rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-primary hover:text-foreground disabled:opacity-50">{q}</button>
           ))}
         </div>
         <form className="mt-2 flex flex-col gap-2 sm:flex-row" onSubmit={(e) => { e.preventDefault(); void submitQuestion(); }}>
-          <Textarea value={question} maxLength={500} rows={2} disabled={asking} onChange={(e) => setQuestion(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void submitQuestion(); } }} placeholder={ar ? "مثال: كم تغيّر النصاب خلال هذه المدة؟ ومتى كان أعلى قيمة؟" : "e.g. How much did the nisab change, and when did it peak?"} className="flex-1" />
+          <Textarea value={question} maxLength={500} rows={2} disabled={asking} onChange={(e) => setQuestion(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void submitQuestion(); } }} placeholder={t("hc.ask.placeholder")} className="flex-1" />
           <Button type="submit" disabled={asking || series.length < 2 || question.trim().length < 3}>
-            {asking ? <><Loader2 className="h-4 w-4 animate-spin" />{ar ? "جارٍ التحليل…" : "Analyzing…"}</> : (ar ? "اسأل" : "Ask")}
+            {asking ? <><Loader2 className="h-4 w-4 animate-spin" />{t("hc.ask.analyzing")}</> : t("hc.ask.button")}
           </Button>
         </form>
-        {series.length < 2 && !isLoading && <p className="mt-2 text-xs text-muted-foreground">{ar ? "لا توجد بيانات معروضة لتحليلها في هذه المدة." : "No chart data to analyze for this period."}</p>}
+        {series.length < 2 && !isLoading && <p className="mt-2 text-xs text-muted-foreground">{t("hc.ask.noData")}</p>}
         {asking && (
           <div className="mt-3 space-y-2" aria-live="polite">
-            <p className="text-xs text-muted-foreground">{ar ? "يحلّل النموذج البيانات المعروضة، قد يستغرق ذلك حتى 30 ثانية…" : "Analyzing the displayed data, this may take up to 30 seconds…"}</p>
+            <p className="text-xs text-muted-foreground">{t("hc.ask.wait")}</p>
             <div className="h-3 w-3/4 animate-pulse rounded bg-muted" /><div className="h-3 w-1/2 animate-pulse rounded bg-muted" />
           </div>
         )}

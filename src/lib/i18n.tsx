@@ -9,6 +9,8 @@ import ha from "./locales/ha.json";
 import uz from "./locales/uz.json";
 import so from "./locales/so.json";
 import ps from "./locales/ps.json";
+import HISTORY_AI from "./locales/history-ai.json";
+const HA = HISTORY_AI as Record<string, Record<string, string>>;
 
 export type Lang = "ar" | "en" | "fr" | "tr" | "id" | "ur" | "bn" | "fa" | "ms" | "sw" | "ha" | "uz" | "so" | "ps";
 
@@ -486,7 +488,9 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       t: (key) =>
         DICTS[lang][key] ??
         PAGE_STRINGS[lang]?.[key] ??
+        HA[lang]?.[key] ??
         en[key] ??
+        HA["en"]?.[key] ??
         PAGE_STRINGS["en"]?.[key] ??
         key,
       country,

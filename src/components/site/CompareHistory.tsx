@@ -67,7 +67,7 @@ export function CompareHistory({ picked }: { picked: string[] }) {
   const usable = perCountry.filter((x) => x.pts.length >= 2);
   const run = async () => {
     if (busy) return;
-    if (usable.length < 2) { setError(aiErrorMessage("NO_DATA", ar)); return; }
+    if (usable.length < 2) { setError(aiErrorMessage("NO_DATA", t)); return; }
     setBusy(true); setError(null); setAnswer(null);
     try {
       const res = await analyze({ data: {
@@ -79,7 +79,7 @@ export function CompareHistory({ picked }: { picked: string[] }) {
       } });
       setAnswer(res.text);
     } catch (e) {
-      setError(aiErrorMessage(e, ar));
+      setError(aiErrorMessage(e, t));
     } finally {
       setBusy(false);
     }
@@ -87,11 +87,11 @@ export function CompareHistory({ picked }: { picked: string[] }) {
 
   return (
     <section className="card-surface mt-6 p-4 sm:p-6">
-      <h2 className="text-lg text-foreground">{ar ? "مقارنة تغيّر النصاب والأسعار تاريخيًا" : "Historical change comparison"}</h2>
-      <p className="mt-1 text-sm text-muted-foreground">{ar ? "كل دولة بعملتها، والمنحنى مؤشر يبدأ من 100 لتسهيل مقارنة نسب التغيّر. تُعرض أول 6 دول مختارة." : "Each country in its own currency, indexed to 100 at the start. First 6 selected countries are shown."}</p>
+      <h2 className="text-lg text-foreground">{t("cmp.h.title")}</h2>
+      <p className="mt-1 text-sm text-muted-foreground">{t("cmp.h.sub")}</p>
       <div className="mt-4 flex flex-wrap gap-2">
         <select aria-label={t("karat.purity")} value={viewId} onChange={(e) => setViewId(e.target.value as typeof viewId)} className="rounded-lg border border-input bg-background px-3 py-2 text-sm">
-          {VIEWS.map((v) => <option key={v.id} value={v.id}>{ar ? v.label.ar : v.label.en}</option>)}
+          {VIEWS.map((v) => <option key={v.id} value={v.id}>{t(`view.${v.id}`)}</option>)}
         </select>
         <div className="flex flex-wrap gap-1">
           {RANGES.map((r) => <Button key={r} size="sm" variant={r === range ? "default" : "outline"} onClick={() => setRange(r)}>{t(`history.range.${r}`)}</Button>)}
@@ -117,9 +117,9 @@ export function CompareHistory({ picked }: { picked: string[] }) {
         <table className="w-full text-sm">
           <thead className="text-xs text-muted-foreground"><tr>
             <th className="p-2 text-start font-normal">{t("compare.country")}</th>
-            <th className="p-2 text-start font-normal">{ar ? "البداية" : "Start"}</th>
-            <th className="p-2 text-start font-normal">{ar ? "النهاية" : "End"}</th>
-            <th className="p-2 text-start font-normal">{ar ? "التغيّر" : "Change"}</th>
+            <th className="p-2 text-start font-normal">{t("cmp.h.start")}</th>
+            <th className="p-2 text-start font-normal">{t("cmp.h.end")}</th>
+            <th className="p-2 text-start font-normal">{t("cmp.h.change")}</th>
           </tr></thead>
           <tbody>
             {perCountry.map((x) => (
@@ -127,21 +127,21 @@ export function CompareHistory({ picked }: { picked: string[] }) {
                 <td className="whitespace-nowrap p-2 text-foreground">{x.name}</td>
                 <td className="num whitespace-nowrap p-2 text-muted-foreground">{x.first ? formatMoney(x.first, x.c.currency, lang) : "—"}</td>
                 <td className="num whitespace-nowrap p-2 text-muted-foreground">{x.last ? formatMoney(x.last, x.c.currency, lang) : "—"}</td>
-                <td className={`num whitespace-nowrap p-2 ${x.change == null ? "text-muted-foreground" : x.change >= 0 ? "text-primary" : "text-negative"}`}>{x.change == null ? (ar ? "غير متاح" : "n/a") : `${x.change >= 0 ? "+" : ""}${x.change.toFixed(1)}%`}</td>
+                <td className={`num whitespace-nowrap p-2 ${x.change == null ? "text-muted-foreground" : x.change >= 0 ? "text-primary" : "text-negative"}`}>{x.change == null ? t("cmp.h.na") : `${x.change >= 0 ? "+" : ""}${x.change.toFixed(1)}%`}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
       <div className="mt-5 border-t border-border pt-4">
-        <h3 className="text-sm font-semibold text-foreground">{ar ? "تحليل الفروق بالذكاء الاصطناعي" : "AI analysis of the differences"}</h3>
+        <h3 className="text-sm font-semibold text-foreground">{t("cmp.ai.title")}</h3>
         <form className="mt-2 flex flex-col gap-2 sm:flex-row" onSubmit={(e) => { e.preventDefault(); void run(); }}>
-          <Textarea value={question} maxLength={500} rows={2} disabled={busy} onChange={(e) => setQuestion(e.target.value)} placeholder={ar ? "اختياري: سؤال محدد، مثل «لماذا ارتفع النصاب في مصر أكثر من السعودية؟»" : "Optional: a specific question about the differences"} className="flex-1" />
+          <Textarea value={question} maxLength={500} rows={2} disabled={busy} onChange={(e) => setQuestion(e.target.value)} placeholder={t("cmp.ai.placeholder")} className="flex-1" />
           <Button type="submit" disabled={busy || loading}>
-            {busy ? <><Loader2 className="h-4 w-4 animate-spin" />{ar ? "جارٍ التحليل…" : "Analyzing…"}</> : (ar ? "حلّل الفروق" : "Analyze")}
+            {busy ? <><Loader2 className="h-4 w-4 animate-spin" />{t("hc.ask.analyzing")}</> : t("cmp.ai.button")}
           </Button>
         </form>
-        {busy && <p className="mt-2 text-xs text-muted-foreground" aria-live="polite">{ar ? "قد يستغرق التحليل حتى 30 ثانية…" : "This may take up to 30 seconds…"}</p>}
+        {busy && <p className="mt-2 text-xs text-muted-foreground" aria-live="polite">{t("cmp.ai.wait")}</p>}
         {error && (
           <div role="alert" className="mt-3 flex flex-wrap items-center gap-3 rounded-md border border-negative/40 bg-negative/10 p-3 text-sm text-negative">
             <span className="flex-1">{error}</span>
