@@ -14,12 +14,14 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CalculatorRouteImport } from './routes/calculator'
+import { Route as ChronologyRouteImport } from './routes/chronology'
 import { Route as CompareRouteImport } from './routes/compare'
 import { Route as CountriesRouteImport } from './routes/countries'
 import { Route as DevelopersRouteImport } from './routes/developers'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as FiqhRouteImport } from './routes/fiqh'
 import { Route as HistoryRouteImport } from './routes/history'
+import { Route as LedgerRouteImport } from './routes/ledger'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as MethodologyRouteImport } from './routes/methodology'
 import { Route as OutlookRouteImport } from './routes/outlook'
@@ -27,7 +29,9 @@ import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as SourcesRouteImport } from './routes/sources'
 import { Route as TodayRouteImport } from './routes/today'
 import { Route as TypesRouteImport } from './routes/types'
+import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as WaqfRouteImport } from './routes/waqf'
+import { Route as WidgetRouteImport } from './routes/widget'
 import { Route as AuthenticatedAlertsRouteImport } from './routes/_authenticated/alerts'
 import { Route as AuthenticatedControlRouteImport } from './routes/_authenticated/control'
 import { Route as AuthenticatedModerationRouteImport } from './routes/_authenticated/moderation'
@@ -60,6 +64,11 @@ const CalculatorRoute = CalculatorRouteImport.update({
   path: '/calculator',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChronologyRoute = ChronologyRouteImport.update({
+  id: '/chronology',
+  path: '/chronology',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CompareRoute = CompareRouteImport.update({
   id: '/compare',
   path: '/compare',
@@ -88,6 +97,11 @@ const FiqhRoute = FiqhRouteImport.update({
 const HistoryRoute = HistoryRouteImport.update({
   id: '/history',
   path: '/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LedgerRoute = LedgerRouteImport.update({
+  id: '/ledger',
+  path: '/ledger',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MapRoute = MapRouteImport.update({
@@ -125,9 +139,19 @@ const TypesRoute = TypesRouteImport.update({
   path: '/types',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VerifyRoute = VerifyRouteImport.update({
+  id: '/verify',
+  path: '/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WaqfRoute = WaqfRouteImport.update({
   id: '/waqf',
   path: '/waqf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WidgetRoute = WidgetRouteImport.update({
+  id: '/widget',
+  path: '/widget',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAlertsRoute = AuthenticatedAlertsRouteImport.update({
@@ -172,12 +196,14 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/calculator': typeof CalculatorRoute
+  '/chronology': typeof ChronologyRoute
   '/compare': typeof CompareRoute
   '/countries': typeof CountriesRoute
   '/developers': typeof DevelopersRoute
   '/faq': typeof FaqRoute
   '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
+  '/ledger': typeof LedgerRoute
   '/map': typeof MapRoute
   '/methodology': typeof MethodologyRoute
   '/outlook': typeof OutlookRoute
@@ -185,7 +211,9 @@ export interface FileRoutesByFullPath {
   '/sources': typeof SourcesRoute
   '/today': typeof TodayRoute
   '/types': typeof TypesRoute
+  '/verify': typeof VerifyRoute
   '/waqf': typeof WaqfRoute
+  '/widget': typeof WidgetRoute
   '/alerts': typeof AuthenticatedAlertsRoute
   '/control': typeof AuthenticatedControlRoute
   '/moderation': typeof AuthenticatedModerationRoute
@@ -199,12 +227,14 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/calculator': typeof CalculatorRoute
+  '/chronology': typeof ChronologyRoute
   '/compare': typeof CompareRoute
   '/countries': typeof CountriesRoute
   '/developers': typeof DevelopersRoute
   '/faq': typeof FaqRoute
   '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
+  '/ledger': typeof LedgerRoute
   '/map': typeof MapRoute
   '/methodology': typeof MethodologyRoute
   '/outlook': typeof OutlookRoute
@@ -212,7 +242,9 @@ export interface FileRoutesByTo {
   '/sources': typeof SourcesRoute
   '/today': typeof TodayRoute
   '/types': typeof TypesRoute
+  '/verify': typeof VerifyRoute
   '/waqf': typeof WaqfRoute
+  '/widget': typeof WidgetRoute
   '/alerts': typeof AuthenticatedAlertsRoute
   '/control': typeof AuthenticatedControlRoute
   '/moderation': typeof AuthenticatedModerationRoute
@@ -228,12 +260,14 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/calculator': typeof CalculatorRoute
+  '/chronology': typeof ChronologyRoute
   '/compare': typeof CompareRoute
   '/countries': typeof CountriesRoute
   '/developers': typeof DevelopersRoute
   '/faq': typeof FaqRoute
   '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
+  '/ledger': typeof LedgerRoute
   '/map': typeof MapRoute
   '/methodology': typeof MethodologyRoute
   '/outlook': typeof OutlookRoute
@@ -241,7 +275,9 @@ export interface FileRoutesById {
   '/sources': typeof SourcesRoute
   '/today': typeof TodayRoute
   '/types': typeof TypesRoute
+  '/verify': typeof VerifyRoute
   '/waqf': typeof WaqfRoute
+  '/widget': typeof WidgetRoute
   '/_authenticated/alerts': typeof AuthenticatedAlertsRoute
   '/_authenticated/control': typeof AuthenticatedControlRoute
   '/_authenticated/moderation': typeof AuthenticatedModerationRoute
@@ -257,12 +293,14 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/calculator'
+    | '/chronology'
     | '/compare'
     | '/countries'
     | '/developers'
     | '/faq'
     | '/fiqh'
     | '/history'
+    | '/ledger'
     | '/map'
     | '/methodology'
     | '/outlook'
@@ -270,7 +308,9 @@ export interface FileRouteTypes {
     | '/sources'
     | '/today'
     | '/types'
+    | '/verify'
     | '/waqf'
+    | '/widget'
     | '/alerts'
     | '/control'
     | '/moderation'
@@ -284,12 +324,14 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/calculator'
+    | '/chronology'
     | '/compare'
     | '/countries'
     | '/developers'
     | '/faq'
     | '/fiqh'
     | '/history'
+    | '/ledger'
     | '/map'
     | '/methodology'
     | '/outlook'
@@ -297,7 +339,9 @@ export interface FileRouteTypes {
     | '/sources'
     | '/today'
     | '/types'
+    | '/verify'
     | '/waqf'
+    | '/widget'
     | '/alerts'
     | '/control'
     | '/moderation'
@@ -312,12 +356,14 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/calculator'
+    | '/chronology'
     | '/compare'
     | '/countries'
     | '/developers'
     | '/faq'
     | '/fiqh'
     | '/history'
+    | '/ledger'
     | '/map'
     | '/methodology'
     | '/outlook'
@@ -325,7 +371,9 @@ export interface FileRouteTypes {
     | '/sources'
     | '/today'
     | '/types'
+    | '/verify'
     | '/waqf'
+    | '/widget'
     | '/_authenticated/alerts'
     | '/_authenticated/control'
     | '/_authenticated/moderation'
@@ -341,12 +389,14 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
   CalculatorRoute: typeof CalculatorRoute
+  ChronologyRoute: typeof ChronologyRoute
   CompareRoute: typeof CompareRoute
   CountriesRoute: typeof CountriesRoute
   DevelopersRoute: typeof DevelopersRoute
   FaqRoute: typeof FaqRoute
   FiqhRoute: typeof FiqhRoute
   HistoryRoute: typeof HistoryRoute
+  LedgerRoute: typeof LedgerRoute
   MapRoute: typeof MapRoute
   MethodologyRoute: typeof MethodologyRoute
   OutlookRoute: typeof OutlookRoute
@@ -354,7 +404,9 @@ export interface RootRouteChildren {
   SourcesRoute: typeof SourcesRoute
   TodayRoute: typeof TodayRoute
   TypesRoute: typeof TypesRoute
+  VerifyRoute: typeof VerifyRoute
   WaqfRoute: typeof WaqfRoute
+  WidgetRoute: typeof WidgetRoute
   CountryCodeRoute: typeof CountryCodeRoute
   ApiPublicHooksJewelerFeedRoute: typeof ApiPublicHooksJewelerFeedRoute
   ApiPublicV1NisabHistoryRoute: typeof ApiPublicV1NisabHistoryRoute
@@ -398,6 +450,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CalculatorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/chronology': {
+      id: '/chronology'
+      path: '/chronology'
+      fullPath: '/chronology'
+      preLoaderRoute: typeof ChronologyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/compare': {
       id: '/compare'
       path: '/compare'
@@ -438,6 +497,13 @@ declare module '@tanstack/react-router' {
       path: '/history'
       fullPath: '/history'
       preLoaderRoute: typeof HistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ledger': {
+      id: '/ledger'
+      path: '/ledger'
+      fullPath: '/ledger'
+      preLoaderRoute: typeof LedgerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/map': {
@@ -489,11 +555,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TypesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/verify': {
+      id: '/verify'
+      path: '/verify'
+      fullPath: '/verify'
+      preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/waqf': {
       id: '/waqf'
       path: '/waqf'
       fullPath: '/waqf'
       preLoaderRoute: typeof WaqfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/widget': {
+      id: '/widget'
+      path: '/widget'
+      fullPath: '/widget'
+      preLoaderRoute: typeof WidgetRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/alerts': {
@@ -569,12 +649,14 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
   CalculatorRoute: CalculatorRoute,
+  ChronologyRoute: ChronologyRoute,
   CompareRoute: CompareRoute,
   CountriesRoute: CountriesRoute,
   DevelopersRoute: DevelopersRoute,
   FaqRoute: FaqRoute,
   FiqhRoute: FiqhRoute,
   HistoryRoute: HistoryRoute,
+  LedgerRoute: LedgerRoute,
   MapRoute: MapRoute,
   MethodologyRoute: MethodologyRoute,
   OutlookRoute: OutlookRoute,
@@ -582,7 +664,9 @@ const rootRouteChildren: RootRouteChildren = {
   SourcesRoute: SourcesRoute,
   TodayRoute: TodayRoute,
   TypesRoute: TypesRoute,
+  VerifyRoute: VerifyRoute,
   WaqfRoute: WaqfRoute,
+  WidgetRoute: WidgetRoute,
   CountryCodeRoute: CountryCodeRoute,
   ApiPublicHooksJewelerFeedRoute: ApiPublicHooksJewelerFeedRoute,
   ApiPublicV1NisabHistoryRoute: ApiPublicV1NisabHistoryRoute,
