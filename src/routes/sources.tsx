@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
 
 import { Page } from "@/components/site/Page";
+import { PriceSourcesTable } from "@/components/site/PriceSourcesTable";
 import { supabase } from "@/integrations/supabase/client";
 import { COUNTRIES, countryName, flagOf } from "@/lib/countries";
 import { useI18n } from "@/lib/i18n";
@@ -62,6 +63,7 @@ function SourcesPage() {
           );
         })}
       </div>
+      <PriceSourcesTable />
       <p className="mt-6 text-xs text-muted-foreground">أرقام استرشادية وليست فتوى؛ المرجع النهائي هو إعلان الجهة الرسمية.</p>
     </Page>
   );
