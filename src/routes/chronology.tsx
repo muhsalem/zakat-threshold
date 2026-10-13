@@ -19,6 +19,7 @@ import {
   Search,
   ListFilter,
   Eye,
+  ShieldCheck,
 } from "lucide-react";
 import { Page } from "@/components/site/Page";
 import { Button } from "@/components/ui/button";
