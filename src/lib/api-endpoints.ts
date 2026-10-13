@@ -1,4 +1,4 @@
-import { fetchRawLivePrices } from "./prices.functions";
+import { getLivePrices as fetchRawLivePrices } from "./prices.functions";
 import { GOLD_NISAB_G, KARATS, SILVER_NISAB_G, TROY_OUNCE_G } from "./nisab";
 import { COUNTRIES, findCountry } from "./countries";
 import { ISLAMIC_CHRONOLOGY } from "./islamic-chronology";
@@ -191,8 +191,8 @@ export async function handlePublicApi(url: URL): Promise<Response | null> {
         const silverPerGram = (live.silverUsdOz / TROY_OUNCE_G) * rate;
         return {
           code: c.code,
-          nameAr: c.nameAr,
-          nameEn: c.nameEn,
+          nameAr: c.ar,
+          nameEn: c.en,
           currency: c.currency,
           goldNisab: Number((goldPerGram * GOLD_NISAB_G).toFixed(2)),
           silverNisab: Number((silverPerGram * SILVER_NISAB_G).toFixed(2)),

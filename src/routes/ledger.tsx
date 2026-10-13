@@ -1,3 +1,4 @@
+import { usePrices } from "@/lib/use-prices";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import {
@@ -55,6 +56,7 @@ export const Route = createFileRoute("/ledger")({
 export function LedgerPage() {
   const { currency, t } = useI18n();
   const { values, money } = useNisab();
+  const { data } = usePrices();
   const [records, setRecords] = useState<ZakatYearRecord[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [filter, setFilter] = useState<"all" | ZakatStatus>("all");

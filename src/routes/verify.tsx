@@ -216,7 +216,7 @@ function VerifyCommunityPage() {
             <Users className="size-4 text-primary" />
           </div>
           <p className="num mt-2 text-3xl font-bold font-mono text-primary">
-            {formatNumber(stats.totalConfirmations, lang)}+
+            {formatNumber(stats.totalConfirmations)}+
           </p>
           <p className="mt-1 text-xs text-muted-foreground">
             {isAr ? "مصادقة ميدانية مؤكدة من الزوار" : "verified community endorsements"}
