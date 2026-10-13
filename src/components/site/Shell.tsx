@@ -41,6 +41,8 @@ const NAV_GROUPS = [
       { to: "/calculator", key: "nav.calculator" },
       { to: "/alerts", key: "nav.alerts" },
       { to: "/outlook", key: "nav.outlook" },
+      { to: "/ledger", key: "nav.ledger" },
+      { to: "/widget", key: "nav.widget" },
     ],
   },
   {
@@ -51,6 +53,8 @@ const NAV_GROUPS = [
       { to: "/methodology", key: "nav.methodology" },
       { to: "/faq", key: "nav.faq" },
       { to: "/sources", key: "nav.sources" },
+      { to: "/chronology", key: "nav.chronology" },
+      { to: "/verify", key: "nav.verify" },
     ],
   },
   {
@@ -88,6 +92,8 @@ const NAV_MOBILE = [
       { to: "/calculator", key: "nav.calculator" },
       { to: "/alerts", key: "nav.alerts" },
       { to: "/outlook", key: "nav.outlook" },
+      { to: "/ledger", key: "nav.ledger" },
+      { to: "/widget", key: "nav.widget" },
     ],
   },
   {
@@ -97,6 +103,8 @@ const NAV_MOBILE = [
       { to: "/fiqh", key: "nav.fiqh" },
       { to: "/faq", key: "nav.faq" },
       { to: "/sources", key: "nav.sources" },
+      { to: "/chronology", key: "nav.chronology" },
+      { to: "/verify", key: "nav.verify" },
     ],
   },
   {

@@ -1,0 +1,6 @@
+{
+  "name": "نِصاب · حاسبة نصاب الزكاة اليومي",
+  "description": "قيمة نصاب الذهب والفضّة يومياً بعملة بلدك، مع حاسبة زكاة وأسعار تاريخية.",
+  "requestFramePermissions": [],
+  "capabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

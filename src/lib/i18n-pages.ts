@@ -1071,10 +1071,18 @@ const EXTRA9: Record<string, Record<string, string>> = {
   ar: {
     "nav.partners": "شبكة الصاغة",
     "nav.outlook": "تقييم اقتصادي",
+    "nav.chronology": "سجل الهجرة",
+    "nav.ledger": "سجل الزكاة",
+    "nav.verify": "التحقق",
+    "nav.widget": "الودجت",
   },
   en: {
     "nav.partners": "Jeweller network",
     "nav.outlook": "Market outlook",
+    "nav.chronology": "Hijri chronology",
+    "nav.ledger": "Zakat ledger",
+    "nav.verify": "Verification",
+    "nav.widget": "Widget",
   },
 };
 
