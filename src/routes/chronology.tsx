@@ -19,6 +19,7 @@ import {
   Search,
   ListFilter,
   Eye,
+  ShieldCheck,
 } from "lucide-react";
 import { Page } from "@/components/site/Page";
 import { Button } from "@/components/ui/button";
@@ -187,7 +188,7 @@ export function ChronologyPage() {
   const quickJumpYears = [2, 3, 4, 5, 11, 18, 77, 99, 132, 160, 450, 800, 1000, 1300, 1391, 1448];
 
   const countryObj = findCountry(selectedCountryCode);
-  const countryNameStr = countryObj ? countryObj.nameAr : selectedCountryCode;
+  const countryNameStr = countryObj ? countryObj.ar : selectedCountryCode;
 
   // Zakat calculation for that specific year
   const wealthNum = parseFloat(testWealth) || 0;
@@ -260,7 +261,7 @@ export function ChronologyPage() {
             >
               {COUNTRIES.map((c) => (
                 <option key={c.code} value={c.code}>
-                  {c.nameAr} ({c.currency})
+                  {c.ar} ({c.currency})
                 </option>
               ))}
             </select>
