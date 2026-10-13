@@ -4,6 +4,7 @@ import { InvitationCard } from "@/components/site/InvitationCard";
 import { DailyComparison, DailyNisabStatus, useDailyNisab } from "@/components/site/DailyNisabStatus";
 import { Button } from "@/components/ui/button";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { Calculator, ChartNoAxesCombined, Coins, Gem, ShieldCheck, Clock3 } from "lucide-react";
 
 import { CityPicker, CountryPicker } from "@/components/site/Shell";
@@ -20,6 +21,7 @@ import {
   useNisab,
 } from "@/components/site/Prices";
 import { HawlReminder } from "@/components/site/Reminders";
+import { formatHijri, today } from "@/lib/hijri";
 import { useI18n } from "@/lib/i18n";
 import { GOLD_NISAB_G, KARATS, SILVER_NISAB_G, formatNumber } from "@/lib/nisab";
 import { usePrices } from "@/lib/use-prices";
@@ -53,6 +55,9 @@ const TYPES = ["cash", "gold", "trade", "crops", "livestock", "fitr"] as const;
 
 function Home() {
   const { t, lang, country } = useI18n();
+  // Client-only: the visitor's local day, not the server's.
+  const [hijri, setHijri] = useState("");
+  useEffect(() => setHijri(formatHijri(today(), lang)), [lang]);
   const s = homeCopy(lang);
   const countryTitle = countryName(findCountry(country), lang);
   const { weight, setWeight } = useSilverStandard();
@@ -67,7 +72,7 @@ function Home() {
       <NisabAlert value={values?.lower} />
 
       <section className="rise home-intro">
-        <p className="home-eyebrow flex items-center gap-3 text-sm font-medium text-primary"><span className="h-px w-8 bg-accent" aria-hidden="true" />{t("hero.eyebrow")}</p>
+        <p className="home-eyebrow flex items-center gap-3 text-sm font-medium text-primary"><span className="h-px w-8 bg-accent" aria-hidden="true" />{t("hero.eyebrow")}{hijri && <span className="num"> · {hijri}</span>}</p>
         <h1 className="home-title mt-3 max-w-4xl text-3xl font-semibold text-foreground sm:text-4xl">
           {s.now} <span className="text-primary">· {countryTitle}</span>
         </h1>
