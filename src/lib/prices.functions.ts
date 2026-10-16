@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { COUNTRIES } from "./countries";
 import { annualSince } from "./long-history";
 import { PRICE_REFRESH_MS, HISTORY_CACHE_MS } from "./daily-nisab";
 
@@ -230,18 +231,32 @@ export const LONG_RANGES: Record<string, number> = {
   "1000y": 1000,
 };
 
+/** 1 Muharram 1448 AH (16 June 2026), start of the "1448" history range. */
+export const HIJRI_1448_START_MS = Date.UTC(2026, 5, 16);
+
+/** Only currencies the site offers — keeps arbitrary codes from fanning out upstream requests. */
+const KNOWN_CURRENCIES = new Set(["USD", ...COUNTRIES.map((c) => c.currency)]);
+
 const histCache = new Map<string, { data: HistoryPoint[]; at: number }>();
 
 
 async function yahooSeries(symbol: string, range: HistoryRange) {
   const interval = range === "1mo" ? "1d" : range === "6mo" || range === "1y" ? "1d" : "1wk";
   const timeQuery = range === "1448"
-    ? `period1=${Math.floor(new Date("2026-06-16T00:00:00Z").getTime() / 1000)}&period2=${Math.floor(Date.now() / 1000)}`
+    ? `period1=${Math.floor(HIJRI_1448_START_MS / 1000)}&period2=${Math.floor(Date.now() / 1000)}`
     : `range=${range}`;
   const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?${timeQuery}&interval=${interval}`;
   const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } });
   if (!res.ok) throw new Error(`History request failed (${res.status})`);
-  const json = (await res.json()) as any;
+  type YahooChart = {
+    chart?: {
+      result?: {
+        timestamp?: number[];
+        indicators?: { quote?: { close?: (number | null)[] }[] };
+      }[];
+    };
+  };
+  const json = (await res.json()) as YahooChart | null;
   const result = json?.chart?.result?.[0];
   const stamps: number[] = result?.timestamp ?? [];
   const closes: (number | null)[] = result?.indicators?.quote?.[0]?.close ?? [];
@@ -259,7 +274,7 @@ export const getHistory = createServerFn({ method: "GET" })
       "1mo", "6mo", "1y", "5y", "10y", "1448", "20y", "30y", "40y", "50y", "75y", "100y", "1000y",
     ];
     const range = allowed.includes(data?.range) ? data.range : "1y";
-    const currency = /^[A-Z]{3}$/.test(data?.currency) ? data.currency : "USD";
+    const currency = KNOWN_CURRENCIES.has(data?.currency) ? data.currency : "USD";
     return { range, currency };
   })
   .handler(async ({ data }): Promise<HistoryResponse> => {

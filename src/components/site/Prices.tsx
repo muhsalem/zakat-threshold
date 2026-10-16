@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
 import { usePrices } from "@/lib/use-prices";
 import { scopeKey } from "@/lib/cities";
+import { formatDays } from "@/lib/hijri";
 import { useLocalQuote } from "@/lib/local-quotes";
 import { manualMetals, nisabTotals, resolveGram, valuationQuote, type PriceOrigin, type PricePreference } from "@/lib/nisab-valuation";
 import { useSilverStandard } from "@/lib/use-silver-standard";
@@ -235,11 +236,28 @@ function fmtDate(value: string | undefined, lang: string) {
 }
 
 /** Last-update / source panel shown under the live figures. */
+/** Manual prices older than this many days get a staleness warning. */
+const STALE_MANUAL_DAYS = 7;
+
 export function UpdateMeta() {
   const { t, lang } = useI18n();
   const { data } = useNisab();
   if (!data) return null;
+  const savedAt = data.manualUpdatedAt ? new Date(data.manualUpdatedAt).getTime() : NaN;
+  const manualAgeDays =
+    data.manual && Number.isFinite(savedAt)
+      ? Math.floor((Date.now() - savedAt) / (24 * 60 * 60 * 1000))
+      : 0;
   return (
+    <>
+      {manualAgeDays >= STALE_MANUAL_DAYS && (
+        <p
+          role="alert"
+          className="card-surface mt-6 border-accent/60 bg-accent/15 p-4 text-sm text-foreground"
+        >
+          {t("update.stale").replace("{n}", formatDays(manualAgeDays, lang))}
+        </p>
+      )}
     <div className="card-surface mt-6 grid gap-3 p-5 text-sm sm:grid-cols-3">
       <div>
         <p className="eyebrow text-muted-foreground">{t("update.metals")}</p>
@@ -263,6 +281,7 @@ export function UpdateMeta() {
         </p>
       </div>
     </div>
+    </>
   );
 }
 
