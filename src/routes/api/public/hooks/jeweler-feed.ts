@@ -23,13 +23,17 @@ async function recordNisabHistory(
   let rates: Record<string, number> = {};
   try {
     const [g, s, fx] = await Promise.all([
-      fetch("https://api.gold-api.com/price/XAU", { headers: { accept: "application/json" } }).then(
+      fetch("https://api.gold-api.com/price/XAU", {
+        headers: { accept: "application/json" },
+        signal: AbortSignal.timeout(10_000),
+      }).then((r) => r.json()),
+      fetch("https://api.gold-api.com/price/XAG", {
+        headers: { accept: "application/json" },
+        signal: AbortSignal.timeout(10_000),
+      }).then((r) => r.json()),
+      fetch("https://open.er-api.com/v6/latest/USD", { signal: AbortSignal.timeout(10_000) }).then(
         (r) => r.json(),
       ),
-      fetch("https://api.gold-api.com/price/XAG", { headers: { accept: "application/json" } }).then(
-        (r) => r.json(),
-      ),
-      fetch("https://open.er-api.com/v6/latest/USD").then((r) => r.json()),
     ]);
     goldOz = Number(g?.price) > 0 ? Number(g.price) : null;
     silverOz = Number(s?.price) > 0 ? Number(s.price) : null;
@@ -117,8 +121,12 @@ export const Route = createFileRoute("/api/public/hooks/jeweler-feed")({
         let fx: Record<string, number> = {};
         try {
           const [g, r] = await Promise.all([
-            fetch("https://api.gold-api.com/price/XAU").then((x) => x.json()),
-            fetch("https://open.er-api.com/v6/latest/USD").then((x) => x.json()),
+            fetch("https://api.gold-api.com/price/XAU", {
+              signal: AbortSignal.timeout(10_000),
+            }).then((x) => x.json()),
+            fetch("https://open.er-api.com/v6/latest/USD", {
+              signal: AbortSignal.timeout(10_000),
+            }).then((x) => x.json()),
           ]);
           spotGoldOz = Number(g?.price) || 0;
           fx = (r?.rates ?? {}) as Record<string, number>;

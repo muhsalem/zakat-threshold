@@ -128,6 +128,7 @@ async function doPost(
   ].join("\n");
   const res = await fetch(`https://graph.facebook.com/v21.0/${pageId}/feed`, {
     method: "POST",
+    signal: AbortSignal.timeout(15_000),
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       message,
