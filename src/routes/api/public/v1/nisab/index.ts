@@ -19,7 +19,12 @@ export const Route = createFileRoute("/api/public/v1/nisab/")({
         const country = COUNTRIES.find((c) => c.code === parsed.data.country.toUpperCase());
         if (!country) return json({ error: "unknown country" }, 404);
 
-        const prices = await getLivePrices();
+        let prices;
+        try {
+          prices = await getLivePrices();
+        } catch {
+          return json({ error: "price sources temporarily unavailable" }, 503);
+        }
         const rate = prices.rates[country.currency];
         const db = publicDb();
         const [official, feed] = await Promise.all([

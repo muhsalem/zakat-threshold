@@ -28,7 +28,12 @@ export const Route = createFileRoute("/api/public/v1/nisab/history")({
         const country = COUNTRIES.find((c) => c.code === parsed.data.country.toUpperCase());
         if (!country) return json({ error: "unknown country" }, 404);
 
-        const h = await getHistory({ data: { range: parsed.data.range as HistoryRange, currency: country.currency } });
+        let h;
+        try {
+          h = await getHistory({ data: { range: parsed.data.range as HistoryRange, currency: country.currency } });
+        } catch {
+          return json({ error: "history sources temporarily unavailable" }, 503);
+        }
         let points = h.points.map((p) => ({
           date: new Date(p.t).toISOString().slice(0, 10),
           gold_nisab: (p.gold / TROY_OUNCE_G) * GOLD_NISAB_G * p.rate,

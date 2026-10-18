@@ -10,7 +10,7 @@ export const CORS = {
 export function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...CORS, "Content-Type": "application/json; charset=utf-8", "Cache-Control": "public, max-age=900" },
+    headers: { ...CORS, "Content-Type": "application/json; charset=utf-8", "Cache-Control": status < 400 ? "public, max-age=900" : "no-store" },
   });
 }
 

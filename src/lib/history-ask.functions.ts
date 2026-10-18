@@ -1,5 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 
+import { enforceRateLimit } from "./rate-limit.server";
+
 type Point = { d: string; v: number };
 type AskInput = {
   question: string;
@@ -61,6 +63,8 @@ function stats(points: Point[]) {
 }
 
 async function runModel(system: string, prompt: string) {
+  // Public endpoint that spends AI credits: 10 questions per 10 minutes per client.
+  enforceRateLimit("history-ask", 10, 10 * 60_000);
   const key = process.env["LOVABLE_API_KEY"];
   if (!key) throw new Error("CONFIG");
   const { createOpenAI } = await import("@ai-sdk/openai");

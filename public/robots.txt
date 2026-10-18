@@ -12,3 +12,12 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+# Private / operational areas
+User-agent: *
+Disallow: /admin
+Disallow: /auth
+Disallow: /control
+Disallow: /moderation
+Disallow: /alerts
+Disallow: /api/

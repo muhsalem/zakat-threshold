@@ -36,10 +36,16 @@ let lastGood: Cache = null;
 /** Price checks are minute-based; the historical series keeps its own hourly cache. */
 const TTL_MS = PRICE_REFRESH_MS;
 
+/** Upstream calls must never hang a request: abort after this long. */
+const FETCH_TIMEOUT_MS = 8_000;
+
 async function fetchJson(url: string) {
-  const res = await fetch(url, { headers: { accept: "application/json" } });
+  const res = await fetch(url, {
+    headers: { accept: "application/json" },
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+  });
   if (!res.ok) throw new Error(`Request failed: ${url} (${res.status})`);
-  return res.json() as Promise<any>;
+  return res.json() as Promise<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 /** Runs sources in order and reports which one answered. */
@@ -143,9 +149,21 @@ async function fxFromFrankfurter(): Promise<Fx> {
   };
 }
 
+/** Concurrent callers share one upstream round trip instead of stampeding the providers. */
+let inflight: Promise<LivePrices> | null = null;
+
 export const getLivePrices = createServerFn({ method: "GET" }).handler(
   async (): Promise<LivePrices> => {
     if (cache && Date.now() - cache.at < TTL_MS) return cache.data;
+    inflight ??= loadLivePrices().finally(() => {
+      inflight = null;
+    });
+    return inflight;
+  },
+);
+
+async function loadLivePrices(): Promise<LivePrices> {
+  {
 
     try {
       const [metals, fx] = await Promise.all([
@@ -193,8 +211,8 @@ export const getLivePrices = createServerFn({ method: "GET" }).handler(
       }
       throw error instanceof Error ? error : new Error("Price sources unavailable");
     }
-  },
-);
+  }
+}
 
 export type HistoryRange =
   | "1mo"
@@ -246,7 +264,10 @@ async function yahooSeries(symbol: string, range: HistoryRange) {
     ? `period1=${Math.floor(HIJRI_1448_START_MS / 1000)}&period2=${Math.floor(Date.now() / 1000)}`
     : `range=${range}`;
   const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?${timeQuery}&interval=${interval}`;
-  const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } });
+  const res = await fetch(url, {
+    headers: { "User-Agent": "Mozilla/5.0" },
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+  });
   if (!res.ok) throw new Error(`History request failed (${res.status})`);
   type YahooChart = {
     chart?: {
