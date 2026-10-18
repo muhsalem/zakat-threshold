@@ -10,7 +10,10 @@ describe("country nisab valuation", () => {
   test("falls back to the available ask, then global, without inventing a bid", () => {
     assert.equal(valuationQuote(null, 103), 103);
     assert.equal(valuationQuote(null, null), null);
-    assert.deepEqual(resolveGram(100, false, valuationQuote(null, null)), { gram: 100, origin: "global" });
+    assert.deepEqual(resolveGram(100, false, valuationQuote(null, null)), {
+      gram: 100,
+      origin: "global",
+    });
   });
   test("a gold-only manual override does not disable local silver", () => {
     const manual = manualMetals({ goldUsdOz: 3100 }, undefined, "EGP");

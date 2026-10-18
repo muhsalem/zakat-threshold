@@ -2,7 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
 import { COUNTRIES } from "@/lib/countries";
-import { GOLD_NISAB_G, SILVER_NISAB_G, goldNisabValue, perGram, silverNisabValue } from "@/lib/nisab";
+import {
+  GOLD_NISAB_G,
+  SILVER_NISAB_G,
+  goldNisabValue,
+  perGram,
+  silverNisabValue,
+} from "@/lib/nisab";
 import { getLivePrices } from "@/lib/prices.functions";
 import { CORS, json, publicDb } from "@/lib/public-api.server";
 
@@ -15,18 +21,34 @@ export const Route = createFileRoute("/api/public/v1/nisab/")({
       GET: async ({ request }) => {
         const url = new URL(request.url);
         const parsed = Query.safeParse({ country: url.searchParams.get("country") ?? "" });
-        if (!parsed.success) return json({ error: "country must be an ISO-3166 alpha-2 code, e.g. ?country=EG" }, 400);
+        if (!parsed.success)
+          return json({ error: "country must be an ISO-3166 alpha-2 code, e.g. ?country=EG" }, 400);
         const country = COUNTRIES.find((c) => c.code === parsed.data.country.toUpperCase());
         if (!country) return json({ error: "unknown country" }, 404);
 
-        const prices = await getLivePrices();
+        let prices;
+        try {
+          prices = await getLivePrices();
+        } catch {
+          return json({ error: "price sources temporarily unavailable" }, 503);
+        }
         const rate = prices.rates[country.currency];
         const db = publicDb();
         const [official, feed] = await Promise.all([
-          db.from("official_nisab").select("gold_nisab,silver_nisab,currency,authority,source_url,announced_on")
-            .eq("country", country.code).order("announced_on", { ascending: false }).limit(1).maybeSingle(),
-          db.from("jeweler_feed").select("gold_gram,buyback_gram,silver_gram,currency,source,source_url,day")
-            .eq("country", country.code).order("day", { ascending: false }).limit(1).maybeSingle(),
+          db
+            .from("official_nisab")
+            .select("gold_nisab,silver_nisab,currency,authority,source_url,announced_on")
+            .eq("country", country.code)
+            .order("announced_on", { ascending: false })
+            .limit(1)
+            .maybeSingle(),
+          db
+            .from("jeweler_feed")
+            .select("gold_gram,buyback_gram,silver_gram,currency,source,source_url,day")
+            .eq("country", country.code)
+            .order("day", { ascending: false })
+            .limit(1)
+            .maybeSingle(),
         ]);
 
         return json({

@@ -11,8 +11,7 @@ export const Route = createFileRoute("/countries")({
       { title: "دليل الدول · نصاب الزكاة لكل دولة" },
       {
         name: "description",
-        content:
-          "تصفّح نصاب الذهب والفضّة لكل دولة بعملتها المحلية، مع صفحة مستقلة لكل دولة.",
+        content: "تصفّح نصاب الذهب والفضّة لكل دولة بعملتها المحلية، مع صفحة مستقلة لكل دولة.",
       },
       { property: "og:title", content: "دليل الدول · نصاب الزكاة لكل دولة" },
       {
@@ -74,10 +73,12 @@ function CountriesPage() {
         </Link>
       </div>
 
-      {([
-        ["country.group.muslim", groups.muslim],
-        ["country.group.other", groups.rest],
-      ] as const).map(([key, list]) =>
+      {(
+        [
+          ["country.group.muslim", groups.muslim],
+          ["country.group.other", groups.rest],
+        ] as const
+      ).map(([key, list]) =>
         list.length === 0 ? null : (
           <section key={key} className="mt-10">
             <h2 className="eyebrow text-muted-foreground">{t(key)}</h2>

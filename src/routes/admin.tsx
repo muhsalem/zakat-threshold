@@ -44,8 +44,7 @@ function Admin() {
   const [saved, setSaved] = useState(false);
 
   const key = scopeKey(country, city);
-  const cityLabel =
-    citiesOf(country).find((c) => c.id === city) ?? null;
+  const cityLabel = citiesOf(country).find((c) => c.id === city) ?? null;
   const scopeLabel = cityLabel ? cityName(cityLabel, lang) : t("city.all");
 
   useEffect(() => {

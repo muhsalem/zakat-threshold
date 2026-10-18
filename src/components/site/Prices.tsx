@@ -7,7 +7,14 @@ import { usePrices } from "@/lib/use-prices";
 import { scopeKey } from "@/lib/cities";
 import { formatDays } from "@/lib/hijri";
 import { useLocalQuote } from "@/lib/local-quotes";
-import { manualMetals, nisabTotals, resolveGram, valuationQuote, type PriceOrigin, type PricePreference } from "@/lib/nisab-valuation";
+import {
+  manualMetals,
+  nisabTotals,
+  resolveGram,
+  valuationQuote,
+  type PriceOrigin,
+  type PricePreference,
+} from "@/lib/nisab-valuation";
 import { useSilverStandard } from "@/lib/use-silver-standard";
 export { resolveGram } from "@/lib/nisab-valuation";
 export type { PriceOrigin, PricePreference } from "@/lib/nisab-valuation";
@@ -76,12 +83,60 @@ import {
 } from "@/lib/nisab";
 
 const PS = {
-  ar: { local: "سعر صاغة محلي", global: "سعر عالمي محوَّل", manual: "سعر أدخلته بنفسك", gold: "الذهب", silver: "الفضة", toggleLocal: "سعر السوق المحلي", toggleGlobal: "السعر العالمي" },
-  en: { local: "Local jeweller price", global: "Converted global price", manual: "Your own price", gold: "Gold", silver: "Silver", toggleLocal: "Local market price", toggleGlobal: "Global price" },
-  fr: { local: "Prix local des bijoutiers", global: "Prix mondial converti", manual: "Votre propre prix", gold: "Or", silver: "Argent", toggleLocal: "Prix du marché local", toggleGlobal: "Prix mondial" },
-  tr: { local: "Yerel kuyumcu fiyatı", global: "Çevrilmiş küresel fiyat", manual: "Kendi girdiğiniz fiyat", gold: "Altın", silver: "Gümüş", toggleLocal: "Yerel piyasa fiyatı", toggleGlobal: "Küresel fiyat" },
-  id: { local: "Harga toko emas lokal", global: "Harga global dikonversi", manual: "Harga Anda sendiri", gold: "Emas", silver: "Perak", toggleLocal: "Harga pasar lokal", toggleGlobal: "Harga global" },
-  ur: { local: "مقامی سنار کی قیمت", global: "تبدیل شدہ عالمی قیمت", manual: "آپ کی درج کردہ قیمت", gold: "سونا", silver: "چاندی", toggleLocal: "مقامی مارکیٹ قیمت", toggleGlobal: "عالمی قیمت" },
+  ar: {
+    local: "سعر صاغة محلي",
+    global: "سعر عالمي محوَّل",
+    manual: "سعر أدخلته بنفسك",
+    gold: "الذهب",
+    silver: "الفضة",
+    toggleLocal: "سعر السوق المحلي",
+    toggleGlobal: "السعر العالمي",
+  },
+  en: {
+    local: "Local jeweller price",
+    global: "Converted global price",
+    manual: "Your own price",
+    gold: "Gold",
+    silver: "Silver",
+    toggleLocal: "Local market price",
+    toggleGlobal: "Global price",
+  },
+  fr: {
+    local: "Prix local des bijoutiers",
+    global: "Prix mondial converti",
+    manual: "Votre propre prix",
+    gold: "Or",
+    silver: "Argent",
+    toggleLocal: "Prix du marché local",
+    toggleGlobal: "Prix mondial",
+  },
+  tr: {
+    local: "Yerel kuyumcu fiyatı",
+    global: "Çevrilmiş küresel fiyat",
+    manual: "Kendi girdiğiniz fiyat",
+    gold: "Altın",
+    silver: "Gümüş",
+    toggleLocal: "Yerel piyasa fiyatı",
+    toggleGlobal: "Küresel fiyat",
+  },
+  id: {
+    local: "Harga toko emas lokal",
+    global: "Harga global dikonversi",
+    manual: "Harga Anda sendiri",
+    gold: "Emas",
+    silver: "Perak",
+    toggleLocal: "Harga pasar lokal",
+    toggleGlobal: "Harga global",
+  },
+  ur: {
+    local: "مقامی سنار کی قیمت",
+    global: "تبدیل شدہ عالمی قیمت",
+    manual: "آپ کی درج کردہ قیمت",
+    gold: "سونا",
+    silver: "چاندی",
+    toggleLocal: "مقامی مارکیٹ قیمت",
+    toggleGlobal: "عالمی قیمت",
+  },
 };
 export function priceStrings(lang: string) {
   return PS[lang as keyof typeof PS] ?? PS.en;
@@ -106,8 +161,7 @@ export function useNisab(prefer: PricePreference = "local") {
     if (!base) return undefined;
     const goldUsdOz = scope?.goldUsdOz ?? base.goldUsdOz;
     const silverUsdOz = scope?.silverUsdOz ?? base.silverUsdOz;
-    const rates =
-      scope?.rate != null ? { ...base.rates, [currency]: scope.rate } : base.rates;
+    const rates = scope?.rate != null ? { ...base.rates, [currency]: scope.rate } : base.rates;
     return {
       ...base,
       goldUsdOz,
@@ -127,8 +181,18 @@ export function useNisab(prefer: PricePreference = "local") {
   const resolved = useMemo(() => {
     if (!data || !ready) return null;
     const manual = manualMetals(overrides, scope, currency);
-    const g = resolveGram(perGram(data.goldUsdOz, r), manual.gold, valuationQuote(quote?.buybackGram, quote?.goldGram), prefer);
-    const s = resolveGram(perGram(data.silverUsdOz, r), manual.silver, valuationQuote(quote?.silverBuybackGram, quote?.silverGram), prefer);
+    const g = resolveGram(
+      perGram(data.goldUsdOz, r),
+      manual.gold,
+      valuationQuote(quote?.buybackGram, quote?.goldGram),
+      prefer,
+    );
+    const s = resolveGram(
+      perGram(data.silverUsdOz, r),
+      manual.silver,
+      valuationQuote(quote?.silverBuybackGram, quote?.silverGram),
+      prefer,
+    );
     return { g, s };
   }, [data, r, ready, quote, prefer, overrides, scope, currency]);
 
@@ -155,7 +219,9 @@ export function useNisab(prefer: PricePreference = "local") {
     silverWeight,
     localFetching: localQuery.isFetching,
     localError: localQuery.isError,
-    localCheckedAt: localQuery.dataUpdatedAt ? new Date(localQuery.dataUpdatedAt).toISOString() : undefined,
+    localCheckedAt: localQuery.dataUpdatedAt
+      ? new Date(localQuery.dataUpdatedAt).toISOString()
+      : undefined,
     money,
     rate: r,
     isLoading,
@@ -178,19 +244,26 @@ export function PriceSourceLine({
   if (!source) return null;
   const s = priceStrings(lang);
   const day = source.at
-    ? new Intl.DateTimeFormat(lang === "ar" ? "ar-EG" : lang, { day: "numeric", month: "long" }).format(new Date(source.at))
+    ? new Intl.DateTimeFormat(lang === "ar" ? "ar-EG" : lang, {
+        day: "numeric",
+        month: "long",
+      }).format(new Date(source.at))
     : "";
   const label = (o: PriceOrigin) =>
-    o === "local" ? `${s.local}: ${source.name}${day ? ` · ${day}` : ""}` : o === "manual" ? s.manual : s.global;
+    o === "local"
+      ? `${s.local}: ${source.name}${day ? ` · ${day}` : ""}`
+      : o === "manual"
+        ? s.manual
+        : s.global;
   const same = source.gold === source.silver;
   return (
     <p className={`text-xs text-muted-foreground ${className}`} data-testid="price-source">
-      {same ? label(source.gold) : `${s.gold}: ${label(source.gold)} — ${s.silver}: ${label(source.silver)}`}
+      {same
+        ? label(source.gold)
+        : `${s.gold}: ${label(source.gold)} — ${s.silver}: ${label(source.silver)}`}
     </p>
   );
 }
-
-
 
 export function StateNote({
   isLoading,
@@ -210,10 +283,7 @@ export function StateNote({
     return (
       <div className="card-surface p-6 text-sm">
         <p className="text-foreground">{t("common.error")}</p>
-        <Button
-          onClick={() => refetch()}
-          className="mt-3"
-        >
+        <Button onClick={() => refetch()} className="mt-3">
           {t("common.retry")}
         </Button>
       </div>
@@ -258,29 +328,29 @@ export function UpdateMeta() {
           {t("update.stale").replace("{n}", formatDays(manualAgeDays, lang))}
         </p>
       )}
-    <div className="card-surface mt-6 grid gap-3 p-5 text-sm sm:grid-cols-3">
-      <div>
-        <p className="eyebrow text-muted-foreground">{t("update.metals")}</p>
-        <p className="mt-1 text-foreground">{fmtDate(data.metalsUpdatedAt, lang)}</p>
-        <p className="text-xs text-muted-foreground">
-          {t("update.source")}: {data.metalsSource}
-        </p>
+      <div className="card-surface mt-6 grid gap-3 p-5 text-sm sm:grid-cols-3">
+        <div>
+          <p className="eyebrow text-muted-foreground">{t("update.metals")}</p>
+          <p className="mt-1 text-foreground">{fmtDate(data.metalsUpdatedAt, lang)}</p>
+          <p className="text-xs text-muted-foreground">
+            {t("update.source")}: {data.metalsSource}
+          </p>
+        </div>
+        <div>
+          <p className="eyebrow text-muted-foreground">{t("update.rates")}</p>
+          <p className="mt-1 text-foreground">{fmtDate(data.ratesUpdatedAt, lang)}</p>
+          <p className="text-xs text-muted-foreground">
+            {t("update.source")}: {data.ratesSource}
+          </p>
+        </div>
+        <div>
+          <p className="eyebrow text-muted-foreground">{t("update.fetched")}</p>
+          <p className="mt-1 text-foreground">{fmtDate(data.fetchedAt, lang)}</p>
+          <p className="text-xs text-muted-foreground">
+            {data.manual ? t("update.manual") : t("update.auto")}
+          </p>
+        </div>
       </div>
-      <div>
-        <p className="eyebrow text-muted-foreground">{t("update.rates")}</p>
-        <p className="mt-1 text-foreground">{fmtDate(data.ratesUpdatedAt, lang)}</p>
-        <p className="text-xs text-muted-foreground">
-          {t("update.source")}: {data.ratesSource}
-        </p>
-      </div>
-      <div>
-        <p className="eyebrow text-muted-foreground">{t("update.fetched")}</p>
-        <p className="mt-1 text-foreground">{fmtDate(data.fetchedAt, lang)}</p>
-        <p className="text-xs text-muted-foreground">
-          {data.manual ? t("update.manual") : t("update.auto")}
-        </p>
-      </div>
-    </div>
     </>
   );
 }
@@ -307,13 +377,17 @@ export function ManualNotice() {
 /** Short, always-visible note that the numbers are indicative and not a fatwa. */
 export function Disclaimer({ className = "" }: { className?: string }) {
   const { t } = useI18n();
-  return (
-    <p className={`text-xs text-muted-foreground ${className}`}>{t("trust.disclaimer")}</p>
-  );
+  return <p className={`text-xs text-muted-foreground ${className}`}>{t("trust.disclaimer")}</p>;
 }
 
 /** Compact "data as of …" line for placing next to the headline figures. */
-export function AsOf({ className = "", prefer = "local" }: { className?: string; prefer?: PricePreference }) {
+export function AsOf({
+  className = "",
+  prefer = "local",
+}: {
+  className?: string;
+  prefer?: PricePreference;
+}) {
   const { t, lang } = useI18n();
   const { data, priceSource } = useNisab(prefer);
   if (!data) return null;
@@ -371,10 +445,8 @@ export function CityPriceCheck() {
   const save = () => {
     const g = parseFloat(gold);
     const s = parseFloat(silver);
-    const goldUsdOz =
-      Number.isFinite(g) && g > 0 ? (g / rate) * TROY_OUNCE_G : data.goldUsdOz;
-    const silverUsdOz =
-      Number.isFinite(s) && s > 0 ? (s / rate) * TROY_OUNCE_G : data.silverUsdOz;
+    const goldUsdOz = Number.isFinite(g) && g > 0 ? (g / rate) * TROY_OUNCE_G : data.goldUsdOz;
+    const silverUsdOz = Number.isFinite(s) && s > 0 ? (s / rate) * TROY_OUNCE_G : data.silverUsdOz;
     writeScopeOverride(key, { goldUsdOz, silverUsdOz, rate, currency });
     recordManualPrice({ goldUsdOz, silverUsdOz, currency, rate, country, city });
     confirm();
@@ -481,10 +553,7 @@ export function NisabAlert({ value }: { value: number | null | undefined }) {
       if (readHawl().nisabAlerts) {
         notify(
           t("hawl.notifyTitle"),
-          t(change > 0 ? "alert.up" : "alert.down").replace(
-            "{pct}",
-            Math.abs(change).toFixed(1),
-          ),
+          t(change > 0 ? "alert.up" : "alert.down").replace("{pct}", Math.abs(change).toFixed(1)),
         );
       }
     } else setPct(null);
@@ -498,9 +567,7 @@ export function NisabAlert({ value }: { value: number | null | undefined }) {
     <div
       role="status"
       className={`card-surface mb-6 flex flex-wrap items-center gap-3 p-4 text-sm ${
-        up
-          ? "border-positive/50 bg-positive/10"
-          : "border-negative/50 bg-negative/10"
+        up ? "border-positive/50 bg-positive/10" : "border-negative/50 bg-negative/10"
       }`}
     >
       {up ? (
@@ -508,9 +575,7 @@ export function NisabAlert({ value }: { value: number | null | undefined }) {
       ) : (
         <TrendingDown aria-hidden="true" className="size-4 text-negative" />
       )}
-      <span className="text-foreground">
-        {t(key).replace("{pct}", Math.abs(pct).toFixed(1))}
-      </span>
+      <span className="text-foreground">{t(key).replace("{pct}", Math.abs(pct).toFixed(1))}</span>
       <button
         onClick={() => setHidden(true)}
         className="ms-auto rounded-lg border border-border px-3 py-1 text-xs text-muted-foreground hover:text-foreground"

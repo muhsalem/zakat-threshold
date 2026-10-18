@@ -1,5 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 
+import { enforceRateLimit } from "./rate-limit.server";
+
 type Point = { d: string; v: number };
 type AskInput = {
   question: string;
@@ -28,21 +30,37 @@ function cleanPoints(raw: unknown, max: number): Point[] {
 
 function parse(input: unknown): AskInput {
   const v = input as Partial<AskInput>;
-  const question = String(v?.question ?? "").trim().slice(0, 500);
+  const question = String(v?.question ?? "")
+    .trim()
+    .slice(0, 500);
   if (question.length < 3) throw new Error("QUESTION_SHORT");
   const points = cleanPoints(v?.points, 200);
   if (points.length < 2) throw new Error("NO_DATA");
-  return { question, country: s(v.country), currency: s(v.currency, 3), range: s(v.range, 10), view: s(v.view), lang: s(v.lang, 5) || "ar", points };
+  return {
+    question,
+    country: s(v.country),
+    currency: s(v.currency, 3),
+    range: s(v.range, 10),
+    view: s(v.view),
+    lang: s(v.lang, 5) || "ar",
+    points,
+  };
 }
 
 function parseCompare(input: unknown): CompareInput {
   const v = input as Partial<CompareInput>;
-  const question = String(v?.question ?? "").trim().slice(0, 500) || "Explain the most important differences between these countries.";
-  const series = (Array.isArray(v?.series) ? v.series : []).slice(0, 6).map((x) => ({
-    country: s(x?.country),
-    currency: s(x?.currency, 3),
-    points: cleanPoints(x?.points, 60),
-  })).filter((x) => x.points.length >= 2);
+  const question =
+    String(v?.question ?? "")
+      .trim()
+      .slice(0, 500) || "Explain the most important differences between these countries.";
+  const series = (Array.isArray(v?.series) ? v.series : [])
+    .slice(0, 6)
+    .map((x) => ({
+      country: s(x?.country),
+      currency: s(x?.currency, 3),
+      points: cleanPoints(x?.points, 60),
+    }))
+    .filter((x) => x.points.length >= 2);
   if (series.length < 2) throw new Error("NO_DATA");
   return { question, range: s(v.range, 10), view: s(v.view), lang: s(v.lang, 5) || "ar", series };
 }
@@ -61,6 +79,8 @@ function stats(points: Point[]) {
 }
 
 async function runModel(system: string, prompt: string) {
+  // Public endpoint that spends AI credits: 10 questions per 10 minutes per client.
+  enforceRateLimit("history-ask", 10, 10 * 60_000);
   const key = process.env["LOVABLE_API_KEY"];
   if (!key) throw new Error("CONFIG");
   const { createOpenAI } = await import("@ai-sdk/openai");
@@ -78,7 +98,9 @@ async function runModel(system: string, prompt: string) {
     model: lovable.responses("openai/gpt-6-astra"),
     system,
     prompt,
-    onError: ({ error }) => { failure = error; },
+    onError: ({ error }) => {
+      failure = error;
+    },
     providerOptions: {
       openai: {
         forceReasoning: true,
@@ -122,7 +144,12 @@ export const compareHistory = createServerFn({ method: "POST" })
     runModel(
       `${SYSTEM} Values are in each country's own currency, so compare percentage changes and trends, not raw amounts across currencies. Reply in language code: ${data.lang}.`,
       `Series: ${data.view}\nRange: ${data.range}\n\n` +
-        data.series.map((x) => `## ${x.country} (${x.currency})\n${stats(x.points)}\n${x.points.map((p) => `${p.d}=${p.v}`).join(", ")}`).join("\n\n") +
+        data.series
+          .map(
+            (x) =>
+              `## ${x.country} (${x.currency})\n${stats(x.points)}\n${x.points.map((p) => `${p.d}=${p.v}`).join(", ")}`,
+          )
+          .join("\n\n") +
         `\n\nQuestion: ${data.question}`,
     ),
   );

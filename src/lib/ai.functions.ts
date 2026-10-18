@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { enforceRateLimit } from "./rate-limit.server";
 
 type AssessInput = {
   country: string;
@@ -14,17 +15,33 @@ type AssessInput = {
 
 function parse(input: unknown): AssessInput {
   const v = input as Partial<AssessInput>;
-  if (!v || typeof v.localGram !== "number" || !(v.localGram > 0)) {
+  if (
+    !v ||
+    typeof v.localGram !== "number" ||
+    !Number.isFinite(v.localGram) ||
+    !(v.localGram > 0)
+  ) {
     throw new Error("invalid price");
   }
+  // User-typed history is interpolated into the prompt: keep only well-formed pairs.
+  const history = (Array.isArray(v.history) ? v.history : [])
+    .filter(
+      (p): p is { date: string; price: number } =>
+        !!p &&
+        typeof p.price === "number" &&
+        Number.isFinite(p.price) &&
+        /^\d{4}-\d{2}-\d{2}$/.test(String(p.date)),
+    )
+    .slice(0, 60)
+    .map((p) => ({ date: String(p.date), price: p.price }));
   return {
-    country: String(v.country ?? ""),
-    currency: String(v.currency ?? ""),
+    country: String(v.country ?? "").slice(0, 60),
+    currency: String(v.currency ?? "").slice(0, 3),
     metal: v.metal === "silver" ? "silver" : "gold",
     localGram: v.localGram,
     globalGram: typeof v.globalGram === "number" ? v.globalGram : null,
-    history: Array.isArray(v.history) ? v.history.slice(0, 60) : [],
-    lang: String(v.lang ?? "ar"),
+    history,
+    lang: String(v.lang ?? "ar").slice(0, 5),
   };
 }
 
@@ -36,6 +53,7 @@ export const assessLocalPrice = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator(parse)
   .handler(async ({ data }) => {
+    enforceRateLimit("assess-price", 20, 10 * 60_000);
     const key = process.env["LOVABLE_API_KEY"];
     if (!key) throw new Error("missing LOVABLE_API_KEY");
 
@@ -51,9 +69,7 @@ export const assessLocalPrice = createServerFn({ method: "POST" })
       fetch: runIdFetch.fetch,
     });
 
-    const series = data.history
-      .map((p) => `${p.date}: ${p.price}`)
-      .join("\n");
+    const series = data.history.map((p) => `${p.date}: ${p.price}`).join("\n");
 
     const result = streamText({
       model: lovable.responses("openai/gpt-6-astra"),
@@ -67,7 +83,9 @@ export const assessLocalPrice = createServerFn({ method: "POST" })
         `الدولة: ${data.country}\nالعملة: ${data.currency}\nالمعدن: ${data.metal === "gold" ? "ذهب عيار 24" : "فضة نقية"}\n` +
         `سعر الجرام المحلي المُدخل: ${data.localGram} ${data.currency}\n` +
         `السعر العالمي المجرَّد للجرام (تقديري): ${data.globalGram ?? "غير متاح"} ${data.currency}\n` +
-        (series ? `سلسلة أسعار محلية أدخلها المستخدم:\n${series}\n` : "لا توجد سلسلة تاريخية مُدخلة.\n") +
+        (series
+          ? `سلسلة أسعار محلية أدخلها المستخدم:\n${series}\n`
+          : "لا توجد سلسلة تاريخية مُدخلة.\n") +
         "قيّم هل السعر المحلي معقول مقارنة بالسعر العالمي وبالسلسلة، واذكر نسبة الفارق إن أمكن.",
       providerOptions: {
         openai: {

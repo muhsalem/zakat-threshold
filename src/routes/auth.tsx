@@ -16,7 +16,8 @@ export const Route = createFileRoute("/auth")({
       { title: "الدخول والتسجيل · نِصاب" },
       {
         name: "description",
-        content: "سجّل دخولك في منصة نِصاب لنشر أسعار الصاغة، والتصويت على دقتها، ومتابعة التنبيهات.",
+        content:
+          "سجّل دخولك في منصة نِصاب لنشر أسعار الصاغة، والتصويت على دقتها، ومتابعة التنبيهات.",
       },
       { property: "og:title", content: "الدخول والتسجيل في نِصاب" },
       { property: "og:description", content: "حساب واحد للصائغ والسفير والمتطوع والمشرف." },
@@ -78,10 +79,18 @@ function AuthPage() {
     <Page eyebrow={t("auth.eyebrow")} title={t("auth.title")} sub={t("auth.sub")}>
       <div className="mx-auto max-w-md rounded-lg border border-border bg-card p-6">
         <div className="flex gap-2">
-          <Button size="sm" variant={mode === "in" ? "default" : "outline"} onClick={() => setMode("in")}>
+          <Button
+            size="sm"
+            variant={mode === "in" ? "default" : "outline"}
+            onClick={() => setMode("in")}
+          >
             {t("auth.signIn")}
           </Button>
-          <Button size="sm" variant={mode === "up" ? "default" : "outline"} onClick={() => setMode("up")}>
+          <Button
+            size="sm"
+            variant={mode === "up" ? "default" : "outline"}
+            onClick={() => setMode("up")}
+          >
             {t("auth.signUp")}
           </Button>
         </div>
@@ -125,7 +134,9 @@ function AuthPage() {
         <Button className="mt-3 w-full" variant="outline" onClick={google}>
           {t("auth.google")}
         </Button>
-        {msg && <p className="mt-4 border-s-2 border-accent ps-3 text-sm text-muted-foreground">{msg}</p>}
+        {msg && (
+          <p className="mt-4 border-s-2 border-accent ps-3 text-sm text-muted-foreground">{msg}</p>
+        )}
         <p className="mt-5 text-xs leading-6 text-muted-foreground">{t("auth.note")}</p>
       </div>
     </Page>

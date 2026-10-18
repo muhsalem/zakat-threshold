@@ -20,10 +20,14 @@ export const Route = createFileRoute("/_authenticated/moderation")({
       { title: "مراجعة أسعار الصاغة · نِصاب" },
       {
         name: "description",
-        content: "لوحة المشرف لمراجعة أسعار الصاغة والتصويتات مع سجل تدقيق كامل لكل قرار اعتماد أو رفض.",
+        content:
+          "لوحة المشرف لمراجعة أسعار الصاغة والتصويتات مع سجل تدقيق كامل لكل قرار اعتماد أو رفض.",
       },
       { property: "og:title", content: "مراجعة أسعار الصاغة" },
-      { property: "og:description", content: "اعتماد أو رفض السعر مع بيان السبب قبل نشره لكل دولة." },
+      {
+        property: "og:description",
+        content: "اعتماد أو رفض السعر مع بيان السبب قبل نشره لكل دولة.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
@@ -143,7 +147,11 @@ function ModerationPage() {
               size="sm"
               onClick={async () => {
                 const res = await runBootstrap();
-                setBootMsg(res.ok ? "تم تفعيل صلاحية المشرف. أعد تحميل الصفحة." : `تعذّر التفعيل (${res.reason}).`);
+                setBootMsg(
+                  res.ok
+                    ? "تم تفعيل صلاحية المشرف. أعد تحميل الصفحة."
+                    : `تعذّر التفعيل (${res.reason}).`,
+                );
                 if (res.ok) window.location.reload();
               }}
             >
@@ -168,12 +176,15 @@ function ModerationPage() {
           {queue.map((row) => (
             <article key={row.id} className="rounded-lg border border-border p-4">
               <p className="text-sm text-foreground">
-                {flagOf(row.country)} {row.country} {row.city ? `· ${row.city}` : ""} · {row.currency}
+                {flagOf(row.country)} {row.country} {row.city ? `· ${row.city}` : ""} ·{" "}
+                {row.currency}
               </p>
               <p className="num mt-1 text-sm text-muted-foreground">
                 {row.gold_gram ? `${t("p.gold")}: ${formatNumber(row.gold_gram, 2)}` : ""}
                 {row.silver_gram ? ` · ${t("p.silver")}: ${formatNumber(row.silver_gram, 2)}` : ""}
-                {row.buyback_gram ? ` · ${t("p.buyback")}: ${formatNumber(row.buyback_gram, 2)}` : ""}
+                {row.buyback_gram
+                  ? ` · ${t("p.buyback")}: ${formatNumber(row.buyback_gram, 2)}`
+                  : ""}
                 {row.source ? ` · ${row.source}` : ""}
               </p>
               <input
@@ -225,8 +236,6 @@ function ModerationPage() {
 
       {user && <OfficialNisabAdmin userId={user.id} />}
       <OfficialSourcesAdmin />
-
-
 
       <section className="mt-8 rounded-lg border border-border bg-card p-6">
         <h2 className="text-xl text-foreground">{t("m.audit")}</h2>

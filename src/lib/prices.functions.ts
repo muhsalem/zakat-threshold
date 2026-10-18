@@ -36,10 +36,16 @@ let lastGood: Cache = null;
 /** Price checks are minute-based; the historical series keeps its own hourly cache. */
 const TTL_MS = PRICE_REFRESH_MS;
 
+/** Upstream calls must never hang a request: abort after this long. */
+const FETCH_TIMEOUT_MS = 8_000;
+
 async function fetchJson(url: string) {
-  const res = await fetch(url, { headers: { accept: "application/json" } });
+  const res = await fetch(url, {
+    headers: { accept: "application/json" },
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+  });
   if (!res.ok) throw new Error(`Request failed: ${url} (${res.status})`);
-  return res.json() as Promise<any>;
+  return res.json() as Promise<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 /** Runs sources in order and reports which one answered. */
@@ -143,10 +149,21 @@ async function fxFromFrankfurter(): Promise<Fx> {
   };
 }
 
+/** Concurrent callers share one upstream round trip instead of stampeding the providers. */
+let inflight: Promise<LivePrices> | null = null;
+
 export const getLivePrices = createServerFn({ method: "GET" }).handler(
   async (): Promise<LivePrices> => {
     if (cache && Date.now() - cache.at < TTL_MS) return cache.data;
+    inflight ??= loadLivePrices().finally(() => {
+      inflight = null;
+    });
+    return inflight;
+  },
+);
 
+async function loadLivePrices(): Promise<LivePrices> {
+  {
     try {
       const [metals, fx] = await Promise.all([
         firstOk<Metals>([{ run: metalsFromGoldApi }, { run: metalsFromYahoo }]),
@@ -166,7 +183,8 @@ export const getLivePrices = createServerFn({ method: "GET" }).handler(
           source: metals.value.label,
           url: metals.value.url,
           market: "International spot / futures (USD per troy ounce)",
-          frequency: metals.depth === 0 ? "Checked every minute; source timestamps apply" : "Daily close",
+          frequency:
+            metals.depth === 0 ? "Checked every minute; source timestamps apply" : "Daily close",
           quality: metals.depth === 0 ? ageQuality(metals.value.updatedAt) : "delayed",
           fallbackDepth: metals.depth,
         },
@@ -193,8 +211,8 @@ export const getLivePrices = createServerFn({ method: "GET" }).handler(
       }
       throw error instanceof Error ? error : new Error("Price sources unavailable");
     }
-  },
-);
+  }
+}
 
 export type HistoryRange =
   | "1mo"
@@ -239,14 +257,17 @@ const KNOWN_CURRENCIES = new Set(["USD", ...COUNTRIES.map((c) => c.currency)]);
 
 const histCache = new Map<string, { data: HistoryPoint[]; at: number }>();
 
-
 async function yahooSeries(symbol: string, range: HistoryRange) {
   const interval = range === "1mo" ? "1d" : range === "6mo" || range === "1y" ? "1d" : "1wk";
-  const timeQuery = range === "1448"
-    ? `period1=${Math.floor(HIJRI_1448_START_MS / 1000)}&period2=${Math.floor(Date.now() / 1000)}`
-    : `range=${range}`;
+  const timeQuery =
+    range === "1448"
+      ? `period1=${Math.floor(HIJRI_1448_START_MS / 1000)}&period2=${Math.floor(Date.now() / 1000)}`
+      : `range=${range}`;
   const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?${timeQuery}&interval=${interval}`;
-  const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } });
+  const res = await fetch(url, {
+    headers: { "User-Agent": "Mozilla/5.0" },
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+  });
   if (!res.ok) throw new Error(`History request failed (${res.status})`);
   type YahooChart = {
     chart?: {
@@ -271,7 +292,19 @@ async function yahooSeries(symbol: string, range: HistoryRange) {
 export const getHistory = createServerFn({ method: "GET" })
   .inputValidator((data: { range: HistoryRange; currency: string }) => {
     const allowed: HistoryRange[] = [
-      "1mo", "6mo", "1y", "5y", "10y", "1448", "20y", "30y", "40y", "50y", "75y", "100y", "1000y",
+      "1mo",
+      "6mo",
+      "1y",
+      "5y",
+      "10y",
+      "1448",
+      "20y",
+      "30y",
+      "40y",
+      "50y",
+      "75y",
+      "100y",
+      "1000y",
     ];
     const range = allowed.includes(data?.range) ? data.range : "1y";
     const currency = KNOWN_CURRENCIES.has(data?.currency) ? data.currency : "USD";
@@ -320,12 +353,12 @@ export const getHistory = createServerFn({ method: "GET" })
     const hit = histCache.get(cacheKey);
     if (hit && Date.now() - hit.at < HISTORY_CACHE_MS) {
       return {
-
         points: hit.data,
         currency: data.currency,
         fxAvailable: true,
         metalsSource: "Yahoo Finance (GC=F, SI=F)",
-        ratesSource: data.currency === "USD" ? "USD base rate" : `Yahoo Finance (${data.currency}=X)`,
+        ratesSource:
+          data.currency === "USD" ? "USD base rate" : `Yahoo Finance (${data.currency}=X)`,
       };
     }
 

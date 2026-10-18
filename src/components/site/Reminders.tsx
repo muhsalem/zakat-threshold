@@ -59,7 +59,10 @@ export function HawlReminder() {
     const key = `nisab.notified.${dueIso}`;
     if (localStorage.getItem(key)) return;
     localStorage.setItem(key, "1");
-    notify(t("hawl.notifyTitle"), t("hawl.notifyBody").replace("{days}", String(Math.max(left, 0))));
+    notify(
+      t("hawl.notifyTitle"),
+      t("hawl.notifyBody").replace("{days}", String(Math.max(left, 0))),
+    );
   }, [showBanner, granted, settings, left, dueIso, t]);
 
   if (!settings) return null;
@@ -78,9 +81,7 @@ export function HawlReminder() {
           className="mt-4 rounded-xl border border-accent/50 bg-accent/10 p-4 text-sm"
         >
           <p className="text-foreground">
-            {left > 0
-              ? t("hawl.due").replace("{days}", String(left))
-              : t("hawl.dueToday")}
+            {left > 0 ? t("hawl.due").replace("{days}", String(left)) : t("hawl.dueToday")}
           </p>
           <p className="num mt-1 text-xs text-muted-foreground">
             {dueIso} · {due ? formatHijri(due, lang) : ""}

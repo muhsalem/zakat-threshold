@@ -1,6 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { BadgeCheck, MapPin, ShieldCheck, Sparkles, ThumbsDown, ThumbsUp, Trophy } from "lucide-react";
+import {
+  BadgeCheck,
+  MapPin,
+  ShieldCheck,
+  Sparkles,
+  ThumbsDown,
+  ThumbsUp,
+  Trophy,
+} from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { Page } from "@/components/site/Page";
@@ -90,7 +98,9 @@ function PartnersPage() {
   const [priceSent, setPriceSent] = useState(false);
 
   const [rows, setRows] = useState<Submission[]>([]);
-  const [votes, setVotes] = useState<Record<string, { up: number; down: number; mine?: number }>>({});
+  const [votes, setVotes] = useState<Record<string, { up: number; down: number; mine?: number }>>(
+    {},
+  );
   const [board, setBoard] = useState<LeaderRow[]>([]);
 
   const [aiHistory, setAiHistory] = useState("");
@@ -102,7 +112,9 @@ function PartnersPage() {
   const loadPrices = useCallback(async () => {
     const { data } = await supabase
       .from("public_price_quotes")
-      .select("id, country, city, currency, metal, gold_gram, silver_gram, buyback_gram, source, created_at, reviewed_at")
+      .select(
+        "id, country, city, currency, metal, gold_gram, silver_gram, buyback_gram, source, created_at, reviewed_at",
+      )
       .eq("country", country)
       .order("created_at", { ascending: false })
       .limit(25);
@@ -218,7 +230,10 @@ function PartnersPage() {
     if (!user) return;
     await supabase
       .from("price_votes")
-      .upsert({ submission_id: id, user_id: user.id, vote: value }, { onConflict: "submission_id,user_id" });
+      .upsert(
+        { submission_id: id, user_id: user.id, vote: value },
+        { onConflict: "submission_id,user_id" },
+      );
     void loadPrices();
   };
 
@@ -234,7 +249,15 @@ function PartnersPage() {
         .filter((parts) => parts.length === 2 && Number.isFinite(Number(parts[1])))
         .map((parts) => ({ date: parts[0]!.trim(), price: Number(parts[1]) }));
       const result = await assess({
-        data: { country, currency, metal: "gold", localGram: gold, globalGram: null, history, lang },
+        data: {
+          country,
+          currency,
+          metal: "gold",
+          localGram: gold,
+          globalGram: null,
+          history,
+          lang,
+        },
       });
       setAiText(result.text);
     } catch (error) {
@@ -291,8 +314,16 @@ function PartnersPage() {
               {city ? ` · ${city}` : ""}
             </p>
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              <Field label={t("p.name")} value={profile.name} onChange={(v) => setProfile({ ...profile, name: v })} />
-              <Field label={t("p.org")} value={profile.org} onChange={(v) => setProfile({ ...profile, org: v })} />
+              <Field
+                label={t("p.name")}
+                value={profile.name}
+                onChange={(v) => setProfile({ ...profile, name: v })}
+              />
+              <Field
+                label={t("p.org")}
+                value={profile.org}
+                onChange={(v) => setProfile({ ...profile, org: v })}
+              />
               <Field
                 label={t("p.contact")}
                 value={profile.contact}
@@ -335,10 +366,26 @@ function PartnersPage() {
             {t("p.submitSub")} · <span className="num">{currency}</span>
           </p>
           <div className="mt-5 grid gap-4 sm:grid-cols-4">
-            <Field label={t("p.gold")} value={price.gold} onChange={(v) => setPrice({ ...price, gold: v })} />
-            <Field label={t("p.silver")} value={price.silver} onChange={(v) => setPrice({ ...price, silver: v })} />
-            <Field label={t("p.buyback")} value={price.buyback} onChange={(v) => setPrice({ ...price, buyback: v })} />
-            <Field label={t("p.source")} value={price.source} onChange={(v) => setPrice({ ...price, source: v })} />
+            <Field
+              label={t("p.gold")}
+              value={price.gold}
+              onChange={(v) => setPrice({ ...price, gold: v })}
+            />
+            <Field
+              label={t("p.silver")}
+              value={price.silver}
+              onChange={(v) => setPrice({ ...price, silver: v })}
+            />
+            <Field
+              label={t("p.buyback")}
+              value={price.buyback}
+              onChange={(v) => setPrice({ ...price, buyback: v })}
+            />
+            <Field
+              label={t("p.source")}
+              value={price.source}
+              onChange={(v) => setPrice({ ...price, source: v })}
+            />
           </div>
           <Button className="mt-5" onClick={publish}>
             {t("p.publish")}
@@ -404,7 +451,9 @@ function PartnersPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="num rounded-md bg-secondary px-2.5 py-1 text-xs text-secondary-foreground">
-                    {score === null ? t("p.noVotes") : `${formatNumber(score, 0)}% ${t("p.accuracy")}`}
+                    {score === null
+                      ? t("p.noVotes")
+                      : `${formatNumber(score, 0)}% ${t("p.accuracy")}`}
                   </span>
                   <Button
                     size="sm"

@@ -98,9 +98,23 @@ function Compare() {
       )}
 
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-y border-border py-4">
-        <p className="text-sm text-muted-foreground">{t("compare.selected")}: <span className="num text-foreground">{picked.length}/10</span></p>
-        <div className="inline-flex rounded-md border border-border bg-card p-1" aria-label={t("compare.currencyMode")}>
-          {(["usd", "local"] as const).map((key) => <Button key={key} size="sm" variant={unit === key ? "default" : "ghost"} onClick={() => setUnit(key)}>{t(`compare.${key}`)}</Button>)}
+        <p className="text-sm text-muted-foreground">
+          {t("compare.selected")}: <span className="num text-foreground">{picked.length}/10</span>
+        </p>
+        <div
+          className="inline-flex rounded-md border border-border bg-card p-1"
+          aria-label={t("compare.currencyMode")}
+        >
+          {(["usd", "local"] as const).map((key) => (
+            <Button
+              key={key}
+              size="sm"
+              variant={unit === key ? "default" : "ghost"}
+              onClick={() => setUnit(key)}
+            >
+              {t(`compare.${key}`)}
+            </Button>
+          ))}
         </div>
       </div>
       <div className="mb-6 flex max-h-48 flex-wrap gap-2 overflow-y-auto pe-2">
@@ -136,7 +150,9 @@ function Compare() {
 
       <section className="card-surface p-4 sm:p-6">
         <h2 className="text-lg text-foreground">{t("compare.chart")}</h2>
-        <p className="mt-1 text-sm text-muted-foreground">{unit === "usd" ? t("compare.usd") : t("compare.localNote")}</p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {unit === "usd" ? t("compare.usd") : t("compare.localNote")}
+        </p>
         {chart.length > 0 && (
           <div dir="ltr" className="mt-5 h-[420px] w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -210,10 +226,18 @@ function Compare() {
             {rows.map((r) => (
               <tr key={r.code} className="border-t border-border">
                 <td className="whitespace-nowrap p-3 text-foreground">{r.name}</td>
-                <td className="num whitespace-nowrap p-3 text-muted-foreground">{formatMoney(r.gold / GOLD_NISAB_G, r.currency, lang)}</td>
-                <td className="num whitespace-nowrap p-3 text-muted-foreground">{formatMoney((r.gold / GOLD_NISAB_G) * 0.875, r.currency, lang)}</td>
-                <td className="num whitespace-nowrap p-3 text-muted-foreground">{formatMoney(r.silver / SILVER_NISAB_G, r.currency, lang)}</td>
-                <td className="num whitespace-nowrap p-3 text-muted-foreground">{formatMoney((r.silver / SILVER_NISAB_G) * 0.925, r.currency, lang)}</td>
+                <td className="num whitespace-nowrap p-3 text-muted-foreground">
+                  {formatMoney(r.gold / GOLD_NISAB_G, r.currency, lang)}
+                </td>
+                <td className="num whitespace-nowrap p-3 text-muted-foreground">
+                  {formatMoney((r.gold / GOLD_NISAB_G) * 0.875, r.currency, lang)}
+                </td>
+                <td className="num whitespace-nowrap p-3 text-muted-foreground">
+                  {formatMoney(r.silver / SILVER_NISAB_G, r.currency, lang)}
+                </td>
+                <td className="num whitespace-nowrap p-3 text-muted-foreground">
+                  {formatMoney((r.silver / SILVER_NISAB_G) * 0.925, r.currency, lang)}
+                </td>
                 <td className="num whitespace-nowrap p-3 text-muted-foreground">
                   {formatMoney(r.gold, r.currency, lang)}
                 </td>

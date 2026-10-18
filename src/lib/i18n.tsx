@@ -12,7 +12,8 @@ import ps from "./locales/ps.json";
 import HISTORY_AI from "./locales/history-ai.json";
 const HA = HISTORY_AI as Record<string, Record<string, string>>;
 
-export type Lang = "ar" | "en" | "fr" | "tr" | "id" | "ur" | "bn" | "fa" | "ms" | "sw" | "ha" | "uz" | "so" | "ps";
+export type Lang =
+  "ar" | "en" | "fr" | "tr" | "id" | "ur" | "bn" | "fa" | "ms" | "sw" | "ha" | "uz" | "so" | "ps";
 
 export const LANGS: { code: Lang; label: string; rtl: boolean }[] = [
   { code: "ar", label: "العربية", rtl: true },
@@ -432,7 +433,22 @@ const ur: Record<string, string> = {
   "common.retry": "دوبارہ کوشش",
 };
 
-const DICTS: Record<Lang, Record<string, string>> = { ar, en, fr, tr, id, ur, bn, fa, ms, sw, ha, uz, so, ps };
+const DICTS: Record<Lang, Record<string, string>> = {
+  ar,
+  en,
+  fr,
+  tr,
+  id,
+  ur,
+  bn,
+  fa,
+  ms,
+  sw,
+  ha,
+  uz,
+  so,
+  ps,
+};
 
 type Ctx = {
   lang: Lang;

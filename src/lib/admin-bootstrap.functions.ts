@@ -14,7 +14,8 @@ export const bootstrapAdmin = createServerFn({ method: "POST" })
 
     const { data: userData, error: userErr } = await context.supabase.auth.getUser();
     const email = userData.user?.email?.toLowerCase();
-    if (userErr || !email || !userData.user?.email_confirmed_at) return { ok: false as const, reason: "unverified" };
+    if (userErr || !email || !userData.user?.email_confirmed_at)
+      return { ok: false as const, reason: "unverified" };
     if (email !== target) return { ok: false as const, reason: "forbidden" };
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
