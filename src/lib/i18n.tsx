@@ -1,14 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { DEFAULT_COUNTRY, findCountry } from "./countries";
 import { PAGE_STRINGS } from "./i18n-pages";
-import bn from "./locales/bn.json";
-import fa from "./locales/fa.json";
-import ms from "./locales/ms.json";
-import sw from "./locales/sw.json";
-import ha from "./locales/ha.json";
-import uz from "./locales/uz.json";
-import so from "./locales/so.json";
-import ps from "./locales/ps.json";
 import HISTORY_AI from "./locales/history-ai.json";
 const HA = HISTORY_AI as Record<string, Record<string, string>>;
 
@@ -433,22 +425,21 @@ const ur: Record<string, string> = {
   "common.retry": "دوبارہ کوشش",
 };
 
-const DICTS: Record<Lang, Record<string, string>> = {
-  ar,
-  en,
-  fr,
-  tr,
-  id,
-  ur,
-  bn,
-  fa,
-  ms,
-  sw,
-  ha,
-  uz,
-  so,
-  ps,
+/** Dictionaries bundled inline; the rest are fetched on demand to keep the first load small. */
+const DICTS: Partial<Record<Lang, Record<string, string>>> = { ar, en, fr, tr, id, ur };
+
+const LAZY_LOADERS: Partial<Record<Lang, () => Promise<{ default: Record<string, string> }>>> = {
+  bn: () => import("./locales/bn.json"),
+  fa: () => import("./locales/fa.json"),
+  ms: () => import("./locales/ms.json"),
+  sw: () => import("./locales/sw.json"),
+  ha: () => import("./locales/ha.json"),
+  uz: () => import("./locales/uz.json"),
+  so: () => import("./locales/so.json"),
+  ps: () => import("./locales/ps.json"),
 };
+
+const VALID_LANGS = new Set<string>(LANGS.map((l) => l.code));
 
 type Ctx = {
   lang: Lang;
@@ -478,7 +469,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const storedLang = localStorage.getItem(LS_LANG) as Lang | null;
-    if (storedLang && DICTS[storedLang]) setLangState(storedLang);
+    if (storedLang && VALID_LANGS.has(storedLang)) setLangState(storedLang);
     const storedCountry = localStorage.getItem(LS_COUNTRY);
     if (storedCountry) setCountryState(storedCountry);
     const storedCurrency = localStorage.getItem(LS_CURRENCY);
@@ -486,6 +477,25 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     const storedCity = localStorage.getItem(LS_CITY);
     if (storedCity) setCityState(storedCity);
   }, []);
+
+  const [lazyDict, setLazyDict] = useState<{ lang: Lang; dict: Record<string, string> } | null>(
+    null,
+  );
+  useEffect(() => {
+    const load = LAZY_LOADERS[lang];
+    if (!load) return;
+    let cancelled = false;
+    load()
+      .then((m) => {
+        if (!cancelled) setLazyDict({ lang, dict: m.default });
+      })
+      .catch(() => {
+        /* offline: fall back to English strings */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [lang]);
 
   const rtl = LANGS.find((l) => l.code === lang)?.rtl ?? false;
 
@@ -503,7 +513,8 @@ export function I18nProvider({ children }: { children: ReactNode }) {
         localStorage.setItem(LS_LANG, l);
       },
       t: (key) =>
-        DICTS[lang][key] ??
+        DICTS[lang]?.[key] ??
+        (lazyDict?.lang === lang ? lazyDict.dict[key] : undefined) ??
         PAGE_STRINGS[lang]?.[key] ??
         HA[lang]?.[key] ??
         en[key] ??
@@ -532,7 +543,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
         else localStorage.removeItem(LS_CITY);
       },
     }),
-    [lang, rtl, country, currency, city],
+    [lang, rtl, country, currency, city, lazyDict],
   );
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;

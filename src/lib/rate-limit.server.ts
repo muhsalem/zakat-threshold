@@ -1,7 +1,8 @@
 import { getRequestHeader } from "@tanstack/react-start/server";
 
-type Bucket = { count: number; resetAt: number };
-const buckets = new Map<string, Bucket>();
+import { createLimiter } from "./rate-limit";
+
+const hit = createLimiter();
 
 /** Best-effort client key: first forwarded address, else a shared "anon" bucket. */
 function clientKey(): string {
@@ -15,16 +16,5 @@ function clientKey(): string {
  * Throws "RATE_LIMIT" (the code the AI callers already map) when exceeded.
  */
 export function enforceRateLimit(scope: string, max: number, windowMs: number) {
-  const now = Date.now();
-  if (buckets.size > 5_000) {
-    for (const [k, b] of buckets) if (b.resetAt <= now) buckets.delete(k);
-  }
-  const key = `${scope}:${clientKey()}`;
-  const bucket = buckets.get(key);
-  if (!bucket || bucket.resetAt <= now) {
-    buckets.set(key, { count: 1, resetAt: now + windowMs });
-    return;
-  }
-  bucket.count += 1;
-  if (bucket.count > max) throw new Error("RATE_LIMIT");
+  if (!hit(`${scope}:${clientKey()}`, max, windowMs)) throw new Error("RATE_LIMIT");
 }
