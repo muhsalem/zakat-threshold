@@ -23,7 +23,7 @@ export type FeedRow = {
 };
 
 async function text(url: string) {
-  const res = await fetch(url, { headers: UA });
+  const res = await fetch(url, { headers: UA, signal: AbortSignal.timeout(10_000) });
   if (!res.ok) throw new Error(`${url} ${res.status}`);
   return (await res.text())
     .replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, " ")
@@ -142,7 +142,9 @@ async function northAmerica(): Promise<FeedRow[]> {
     },
   ];
   try {
-    const fx = (await (await fetch("https://open.er-api.com/v6/latest/USD")).json()) as {
+    const fx = (await (
+      await fetch("https://open.er-api.com/v6/latest/USD", { signal: AbortSignal.timeout(10_000) })
+    ).json()) as {
       rates?: Record<string, number>;
     };
     const cad = Number(fx.rates?.["CAD"]);

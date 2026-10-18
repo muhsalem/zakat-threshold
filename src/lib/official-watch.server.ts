@@ -31,12 +31,14 @@ export async function watchOfficialSources(db: Admin) {
     try {
       const res = await fetch(s.url, {
         headers: { "User-Agent": UA, "Accept-Language": "ar,en;q=0.8" },
+        signal: AbortSignal.timeout(10_000),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const text = pageText(await res.text());
+      // Cap the scanned text so an admin-supplied pattern cannot run away on a huge page.
+      const text = pageText(await res.text()).slice(0, 400_000);
       const found = snippets(text);
       let value: number | null = null;
-      if (s.value_pattern) {
+      if (s.value_pattern && s.value_pattern.length <= 300) {
         const m = text.match(new RegExp(s.value_pattern, "i"));
         if (m?.[1]) value = Number(m[1].replace(/,/g, ""));
       }
