@@ -5,9 +5,15 @@ export type PriceOrigin = "manual" | "local" | "global";
 export type PricePreference = "local" | "global";
 export const ALTERNATIVE_SILVER_NISAB_G = 612.36;
 
-export function resolveGram(spot: number, manual: boolean, local: number | null | undefined, prefer: PricePreference = "local") {
+export function resolveGram(
+  spot: number,
+  manual: boolean,
+  local: number | null | undefined,
+  prefer: PricePreference = "local",
+) {
   if (manual) return { gram: spot, origin: "manual" as PriceOrigin };
-  if (prefer === "local" && local != null && Number.isFinite(local) && local > 0) return { gram: local, origin: "local" as PriceOrigin };
+  if (prefer === "local" && local != null && Number.isFinite(local) && local > 0)
+    return { gram: local, origin: "local" as PriceOrigin };
   return { gram: spot, origin: "global" as PriceOrigin };
 }
 
@@ -17,7 +23,11 @@ export function valuationQuote(bid: number | null | undefined, ask: number | nul
   return ask != null && Number.isFinite(ask) && ask > 0 ? ask : null;
 }
 
-export function manualMetals(overrides: Overrides, scope: ScopeOverride | undefined, currency: string) {
+export function manualMetals(
+  overrides: Overrides,
+  scope: ScopeOverride | undefined,
+  currency: string,
+) {
   const manualRate = scope?.rate != null || overrides.rates?.[currency] != null;
   return {
     gold: manualRate || scope?.goldUsdOz != null || overrides.goldUsdOz != null,
@@ -28,5 +38,12 @@ export function manualMetals(overrides: Overrides, scope: ScopeOverride | undefi
 export function nisabTotals(goldGram: number, silverGram: number, silverWeight = SILVER_NISAB_G) {
   const gold = goldGram * GOLD_NISAB_G;
   const silver = silverGram * silverWeight;
-  return { goldGram, silverGram, gold, silver, lower: Math.min(gold, silver), ratio: goldGram / silverGram };
+  return {
+    goldGram,
+    silverGram,
+    gold,
+    silver,
+    lower: Math.min(gold, silver),
+    ratio: goldGram / silverGram,
+  };
 }

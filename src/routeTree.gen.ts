@@ -36,6 +36,7 @@ import { Route as AuthenticatedAlertsRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedControlRouteImport } from './routes/_authenticated/control'
 import { Route as AuthenticatedModerationRouteImport } from './routes/_authenticated/moderation'
 import { Route as CountryCodeRouteImport } from './routes/country.$code'
+import { Route as SitemapXmlRouteImport } from './routes/sitemap.xml'
 import { Route as ApiPublicHooksJewelerFeedRouteImport } from './routes/api/public/hooks/jeweler-feed'
 import { Route as ApiPublicV1NisabIndexRouteImport } from './routes/api/public/v1/nisab/index'
 import { Route as ApiPublicV1NisabHistoryRouteImport } from './routes/api/public/v1/nisab/history'
@@ -174,6 +175,11 @@ const CountryCodeRoute = CountryCodeRouteImport.update({
   path: '/country/$code',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapXmlRoute = SitemapXmlRouteImport.update({
+  id: '/sitemap/xml',
+  path: '/sitemap/xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicHooksJewelerFeedRoute =
   ApiPublicHooksJewelerFeedRouteImport.update({
     id: '/api/public/hooks/jeweler-feed',
@@ -218,6 +224,7 @@ export interface FileRoutesByFullPath {
   '/control': typeof AuthenticatedControlRoute
   '/moderation': typeof AuthenticatedModerationRoute
   '/country/$code': typeof CountryCodeRoute
+  '/sitemap/xml': typeof SitemapXmlRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
   '/api/public/v1/nisab/history': typeof ApiPublicV1NisabHistoryRoute
   '/api/public/v1/nisab/': typeof ApiPublicV1NisabIndexRoute
@@ -249,6 +256,7 @@ export interface FileRoutesByTo {
   '/control': typeof AuthenticatedControlRoute
   '/moderation': typeof AuthenticatedModerationRoute
   '/country/$code': typeof CountryCodeRoute
+  '/sitemap/xml': typeof SitemapXmlRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
   '/api/public/v1/nisab/history': typeof ApiPublicV1NisabHistoryRoute
   '/api/public/v1/nisab': typeof ApiPublicV1NisabIndexRoute
@@ -282,6 +290,7 @@ export interface FileRoutesById {
   '/_authenticated/control': typeof AuthenticatedControlRoute
   '/_authenticated/moderation': typeof AuthenticatedModerationRoute
   '/country/$code': typeof CountryCodeRoute
+  '/sitemap/xml': typeof SitemapXmlRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
   '/api/public/v1/nisab/history': typeof ApiPublicV1NisabHistoryRoute
   '/api/public/v1/nisab/': typeof ApiPublicV1NisabIndexRoute
@@ -315,6 +324,7 @@ export interface FileRouteTypes {
     | '/control'
     | '/moderation'
     | '/country/$code'
+    | '/sitemap/xml'
     | '/api/public/hooks/jeweler-feed'
     | '/api/public/v1/nisab/history'
     | '/api/public/v1/nisab/'
@@ -346,6 +356,7 @@ export interface FileRouteTypes {
     | '/control'
     | '/moderation'
     | '/country/$code'
+    | '/sitemap/xml'
     | '/api/public/hooks/jeweler-feed'
     | '/api/public/v1/nisab/history'
     | '/api/public/v1/nisab'
@@ -378,6 +389,7 @@ export interface FileRouteTypes {
     | '/_authenticated/control'
     | '/_authenticated/moderation'
     | '/country/$code'
+    | '/sitemap/xml'
     | '/api/public/hooks/jeweler-feed'
     | '/api/public/v1/nisab/history'
     | '/api/public/v1/nisab/'
@@ -408,6 +420,7 @@ export interface RootRouteChildren {
   WaqfRoute: typeof WaqfRoute
   WidgetRoute: typeof WidgetRoute
   CountryCodeRoute: typeof CountryCodeRoute
+  SitemapXmlRoute: typeof SitemapXmlRoute
   ApiPublicHooksJewelerFeedRoute: typeof ApiPublicHooksJewelerFeedRoute
   ApiPublicV1NisabHistoryRoute: typeof ApiPublicV1NisabHistoryRoute
   ApiPublicV1NisabIndexRoute: typeof ApiPublicV1NisabIndexRoute
@@ -604,6 +617,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CountryCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sitemap/xml': {
+      id: '/sitemap/xml'
+      path: '/sitemap/xml'
+      fullPath: '/sitemap/xml'
+      preLoaderRoute: typeof SitemapXmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/jeweler-feed': {
       id: '/api/public/hooks/jeweler-feed'
       path: '/api/public/hooks/jeweler-feed'
@@ -668,6 +688,7 @@ const rootRouteChildren: RootRouteChildren = {
   WaqfRoute: WaqfRoute,
   WidgetRoute: WidgetRoute,
   CountryCodeRoute: CountryCodeRoute,
+  SitemapXmlRoute: SitemapXmlRoute,
   ApiPublicHooksJewelerFeedRoute: ApiPublicHooksJewelerFeedRoute,
   ApiPublicV1NisabHistoryRoute: ApiPublicV1NisabHistoryRoute,
   ApiPublicV1NisabIndexRoute: ApiPublicV1NisabIndexRoute,

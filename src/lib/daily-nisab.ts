@@ -13,9 +13,10 @@ export function dailyWindow(now: Date) {
 }
 
 export function nisabChange(current: number, previous: number | null | undefined) {
-  if (!Number.isFinite(current) || previous == null || !Number.isFinite(previous) || previous <= 0) return null;
+  if (!Number.isFinite(current) || previous == null || !Number.isFinite(previous) || previous <= 0)
+    return null;
   const difference = current - previous;
-  return { difference, percent: difference / previous * 100 };
+  return { difference, percent: (difference / previous) * 100 };
 }
 
 export function isCurrentUtcDay(at: string, day: string) {

@@ -97,7 +97,7 @@ export function hijriToGregorian(hijri: HijriDate) {
 }
 
 export function isHijriLeapYear(year: number) {
-  return ((11 * year + 14) % 30) < 11;
+  return (11 * year + 14) % 30 < 11;
 }
 
 export function hijriMonthDays(year: number, month: number) {

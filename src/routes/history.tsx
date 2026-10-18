@@ -16,12 +16,7 @@ import {
 
 import { Page } from "@/components/site/Page";
 import { CityPicker, CountryPicker } from "@/components/site/Shell";
-import {
-  CityPriceCheck,
-  Disclaimer,
-  ManualNotice,
-  useNisab,
-} from "@/components/site/Prices";
+import { CityPriceCheck, Disclaimer, ManualNotice, useNisab } from "@/components/site/Prices";
 import { Button } from "@/components/ui/button";
 import {
   formatGregorianIso,
@@ -63,7 +58,18 @@ export const Route = createFileRoute("/history")({
 });
 
 const RANGES: HistoryRange[] = [
-  "1mo", "6mo", "1y", "5y", "10y", "20y", "30y", "40y", "50y", "75y", "100y", "1000y",
+  "1mo",
+  "6mo",
+  "1y",
+  "5y",
+  "10y",
+  "20y",
+  "30y",
+  "40y",
+  "50y",
+  "75y",
+  "100y",
+  "1000y",
 ];
 
 const GOLD_VIEWS = [
@@ -113,7 +119,9 @@ function History() {
   // "nisab" = full nisab value; otherwise price of one gram at the chosen purity.
   const grams =
     activeView === "nisab"
-      ? metal === "gold" ? GOLD_NISAB_G : SILVER_NISAB_G
+      ? metal === "gold"
+        ? GOLD_NISAB_G
+        : SILVER_NISAB_G
       : purities.find((p) => p.id === activeView)!.factor;
 
   const series = useMemo(
@@ -129,9 +137,7 @@ function History() {
           .map((p) => ({
             t: p.t,
             value:
-              ((metal === "gold" ? p.goldUsdOz : p.silverUsdOz) / TROY_OUNCE_G) *
-              p.rate *
-              grams,
+              ((metal === "gold" ? p.goldUsdOz : p.silverUsdOz) / TROY_OUNCE_G) * p.rate * grams,
             manual: true,
           })),
       ]
@@ -169,7 +175,9 @@ function History() {
   const nearest = useMemo(() => {
     if (!selectedDate || series.length === 0) return null;
     const target = selectedDate.getTime();
-    return series.reduce((best, point) => Math.abs(point.t - target) < Math.abs(best.t - target) ? point : best);
+    return series.reduce((best, point) =>
+      Math.abs(point.t - target) < Math.abs(best.t - target) ? point : best,
+    );
   }, [selectedDate, series]);
 
   const exportCsv = () => {
@@ -177,10 +185,17 @@ function History() {
       [t("history.gregorianDate"), t("history.hijriDate"), t("history.price"), currency],
       ...series.map((point) => {
         const date = new Date(point.t);
-        return [formatGregorianIso(date), formatHijri(date, lang), point.value.toFixed(2), currency];
+        return [
+          formatGregorianIso(date),
+          formatHijri(date, lang),
+          point.value.toFixed(2),
+          currency,
+        ];
       }),
     ];
-    const blob = new Blob([rows.map((row) => row.join(",")).join("\n")], { type: "text/csv;charset=utf-8" });
+    const blob = new Blob([rows.map((row) => row.join(",")).join("\n")], {
+      type: "text/csv;charset=utf-8",
+    });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
@@ -223,7 +238,7 @@ function History() {
             <option key={p.id} value={p.id}>{`${t(metal)} ${p.label} · ${t("perGram")}`}</option>
           ))}
         </select>
-        <div className="flex flex-wrap gap-1" aria-label={t("history.period") }>
+        <div className="flex flex-wrap gap-1" aria-label={t("history.period")}>
           {RANGES.map((r) => (
             <Button
               key={r}
@@ -239,7 +254,6 @@ function History() {
 
       <div className="mb-4 border-s-2 border-accent bg-card px-4 py-3 text-sm text-muted-foreground">
         <strong className="text-foreground">{currency}</strong> · {t("history.countrySeries")}
-        
         {data?.approx && <span> · {t("history.approx")}</span>}
         <Disclaimer className="mt-2" />
       </div>
@@ -265,33 +279,117 @@ function History() {
 
       <section className="mb-6 grid gap-4 border-y border-border py-6 lg:grid-cols-[1fr_1fr]">
         <div>
-          <div className="flex items-center gap-2"><CalendarSearch aria-hidden="true" className="size-5 text-primary" /><h2 className="text-xl text-foreground">{t("history.lookup")}</h2></div>
+          <div className="flex items-center gap-2">
+            <CalendarSearch aria-hidden="true" className="size-5 text-primary" />
+            <h2 className="text-xl text-foreground">{t("history.lookup")}</h2>
+          </div>
           <p className="mt-2 text-sm text-muted-foreground">{t("history.lookupSub")}</p>
         </div>
         <div>
           <div className="mb-3 flex gap-1" aria-label={t("history.calendarType")}>
-            <Button type="button" size="sm" variant={calendar === "gregorian" ? "default" : "outline"} onClick={() => setCalendar("gregorian")}>{t("history.gregorian")}</Button>
-            <Button type="button" size="sm" variant={calendar === "hijri" ? "default" : "outline"} onClick={() => setCalendar("hijri")}>{t("history.hijri")}</Button>
+            <Button
+              type="button"
+              size="sm"
+              variant={calendar === "gregorian" ? "default" : "outline"}
+              onClick={() => setCalendar("gregorian")}
+            >
+              {t("history.gregorian")}
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant={calendar === "hijri" ? "default" : "outline"}
+              onClick={() => setCalendar("hijri")}
+            >
+              {t("history.hijri")}
+            </Button>
           </div>
           {calendar === "gregorian" ? (
             <label className="block text-sm text-muted-foreground">
               <span className="mb-1 block">{t("history.gregorianDate")}</span>
-              <input type="date" value={lookupDate} onChange={(event) => setLookupDate(event.target.value)} className="num w-full rounded-md border border-input bg-card px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring" />
+              <input
+                type="date"
+                value={lookupDate}
+                onChange={(event) => setLookupDate(event.target.value)}
+                className="num w-full rounded-md border border-input bg-card px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring"
+              />
             </label>
           ) : (
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-[0.8fr_1.5fr_1fr]" dir={lang === "ar" || lang === "ur" ? "rtl" : "ltr"}>
-              <label className="text-sm text-muted-foreground"><span className="mb-1 block">{t("history.hijriDay")}</span><input aria-label={t("history.hijriDay")} type="number" min={1} max={hijriMonthDays(hijriYear, hijriMonth)} value={hijriDay} onChange={(event) => setHijriDay(Number(event.target.value))} className="num w-full rounded-md border border-input bg-card px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring" /></label>
-              <label className="text-sm text-muted-foreground"><span className="mb-1 block">{t("history.hijriMonth")}</span><select aria-label={t("history.hijriMonth")} value={hijriMonth} onChange={(event) => setHijriMonth(Number(event.target.value))} className="w-full rounded-md border border-input bg-card px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring">{(lang === "ar" || lang === "ur" ? HIJRI_MONTHS_AR : HIJRI_MONTHS_EN).map((month, index) => <option key={month} value={index + 1}>{month}</option>)}</select></label>
-              <label className="text-sm text-muted-foreground"><span className="mb-1 block">{t("history.hijriYear")}</span><input aria-label={t("history.hijriYear")} type="number" min={1200} max={1700} value={hijriYear} onChange={(event) => setHijriYear(Number(event.target.value))} className="num w-full rounded-md border border-input bg-card px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring" /></label>
+            <div
+              className="grid grid-cols-2 gap-2 sm:grid-cols-[0.8fr_1.5fr_1fr]"
+              dir={lang === "ar" || lang === "ur" ? "rtl" : "ltr"}
+            >
+              <label className="text-sm text-muted-foreground">
+                <span className="mb-1 block">{t("history.hijriDay")}</span>
+                <input
+                  aria-label={t("history.hijriDay")}
+                  type="number"
+                  min={1}
+                  max={hijriMonthDays(hijriYear, hijriMonth)}
+                  value={hijriDay}
+                  onChange={(event) => setHijriDay(Number(event.target.value))}
+                  className="num w-full rounded-md border border-input bg-card px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring"
+                />
+              </label>
+              <label className="text-sm text-muted-foreground">
+                <span className="mb-1 block">{t("history.hijriMonth")}</span>
+                <select
+                  aria-label={t("history.hijriMonth")}
+                  value={hijriMonth}
+                  onChange={(event) => setHijriMonth(Number(event.target.value))}
+                  className="w-full rounded-md border border-input bg-card px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring"
+                >
+                  {(lang === "ar" || lang === "ur" ? HIJRI_MONTHS_AR : HIJRI_MONTHS_EN).map(
+                    (month, index) => (
+                      <option key={month} value={index + 1}>
+                        {month}
+                      </option>
+                    ),
+                  )}
+                </select>
+              </label>
+              <label className="text-sm text-muted-foreground">
+                <span className="mb-1 block">{t("history.hijriYear")}</span>
+                <input
+                  aria-label={t("history.hijriYear")}
+                  type="number"
+                  min={1200}
+                  max={1700}
+                  value={hijriYear}
+                  onChange={(event) => setHijriYear(Number(event.target.value))}
+                  className="num w-full rounded-md border border-input bg-card px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring"
+                />
+              </label>
             </div>
           )}
           {selectedDate && (
             <div className="mt-3 grid gap-2 rounded-md border border-border bg-secondary p-4 text-sm sm:grid-cols-2">
-              <p><span className="text-muted-foreground">{t("history.gregorianDate")}</span><strong className="num mt-1 block text-foreground">{formatGregorianIso(selectedDate)}</strong></p>
-              <p><span className="text-muted-foreground">{t("history.hijriDate")}</span><strong className="mt-1 block text-foreground">{formatHijri(selectedDate, lang)}</strong></p>
+              <p>
+                <span className="text-muted-foreground">{t("history.gregorianDate")}</span>
+                <strong className="num mt-1 block text-foreground">
+                  {formatGregorianIso(selectedDate)}
+                </strong>
+              </p>
+              <p>
+                <span className="text-muted-foreground">{t("history.hijriDate")}</span>
+                <strong className="mt-1 block text-foreground">
+                  {formatHijri(selectedDate, lang)}
+                </strong>
+              </p>
             </div>
           )}
-          {nearest && <div className="mt-3 flex flex-wrap items-end justify-between gap-4 rounded-md bg-primary p-4 text-sm text-primary-foreground"><span>{t("history.nearest")}<span className="mt-1 block"><span className="num">{formatGregorianIso(new Date(nearest.t))}</span> · {formatHijri(new Date(nearest.t), lang)}</span></span><strong className="num text-lg">{money(nearest.value)}</strong></div>}
+          {nearest && (
+            <div className="mt-3 flex flex-wrap items-end justify-between gap-4 rounded-md bg-primary p-4 text-sm text-primary-foreground">
+              <span>
+                {t("history.nearest")}
+                <span className="mt-1 block">
+                  <span className="num">{formatGregorianIso(new Date(nearest.t))}</span> ·{" "}
+                  {formatHijri(new Date(nearest.t), lang)}
+                </span>
+              </span>
+              <strong className="num text-lg">{money(nearest.value)}</strong>
+            </div>
+          )}
         </div>
       </section>
 
@@ -301,11 +399,15 @@ function History() {
       </aside>
 
       <div className="card-surface p-4 sm:p-6">
-        {isLoading && <p className="py-20 text-center text-muted-foreground">{t("common.loading")}</p>}
+        {isLoading && (
+          <p className="py-20 text-center text-muted-foreground">{t("common.loading")}</p>
+        )}
         {isError && (
           <div className="py-20 text-center">
             <p className="text-muted-foreground">{t("common.error")}</p>
-            <Button onClick={() => refetch()} className="mt-3">{t("common.retry")}</Button>
+            <Button onClick={() => refetch()} className="mt-3">
+              {t("common.retry")}
+            </Button>
           </div>
         )}
         {!isLoading && !isError && data && !data.fxAvailable && (
@@ -341,11 +443,15 @@ function History() {
                   tickLine={false}
                   axisLine={false}
                   tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }}
-                  tickFormatter={(v: number) => Intl.NumberFormat("en", { notation: "compact" }).format(v)}
+                  tickFormatter={(v: number) =>
+                    Intl.NumberFormat("en", { notation: "compact" }).format(v)
+                  }
                 />
                 <Tooltip
-                  labelFormatter={(v) => `${fmtTick(Number(v))} · ${formatHijri(new Date(Number(v)), lang)}`}
-                   formatter={(v: number) => [money(v), t("history.sub")]}
+                  labelFormatter={(v) =>
+                    `${fmtTick(Number(v))} · ${formatHijri(new Date(Number(v)), lang)}`
+                  }
+                  formatter={(v: number) => [money(v), t("history.sub")]}
                   contentStyle={{
                     background: "var(--color-card)",
                     border: "1px solid var(--color-border)",
@@ -366,7 +472,11 @@ function History() {
         )}
         <div className="mt-4 grid gap-1 border-t border-border pt-3 text-xs text-muted-foreground sm:grid-cols-2">
           <p>{t("history.note")}</p>
-          {data && <p>{t("update.source")}: {data.metalsSource} · {data.ratesSource}</p>}
+          {data && (
+            <p>
+              {t("update.source")}: {data.metalsSource} · {data.ratesSource}
+            </p>
+          )}
           {manualHistory.some((p) => p.currency === currency && (p.city ?? "") === city) && (
             <p className="sm:col-span-2">{t("history.manualPoint")}</p>
           )}
@@ -376,15 +486,53 @@ function History() {
       {series.length > 0 && (
         <section className="card-surface mt-6 overflow-hidden">
           <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-4">
-            <div><h2 className="text-lg text-foreground">{t("history.table")}</h2><p className="text-xs text-muted-foreground">{t("history.showTable")}</p></div>
-            <Button variant="outline" size="sm" onClick={exportCsv}><Download />{t("history.export")}</Button>
+            <div>
+              <h2 className="text-lg text-foreground">{t("history.table")}</h2>
+              <p className="text-xs text-muted-foreground">{t("history.showTable")}</p>
+            </div>
+            <Button variant="outline" size="sm" onClick={exportCsv}>
+              <Download />
+              {t("history.export")}
+            </Button>
           </header>
-          <div className="scroll-x"><table className="w-full min-w-[34rem] text-sm"><thead className="bg-secondary text-muted-foreground"><tr><th className="p-3 text-start font-normal">{t("history.gregorianDate")}</th><th className="p-3 text-start font-normal">{t("history.hijriDate")}</th><th className="p-3 text-start font-normal">{t("history.price")}</th><th className="p-3 text-start font-normal">{t("history.pick")}</th></tr></thead><tbody>{series.slice(-12).reverse().map((point) => <tr key={`${point.t}-${point.manual}`} className="border-t border-border"><td className="num whitespace-nowrap p-3 text-foreground">{formatGregorianIso(new Date(point.t))}</td><td className="whitespace-nowrap p-3 text-foreground">{formatHijri(new Date(point.t), lang)}</td><td className="num whitespace-nowrap p-3 text-foreground">{money(point.value)}</td><td className="p-3 text-muted-foreground">{t(metal)}</td></tr>)}</tbody></table></div>
+          <div className="scroll-x">
+            <table className="w-full min-w-[34rem] text-sm">
+              <thead className="bg-secondary text-muted-foreground">
+                <tr>
+                  <th className="p-3 text-start font-normal">{t("history.gregorianDate")}</th>
+                  <th className="p-3 text-start font-normal">{t("history.hijriDate")}</th>
+                  <th className="p-3 text-start font-normal">{t("history.price")}</th>
+                  <th className="p-3 text-start font-normal">{t("history.pick")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {series
+                  .slice(-12)
+                  .reverse()
+                  .map((point) => (
+                    <tr key={`${point.t}-${point.manual}`} className="border-t border-border">
+                      <td className="num whitespace-nowrap p-3 text-foreground">
+                        {formatGregorianIso(new Date(point.t))}
+                      </td>
+                      <td className="whitespace-nowrap p-3 text-foreground">
+                        {formatHijri(new Date(point.t), lang)}
+                      </td>
+                      <td className="num whitespace-nowrap p-3 text-foreground">
+                        {money(point.value)}
+                      </td>
+                      <td className="p-3 text-muted-foreground">{t(metal)}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
         </section>
       )}
 
       <CityPriceCheck />
-      <div className="mt-8"><HistoricalYearsCalculator /></div>
+      <div className="mt-8">
+        <HistoricalYearsCalculator />
+      </div>
     </Page>
   );
 }

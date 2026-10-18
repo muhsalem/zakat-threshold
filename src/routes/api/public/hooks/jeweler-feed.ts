@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-
 import { authenticateCronRequest } from "@/integrations/supabase/cron-auth";
 import { COUNTRIES } from "@/lib/countries";
 import type { FeedRow } from "@/lib/jeweler-feed.server";
@@ -24,8 +23,12 @@ async function recordNisabHistory(
   let rates: Record<string, number> = {};
   try {
     const [g, s, fx] = await Promise.all([
-      fetch("https://api.gold-api.com/price/XAU", { headers: { accept: "application/json" } }).then((r) => r.json()),
-      fetch("https://api.gold-api.com/price/XAG", { headers: { accept: "application/json" } }).then((r) => r.json()),
+      fetch("https://api.gold-api.com/price/XAU", { headers: { accept: "application/json" } }).then(
+        (r) => r.json(),
+      ),
+      fetch("https://api.gold-api.com/price/XAG", { headers: { accept: "application/json" } }).then(
+        (r) => r.json(),
+      ),
       fetch("https://open.er-api.com/v6/latest/USD").then((r) => r.json()),
     ]);
     goldOz = Number(g?.price) > 0 ? Number(g.price) : null;
@@ -41,7 +44,16 @@ async function recordNisabHistory(
     const rate0 = c.currency === "USD" ? 1 : rates[c.currency];
     if (feed && !feed.gold_gram && feed.silver_gram) {
       // Silver-only local board: gold from spot, silver from the local dealer.
-      if (goldOz && rate0) rows.push({ country: c.code, currency: c.currency, day: today, gold_gram: (goldOz / OZ) * rate0, silver_gram: feed.silver_gram, source: `spot + ${feed.source}`, source_url: feed.source_url });
+      if (goldOz && rate0)
+        rows.push({
+          country: c.code,
+          currency: c.currency,
+          day: today,
+          gold_gram: (goldOz / OZ) * rate0,
+          silver_gram: feed.silver_gram,
+          source: `spot + ${feed.source}`,
+          source_url: feed.source_url,
+        });
       continue;
     }
     if (feed?.gold_gram) {
@@ -85,14 +97,18 @@ export const Route = createFileRoute("/api/public/hooks/jeweler-feed")({
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const jobToken = request.headers.get("x-job-token");
         if (jobToken) {
-          const { data: ok } = await supabaseAdmin.rpc("verify_job_token", { _name: "jeweler_feed", _token: jobToken });
+          const { data: ok } = await supabaseAdmin.rpc("verify_job_token", {
+            _name: "jeweler_feed",
+            _token: jobToken,
+          });
           if (!ok) return new Response("Unauthorized", { status: 401 });
         } else {
           const denied = await authenticateCronRequest(request);
           if (denied) return denied;
         }
 
-        const { collectFeed, BIG_CHANGE_PCT, MAX_SPOT_DEVIATION_PCT } = await import("@/lib/jeweler-feed.server");
+        const { collectFeed, BIG_CHANGE_PCT, MAX_SPOT_DEVIATION_PCT } =
+          await import("@/lib/jeweler-feed.server");
         const collected = await collectFeed();
         const errors = collected.errors;
 
@@ -121,7 +137,12 @@ export const Route = createFileRoute("/api/public/hooks/jeweler-feed")({
               entity: "jeweler_feed",
               entity_id: null,
               reason: `deviation ${dev.toFixed(1)}% > ${MAX_SPOT_DEVIATION_PCT}%`,
-              meta: { country: row.country, source: row.source, gold_gram: row.gold_gram, spot_gram: spot },
+              meta: {
+                country: row.country,
+                source: row.source,
+                gold_gram: row.gold_gram,
+                spot_gram: spot,
+              },
             });
             continue;
           }
@@ -141,26 +162,48 @@ export const Route = createFileRoute("/api/public/hooks/jeweler-feed")({
             .maybeSingle();
           const before = prev?.gold_gram ? Number(prev.gold_gram) : null;
           const change = before && row.gold_gram ? ((row.gold_gram - before) / before) * 100 : null;
-          await supabaseAdmin
-            .from("jeweler_feed")
-            .upsert({ country: row.country, currency: row.currency, source: row.source, source_url: row.source_url, gold_gram: row.gold_gram, buyback_gram: row.buyback_gram, silver_gram: row.silver_gram, silver_buyback_gram: row.silver_buyback_gram ?? null, day: today, change_pct: change, fetched_at: new Date().toISOString() }, { onConflict: "country,day" });
+          await supabaseAdmin.from("jeweler_feed").upsert(
+            {
+              country: row.country,
+              currency: row.currency,
+              source: row.source,
+              source_url: row.source_url,
+              gold_gram: row.gold_gram,
+              buyback_gram: row.buyback_gram,
+              silver_gram: row.silver_gram,
+              silver_buyback_gram: row.silver_buyback_gram ?? null,
+              day: today,
+              change_pct: change,
+              fetched_at: new Date().toISOString(),
+            },
+            { onConflict: "country,day" },
+          );
           if (change != null && Math.abs(change) >= BIG_CHANGE_PCT) {
-            alerts.push(`${row.country}: ${change > 0 ? "+" : ""}${change.toFixed(1)}% (${row.source})`);
+            alerts.push(
+              `${row.country}: ${change > 0 ? "+" : ""}${change.toFixed(1)}% (${row.source})`,
+            );
           }
         }
 
         if (alerts.length || errors.length) {
-          const { data: admins } = await supabaseAdmin.from("user_roles").select("user_id").eq("role", "admin");
+          const { data: admins } = await supabaseAdmin
+            .from("user_roles")
+            .select("user_id")
+            .eq("role", "admin");
           const body = [
             alerts.length ? `تغيّر كبير في سعر الصاغة: ${alerts.join(" · ")}` : "",
             errors.length ? `مصادر تعذّرت قراءتها: ${errors.join(" · ")}` : "",
-          ].filter(Boolean).join("\n");
+          ]
+            .filter(Boolean)
+            .join("\n");
           if (admins?.length) {
             await supabaseAdmin.from("notifications").insert(
               admins.map((a) => ({
                 user_id: a.user_id,
                 kind: alerts.length ? "jeweler_big_change" : "jeweler_feed_error",
-                title: alerts.length ? "تنبيه: تغيّر كبير في أسعار الصاغة" : "تنبيه: تعذّر تحديث بعض مصادر الصاغة",
+                title: alerts.length
+                  ? "تنبيه: تغيّر كبير في أسعار الصاغة"
+                  : "تنبيه: تعذّر تحديث بعض مصادر الصاغة",
                 body,
               })),
             );
@@ -174,11 +217,24 @@ export const Route = createFileRoute("/api/public/hooks/jeweler-feed")({
         // global spot (converted per currency) everywhere else.
         const history = await recordNisabHistory(supabaseAdmin, rows, today);
 
-        const { notifyNisabChanges, postDailyToFacebook } = await import("@/lib/daily-broadcast.server");
+        const { notifyNisabChanges, postDailyToFacebook } =
+          await import("@/lib/daily-broadcast.server");
         const followers = await notifyNisabChanges(supabaseAdmin, today);
-        const facebook = await postDailyToFacebook(supabaseAdmin, today).catch((e) => ({ posted: false, reason: String(e) }));
+        const facebook = await postDailyToFacebook(supabaseAdmin, today).catch((e) => ({
+          posted: false,
+          reason: String(e),
+        }));
 
-        return Response.json({ ok: true, updated: rows.map((r) => r.country), alerts, errors, official, history, followers, facebook });
+        return Response.json({
+          ok: true,
+          updated: rows.map((r) => r.country),
+          alerts,
+          errors,
+          official,
+          history,
+          followers,
+          facebook,
+        });
       },
     },
   },

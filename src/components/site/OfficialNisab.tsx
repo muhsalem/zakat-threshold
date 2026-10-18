@@ -8,8 +8,13 @@ export function OfficialNisab({ country, locale }: { country: string; locale: st
   const { data } = useQuery({
     queryKey: ["official-nisab", country],
     queryFn: async () => {
-      const { data } = await supabase.from("official_nisab").select("*").eq("country", country)
-        .order("announced_on", { ascending: false }).limit(1).maybeSingle();
+      const { data } = await supabase
+        .from("official_nisab")
+        .select("*")
+        .eq("country", country)
+        .order("announced_on", { ascending: false })
+        .limit(1)
+        .maybeSingle();
       return data;
     },
   });
@@ -29,20 +34,34 @@ export function OfficialNisab({ country, locale }: { country: string; locale: st
             {data.gold_nisab != null && (
               <div className="rounded-lg bg-muted p-4">
                 <p className="text-sm text-muted-foreground">نصاب الذهب</p>
-                <p className="num mt-1 text-2xl text-foreground">{formatMoney(Number(data.gold_nisab), data.currency, locale)}</p>
+                <p className="num mt-1 text-2xl text-foreground">
+                  {formatMoney(Number(data.gold_nisab), data.currency, locale)}
+                </p>
               </div>
             )}
             {data.silver_nisab != null && (
               <div className="rounded-lg bg-muted p-4">
                 <p className="text-sm text-muted-foreground">نصاب الفضة</p>
-                <p className="num mt-1 text-2xl text-foreground">{formatMoney(Number(data.silver_nisab), data.currency, locale)}</p>
+                <p className="num mt-1 text-2xl text-foreground">
+                  {formatMoney(Number(data.silver_nisab), data.currency, locale)}
+                </p>
               </div>
             )}
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
-            الجهة: {data.source_url ? (
-              <a href={data.source_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">{data.authority}</a>
-            ) : data.authority}
+            الجهة:{" "}
+            {data.source_url ? (
+              <a
+                href={data.source_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-4"
+              >
+                {data.authority}
+              </a>
+            ) : (
+              data.authority
+            )}
             {" · "}تاريخ الإعلان: <span className="num">{data.announced_on}</span>
           </p>
         </>

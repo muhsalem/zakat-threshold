@@ -7,8 +7,16 @@ describe("daily nisab", () => {
     assert.equal(PRICE_REFRESH_MS, 60_000);
   });
   test("today ends exactly at UTC midnight", () => {
-    assert.deepEqual(dailyWindow(new Date("2026-10-10T23:59:59Z")), { today: "2026-10-10", yesterday: "2026-10-09", remainingMs: 1000 });
-    assert.deepEqual(dailyWindow(new Date("2026-10-11T00:00:00Z")), { today: "2026-10-11", yesterday: "2026-10-10", remainingMs: 86_400_000 });
+    assert.deepEqual(dailyWindow(new Date("2026-10-10T23:59:59Z")), {
+      today: "2026-10-10",
+      yesterday: "2026-10-09",
+      remainingMs: 1000,
+    });
+    assert.deepEqual(dailyWindow(new Date("2026-10-11T00:00:00Z")), {
+      today: "2026-10-11",
+      yesterday: "2026-10-10",
+      remainingMs: 86_400_000,
+    });
   });
   test("compares gold nisab with yesterday's recorded gold value", () => {
     assert.deepEqual(nisabChange(85 * 110, 85 * 100), { difference: 850, percent: 10 });

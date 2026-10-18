@@ -15,7 +15,8 @@ export const Route = createFileRoute("/_authenticated/alerts")({
       { title: "تنبيهاتي · نِصاب" },
       {
         name: "description",
-        content: "اختر الدول والمواد التي تتابعها لتصلك تنبيهات الأسعار المحلية الجديدة والتصحيحات المعتمدة.",
+        content:
+          "اختر الدول والمواد التي تتابعها لتصلك تنبيهات الأسعار المحلية الجديدة والتصحيحات المعتمدة.",
       },
       { property: "og:title", content: "تنبيهات نِصاب" },
       { property: "og:description", content: "تنبيه يومي عند وصول سعر محلي جديد أو اعتماد تصحيح." },
@@ -89,7 +90,9 @@ function AlertsPage() {
 
   const markRead = async (id: string) => {
     await supabase.from("notifications").update({ read_at: new Date().toISOString() }).eq("id", id);
-    setInbox((prev) => prev.map((n) => (n.id === id ? { ...n, read_at: new Date().toISOString() } : n)));
+    setInbox((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, read_at: new Date().toISOString() } : n)),
+    );
   };
 
   const toggle = (list: string[], value: string, set: (v: string[]) => void) =>

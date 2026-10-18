@@ -738,7 +738,8 @@ const EXTRA: Record<string, Record<string, string>> = {
     "fiqh.linkCalc": "Calculate your zakat",
     "fiqh.linkTypes": "Threshold tables",
     "fiqh.linkHistory": "Historical prices",
-    "fiqh.note": "Short educational summaries of each school's well-known position; not a substitute for a scholar.",
+    "fiqh.note":
+      "Short educational summaries of each school's well-known position; not a substitute for a scholar.",
     "history.range.20y": "20 years",
     "history.range.30y": "30 years",
     "history.range.40y": "40 years",
@@ -746,14 +747,15 @@ const EXTRA: Record<string, Record<string, string>> = {
     "history.range.100y": "100 years",
     "history.range.75y": "75 years",
     "history.range.1000y": "1000 years",
-    "history.approx": "Long ranges use annual average metal prices converted with today's exchange rate.",
+    "history.approx":
+      "Long ranges use annual average metal prices converted with today's exchange rate.",
     "city.label": "City",
     "city.all": "All cities",
     "city.none": "No cities listed for this country yet.",
     "admin.city": "City-specific price",
     "admin.market": "Market price now",
     "admin.diff": "Difference vs market",
-    "admin.cityNote": "Leave the city on \"All cities\" to apply the price country-wide.",
+    "admin.cityNote": 'Leave the city on "All cities" to apply the price country-wide.',
     "admin.scope": "Pricing scope",
   },
   fr: {
@@ -828,15 +830,21 @@ const EXTRA2: Record<string, Record<string, string>> = {
   en: {
     "nav.compare": "Compare countries",
     "compare.title": "Compare the nisab across countries",
-    "compare.sub": "Compare gold and silver nisab in each country's currency, with today's gold-to-silver ratio.",
+    "compare.sub":
+      "Compare gold and silver nisab in each country's currency, with today's gold-to-silver ratio.",
     "compare.chart": "Nisab value chart",
     "compare.country": "Country",
     "compare.lower": "Lower nisab (safer for the poor)",
-    "compare.localNote": "Values in each country's currency, from the ounce price and today's exchange rate.",
-    "compare.note": "The nisab in grams is fixed; differences between countries come from exchange rates only.",
+    "compare.localNote":
+      "Values in each country's currency, from the ounce price and today's exchange rate.",
+    "compare.note":
+      "The nisab in grams is fixed; differences between countries come from exchange rates only.",
   },
   fr: { "nav.compare": "Comparer les pays", "compare.title": "Comparer le nisab entre pays" },
-  tr: { "nav.compare": "Ülke karşılaştırması", "compare.title": "Ülkeler arasında nisap karşılaştırması" },
+  tr: {
+    "nav.compare": "Ülke karşılaştırması",
+    "compare.title": "Ülkeler arasında nisap karşılaştırması",
+  },
   id: { "nav.compare": "Bandingkan negara", "compare.title": "Perbandingan nisab antarnegara" },
   ur: { "nav.compare": "ممالک کا موازنہ", "compare.title": "ممالک کے درمیان نصاب کا موازنہ" },
 };
@@ -859,9 +867,11 @@ const EXTRA3: Record<string, Record<string, string>> = {
     "country.group.muslim": "دول ذات أغلبية مسلمة",
     "country.group.other": "بقيّة دول العالم",
     "trust.manual.title": "أسعار معدّلة يدوياً على جهازك",
-    "trust.manual.body": "الأرقام المعروضة تعتمد تعديلاً حفظته أنت في صفحة المعايرة المحلية، ولا يراه غيرك.",
+    "trust.manual.body":
+      "الأرقام المعروضة تعتمد تعديلاً حفظته أنت في صفحة المعايرة المحلية، ولا يراه غيرك.",
     "trust.manual.reset": "العودة لأسعار السوق",
-    "trust.disclaimer": "هذه الأرقام استرشادية لحساب النصاب، وليست فتوى؛ وتُسأل في النوازل جهة علمية موثوقة.",
+    "trust.disclaimer":
+      "هذه الأرقام استرشادية لحساب النصاب، وليست فتوى؛ وتُسأل في النوازل جهة علمية موثوقة.",
     "trust.asof": "بيانات بتاريخ",
   },
   en: {
@@ -877,9 +887,11 @@ const EXTRA3: Record<string, Record<string, string>> = {
     "country.group.muslim": "Muslim-majority countries",
     "country.group.other": "Other countries",
     "trust.manual.title": "Prices manually adjusted on this device",
-    "trust.manual.body": "These figures use an override you saved in local calibration. Nobody else sees it.",
+    "trust.manual.body":
+      "These figures use an override you saved in local calibration. Nobody else sees it.",
     "trust.manual.reset": "Back to market prices",
-    "trust.disclaimer": "These figures are indicative for nisab calculation, not a fatwa; ask a trusted scholar for rulings.",
+    "trust.disclaimer":
+      "These figures are indicative for nisab calculation, not a fatwa; ask a trusted scholar for rulings.",
     "trust.asof": "Data as of",
   },
   fr: {
@@ -939,7 +951,8 @@ const EXTRA4: Record<string, Record<string, string>> = {
   },
   en: {
     "verify.title": "Check the price for your city",
-    "verify.sub": "Compare the gram price shown with your local market, and correct it if it differs.",
+    "verify.sub":
+      "Compare the gram price shown with your local market, and correct it if it differs.",
     "verify.match": "Matches my city",
     "verify.differs": "Different · enter my city price",
     "verify.goldInput": "24K gold gram price in my city",
@@ -1007,28 +1020,38 @@ const EXTRA6: Record<string, Record<string, string>> = {
     "today.trace.method": "منهج الحساب",
     "today.trace.methodBody": "سعر الأونصة ÷ وزن الأونصة × سعر الصرف × وزن النصاب.",
     "today.notZakat": "النصاب ليس مقدار الزكاة",
-    "today.notZakatBody": "النصاب هو الحد الأدنى للمال؛ أمّا الزكاة المستحقة فتُحسب بعد تحقق الحول وبقية الشروط.",
+    "today.notZakatBody":
+      "النصاب هو الحد الأدنى للمال؛ أمّا الزكاة المستحقة فتُحسب بعد تحقق الحول وبقية الشروط.",
     "map.eyebrow": "NISAB AROUND THE WORLD",
     "map.title": "خريطة النصاب حول العالم",
-    "map.sub": "استكشف قيمة النصاب بعملة كل دولة، ثم انتقل إلى صفحتها لمعرفة السعر والمعادلة والمصدر.",
+    "map.sub":
+      "استكشف قيمة النصاب بعملة كل دولة، ثم انتقل إلى صفحتها لمعرفة السعر والمعادلة والمصدر.",
     "map.directory": "دليل الدول والقيم الحالية",
     "method.eyebrow": "METHODOLOGY",
     "method.title": "منهجية حساب النصاب",
-    "method.sub": "نفصل بوضوح بين الأصل الشرعي، وبيانات السوق، والحساب الرياضي حتى يبقى كل رقم قابلًا للفهم والتدقيق.",
+    "method.sub":
+      "نفصل بوضوح بين الأصل الشرعي، وبيانات السوق، والحساب الرياضي حتى يبقى كل رقم قابلًا للفهم والتدقيق.",
     "method.distinction": "النصاب حدّ، وليس زكاة مستحقة",
-    "method.distinctionBody": "بلوغ النصاب أحد شروط الوجوب، ولا يعني وحده أن الزكاة قد وجبت أو أن الرقم الظاهر هو مقدارها.",
+    "method.distinctionBody":
+      "بلوغ النصاب أحد شروط الوجوب، ولا يعني وحده أن الزكاة قد وجبت أو أن الرقم الظاهر هو مقدارها.",
     "method.nisab": "الحد الأدنى للمال الذي يبدأ عنده النظر في وجوب الزكاة مع بقية الشروط.",
     "method.zakat": "المقدار الواجب إخراجه بعد تحقق النصاب والحول والشروط المتعلقة بنوع المال.",
     "method.fiqh.title": "الأصل الشرعي",
-    "method.fiqh.body": "تعتمد المنصة المقدارين المشهورين: عشرون مثقالًا للذهب بما يقارب ٨٥ جرامًا من الذهب الخالص، ومائتا درهم للفضة بما يقارب ٥٩٥ جرامًا. تُعرض المسائل التي وقع فيها خلاف باعتبارها خلافًا فقهيًا، لا حكمًا واحدًا ملزمًا.",
+    "method.fiqh.body":
+      "تعتمد المنصة المقدارين المشهورين: عشرون مثقالًا للذهب بما يقارب ٨٥ جرامًا من الذهب الخالص، ومائتا درهم للفضة بما يقارب ٥٩٥ جرامًا. تُعرض المسائل التي وقع فيها خلاف باعتبارها خلافًا فقهيًا، لا حكمًا واحدًا ملزمًا.",
     "method.data.title": "بيانات السوق",
-    "method.data.body": "يُقرأ سعر الأونصة للذهب والفضة وسعر الصرف إلى العملة المختارة. يظهر المصدر ووقت التحديث بجوار النتائج، ولا يُقدَّم السعر القديم على أنه لحظي.",
+    "method.data.body":
+      "يُقرأ سعر الأونصة للذهب والفضة وسعر الصرف إلى العملة المختارة. يظهر المصدر ووقت التحديث بجوار النتائج، ولا يُقدَّم السعر القديم على أنه لحظي.",
     "method.math.title": "الحساب الرياضي",
-    "method.math.body": "يُحوّل سعر الأونصة الترويسية إلى سعر الجرام بقسمته على ٣١٫١٠٣٤٧٦٨، ثم يُضرب في سعر الصرف ووزن النصاب. لا تغيّر المنصة الوزن الشرعي عند اختلاف عيار المشغولات.",
-    "method.goldNote": "مرجع النصاب هو الذهب الخالص. عرض ٢٤ و٢٢ و٢١ و١٨ قيراطًا للتسعير فقط، لا لتغيير وزن النصاب.",
-    "method.silverNote": "الفضة معيار مستقل بوزن ٥٩٥ جرامًا، ولها سعرها وسجلها ومقارنتها المنفصلة عن الذهب.",
+    "method.math.body":
+      "يُحوّل سعر الأونصة الترويسية إلى سعر الجرام بقسمته على ٣١٫١٠٣٤٧٦٨، ثم يُضرب في سعر الصرف ووزن النصاب. لا تغيّر المنصة الوزن الشرعي عند اختلاف عيار المشغولات.",
+    "method.goldNote":
+      "مرجع النصاب هو الذهب الخالص. عرض ٢٤ و٢٢ و٢١ و١٨ قيراطًا للتسعير فقط، لا لتغيير وزن النصاب.",
+    "method.silverNote":
+      "الفضة معيار مستقل بوزن ٥٩٥ جرامًا، ولها سعرها وسجلها ومقارنتها المنفصلة عن الذهب.",
     "method.difference.title": "اختيار معيار الذهب أو الفضة",
-    "method.difference.body": "تختلف القيمة النقدية للمعيارين بسبب تغير العلاقة السوقية بين الذهب والفضة، وتوجد أقوال وتطبيقات فقهية معاصرة في اختيار المعيار. تعرض المنصة القيمتين والمقارنة بينهما دون إصدار حكم آلي على حالة المستخدم.",
+    "method.difference.body":
+      "تختلف القيمة النقدية للمعيارين بسبب تغير العلاقة السوقية بين الذهب والفضة، وتوجد أقوال وتطبيقات فقهية معاصرة في اختيار المعيار. تعرض المنصة القيمتين والمقارنة بينهما دون إصدار حكم آلي على حالة المستخدم.",
     "history.average": "المتوسط",
     "history.lookup": "ما كان النصاب في تاريخ…؟",
     "history.lookupSub": "ابحث بتاريخ ميلادي أو هجري؛ نعرض التاريخ المقابل وأقرب يوم تداول موثّق.",
@@ -1042,7 +1065,8 @@ const EXTRA6: Record<string, Record<string, string>> = {
     "history.hijriMonth": "الشهر",
     "history.hijriYear": "السنة الهجرية",
     "history.conversionTitle": "كيف نحول بين التاريخين؟",
-    "history.conversionBody": "نستخدم التقويم الهجري المدني الحسابي لتحويل اليوم إلى رقم يوم متسلسل، ثم نحوله إلى التقويم الميلادي أو العكس. هذا مناسب للبحث التاريخي المتّسق، لكن بداية الشهر الهجري بالرؤية الشرعية قد تختلف يومًا واحدًا بحسب البلد والجهة المعتمدة.",
+    "history.conversionBody":
+      "نستخدم التقويم الهجري المدني الحسابي لتحويل اليوم إلى رقم يوم متسلسل، ثم نحوله إلى التقويم الميلادي أو العكس. هذا مناسب للبحث التاريخي المتّسق، لكن بداية الشهر الهجري بالرؤية الشرعية قد تختلف يومًا واحدًا بحسب البلد والجهة المعتمدة.",
     "history.price": "قيمة النصاب",
     "history.nearest": "أقرب نقطة متاحة",
     "history.table": "جدول البيانات",
@@ -1059,38 +1083,52 @@ const EXTRA6: Record<string, Record<string, string>> = {
     "nav.methodology": "Methodology",
     "today.eyebrow": "TODAY'S NISAB",
     "today.title": "Today's zakat nisab",
-    "today.sub": "A clear daily reference for gold and silver nisab in your currency, with each figure, formula and source.",
+    "today.sub":
+      "A clear daily reference for gold and silver nisab in your currency, with each figure, formula and source.",
     "today.weight": "Nisab weight",
     "today.trace.source": "Metal source",
     "today.trace.status": "Data status",
     "today.trace.method": "Calculation method",
     "today.trace.methodBody": "Ounce price ÷ ounce weight × exchange rate × nisab weight.",
     "today.notZakat": "Nisab is not the zakat amount",
-    "today.notZakatBody": "Nisab is the minimum threshold; zakat due is calculated after the lunar year and other conditions are met.",
+    "today.notZakatBody":
+      "Nisab is the minimum threshold; zakat due is calculated after the lunar year and other conditions are met.",
     "map.eyebrow": "NISAB AROUND THE WORLD",
     "map.title": "Nisab around the world",
-    "map.sub": "Explore nisab in each country's currency, then open its page for the price, formula and source.",
+    "map.sub":
+      "Explore nisab in each country's currency, then open its page for the price, formula and source.",
     "map.directory": "Countries and current values",
     "method.eyebrow": "METHODOLOGY",
     "method.title": "How nisab is calculated",
-    "method.sub": "We separate the fiqh basis, market data and arithmetic so every figure remains understandable and auditable.",
+    "method.sub":
+      "We separate the fiqh basis, market data and arithmetic so every figure remains understandable and auditable.",
     "method.distinction": "Nisab is a threshold, not zakat due",
-    "method.distinctionBody": "Reaching nisab is one condition. It alone does not mean zakat is due, nor that the displayed number is the amount payable.",
-    "method.nisab": "The minimum wealth threshold at which zakat may become due when the remaining conditions are met.",
-    "method.zakat": "The amount payable after nisab, the lunar year and the conditions for the asset type are satisfied.",
+    "method.distinctionBody":
+      "Reaching nisab is one condition. It alone does not mean zakat is due, nor that the displayed number is the amount payable.",
+    "method.nisab":
+      "The minimum wealth threshold at which zakat may become due when the remaining conditions are met.",
+    "method.zakat":
+      "The amount payable after nisab, the lunar year and the conditions for the asset type are satisfied.",
     "method.fiqh.title": "Fiqh basis",
-    "method.fiqh.body": "The platform uses the well-known measures: twenty mithqal, approximately 85 grams of pure gold, and two hundred dirhams, approximately 595 grams of silver. Disputed matters are presented as scholarly differences, not one binding ruling.",
+    "method.fiqh.body":
+      "The platform uses the well-known measures: twenty mithqal, approximately 85 grams of pure gold, and two hundred dirhams, approximately 595 grams of silver. Disputed matters are presented as scholarly differences, not one binding ruling.",
     "method.data.title": "Market data",
-    "method.data.body": "Gold and silver ounce prices and the exchange rate to the selected currency are read from the stated sources. Source and timestamp accompany results; old data is never presented as live.",
+    "method.data.body":
+      "Gold and silver ounce prices and the exchange rate to the selected currency are read from the stated sources. Source and timestamp accompany results; old data is never presented as live.",
     "method.math.title": "Arithmetic",
-    "method.math.body": "The troy-ounce price is divided by 31.1034768 for the gram price, then multiplied by the exchange rate and nisab weight. Jewellery purity never changes the reference nisab weight.",
-    "method.goldNote": "The reference is pure gold. 24K, 22K, 21K and 18K are pricing views only and do not alter the nisab weight.",
-    "method.silverNote": "Silver is an independent 595-gram standard with its own price, history and comparison.",
+    "method.math.body":
+      "The troy-ounce price is divided by 31.1034768 for the gram price, then multiplied by the exchange rate and nisab weight. Jewellery purity never changes the reference nisab weight.",
+    "method.goldNote":
+      "The reference is pure gold. 24K, 22K, 21K and 18K are pricing views only and do not alter the nisab weight.",
+    "method.silverNote":
+      "Silver is an independent 595-gram standard with its own price, history and comparison.",
     "method.difference.title": "Choosing gold or silver",
-    "method.difference.body": "The monetary values differ as the market relationship between gold and silver changes. Contemporary scholars and institutions differ in application. The platform shows both without issuing an automatic ruling for the user.",
+    "method.difference.body":
+      "The monetary values differ as the market relationship between gold and silver changes. Contemporary scholars and institutions differ in application. The platform shows both without issuing an automatic ruling for the user.",
     "history.average": "Average",
     "history.lookup": "What was nisab on a date?",
-    "history.lookupSub": "Search by Gregorian or Hijri date; we show its counterpart and the nearest verified trading day.",
+    "history.lookupSub":
+      "Search by Gregorian or Hijri date; we show its counterpart and the nearest verified trading day.",
     "history.date": "Date",
     "history.calendarType": "Calendar type",
     "history.gregorian": "Gregorian",
@@ -1101,7 +1139,8 @@ const EXTRA6: Record<string, Record<string, string>> = {
     "history.hijriMonth": "Month",
     "history.hijriYear": "Hijri year",
     "history.conversionTitle": "How are the dates converted?",
-    "history.conversionBody": "We use the arithmetic civil Hijri calendar, converting each date through a continuous day number before producing its Gregorian or Hijri counterpart. This gives consistent historical lookup; an observed lunar month may differ by one day across countries and authorities.",
+    "history.conversionBody":
+      "We use the arithmetic civil Hijri calendar, converting each date through a continuous day number before producing its Gregorian or Hijri counterpart. This gives consistent historical lookup; an observed lunar month may differ by one day across countries and authorities.",
     "history.price": "Nisab value",
     "history.nearest": "Nearest available point",
     "history.table": "Data table",
@@ -1130,7 +1169,8 @@ const EXTRA7: Record<string, Record<string, string>> = {
     "quality.delayed": "متأخر",
     "quality.stale": "آخر قيمة متاحة",
     "quality.manual": "تعديل يدوي منك",
-    "quality.noRate": "لا يتوفر سعر صرف موثوق لـ {currency} الآن؛ نعرض آخر قيمة متاحة بدل اختلاق رقم.",
+    "quality.noRate":
+      "لا يتوفر سعر صرف موثوق لـ {currency} الآن؛ نعرض آخر قيمة متاحة بدل اختلاق رقم.",
     "quality.note":
       "سعر المعدن عالمي (سبوت)، وقد يختلف عن سعر التجزئة المحلي بسبب المصنعية والجمارك والضريبة. أسعار الصرف رسمية وقد تختلف عن السوق الموازي.",
     "hawl.title": "تذكير سنوي بموعد الحَوْل",
@@ -1166,7 +1206,8 @@ const EXTRA7: Record<string, Record<string, string>> = {
     "quality.note":
       "Metal prices are international spot quotes and can differ from local retail prices (craftsmanship, customs, tax). Exchange rates are official references and may differ from parallel markets.",
     "hawl.title": "Yearly hawl reminder",
-    "hawl.sub": "Set the start of your hawl; we remind you before it is due and flag sharp nisab moves.",
+    "hawl.sub":
+      "Set the start of your hawl; we remind you before it is due and flag sharp nisab moves.",
     "hawl.start": "Hawl start date",
     "hawl.calendar": "Year type",
     "hawl.lunar": "Hijri (lunar) year",
@@ -1203,10 +1244,13 @@ const EXTRA8: Record<string, Record<string, string>> = {
     "local.silverNisab": "نصاب الفضّة ٥٩٥غ بسعر التسييل",
     "local.spread": "فرق سعر الشراء لدى الصائغ (%)",
     "local.apply": "تطبيق",
-    "local.rule.pure": "التقويم على الخالص: الذهب عيار ٢٤ لوزن ٨٥ جرامًا، والفضّة النقية ٥٩٥ جرامًا.",
-    "local.rule.nomaking": "لا تُحتسب المصنعية ولا الدمغة ولا الضرائب؛ الزكاة في عين المعدن وقيمته الذاتية.",
+    "local.rule.pure":
+      "التقويم على الخالص: الذهب عيار ٢٤ لوزن ٨٥ جرامًا، والفضّة النقية ٥٩٥ جرامًا.",
+    "local.rule.nomaking":
+      "لا تُحتسب المصنعية ولا الدمغة ولا الضرائب؛ الزكاة في عين المعدن وقيمته الذاتية.",
     "local.rule.hawlday": "العبرة بسعر يوم اكتمال الحول الهجري، لا بسعر يوم الشراء.",
-    "local.rule.buyback": "في التدقيق المحاسبي يُعتمد السعر الذي يشتري به الصائغ من العميل، لأنه القيمة التي يمكن تسييل المعدن بها.",
+    "local.rule.buyback":
+      "في التدقيق المحاسبي يُعتمد السعر الذي يشتري به الصائغ من العميل، لأنه القيمة التي يمكن تسييل المعدن بها.",
     "local.note":
       "سعر السوق المحلي يبدأ من السعر العالمي المجرد ثم يُضبط بما تُدخله من سعر صاغة مدينتك وفرق سعر الشراء، ويُحفظ على جهازك فقط.",
   },
@@ -1225,9 +1269,12 @@ const EXTRA8: Record<string, Record<string, string>> = {
     "local.spread": "Jeweller buy-back discount (%)",
     "local.apply": "Apply",
     "local.rule.pure": "Valued on pure metal: 85 g of 24K gold, 595 g of pure silver.",
-    "local.rule.nomaking": "Making charges, hallmark fees and taxes are excluded; zakat is on the metal itself.",
-    "local.rule.hawlday": "The price of the day the hijri hawl completes applies, not the purchase-day price.",
-    "local.rule.buyback": "Precise accounting uses the price a jeweller pays you, since that is the real liquidation value.",
+    "local.rule.nomaking":
+      "Making charges, hallmark fees and taxes are excluded; zakat is on the metal itself.",
+    "local.rule.hawlday":
+      "The price of the day the hijri hawl completes applies, not the purchase-day price.",
+    "local.rule.buyback":
+      "Precise accounting uses the price a jeweller pays you, since that is the real liquidation value.",
     "local.note":
       "The local price starts from the bare global quote and is adjusted by your city jeweller price and buy-back discount; it stays on your device.",
   },
@@ -1269,7 +1316,8 @@ const EXTRA10: Record<string, Record<string, string>> = {
     "nav.account": "حسابي",
     "auth.eyebrow": "حساب نِصاب",
     "auth.title": "الدخول والتسجيل",
-    "auth.sub": "حساب واحد للصائغ والسفير والمتطوع والمشرف، تُحفظ به مشاركاتك على المنصة لا على جهازك.",
+    "auth.sub":
+      "حساب واحد للصائغ والسفير والمتطوع والمشرف، تُحفظ به مشاركاتك على المنصة لا على جهازك.",
     "auth.signIn": "دخول",
     "auth.signUp": "حساب جديد",
     "auth.name": "الاسم",
@@ -1277,17 +1325,21 @@ const EXTRA10: Record<string, Record<string, string>> = {
     "auth.password": "كلمة المرور",
     "auth.google": "المتابعة بحساب Google",
     "auth.checkEmail": "أرسلنا رسالة تأكيد إلى بريدك، افتح الرابط ثم عد للدخول.",
-    "auth.note": "كل حساب جديد يبدأ بدور «متطوع». أدوار الصائغ والسفير والمشرف يمنحها المشرف بعد المراجعة.",
+    "auth.note":
+      "كل حساب جديد يبدأ بدور «متطوع». أدوار الصائغ والسفير والمشرف يمنحها المشرف بعد المراجعة.",
     "auth.signOut": "خروج",
     "p.eyebrow": "شبكة الثقة",
     "p.title": "شبكة الصاغة وسفراء نِصاب",
-    "p.sub": "سعر النصاب الأدق هو سعر الصاغة داخل دولتك يوم وجوب الزكاة. انشر سعرك، وقيّم أسعار غيرك، وتابع ترتيب الأكثر التزامًا.",
+    "p.sub":
+      "سعر النصاب الأدق هو سعر الصاغة داخل دولتك يوم وجوب الزكاة. انشر سعرك، وقيّم أسعار غيرك، وتابع ترتيب الأكثر التزامًا.",
     "p.card1.t": "صائغ معتمد",
-    "p.card1.b": "محل أو صائغ مرخّص ينشر سعر الجرام مجرَّدًا من المصنعية وسعر الشراء (التسييل) في مدينته.",
+    "p.card1.b":
+      "محل أو صائغ مرخّص ينشر سعر الجرام مجرَّدًا من المصنعية وسعر الشراء (التسييل) في مدينته.",
     "p.card2.t": "سفير نِصاب",
     "p.card2.b": "متطوع يحدّث سعر الذهب عيار ٢٤ والفضة النقية يوميًا لمدينته ويوثّق مصدر الاقتباس.",
     "p.card3.t": "تحقق مجتمعي",
-    "p.card3.b": "أي مسجَّل يقيّم السعر المنشور: مطابق للسوق أم بعيد عنه، فتظهر نسبة الدقة بجانب كل سعر.",
+    "p.card3.b":
+      "أي مسجَّل يقيّم السعر المنشور: مطابق للسوق أم بعيد عنه، فتظهر نسبة الدقة بجانب كل سعر.",
     "p.path": "مسار الاعتماد",
     "p.duties": "واجبات السفير اليومية",
     "p.join": "ملف المشاركة",
@@ -1320,14 +1372,17 @@ const EXTRA10: Record<string, Record<string, string>> = {
     "p.entries": "أسعار معتمدة",
     "p.badgeMonth": "صائغ الشهر",
     "p.ai.title": "تقييم ذكي لمعقولية السعر",
-    "p.ai.sub": "أدخل سعرك المحلي وسلسلة أسعار سابقة إن وُجدت، ليصلك تقييم مفسّر للمعقولية والعوامل والسيناريوهات.",
+    "p.ai.sub":
+      "أدخل سعرك المحلي وسلسلة أسعار سابقة إن وُجدت، ليصلك تقييم مفسّر للمعقولية والعوامل والسيناريوهات.",
     "p.ai.history": "سلسلة تاريخية (سطر لكل يوم: 2026-09-01=4200)",
     "p.ai.run": "قيّم السعر",
     "p.ai.busy": "جارٍ التحليل…",
     "p.ai.note": "التقييم اجتهاد تحليلي وليس فتوى ولا نصيحة استثمارية.",
-    "p.localNote": "الأسعار والتقييمات استرشادية. النصاب يبقى ٨٥ جرام ذهب و٥٩٥ جرام فضة، ومقدار الزكاة ٢٫٥٪.",
+    "p.localNote":
+      "الأسعار والتقييمات استرشادية. النصاب يبقى ٨٥ جرام ذهب و٥٩٥ جرام فضة، ومقدار الزكاة ٢٫٥٪.",
     "m.title": "مراجعة أسعار الصاغة",
-    "m.sub": "اعتمد السعر أو ارفضه مع بيان السبب قبل نشره لكل دولة. كل قرار يُسجَّل في سجل التدقيق.",
+    "m.sub":
+      "اعتمد السعر أو ارفضه مع بيان السبب قبل نشره لكل دولة. كل قرار يُسجَّل في سجل التدقيق.",
     "m.queue": "قائمة المراجعة",
     "m.empty": "لا توجد أسعار بانتظار المراجعة.",
     "m.reason": "سبب القرار",
@@ -1338,7 +1393,8 @@ const EXTRA10: Record<string, Record<string, string>> = {
     "m.roles": "الأدوار",
     "m.grant": "منح الدور",
     "a.title": "تنبيهاتي",
-    "a.sub": "اختر الدول والمواد التي تتابعها، ليصلك تنبيه عند وصول سعر محلي جديد أو تغيّر تقييمه أو اعتماد تصحيح من المجتمع.",
+    "a.sub":
+      "اختر الدول والمواد التي تتابعها، ليصلك تنبيه عند وصول سعر محلي جديد أو تغيّر تقييمه أو اعتماد تصحيح من المجتمع.",
     "a.countries": "الدول المتابَعة",
     "a.metals": "المواد",
     "a.inApp": "تنبيه داخل المنصة",
@@ -1351,7 +1407,8 @@ const EXTRA10: Record<string, Record<string, string>> = {
     "a.markRead": "تعليم كمقروء",
     "o.eyebrow": "قراءة اقتصادية",
     "o.title": "تقييم سعر الذهب والفضة: الماضي والاحتمالات",
-    "o.sub": "قراءة مبنية على متوسطات سنوية من ١٩٢٥ حتى اليوم بالدولار للأونصة. اجتهاد تحليلي لفهم سلوك المعدن، لا وعد بسعر ولا نصيحة استثمارية.",
+    "o.sub":
+      "قراءة مبنية على متوسطات سنوية من ١٩٢٥ حتى اليوم بالدولار للأونصة. اجتهاد تحليلي لفهم سلوك المعدن، لا وعد بسعر ولا نصيحة استثمارية.",
     "o.gold": "الذهب",
     "o.silver": "الفضة",
     "o.price": "متوسط سعر السنة",
@@ -1366,12 +1423,15 @@ const EXTRA10: Record<string, Record<string, string>> = {
     "o.cagr": "نمو سنوي مركب",
     "o.years": "سنة",
     "o.trend": "قراءة الاتجاه",
-    "o.trendBody": "ثبت الذهب عند نحو ٣٥ دولارًا للأونصة حتى انهيار نظام بريتون وودز سنة ١٩٧١، ومنذ تحرير السعر صار يتحرك مع التضخم والفائدة الحقيقية وشراء البنوك المركزية.",
+    "o.trendBody":
+      "ثبت الذهب عند نحو ٣٥ دولارًا للأونصة حتى انهيار نظام بريتون وودز سنة ١٩٧١، ومنذ تحرير السعر صار يتحرك مع التضخم والفائدة الحقيقية وشراء البنوك المركزية.",
     "o.volTitle": "التقلب والتراجعات",
     "o.ratioTitle": "نسبة الذهب إلى الفضة",
-    "o.ratioBody": "ارتفاع النسبة يعني أن نصاب الفضة صار أرخص كثيرًا من نصاب الذهب، وهو سبب الخلاف العملي في اختيار أي النصابين يُعتمد.",
+    "o.ratioBody":
+      "ارتفاع النسبة يعني أن نصاب الفضة صار أرخص كثيرًا من نصاب الذهب، وهو سبب الخلاف العملي في اختيار أي النصابين يُعتمد.",
     "o.scenarios": "سيناريوهات استرشادية",
-    "o.scenariosSub": "السيناريو الأساسي متوسط النمو المركب على عشرين وخمسين سنة، والمتحفظ والمتفائل يبعدان عنه بنصف التقلب السنوي. امتداد للماضي لا تنبؤ بالسوق.",
+    "o.scenariosSub":
+      "السيناريو الأساسي متوسط النمو المركب على عشرين وخمسين سنة، والمتحفظ والمتفائل يبعدان عنه بنصف التقلب السنوي. امتداد للماضي لا تنبؤ بالسوق.",
     "o.scenario": "السيناريو",
     "o.rate": "نمو سنوي",
     "o.low": "متحفظ",
@@ -1389,8 +1449,10 @@ const EXTRA10: Record<string, Record<string, string>> = {
     "o.down3": "بيع المستثمرين بعد موجات صعود حادة.",
     "o.down4": "للفضة: ركود صناعي يخفض الطلب بسرعة.",
     "o.impact": "أثر ذلك على النصاب",
-    "o.impactBody": "وزن النصاب ثابت: ٨٥ جرام ذهب و٥٩٥ جرام فضة، والزكاة ٢٫٥٪. المتغير قيمة هذا الوزن بعملتك. العبرة بسعر يوم اكتمال الحول الهجري، لا بالتوقع ولا بسعر الشراء.",
-    "o.disclaimer": "إخلاء مسؤولية: قراءة استرشادية مبنية على متوسطات سنوية تقريبية، وليست نصيحة استثمارية ولا فتوى.",
+    "o.impactBody":
+      "وزن النصاب ثابت: ٨٥ جرام ذهب و٥٩٥ جرام فضة، والزكاة ٢٫٥٪. المتغير قيمة هذا الوزن بعملتك. العبرة بسعر يوم اكتمال الحول الهجري، لا بالتوقع ولا بسعر الشراء.",
+    "o.disclaimer":
+      "إخلاء مسؤولية: قراءة استرشادية مبنية على متوسطات سنوية تقريبية، وليست نصيحة استثمارية ولا فتوى.",
   },
   en: {
     "nav.alerts": "My alerts",
@@ -1399,7 +1461,8 @@ const EXTRA10: Record<string, Record<string, string>> = {
     "nav.account": "My account",
     "auth.eyebrow": "Nisab account",
     "auth.title": "Sign in or register",
-    "auth.sub": "One account for jewellers, ambassadors, volunteers and moderators — your work is saved on the platform, not on one device.",
+    "auth.sub":
+      "One account for jewellers, ambassadors, volunteers and moderators — your work is saved on the platform, not on one device.",
     "auth.signIn": "Sign in",
     "auth.signUp": "Create account",
     "auth.name": "Name",
@@ -1407,17 +1470,22 @@ const EXTRA10: Record<string, Record<string, string>> = {
     "auth.password": "Password",
     "auth.google": "Continue with Google",
     "auth.checkEmail": "We sent a confirmation link to your email. Open it, then sign in.",
-    "auth.note": "Every new account starts as a volunteer. Jeweller, ambassador and moderator roles are granted after review.",
+    "auth.note":
+      "Every new account starts as a volunteer. Jeweller, ambassador and moderator roles are granted after review.",
     "auth.signOut": "Sign out",
     "p.eyebrow": "Trust network",
     "p.title": "Jeweller network and Nisab ambassadors",
-    "p.sub": "The most accurate nisab uses jeweller prices inside your own country on the day zakat falls due. Post your price, rate others, and follow the contributor ranking.",
+    "p.sub":
+      "The most accurate nisab uses jeweller prices inside your own country on the day zakat falls due. Post your price, rate others, and follow the contributor ranking.",
     "p.card1.t": "Accredited jeweller",
-    "p.card1.b": "A licensed shop posting the bare gram price — no making charges — plus the buy-back price in its city.",
+    "p.card1.b":
+      "A licensed shop posting the bare gram price — no making charges — plus the buy-back price in its city.",
     "p.card2.t": "Nisab ambassador",
-    "p.card2.b": "A volunteer who updates 24K gold and pure silver prices daily for their city and documents the source.",
+    "p.card2.b":
+      "A volunteer who updates 24K gold and pure silver prices daily for their city and documents the source.",
     "p.card3.t": "Community check",
-    "p.card3.b": "Any registered member rates a posted price as accurate or off-market; an accuracy score shows next to it.",
+    "p.card3.b":
+      "Any registered member rates a posted price as accurate or off-market; an accuracy score shows next to it.",
     "p.path": "Accreditation path",
     "p.duties": "Daily ambassador duties",
     "p.join": "Contributor profile",
@@ -1439,7 +1507,8 @@ const EXTRA10: Record<string, Record<string, string>> = {
     "p.pending": "Awaiting review",
     "p.approved": "Approved",
     "p.rejected": "Rejected",
-    "p.sent": "Price received. It becomes public after moderator approval, or instantly for trusted contributors.",
+    "p.sent":
+      "Price received. It becomes public after moderator approval, or instantly for trusted contributors.",
     "p.listTitle": "Approved prices in your country",
     "p.noPrices": "No approved prices for this country yet.",
     "p.accuracy": "accuracy",
@@ -1450,14 +1519,17 @@ const EXTRA10: Record<string, Record<string, string>> = {
     "p.entries": "approved prices",
     "p.badgeMonth": "Jeweller of the month",
     "p.ai.title": "AI plausibility review",
-    "p.ai.sub": "Enter your local price and any past series to get an explained review of plausibility, drivers and scenarios.",
+    "p.ai.sub":
+      "Enter your local price and any past series to get an explained review of plausibility, drivers and scenarios.",
     "p.ai.history": "Historical series (one per line: 2026-09-01=4200)",
     "p.ai.run": "Review price",
     "p.ai.busy": "Analysing…",
     "p.ai.note": "This review is analytical guidance, not a fatwa or investment advice.",
-    "p.localNote": "Prices and ratings are indicative. The nisab stays 85 g of gold and 595 g of silver, and zakat stays 2.5%.",
+    "p.localNote":
+      "Prices and ratings are indicative. The nisab stays 85 g of gold and 595 g of silver, and zakat stays 2.5%.",
     "m.title": "Jeweller price review",
-    "m.sub": "Approve or reject each price with a reason before it is published for a country. Every decision is logged.",
+    "m.sub":
+      "Approve or reject each price with a reason before it is published for a country. Every decision is logged.",
     "m.queue": "Review queue",
     "m.empty": "No prices awaiting review.",
     "m.reason": "Decision reason",
@@ -1468,7 +1540,8 @@ const EXTRA10: Record<string, Record<string, string>> = {
     "m.roles": "Roles",
     "m.grant": "Grant role",
     "a.title": "My alerts",
-    "a.sub": "Choose the countries and metals you follow to be told when a new local price lands, its quality score changes, or a community correction is approved.",
+    "a.sub":
+      "Choose the countries and metals you follow to be told when a new local price lands, its quality score changes, or a community correction is approved.",
     "a.countries": "Followed countries",
     "a.metals": "Metals",
     "a.inApp": "In-app alert",
@@ -1481,7 +1554,8 @@ const EXTRA10: Record<string, Record<string, string>> = {
     "a.markRead": "Mark read",
     "o.eyebrow": "Economic reading",
     "o.title": "Gold and silver: the record and the possibilities",
-    "o.sub": "Built on annual averages from 1925 to today in USD per ounce. Analytical guidance to understand the metal's behaviour — not a price promise or investment advice.",
+    "o.sub":
+      "Built on annual averages from 1925 to today in USD per ounce. Analytical guidance to understand the metal's behaviour — not a price promise or investment advice.",
     "o.gold": "Gold",
     "o.silver": "Silver",
     "o.price": "Average price this year",
@@ -1496,12 +1570,15 @@ const EXTRA10: Record<string, Record<string, string>> = {
     "o.cagr": "Compound annual growth",
     "o.years": "years",
     "o.trend": "Reading the trend",
-    "o.trendBody": "Gold was pegged near $35 an ounce until Bretton Woods collapsed in 1971; since then it moves with inflation, real rates and central-bank buying.",
+    "o.trendBody":
+      "Gold was pegged near $35 an ounce until Bretton Woods collapsed in 1971; since then it moves with inflation, real rates and central-bank buying.",
     "o.volTitle": "Volatility and drawdowns",
     "o.ratioTitle": "Gold-to-silver ratio",
-    "o.ratioBody": "A higher ratio means the silver nisab is far cheaper than the gold one — the practical reason scholars differ on which to use.",
+    "o.ratioBody":
+      "A higher ratio means the silver nisab is far cheaper than the gold one — the practical reason scholars differ on which to use.",
     "o.scenarios": "Indicative scenarios",
-    "o.scenariosSub": "The base case is the average compound growth over 20 and 50 years; conservative and optimistic sit half the annual volatility away. An extension of the past, not a market forecast.",
+    "o.scenariosSub":
+      "The base case is the average compound growth over 20 and 50 years; conservative and optimistic sit half the annual volatility away. An extension of the past, not a market forecast.",
     "o.scenario": "Scenario",
     "o.rate": "Annual growth",
     "o.low": "Conservative",
@@ -1519,8 +1596,10 @@ const EXTRA10: Record<string, Record<string, string>> = {
     "o.down3": "Investor selling after sharp rallies.",
     "o.down4": "For silver: an industrial slowdown cuts demand fast.",
     "o.impact": "What this means for the nisab",
-    "o.impactBody": "The nisab weight never changes: 85 g of gold, 595 g of silver, zakat at 2.5%. Only its value in your currency moves. What counts is the price on the day the hijri year completes — not a forecast, not the purchase price.",
-    "o.disclaimer": "Disclaimer: indicative reading based on approximate annual averages. Not investment advice and not a fatwa.",
+    "o.impactBody":
+      "The nisab weight never changes: 85 g of gold, 595 g of silver, zakat at 2.5%. Only its value in your currency moves. What counts is the price on the day the hijri year completes — not a forecast, not the purchase price.",
+    "o.disclaimer":
+      "Disclaimer: indicative reading based on approximate annual averages. Not investment advice and not a fatwa.",
   },
 };
 
@@ -1532,7 +1611,8 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "nav.account": "Mon compte",
     "auth.eyebrow": "Compte Nisab",
     "auth.title": "Connexion ou inscription",
-    "auth.sub": "Un compte pour les bijoutiers, ambassadeurs, bénévoles et modérateurs — vos contributions sont enregistrées sur la plateforme.",
+    "auth.sub":
+      "Un compte pour les bijoutiers, ambassadeurs, bénévoles et modérateurs — vos contributions sont enregistrées sur la plateforme.",
     "auth.signIn": "Se connecter",
     "auth.signUp": "Créer un compte",
     "auth.name": "Nom",
@@ -1540,17 +1620,22 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "auth.password": "Mot de passe",
     "auth.google": "Continuer avec Google",
     "auth.checkEmail": "Un lien de confirmation vous a été envoyé par e-mail.",
-    "auth.note": "Chaque nouveau compte démarre comme bénévole. Les rôles sont accordés après examen.",
+    "auth.note":
+      "Chaque nouveau compte démarre comme bénévole. Les rôles sont accordés après examen.",
     "auth.signOut": "Déconnexion",
     "p.eyebrow": "Réseau de confiance",
     "p.title": "Réseau des bijoutiers et ambassadeurs Nisab",
-    "p.sub": "Le nisab le plus juste utilise les prix des bijoutiers de votre pays le jour où la zakat est due. Publiez votre prix, évaluez ceux des autres, suivez le classement.",
+    "p.sub":
+      "Le nisab le plus juste utilise les prix des bijoutiers de votre pays le jour où la zakat est due. Publiez votre prix, évaluez ceux des autres, suivez le classement.",
     "p.card1.t": "Bijoutier accrédité",
-    "p.card1.b": "Une boutique agréée publie le prix nu du gramme, hors façon, ainsi que le prix de rachat.",
+    "p.card1.b":
+      "Une boutique agréée publie le prix nu du gramme, hors façon, ainsi que le prix de rachat.",
     "p.card2.t": "Ambassadeur Nisab",
-    "p.card2.b": "Un bénévole met à jour chaque jour l'or 24 carats et l'argent pur de sa ville, en citant la source.",
+    "p.card2.b":
+      "Un bénévole met à jour chaque jour l'or 24 carats et l'argent pur de sa ville, en citant la source.",
     "p.card3.t": "Vérification communautaire",
-    "p.card3.b": "Tout membre inscrit juge un prix conforme ou éloigné du marché ; un taux de précision s'affiche.",
+    "p.card3.b":
+      "Tout membre inscrit juge un prix conforme ou éloigné du marché ; un taux de précision s'affiche.",
     "p.path": "Parcours d'accréditation",
     "p.duties": "Devoirs quotidiens de l'ambassadeur",
     "p.join": "Profil de contributeur",
@@ -1572,7 +1657,8 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "p.pending": "En attente de révision",
     "p.approved": "Approuvé",
     "p.rejected": "Refusé",
-    "p.sent": "Prix reçu. Il devient public après approbation, ou immédiatement pour les contributeurs de confiance.",
+    "p.sent":
+      "Prix reçu. Il devient public après approbation, ou immédiatement pour les contributeurs de confiance.",
     "p.listTitle": "Prix approuvés dans votre pays",
     "p.noPrices": "Aucun prix approuvé pour ce pays.",
     "p.accuracy": "précision",
@@ -1583,14 +1669,17 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "p.entries": "prix approuvés",
     "p.badgeMonth": "Bijoutier du mois",
     "p.ai.title": "Évaluation IA de la plausibilité",
-    "p.ai.sub": "Saisissez votre prix local et une série passée pour obtenir une analyse expliquée.",
+    "p.ai.sub":
+      "Saisissez votre prix local et une série passée pour obtenir une analyse expliquée.",
     "p.ai.history": "Série historique (une ligne : 2026-09-01=4200)",
     "p.ai.run": "Évaluer le prix",
     "p.ai.busy": "Analyse en cours…",
     "p.ai.note": "Analyse indicative : ni fatwa, ni conseil en investissement.",
-    "p.localNote": "Prix et évaluations indicatifs. Le nisab reste 85 g d'or et 595 g d'argent, la zakat 2,5 %.",
+    "p.localNote":
+      "Prix et évaluations indicatifs. Le nisab reste 85 g d'or et 595 g d'argent, la zakat 2,5 %.",
     "m.title": "Révision des prix",
-    "m.sub": "Approuvez ou refusez chaque prix avec un motif avant publication. Chaque décision est journalisée.",
+    "m.sub":
+      "Approuvez ou refusez chaque prix avec un motif avant publication. Chaque décision est journalisée.",
     "m.queue": "File de révision",
     "m.empty": "Aucun prix en attente.",
     "m.reason": "Motif de la décision",
@@ -1601,7 +1690,8 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "m.roles": "Rôles",
     "m.grant": "Accorder le rôle",
     "a.title": "Mes alertes",
-    "a.sub": "Choisissez les pays et métaux suivis pour être averti d'un nouveau prix local, d'un changement de qualité ou d'une correction approuvée.",
+    "a.sub":
+      "Choisissez les pays et métaux suivis pour être averti d'un nouveau prix local, d'un changement de qualité ou d'une correction approuvée.",
     "a.countries": "Pays suivis",
     "a.metals": "Métaux",
     "a.inApp": "Alerte dans l'application",
@@ -1614,7 +1704,8 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "a.markRead": "Marquer comme lu",
     "o.eyebrow": "Lecture économique",
     "o.title": "Or et argent : le passé et les possibles",
-    "o.sub": "Moyennes annuelles de 1925 à aujourd'hui en USD l'once. Analyse indicative, ni promesse de prix ni conseil d'investissement.",
+    "o.sub":
+      "Moyennes annuelles de 1925 à aujourd'hui en USD l'once. Analyse indicative, ni promesse de prix ni conseil d'investissement.",
     "o.gold": "Or",
     "o.silver": "Argent",
     "o.price": "Prix moyen de l'année",
@@ -1629,12 +1720,15 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "o.cagr": "Croissance annuelle composée",
     "o.years": "ans",
     "o.trend": "Lecture de la tendance",
-    "o.trendBody": "L'or est resté proche de 35 $ l'once jusqu'à la fin de Bretton Woods en 1971 ; depuis, il suit l'inflation, les taux réels et les achats des banques centrales.",
+    "o.trendBody":
+      "L'or est resté proche de 35 $ l'once jusqu'à la fin de Bretton Woods en 1971 ; depuis, il suit l'inflation, les taux réels et les achats des banques centrales.",
     "o.volTitle": "Volatilité et reculs",
     "o.ratioTitle": "Ratio or/argent",
-    "o.ratioBody": "Un ratio élevé rend le nisab de l'argent bien moins cher que celui de l'or : c'est la raison pratique des divergences.",
+    "o.ratioBody":
+      "Un ratio élevé rend le nisab de l'argent bien moins cher que celui de l'or : c'est la raison pratique des divergences.",
     "o.scenarios": "Scénarios indicatifs",
-    "o.scenariosSub": "Le scénario de base est la moyenne de la croissance composée sur 20 et 50 ans ; les autres s'en écartent d'une demi-volatilité.",
+    "o.scenariosSub":
+      "Le scénario de base est la moyenne de la croissance composée sur 20 et 50 ans ; les autres s'en écartent d'une demi-volatilité.",
     "o.scenario": "Scénario",
     "o.rate": "Croissance annuelle",
     "o.low": "Prudent",
@@ -1652,8 +1746,10 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "o.down3": "Ventes des investisseurs après de fortes hausses.",
     "o.down4": "Argent : un ralentissement industriel réduit vite la demande.",
     "o.impact": "Effet sur le nisab",
-    "o.impactBody": "Le poids du nisab ne change pas : 85 g d'or, 595 g d'argent, zakat à 2,5 %. Seule sa valeur dans votre monnaie bouge, au prix du jour où l'année hégirienne s'achève.",
-    "o.disclaimer": "Avertissement : lecture indicative fondée sur des moyennes annuelles approximatives.",
+    "o.impactBody":
+      "Le poids du nisab ne change pas : 85 g d'or, 595 g d'argent, zakat à 2,5 %. Seule sa valeur dans votre monnaie bouge, au prix du jour où l'année hégirienne s'achève.",
+    "o.disclaimer":
+      "Avertissement : lecture indicative fondée sur des moyennes annuelles approximatives.",
   },
   tr: {
     "nav.alerts": "Uyarılarım",
@@ -1662,7 +1758,8 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "nav.account": "Hesabım",
     "auth.eyebrow": "Nisab hesabı",
     "auth.title": "Giriş veya kayıt",
-    "auth.sub": "Kuyumcu, temsilci, gönüllü ve moderatör için tek hesap — katkılarınız cihazda değil platformda saklanır.",
+    "auth.sub":
+      "Kuyumcu, temsilci, gönüllü ve moderatör için tek hesap — katkılarınız cihazda değil platformda saklanır.",
     "auth.signIn": "Giriş",
     "auth.signUp": "Hesap oluştur",
     "auth.name": "Ad",
@@ -1674,13 +1771,16 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "auth.signOut": "Çıkış",
     "p.eyebrow": "Güven ağı",
     "p.title": "Kuyumcu ağı ve Nisab temsilcileri",
-    "p.sub": "En doğru nisap, zekâtın farz olduğu gün ülkenizdeki kuyumcu fiyatıdır. Fiyatınızı paylaşın, diğerlerini değerlendirin, sıralamayı izleyin.",
+    "p.sub":
+      "En doğru nisap, zekâtın farz olduğu gün ülkenizdeki kuyumcu fiyatıdır. Fiyatınızı paylaşın, diğerlerini değerlendirin, sıralamayı izleyin.",
     "p.card1.t": "Onaylı kuyumcu",
     "p.card1.b": "Ruhsatlı dükkân, işçiliksiz gram fiyatını ve geri alım fiyatını paylaşır.",
     "p.card2.t": "Nisab temsilcisi",
-    "p.card2.b": "Gönüllü, şehrinin 24 ayar altın ve saf gümüş fiyatını günlük günceller ve kaynağı belgeler.",
+    "p.card2.b":
+      "Gönüllü, şehrinin 24 ayar altın ve saf gümüş fiyatını günlük günceller ve kaynağı belgeler.",
     "p.card3.t": "Topluluk doğrulaması",
-    "p.card3.b": "Kayıtlı her üye fiyatın piyasaya uygun olup olmadığını oylar; doğruluk oranı görünür.",
+    "p.card3.b":
+      "Kayıtlı her üye fiyatın piyasaya uygun olup olmadığını oylar; doğruluk oranı görünür.",
     "p.path": "Onay yolu",
     "p.duties": "Temsilcinin günlük görevleri",
     "p.join": "Katılımcı profili",
@@ -1702,7 +1802,8 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "p.pending": "İnceleme bekliyor",
     "p.approved": "Onaylandı",
     "p.rejected": "Reddedildi",
-    "p.sent": "Fiyat alındı. Moderatör onayından sonra, güvenilir katkıcılarda ise anında yayınlanır.",
+    "p.sent":
+      "Fiyat alındı. Moderatör onayından sonra, güvenilir katkıcılarda ise anında yayınlanır.",
     "p.listTitle": "Ülkenizdeki onaylı fiyatlar",
     "p.noPrices": "Bu ülke için onaylı fiyat yok.",
     "p.accuracy": "doğruluk",
@@ -1718,7 +1819,8 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "p.ai.run": "Fiyatı değerlendir",
     "p.ai.busy": "Analiz ediliyor…",
     "p.ai.note": "Bu değerlendirme fetva veya yatırım tavsiyesi değildir.",
-    "p.localNote": "Fiyatlar yol göstericidir. Nisap 85 g altın ve 595 g gümüş, zekât %2,5 olarak kalır.",
+    "p.localNote":
+      "Fiyatlar yol göstericidir. Nisap 85 g altın ve 595 g gümüş, zekât %2,5 olarak kalır.",
     "m.title": "Kuyumcu fiyat incelemesi",
     "m.sub": "Her fiyatı gerekçesiyle onaylayın veya reddedin. Her karar kaydedilir.",
     "m.queue": "İnceleme kuyruğu",
@@ -1731,7 +1833,8 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "m.roles": "Roller",
     "m.grant": "Rol ver",
     "a.title": "Uyarılarım",
-    "a.sub": "Takip ettiğiniz ülke ve madenleri seçin; yeni yerel fiyat, kalite değişimi veya onaylı düzeltmede haber alın.",
+    "a.sub":
+      "Takip ettiğiniz ülke ve madenleri seçin; yeni yerel fiyat, kalite değişimi veya onaylı düzeltmede haber alın.",
     "a.countries": "Takip edilen ülkeler",
     "a.metals": "Madenler",
     "a.inApp": "Uygulama içi uyarı",
@@ -1744,7 +1847,8 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "a.markRead": "Okundu işaretle",
     "o.eyebrow": "Ekonomik okuma",
     "o.title": "Altın ve gümüş: geçmiş ve olasılıklar",
-    "o.sub": "1925'ten bugüne ons başına dolar yıllık ortalamalar. Yol gösterici analiz; fiyat vaadi veya yatırım tavsiyesi değildir.",
+    "o.sub":
+      "1925'ten bugüne ons başına dolar yıllık ortalamalar. Yol gösterici analiz; fiyat vaadi veya yatırım tavsiyesi değildir.",
     "o.gold": "Altın",
     "o.silver": "Gümüş",
     "o.price": "Yıl ortalaması",
@@ -1759,12 +1863,15 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "o.cagr": "Bileşik yıllık büyüme",
     "o.years": "yıl",
     "o.trend": "Eğilimi okumak",
-    "o.trendBody": "Altın 1971'de Bretton Woods çökene dek ons başına ~35 dolardaydı; o günden beri enflasyon, reel faiz ve merkez bankası alımlarıyla hareket eder.",
+    "o.trendBody":
+      "Altın 1971'de Bretton Woods çökene dek ons başına ~35 dolardaydı; o günden beri enflasyon, reel faiz ve merkez bankası alımlarıyla hareket eder.",
     "o.volTitle": "Oynaklık ve düşüşler",
     "o.ratioTitle": "Altın/gümüş oranı",
-    "o.ratioBody": "Oranın yükselmesi gümüş nisabını altına göre çok ucuzlatır; hangi nisabın esas alınacağındaki pratik ayrılığın sebebi budur.",
+    "o.ratioBody":
+      "Oranın yükselmesi gümüş nisabını altına göre çok ucuzlatır; hangi nisabın esas alınacağındaki pratik ayrılığın sebebi budur.",
     "o.scenarios": "Yol gösterici senaryolar",
-    "o.scenariosSub": "Temel senaryo 20 ve 50 yıllık bileşik büyümenin ortalamasıdır; diğerleri yarım oynaklık kadar uzaktır.",
+    "o.scenariosSub":
+      "Temel senaryo 20 ve 50 yıllık bileşik büyümenin ortalamasıdır; diğerleri yarım oynaklık kadar uzaktır.",
     "o.scenario": "Senaryo",
     "o.rate": "Yıllık büyüme",
     "o.low": "Temkinli",
@@ -1782,7 +1889,8 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "o.down3": "Sert yükselişlerden sonra yatırımcı satışı.",
     "o.down4": "Gümüşte: sanayi durgunluğu talebi hızla kısar.",
     "o.impact": "Nisaba etkisi",
-    "o.impactBody": "Nisap ağırlığı sabittir: 85 g altın, 595 g gümüş, zekât %2,5. Değişen yalnızca bunun para biriminizdeki değeridir; esas olan hicri yılın dolduğu günkü fiyattır.",
+    "o.impactBody":
+      "Nisap ağırlığı sabittir: 85 g altın, 595 g gümüş, zekât %2,5. Değişen yalnızca bunun para biriminizdeki değeridir; esas olan hicri yılın dolduğu günkü fiyattır.",
     "o.disclaimer": "Uyarı: yaklaşık yıllık ortalamalara dayanan yol gösterici bir okumadır.",
   },
   id: {
@@ -1792,7 +1900,8 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "nav.account": "Akun saya",
     "auth.eyebrow": "Akun Nisab",
     "auth.title": "Masuk atau daftar",
-    "auth.sub": "Satu akun untuk pedagang emas, duta, relawan, dan moderator — kontribusi tersimpan di platform.",
+    "auth.sub":
+      "Satu akun untuk pedagang emas, duta, relawan, dan moderator — kontribusi tersimpan di platform.",
     "auth.signIn": "Masuk",
     "auth.signUp": "Buat akun",
     "auth.name": "Nama",
@@ -1804,13 +1913,17 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "auth.signOut": "Keluar",
     "p.eyebrow": "Jaringan kepercayaan",
     "p.title": "Jaringan toko emas dan duta Nisab",
-    "p.sub": "Nisab paling akurat memakai harga toko emas di negara Anda pada hari zakat wajib. Kirim harga Anda, nilai harga orang lain, ikuti peringkatnya.",
+    "p.sub":
+      "Nisab paling akurat memakai harga toko emas di negara Anda pada hari zakat wajib. Kirim harga Anda, nilai harga orang lain, ikuti peringkatnya.",
     "p.card1.t": "Toko emas terakreditasi",
-    "p.card1.b": "Toko berizin menerbitkan harga gram murni tanpa ongkos pembuatan, plus harga beli kembali.",
+    "p.card1.b":
+      "Toko berizin menerbitkan harga gram murni tanpa ongkos pembuatan, plus harga beli kembali.",
     "p.card2.t": "Duta Nisab",
-    "p.card2.b": "Relawan memperbarui harga emas 24K dan perak murni kotanya setiap hari serta mencantumkan sumber.",
+    "p.card2.b":
+      "Relawan memperbarui harga emas 24K dan perak murni kotanya setiap hari serta mencantumkan sumber.",
     "p.card3.t": "Verifikasi komunitas",
-    "p.card3.b": "Setiap anggota terdaftar menilai harga sesuai pasar atau tidak; skor akurasi tampil di sebelahnya.",
+    "p.card3.b":
+      "Setiap anggota terdaftar menilai harga sesuai pasar atau tidak; skor akurasi tampil di sebelahnya.",
     "p.path": "Jalur akreditasi",
     "p.duties": "Tugas harian duta",
     "p.join": "Profil kontributor",
@@ -1832,7 +1945,8 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "p.pending": "Menunggu tinjauan",
     "p.approved": "Disetujui",
     "p.rejected": "Ditolak",
-    "p.sent": "Harga diterima. Tampil publik setelah disetujui moderator, atau langsung bagi kontributor tepercaya.",
+    "p.sent":
+      "Harga diterima. Tampil publik setelah disetujui moderator, atau langsung bagi kontributor tepercaya.",
     "p.listTitle": "Harga disetujui di negara Anda",
     "p.noPrices": "Belum ada harga disetujui untuk negara ini.",
     "p.accuracy": "akurasi",
@@ -1843,14 +1957,17 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "p.entries": "harga disetujui",
     "p.badgeMonth": "Toko emas bulan ini",
     "p.ai.title": "Penilaian AI atas kewajaran harga",
-    "p.ai.sub": "Masukkan harga lokal dan deret harga lampau untuk mendapat penilaian yang dijelaskan.",
+    "p.ai.sub":
+      "Masukkan harga lokal dan deret harga lampau untuk mendapat penilaian yang dijelaskan.",
     "p.ai.history": "Deret historis (satu baris: 2026-09-01=4200)",
     "p.ai.run": "Nilai harga",
     "p.ai.busy": "Menganalisis…",
     "p.ai.note": "Penilaian ini bukan fatwa dan bukan nasihat investasi.",
-    "p.localNote": "Harga dan penilaian bersifat indikatif. Nisab tetap 85 g emas dan 595 g perak, zakat 2,5%.",
+    "p.localNote":
+      "Harga dan penilaian bersifat indikatif. Nisab tetap 85 g emas dan 595 g perak, zakat 2,5%.",
     "m.title": "Tinjauan harga toko emas",
-    "m.sub": "Setujui atau tolak tiap harga disertai alasan sebelum diterbitkan. Semua keputusan dicatat.",
+    "m.sub":
+      "Setujui atau tolak tiap harga disertai alasan sebelum diterbitkan. Semua keputusan dicatat.",
     "m.queue": "Antrean tinjauan",
     "m.empty": "Tidak ada harga menunggu.",
     "m.reason": "Alasan keputusan",
@@ -1861,7 +1978,8 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "m.roles": "Peran",
     "m.grant": "Beri peran",
     "a.title": "Notifikasi saya",
-    "a.sub": "Pilih negara dan logam yang diikuti agar diberi tahu saat ada harga lokal baru, perubahan mutu, atau koreksi komunitas disetujui.",
+    "a.sub":
+      "Pilih negara dan logam yang diikuti agar diberi tahu saat ada harga lokal baru, perubahan mutu, atau koreksi komunitas disetujui.",
     "a.countries": "Negara diikuti",
     "a.metals": "Logam",
     "a.inApp": "Notifikasi dalam aplikasi",
@@ -1874,7 +1992,8 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "a.markRead": "Tandai dibaca",
     "o.eyebrow": "Bacaan ekonomi",
     "o.title": "Emas dan perak: rekam jejak dan kemungkinan",
-    "o.sub": "Berdasar rata-rata tahunan 1925 hingga kini dalam USD per ons. Analisis indikatif, bukan janji harga atau nasihat investasi.",
+    "o.sub":
+      "Berdasar rata-rata tahunan 1925 hingga kini dalam USD per ons. Analisis indikatif, bukan janji harga atau nasihat investasi.",
     "o.gold": "Emas",
     "o.silver": "Perak",
     "o.price": "Rata-rata harga tahun ini",
@@ -1889,12 +2008,15 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "o.cagr": "Pertumbuhan majemuk tahunan",
     "o.years": "tahun",
     "o.trend": "Membaca tren",
-    "o.trendBody": "Emas dipatok sekitar $35 per ons sampai Bretton Woods runtuh pada 1971; sejak itu bergerak mengikuti inflasi, suku bunga riil, dan pembelian bank sentral.",
+    "o.trendBody":
+      "Emas dipatok sekitar $35 per ons sampai Bretton Woods runtuh pada 1971; sejak itu bergerak mengikuti inflasi, suku bunga riil, dan pembelian bank sentral.",
     "o.volTitle": "Volatilitas dan penurunan",
     "o.ratioTitle": "Rasio emas terhadap perak",
-    "o.ratioBody": "Rasio yang tinggi membuat nisab perak jauh lebih murah daripada emas — inilah alasan praktis perbedaan pendapat.",
+    "o.ratioBody":
+      "Rasio yang tinggi membuat nisab perak jauh lebih murah daripada emas — inilah alasan praktis perbedaan pendapat.",
     "o.scenarios": "Skenario indikatif",
-    "o.scenariosSub": "Skenario dasar adalah rata-rata pertumbuhan majemuk 20 dan 50 tahun; skenario lain berjarak setengah volatilitas.",
+    "o.scenariosSub":
+      "Skenario dasar adalah rata-rata pertumbuhan majemuk 20 dan 50 tahun; skenario lain berjarak setengah volatilitas.",
     "o.scenario": "Skenario",
     "o.rate": "Pertumbuhan tahunan",
     "o.low": "Konservatif",
@@ -1912,7 +2034,8 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "o.down3": "Investor menjual setelah kenaikan tajam.",
     "o.down4": "Perak: perlambatan industri cepat memangkas permintaan.",
     "o.impact": "Dampaknya pada nisab",
-    "o.impactBody": "Berat nisab tetap: 85 g emas, 595 g perak, zakat 2,5%. Yang berubah hanya nilainya dalam mata uang Anda, dihitung pada hari haul hijriah genap.",
+    "o.impactBody":
+      "Berat nisab tetap: 85 g emas, 595 g perak, zakat 2,5%. Yang berubah hanya nilainya dalam mata uang Anda, dihitung pada hari haul hijriah genap.",
     "o.disclaimer": "Penafian: bacaan indikatif berdasar rata-rata tahunan perkiraan.",
   },
   ur: {
@@ -1922,7 +2045,8 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "nav.account": "میرا کھاتہ",
     "auth.eyebrow": "نصاب اکاؤنٹ",
     "auth.title": "داخلہ یا رجسٹریشن",
-    "auth.sub": "سنار، سفیر، رضاکار اور منتظم کے لیے ایک ہی کھاتہ — آپ کا کام پلیٹ فارم پر محفوظ رہتا ہے۔",
+    "auth.sub":
+      "سنار، سفیر، رضاکار اور منتظم کے لیے ایک ہی کھاتہ — آپ کا کام پلیٹ فارم پر محفوظ رہتا ہے۔",
     "auth.signIn": "داخل ہوں",
     "auth.signUp": "نیا کھاتہ",
     "auth.name": "نام",
@@ -1930,17 +2054,22 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "auth.password": "پاس ورڈ",
     "auth.google": "گوگل سے جاری رکھیں",
     "auth.checkEmail": "تصدیقی لنک آپ کے ای میل پر بھیج دیا گیا ہے۔",
-    "auth.note": "ہر نیا کھاتہ رضاکار کے طور پر شروع ہوتا ہے۔ باقی کردار جائزے کے بعد دیے جاتے ہیں۔",
+    "auth.note":
+      "ہر نیا کھاتہ رضاکار کے طور پر شروع ہوتا ہے۔ باقی کردار جائزے کے بعد دیے جاتے ہیں۔",
     "auth.signOut": "باہر نکلیں",
     "p.eyebrow": "اعتماد کا نیٹ ورک",
     "p.title": "سناروں کا نیٹ ورک اور نصاب سفیر",
-    "p.sub": "سب سے درست نصاب وہی ہے جو زکوٰۃ کے دن آپ کے ملک کے سناروں کی قیمت پر ہو۔ اپنی قیمت بھیجیں، دوسروں کی جانچ کریں، درجہ بندی دیکھیں۔",
+    "p.sub":
+      "سب سے درست نصاب وہی ہے جو زکوٰۃ کے دن آپ کے ملک کے سناروں کی قیمت پر ہو۔ اپنی قیمت بھیجیں، دوسروں کی جانچ کریں، درجہ بندی دیکھیں۔",
     "p.card1.t": "منظور شدہ سنار",
-    "p.card1.b": "لائسنس یافتہ دکان بناوٹ کے خرچ کے بغیر خالص گرام قیمت اور واپس خریداری کی قیمت شائع کرتی ہے۔",
+    "p.card1.b":
+      "لائسنس یافتہ دکان بناوٹ کے خرچ کے بغیر خالص گرام قیمت اور واپس خریداری کی قیمت شائع کرتی ہے۔",
     "p.card2.t": "نصاب سفیر",
-    "p.card2.b": "رضاکار روزانہ اپنے شہر کے ۲۴ قیراط سونے اور خالص چاندی کی قیمت اپ ڈیٹ کرتا اور ماخذ لکھتا ہے۔",
+    "p.card2.b":
+      "رضاکار روزانہ اپنے شہر کے ۲۴ قیراط سونے اور خالص چاندی کی قیمت اپ ڈیٹ کرتا اور ماخذ لکھتا ہے۔",
     "p.card3.t": "عوامی تصدیق",
-    "p.card3.b": "ہر رجسٹرڈ رکن قیمت کو بازار کے مطابق یا غلط قرار دیتا ہے؛ درستگی کا تناسب ساتھ دکھتا ہے۔",
+    "p.card3.b":
+      "ہر رجسٹرڈ رکن قیمت کو بازار کے مطابق یا غلط قرار دیتا ہے؛ درستگی کا تناسب ساتھ دکھتا ہے۔",
     "p.path": "منظوری کا راستہ",
     "p.duties": "سفیر کے روزانہ فرائض",
     "p.join": "شرکت کا پروفائل",
@@ -1962,7 +2091,8 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "p.pending": "جائزے کے منتظر",
     "p.approved": "منظور شدہ",
     "p.rejected": "مسترد",
-    "p.sent": "قیمت موصول ہو گئی۔ منتظم کی منظوری کے بعد، یا معتبر شرکاء کے لیے فوراً، سب کو نظر آئے گی۔",
+    "p.sent":
+      "قیمت موصول ہو گئی۔ منتظم کی منظوری کے بعد، یا معتبر شرکاء کے لیے فوراً، سب کو نظر آئے گی۔",
     "p.listTitle": "آپ کے ملک میں منظور شدہ قیمتیں",
     "p.noPrices": "اس ملک کے لیے ابھی کوئی منظور شدہ قیمت نہیں۔",
     "p.accuracy": "درستگی",
@@ -1973,12 +2103,14 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "p.entries": "منظور شدہ قیمتیں",
     "p.badgeMonth": "مہینے کا سنار",
     "p.ai.title": "قیمت کی معقولیت کا ذہین جائزہ",
-    "p.ai.sub": "اپنی مقامی قیمت اور پرانی قیمتوں کی فہرست درج کریں تاکہ وضاحت کے ساتھ جائزہ مل سکے۔",
+    "p.ai.sub":
+      "اپنی مقامی قیمت اور پرانی قیمتوں کی فہرست درج کریں تاکہ وضاحت کے ساتھ جائزہ مل سکے۔",
     "p.ai.history": "تاریخی سلسلہ (ہر سطر: 2026-09-01=4200)",
     "p.ai.run": "قیمت جانچیں",
     "p.ai.busy": "تجزیہ جاری…",
     "p.ai.note": "یہ جائزہ فتویٰ ہے نہ سرمایہ کاری کا مشورہ۔",
-    "p.localNote": "قیمتیں اور درجہ بندیاں رہنمائی کے لیے ہیں۔ نصاب ۸۵ گرام سونا اور ۵۹۵ گرام چاندی، زکوٰۃ ۲٫۵٪ ہی رہتی ہے۔",
+    "p.localNote":
+      "قیمتیں اور درجہ بندیاں رہنمائی کے لیے ہیں۔ نصاب ۸۵ گرام سونا اور ۵۹۵ گرام چاندی، زکوٰۃ ۲٫۵٪ ہی رہتی ہے۔",
     "m.title": "سناروں کی قیمتوں کا جائزہ",
     "m.sub": "اشاعت سے پہلے ہر قیمت کو وجہ کے ساتھ منظور یا مسترد کریں۔ ہر فیصلہ محفوظ ہوتا ہے۔",
     "m.queue": "جائزے کی فہرست",
@@ -1991,7 +2123,8 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "m.roles": "کردار",
     "m.grant": "کردار دیں",
     "a.title": "میری اطلاعات",
-    "a.sub": "جن ممالک اور دھاتوں کی پیروی کرتے ہیں انہیں چنیں تاکہ نئی مقامی قیمت، معیار کی تبدیلی یا منظور شدہ تصحیح کی اطلاع ملے۔",
+    "a.sub":
+      "جن ممالک اور دھاتوں کی پیروی کرتے ہیں انہیں چنیں تاکہ نئی مقامی قیمت، معیار کی تبدیلی یا منظور شدہ تصحیح کی اطلاع ملے۔",
     "a.countries": "زیرِ نگرانی ممالک",
     "a.metals": "دھاتیں",
     "a.inApp": "پلیٹ فارم پر اطلاع",
@@ -2004,7 +2137,8 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "a.markRead": "پڑھا ہوا نشان زد کریں",
     "o.eyebrow": "معاشی مطالعہ",
     "o.title": "سونا اور چاندی: ماضی اور امکانات",
-    "o.sub": "۱۹۲۵ سے آج تک سالانہ اوسط، ڈالر فی اونس۔ رہنمائی کے لیے تجزیہ ہے، قیمت کا وعدہ یا سرمایہ کاری کا مشورہ نہیں۔",
+    "o.sub":
+      "۱۹۲۵ سے آج تک سالانہ اوسط، ڈالر فی اونس۔ رہنمائی کے لیے تجزیہ ہے، قیمت کا وعدہ یا سرمایہ کاری کا مشورہ نہیں۔",
     "o.gold": "سونا",
     "o.silver": "چاندی",
     "o.price": "اس سال کی اوسط قیمت",
@@ -2019,12 +2153,15 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "o.cagr": "سالانہ مرکب نمو",
     "o.years": "سال",
     "o.trend": "رجحان کا مطالعہ",
-    "o.trendBody": "۱۹۷۱ میں بریٹن ووڈز کے خاتمے تک سونا تقریباً ۳۵ ڈالر فی اونس رہا؛ اس کے بعد یہ افراطِ زر، حقیقی شرحِ سود اور مرکزی بینکوں کی خریداری کے ساتھ چلتا ہے۔",
+    "o.trendBody":
+      "۱۹۷۱ میں بریٹن ووڈز کے خاتمے تک سونا تقریباً ۳۵ ڈالر فی اونس رہا؛ اس کے بعد یہ افراطِ زر، حقیقی شرحِ سود اور مرکزی بینکوں کی خریداری کے ساتھ چلتا ہے۔",
     "o.volTitle": "اتار چڑھاؤ اور گراوٹ",
     "o.ratioTitle": "سونے اور چاندی کا تناسب",
-    "o.ratioBody": "تناسب بڑھنے سے چاندی کا نصاب سونے کے مقابلے بہت سستا ہو جاتا ہے؛ یہی عملی اختلاف کی وجہ ہے۔",
+    "o.ratioBody":
+      "تناسب بڑھنے سے چاندی کا نصاب سونے کے مقابلے بہت سستا ہو جاتا ہے؛ یہی عملی اختلاف کی وجہ ہے۔",
     "o.scenarios": "رہنما منظرنامے",
-    "o.scenariosSub": "بنیادی منظرنامہ ۲۰ اور ۵۰ سال کی مرکب نمو کا اوسط ہے؛ باقی اس سے نصف اتار چڑھاؤ کے فاصلے پر ہیں۔",
+    "o.scenariosSub":
+      "بنیادی منظرنامہ ۲۰ اور ۵۰ سال کی مرکب نمو کا اوسط ہے؛ باقی اس سے نصف اتار چڑھاؤ کے فاصلے پر ہیں۔",
     "o.scenario": "منظرنامہ",
     "o.rate": "سالانہ نمو",
     "o.low": "محتاط",
@@ -2042,7 +2179,8 @@ const OUTLOOK_PARTNERS_LANGS: Record<string, Record<string, string>> = {
     "o.down3": "تیز اضافے کے بعد سرمایہ کاروں کی فروخت۔",
     "o.down4": "چاندی: صنعتی سست روی طلب تیزی سے کم کرتی ہے۔",
     "o.impact": "نصاب پر اثر",
-    "o.impactBody": "نصاب کا وزن ثابت ہے: ۸۵ گرام سونا، ۵۹۵ گرام چاندی، زکوٰۃ ۲٫۵٪۔ صرف آپ کی کرنسی میں اس کی قیمت بدلتی ہے، اور اعتبار سالِ ہجری مکمل ہونے کے دن کی قیمت کا ہے۔",
+    "o.impactBody":
+      "نصاب کا وزن ثابت ہے: ۸۵ گرام سونا، ۵۹۵ گرام چاندی، زکوٰۃ ۲٫۵٪۔ صرف آپ کی کرنسی میں اس کی قیمت بدلتی ہے، اور اعتبار سالِ ہجری مکمل ہونے کے دن کی قیمت کا ہے۔",
     "o.disclaimer": "اعلانِ لاتعلقی: یہ تقریبی سالانہ اوسط پر مبنی رہنما مطالعہ ہے۔",
   },
 };

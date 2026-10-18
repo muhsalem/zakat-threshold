@@ -6,11 +6,27 @@ import { GOLD_NISAB_G, SILVER_NISAB_G, TROY_OUNCE_G } from "@/lib/nisab";
 import { getHistory, type HistoryRange } from "@/lib/prices.functions";
 import { CORS, json } from "@/lib/public-api.server";
 
-const RANGES = ["1mo", "6mo", "1y", "5y", "10y", "20y", "30y", "40y", "50y", "75y", "100y", "1000y"] as const;
+const RANGES = [
+  "1mo",
+  "6mo",
+  "1y",
+  "5y",
+  "10y",
+  "20y",
+  "30y",
+  "40y",
+  "50y",
+  "75y",
+  "100y",
+  "1000y",
+] as const;
 const Query = z.object({
   country: z.string().regex(/^[A-Za-z]{2}$/),
   range: z.enum(RANGES).default("1y"),
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
 });
 
 export const Route = createFileRoute("/api/public/v1/nisab/history")({
@@ -24,13 +40,16 @@ export const Route = createFileRoute("/api/public/v1/nisab/history")({
           range: sp.get("range") ?? undefined,
           date: sp.get("date") ?? undefined,
         });
-        if (!parsed.success) return json({ error: "use ?country=EG&range=1y|5y|10y|...|100y[&date=YYYY-MM-DD]" }, 400);
+        if (!parsed.success)
+          return json({ error: "use ?country=EG&range=1y|5y|10y|...|100y[&date=YYYY-MM-DD]" }, 400);
         const country = COUNTRIES.find((c) => c.code === parsed.data.country.toUpperCase());
         if (!country) return json({ error: "unknown country" }, 404);
 
         let h;
         try {
-          h = await getHistory({ data: { range: parsed.data.range as HistoryRange, currency: country.currency } });
+          h = await getHistory({
+            data: { range: parsed.data.range as HistoryRange, currency: country.currency },
+          });
         } catch {
           return json({ error: "history sources temporarily unavailable" }, 503);
         }
@@ -42,7 +61,11 @@ export const Route = createFileRoute("/api/public/v1/nisab/history")({
         if (parsed.data.date) {
           const target = Date.parse(parsed.data.date);
           const nearest = points.reduce<(typeof points)[number] | null>(
-            (best, p) => (!best || Math.abs(Date.parse(p.date) - target) < Math.abs(Date.parse(best.date) - target) ? p : best),
+            (best, p) =>
+              !best ||
+              Math.abs(Date.parse(p.date) - target) < Math.abs(Date.parse(best.date) - target)
+                ? p
+                : best,
             null,
           );
           points = nearest ? [nearest] : [];

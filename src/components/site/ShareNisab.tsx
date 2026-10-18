@@ -3,7 +3,13 @@ import { Share2, Copy, Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-type Props = { countryName: string; goldText: string; silverText: string; url: string; silverWeight?: number };
+type Props = {
+  countryName: string;
+  goldText: string;
+  silverText: string;
+  url: string;
+  silverWeight?: number;
+};
 
 export function ShareNisab({ countryName, goldText, silverText, url, silverWeight = 595 }: Props) {
   const [copied, setCopied] = useState(false);
@@ -18,9 +24,15 @@ export function ShareNisab({ countryName, goldText, silverText, url, silverWeigh
   const links = [
     { name: "واتساب", href: `https://wa.me/?text=${enc(`${text}\n${shareUrl}`)}` },
     { name: "X", href: `https://twitter.com/intent/tweet?text=${enc(text)}&url=${enc(shareUrl)}` },
-    { name: "فيسبوك", href: `https://www.facebook.com/sharer/sharer.php?u=${enc(shareUrl)}&quote=${enc(text)}` },
+    {
+      name: "فيسبوك",
+      href: `https://www.facebook.com/sharer/sharer.php?u=${enc(shareUrl)}&quote=${enc(text)}`,
+    },
     { name: "تيليجرام", href: `https://t.me/share/url?url=${enc(shareUrl)}&text=${enc(text)}` },
-    { name: "لينكدإن", href: `https://www.linkedin.com/sharing/share-offsite/?url=${enc(shareUrl)}` },
+    {
+      name: "لينكدإن",
+      href: `https://www.linkedin.com/sharing/share-offsite/?url=${enc(shareUrl)}`,
+    },
   ];
 
   const copy = async () => {
@@ -29,7 +41,10 @@ export function ShareNisab({ countryName, goldText, silverText, url, silverWeigh
     setTimeout(() => setCopied(false), 2000);
   };
   const native = async () => {
-    if (navigator.share) await navigator.share({ title: `نصاب الزكاة في ${countryName}`, text, url: shareUrl }).catch(() => {});
+    if (navigator.share)
+      await navigator
+        .share({ title: `نصاب الزكاة في ${countryName}`, text, url: shareUrl })
+        .catch(() => {});
     else await copy();
   };
 
@@ -38,16 +53,24 @@ export function ShareNisab({ countryName, goldText, silverText, url, silverWeigh
       <h2 id="share-title" className="flex items-center gap-2 text-xl text-foreground">
         <Share2 aria-hidden="true" className="size-5 text-primary" /> شارك نصاب اليوم
       </h2>
-      <p className="mt-2 whitespace-pre-line rounded-lg bg-muted p-3 text-sm text-muted-foreground">{text}</p>
+      <p className="mt-2 whitespace-pre-line rounded-lg bg-muted p-3 text-sm text-muted-foreground">
+        {text}
+      </p>
       <div className="mt-4 flex flex-wrap gap-2">
         {links.map((l) => (
-          <a key={l.name} href={l.href} target="_blank" rel="noopener noreferrer"
-            className="rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground hover:bg-muted">
+          <a
+            key={l.name}
+            href={l.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground hover:bg-muted"
+          >
             {l.name}
           </a>
         ))}
         <Button variant="outline" size="sm" className="h-auto py-2" onClick={copy}>
-          {copied ? <Check className="size-4" /> : <Copy className="size-4" />} {copied ? "تم النسخ" : "نسخ النص"}
+          {copied ? <Check className="size-4" /> : <Copy className="size-4" />}{" "}
+          {copied ? "تم النسخ" : "نسخ النص"}
         </Button>
         <Button size="sm" className="h-auto py-2" onClick={native}>
           <Share2 className="size-4" /> مشاركة

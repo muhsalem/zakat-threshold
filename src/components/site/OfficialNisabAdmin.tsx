@@ -19,13 +19,25 @@ export function OfficialNisabAdmin({ userId }: { userId: string }) {
     const c = COUNTRIES.find((x) => x.code === country)!;
     if (!authority.trim() || (!gold && !silver)) return setMsg("أدخل الجهة وقيمة واحدة على الأقل.");
     const { error } = await supabase.from("official_nisab").insert({
-      country, currency: c.currency, authority: authority.trim(), source_url: url.trim(), announced_on: day,
-      gold_nisab: gold ? Number(gold) : null, silver_nisab: silver ? Number(silver) : null, created_by: userId,
+      country,
+      currency: c.currency,
+      authority: authority.trim(),
+      source_url: url.trim(),
+      announced_on: day,
+      gold_nisab: gold ? Number(gold) : null,
+      silver_nisab: silver ? Number(silver) : null,
+      created_by: userId,
     });
     if (error) return setMsg(error.message);
-    await supabase.from("audit_log").insert({ actor_id: userId, action: "official_nisab", entity: country, reason: authority.trim() });
+    await supabase.from("audit_log").insert({
+      actor_id: userId,
+      action: "official_nisab",
+      entity: country,
+      reason: authority.trim(),
+    });
     setMsg("تم حفظ النصاب الرسمي ونشره.");
-    setGold(""); setSilver("");
+    setGold("");
+    setSilver("");
   };
 
   return (
@@ -33,14 +45,38 @@ export function OfficialNisabAdmin({ userId }: { userId: string }) {
       <h2 className="flex items-center gap-2 text-xl text-foreground">
         <Landmark aria-hidden="true" className="size-5 text-primary" /> النصاب الرسمي المعلن
       </h2>
-      <p className="mt-1 text-sm text-muted-foreground">سجّل النصاب الذي تعلنه جهة رسمية (دار إفتاء، بيت زكاة…) مع رابط الإعلان.</p>
+      <p className="mt-1 text-sm text-muted-foreground">
+        سجّل النصاب الذي تعلنه جهة رسمية (دار إفتاء، بيت زكاة…) مع رابط الإعلان.
+      </p>
       <div className="mt-4 grid gap-3 sm:grid-cols-3">
-        <select value={country} onChange={(e) => setCountry(e.target.value)} className="h-10 rounded-md border border-input bg-background px-3 text-sm">
-          {COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.ar} · {c.currency}</option>)}
+        <select
+          value={country}
+          onChange={(e) => setCountry(e.target.value)}
+          className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+        >
+          {COUNTRIES.map((c) => (
+            <option key={c.code} value={c.code}>
+              {c.ar} · {c.currency}
+            </option>
+          ))}
         </select>
-        <Input inputMode="decimal" placeholder="نصاب الذهب بالعملة المحلية" value={gold} onChange={(e) => setGold(e.target.value)} />
-        <Input inputMode="decimal" placeholder="نصاب الفضة بالعملة المحلية" value={silver} onChange={(e) => setSilver(e.target.value)} />
-        <Input placeholder="الجهة الرسمية" value={authority} onChange={(e) => setAuthority(e.target.value)} />
+        <Input
+          inputMode="decimal"
+          placeholder="نصاب الذهب بالعملة المحلية"
+          value={gold}
+          onChange={(e) => setGold(e.target.value)}
+        />
+        <Input
+          inputMode="decimal"
+          placeholder="نصاب الفضة بالعملة المحلية"
+          value={silver}
+          onChange={(e) => setSilver(e.target.value)}
+        />
+        <Input
+          placeholder="الجهة الرسمية"
+          value={authority}
+          onChange={(e) => setAuthority(e.target.value)}
+        />
         <Input placeholder="رابط الإعلان" value={url} onChange={(e) => setUrl(e.target.value)} />
         <Input type="date" value={day} onChange={(e) => setDay(e.target.value)} />
       </div>

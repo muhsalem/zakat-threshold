@@ -1,7 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 import { Download, Loader2 } from "lucide-react";
 import { aiErrorMessage } from "@/lib/ai-errors";
@@ -15,15 +23,42 @@ import { getHistory, type HistoryRange, type HistoryResponse } from "@/lib/price
 import { askHistory } from "@/lib/history-ask.functions";
 import { countryName, findCountry } from "@/lib/countries";
 
-export const RANGES: HistoryRange[] = ["1mo", "6mo", "1y", "5y", "10y", "20y", "30y", "50y", "75y", "100y", "1000y"];
+export const RANGES: HistoryRange[] = [
+  "1mo",
+  "6mo",
+  "1y",
+  "5y",
+  "10y",
+  "20y",
+  "30y",
+  "50y",
+  "75y",
+  "100y",
+  "1000y",
+];
 export const VIEWS = [
-  { id: "ng", metal: "gold", grams: GOLD_NISAB_G, label: { ar: "نصاب الذهب (٨٥ جم)", en: "Gold nisab (85 g)" } },
-  { id: "ns", metal: "silver", grams: SILVER_NISAB_G, label: { ar: "نصاب الفضة (٥٩٥ جم)", en: "Silver nisab (595 g)" } },
+  {
+    id: "ng",
+    metal: "gold",
+    grams: GOLD_NISAB_G,
+    label: { ar: "نصاب الذهب (٨٥ جم)", en: "Gold nisab (85 g)" },
+  },
+  {
+    id: "ns",
+    metal: "silver",
+    grams: SILVER_NISAB_G,
+    label: { ar: "نصاب الفضة (٥٩٥ جم)", en: "Silver nisab (595 g)" },
+  },
   { id: "g24", metal: "gold", grams: 1, label: { ar: "ذهب 24K / جم", en: "Gold 24K / g" } },
   { id: "g21", metal: "gold", grams: 0.875, label: { ar: "ذهب 21K / جم", en: "Gold 21K / g" } },
   { id: "g18", metal: "gold", grams: 0.75, label: { ar: "ذهب 18K / جم", en: "Gold 18K / g" } },
   { id: "s999", metal: "silver", grams: 1, label: { ar: "فضة 999 / جم", en: "Silver 999 / g" } },
-  { id: "s925", metal: "silver", grams: 0.925, label: { ar: "فضة 925 / جم", en: "Silver 925 / g" } },
+  {
+    id: "s925",
+    metal: "silver",
+    grams: 0.925,
+    label: { ar: "فضة 925 / جم", en: "Silver 925 / g" },
+  },
 ] as const;
 
 /** Interactive historical chart of nisab and metal prices for the selected country & purity. */
@@ -40,17 +75,37 @@ export function NisabHistoryChart({ money }: { money: (v: number) => string }) {
     staleTime: 60 * 60 * 1000,
   });
   const series = useMemo(
-    () => (data?.points ?? []).map((p) => ({ t: p.t, value: ((view.metal === "gold" ? p.gold : p.silver) / TROY_OUNCE_G) * p.rate * view.grams })),
+    () =>
+      (data?.points ?? []).map((p) => ({
+        t: p.t,
+        value: ((view.metal === "gold" ? p.gold : p.silver) / TROY_OUNCE_G) * p.rate * view.grams,
+      })),
     [data, view],
   );
-  const change = series.length > 1 ? ((series[series.length - 1]!.value - series[0]!.value) / series[0]!.value) * 100 : null;
-  const fmt = (v: number) => new Intl.DateTimeFormat(ar ? "en" : lang, { month: "short", year: "2-digit" }).format(new Date(v));
+  const change =
+    series.length > 1
+      ? ((series[series.length - 1]!.value - series[0]!.value) / series[0]!.value) * 100
+      : null;
+  const fmt = (v: number) =>
+    new Intl.DateTimeFormat(ar ? "en" : lang, { month: "short", year: "2-digit" }).format(
+      new Date(v),
+    );
   const cName = countryName(findCountry(country), lang);
   const viewLabel = t(`view.${view.id}`);
 
   const downloadCsv = () => {
     const rows = [["date", "country", "currency", "series", "range", "value"].join(",")];
-    for (const p of series) rows.push([new Date(p.t).toISOString().slice(0, 10), country, currency, `"${view.label.en}"`, range, p.value.toFixed(4)].join(","));
+    for (const p of series)
+      rows.push(
+        [
+          new Date(p.t).toISOString().slice(0, 10),
+          country,
+          currency,
+          `"${view.label.en}"`,
+          range,
+          p.value.toFixed(4),
+        ].join(","),
+      );
     const blob = new Blob(["\uFEFF" + rows.join("\n")], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -69,13 +124,31 @@ export function NisabHistoryChart({ money }: { money: (v: number) => string }) {
     const q = (preset ?? question).trim();
     if (preset) setQuestion(preset);
     if (asking) return;
-    if (q.length < 3) { setAskError(aiErrorMessage("QUESTION_SHORT", t)); return; }
-    if (series.length < 2) { setAskError(aiErrorMessage("NO_DATA", t)); return; }
-    setAsking(true); setAskError(null); setAnswer(null);
+    if (q.length < 3) {
+      setAskError(aiErrorMessage("QUESTION_SHORT", t));
+      return;
+    }
+    if (series.length < 2) {
+      setAskError(aiErrorMessage("NO_DATA", t));
+      return;
+    }
+    setAsking(true);
+    setAskError(null);
+    setAnswer(null);
     const step = Math.max(1, Math.ceil(series.length / 150));
     const sampled = series.filter((_, i) => i % step === 0 || i === series.length - 1);
     try {
-      const res = await ask({ data: { question: q, country: cName, currency, range, view: view.label.en, lang, points: sampled.map((p) => ({ d: new Date(p.t).toISOString().slice(0, 10), v: p.value })) } });
+      const res = await ask({
+        data: {
+          question: q,
+          country: cName,
+          currency,
+          range,
+          view: view.label.en,
+          lang,
+          points: sampled.map((p) => ({ d: new Date(p.t).toISOString().slice(0, 10), v: p.value })),
+        },
+      });
       setAnswer(res.text);
     } catch (e) {
       setAskError(aiErrorMessage(e, t));
@@ -89,27 +162,65 @@ export function NisabHistoryChart({ money }: { money: (v: number) => string }) {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold text-foreground">{t("hc.title")}</h2>
-          <p className="text-xs text-muted-foreground">{cName} · {currency}{data?.approx ? ` · ${t("history.approx")}` : ""}</p>
+          <p className="text-xs text-muted-foreground">
+            {cName} · {currency}
+            {data?.approx ? ` · ${t("history.approx")}` : ""}
+          </p>
         </div>
         <div className="flex items-center gap-3">
-          {change != null && <p className={`num text-sm ${change >= 0 ? "text-primary" : "text-negative"}`}>{change >= 0 ? "+" : ""}{change.toFixed(1)}%</p>}
+          {change != null && (
+            <p className={`num text-sm ${change >= 0 ? "text-primary" : "text-negative"}`}>
+              {change >= 0 ? "+" : ""}
+              {change.toFixed(1)}%
+            </p>
+          )}
           <Button size="sm" variant="outline" disabled={series.length === 0} onClick={downloadCsv}>
             <Download className="h-4 w-4" /> CSV
           </Button>
         </div>
       </div>
       <div className="mt-4 flex flex-wrap gap-2">
-        <select aria-label={t("karat.purity")} value={viewId} onChange={(e) => setViewId(e.target.value as typeof viewId)} className="rounded-lg border border-input bg-background px-3 py-2 text-sm">
-          {VIEWS.map((v) => <option key={v.id} value={v.id}>{t(`view.${v.id}`)}</option>)}
+        <select
+          aria-label={t("karat.purity")}
+          value={viewId}
+          onChange={(e) => setViewId(e.target.value as typeof viewId)}
+          className="rounded-lg border border-input bg-background px-3 py-2 text-sm"
+        >
+          {VIEWS.map((v) => (
+            <option key={v.id} value={v.id}>
+              {t(`view.${v.id}`)}
+            </option>
+          ))}
         </select>
         <div className="flex flex-wrap gap-1">
-          {RANGES.map((r) => <Button key={r} size="sm" variant={r === range ? "default" : "outline"} onClick={() => setRange(r)}>{t(`history.range.${r}`)}</Button>)}
+          {RANGES.map((r) => (
+            <Button
+              key={r}
+              size="sm"
+              variant={r === range ? "default" : "outline"}
+              onClick={() => setRange(r)}
+            >
+              {t(`history.range.${r}`)}
+            </Button>
+          ))}
         </div>
       </div>
       <div dir="ltr" className="mt-4 h-[240px] w-full sm:h-[320px]">
-        {isLoading && <p className="pt-20 text-center text-sm text-muted-foreground">{t("common.loading")}</p>}
-        {isError && <div className="pt-20 text-center"><Button size="sm" onClick={() => refetch()}>{t("common.retry")}</Button></div>}
-        {data && !data.fxAvailable && <p className="pt-20 text-center text-sm text-muted-foreground">{t("history.fxUnavailable")}</p>}
+        {isLoading && (
+          <p className="pt-20 text-center text-sm text-muted-foreground">{t("common.loading")}</p>
+        )}
+        {isError && (
+          <div className="pt-20 text-center">
+            <Button size="sm" onClick={() => refetch()}>
+              {t("common.retry")}
+            </Button>
+          </div>
+        )}
+        {data && !data.fxAvailable && (
+          <p className="pt-20 text-center text-sm text-muted-foreground">
+            {t("history.fxUnavailable")}
+          </p>
+        )}
         {data?.fxAvailable && series.length > 0 && (
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={series} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
@@ -120,43 +231,134 @@ export function NisabHistoryChart({ money }: { money: (v: number) => string }) {
                 </linearGradient>
               </defs>
               <CartesianGrid stroke="var(--color-border)" vertical={false} />
-              <XAxis dataKey="t" tickFormatter={fmt} tickLine={false} axisLine={false} minTickGap={40} tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }} />
-              <YAxis width={70} tickLine={false} axisLine={false} tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }} tickFormatter={(v: number) => Intl.NumberFormat("en", { notation: "compact" }).format(v)} />
-              <Tooltip labelFormatter={(v) => fmt(Number(v))} formatter={(v: number) => [money(v), viewLabel]} contentStyle={{ background: "var(--color-card)", border: "1px solid var(--color-border)", borderRadius: 12, color: "var(--color-foreground)" }} />
-              <Area type="monotone" dataKey="value" stroke="var(--color-chart-1)" strokeWidth={2} fill="url(#homeHistFill)" />
+              <XAxis
+                dataKey="t"
+                tickFormatter={fmt}
+                tickLine={false}
+                axisLine={false}
+                minTickGap={40}
+                tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }}
+              />
+              <YAxis
+                width={70}
+                tickLine={false}
+                axisLine={false}
+                tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }}
+                tickFormatter={(v: number) =>
+                  Intl.NumberFormat("en", { notation: "compact" }).format(v)
+                }
+              />
+              <Tooltip
+                labelFormatter={(v) => fmt(Number(v))}
+                formatter={(v: number) => [money(v), viewLabel]}
+                contentStyle={{
+                  background: "var(--color-card)",
+                  border: "1px solid var(--color-border)",
+                  borderRadius: 12,
+                  color: "var(--color-foreground)",
+                }}
+              />
+              <Area
+                type="monotone"
+                dataKey="value"
+                stroke="var(--color-chart-1)"
+                strokeWidth={2}
+                fill="url(#homeHistFill)"
+              />
             </AreaChart>
           </ResponsiveContainer>
         )}
       </div>
-      {data && <p className="mt-3 text-xs text-muted-foreground">{t("update.source")}: {data.metalsSource} · {data.ratesSource}</p>}
+      {data && (
+        <p className="mt-3 text-xs text-muted-foreground">
+          {t("update.source")}: {data.metalsSource} · {data.ratesSource}
+        </p>
+      )}
       <div className="mt-5 border-t border-border pt-4">
         <h3 className="text-sm font-semibold text-foreground">{t("hc.ask.title")}</h3>
-        <p className="text-xs text-muted-foreground">{t("hc.ask.basis").replace("{basis}", `${viewLabel} · ${cName} · ${t(`history.range.${range}`)}`)}</p>
+        <p className="text-xs text-muted-foreground">
+          {t("hc.ask.basis").replace(
+            "{basis}",
+            `${viewLabel} · ${cName} · ${t(`history.range.${range}`)}`,
+          )}
+        </p>
         <div className="mt-2 flex flex-wrap gap-2">
-          {["hc.ex1", "hc.ex2", "hc.ex3", "hc.ex4"].map((k) => t(k)).map((q) => (
-            <button key={q} type="button" disabled={asking} onClick={() => void submitQuestion(q)} className="rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-primary hover:text-foreground disabled:opacity-50">{q}</button>
-          ))}
+          {["hc.ex1", "hc.ex2", "hc.ex3", "hc.ex4"]
+            .map((k) => t(k))
+            .map((q) => (
+              <button
+                key={q}
+                type="button"
+                disabled={asking}
+                onClick={() => void submitQuestion(q)}
+                className="rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-primary hover:text-foreground disabled:opacity-50"
+              >
+                {q}
+              </button>
+            ))}
         </div>
-        <form className="mt-2 flex flex-col gap-2 sm:flex-row" onSubmit={(e) => { e.preventDefault(); void submitQuestion(); }}>
-          <Textarea value={question} maxLength={500} rows={2} disabled={asking} onChange={(e) => setQuestion(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void submitQuestion(); } }} placeholder={t("hc.ask.placeholder")} className="flex-1" />
-          <Button type="submit" disabled={asking || series.length < 2 || question.trim().length < 3}>
-            {asking ? <><Loader2 className="h-4 w-4 animate-spin" />{t("hc.ask.analyzing")}</> : t("hc.ask.button")}
+        <form
+          className="mt-2 flex flex-col gap-2 sm:flex-row"
+          onSubmit={(e) => {
+            e.preventDefault();
+            void submitQuestion();
+          }}
+        >
+          <Textarea
+            value={question}
+            maxLength={500}
+            rows={2}
+            disabled={asking}
+            onChange={(e) => setQuestion(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                void submitQuestion();
+              }
+            }}
+            placeholder={t("hc.ask.placeholder")}
+            className="flex-1"
+          />
+          <Button
+            type="submit"
+            disabled={asking || series.length < 2 || question.trim().length < 3}
+          >
+            {asking ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                {t("hc.ask.analyzing")}
+              </>
+            ) : (
+              t("hc.ask.button")
+            )}
           </Button>
         </form>
-        {series.length < 2 && !isLoading && <p className="mt-2 text-xs text-muted-foreground">{t("hc.ask.noData")}</p>}
+        {series.length < 2 && !isLoading && (
+          <p className="mt-2 text-xs text-muted-foreground">{t("hc.ask.noData")}</p>
+        )}
         {asking && (
           <div className="mt-3 space-y-2" aria-live="polite">
             <p className="text-xs text-muted-foreground">{t("hc.ask.wait")}</p>
-            <div className="h-3 w-3/4 animate-pulse rounded bg-muted" /><div className="h-3 w-1/2 animate-pulse rounded bg-muted" />
+            <div className="h-3 w-3/4 animate-pulse rounded bg-muted" />
+            <div className="h-3 w-1/2 animate-pulse rounded bg-muted" />
           </div>
         )}
         {askError && (
-          <div role="alert" className="mt-3 flex flex-wrap items-center gap-3 rounded-md border border-negative/40 bg-negative/10 p-3 text-sm text-negative">
+          <div
+            role="alert"
+            className="mt-3 flex flex-wrap items-center gap-3 rounded-md border border-negative/40 bg-negative/10 p-3 text-sm text-negative"
+          >
             <span className="flex-1">{askError}</span>
-            <Button size="sm" variant="outline" onClick={() => void submitQuestion()}>{t("common.retry")}</Button>
+            <Button size="sm" variant="outline" onClick={() => void submitQuestion()}>
+              {t("common.retry")}
+            </Button>
           </div>
         )}
-        {answer && <div className="prose prose-sm mt-3 max-w-none text-foreground"><ReactMarkdown>{answer}</ReactMarkdown></div>}
+        {answer && (
+          <div className="prose prose-sm mt-3 max-w-none text-foreground">
+            <ReactMarkdown>{answer}</ReactMarkdown>
+          </div>
+        )}
       </div>
     </section>
   );

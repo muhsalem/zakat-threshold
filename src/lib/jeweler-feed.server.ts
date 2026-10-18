@@ -3,7 +3,10 @@
  * platforms and stores the bare 24K gram price (and buy-back where published).
  */
 const OZ = 31.1034768;
-const UA = { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36" };
+const UA = {
+  "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36",
+};
 
 export type FeedRow = {
   country: string;
@@ -56,7 +59,16 @@ async function egypt(): Promise<FeedRow> {
   } catch {
     /* silver falls back to global spot */
   }
-  return { country: "EG", currency: "EGP", source, source_url: url, gold_gram: num(m[1]), buyback_gram: num(m[2]), silver_gram: silver.sell, silver_buyback_gram: silver.buy };
+  return {
+    country: "EG",
+    currency: "EGP",
+    source,
+    source_url: url,
+    gold_gram: num(m[1]),
+    buyback_gram: num(m[2]),
+    silver_gram: silver.sell,
+    silver_buyback_gram: silver.buy,
+  };
 }
 
 /** Saudi Gold Price silver board: raw 999 gram and the 999 bullion resale (buy-back) gram. */
@@ -79,7 +91,16 @@ async function saudi(): Promise<FeedRow> {
   } catch {
     /* silver falls back to global spot */
   }
-  return { country: "SA", currency: "SAR", source: "Saudi Gold Price (السعودية)", source_url: url, gold_gram: num(m[1]), buyback_gram: null, silver_gram: silver.sell, silver_buyback_gram: silver.buy };
+  return {
+    country: "SA",
+    currency: "SAR",
+    source: "Saudi Gold Price (السعودية)",
+    source_url: url,
+    gold_gram: num(m[1]),
+    buyback_gram: null,
+    silver_gram: silver.sell,
+    silver_buyback_gram: silver.buy,
+  };
 }
 
 async function uae(): Promise<FeedRow> {
@@ -87,7 +108,15 @@ async function uae(): Promise<FeedRow> {
   const t = await text(url);
   const m = /24K Gold\s*AED\s*([\d.,]+)/.exec(t);
   if (!m) throw new Error("Dubai City of Gold: pattern not found");
-  return { country: "AE", currency: "AED", source: "Dubai City of Gold (DGJG)", source_url: url, gold_gram: num(m[1]), buyback_gram: null, silver_gram: null };
+  return {
+    country: "AE",
+    currency: "AED",
+    source: "Dubai City of Gold (DGJG)",
+    source_url: url,
+    gold_gram: num(m[1]),
+    buyback_gram: null,
+    silver_gram: null,
+  };
 }
 
 async function kitcoBidGramUsd(): Promise<number> {
@@ -102,12 +131,31 @@ async function northAmerica(): Promise<FeedRow[]> {
   const url = "https://www.kitco.com/charts/gold";
   const usd = await kitcoBidGramUsd();
   const rows: FeedRow[] = [
-    { country: "US", currency: "USD", source: "Kitco (dealer bid)", source_url: url, gold_gram: usd, buyback_gram: usd, silver_gram: null },
+    {
+      country: "US",
+      currency: "USD",
+      source: "Kitco (dealer bid)",
+      source_url: url,
+      gold_gram: usd,
+      buyback_gram: usd,
+      silver_gram: null,
+    },
   ];
   try {
-    const fx = (await (await fetch("https://open.er-api.com/v6/latest/USD")).json()) as { rates?: Record<string, number> };
+    const fx = (await (await fetch("https://open.er-api.com/v6/latest/USD")).json()) as {
+      rates?: Record<string, number>;
+    };
     const cad = Number(fx.rates?.["CAD"]);
-    if (cad > 0) rows.push({ country: "CA", currency: "CAD", source: "Kitco Montreal (dealer bid)", source_url: url, gold_gram: usd * cad, buyback_gram: usd * cad, silver_gram: null });
+    if (cad > 0)
+      rows.push({
+        country: "CA",
+        currency: "CAD",
+        source: "Kitco Montreal (dealer bid)",
+        source_url: url,
+        gold_gram: usd * cad,
+        buyback_gram: usd * cad,
+        silver_gram: null,
+      });
   } catch {
     /* CAD skipped when the rate is unavailable */
   }

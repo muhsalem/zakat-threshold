@@ -20,7 +20,8 @@ export const Route = createFileRoute("/outlook")({
       { property: "og:title", content: "تقييم اقتصادي لسعر الذهب والفضة" },
       {
         property: "og:description",
-        content: "النمو المركب والتقلب ونسبة الذهب/الفضة عبر قرن كامل، مع سيناريوهات متحفظة وأساسية ومتفائلة.",
+        content:
+          "النمو المركب والتقلب ونسبة الذهب/الفضة عبر قرن كامل، مع سيناريوهات متحفظة وأساسية ومتفائلة.",
       },
       { property: "og:type", content: "article" },
       { name: "twitter:card", content: "summary" },
@@ -104,15 +105,10 @@ function OutlookPage() {
     ];
   }, [stats, t]);
 
-  const project = (rate: number, years: number) =>
-    LATEST[metal] * Math.pow(1 + rate / 100, years);
+  const project = (rate: number, years: number) => LATEST[metal] * Math.pow(1 + rate / 100, years);
 
   return (
-    <Page
-      eyebrow={t("o.eyebrow")}
-      title={t("o.title")}
-      sub={t("o.sub")}
-    >
+    <Page eyebrow={t("o.eyebrow")} title={t("o.title")} sub={t("o.sub")}>
       <div className="flex flex-wrap gap-2">
         {(
           [
@@ -181,11 +177,15 @@ function OutlookPage() {
                 const growth = cagr(years, metal);
                 return (
                   <tr key={years} className="border-b border-border last:border-0">
-                    <td className="p-3 text-foreground">{years} {t("o.years")}</td>
+                    <td className="p-3 text-foreground">
+                      {years} {t("o.years")}
+                    </td>
                     <td className="num p-3 text-muted-foreground">
                       {start ? formatNumber(start, 2) : "—"}
                     </td>
-                    <td className="num p-3 text-muted-foreground">{formatNumber(LATEST[metal], 2)}</td>
+                    <td className="num p-3 text-muted-foreground">
+                      {formatNumber(LATEST[metal], 2)}
+                    </td>
                     <td className="num p-3 text-muted-foreground">
                       {start ? `${formatNumber(LATEST[metal] / start, 1)}×` : "—"}
                     </td>
@@ -203,14 +203,13 @@ function OutlookPage() {
       <section className="mt-10 grid gap-4 md:grid-cols-3">
         <article className="card-surface p-6">
           <h3 className="text-lg text-foreground">{t("o.trend")}</h3>
-          <p className="mt-2 text-sm leading-7 text-muted-foreground">
-            {t("o.trendBody")}
-          </p>
+          <p className="mt-2 text-sm leading-7 text-muted-foreground">{t("o.trendBody")}</p>
         </article>
         <article className="card-surface p-6">
           <h3 className="text-lg text-foreground">{t("o.volTitle")}</h3>
           <p className="num mt-2 text-sm leading-7 text-muted-foreground">
-            σ 20y: {formatNumber(stats.vol20, 1)}% · σ 50y: {formatNumber(stats.vol50, 1)}% · max drawdown: {formatNumber(Math.abs(stats.dd50), 0)}%
+            σ 20y: {formatNumber(stats.vol20, 1)}% · σ 50y: {formatNumber(stats.vol50, 1)}% · max
+            drawdown: {formatNumber(Math.abs(stats.dd50), 0)}%
           </p>
         </article>
         <article className="card-surface p-6">
@@ -225,24 +224,32 @@ function OutlookPage() {
       <section className="mt-10">
         <h2 className="text-2xl text-foreground">{t("o.scenarios")}</h2>
         <p className="mt-2 max-w-3xl text-sm leading-7 text-muted-foreground">
-            {t("o.scenariosSub")}
-          </p>
+          {t("o.scenariosSub")}
+        </p>
         <div className="scroll-x mt-4">
           <table className="w-full min-w-[34rem] border-collapse text-sm">
             <thead>
               <tr className="border-b border-border text-muted-foreground">
                 <th className="p-3 text-start font-medium">{t("o.scenario")}</th>
                 <th className="p-3 text-start font-medium">{t("o.rate")}</th>
-                <th className="p-3 text-start font-medium">{t("o.after")} 1 {t("o.years")}</th>
-                <th className="p-3 text-start font-medium">{t("o.after")} 5 {t("o.years")}</th>
-                <th className="p-3 text-start font-medium">{t("o.after")} 10 {t("o.years")}</th>
+                <th className="p-3 text-start font-medium">
+                  {t("o.after")} 1 {t("o.years")}
+                </th>
+                <th className="p-3 text-start font-medium">
+                  {t("o.after")} 5 {t("o.years")}
+                </th>
+                <th className="p-3 text-start font-medium">
+                  {t("o.after")} 10 {t("o.years")}
+                </th>
               </tr>
             </thead>
             <tbody>
               {scenarios.map((scenario) => (
                 <tr key={scenario.key} className="border-b border-border last:border-0">
                   <td className={`p-3 ${scenario.tone}`}>{scenario.label}</td>
-                  <td className="num p-3 text-muted-foreground">{formatNumber(scenario.rate, 2)}%</td>
+                  <td className="num p-3 text-muted-foreground">
+                    {formatNumber(scenario.rate, 2)}%
+                  </td>
                   {[1, 5, 10].map((years) => (
                     <td key={years} className="num p-3 text-foreground">
                       {formatNumber(project(scenario.rate, years), 0)} USD/oz
@@ -279,8 +286,8 @@ function OutlookPage() {
       <section className="mt-10 border-s-2 border-accent bg-card p-6">
         <h2 className="text-xl text-foreground">{t("o.impact")}</h2>
         <p className="mt-3 max-w-4xl text-sm leading-8 text-muted-foreground">
-            {t("o.impactBody")}
-          </p>
+          {t("o.impactBody")}
+        </p>
         <div className="mt-5 flex flex-wrap gap-3">
           <Button asChild>
             <Link to="/history">{t("nav.history")}</Link>

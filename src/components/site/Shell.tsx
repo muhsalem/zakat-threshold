@@ -16,13 +16,7 @@ import { COUNTRIES, countryName, flagOf } from "@/lib/countries";
 import { citiesOf, cityName } from "@/lib/cities";
 import { ThemePicker } from "./ThemePicker";
 import { NisabBrand } from "./NisabLogo";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 const NAV_GROUPS = [
   {
@@ -284,7 +278,10 @@ function MobileNav() {
         <SheetHeader>
           <SheetTitle>{t("brand.name")}</SheetTitle>
         </SheetHeader>
-        <div className="flex flex-wrap gap-2 px-4"><ThemePicker /><LangPicker /></div>
+        <div className="flex flex-wrap gap-2 px-4">
+          <ThemePicker />
+          <LangPicker />
+        </div>
         <nav aria-label={t("nav.menu")} className="mt-2 flex flex-col gap-5 px-4 pb-8">
           {NAV_MOBILE.map((group) => (
             <div key={group.key}>
@@ -388,8 +385,12 @@ export function Shell({ children }: { children: ReactNode }) {
 
           <div className="ms-auto flex shrink-0 items-center gap-2">
             <GlobalSearch />
-            <div className="hidden xl:block"><ThemePicker /></div>
-            <div className="hidden lg:block"><LangPicker /></div>
+            <div className="hidden xl:block">
+              <ThemePicker />
+            </div>
+            <div className="hidden lg:block">
+              <LangPicker />
+            </div>
             <MobileNav />
           </div>
         </div>

@@ -164,7 +164,6 @@ export const getLivePrices = createServerFn({ method: "GET" }).handler(
 
 async function loadLivePrices(): Promise<LivePrices> {
   {
-
     try {
       const [metals, fx] = await Promise.all([
         firstOk<Metals>([{ run: metalsFromGoldApi }, { run: metalsFromYahoo }]),
@@ -184,7 +183,8 @@ async function loadLivePrices(): Promise<LivePrices> {
           source: metals.value.label,
           url: metals.value.url,
           market: "International spot / futures (USD per troy ounce)",
-          frequency: metals.depth === 0 ? "Checked every minute; source timestamps apply" : "Daily close",
+          frequency:
+            metals.depth === 0 ? "Checked every minute; source timestamps apply" : "Daily close",
           quality: metals.depth === 0 ? ageQuality(metals.value.updatedAt) : "delayed",
           fallbackDepth: metals.depth,
         },
@@ -257,12 +257,12 @@ const KNOWN_CURRENCIES = new Set(["USD", ...COUNTRIES.map((c) => c.currency)]);
 
 const histCache = new Map<string, { data: HistoryPoint[]; at: number }>();
 
-
 async function yahooSeries(symbol: string, range: HistoryRange) {
   const interval = range === "1mo" ? "1d" : range === "6mo" || range === "1y" ? "1d" : "1wk";
-  const timeQuery = range === "1448"
-    ? `period1=${Math.floor(HIJRI_1448_START_MS / 1000)}&period2=${Math.floor(Date.now() / 1000)}`
-    : `range=${range}`;
+  const timeQuery =
+    range === "1448"
+      ? `period1=${Math.floor(HIJRI_1448_START_MS / 1000)}&period2=${Math.floor(Date.now() / 1000)}`
+      : `range=${range}`;
   const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?${timeQuery}&interval=${interval}`;
   const res = await fetch(url, {
     headers: { "User-Agent": "Mozilla/5.0" },
@@ -292,7 +292,19 @@ async function yahooSeries(symbol: string, range: HistoryRange) {
 export const getHistory = createServerFn({ method: "GET" })
   .inputValidator((data: { range: HistoryRange; currency: string }) => {
     const allowed: HistoryRange[] = [
-      "1mo", "6mo", "1y", "5y", "10y", "1448", "20y", "30y", "40y", "50y", "75y", "100y", "1000y",
+      "1mo",
+      "6mo",
+      "1y",
+      "5y",
+      "10y",
+      "1448",
+      "20y",
+      "30y",
+      "40y",
+      "50y",
+      "75y",
+      "100y",
+      "1000y",
     ];
     const range = allowed.includes(data?.range) ? data.range : "1y";
     const currency = KNOWN_CURRENCIES.has(data?.currency) ? data.currency : "USD";
@@ -341,12 +353,12 @@ export const getHistory = createServerFn({ method: "GET" })
     const hit = histCache.get(cacheKey);
     if (hit && Date.now() - hit.at < HISTORY_CACHE_MS) {
       return {
-
         points: hit.data,
         currency: data.currency,
         fxAvailable: true,
         metalsSource: "Yahoo Finance (GC=F, SI=F)",
-        ratesSource: data.currency === "USD" ? "USD base rate" : `Yahoo Finance (${data.currency}=X)`,
+        ratesSource:
+          data.currency === "USD" ? "USD base rate" : `Yahoo Finance (${data.currency}=X)`,
       };
     }
 

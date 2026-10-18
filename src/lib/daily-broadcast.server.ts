@@ -6,17 +6,28 @@ const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
 
 /** Notify each country's followers when today's nisab moved >= threshold vs the previous recorded day. */
 export async function notifyNisabChanges(db: SupabaseClient, today: string) {
-  const { data: todayRows } = await db.from("nisab_history")
-    .select("country,currency,gold_nisab,silver_nisab").eq("day", today);
-  const { data: prevDay } = await db.from("nisab_history").select("day")
-    .lt("day", today).order("day", { ascending: false }).limit(1).maybeSingle();
+  const { data: todayRows } = await db
+    .from("nisab_history")
+    .select("country,currency,gold_nisab,silver_nisab")
+    .eq("day", today);
+  const { data: prevDay } = await db
+    .from("nisab_history")
+    .select("day")
+    .lt("day", today)
+    .order("day", { ascending: false })
+    .limit(1)
+    .maybeSingle();
   if (!todayRows?.length || !prevDay) return { notified: 0, countries: [] as string[] };
-  const { data: prevRows } = await db.from("nisab_history")
-    .select("country,gold_nisab,silver_nisab").eq("day", prevDay.day);
+  const { data: prevRows } = await db
+    .from("nisab_history")
+    .select("country,gold_nisab,silver_nisab")
+    .eq("day", prevDay.day);
   const prev = new Map((prevRows ?? []).map((r) => [r.country, r]));
 
-  const { data: prefs } = await db.from("notification_prefs")
-    .select("user_id,countries,metals").eq("in_app", true);
+  const { data: prefs } = await db
+    .from("notification_prefs")
+    .select("user_id,countries,metals")
+    .eq("in_app", true);
   const out: Record<string, unknown>[] = [];
   const moved: string[] = [];
   for (const r of todayRows) {
@@ -37,9 +48,16 @@ export async function notifyNisabChanges(db: SupabaseClient, today: string) {
       const mine = parts.filter((x) => (pref.metals ?? ["gold", "silver"]).includes(x.metal));
       if (!mine.length) continue;
       out.push({
-        user_id: pref.user_id, kind: "nisab_change", country: r.country,
+        user_id: pref.user_id,
+        kind: "nisab_change",
+        country: r.country,
         title: `تغيّر نصاب ${r.country} اليوم`,
-        body: mine.map((x) => `${x.metal === "gold" ? "الذهب" : "الفضة"}: ${fmt(x.v)} ${r.currency} (${x.pct > 0 ? "+" : ""}${x.pct.toFixed(1)}%)`).join(" · "),
+        body: mine
+          .map(
+            (x) =>
+              `${x.metal === "gold" ? "الذهب" : "الفضة"}: ${fmt(x.v)} ${r.currency} (${x.pct > 0 ? "+" : ""}${x.pct.toFixed(1)}%)`,
+          )
+          .join(" · "),
       });
     }
   }
@@ -51,38 +69,71 @@ export async function notifyNisabChanges(db: SupabaseClient, today: string) {
 export async function postDailyToFacebook(db: SupabaseClient, today: string, force = false) {
   const result = await doPost(db, today, force);
   if (result.reason !== "disabled") {
-    const { data: cur } = await db.from("app_settings").select("value").eq("key", "facebook").maybeSingle();
+    const { data: cur } = await db
+      .from("app_settings")
+      .select("value")
+      .eq("key", "facebook")
+      .maybeSingle();
     await db.from("app_settings").upsert({
       key: "facebook",
-      value: { ...((cur?.value as object) ?? {}), last_run: new Date().toISOString(), last_posted: result.posted, last_reason: result.reason ?? "" },
+      value: {
+        ...((cur?.value as object) ?? {}),
+        last_run: new Date().toISOString(),
+        last_posted: result.posted,
+        last_reason: result.reason ?? "",
+      },
       updated_at: new Date().toISOString(),
     });
   }
   return result;
 }
 
-async function doPost(db: SupabaseClient, today: string, force: boolean): Promise<{ posted: boolean; reason?: string }> {
-  const { data: row } = await db.from("app_settings").select("value").eq("key", "facebook").maybeSingle();
+async function doPost(
+  db: SupabaseClient,
+  today: string,
+  force: boolean,
+): Promise<{ posted: boolean; reason?: string }> {
+  const { data: row } = await db
+    .from("app_settings")
+    .select("value")
+    .eq("key", "facebook")
+    .maybeSingle();
   const cfg = (row?.value ?? {}) as { page_id?: string; token?: string; enabled?: boolean };
   if (row && cfg.enabled === false && !force) return { posted: false, reason: "disabled" };
   const pageId = cfg.page_id || process.env["FACEBOOK_PAGE_ID"];
   const token = cfg.token || process.env["FACEBOOK_PAGE_ACCESS_TOKEN"];
   if (!pageId || !token) return { posted: false, reason: "not configured" };
   const featured = ["EG", "SA", "AE", "KW", "MY", "US"];
-  const { data } = await db.from("nisab_history")
-    .select("country,currency,gold_nisab,silver_nisab").eq("day", today).in("country", featured);
+  const { data } = await db
+    .from("nisab_history")
+    .select("country,currency,gold_nisab,silver_nisab")
+    .eq("day", today)
+    .in("country", featured);
   if (!data?.length) return { posted: false, reason: "no data" };
   const lines = featured.flatMap((c) => {
     const r = data.find((x) => x.country === c);
     if (!r) return [];
-    return [`• ${c}: ذهب ${fmt(Number(r.gold_nisab))} / فضة ${r.silver_nisab ? fmt(Number(r.silver_nisab)) : "—"} ${r.currency}`];
+    return [
+      `• ${c}: ذهب ${fmt(Number(r.gold_nisab))} / فضة ${r.silver_nisab ? fmt(Number(r.silver_nisab)) : "—"} ${r.currency}`,
+    ];
   });
-  const message = [`نصاب الزكاة اليوم ${today}`, "(ذهب 85غ عيار 24 · فضة 595غ)", "", ...lines, "",
-    "لكل الدول: https://zakat-threshold.lovable.app/today", "أرقام استرشادية وليست فتوى."].join("\n");
+  const message = [
+    `نصاب الزكاة اليوم ${today}`,
+    "(ذهب 85غ عيار 24 · فضة 595غ)",
+    "",
+    ...lines,
+    "",
+    "لكل الدول: https://zakat-threshold.lovable.app/today",
+    "أرقام استرشادية وليست فتوى.",
+  ].join("\n");
   const res = await fetch(`https://graph.facebook.com/v21.0/${pageId}/feed`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message, link: "https://zakat-threshold.lovable.app/today", access_token: token }),
+    body: JSON.stringify({
+      message,
+      link: "https://zakat-threshold.lovable.app/today",
+      access_token: token,
+    }),
   });
   const body = await res.text();
   if (!res.ok) return { posted: false, reason: `Facebook ${res.status}: ${body}` };

@@ -10,7 +10,11 @@ export const CORS = {
 export function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...CORS, "Content-Type": "application/json; charset=utf-8", "Cache-Control": status < 400 ? "public, max-age=900" : "no-store" },
+    headers: {
+      ...CORS,
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": status < 400 ? "public, max-age=900" : "no-store",
+    },
   });
 }
 
@@ -22,7 +26,8 @@ export function publicDb() {
     global: {
       fetch: (input, init) => {
         const h = new Headers(init?.headers);
-        if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`) h.delete("Authorization");
+        if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`)
+          h.delete("Authorization");
         h.set("apikey", key);
         return fetch(input, { ...init, headers: h });
       },

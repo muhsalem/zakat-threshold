@@ -4,7 +4,14 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { COUNTRIES, countryName, flagOf } from "@/lib/countries";
 import { useI18n } from "@/lib/i18n";
 import { usePrices } from "@/lib/use-prices";
-import { StateNote, Disclaimer, LocalMarket, SourceQuality, PriceSourceLine, resolveGram } from "@/components/site/Prices";
+import {
+  StateNote,
+  Disclaimer,
+  LocalMarket,
+  SourceQuality,
+  PriceSourceLine,
+  resolveGram,
+} from "@/components/site/Prices";
 import { useLocalQuote } from "@/lib/local-quotes";
 import { scopeKey } from "@/lib/cities";
 import { manualMetals, valuationQuote } from "@/lib/nisab-valuation";
@@ -22,7 +29,8 @@ import {
 } from "@/lib/nisab";
 
 export const Route = createFileRoute("/country/$code")({
-  validateSearch: (search: Record<string, unknown>): { silverWeight?: number } => Number(search["silverWeight"]) === 612.36 ? { silverWeight: 612.36 } : {},
+  validateSearch: (search: Record<string, unknown>): { silverWeight?: number } =>
+    Number(search["silverWeight"]) === 612.36 ? { silverWeight: 612.36 } : {},
   loader: ({ params }) => {
     const country = COUNTRIES.find((c) => c.code.toLowerCase() === params.code.toLowerCase());
     if (!country) throw notFound();
@@ -30,7 +38,9 @@ export const Route = createFileRoute("/country/$code")({
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
-      return { meta: [{ title: "دولة غير متاحة · نِصاب" }, { name: "robots", content: "noindex" }] };
+      return {
+        meta: [{ title: "دولة غير متاحة · نِصاب" }, { name: "robots", content: "noindex" }],
+      };
     }
     const { country } = loaderData;
     const title = `نصاب الزكاة في ${country.ar} · ${country.currency}`;
@@ -67,7 +77,11 @@ function CountryPage() {
   const spotGold = data ? perGram(scope?.goldUsdOz ?? data.goldUsdOz, r) : 0;
   const spotSilver = data ? perGram(scope?.silverUsdOz ?? data.silverUsdOz, r) : 0;
   const g = resolveGram(spotGold, manual.gold, valuationQuote(quote?.buybackGram, quote?.goldGram));
-  const s = resolveGram(spotSilver, manual.silver, valuationQuote(quote?.silverBuybackGram, quote?.silverGram));
+  const s = resolveGram(
+    spotSilver,
+    manual.silver,
+    valuationQuote(quote?.silverBuybackGram, quote?.silverGram),
+  );
   const goldGram = g.gram;
   const silverGram = s.gram;
   const gold = goldGram * GOLD_NISAB_G;
@@ -153,12 +167,9 @@ function CountryPage() {
                   {t("perGram")}: <span className="num">{money(c.gram)}</span>
                 </p>
                 <details className="mt-4 text-sm">
-                  <summary className="cursor-pointer text-foreground">
-                    {t("country.how")}
-                  </summary>
+                  <summary className="cursor-pointer text-foreground">{t("country.how")}</summary>
                   <p className="num mt-2 text-muted-foreground">
-                    {money(c.gram)} / g × {c.grams} g ={" "}
-                    {money(c.total)}
+                    {money(c.gram)} / g × {c.grams} g = {money(c.total)}
                   </p>
                 </details>
               </article>
@@ -206,7 +217,14 @@ function CountryPage() {
           <LocalMarket currency={country.currency} goldGram={spotGold} silverGram={spotSilver} />
           <OfficialNisab country={country.code} locale={lang} />
           <SourceQuality currency={country.currency} />
-          <CountryVerificationSection country={country} lang={lang} spotGoldGram={spotGold} spotSilverGram={spotSilver} spotGoldNisab={spotGold * GOLD_NISAB_G} spotSilverNisab={spotSilver * SILVER_NISAB_G} />
+          <CountryVerificationSection
+            country={country}
+            lang={lang}
+            spotGoldGram={spotGold}
+            spotSilverGram={spotSilver}
+            spotGoldNisab={spotGold * GOLD_NISAB_G}
+            spotSilverNisab={spotSilver * SILVER_NISAB_G}
+          />
           <ShareNisab
             silverWeight={silverWeight}
             countryName={country.ar}

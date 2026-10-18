@@ -3,11 +3,25 @@ import { createFileRoute } from "@tanstack/react-router";
 import { COUNTRIES } from "@/lib/countries";
 
 const PAGES = [
-  "/", "/today", "/calculator", "/countries", "/map", "/compare", "/history", "/chronology",
-  "/methodology", "/fiqh", "/types", "/faq", "/sources", "/developers", "/outlook", "/waqf",
+  "/",
+  "/today",
+  "/calculator",
+  "/countries",
+  "/map",
+  "/compare",
+  "/history",
+  "/chronology",
+  "/methodology",
+  "/fiqh",
+  "/types",
+  "/faq",
+  "/sources",
+  "/developers",
+  "/outlook",
+  "/waqf",
 ];
 
-export const Route = createFileRoute("/sitemap.xml")({
+export const Route = createFileRoute("/sitemap/xml")({
   server: {
     handlers: {
       GET: async ({ request }) => {
@@ -18,7 +32,10 @@ export const Route = createFileRoute("/sitemap.xml")({
           urls.map((u) => `  <url><loc>${origin}${u}</loc></url>`).join("\n") +
           `\n</urlset>\n`;
         return new Response(body, {
-          headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, max-age=3600" },
+          headers: {
+            "Content-Type": "application/xml; charset=utf-8",
+            "Cache-Control": "public, max-age=3600",
+          },
         });
       },
     },

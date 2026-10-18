@@ -18,7 +18,7 @@ export const COUNTRIES: Country[] = [
     en: "Afghanistan",
     muslim: true,
     lat: 33,
-    lng: 65
+    lng: 65,
   },
   {
     code: "AL",
@@ -28,7 +28,7 @@ export const COUNTRIES: Country[] = [
     en: "Albania",
     muslim: true,
     lat: 41,
-    lng: 20
+    lng: 20,
   },
   {
     code: "DZ",
@@ -38,7 +38,7 @@ export const COUNTRIES: Country[] = [
     en: "Algeria",
     muslim: true,
     lat: 28,
-    lng: 3
+    lng: 3,
   },
   {
     code: "AZ",
@@ -48,7 +48,7 @@ export const COUNTRIES: Country[] = [
     en: "Azerbaijan",
     muslim: true,
     lat: 40.5,
-    lng: 47.5
+    lng: 47.5,
   },
   {
     code: "BH",
@@ -58,7 +58,7 @@ export const COUNTRIES: Country[] = [
     en: "Bahrain",
     muslim: true,
     lat: 26,
-    lng: 50.55
+    lng: 50.55,
   },
   {
     code: "BD",
@@ -68,7 +68,7 @@ export const COUNTRIES: Country[] = [
     en: "Bangladesh",
     muslim: true,
     lat: 24,
-    lng: 90
+    lng: 90,
   },
   {
     code: "BN",
@@ -78,7 +78,7 @@ export const COUNTRIES: Country[] = [
     en: "Brunei",
     muslim: true,
     lat: 4.5,
-    lng: 114.66666666
+    lng: 114.66666666,
   },
   {
     code: "BF",
@@ -88,7 +88,7 @@ export const COUNTRIES: Country[] = [
     en: "Burkina Faso",
     muslim: true,
     lat: 13,
-    lng: -2
+    lng: -2,
   },
   {
     code: "TD",
@@ -98,7 +98,7 @@ export const COUNTRIES: Country[] = [
     en: "Chad",
     muslim: true,
     lat: 15,
-    lng: 19
+    lng: 19,
   },
   {
     code: "KM",
@@ -108,7 +108,7 @@ export const COUNTRIES: Country[] = [
     en: "Comoros",
     muslim: true,
     lat: -12.16666666,
-    lng: 44.25
+    lng: 44.25,
   },
   {
     code: "DJ",
@@ -118,7 +118,7 @@ export const COUNTRIES: Country[] = [
     en: "Djibouti",
     muslim: true,
     lat: 11.5,
-    lng: 43
+    lng: 43,
   },
   {
     code: "EG",
@@ -128,7 +128,7 @@ export const COUNTRIES: Country[] = [
     en: "Egypt",
     muslim: true,
     lat: 27,
-    lng: 30
+    lng: 30,
   },
   {
     code: "GM",
@@ -138,7 +138,7 @@ export const COUNTRIES: Country[] = [
     en: "Gambia",
     muslim: true,
     lat: 13.46666666,
-    lng: -16.56666666
+    lng: -16.56666666,
   },
   {
     code: "GN",
@@ -148,7 +148,7 @@ export const COUNTRIES: Country[] = [
     en: "Guinea",
     muslim: true,
     lat: 11,
-    lng: -10
+    lng: -10,
   },
   {
     code: "ID",
@@ -158,7 +158,7 @@ export const COUNTRIES: Country[] = [
     en: "Indonesia",
     muslim: true,
     lat: -5,
-    lng: 120
+    lng: 120,
   },
   {
     code: "IR",
@@ -168,7 +168,7 @@ export const COUNTRIES: Country[] = [
     en: "Iran",
     muslim: true,
     lat: 32,
-    lng: 53
+    lng: 53,
   },
   {
     code: "IQ",
@@ -178,7 +178,7 @@ export const COUNTRIES: Country[] = [
     en: "Iraq",
     muslim: true,
     lat: 33,
-    lng: 44
+    lng: 44,
   },
   {
     code: "JO",
@@ -188,7 +188,7 @@ export const COUNTRIES: Country[] = [
     en: "Jordan",
     muslim: true,
     lat: 31,
-    lng: 36
+    lng: 36,
   },
   {
     code: "KZ",
@@ -198,7 +198,7 @@ export const COUNTRIES: Country[] = [
     en: "Kazakhstan",
     muslim: true,
     lat: 48,
-    lng: 68
+    lng: 68,
   },
   {
     code: "KW",
@@ -208,7 +208,7 @@ export const COUNTRIES: Country[] = [
     en: "Kuwait",
     muslim: true,
     lat: 29.5,
-    lng: 45.75
+    lng: 45.75,
   },
   {
     code: "KG",
@@ -218,7 +218,7 @@ export const COUNTRIES: Country[] = [
     en: "Kyrgyzstan",
     muslim: true,
     lat: 41,
-    lng: 75
+    lng: 75,
   },
   {
     code: "LB",
@@ -228,7 +228,7 @@ export const COUNTRIES: Country[] = [
     en: "Lebanon",
     muslim: true,
     lat: 33.83333333,
-    lng: 35.83333333
+    lng: 35.83333333,
   },
   {
     code: "LY",
@@ -238,7 +238,7 @@ export const COUNTRIES: Country[] = [
     en: "Libya",
     muslim: true,
     lat: 25,
-    lng: 17
+    lng: 17,
   },
   {
     code: "MY",
@@ -248,7 +248,7 @@ export const COUNTRIES: Country[] = [
     en: "Malaysia",
     muslim: true,
     lat: 2.5,
-    lng: 112.5
+    lng: 112.5,
   },
   {
     code: "MV",
@@ -258,7 +258,7 @@ export const COUNTRIES: Country[] = [
     en: "Maldives",
     muslim: true,
     lat: 3.25,
-    lng: 73
+    lng: 73,
   },
   {
     code: "ML",
@@ -268,7 +268,7 @@ export const COUNTRIES: Country[] = [
     en: "Mali",
     muslim: true,
     lat: 17,
-    lng: -4
+    lng: -4,
   },
   {
     code: "MR",
@@ -278,7 +278,7 @@ export const COUNTRIES: Country[] = [
     en: "Mauritania",
     muslim: true,
     lat: 20,
-    lng: -12
+    lng: -12,
   },
   {
     code: "MA",
@@ -288,7 +288,7 @@ export const COUNTRIES: Country[] = [
     en: "Morocco",
     muslim: true,
     lat: 32,
-    lng: -5
+    lng: -5,
   },
   {
     code: "NE",
@@ -298,7 +298,7 @@ export const COUNTRIES: Country[] = [
     en: "Niger",
     muslim: true,
     lat: 16,
-    lng: 8
+    lng: 8,
   },
   {
     code: "NG",
@@ -308,7 +308,7 @@ export const COUNTRIES: Country[] = [
     en: "Nigeria",
     muslim: true,
     lat: 10,
-    lng: 8
+    lng: 8,
   },
   {
     code: "OM",
@@ -318,7 +318,7 @@ export const COUNTRIES: Country[] = [
     en: "Oman",
     muslim: true,
     lat: 21,
-    lng: 57
+    lng: 57,
   },
   {
     code: "PK",
@@ -328,7 +328,7 @@ export const COUNTRIES: Country[] = [
     en: "Pakistan",
     muslim: true,
     lat: 30,
-    lng: 70
+    lng: 70,
   },
   {
     code: "PS",
@@ -338,7 +338,7 @@ export const COUNTRIES: Country[] = [
     en: "Palestine",
     muslim: true,
     lat: 31.9,
-    lng: 35.2
+    lng: 35.2,
   },
   {
     code: "QA",
@@ -348,7 +348,7 @@ export const COUNTRIES: Country[] = [
     en: "Qatar",
     muslim: true,
     lat: 25.5,
-    lng: 51.25
+    lng: 51.25,
   },
   {
     code: "SA",
@@ -358,7 +358,7 @@ export const COUNTRIES: Country[] = [
     en: "Saudi Arabia",
     muslim: true,
     lat: 25,
-    lng: 45
+    lng: 45,
   },
   {
     code: "SN",
@@ -368,7 +368,7 @@ export const COUNTRIES: Country[] = [
     en: "Senegal",
     muslim: true,
     lat: 14,
-    lng: -14
+    lng: -14,
   },
   {
     code: "SL",
@@ -378,7 +378,7 @@ export const COUNTRIES: Country[] = [
     en: "Sierra Leone",
     muslim: true,
     lat: 8.5,
-    lng: -11.5
+    lng: -11.5,
   },
   {
     code: "SO",
@@ -388,7 +388,7 @@ export const COUNTRIES: Country[] = [
     en: "Somalia",
     muslim: true,
     lat: 10,
-    lng: 49
+    lng: 49,
   },
   {
     code: "SD",
@@ -398,7 +398,7 @@ export const COUNTRIES: Country[] = [
     en: "Sudan",
     muslim: true,
     lat: 15,
-    lng: 30
+    lng: 30,
   },
   {
     code: "SY",
@@ -408,7 +408,7 @@ export const COUNTRIES: Country[] = [
     en: "Syria",
     muslim: true,
     lat: 35,
-    lng: 38
+    lng: 38,
   },
   {
     code: "TJ",
@@ -418,7 +418,7 @@ export const COUNTRIES: Country[] = [
     en: "Tajikistan",
     muslim: true,
     lat: 39,
-    lng: 71
+    lng: 71,
   },
   {
     code: "TN",
@@ -428,7 +428,7 @@ export const COUNTRIES: Country[] = [
     en: "Tunisia",
     muslim: true,
     lat: 34,
-    lng: 9
+    lng: 9,
   },
   {
     code: "TR",
@@ -438,7 +438,7 @@ export const COUNTRIES: Country[] = [
     en: "Türkiye",
     muslim: true,
     lat: 39,
-    lng: 35
+    lng: 35,
   },
   {
     code: "TM",
@@ -448,7 +448,7 @@ export const COUNTRIES: Country[] = [
     en: "Turkmenistan",
     muslim: true,
     lat: 40,
-    lng: 60
+    lng: 60,
   },
   {
     code: "AE",
@@ -458,7 +458,7 @@ export const COUNTRIES: Country[] = [
     en: "United Arab Emirates",
     muslim: true,
     lat: 24,
-    lng: 54
+    lng: 54,
   },
   {
     code: "UZ",
@@ -468,7 +468,7 @@ export const COUNTRIES: Country[] = [
     en: "Uzbekistan",
     muslim: true,
     lat: 41,
-    lng: 64
+    lng: 64,
   },
   {
     code: "YE",
@@ -478,7 +478,7 @@ export const COUNTRIES: Country[] = [
     en: "Yemen",
     muslim: true,
     lat: 15,
-    lng: 48
+    lng: 48,
   },
   {
     code: "AD",
@@ -487,7 +487,7 @@ export const COUNTRIES: Country[] = [
     ar: "أندورا",
     en: "Andorra",
     lat: 42.5,
-    lng: 1.5
+    lng: 1.5,
   },
   {
     code: "AO",
@@ -496,7 +496,7 @@ export const COUNTRIES: Country[] = [
     ar: "جمهورية أنغولا",
     en: "Angola",
     lat: -12.5,
-    lng: 18.5
+    lng: 18.5,
   },
   {
     code: "AG",
@@ -505,7 +505,7 @@ export const COUNTRIES: Country[] = [
     ar: "أنتيغوا وباربودا",
     en: "Antigua and Barbuda",
     lat: 17.05,
-    lng: -61.8
+    lng: -61.8,
   },
   {
     code: "AR",
@@ -514,7 +514,7 @@ export const COUNTRIES: Country[] = [
     ar: "الأرجنتين",
     en: "Argentina",
     lat: -34,
-    lng: -64
+    lng: -64,
   },
   {
     code: "AM",
@@ -523,7 +523,7 @@ export const COUNTRIES: Country[] = [
     ar: "أرمينيا",
     en: "Armenia",
     lat: 40,
-    lng: 45
+    lng: 45,
   },
   {
     code: "AU",
@@ -532,7 +532,7 @@ export const COUNTRIES: Country[] = [
     ar: "أستراليا",
     en: "Australia",
     lat: -27,
-    lng: 133
+    lng: 133,
   },
   {
     code: "AT",
@@ -541,7 +541,7 @@ export const COUNTRIES: Country[] = [
     ar: "النمسا",
     en: "Austria",
     lat: 47.33333333,
-    lng: 13.33333333
+    lng: 13.33333333,
   },
   {
     code: "BS",
@@ -550,7 +550,7 @@ export const COUNTRIES: Country[] = [
     ar: "البهاما",
     en: "Bahamas",
     lat: 24.25,
-    lng: -76
+    lng: -76,
   },
   {
     code: "BB",
@@ -559,7 +559,7 @@ export const COUNTRIES: Country[] = [
     ar: "باربادوس",
     en: "Barbados",
     lat: 13.16666666,
-    lng: -59.53333333
+    lng: -59.53333333,
   },
   {
     code: "BY",
@@ -568,7 +568,7 @@ export const COUNTRIES: Country[] = [
     ar: "بيلاروسيا",
     en: "Belarus",
     lat: 53,
-    lng: 28
+    lng: 28,
   },
   {
     code: "BE",
@@ -577,7 +577,7 @@ export const COUNTRIES: Country[] = [
     ar: "بلجيكا",
     en: "Belgium",
     lat: 50.83333333,
-    lng: 4
+    lng: 4,
   },
   {
     code: "BZ",
@@ -586,7 +586,7 @@ export const COUNTRIES: Country[] = [
     ar: "بليز",
     en: "Belize",
     lat: 17.25,
-    lng: -88.75
+    lng: -88.75,
   },
   {
     code: "BJ",
@@ -595,7 +595,7 @@ export const COUNTRIES: Country[] = [
     ar: "بنين",
     en: "Benin",
     lat: 9.5,
-    lng: 2.25
+    lng: 2.25,
   },
   {
     code: "BT",
@@ -604,7 +604,7 @@ export const COUNTRIES: Country[] = [
     ar: "بوتان",
     en: "Bhutan",
     lat: 27.5,
-    lng: 90.5
+    lng: 90.5,
   },
   {
     code: "BO",
@@ -613,7 +613,7 @@ export const COUNTRIES: Country[] = [
     ar: "بوليفيا",
     en: "Bolivia",
     lat: -17,
-    lng: -65
+    lng: -65,
   },
   {
     code: "BA",
@@ -622,7 +622,7 @@ export const COUNTRIES: Country[] = [
     ar: "البوسنة والهرسك",
     en: "Bosnia and Herzegovina",
     lat: 44,
-    lng: 18
+    lng: 18,
   },
   {
     code: "BW",
@@ -631,7 +631,7 @@ export const COUNTRIES: Country[] = [
     ar: "بوتسوانا",
     en: "Botswana",
     lat: -22,
-    lng: 24
+    lng: 24,
   },
   {
     code: "BR",
@@ -640,7 +640,7 @@ export const COUNTRIES: Country[] = [
     ar: "البرازيل",
     en: "Brazil",
     lat: -10,
-    lng: -55
+    lng: -55,
   },
   {
     code: "BG",
@@ -649,7 +649,7 @@ export const COUNTRIES: Country[] = [
     ar: "بلغاريا",
     en: "Bulgaria",
     lat: 43,
-    lng: 25
+    lng: 25,
   },
   {
     code: "BI",
@@ -658,7 +658,7 @@ export const COUNTRIES: Country[] = [
     ar: "بوروندي",
     en: "Burundi",
     lat: -3.5,
-    lng: 30
+    lng: 30,
   },
   {
     code: "KH",
@@ -667,7 +667,7 @@ export const COUNTRIES: Country[] = [
     ar: "كمبوديا",
     en: "Cambodia",
     lat: 13,
-    lng: 105
+    lng: 105,
   },
   {
     code: "CM",
@@ -676,7 +676,7 @@ export const COUNTRIES: Country[] = [
     ar: "الكاميرون",
     en: "Cameroon",
     lat: 6,
-    lng: 12
+    lng: 12,
   },
   {
     code: "CA",
@@ -685,7 +685,7 @@ export const COUNTRIES: Country[] = [
     ar: "كندا",
     en: "Canada",
     lat: 60,
-    lng: -95
+    lng: -95,
   },
   {
     code: "CV",
@@ -694,7 +694,7 @@ export const COUNTRIES: Country[] = [
     ar: "كابو فيردي",
     en: "Cape Verde",
     lat: 16,
-    lng: -24
+    lng: -24,
   },
   {
     code: "CF",
@@ -703,7 +703,7 @@ export const COUNTRIES: Country[] = [
     ar: "جمهورية أفريقيا الوسطى",
     en: "Central African Republic",
     lat: 7,
-    lng: 21
+    lng: 21,
   },
   {
     code: "CL",
@@ -712,7 +712,7 @@ export const COUNTRIES: Country[] = [
     ar: "تشيلي",
     en: "Chile",
     lat: -30,
-    lng: -71
+    lng: -71,
   },
   {
     code: "CN",
@@ -721,7 +721,7 @@ export const COUNTRIES: Country[] = [
     ar: "الصين",
     en: "China",
     lat: 35,
-    lng: 105
+    lng: 105,
   },
   {
     code: "CO",
@@ -730,7 +730,7 @@ export const COUNTRIES: Country[] = [
     ar: "كولومبيا",
     en: "Colombia",
     lat: 4,
-    lng: -72
+    lng: -72,
   },
   {
     code: "CR",
@@ -739,7 +739,7 @@ export const COUNTRIES: Country[] = [
     ar: "كوستاريكا",
     en: "Costa Rica",
     lat: 10,
-    lng: -84
+    lng: -84,
   },
   {
     code: "HR",
@@ -748,7 +748,7 @@ export const COUNTRIES: Country[] = [
     ar: "كرواتيا",
     en: "Croatia",
     lat: 45.16666666,
-    lng: 15.5
+    lng: 15.5,
   },
   {
     code: "CU",
@@ -757,7 +757,7 @@ export const COUNTRIES: Country[] = [
     ar: "كوبا",
     en: "Cuba",
     lat: 21.5,
-    lng: -80
+    lng: -80,
   },
   {
     code: "CY",
@@ -766,7 +766,7 @@ export const COUNTRIES: Country[] = [
     ar: "قبرص",
     en: "Cyprus",
     lat: 35,
-    lng: 33
+    lng: 33,
   },
   {
     code: "CZ",
@@ -775,7 +775,7 @@ export const COUNTRIES: Country[] = [
     ar: "التشيك",
     en: "Czechia",
     lat: 49.75,
-    lng: 15.5
+    lng: 15.5,
   },
   {
     code: "DK",
@@ -784,7 +784,7 @@ export const COUNTRIES: Country[] = [
     ar: "الدنمارك",
     en: "Denmark",
     lat: 56,
-    lng: 10
+    lng: 10,
   },
   {
     code: "DM",
@@ -793,7 +793,7 @@ export const COUNTRIES: Country[] = [
     ar: "دومينيكا",
     en: "Dominica",
     lat: 15.41666666,
-    lng: -61.33333333
+    lng: -61.33333333,
   },
   {
     code: "DO",
@@ -802,7 +802,7 @@ export const COUNTRIES: Country[] = [
     ar: "جمهورية الدومينيكان",
     en: "Dominican Republic",
     lat: 19,
-    lng: -70.66666666
+    lng: -70.66666666,
   },
   {
     code: "CD",
@@ -811,7 +811,7 @@ export const COUNTRIES: Country[] = [
     ar: "الكونغو",
     en: "DR Congo",
     lat: 0,
-    lng: 25
+    lng: 25,
   },
   {
     code: "EC",
@@ -820,7 +820,7 @@ export const COUNTRIES: Country[] = [
     ar: "الإكوادور",
     en: "Ecuador",
     lat: -2,
-    lng: -77.5
+    lng: -77.5,
   },
   {
     code: "SV",
@@ -829,7 +829,7 @@ export const COUNTRIES: Country[] = [
     ar: "السلفادور",
     en: "El Salvador",
     lat: 13.83333333,
-    lng: -88.91666666
+    lng: -88.91666666,
   },
   {
     code: "GQ",
@@ -838,7 +838,7 @@ export const COUNTRIES: Country[] = [
     ar: "غينيا الاستوائية",
     en: "Equatorial Guinea",
     lat: 2,
-    lng: 10
+    lng: 10,
   },
   {
     code: "ER",
@@ -847,7 +847,7 @@ export const COUNTRIES: Country[] = [
     ar: "إريتريا",
     en: "Eritrea",
     lat: 15,
-    lng: 39
+    lng: 39,
   },
   {
     code: "EE",
@@ -856,7 +856,7 @@ export const COUNTRIES: Country[] = [
     ar: "إستونيا",
     en: "Estonia",
     lat: 59,
-    lng: 26
+    lng: 26,
   },
   {
     code: "SZ",
@@ -865,7 +865,7 @@ export const COUNTRIES: Country[] = [
     ar: "إسواتيني",
     en: "Eswatini",
     lat: -26.5,
-    lng: 31.5
+    lng: 31.5,
   },
   {
     code: "ET",
@@ -874,7 +874,7 @@ export const COUNTRIES: Country[] = [
     ar: "إثيوبيا",
     en: "Ethiopia",
     lat: 8,
-    lng: 38
+    lng: 38,
   },
   {
     code: "FJ",
@@ -883,7 +883,7 @@ export const COUNTRIES: Country[] = [
     ar: "فيجي",
     en: "Fiji",
     lat: -18,
-    lng: 175
+    lng: 175,
   },
   {
     code: "FI",
@@ -892,7 +892,7 @@ export const COUNTRIES: Country[] = [
     ar: "فنلندا",
     en: "Finland",
     lat: 64,
-    lng: 26
+    lng: 26,
   },
   {
     code: "FR",
@@ -901,7 +901,7 @@ export const COUNTRIES: Country[] = [
     ar: "فرنسا",
     en: "France",
     lat: 46,
-    lng: 2
+    lng: 2,
   },
   {
     code: "GA",
@@ -910,7 +910,7 @@ export const COUNTRIES: Country[] = [
     ar: "الغابون",
     en: "Gabon",
     lat: -1,
-    lng: 11.75
+    lng: 11.75,
   },
   {
     code: "GE",
@@ -919,7 +919,7 @@ export const COUNTRIES: Country[] = [
     ar: "جورجيا",
     en: "Georgia",
     lat: 42,
-    lng: 43.5
+    lng: 43.5,
   },
   {
     code: "DE",
@@ -928,7 +928,7 @@ export const COUNTRIES: Country[] = [
     ar: "ألمانيا",
     en: "Germany",
     lat: 51,
-    lng: 9
+    lng: 9,
   },
   {
     code: "GH",
@@ -937,7 +937,7 @@ export const COUNTRIES: Country[] = [
     ar: "غانا",
     en: "Ghana",
     lat: 8,
-    lng: -2
+    lng: -2,
   },
   {
     code: "GR",
@@ -946,7 +946,7 @@ export const COUNTRIES: Country[] = [
     ar: "اليونان",
     en: "Greece",
     lat: 39,
-    lng: 22
+    lng: 22,
   },
   {
     code: "GD",
@@ -955,7 +955,7 @@ export const COUNTRIES: Country[] = [
     ar: "غرينادا",
     en: "Grenada",
     lat: 12.11666666,
-    lng: -61.66666666
+    lng: -61.66666666,
   },
   {
     code: "GT",
@@ -964,7 +964,7 @@ export const COUNTRIES: Country[] = [
     ar: "غواتيمالا",
     en: "Guatemala",
     lat: 15.5,
-    lng: -90.25
+    lng: -90.25,
   },
   {
     code: "GW",
@@ -973,7 +973,7 @@ export const COUNTRIES: Country[] = [
     ar: "غينيا بيساو",
     en: "Guinea-Bissau",
     lat: 12,
-    lng: -15
+    lng: -15,
   },
   {
     code: "GY",
@@ -982,7 +982,7 @@ export const COUNTRIES: Country[] = [
     ar: "غيانا",
     en: "Guyana",
     lat: 5,
-    lng: -59
+    lng: -59,
   },
   {
     code: "HT",
@@ -991,7 +991,7 @@ export const COUNTRIES: Country[] = [
     ar: "هايتي",
     en: "Haiti",
     lat: 19,
-    lng: -72.41666666
+    lng: -72.41666666,
   },
   {
     code: "HN",
@@ -1000,7 +1000,7 @@ export const COUNTRIES: Country[] = [
     ar: "هندوراس",
     en: "Honduras",
     lat: 15,
-    lng: -86.5
+    lng: -86.5,
   },
   {
     code: "HU",
@@ -1009,7 +1009,7 @@ export const COUNTRIES: Country[] = [
     ar: "المجر",
     en: "Hungary",
     lat: 47,
-    lng: 20
+    lng: 20,
   },
   {
     code: "IS",
@@ -1018,7 +1018,7 @@ export const COUNTRIES: Country[] = [
     ar: "آيسلندا",
     en: "Iceland",
     lat: 65,
-    lng: -18
+    lng: -18,
   },
   {
     code: "IN",
@@ -1027,7 +1027,7 @@ export const COUNTRIES: Country[] = [
     ar: "الهند",
     en: "India",
     lat: 20,
-    lng: 77
+    lng: 77,
   },
   {
     code: "IE",
@@ -1036,7 +1036,7 @@ export const COUNTRIES: Country[] = [
     ar: "أيرلندا",
     en: "Ireland",
     lat: 53,
-    lng: -8
+    lng: -8,
   },
   {
     code: "IL",
@@ -1045,7 +1045,7 @@ export const COUNTRIES: Country[] = [
     ar: "إسرائيل",
     en: "Israel",
     lat: 31.47,
-    lng: 35.13
+    lng: 35.13,
   },
   {
     code: "IT",
@@ -1054,7 +1054,7 @@ export const COUNTRIES: Country[] = [
     ar: "إيطاليا",
     en: "Italy",
     lat: 42.83333333,
-    lng: 12.83333333
+    lng: 12.83333333,
   },
   {
     code: "CI",
@@ -1063,7 +1063,7 @@ export const COUNTRIES: Country[] = [
     ar: "ساحل العاج",
     en: "Ivory Coast",
     lat: 8,
-    lng: -5
+    lng: -5,
   },
   {
     code: "JM",
@@ -1072,7 +1072,7 @@ export const COUNTRIES: Country[] = [
     ar: "جامايكا",
     en: "Jamaica",
     lat: 18.25,
-    lng: -77.5
+    lng: -77.5,
   },
   {
     code: "JP",
@@ -1081,7 +1081,7 @@ export const COUNTRIES: Country[] = [
     ar: "اليابان",
     en: "Japan",
     lat: 36,
-    lng: 138
+    lng: 138,
   },
   {
     code: "KE",
@@ -1090,7 +1090,7 @@ export const COUNTRIES: Country[] = [
     ar: "كينيا",
     en: "Kenya",
     lat: 1,
-    lng: 38
+    lng: 38,
   },
   {
     code: "KI",
@@ -1099,7 +1099,7 @@ export const COUNTRIES: Country[] = [
     ar: "كيريباتي",
     en: "Kiribati",
     lat: 1.41666666,
-    lng: 173
+    lng: 173,
   },
   {
     code: "LA",
@@ -1108,7 +1108,7 @@ export const COUNTRIES: Country[] = [
     ar: "لاوس",
     en: "Laos",
     lat: 18,
-    lng: 105
+    lng: 105,
   },
   {
     code: "LV",
@@ -1117,7 +1117,7 @@ export const COUNTRIES: Country[] = [
     ar: "لاتفيا",
     en: "Latvia",
     lat: 57,
-    lng: 25
+    lng: 25,
   },
   {
     code: "LS",
@@ -1126,7 +1126,7 @@ export const COUNTRIES: Country[] = [
     ar: "ليسوتو",
     en: "Lesotho",
     lat: -29.5,
-    lng: 28.5
+    lng: 28.5,
   },
   {
     code: "LR",
@@ -1135,7 +1135,7 @@ export const COUNTRIES: Country[] = [
     ar: "ليبيريا",
     en: "Liberia",
     lat: 6.5,
-    lng: -9.5
+    lng: -9.5,
   },
   {
     code: "LI",
@@ -1144,7 +1144,7 @@ export const COUNTRIES: Country[] = [
     ar: "ليختنشتاين",
     en: "Liechtenstein",
     lat: 47.26666666,
-    lng: 9.53333333
+    lng: 9.53333333,
   },
   {
     code: "LT",
@@ -1153,7 +1153,7 @@ export const COUNTRIES: Country[] = [
     ar: "ليتوانيا",
     en: "Lithuania",
     lat: 56,
-    lng: 24
+    lng: 24,
   },
   {
     code: "LU",
@@ -1162,7 +1162,7 @@ export const COUNTRIES: Country[] = [
     ar: "لوكسمبورغ",
     en: "Luxembourg",
     lat: 49.75,
-    lng: 6.16666666
+    lng: 6.16666666,
   },
   {
     code: "MG",
@@ -1171,7 +1171,7 @@ export const COUNTRIES: Country[] = [
     ar: "مدغشقر",
     en: "Madagascar",
     lat: -20,
-    lng: 47
+    lng: 47,
   },
   {
     code: "MW",
@@ -1180,7 +1180,7 @@ export const COUNTRIES: Country[] = [
     ar: "مالاوي",
     en: "Malawi",
     lat: -13.5,
-    lng: 34
+    lng: 34,
   },
   {
     code: "MT",
@@ -1189,7 +1189,7 @@ export const COUNTRIES: Country[] = [
     ar: "مالطا",
     en: "Malta",
     lat: 35.83333333,
-    lng: 14.58333333
+    lng: 14.58333333,
   },
   {
     code: "MH",
@@ -1198,7 +1198,7 @@ export const COUNTRIES: Country[] = [
     ar: "جزر مارشال",
     en: "Marshall Islands",
     lat: 9,
-    lng: 168
+    lng: 168,
   },
   {
     code: "MU",
@@ -1207,7 +1207,7 @@ export const COUNTRIES: Country[] = [
     ar: "موريشيوس",
     en: "Mauritius",
     lat: -20.28333333,
-    lng: 57.55
+    lng: 57.55,
   },
   {
     code: "MX",
@@ -1216,7 +1216,7 @@ export const COUNTRIES: Country[] = [
     ar: "المسكيك",
     en: "Mexico",
     lat: 23,
-    lng: -102
+    lng: -102,
   },
   {
     code: "FM",
@@ -1225,7 +1225,7 @@ export const COUNTRIES: Country[] = [
     ar: "ميكرونيسيا",
     en: "Micronesia",
     lat: 6.91666666,
-    lng: 158.25
+    lng: 158.25,
   },
   {
     code: "MD",
@@ -1234,7 +1234,7 @@ export const COUNTRIES: Country[] = [
     ar: "مولدوڤا",
     en: "Moldova",
     lat: 47,
-    lng: 29
+    lng: 29,
   },
   {
     code: "MC",
@@ -1243,7 +1243,7 @@ export const COUNTRIES: Country[] = [
     ar: "موناكو",
     en: "Monaco",
     lat: 43.73333333,
-    lng: 7.4
+    lng: 7.4,
   },
   {
     code: "MN",
@@ -1252,7 +1252,7 @@ export const COUNTRIES: Country[] = [
     ar: "منغوليا",
     en: "Mongolia",
     lat: 46,
-    lng: 105
+    lng: 105,
   },
   {
     code: "ME",
@@ -1261,7 +1261,7 @@ export const COUNTRIES: Country[] = [
     ar: "الجبل الاسود",
     en: "Montenegro",
     lat: 42.5,
-    lng: 19.3
+    lng: 19.3,
   },
   {
     code: "MZ",
@@ -1270,7 +1270,7 @@ export const COUNTRIES: Country[] = [
     ar: "موزمبيق",
     en: "Mozambique",
     lat: -18.25,
-    lng: 35
+    lng: 35,
   },
   {
     code: "MM",
@@ -1279,7 +1279,7 @@ export const COUNTRIES: Country[] = [
     ar: "ميانمار",
     en: "Myanmar",
     lat: 22,
-    lng: 98
+    lng: 98,
   },
   {
     code: "NA",
@@ -1288,7 +1288,7 @@ export const COUNTRIES: Country[] = [
     ar: "ناميبيا",
     en: "Namibia",
     lat: -22,
-    lng: 17
+    lng: 17,
   },
   {
     code: "NR",
@@ -1297,7 +1297,7 @@ export const COUNTRIES: Country[] = [
     ar: "ناورو",
     en: "Nauru",
     lat: -0.53333333,
-    lng: 166.91666666
+    lng: 166.91666666,
   },
   {
     code: "NP",
@@ -1306,7 +1306,7 @@ export const COUNTRIES: Country[] = [
     ar: "نيبال",
     en: "Nepal",
     lat: 28,
-    lng: 84
+    lng: 84,
   },
   {
     code: "NL",
@@ -1315,7 +1315,7 @@ export const COUNTRIES: Country[] = [
     ar: "هولندا",
     en: "Netherlands",
     lat: 52.5,
-    lng: 5.75
+    lng: 5.75,
   },
   {
     code: "NZ",
@@ -1324,7 +1324,7 @@ export const COUNTRIES: Country[] = [
     ar: "نيوزيلندا",
     en: "New Zealand",
     lat: -41,
-    lng: 174
+    lng: 174,
   },
   {
     code: "NI",
@@ -1333,7 +1333,7 @@ export const COUNTRIES: Country[] = [
     ar: "نيكاراغوا",
     en: "Nicaragua",
     lat: 13,
-    lng: -85
+    lng: -85,
   },
   {
     code: "KP",
@@ -1342,7 +1342,7 @@ export const COUNTRIES: Country[] = [
     ar: "كوريا الشمالية",
     en: "North Korea",
     lat: 40,
-    lng: 127
+    lng: 127,
   },
   {
     code: "MK",
@@ -1351,7 +1351,7 @@ export const COUNTRIES: Country[] = [
     ar: "شمال مقدونيا",
     en: "North Macedonia",
     lat: 41.83333333,
-    lng: 22
+    lng: 22,
   },
   {
     code: "NO",
@@ -1360,7 +1360,7 @@ export const COUNTRIES: Country[] = [
     ar: "النرويج",
     en: "Norway",
     lat: 62,
-    lng: 10
+    lng: 10,
   },
   {
     code: "PW",
@@ -1369,7 +1369,7 @@ export const COUNTRIES: Country[] = [
     ar: "بالاو",
     en: "Palau",
     lat: 7.5,
-    lng: 134.5
+    lng: 134.5,
   },
   {
     code: "PA",
@@ -1378,7 +1378,7 @@ export const COUNTRIES: Country[] = [
     ar: "بنما",
     en: "Panama",
     lat: 9,
-    lng: -80
+    lng: -80,
   },
   {
     code: "PG",
@@ -1387,7 +1387,7 @@ export const COUNTRIES: Country[] = [
     ar: "بابوا غينيا الجديدة",
     en: "Papua New Guinea",
     lat: -6,
-    lng: 147
+    lng: 147,
   },
   {
     code: "PY",
@@ -1396,7 +1396,7 @@ export const COUNTRIES: Country[] = [
     ar: "باراغواي",
     en: "Paraguay",
     lat: -23,
-    lng: -58
+    lng: -58,
   },
   {
     code: "PE",
@@ -1405,7 +1405,7 @@ export const COUNTRIES: Country[] = [
     ar: "بيرو",
     en: "Peru",
     lat: -10,
-    lng: -76
+    lng: -76,
   },
   {
     code: "PH",
@@ -1414,7 +1414,7 @@ export const COUNTRIES: Country[] = [
     ar: "الفلبين",
     en: "Philippines",
     lat: 13,
-    lng: 122
+    lng: 122,
   },
   {
     code: "PL",
@@ -1423,7 +1423,7 @@ export const COUNTRIES: Country[] = [
     ar: "بولندا",
     en: "Poland",
     lat: 52,
-    lng: 20
+    lng: 20,
   },
   {
     code: "PT",
@@ -1432,7 +1432,7 @@ export const COUNTRIES: Country[] = [
     ar: "البرتغال",
     en: "Portugal",
     lat: 39.5,
-    lng: -8
+    lng: -8,
   },
   {
     code: "CG",
@@ -1441,7 +1441,7 @@ export const COUNTRIES: Country[] = [
     ar: "جمهورية الكونغو",
     en: "Republic of the Congo",
     lat: -1,
-    lng: 15
+    lng: 15,
   },
   {
     code: "RO",
@@ -1450,7 +1450,7 @@ export const COUNTRIES: Country[] = [
     ar: "رومانيا",
     en: "Romania",
     lat: 46,
-    lng: 25
+    lng: 25,
   },
   {
     code: "RU",
@@ -1459,7 +1459,7 @@ export const COUNTRIES: Country[] = [
     ar: "روسيا",
     en: "Russia",
     lat: 60,
-    lng: 100
+    lng: 100,
   },
   {
     code: "RW",
@@ -1468,7 +1468,7 @@ export const COUNTRIES: Country[] = [
     ar: "رواندا",
     en: "Rwanda",
     lat: -2,
-    lng: 30
+    lng: 30,
   },
   {
     code: "KN",
@@ -1477,7 +1477,7 @@ export const COUNTRIES: Country[] = [
     ar: "سانت كيتس ونيفيس",
     en: "Saint Kitts and Nevis",
     lat: 17.33333333,
-    lng: -62.75
+    lng: -62.75,
   },
   {
     code: "LC",
@@ -1486,7 +1486,7 @@ export const COUNTRIES: Country[] = [
     ar: "سانت لوسيا",
     en: "Saint Lucia",
     lat: 13.88333333,
-    lng: -60.96666666
+    lng: -60.96666666,
   },
   {
     code: "VC",
@@ -1495,7 +1495,7 @@ export const COUNTRIES: Country[] = [
     ar: "سانت فينسنت والغرينادين",
     en: "Saint Vincent and the Grenadines",
     lat: 13.25,
-    lng: -61.2
+    lng: -61.2,
   },
   {
     code: "WS",
@@ -1504,7 +1504,7 @@ export const COUNTRIES: Country[] = [
     ar: "ساموا",
     en: "Samoa",
     lat: -13.58333333,
-    lng: -172.33333333
+    lng: -172.33333333,
   },
   {
     code: "SM",
@@ -1513,7 +1513,7 @@ export const COUNTRIES: Country[] = [
     ar: "سان مارينو",
     en: "San Marino",
     lat: 43.76666666,
-    lng: 12.41666666
+    lng: 12.41666666,
   },
   {
     code: "ST",
@@ -1522,7 +1522,7 @@ export const COUNTRIES: Country[] = [
     ar: "ساو تومي وبرينسيب",
     en: "São Tomé and Príncipe",
     lat: 1,
-    lng: 7
+    lng: 7,
   },
   {
     code: "RS",
@@ -1531,7 +1531,7 @@ export const COUNTRIES: Country[] = [
     ar: "صيربيا",
     en: "Serbia",
     lat: 44,
-    lng: 21
+    lng: 21,
   },
   {
     code: "SC",
@@ -1540,7 +1540,7 @@ export const COUNTRIES: Country[] = [
     ar: "سيشل",
     en: "Seychelles",
     lat: -4.58333333,
-    lng: 55.66666666
+    lng: 55.66666666,
   },
   {
     code: "SG",
@@ -1549,7 +1549,7 @@ export const COUNTRIES: Country[] = [
     ar: "سنغافورة",
     en: "Singapore",
     lat: 1.36666666,
-    lng: 103.8
+    lng: 103.8,
   },
   {
     code: "SK",
@@ -1558,7 +1558,7 @@ export const COUNTRIES: Country[] = [
     ar: "سلوفاكيا",
     en: "Slovakia",
     lat: 48.66666666,
-    lng: 19.5
+    lng: 19.5,
   },
   {
     code: "SI",
@@ -1567,7 +1567,7 @@ export const COUNTRIES: Country[] = [
     ar: "سلوفينيا",
     en: "Slovenia",
     lat: 46.11666666,
-    lng: 14.81666666
+    lng: 14.81666666,
   },
   {
     code: "SB",
@@ -1576,7 +1576,7 @@ export const COUNTRIES: Country[] = [
     ar: "جزر سليمان",
     en: "Solomon Islands",
     lat: -8,
-    lng: 159
+    lng: 159,
   },
   {
     code: "ZA",
@@ -1585,7 +1585,7 @@ export const COUNTRIES: Country[] = [
     ar: "جنوب أفريقيا",
     en: "South Africa",
     lat: -29,
-    lng: 24
+    lng: 24,
   },
   {
     code: "KR",
@@ -1594,7 +1594,7 @@ export const COUNTRIES: Country[] = [
     ar: "كوريا الجنوبية",
     en: "South Korea",
     lat: 37,
-    lng: 127.5
+    lng: 127.5,
   },
   {
     code: "SS",
@@ -1603,7 +1603,7 @@ export const COUNTRIES: Country[] = [
     ar: "جنوب السودان",
     en: "South Sudan",
     lat: 7,
-    lng: 30
+    lng: 30,
   },
   {
     code: "ES",
@@ -1612,7 +1612,7 @@ export const COUNTRIES: Country[] = [
     ar: "إسبانيا",
     en: "Spain",
     lat: 40,
-    lng: -4
+    lng: -4,
   },
   {
     code: "LK",
@@ -1621,7 +1621,7 @@ export const COUNTRIES: Country[] = [
     ar: "سريلانكا",
     en: "Sri Lanka",
     lat: 7,
-    lng: 81
+    lng: 81,
   },
   {
     code: "SR",
@@ -1630,7 +1630,7 @@ export const COUNTRIES: Country[] = [
     ar: "سورينام",
     en: "Suriname",
     lat: 4,
-    lng: -56
+    lng: -56,
   },
   {
     code: "SE",
@@ -1639,7 +1639,7 @@ export const COUNTRIES: Country[] = [
     ar: "السويد",
     en: "Sweden",
     lat: 62,
-    lng: 15
+    lng: 15,
   },
   {
     code: "CH",
@@ -1648,7 +1648,7 @@ export const COUNTRIES: Country[] = [
     ar: "سويسرا",
     en: "Switzerland",
     lat: 47,
-    lng: 8
+    lng: 8,
   },
   {
     code: "TZ",
@@ -1657,7 +1657,7 @@ export const COUNTRIES: Country[] = [
     ar: "تنزانيا",
     en: "Tanzania",
     lat: -6,
-    lng: 35
+    lng: 35,
   },
   {
     code: "TH",
@@ -1666,7 +1666,7 @@ export const COUNTRIES: Country[] = [
     ar: "تايلند",
     en: "Thailand",
     lat: 15,
-    lng: 100
+    lng: 100,
   },
   {
     code: "TL",
@@ -1675,7 +1675,7 @@ export const COUNTRIES: Country[] = [
     ar: "تيمور الشرقية",
     en: "Timor-Leste",
     lat: -8.83333333,
-    lng: 125.91666666
+    lng: 125.91666666,
   },
   {
     code: "TG",
@@ -1684,7 +1684,7 @@ export const COUNTRIES: Country[] = [
     ar: "توغو",
     en: "Togo",
     lat: 8,
-    lng: 1.16666666
+    lng: 1.16666666,
   },
   {
     code: "TO",
@@ -1693,7 +1693,7 @@ export const COUNTRIES: Country[] = [
     ar: "تونغا",
     en: "Tonga",
     lat: -20,
-    lng: -175
+    lng: -175,
   },
   {
     code: "TT",
@@ -1702,7 +1702,7 @@ export const COUNTRIES: Country[] = [
     ar: "ترينيداد وتوباغو",
     en: "Trinidad and Tobago",
     lat: 11,
-    lng: -61
+    lng: -61,
   },
   {
     code: "TV",
@@ -1711,7 +1711,7 @@ export const COUNTRIES: Country[] = [
     ar: "توفالو",
     en: "Tuvalu",
     lat: -8,
-    lng: 178
+    lng: 178,
   },
   {
     code: "UG",
@@ -1720,7 +1720,7 @@ export const COUNTRIES: Country[] = [
     ar: "أوغندا",
     en: "Uganda",
     lat: 1,
-    lng: 32
+    lng: 32,
   },
   {
     code: "UA",
@@ -1729,7 +1729,7 @@ export const COUNTRIES: Country[] = [
     ar: "أوكرانيا",
     en: "Ukraine",
     lat: 49,
-    lng: 32
+    lng: 32,
   },
   {
     code: "GB",
@@ -1738,7 +1738,7 @@ export const COUNTRIES: Country[] = [
     ar: "المملكة المتحدة",
     en: "United Kingdom",
     lat: 54,
-    lng: -2
+    lng: -2,
   },
   {
     code: "US",
@@ -1747,7 +1747,7 @@ export const COUNTRIES: Country[] = [
     ar: "الولايات المتحدة",
     en: "United States",
     lat: 38,
-    lng: -97
+    lng: -97,
   },
   {
     code: "UY",
@@ -1756,7 +1756,7 @@ export const COUNTRIES: Country[] = [
     ar: "الأوروغواي",
     en: "Uruguay",
     lat: -33,
-    lng: -56
+    lng: -56,
   },
   {
     code: "VU",
@@ -1765,7 +1765,7 @@ export const COUNTRIES: Country[] = [
     ar: "فانواتو",
     en: "Vanuatu",
     lat: -16,
-    lng: 167
+    lng: 167,
   },
   {
     code: "VA",
@@ -1774,7 +1774,7 @@ export const COUNTRIES: Country[] = [
     ar: "مدينة الفاتيكان",
     en: "Vatican City",
     lat: 41.9,
-    lng: 12.45
+    lng: 12.45,
   },
   {
     code: "VE",
@@ -1783,7 +1783,7 @@ export const COUNTRIES: Country[] = [
     ar: "فنزويلا",
     en: "Venezuela",
     lat: 8,
-    lng: -66
+    lng: -66,
   },
   {
     code: "VN",
@@ -1792,7 +1792,7 @@ export const COUNTRIES: Country[] = [
     ar: "فيتنام",
     en: "Vietnam",
     lat: 16.16666666,
-    lng: 107.83333333
+    lng: 107.83333333,
   },
   {
     code: "ZM",
@@ -1801,7 +1801,7 @@ export const COUNTRIES: Country[] = [
     ar: "زامبيا",
     en: "Zambia",
     lat: -15,
-    lng: 30
+    lng: 30,
   },
   {
     code: "ZW",
@@ -1810,8 +1810,8 @@ export const COUNTRIES: Country[] = [
     ar: "زيمبابوي",
     en: "Zimbabwe",
     lat: -20,
-    lng: 30
-  }
+    lng: 30,
+  },
 ];
 
 export const DEFAULT_COUNTRY = "SA";
@@ -1837,7 +1837,11 @@ export function findCountry(code: string): Country {
 }
 
 export function flagOf(code: string): string {
-  return code.toUpperCase().split("").map((ch) => String.fromCodePoint(0x1f1e6 + ch.charCodeAt(0) - 65)).join("");
+  return code
+    .toUpperCase()
+    .split("")
+    .map((ch) => String.fromCodePoint(0x1f1e6 + ch.charCodeAt(0) - 65))
+    .join("");
 }
 
 export function countryName(country: Country, locale: string): string {
@@ -1845,5 +1849,7 @@ export function countryName(country: Country, locale: string): string {
   try {
     const dn = new Intl.DisplayNames([locale], { type: "region" });
     return dn.of(country.code) ?? country.en;
-  } catch { return country.en; }
+  } catch {
+    return country.en;
+  }
 }

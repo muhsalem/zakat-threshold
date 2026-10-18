@@ -12,9 +12,16 @@ export const Route = createFileRoute("/sources")({
   head: () => ({
     meta: [
       { title: "مصادر النصاب الرسمية لكل دولة · نِصاب" },
-      { name: "description", content: "روابط الجهات الرسمية التي تعلن النصاب أو أحكام الزكاة في كل دولة، تتابعها منصة نِصاب يوميًا." },
+      {
+        name: "description",
+        content:
+          "روابط الجهات الرسمية التي تعلن النصاب أو أحكام الزكاة في كل دولة، تتابعها منصة نِصاب يوميًا.",
+      },
       { property: "og:title", content: "مصادر النصاب الرسمية لكل دولة" },
-      { property: "og:description", content: "دور الإفتاء وبيوت الزكاة والهيئات الرسمية المتابَعة يوميًا." },
+      {
+        property: "og:description",
+        content: "دور الإفتاء وبيوت الزكاة والهيئات الرسمية المتابَعة يوميًا.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -40,7 +47,11 @@ function SourcesPage() {
   for (const s of data) byCountry.set(s.country, [...(byCountry.get(s.country) ?? []), s]);
 
   return (
-    <Page eyebrow="SOURCES" title="مصادر النصاب الرسمية" sub="الجهات الرسمية التي نتابع إعلاناتها يوميًا؛ عند أي تحديث يصل تنبيه للمشرفين ومتابعي الدولة.">
+    <Page
+      eyebrow="SOURCES"
+      title="مصادر النصاب الرسمية"
+      sub="الجهات الرسمية التي نتابع إعلاناتها يوميًا؛ عند أي تحديث يصل تنبيه للمشرفين ومتابعي الدولة."
+    >
       {isLoading && <p className="text-sm text-muted-foreground">…</p>}
       <div className="grid gap-4 sm:grid-cols-2">
         {[...byCountry.entries()].map(([code, list]) => {
@@ -53,7 +64,12 @@ function SourcesPage() {
               <ul className="mt-3 grid gap-2">
                 {list.map((s) => (
                   <li key={s.id}>
-                    <a href={s.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm text-primary underline underline-offset-4">
+                    <a
+                      href={s.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-sm text-primary underline underline-offset-4"
+                    >
                       {s.authority} <ExternalLink aria-hidden="true" className="size-3.5" />
                     </a>
                   </li>
@@ -64,7 +80,9 @@ function SourcesPage() {
         })}
       </div>
       <PriceSourcesTable />
-      <p className="mt-6 text-xs text-muted-foreground">أرقام استرشادية وليست فتوى؛ المرجع النهائي هو إعلان الجهة الرسمية.</p>
+      <p className="mt-6 text-xs text-muted-foreground">
+        أرقام استرشادية وليست فتوى؛ المرجع النهائي هو إعلان الجهة الرسمية.
+      </p>
     </Page>
   );
 }
