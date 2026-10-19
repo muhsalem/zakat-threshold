@@ -1,6 +1,13 @@
 import { describe, test } from "node:test";
 import { strict as assert } from "node:assert";
-import { manualMetals, nisabTotals, resolveGram, valuationQuote } from "./nisab-valuation";
+import {
+  ALTERNATIVE_GOLD_NISAB_G,
+  goldWeightFor,
+  manualMetals,
+  nisabTotals,
+  resolveGram,
+  valuationQuote,
+} from "./nisab-valuation";
 
 describe("country nisab valuation", () => {
   test("uses the local purchase quote, not the sale quote, when available", () => {
@@ -28,5 +35,15 @@ describe("country nisab valuation", () => {
   test("recalculates gold and silver when their gram prices change", () => {
     assert.equal(nisabTotals(110, 9).gold - nisabTotals(100, 10).gold, 850);
     assert.equal(nisabTotals(110, 9).silver - nisabTotals(100, 10).silver, -595);
+  });
+  test("the tola silver standard pairs with the 87.48 g gold standard", () => {
+    assert.equal(goldWeightFor(595), 85);
+    assert.equal(goldWeightFor(612.36), ALTERNATIVE_GOLD_NISAB_G);
+    assert.equal(nisabTotals(100, 10, 612.36).gold, 8748);
+    assert.equal(nisabTotals(100, 10).gold, 8500);
+  });
+  test("a zero silver price does not produce an infinite ratio", () => {
+    assert.equal(nisabTotals(100, 0).ratio, 0);
+    assert.equal(nisabTotals(100, 10).ratio, 10);
   });
 });

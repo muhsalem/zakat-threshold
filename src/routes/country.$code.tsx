@@ -14,7 +14,7 @@ import {
 } from "@/components/site/Prices";
 import { useLocalQuote } from "@/lib/local-quotes";
 import { scopeKey } from "@/lib/cities";
-import { manualMetals, valuationQuote } from "@/lib/nisab-valuation";
+import { goldWeightFor, manualMetals, valuationQuote } from "@/lib/nisab-valuation";
 import { useSilverStandard } from "@/lib/use-silver-standard";
 import { OfficialNisab } from "@/components/site/OfficialNisab";
 import { ShareNisab } from "@/components/site/ShareNisab";
@@ -84,7 +84,8 @@ function CountryPage() {
   );
   const goldGram = g.gram;
   const silverGram = s.gram;
-  const gold = goldGram * GOLD_NISAB_G;
+  const goldWeight = goldWeightFor(silverWeight);
+  const gold = goldGram * goldWeight;
   const silver = silverGram * silverWeight;
   const priceSource = data
     ? { gold: g.origin, silver: s.origin, name: quote?.source ?? "", at: quote?.at ?? "" }
@@ -132,7 +133,7 @@ function CountryPage() {
               {
                 label: t("nisab.gold"),
                 metal: t("gold"),
-                grams: GOLD_NISAB_G,
+                grams: goldWeight,
                 total: gold,
                 gram: goldGram,
                 oz: data.goldUsdOz,
@@ -222,8 +223,8 @@ function CountryPage() {
             lang={lang}
             spotGoldGram={spotGold}
             spotSilverGram={spotSilver}
-            spotGoldNisab={spotGold * GOLD_NISAB_G}
-            spotSilverNisab={spotSilver * SILVER_NISAB_G}
+            spotGoldNisab={spotGold * goldWeight}
+            spotSilverNisab={spotSilver * silverWeight}
           />
           <ShareNisab
             silverWeight={silverWeight}

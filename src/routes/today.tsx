@@ -18,7 +18,8 @@ import {
 import { HawlReminder } from "@/components/site/Reminders";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
-import { GOLD_NISAB_G, SILVER_NISAB_G, TROY_OUNCE_G, formatNumber } from "@/lib/nisab";
+import { SILVER_NISAB_G, TROY_OUNCE_G, formatNumber } from "@/lib/nisab";
+import { goldWeightFor } from "@/lib/nisab-valuation";
 
 export const Route = createFileRoute("/today")({
   head: () => ({
@@ -94,7 +95,7 @@ function TodayPage() {
               {
                 key: "gold",
                 title: t("nisab.gold"),
-                grams: GOLD_NISAB_G,
+                grams: goldWeightFor(silverWeight),
                 gram: values.goldGram,
                 total: values.gold,
                 oz: data.goldUsdOz,

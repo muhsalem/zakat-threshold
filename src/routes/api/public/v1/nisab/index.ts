@@ -2,17 +2,16 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
 import { COUNTRIES } from "@/lib/countries";
-import {
-  GOLD_NISAB_G,
-  SILVER_NISAB_G,
-  goldNisabValue,
-  perGram,
-  silverNisabValue,
-} from "@/lib/nisab";
+import { SILVER_NISAB_G, perGram } from "@/lib/nisab";
+import { ALTERNATIVE_SILVER_NISAB_G, goldWeightFor } from "@/lib/nisab-valuation";
 import { getLivePrices } from "@/lib/prices.functions";
 import { CORS, json, publicDb } from "@/lib/public-api.server";
 
-const Query = z.object({ country: z.string().regex(/^[A-Za-z]{2}$/) });
+const Query = z.object({
+  country: z.string().regex(/^[A-Za-z]{2}$/),
+  /** "tola" = 87.48 g gold / 612.36 g silver (Hanafi, South Asia); default 85 g / 595 g. */
+  standard: z.enum(["default", "tola"]).default("default"),
+});
 
 export const Route = createFileRoute("/api/public/v1/nisab/")({
   server: {
@@ -20,12 +19,24 @@ export const Route = createFileRoute("/api/public/v1/nisab/")({
       OPTIONS: async () => new Response(null, { status: 204, headers: CORS }),
       GET: async ({ request }) => {
         const url = new URL(request.url);
-        const parsed = Query.safeParse({ country: url.searchParams.get("country") ?? "" });
+        const parsed = Query.safeParse({
+          country: url.searchParams.get("country") ?? "",
+          standard: url.searchParams.get("standard") ?? undefined,
+        });
         if (!parsed.success)
-          return json({ error: "country must be an ISO-3166 alpha-2 code, e.g. ?country=EG" }, 400);
+          return json(
+            {
+              error:
+                "country must be an ISO-3166 alpha-2 code, e.g. ?country=EG (optional &standard=tola)",
+            },
+            400,
+          );
         const country = COUNTRIES.find((c) => c.code === parsed.data.country.toUpperCase());
         if (!country) return json({ error: "unknown country" }, 404);
 
+        const silverG =
+          parsed.data.standard === "tola" ? ALTERNATIVE_SILVER_NISAB_G : SILVER_NISAB_G;
+        const goldG = goldWeightFor(silverG);
         let prices;
         try {
           prices = await getLivePrices();
@@ -55,13 +66,14 @@ export const Route = createFileRoute("/api/public/v1/nisab/")({
           country: country.code,
           name: { ar: country.ar, en: country.en },
           currency: country.currency,
-          weights: { gold_g: GOLD_NISAB_G, gold_karat: 24, silver_g: SILVER_NISAB_G },
+          standard: parsed.data.standard,
+          weights: { gold_g: goldG, gold_karat: 24, silver_g: silverG },
           market: rate
             ? {
                 gold_gram: perGram(prices.goldUsdOz, rate),
                 silver_gram: perGram(prices.silverUsdOz, rate),
-                gold_nisab: goldNisabValue(prices.goldUsdOz, rate),
-                silver_nisab: silverNisabValue(prices.silverUsdOz, rate),
+                gold_nisab: perGram(prices.goldUsdOz, rate) * goldG,
+                silver_nisab: perGram(prices.silverUsdOz, rate) * silverG,
                 metals_source: prices.metals.source,
                 fx_source: prices.fx.source,
                 quality: prices.metals.quality,

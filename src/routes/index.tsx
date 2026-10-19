@@ -27,7 +27,8 @@ import {
 import { HawlReminder } from "@/components/site/Reminders";
 import { formatHijri, today } from "@/lib/hijri";
 import { useI18n } from "@/lib/i18n";
-import { GOLD_NISAB_G, KARATS, SILVER_NISAB_G, formatNumber } from "@/lib/nisab";
+import { KARATS, SILVER_NISAB_G, formatNumber } from "@/lib/nisab";
+import { goldWeightFor } from "@/lib/nisab-valuation";
 import { usePrices } from "@/lib/use-prices";
 import { homeCopy } from "@/lib/home-copy";
 import { countryName, findCountry, flagOf } from "@/lib/countries";
@@ -140,7 +141,7 @@ function Home() {
               {
                 label: t("nisab.gold"),
                 metal: t("gold"),
-                grams: GOLD_NISAB_G,
+                grams: goldWeightFor(silverWeight),
                 total: values.gold,
                 gram: values.goldGram,
                 lower: values.gold <= values.silver,

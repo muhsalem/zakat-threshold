@@ -3,7 +3,15 @@ import type { Overrides, ScopeOverride } from "./overrides";
 
 export type PriceOrigin = "manual" | "local" | "global";
 export type PricePreference = "local" | "global";
+/** Silver nisab on the tola standard: 52.5 tola × 11.664 g (Hanafi, South Asia). */
 export const ALTERNATIVE_SILVER_NISAB_G = 612.36;
+/** Matching gold nisab on the tola standard: 7.5 tola × 11.664 g. */
+export const ALTERNATIVE_GOLD_NISAB_G = 87.48;
+
+/** The gold weight that pairs with a silver standard (the tola pair is chosen together). */
+export function goldWeightFor(silverWeight: number): number {
+  return silverWeight === ALTERNATIVE_SILVER_NISAB_G ? ALTERNATIVE_GOLD_NISAB_G : GOLD_NISAB_G;
+}
 
 export function resolveGram(
   spot: number,
@@ -36,7 +44,7 @@ export function manualMetals(
 }
 
 export function nisabTotals(goldGram: number, silverGram: number, silverWeight = SILVER_NISAB_G) {
-  const gold = goldGram * GOLD_NISAB_G;
+  const gold = goldGram * goldWeightFor(silverWeight);
   const silver = silverGram * silverWeight;
   return {
     goldGram,
@@ -44,6 +52,6 @@ export function nisabTotals(goldGram: number, silverGram: number, silverWeight =
     gold,
     silver,
     lower: Math.min(gold, silver),
-    ratio: goldGram / silverGram,
+    ratio: silverGram > 0 ? goldGram / silverGram : 0,
   };
 }

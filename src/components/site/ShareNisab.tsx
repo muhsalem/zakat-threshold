@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Share2, Copy, Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { goldWeightFor } from "@/lib/nisab-valuation";
 
 type Props = {
   countryName: string;
@@ -19,7 +20,7 @@ export function ShareNisab({ countryName, goldText, silverText, url, silverWeigh
     setDate(new Date().toISOString().slice(0, 10));
     setShareUrl(new URL(url, window.location.origin).href);
   }, [url]);
-  const text = `نصاب الزكاة في ${countryName} (${date} UTC):\n• الذهب ٨٥غ عيار ٢٤: ${goldText}\n• الفضة ${silverWeight}غ: ${silverText}\nأرقام استرشادية وليست إعلانًا رسميًا أو فتوى — نِصاب`;
+  const text = `نصاب الزكاة في ${countryName} (${date} UTC):\n• الذهب ${goldWeightFor(silverWeight)}غ عيار ٢٤: ${goldText}\n• الفضة ${silverWeight}غ: ${silverText}\nأرقام استرشادية وليست إعلانًا رسميًا أو فتوى — نِصاب`;
   const enc = encodeURIComponent;
   const links = [
     { name: "واتساب", href: `https://wa.me/?text=${enc(`${text}\n${shareUrl}`)}` },
