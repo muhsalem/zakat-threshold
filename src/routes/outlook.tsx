@@ -58,7 +58,8 @@ function volatility(span: number, metal: Metal): number {
   }
   if (moves.length === 0) return 0;
   const mean = moves.reduce((a, b) => a + b, 0) / moves.length;
-  const variance = moves.reduce((a, b) => a + (b - mean) ** 2, 0) / moves.length;
+  // Sample (n-1) standard deviation.
+  const variance = moves.reduce((a, b) => a + (b - mean) ** 2, 0) / Math.max(1, moves.length - 1);
   return Math.sqrt(variance);
 }
 
@@ -75,6 +76,8 @@ function drawdown(span: number, metal: Metal): number {
 }
 
 const HORIZONS = [10, 20, 30, 50, 100];
+/** Gold was officially fixed (not a market price) up to and including 1971. */
+const OFFICIAL_UNTIL = 1971;
 
 function OutlookPage() {
   const { t } = useI18n();
@@ -94,18 +97,6 @@ function OutlookPage() {
       cagr50: cagr(50, metal) ?? 0,
     };
   }, [metal]);
-
-  const scenarios = useMemo(() => {
-    const base = (stats.cagr20 + stats.cagr50) / 2;
-    const spread = Math.max(2, stats.vol20 / 2);
-    return [
-      { key: "low", label: t("o.low"), rate: base - spread, tone: "text-muted-foreground" },
-      { key: "base", label: t("o.base"), rate: base, tone: "text-foreground" },
-      { key: "high", label: t("o.high"), rate: base + spread, tone: "text-primary" },
-    ];
-  }, [stats, t]);
-
-  const project = (rate: number, years: number) => LATEST[metal] * Math.pow(1 + rate / 100, years);
 
   return (
     <Page eyebrow={t("o.eyebrow")} title={t("o.title")} sub={t("o.sub")}>
@@ -182,6 +173,9 @@ function OutlookPage() {
                     </td>
                     <td className="num p-3 text-muted-foreground">
                       {start ? formatNumber(start, 2) : "—"}
+                      {start && metal === "gold" && LATEST.year - years <= OFFICIAL_UNTIL
+                        ? " †"
+                        : ""}
                     </td>
                     <td className="num p-3 text-muted-foreground">
                       {formatNumber(LATEST[metal], 2)}
@@ -221,47 +215,6 @@ function OutlookPage() {
         </article>
       </section>
 
-      <section className="mt-10">
-        <h2 className="text-2xl text-foreground">{t("o.scenarios")}</h2>
-        <p className="mt-2 max-w-3xl text-sm leading-7 text-muted-foreground">
-          {t("o.scenariosSub")}
-        </p>
-        <div className="scroll-x mt-4">
-          <table className="w-full min-w-[34rem] border-collapse text-sm">
-            <thead>
-              <tr className="border-b border-border text-muted-foreground">
-                <th className="p-3 text-start font-medium">{t("o.scenario")}</th>
-                <th className="p-3 text-start font-medium">{t("o.rate")}</th>
-                <th className="p-3 text-start font-medium">
-                  {t("o.after")} 1 {t("o.years")}
-                </th>
-                <th className="p-3 text-start font-medium">
-                  {t("o.after")} 5 {t("o.years")}
-                </th>
-                <th className="p-3 text-start font-medium">
-                  {t("o.after")} 10 {t("o.years")}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {scenarios.map((scenario) => (
-                <tr key={scenario.key} className="border-b border-border last:border-0">
-                  <td className={`p-3 ${scenario.tone}`}>{scenario.label}</td>
-                  <td className="num p-3 text-muted-foreground">
-                    {formatNumber(scenario.rate, 2)}%
-                  </td>
-                  {[1, 5, 10].map((years) => (
-                    <td key={years} className="num p-3 text-foreground">
-                      {formatNumber(project(scenario.rate, years), 0)} USD/oz
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
       <section className="mt-10 grid gap-4 md:grid-cols-2">
         <article className="rounded-lg border border-border bg-card p-6">
           <h3 className="text-lg text-foreground">{t("o.up")}</h3>
@@ -281,6 +234,14 @@ function OutlookPage() {
             <li>{t("o.down4")}</li>
           </ul>
         </article>
+      </section>
+
+      <section className="mt-10 rounded-lg border border-border bg-card p-6">
+        <h2 className="text-lg text-foreground">{t("o.dataTitle")}</h2>
+        <p className="mt-2 max-w-4xl text-sm leading-7 text-muted-foreground">
+          {t("o.dataBody").replace("{year}", String(LATEST.year))}
+        </p>
+        <p className="mt-2 text-xs text-muted-foreground">{t("o.officialNote")}</p>
       </section>
 
       <section className="mt-10 border-s-2 border-accent bg-card p-6">

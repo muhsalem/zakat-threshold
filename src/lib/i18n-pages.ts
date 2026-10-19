@@ -716,7 +716,8 @@ const EXTRA: Record<string, Record<string, string>> = {
     "history.range.100y": "١٠٠ سنة",
     "history.range.75y": "٧٥ سنة",
     "history.range.1000y": "١٠٠٠ سنة",
-    "history.approx": "المدى الطويل يعتمد متوسطات سنوية للسعر، ويُحوَّل بسعر الصرف الحالي لبلدك.",
+    "history.approx":
+      "المدى الطويل يعتمد متوسطات سنوية للسعر، ويُحوَّل بسعر الصرف الحالي لبلدك؛ لذا لا يعكس القيمة المحلية في ذلك الزمن، وهو لمقارنة سعر المعدن فقط.",
     "city.label": "المدينة",
     "city.all": "كل المدن",
     "city.none": "لا توجد مدن مضافة لهذه الدولة بعد.",
@@ -1453,6 +1454,12 @@ const EXTRA10: Record<string, Record<string, string>> = {
       "وزن النصاب ثابت: ٨٥ جرام ذهب و٥٩٥ جرام فضة، والزكاة ٢٫٥٪. المتغير قيمة هذا الوزن بعملتك. العبرة بسعر يوم اكتمال الحول الهجري، لا بالتوقع ولا بسعر الشراء.",
     "o.disclaimer":
       "إخلاء مسؤولية: قراءة استرشادية مبنية على متوسطات سنوية تقريبية، وليست نصيحة استثمارية ولا فتوى.",
+    "o.dataTitle": "ملاحظات على البيانات",
+    "o.dataBody":
+      "السلسلة متوسطات سنوية تقريبية مُدخلة يدويًا (دولار للأونصة) دون مصدر منشور، وآخر سنة فيها {year}؛ فالسعر الحي في صفحة «اليوم». التقلب محسوب على متوسطات سنوية فيبدو أقل من التقلب الفعلي خلال السنة. ولا تُعرض إسقاطات مستقبلية لأن بيانات تاريخية كهذه لا تكفي لتقدير موثوق.",
+    "o.officialNote": "† سعر رسمي ثابت وليس سعر سوق (حتى ١٩٧١).",
+    "ratio.gap":
+      "نصاب الفضة اليوم يعادل نحو {pct}٪ من نصاب الذهب (نسبة الذهب إلى الفضة {ratio}:1)، وكانت النسبة قرابة ١٠:١ في عهد النبوة. فاختيار المعيار يغيّر من تجب عليه الزكاة تغييرًا كبيرًا، والأَولى اتباع جهة الفتوى في بلدك.",
   },
   en: {
     "nav.alerts": "My alerts",
@@ -1600,6 +1607,12 @@ const EXTRA10: Record<string, Record<string, string>> = {
       "The nisab weight never changes: 85 g of gold, 595 g of silver, zakat at 2.5%. Only its value in your currency moves. What counts is the price on the day the hijri year completes — not a forecast, not the purchase price.",
     "o.disclaimer":
       "Disclaimer: indicative reading based on approximate annual averages. Not investment advice and not a fatwa.",
+    "o.dataTitle": "Notes on the data",
+    "o.dataBody":
+      "The series is hand-entered approximate annual averages (USD per ounce) with no published source; its last year is {year}, so see the Today page for the live price. Volatility is computed on annual averages and therefore looks lower than intra-year volatility. No forward projections are shown because historical data like this cannot support a reliable estimate.",
+    "o.officialNote": "† Fixed official price, not a market price (up to 1971).",
+    "ratio.gap":
+      "Today the silver nisab is about {pct}% of the gold nisab (gold-to-silver ratio {ratio}:1); in the Prophetic era the ratio was roughly 10:1. The choice of standard therefore changes who owes zakat substantially; follow the fatwa authority in your country.",
   },
 };
 

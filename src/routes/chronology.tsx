@@ -243,6 +243,15 @@ export function ChronologyPage() {
         </div>
       </div>
 
+      <p
+        role="note"
+        className="mb-6 rounded-xl border border-border bg-card p-4 text-xs leading-6 text-muted-foreground sm:text-sm"
+      >
+        تنبيه منهجي: الأوزان الشرعية (٨٥ جم و٥٩٥ جم) مبنية على النصوص وأقوال الفقهاء. أما أسعار
+        الذهب والفضة في العصور القديمة والقوة الشرائية وأجور العمال وتقسيم العصور النقدية فهي
+        تقديرات تاريخية تقريبية غير منسوبة لمصدر محدد في هذه الصفحة، وتُقرأ للاستئناس لا للاحتجاج.
+      </p>
+
       {/* Top Controller Bar: Year Selector & Country Selector */}
       <section className="card-surface p-6 sm:p-8 border border-accent/40 bg-gradient-to-br from-card via-card to-secondary/30">
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
