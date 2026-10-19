@@ -72,7 +72,7 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "types.due": "Zakat due",
     "faq.q1": "What is the nisab?",
     "faq.a1":
-      "The nisab is the minimum wealth a Muslim must hold for a full lunar year before zakat becomes due: 85 g of gold or 595 g of silver, or their value.",
+      "The nisab is the minimum wealth a Muslim must hold for a full lunar year before zakat becomes due: twenty mithqal of pure gold (about 85 g by the majority view) or two hundred dirhams of silver (about 595 g), or their value. On the tola standard used by Hanafis in South Asia it is 87.48 g of gold and 612.36 g of silver.",
     "faq.q2": "Should I use the gold or the silver nisab?",
     "faq.a2":
       "It is a contemporary matter of ijtihad: some scholars and bodies prefer the silver nisab as it is lower and better for the poor, while many others prefer gold as closer to the original value of the nisab. The calculator lets you choose; follow the fatwa authority in your country.",
@@ -197,7 +197,7 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "types.due": "الواجب",
     "faq.q1": "ما هو النصاب؟",
     "faq.a1":
-      "النصاب أقلّ مقدارٍ من المال تجب فيه الزكاة إذا حال عليه الحول: ٨٥ جراماً من الذهب أو ٥٩٥ جراماً من الفضّة أو ما يعادلهما.",
+      "النصاب أقلّ مقدارٍ من المال تجب فيه الزكاة إذا حال عليه الحول: عشرون مثقالاً من الذهب الخالص (نحو ٨٥ جراماً عند الجمهور) أو مائتا درهم من الفضّة (نحو ٥٩٥ جراماً)، أو ما يعادلهما. وفي معيار التولة عند الحنفية في جنوب آسيا: ٨٧٫٤٨ جراماً ذهباً و٦١٢٫٣٦ جراماً فضة.",
     "faq.q2": "أآخُذ بنصاب الذهب أم الفضّة؟",
     "faq.a2":
       "المسألة اجتهادية معاصرة: رجّح بعض العلماء والهيئات نصاب الفضّة لأنه الأدنى والأحظّ للفقراء، ورجّح كثيرون غيرهم نصاب الذهب لأنه أقرب إلى القيمة الأصلية للنصاب. تتيح لك الحاسبة الاختيار بينهما، والأَولى اتّباع جهة الفتوى في بلدك.",
