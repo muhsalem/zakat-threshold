@@ -94,6 +94,35 @@ function MethodologyPage() {
         </article>
       </section>
 
+      <section className="mt-10 card-surface p-6" dir="rtl" lang="ar">
+        <h2 className="text-xl text-foreground">الدليل الشرعي وأصل الأوزان</h2>
+        <ul className="mt-4 max-w-4xl list-disc space-y-3 ps-5 leading-8 text-muted-foreground">
+          <li>
+            <strong className="text-foreground">الذهب:</strong> «ليس عليك شيء — يعني في الذهب — حتى
+            يكون لك عشرون ديناراً، فإذا كان لك عشرون ديناراً وحال عليها الحول ففيها نصف دينار» (رواه
+            أبو داود من حديث علي رضي الله عنه).
+          </li>
+          <li>
+            <strong className="text-foreground">الفضة:</strong> «ليس فيما دون خمس أواقٍ صدقة» (متفق
+            عليه من حديث أبي سعيد الخدري رضي الله عنه)، والأوقية أربعون درهماً، فالنصاب مائتا درهم.
+          </li>
+          <li>
+            <strong className="text-foreground">تقدير الأوزان:</strong> الجمهور على أن المثقال ٤٫٢٥
+            جم والدرهم ٢٫٩٧٥ جم، فيكون نصاب الذهب ٨٥ جم ونصاب الفضة ٥٩٥ جم. ويعتمد كثير من الحنفية
+            في جنوب آسيا معيار التولة (١١٫٦٦٤ جم): ٧٫٥ تولة ذهباً = ٨٧٫٤٨ جم، و٥٢٫٥ تولة فضة =
+            ٦١٢٫٣٦ جم. والخلاف في تقدير الوزن اجتهادي، والأولى اتباع جهة الفتوى في بلدك.
+          </li>
+          <li>
+            <strong className="text-foreground">نصاب الأوراق النقدية:</strong> يُقدَّر بقيمة نصاب
+            الذهب أو الفضة، ومن العلماء والهيئات من يرجّح الفضة لأنها الأحظّ للفقراء، ومنهم من يرجّح
+            الذهب لثباته؛ فهي مسألة اجتهادية معاصرة.
+          </li>
+        </ul>
+        <p className="mt-4 text-sm leading-7 text-muted-foreground">
+          هذا الموقع أداة حساب استرشادية وليس فتوى، ويُنصح بمراجعة مختص شرعي في الحالات الخاصة.
+        </p>
+      </section>
+
       <section className="mt-10 border-s-2 border-accent bg-card p-6">
         <h2 className="text-xl text-foreground">{t("method.difference.title")}</h2>
         <p className="mt-3 max-w-4xl leading-8 text-muted-foreground">
