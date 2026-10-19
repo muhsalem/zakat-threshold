@@ -337,6 +337,13 @@ function Home() {
               <p className="num text-xl text-foreground">{formatNumber(values.ratio, 1)}</p>
             </div>
             <p className="mt-2 text-sm text-muted-foreground">{t("ratio.note")}</p>
+            {values.gold > 0 && (
+              <p className="mt-2 text-sm text-muted-foreground">
+                {t("ratio.gap")
+                  .replace("{pct}", formatNumber((values.silver / values.gold) * 100, 0))
+                  .replace("{ratio}", formatNumber(values.ratio, 0))}
+              </p>
+            )}
           </section>
 
           <div className="mt-4 grid grid-cols-[auto_minmax(0,1fr)] items-start gap-2.5">

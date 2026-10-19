@@ -2,7 +2,9 @@
  * Approximate annual average spot prices (USD per troy ounce) for gold and
  * silver. Used for long historical ranges (20–100 years) where intraday
  * market feeds have no coverage. Values are rounded annual averages and are
- * indicative only.
+ * indicative only. The values are hand-entered with no published source,
+ * and gold up to 1971 is the officially fixed price rather than a market price.
+ * The last entry may lag the current year; live prices come from the price API.
  */
 
 export type AnnualPoint = { year: number; gold: number; silver: number };
