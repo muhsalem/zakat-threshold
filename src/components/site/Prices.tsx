@@ -8,6 +8,7 @@ import { scopeKey } from "@/lib/cities";
 import { formatDays } from "@/lib/hijri";
 import { useLocalQuote } from "@/lib/local-quotes";
 import {
+  goldWeightFor,
   manualMetals,
   nisabTotals,
   resolveGram,
@@ -710,6 +711,7 @@ export function LocalMarket({
 }) {
   const { t, lang, country, city, currency: activeCurrency } = useI18n();
   const { values, data, scoped } = useNisab();
+  const { weight: standardWeight } = useSilverStandard();
   const key = scopeKey(country, city);
   const [local, setLocal] = useState<LocalMarketSettings>({ spreadPct: 0, jeweler: false });
   const [draft, setDraft] = useState("0");
@@ -781,8 +783,8 @@ export function LocalMarket({
           { label: t("local.silverQuote"), value: money(silverGram) },
           { label: t("local.goldBuy"), value: money(goldBuy) },
           { label: t("local.silverBuy"), value: money(silverBuy) },
-          { label: t("local.goldNisab"), value: money(goldBuy * GOLD_NISAB_G) },
-          { label: t("local.silverNisab"), value: money(silverBuy * SILVER_NISAB_G) },
+          { label: t("local.goldNisab"), value: money(goldBuy * goldWeightFor(standardWeight)) },
+          { label: t("local.silverNisab"), value: money(silverBuy * standardWeight) },
         ].map((row) => (
           <div
             key={row.label}
