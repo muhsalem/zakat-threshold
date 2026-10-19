@@ -78,6 +78,7 @@ export const Route = createFileRoute("/api/public/v1/nisab/")({
                 fx_source: prices.fx.source,
                 quality: prices.metals.quality,
                 updated_at: prices.metalsUpdatedAt,
+                consensus: prices.consensus ?? null,
               }
             : null,
           local_jewelers: feed.data ?? null,

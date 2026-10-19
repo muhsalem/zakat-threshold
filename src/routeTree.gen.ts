@@ -41,6 +41,7 @@ import { Route as CountryCodeRouteImport } from './routes/country.$code'
 import { Route as ApiPublicHooksJewelerFeedRouteImport } from './routes/api/public/hooks/jeweler-feed'
 import { Route as ApiPublicV1NisabIndexRouteImport } from './routes/api/public/v1/nisab/index'
 import { Route as ApiPublicV1NisabHistoryRouteImport } from './routes/api/public/v1/nisab/history'
+import { Route as ApiPublicV1NisabSnapshotRouteImport } from './routes/api/public/v1/nisab/snapshot'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -202,6 +203,12 @@ const ApiPublicV1NisabHistoryRoute = ApiPublicV1NisabHistoryRouteImport.update({
   path: '/api/public/v1/nisab/history',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicV1NisabSnapshotRoute =
+  ApiPublicV1NisabSnapshotRouteImport.update({
+    id: '/api/public/v1/nisab/snapshot',
+    path: '/api/public/v1/nisab/snapshot',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -234,6 +241,7 @@ export interface FileRoutesByFullPath {
   '/country/$code': typeof CountryCodeRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
   '/api/public/v1/nisab/history': typeof ApiPublicV1NisabHistoryRoute
+  '/api/public/v1/nisab/snapshot': typeof ApiPublicV1NisabSnapshotRoute
   '/api/public/v1/nisab/': typeof ApiPublicV1NisabIndexRoute
 }
 export interface FileRoutesByTo {
@@ -267,6 +275,7 @@ export interface FileRoutesByTo {
   '/country/$code': typeof CountryCodeRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
   '/api/public/v1/nisab/history': typeof ApiPublicV1NisabHistoryRoute
+  '/api/public/v1/nisab/snapshot': typeof ApiPublicV1NisabSnapshotRoute
   '/api/public/v1/nisab': typeof ApiPublicV1NisabIndexRoute
 }
 export interface FileRoutesById {
@@ -302,6 +311,7 @@ export interface FileRoutesById {
   '/country/$code': typeof CountryCodeRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
   '/api/public/v1/nisab/history': typeof ApiPublicV1NisabHistoryRoute
+  '/api/public/v1/nisab/snapshot': typeof ApiPublicV1NisabSnapshotRoute
   '/api/public/v1/nisab/': typeof ApiPublicV1NisabIndexRoute
 }
 export interface FileRouteTypes {
@@ -337,6 +347,7 @@ export interface FileRouteTypes {
     | '/country/$code'
     | '/api/public/hooks/jeweler-feed'
     | '/api/public/v1/nisab/history'
+    | '/api/public/v1/nisab/snapshot'
     | '/api/public/v1/nisab/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -370,6 +381,7 @@ export interface FileRouteTypes {
     | '/country/$code'
     | '/api/public/hooks/jeweler-feed'
     | '/api/public/v1/nisab/history'
+    | '/api/public/v1/nisab/snapshot'
     | '/api/public/v1/nisab'
   id:
     | '__root__'
@@ -404,6 +416,7 @@ export interface FileRouteTypes {
     | '/country/$code'
     | '/api/public/hooks/jeweler-feed'
     | '/api/public/v1/nisab/history'
+    | '/api/public/v1/nisab/snapshot'
     | '/api/public/v1/nisab/'
   fileRoutesById: FileRoutesById
 }
@@ -436,6 +449,7 @@ export interface RootRouteChildren {
   CountryCodeRoute: typeof CountryCodeRoute
   ApiPublicHooksJewelerFeedRoute: typeof ApiPublicHooksJewelerFeedRoute
   ApiPublicV1NisabHistoryRoute: typeof ApiPublicV1NisabHistoryRoute
+  ApiPublicV1NisabSnapshotRoute: typeof ApiPublicV1NisabSnapshotRoute
   ApiPublicV1NisabIndexRoute: typeof ApiPublicV1NisabIndexRoute
 }
 
@@ -665,6 +679,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1NisabHistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/nisab/snapshot': {
+      id: '/api/public/v1/nisab/snapshot'
+      path: '/api/public/v1/nisab/snapshot'
+      fullPath: '/api/public/v1/nisab/snapshot'
+      preLoaderRoute: typeof ApiPublicV1NisabSnapshotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -712,6 +733,7 @@ const rootRouteChildren: RootRouteChildren = {
   CountryCodeRoute: CountryCodeRoute,
   ApiPublicHooksJewelerFeedRoute: ApiPublicHooksJewelerFeedRoute,
   ApiPublicV1NisabHistoryRoute: ApiPublicV1NisabHistoryRoute,
+  ApiPublicV1NisabSnapshotRoute: ApiPublicV1NisabSnapshotRoute,
   ApiPublicV1NisabIndexRoute: ApiPublicV1NisabIndexRoute,
 }
 export const routeTree = rootRouteImport

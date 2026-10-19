@@ -107,6 +107,48 @@ export type Database = {
         };
         Relationships: [];
       };
+      price_snapshots: {
+        Row: {
+          consensus_status: string;
+          day: string;
+          deviation_pct: number;
+          fx_rates: Json;
+          fx_source: string;
+          gold_usd_oz: number;
+          metals_source: string;
+          rejected: Json;
+          silver_usd_oz: number;
+          sources: Json;
+          taken_at: string;
+        };
+        Insert: {
+          consensus_status: string;
+          day: string;
+          deviation_pct?: number;
+          fx_rates?: Json;
+          fx_source?: string;
+          gold_usd_oz: number;
+          metals_source: string;
+          rejected?: Json;
+          silver_usd_oz: number;
+          sources?: Json;
+          taken_at?: string;
+        };
+        Update: {
+          consensus_status?: string;
+          day?: string;
+          deviation_pct?: number;
+          fx_rates?: Json;
+          fx_source?: string;
+          gold_usd_oz?: number;
+          metals_source?: string;
+          rejected?: Json;
+          silver_usd_oz?: number;
+          sources?: Json;
+          taken_at?: string;
+        };
+        Relationships: [];
+      };
       nisab_history: {
         Row: {
           country: string;
