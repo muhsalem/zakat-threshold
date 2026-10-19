@@ -193,6 +193,22 @@ export const Route = createFileRoute("/api/public/hooks/jeweler-feed")({
           }
         }
 
+        // Raw daily snapshot (USD/oz, FX, source agreement). Never fails the whole job.
+        const { recordPriceSnapshot } = await import("@/lib/price-snapshot.server");
+        const snapshot = await recordPriceSnapshot(supabaseAdmin, today).catch((e) => ({
+          recorded: false,
+          reason: String(e),
+          errors: [] as string[],
+        }));
+        if (
+          "status" in snapshot &&
+          (snapshot.status === "diverged" || snapshot.status === "warn")
+        ) {
+          errors.push(
+            `مصادر الذهب والفضة متباعدة ${(snapshot.deviationPct ?? 0).toFixed(1)}% (${snapshot.status})`,
+          );
+        }
+
         if (alerts.length || errors.length) {
           const { data: admins } = await supabaseAdmin
             .from("user_roles")
@@ -240,6 +256,7 @@ export const Route = createFileRoute("/api/public/hooks/jeweler-feed")({
           errors,
           official,
           history,
+          snapshot,
           followers,
           facebook,
         });

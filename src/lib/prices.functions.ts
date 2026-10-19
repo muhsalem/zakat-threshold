@@ -2,6 +2,14 @@ import { createServerFn } from "@tanstack/react-start";
 import { COUNTRIES } from "./countries";
 import { annualSince } from "./long-history";
 import { PRICE_REFRESH_MS, HISTORY_CACHE_MS } from "./daily-nisab";
+import { reachConsensus, type Consensus, type SpotQuote } from "./spot-consensus";
+import {
+  FETCH_TIMEOUT_MS,
+  collectQuotes,
+  fetchJson,
+  quoteFromGoldApi,
+  quoteFromYahooFutures,
+} from "./spot-providers";
 
 /** How trustworthy a figure on screen is right now. */
 export type Quality = "live" | "delayed" | "stale";
@@ -27,6 +35,15 @@ export type LivePrices = {
   ratesSource: string;
   metals: FeedMeta;
   fx: FeedMeta;
+  /** How the independent metal quotes compare; absent on payloads from older servers. */
+  consensus?: PriceConsensus;
+};
+
+export type PriceConsensus = {
+  status: Consensus["status"];
+  deviationPct: number;
+  sources: Pick<SpotQuote, "source" | "kind" | "goldUsdOz" | "silverUsdOz" | "at">[];
+  rejected: Consensus["rejected"];
 };
 
 type Cache = { data: LivePrices; at: number } | null;
@@ -35,18 +52,6 @@ let cache: Cache = null;
 let lastGood: Cache = null;
 /** Price checks are minute-based; the historical series keeps its own hourly cache. */
 const TTL_MS = PRICE_REFRESH_MS;
-
-/** Upstream calls must never hang a request: abort after this long. */
-const FETCH_TIMEOUT_MS = 8_000;
-
-async function fetchJson(url: string) {
-  const res = await fetch(url, {
-    headers: { accept: "application/json" },
-    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-  });
-  if (!res.ok) throw new Error(`Request failed: ${url} (${res.status})`);
-  return res.json() as Promise<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
-}
 
 /** Runs sources in order and reports which one answered. */
 async function firstOk<T>(
@@ -71,56 +76,6 @@ function ageQuality(iso: string): Quality {
   if (age < 2 * 60 * 60 * 1000) return "live";
   if (age < 36 * 60 * 60 * 1000) return "delayed";
   return "stale";
-}
-
-type Metals = { gold: number; silver: number; updatedAt: string; label: string; url: string };
-
-async function metalsFromGoldApi(): Promise<Metals> {
-  const [gold, silver] = await Promise.all([
-    fetchJson("https://api.gold-api.com/price/XAU"),
-    fetchJson("https://api.gold-api.com/price/XAG"),
-  ]);
-  const g = Number(gold.price);
-  const s = Number(silver.price);
-  if (!Number.isFinite(g) || !Number.isFinite(s)) throw new Error("gold-api: bad payload");
-  return {
-    gold: g,
-    silver: s,
-    updatedAt: String(gold.updatedAt ?? new Date().toISOString()),
-    label: "gold-api.com — spot XAU/XAG",
-    url: "https://api.gold-api.com/price/XAU",
-  };
-}
-
-async function lastCloseFromYahoo(symbol: string) {
-  const json = await fetchJson(
-    `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=5d&interval=1d`,
-  );
-  const result = json?.chart?.result?.[0];
-  const closes: (number | null)[] = result?.indicators?.quote?.[0]?.close ?? [];
-  const stamps: number[] = result?.timestamp ?? [];
-  for (let i = closes.length - 1; i >= 0; i -= 1) {
-    const close = closes[i];
-    const stamp = stamps[i];
-    if (typeof close === "number" && Number.isFinite(close)) {
-      return { price: close, at: new Date((stamp ?? Date.now() / 1000) * 1000).toISOString() };
-    }
-  }
-  throw new Error(`yahoo: no close for ${symbol}`);
-}
-
-async function metalsFromYahoo(): Promise<Metals> {
-  const [gold, silver] = await Promise.all([
-    lastCloseFromYahoo("GC=F"),
-    lastCloseFromYahoo("SI=F"),
-  ]);
-  return {
-    gold: gold.price,
-    silver: silver.price,
-    updatedAt: gold.at,
-    label: "Yahoo Finance — COMEX futures close (GC=F, SI=F)",
-    url: "https://finance.yahoo.com/quote/GC=F",
-  };
 }
 
 type Fx = { rates: Record<string, number>; updatedAt: string; label: string; url: string };
@@ -165,28 +120,39 @@ export const getLivePrices = createServerFn({ method: "GET" }).handler(
 async function loadLivePrices(): Promise<LivePrices> {
   {
     try {
-      const [metals, fx] = await Promise.all([
-        firstOk<Metals>([{ run: metalsFromGoldApi }, { run: metalsFromYahoo }]),
+      const [metalQuotes, fx] = await Promise.all([
+        collectQuotes([
+          { name: "gold-api", run: quoteFromGoldApi },
+          { name: "yahoo-futures", run: quoteFromYahooFutures },
+        ]),
         firstOk<Fx>([{ run: fxFromErApi }, { run: fxFromFrankfurter }]),
       ]);
+      const consensus = reachConsensus(metalQuotes.quotes);
+      if (!consensus) throw new Error(`All metal sources failed: ${metalQuotes.errors.join("; ")}`);
+      const primary = consensus.primary;
+      const primaryIsSpot = primary.kind !== "futures";
+      const depth = metalQuotes.quotes.indexOf(primary);
 
       const data: LivePrices = {
-        goldUsdOz: metals.value.gold,
-        silverUsdOz: metals.value.silver,
+        goldUsdOz: consensus.goldUsdOz,
+        silverUsdOz: consensus.silverUsdOz,
         rates: { USD: 1, ...fx.value.rates },
-        metalsUpdatedAt: metals.value.updatedAt,
+        metalsUpdatedAt: primary.at,
         ratesUpdatedAt: fx.value.updatedAt,
         fetchedAt: new Date().toISOString(),
-        metalsSource: metals.value.label,
+        metalsSource: primary.source,
         ratesSource: fx.value.label,
         metals: {
-          source: metals.value.label,
-          url: metals.value.url,
+          source: primary.source,
+          url: primary.url,
           market: "International spot / futures (USD per troy ounce)",
-          frequency:
-            metals.depth === 0 ? "Checked every minute; source timestamps apply" : "Daily close",
-          quality: metals.depth === 0 ? ageQuality(metals.value.updatedAt) : "delayed",
-          fallbackDepth: metals.depth,
+          frequency: primaryIsSpot
+            ? "Checked every minute; source timestamps apply"
+            : "Daily close",
+          // Futures closes and unresolved disagreement are never presented as live.
+          quality:
+            primaryIsSpot && consensus.status !== "diverged" ? ageQuality(primary.at) : "delayed",
+          fallbackDepth: Math.max(0, depth),
         },
         fx: {
           source: fx.value.label,
@@ -195,6 +161,18 @@ async function loadLivePrices(): Promise<LivePrices> {
           frequency: "Daily",
           quality: fx.depth === 0 ? ageQuality(fx.value.updatedAt) : "delayed",
           fallbackDepth: fx.depth,
+        },
+        consensus: {
+          status: consensus.status,
+          deviationPct: consensus.deviationPct,
+          sources: metalQuotes.quotes.map(({ source, kind, goldUsdOz, silverUsdOz, at }) => ({
+            source,
+            kind,
+            goldUsdOz,
+            silverUsdOz,
+            at,
+          })),
+          rejected: consensus.rejected,
         },
       };
 
