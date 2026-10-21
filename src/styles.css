@@ -2,20 +2,10 @@
 @source "../src";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
 /*
- * Design system definition.
- *
- * The @theme inline block maps CSS custom properties to Tailwind utility
- * classes (e.g. --color-primary -> bg-primary, text-primary).
- *
- * The :root and .dark blocks define the actual color values using oklch.
- * All colors MUST use oklch format.
- *
- * To add a new semantic color:
- * 1. Add the variable to :root (light value) and .dark (dark value)
- * 2. Register it in @theme inline as --color-<name>: var(--<name>)
+ * Design system — "Desert Luxe Minimal"
+ * Ivory sand paper, deep forest green, assay gold.
+ * All colors are oklch semantic tokens. Never hardcode colors in components.
  */
 
 @theme inline {
@@ -24,8 +14,7 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -45,91 +34,151 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-ring-offset-background: var(--background);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Brand tokens */
+  --color-sand: var(--sand);
+  --color-cream: var(--cream);
+  --color-ink: var(--ink);
+  --color-forest: var(--forest);
+  --color-emerald: var(--emerald);
+  --color-gold: var(--gold);
+  --color-goldlight: var(--goldlight);
+
+  --color-chart-1: var(--gold);
+  --color-chart-2: var(--emerald);
+  --color-chart-3: var(--forest);
+  --color-chart-4: var(--goldlight);
+  --color-chart-5: var(--ink);
+
+  --font-sans: var(--font-arabic);
+  --font-arabic: "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --font-display: "Cairo", system-ui, sans-serif;
+  --font-calligraphy: "Amiri", "Aref Ruqaa", serif;
+  --font-latin: "Space Grotesk", ui-monospace, sans-serif;
 }
 
-:root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.208 0.042 265.755);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.704 0.04 256.788);
+:root,
+[data-theme="emerald"] {
+  --radius: 0.875rem;
+
+  /* Royal Emerald & Pure Pearl Alabaster Palette */
+  --sand: oklch(0.985 0.005 160); /* Pristine pearl ivory canvas */
+  --cream: oklch(1 0 0); /* Pure white card surface */
+  --ink: oklch(0.18 0.025 165); /* Deep obsidian charcoal typography */
+  --forest: oklch(0.32 0.092 162); /* Royal Andalusian Emerald (#064e3b) */
+  --emerald: oklch(0.48 0.118 162); /* Vibrant malachite green (#059669) */
+  --gold: oklch(0.72 0.145 78); /* 24K Assay Bullion Gold (#d97706) */
+  --goldlight: oklch(0.88 0.08 82); /* Warm champagne gold shimmer */
+
+  --background: var(--sand);
+  --foreground: var(--ink);
+  --card: var(--cream);
+  --card-foreground: var(--ink);
+  --popover: var(--cream);
+  --popover-foreground: var(--ink);
+  --primary: var(--forest);
+  --primary-foreground: oklch(0.99 0.005 160);
+  --secondary: oklch(0.96 0.012 162);
+  --secondary-foreground: var(--forest);
+  --muted: oklch(0.958 0.008 162);
+  --muted-foreground: oklch(0.48 0.025 165);
+  --accent: var(--gold);
+  --accent-foreground: oklch(0.2 0.04 78);
+  --destructive: oklch(0.55 0.2 27);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: oklch(0.2 0.025 165 / 10%);
+  --input: oklch(0.2 0.025 165 / 12%);
+  --ring: var(--forest);
 }
 
-.dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
+[data-theme="sapphire"] {
+  --sand: oklch(0.984 0.006 250); /* Crisp celestial white */
+  --cream: oklch(1 0 0);
+  --ink: oklch(0.18 0.032 260); /* Deep midnight navy ink */
+  --forest: oklch(0.3 0.088 258); /* Sovereign Royal Navy */
+  --emerald: oklch(0.46 0.115 245); /* Cyan sapphire */
+  --gold: oklch(0.72 0.145 78); /* Assay bullion gold */
+  --goldlight: oklch(0.88 0.08 82);
+
+  --background: var(--sand);
+  --foreground: var(--ink);
+  --card: var(--cream);
+  --card-foreground: var(--ink);
+  --popover: var(--cream);
+  --popover-foreground: var(--ink);
+  --primary: var(--forest);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.958 0.012 250);
+  --secondary-foreground: var(--forest);
+  --muted: oklch(0.958 0.008 250);
+  --muted-foreground: oklch(0.48 0.03 260);
+  --accent: var(--gold);
+  --accent-foreground: oklch(0.2 0.04 78);
+  --destructive: oklch(0.55 0.2 27);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: oklch(0.2 0.03 260 / 10%);
+  --input: oklch(0.2 0.03 260 / 12%);
+  --ring: var(--forest);
+}
+
+[data-theme="dark-emerald"] {
+  --sand: oklch(0.14 0.025 165); /* Deep nocturnal pine */
+  --cream: oklch(0.18 0.028 165); /* Elevated card dark pine */
+  --ink: oklch(0.96 0.01 160); /* Crisp moonlight white text */
+  --forest: oklch(0.55 0.14 162); /* Radiant emerald button */
+  --emerald: oklch(0.62 0.13 162); /* Bright malachite */
+  --gold: oklch(0.76 0.155 80); /* Radiant glowing gold */
+  --goldlight: oklch(0.88 0.1 82);
+
+  --background: var(--sand);
+  --foreground: var(--ink);
+  --card: var(--cream);
+  --card-foreground: var(--ink);
+  --popover: var(--cream);
+  --popover-foreground: var(--ink);
+  --primary: var(--forest);
+  --primary-foreground: oklch(0.12 0.02 165);
+  --secondary: oklch(0.22 0.03 165);
+  --secondary-foreground: var(--ink);
+  --muted: oklch(0.22 0.03 165);
+  --muted-foreground: oklch(0.72 0.02 165);
+  --accent: var(--gold);
+  --accent-foreground: oklch(0.12 0.02 165);
+  --destructive: oklch(0.6 0.22 27);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: oklch(0.96 0.01 160 / 12%);
+  --input: oklch(0.96 0.01 160 / 14%);
+  --ring: var(--gold);
+}
+
+[data-theme="desert"] {
+  --sand: oklch(0.9503 0.0184 86.15);
+  --cream: oklch(0.9823 0.0069 88.64);
+  --ink: oklch(0.2689 0.0242 164.16);
+  --forest: oklch(0.3102 0.0471 168.59);
+  --emerald: oklch(0.4744 0.0847 167.15);
+  --gold: oklch(0.706 0.1199 85.41);
+  --goldlight: oklch(0.8485 0.0867 89.06);
+
+  --background: var(--sand);
+  --foreground: var(--ink);
+  --card: var(--cream);
+  --card-foreground: var(--ink);
+  --popover: var(--cream);
+  --popover-foreground: var(--ink);
+  --primary: var(--forest);
+  --primary-foreground: var(--cream);
+  --secondary: oklch(0.9503 0.0184 86.15);
+  --secondary-foreground: var(--ink);
+  --muted: oklch(0.9503 0.0184 86.15);
+  --muted-foreground: oklch(0.52 0.02 164);
+  --accent: var(--gold);
+  --accent-foreground: var(--ink);
+  --destructive: oklch(0.55 0.19 27);
+  --destructive-foreground: var(--cream);
+  --border: oklch(0.2689 0.0242 164.16 / 12%);
+  --input: oklch(0.2689 0.0242 164.16 / 14%);
+  --ring: var(--gold);
 }
 
 @layer base {
@@ -137,8 +186,96 @@
     border-color: var(--color-border);
   }
 
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-arabic);
+    -webkit-font-smoothing: antialiased;
   }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+  }
+}
+
+@utility num {
+  font-family: var(--font-latin);
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+@utility eyebrow {
+  font-family: var(--font-latin);
+  font-size: 0.75rem;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+@utility card-surface {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  box-shadow:
+    0 1px 3px 0 rgb(0 0 0 / 0.03),
+    0 1px 2px -1px rgb(0 0 0 / 0.02);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+@keyframes nisab-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility rise {
+  animation: nisab-rise 0.6s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+/* The home price overview is an editorial, unframed layout. */
+:root {
+  --summary-gold: color-mix(in oklch, var(--card) 94%, var(--gold));
+  --summary-silver: color-mix(in oklch, var(--card) 92%, var(--muted-foreground));
+  --symbol-gold: color-mix(in oklch, var(--gold) 15%, var(--card));
+  --symbol-silver: color-mix(in oklch, var(--muted-foreground) 12%, var(--card));
+  --summary-shadow: 0 4px 18px color-mix(in oklch, var(--foreground) 4%, transparent);
+}
+
+.nisab-home .home-title { line-height: 1.5; text-wrap: balance; letter-spacing: 0; }
+.nisab-home .home-controls label { display: grid; gap: 8px; min-width: 0; }
+.nisab-home .home-controls label > span { font-size: 13px; font-weight: 500; }
+.nisab-home .home-controls select {
+  width: 100%; min-width: 0; height: 52px; padding-inline: 14px 32px;
+  font-size: 15px; border-radius: 8px; transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+.nisab-home .home-controls select:hover { border-color: var(--primary); }
+.nisab-home .home-update p { line-height: 1.9; overflow-wrap: anywhere; }
+.nisab-home .home-update [data-testid="price-source"] { color: var(--primary); }
+.nisab-home .nisab-summary { box-shadow: var(--summary-shadow); border-top-width: 3px; }
+.nisab-home .nisab-summary-gold { background: var(--summary-gold); border-top-color: var(--gold); }
+.nisab-home .nisab-summary-silver { background: var(--summary-silver); border-top-color: var(--muted-foreground); }
+.nisab-home .nisab-summary-gold .metal-symbol { background: var(--symbol-gold); color: var(--accent-foreground); }
+.nisab-home .nisab-summary-silver .metal-symbol { background: var(--symbol-silver); color: var(--primary); }
+.nisab-home .nisab-total { overflow-wrap: anywhere; line-height: 1.4; }
+@media (max-width: 639px) {
+  .nisab-home .home-title { font-size: 30px; line-height: 1.6; }
+  .nisab-home .nisab-total { font-size: 28px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rise { animation: none; }
+  .nisab-home .home-controls select { transition: none; }
 }
