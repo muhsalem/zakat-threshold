@@ -10,33 +10,447 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CalculatorRouteImport } from './routes/calculator'
+import { Route as ChronologyRouteImport } from './routes/chronology'
+import { Route as CompareRouteImport } from './routes/compare'
+import { Route as CountriesRouteImport } from './routes/countries'
+import { Route as DevelopersRouteImport } from './routes/developers'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as FiqhRouteImport } from './routes/fiqh'
+import { Route as HistoryRouteImport } from './routes/history'
+import { Route as LedgerRouteImport } from './routes/ledger'
+import { Route as MapRouteImport } from './routes/map'
+import { Route as MethodologyRouteImport } from './routes/methodology'
+import { Route as OutlookRouteImport } from './routes/outlook'
+import { Route as PartnersRouteImport } from './routes/partners'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SourcesRouteImport } from './routes/sources'
+import { Route as TodayRouteImport } from './routes/today'
+import { Route as TypesRouteImport } from './routes/types'
+import { Route as VerifyRouteImport } from './routes/verify'
+import { Route as WaqfRouteImport } from './routes/waqf'
+import { Route as WidgetRouteImport } from './routes/widget'
+import { Route as AuthenticatedAlertsRouteImport } from './routes/_authenticated/alerts'
+import { Route as AuthenticatedControlRouteImport } from './routes/_authenticated/control'
+import { Route as AuthenticatedModerationRouteImport } from './routes/_authenticated/moderation'
+import { Route as CountryCodeRouteImport } from './routes/country.$code'
+import { Route as ApiPublicHooksJewelerFeedRouteImport } from './routes/api/public/hooks/jeweler-feed'
+import { Route as ApiPublicV1NisabIndexRouteImport } from './routes/api/public/v1/nisab/index'
+import { Route as ApiPublicV1NisabHistoryRouteImport } from './routes/api/public/v1/nisab/history'
+import { Route as ApiPublicV1NisabSnapshotRouteImport } from './routes/api/public/v1/nisab/snapshot'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalculatorRoute = CalculatorRouteImport.update({
+  id: '/calculator',
+  path: '/calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChronologyRoute = ChronologyRouteImport.update({
+  id: '/chronology',
+  path: '/chronology',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompareRoute = CompareRouteImport.update({
+  id: '/compare',
+  path: '/compare',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CountriesRoute = CountriesRouteImport.update({
+  id: '/countries',
+  path: '/countries',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevelopersRoute = DevelopersRouteImport.update({
+  id: '/developers',
+  path: '/developers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FiqhRoute = FiqhRouteImport.update({
+  id: '/fiqh',
+  path: '/fiqh',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoryRoute = HistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LedgerRoute = LedgerRouteImport.update({
+  id: '/ledger',
+  path: '/ledger',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MapRoute = MapRouteImport.update({
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MethodologyRoute = MethodologyRouteImport.update({
+  id: '/methodology',
+  path: '/methodology',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OutlookRoute = OutlookRouteImport.update({
+  id: '/outlook',
+  path: '/outlook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PartnersRoute = PartnersRouteImport.update({
+  id: '/partners',
+  path: '/partners',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SourcesRoute = SourcesRouteImport.update({
+  id: '/sources',
+  path: '/sources',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TodayRoute = TodayRouteImport.update({
+  id: '/today',
+  path: '/today',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TypesRoute = TypesRouteImport.update({
+  id: '/types',
+  path: '/types',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifyRoute = VerifyRouteImport.update({
+  id: '/verify',
+  path: '/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WaqfRoute = WaqfRouteImport.update({
+  id: '/waqf',
+  path: '/waqf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WidgetRoute = WidgetRouteImport.update({
+  id: '/widget',
+  path: '/widget',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAlertsRoute = AuthenticatedAlertsRouteImport.update({
+  id: '/alerts',
+  path: '/alerts',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedControlRoute = AuthenticatedControlRouteImport.update({
+  id: '/control',
+  path: '/control',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedModerationRoute = AuthenticatedModerationRouteImport.update({
+  id: '/moderation',
+  path: '/moderation',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const CountryCodeRoute = CountryCodeRouteImport.update({
+  id: '/country/$code',
+  path: '/country/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicHooksJewelerFeedRoute =
+  ApiPublicHooksJewelerFeedRouteImport.update({
+    id: '/api/public/hooks/jeweler-feed',
+    path: '/api/public/hooks/jeweler-feed',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicV1NisabIndexRoute = ApiPublicV1NisabIndexRouteImport.update({
+  id: '/api/public/v1/nisab/',
+  path: '/api/public/v1/nisab/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicV1NisabHistoryRoute = ApiPublicV1NisabHistoryRouteImport.update({
+  id: '/api/public/v1/nisab/history',
+  path: '/api/public/v1/nisab/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicV1NisabSnapshotRoute =
+  ApiPublicV1NisabSnapshotRouteImport.update({
+    id: '/api/public/v1/nisab/snapshot',
+    path: '/api/public/v1/nisab/snapshot',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
+  '/calculator': typeof CalculatorRoute
+  '/chronology': typeof ChronologyRoute
+  '/compare': typeof CompareRoute
+  '/countries': typeof CountriesRoute
+  '/developers': typeof DevelopersRoute
+  '/faq': typeof FaqRoute
+  '/fiqh': typeof FiqhRoute
+  '/history': typeof HistoryRoute
+  '/ledger': typeof LedgerRoute
+  '/map': typeof MapRoute
+  '/methodology': typeof MethodologyRoute
+  '/outlook': typeof OutlookRoute
+  '/partners': typeof PartnersRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sources': typeof SourcesRoute
+  '/today': typeof TodayRoute
+  '/types': typeof TypesRoute
+  '/verify': typeof VerifyRoute
+  '/waqf': typeof WaqfRoute
+  '/widget': typeof WidgetRoute
+  '/alerts': typeof AuthenticatedAlertsRoute
+  '/control': typeof AuthenticatedControlRoute
+  '/moderation': typeof AuthenticatedModerationRoute
+  '/country/$code': typeof CountryCodeRoute
+  '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
+  '/api/public/v1/nisab/history': typeof ApiPublicV1NisabHistoryRoute
+  '/api/public/v1/nisab/snapshot': typeof ApiPublicV1NisabSnapshotRoute
+  '/api/public/v1/nisab/': typeof ApiPublicV1NisabIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
+  '/calculator': typeof CalculatorRoute
+  '/chronology': typeof ChronologyRoute
+  '/compare': typeof CompareRoute
+  '/countries': typeof CountriesRoute
+  '/developers': typeof DevelopersRoute
+  '/faq': typeof FaqRoute
+  '/fiqh': typeof FiqhRoute
+  '/history': typeof HistoryRoute
+  '/ledger': typeof LedgerRoute
+  '/map': typeof MapRoute
+  '/methodology': typeof MethodologyRoute
+  '/outlook': typeof OutlookRoute
+  '/partners': typeof PartnersRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sources': typeof SourcesRoute
+  '/today': typeof TodayRoute
+  '/types': typeof TypesRoute
+  '/verify': typeof VerifyRoute
+  '/waqf': typeof WaqfRoute
+  '/widget': typeof WidgetRoute
+  '/alerts': typeof AuthenticatedAlertsRoute
+  '/control': typeof AuthenticatedControlRoute
+  '/moderation': typeof AuthenticatedModerationRoute
+  '/country/$code': typeof CountryCodeRoute
+  '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
+  '/api/public/v1/nisab/history': typeof ApiPublicV1NisabHistoryRoute
+  '/api/public/v1/nisab/snapshot': typeof ApiPublicV1NisabSnapshotRoute
+  '/api/public/v1/nisab': typeof ApiPublicV1NisabIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
+  '/calculator': typeof CalculatorRoute
+  '/chronology': typeof ChronologyRoute
+  '/compare': typeof CompareRoute
+  '/countries': typeof CountriesRoute
+  '/developers': typeof DevelopersRoute
+  '/faq': typeof FaqRoute
+  '/fiqh': typeof FiqhRoute
+  '/history': typeof HistoryRoute
+  '/ledger': typeof LedgerRoute
+  '/map': typeof MapRoute
+  '/methodology': typeof MethodologyRoute
+  '/outlook': typeof OutlookRoute
+  '/partners': typeof PartnersRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sources': typeof SourcesRoute
+  '/today': typeof TodayRoute
+  '/types': typeof TypesRoute
+  '/verify': typeof VerifyRoute
+  '/waqf': typeof WaqfRoute
+  '/widget': typeof WidgetRoute
+  '/_authenticated/alerts': typeof AuthenticatedAlertsRoute
+  '/_authenticated/control': typeof AuthenticatedControlRoute
+  '/_authenticated/moderation': typeof AuthenticatedModerationRoute
+  '/country/$code': typeof CountryCodeRoute
+  '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
+  '/api/public/v1/nisab/history': typeof ApiPublicV1NisabHistoryRoute
+  '/api/public/v1/nisab/snapshot': typeof ApiPublicV1NisabSnapshotRoute
+  '/api/public/v1/nisab/': typeof ApiPublicV1NisabIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/auth'
+    | '/calculator'
+    | '/chronology'
+    | '/compare'
+    | '/countries'
+    | '/developers'
+    | '/faq'
+    | '/fiqh'
+    | '/history'
+    | '/ledger'
+    | '/map'
+    | '/methodology'
+    | '/outlook'
+    | '/partners'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/sources'
+    | '/today'
+    | '/types'
+    | '/verify'
+    | '/waqf'
+    | '/widget'
+    | '/alerts'
+    | '/control'
+    | '/moderation'
+    | '/country/$code'
+    | '/api/public/hooks/jeweler-feed'
+    | '/api/public/v1/nisab/history'
+    | '/api/public/v1/nisab/snapshot'
+    | '/api/public/v1/nisab/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/admin'
+    | '/auth'
+    | '/calculator'
+    | '/chronology'
+    | '/compare'
+    | '/countries'
+    | '/developers'
+    | '/faq'
+    | '/fiqh'
+    | '/history'
+    | '/ledger'
+    | '/map'
+    | '/methodology'
+    | '/outlook'
+    | '/partners'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/sources'
+    | '/today'
+    | '/types'
+    | '/verify'
+    | '/waqf'
+    | '/widget'
+    | '/alerts'
+    | '/control'
+    | '/moderation'
+    | '/country/$code'
+    | '/api/public/hooks/jeweler-feed'
+    | '/api/public/v1/nisab/history'
+    | '/api/public/v1/nisab/snapshot'
+    | '/api/public/v1/nisab'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/admin'
+    | '/auth'
+    | '/calculator'
+    | '/chronology'
+    | '/compare'
+    | '/countries'
+    | '/developers'
+    | '/faq'
+    | '/fiqh'
+    | '/history'
+    | '/ledger'
+    | '/map'
+    | '/methodology'
+    | '/outlook'
+    | '/partners'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/sources'
+    | '/today'
+    | '/types'
+    | '/verify'
+    | '/waqf'
+    | '/widget'
+    | '/_authenticated/alerts'
+    | '/_authenticated/control'
+    | '/_authenticated/moderation'
+    | '/country/$code'
+    | '/api/public/hooks/jeweler-feed'
+    | '/api/public/v1/nisab/history'
+    | '/api/public/v1/nisab/snapshot'
+    | '/api/public/v1/nisab/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AdminRoute: typeof AdminRoute
+  AuthRoute: typeof AuthRoute
+  CalculatorRoute: typeof CalculatorRoute
+  ChronologyRoute: typeof ChronologyRoute
+  CompareRoute: typeof CompareRoute
+  CountriesRoute: typeof CountriesRoute
+  DevelopersRoute: typeof DevelopersRoute
+  FaqRoute: typeof FaqRoute
+  FiqhRoute: typeof FiqhRoute
+  HistoryRoute: typeof HistoryRoute
+  LedgerRoute: typeof LedgerRoute
+  MapRoute: typeof MapRoute
+  MethodologyRoute: typeof MethodologyRoute
+  OutlookRoute: typeof OutlookRoute
+  PartnersRoute: typeof PartnersRoute
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SourcesRoute: typeof SourcesRoute
+  TodayRoute: typeof TodayRoute
+  TypesRoute: typeof TypesRoute
+  VerifyRoute: typeof VerifyRoute
+  WaqfRoute: typeof WaqfRoute
+  WidgetRoute: typeof WidgetRoute
+  CountryCodeRoute: typeof CountryCodeRoute
+  ApiPublicHooksJewelerFeedRoute: typeof ApiPublicHooksJewelerFeedRoute
+  ApiPublicV1NisabHistoryRoute: typeof ApiPublicV1NisabHistoryRoute
+  ApiPublicV1NisabSnapshotRoute: typeof ApiPublicV1NisabSnapshotRoute
+  ApiPublicV1NisabIndexRoute: typeof ApiPublicV1NisabIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +462,279 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calculator': {
+      id: '/calculator'
+      path: '/calculator'
+      fullPath: '/calculator'
+      preLoaderRoute: typeof CalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chronology': {
+      id: '/chronology'
+      path: '/chronology'
+      fullPath: '/chronology'
+      preLoaderRoute: typeof ChronologyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/compare': {
+      id: '/compare'
+      path: '/compare'
+      fullPath: '/compare'
+      preLoaderRoute: typeof CompareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/countries': {
+      id: '/countries'
+      path: '/countries'
+      fullPath: '/countries'
+      preLoaderRoute: typeof CountriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/developers': {
+      id: '/developers'
+      path: '/developers'
+      fullPath: '/developers'
+      preLoaderRoute: typeof DevelopersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fiqh': {
+      id: '/fiqh'
+      path: '/fiqh'
+      fullPath: '/fiqh'
+      preLoaderRoute: typeof FiqhRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/history': {
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ledger': {
+      id: '/ledger'
+      path: '/ledger'
+      fullPath: '/ledger'
+      preLoaderRoute: typeof LedgerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/map': {
+      id: '/map'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof MapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/methodology': {
+      id: '/methodology'
+      path: '/methodology'
+      fullPath: '/methodology'
+      preLoaderRoute: typeof MethodologyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/outlook': {
+      id: '/outlook'
+      path: '/outlook'
+      fullPath: '/outlook'
+      preLoaderRoute: typeof OutlookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/partners': {
+      id: '/partners'
+      path: '/partners'
+      fullPath: '/partners'
+      preLoaderRoute: typeof PartnersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sources': {
+      id: '/sources'
+      path: '/sources'
+      fullPath: '/sources'
+      preLoaderRoute: typeof SourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/today': {
+      id: '/today'
+      path: '/today'
+      fullPath: '/today'
+      preLoaderRoute: typeof TodayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/types': {
+      id: '/types'
+      path: '/types'
+      fullPath: '/types'
+      preLoaderRoute: typeof TypesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verify': {
+      id: '/verify'
+      path: '/verify'
+      fullPath: '/verify'
+      preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/waqf': {
+      id: '/waqf'
+      path: '/waqf'
+      fullPath: '/waqf'
+      preLoaderRoute: typeof WaqfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/widget': {
+      id: '/widget'
+      path: '/widget'
+      fullPath: '/widget'
+      preLoaderRoute: typeof WidgetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/alerts': {
+      id: '/_authenticated/alerts'
+      path: '/alerts'
+      fullPath: '/alerts'
+      preLoaderRoute: typeof AuthenticatedAlertsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/control': {
+      id: '/_authenticated/control'
+      path: '/control'
+      fullPath: '/control'
+      preLoaderRoute: typeof AuthenticatedControlRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/moderation': {
+      id: '/_authenticated/moderation'
+      path: '/moderation'
+      fullPath: '/moderation'
+      preLoaderRoute: typeof AuthenticatedModerationRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/country/$code': {
+      id: '/country/$code'
+      path: '/country/$code'
+      fullPath: '/country/$code'
+      preLoaderRoute: typeof CountryCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/jeweler-feed': {
+      id: '/api/public/hooks/jeweler-feed'
+      path: '/api/public/hooks/jeweler-feed'
+      fullPath: '/api/public/hooks/jeweler-feed'
+      preLoaderRoute: typeof ApiPublicHooksJewelerFeedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/nisab/': {
+      id: '/api/public/v1/nisab/'
+      path: '/api/public/v1/nisab'
+      fullPath: '/api/public/v1/nisab/'
+      preLoaderRoute: typeof ApiPublicV1NisabIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/nisab/history': {
+      id: '/api/public/v1/nisab/history'
+      path: '/api/public/v1/nisab/history'
+      fullPath: '/api/public/v1/nisab/history'
+      preLoaderRoute: typeof ApiPublicV1NisabHistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/nisab/snapshot': {
+      id: '/api/public/v1/nisab/snapshot'
+      path: '/api/public/v1/nisab/snapshot'
+      fullPath: '/api/public/v1/nisab/snapshot'
+      preLoaderRoute: typeof ApiPublicV1NisabSnapshotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAlertsRoute: typeof AuthenticatedAlertsRoute
+  AuthenticatedControlRoute: typeof AuthenticatedControlRoute
+  AuthenticatedModerationRoute: typeof AuthenticatedModerationRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAlertsRoute: AuthenticatedAlertsRoute,
+  AuthenticatedControlRoute: AuthenticatedControlRoute,
+  AuthenticatedModerationRoute: AuthenticatedModerationRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AdminRoute: AdminRoute,
+  AuthRoute: AuthRoute,
+  CalculatorRoute: CalculatorRoute,
+  ChronologyRoute: ChronologyRoute,
+  CompareRoute: CompareRoute,
+  CountriesRoute: CountriesRoute,
+  DevelopersRoute: DevelopersRoute,
+  FaqRoute: FaqRoute,
+  FiqhRoute: FiqhRoute,
+  HistoryRoute: HistoryRoute,
+  LedgerRoute: LedgerRoute,
+  MapRoute: MapRoute,
+  MethodologyRoute: MethodologyRoute,
+  OutlookRoute: OutlookRoute,
+  PartnersRoute: PartnersRoute,
+  RobotsDottxtRoute: RobotsDottxtRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SourcesRoute: SourcesRoute,
+  TodayRoute: TodayRoute,
+  TypesRoute: TypesRoute,
+  VerifyRoute: VerifyRoute,
+  WaqfRoute: WaqfRoute,
+  WidgetRoute: WidgetRoute,
+  CountryCodeRoute: CountryCodeRoute,
+  ApiPublicHooksJewelerFeedRoute: ApiPublicHooksJewelerFeedRoute,
+  ApiPublicV1NisabHistoryRoute: ApiPublicV1NisabHistoryRoute,
+  ApiPublicV1NisabSnapshotRoute: ApiPublicV1NisabSnapshotRoute,
+  ApiPublicV1NisabIndexRoute: ApiPublicV1NisabIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
