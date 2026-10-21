@@ -14,7 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      app_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          updated_by: string | null
+          value: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json
+        }
+        Relationships: []
+      }
+      price_snapshots: {
+        Row: {
+          consensus_status: string
+          day: string
+          deviation_pct: number
+          fx_rates: Json
+          fx_source: string
+          gold_usd_oz: number
+          metals_source: string
+          rejected: Json
+          silver_usd_oz: number
+          sources: Json
+          taken_at: string
+        }
+        Insert: {
+          consensus_status: string
+          day: string
+          deviation_pct?: number
+          fx_rates?: Json
+          fx_source?: string
+          gold_usd_oz: number
+          metals_source: string
+          rejected?: Json
+          silver_usd_oz: number
+          sources?: Json
+          taken_at?: string
+        }
+        Update: {
+          consensus_status?: string
+          day?: string
+          deviation_pct?: number
+          fx_rates?: Json
+          fx_source?: string
+          gold_usd_oz?: number
+          metals_source?: string
+          rejected?: Json
+          silver_usd_oz?: number
+          sources?: Json
+          taken_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
