@@ -35,6 +35,270 @@ export type Database = {
         }
         Relationships: []
       }
+      audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string
+          entity: string
+          entity_id: string | null
+          id: string
+          meta: Json
+          reason: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string
+          entity?: string
+          entity_id?: string | null
+          id?: string
+          meta?: Json
+          reason?: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string
+          entity?: string
+          entity_id?: string | null
+          id?: string
+          meta?: Json
+          reason?: string
+        }
+        Relationships: []
+      }
+      jeweler_feed: {
+        Row: {
+          buyback_gram: number | null
+          country: string
+          currency: string
+          day: string
+          fetched_at: string
+          gold_gram: number | null
+          id: string
+          silver_buyback_gram: number | null
+          silver_gram: number | null
+          source: string
+        }
+        Insert: {
+          buyback_gram?: number | null
+          country: string
+          currency: string
+          day?: string
+          fetched_at?: string
+          gold_gram?: number | null
+          id?: string
+          silver_buyback_gram?: number | null
+          silver_gram?: number | null
+          source?: string
+        }
+        Update: {
+          buyback_gram?: number | null
+          country?: string
+          currency?: string
+          day?: string
+          fetched_at?: string
+          gold_gram?: number | null
+          id?: string
+          silver_buyback_gram?: number | null
+          silver_gram?: number | null
+          source?: string
+        }
+        Relationships: []
+      }
+      nisab_history: {
+        Row: {
+          country: string
+          created_at: string
+          currency: string
+          day: string
+          gold_gram: number | null
+          gold_nisab: number | null
+          id: string
+          silver_gram: number | null
+          silver_nisab: number | null
+          source: string | null
+          spot_gram: number | null
+        }
+        Insert: {
+          country: string
+          created_at?: string
+          currency?: string
+          day: string
+          gold_gram?: number | null
+          gold_nisab?: number | null
+          id?: string
+          silver_gram?: number | null
+          silver_nisab?: number | null
+          source?: string | null
+          spot_gram?: number | null
+        }
+        Update: {
+          country?: string
+          created_at?: string
+          currency?: string
+          day?: string
+          gold_gram?: number | null
+          gold_nisab?: number | null
+          id?: string
+          silver_gram?: number | null
+          silver_nisab?: number | null
+          source?: string | null
+          spot_gram?: number | null
+        }
+        Relationships: []
+      }
+      notification_prefs: {
+        Row: {
+          countries: string[]
+          daily_digest: boolean
+          in_app: boolean
+          metals: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          countries?: string[]
+          daily_digest?: boolean
+          in_app?: boolean
+          metals?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          countries?: string[]
+          daily_digest?: boolean
+          in_app?: boolean
+          metals?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          body: string
+          country: string | null
+          created_at: string
+          id: string
+          kind: string
+          read_at: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string
+          country?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          read_at?: string | null
+          title?: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          country?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          read_at?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      official_nisab: {
+        Row: {
+          announced_on: string
+          authority: string
+          country: string
+          created_at: string
+          created_by: string | null
+          currency: string
+          gold_nisab: number | null
+          id: string
+          silver_nisab: number | null
+          source_url: string | null
+        }
+        Insert: {
+          announced_on?: string
+          authority?: string
+          country: string
+          created_at?: string
+          created_by?: string | null
+          currency: string
+          gold_nisab?: number | null
+          id?: string
+          silver_nisab?: number | null
+          source_url?: string | null
+        }
+        Update: {
+          announced_on?: string
+          authority?: string
+          country?: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          gold_nisab?: number | null
+          id?: string
+          silver_nisab?: number | null
+          source_url?: string | null
+        }
+        Relationships: []
+      }
+      official_sources: {
+        Row: {
+          active: boolean
+          authority: string
+          country: string
+          created_at: string
+          currency: string | null
+          id: string
+          last_changed: string | null
+          last_checked: string | null
+          last_error: string | null
+          last_hash: string | null
+          last_snippet: string | null
+          last_value: number | null
+          metal: string | null
+          url: string
+        }
+        Insert: {
+          active?: boolean
+          authority?: string
+          country: string
+          created_at?: string
+          currency?: string | null
+          id?: string
+          last_changed?: string | null
+          last_checked?: string | null
+          last_error?: string | null
+          last_hash?: string | null
+          last_snippet?: string | null
+          last_value?: number | null
+          metal?: string | null
+          url: string
+        }
+        Update: {
+          active?: boolean
+          authority?: string
+          country?: string
+          created_at?: string
+          currency?: string | null
+          id?: string
+          last_changed?: string | null
+          last_checked?: string | null
+          last_error?: string | null
+          last_hash?: string | null
+          last_snippet?: string | null
+          last_value?: number | null
+          metal?: string | null
+          url?: string
+        }
+        Relationships: []
+      }
       price_snapshots: {
         Row: {
           consensus_status: string
@@ -77,15 +341,207 @@ export type Database = {
         }
         Relationships: []
       }
+      price_submissions: {
+        Row: {
+          buyback_gram: number | null
+          city: string
+          country: string
+          created_at: string
+          currency: string
+          gold_gram: number | null
+          id: string
+          metal: string
+          review_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          silver_gram: number | null
+          source: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          buyback_gram?: number | null
+          city?: string
+          country: string
+          created_at?: string
+          currency: string
+          gold_gram?: number | null
+          id?: string
+          metal?: string
+          review_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          silver_gram?: number | null
+          source?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          buyback_gram?: number | null
+          city?: string
+          country?: string
+          created_at?: string
+          currency?: string
+          gold_gram?: number | null
+          id?: string
+          metal?: string
+          review_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          silver_gram?: number | null
+          source?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      price_votes: {
+        Row: {
+          created_at: string
+          id: string
+          submission_id: string
+          user_id: string
+          vote: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          submission_id: string
+          user_id: string
+          vote: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          submission_id?: string
+          user_id?: string
+          vote?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "price_votes_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "price_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          city: string | null
+          contact: string | null
+          country: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          license: string | null
+          org: string | null
+          updated_at: string
+        }
+        Insert: {
+          city?: string | null
+          contact?: string | null
+          country?: string | null
+          created_at?: string
+          display_name?: string | null
+          id: string
+          license?: string | null
+          org?: string | null
+          updated_at?: string
+        }
+        Update: {
+          city?: string | null
+          contact?: string | null
+          country?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          license?: string | null
+          org?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      public_price_quotes: {
+        Row: {
+          buyback_gram: number | null
+          city: string
+          country: string
+          created_at: string
+          currency: string
+          gold_gram: number | null
+          id: string
+          metal: string
+          reviewed_at: string | null
+          silver_gram: number | null
+          source: string
+        }
+        Insert: {
+          buyback_gram?: number | null
+          city?: string
+          country: string
+          created_at?: string
+          currency: string
+          gold_gram?: number | null
+          id?: string
+          metal?: string
+          reviewed_at?: string | null
+          silver_gram?: number | null
+          source?: string
+        }
+        Update: {
+          buyback_gram?: number | null
+          city?: string
+          country?: string
+          created_at?: string
+          currency?: string
+          gold_gram?: number | null
+          id?: string
+          metal?: string
+          reviewed_at?: string | null
+          silver_gram?: number | null
+          source?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      verify_job_token: { Args: { _name: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "jeweler" | "ambassador" | "volunteer"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -212,6 +668,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "jeweler", "ambassador", "volunteer"],
+    },
   },
 } as const

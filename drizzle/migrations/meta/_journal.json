@@ -29,6 +29,13 @@
       "when": 1792555695504,
       "tag": "0003_price_snapshots",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792671257979,
+      "tag": "0004_core_tables",
+      "breakpoints": true
     }
   ]
 }
