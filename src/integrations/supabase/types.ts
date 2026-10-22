@@ -553,10 +553,12 @@ export type Database = {
       jeweler_leaderboard: {
         Args: { _country: string }
         Returns: {
+          accuracy: number
           approved: number
+          country: string
           display_name: string
           org: string
-          score: number
+          points: number
           user_id: string
         }[]
       }
