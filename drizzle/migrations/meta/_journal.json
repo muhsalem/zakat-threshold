@@ -29,6 +29,27 @@
       "when": 1792555695504,
       "tag": "0003_price_snapshots",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792671257979,
+      "tag": "0004_core_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792671287002,
+      "tag": "0005_schema_fixups",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792671308056,
+      "tag": "0006_leaderboard_shape",
+      "breakpoints": true
     }
   ]
 }
