@@ -71,6 +71,7 @@ export type Database = {
       jeweler_feed: {
         Row: {
           buyback_gram: number | null
+          change_pct: number | null
           country: string
           currency: string
           day: string
@@ -80,9 +81,11 @@ export type Database = {
           silver_buyback_gram: number | null
           silver_gram: number | null
           source: string
+          source_url: string | null
         }
         Insert: {
           buyback_gram?: number | null
+          change_pct?: number | null
           country: string
           currency: string
           day?: string
@@ -92,9 +95,11 @@ export type Database = {
           silver_buyback_gram?: number | null
           silver_gram?: number | null
           source?: string
+          source_url?: string | null
         }
         Update: {
           buyback_gram?: number | null
+          change_pct?: number | null
           country?: string
           currency?: string
           day?: string
@@ -104,6 +109,7 @@ export type Database = {
           silver_buyback_gram?: number | null
           silver_gram?: number | null
           source?: string
+          source_url?: string | null
         }
         Relationships: []
       }
@@ -153,6 +159,7 @@ export type Database = {
         Row: {
           countries: string[]
           daily_digest: boolean
+          email: boolean
           in_app: boolean
           metals: string[]
           updated_at: string
@@ -161,6 +168,7 @@ export type Database = {
         Insert: {
           countries?: string[]
           daily_digest?: boolean
+          email?: boolean
           in_app?: boolean
           metals?: string[]
           updated_at?: string
@@ -169,6 +177,7 @@ export type Database = {
         Update: {
           countries?: string[]
           daily_digest?: boolean
+          email?: boolean
           in_app?: boolean
           metals?: string[]
           updated_at?: string
@@ -254,7 +263,7 @@ export type Database = {
           authority: string
           country: string
           created_at: string
-          currency: string | null
+          currency: string
           id: string
           last_changed: string | null
           last_checked: string | null
@@ -264,13 +273,14 @@ export type Database = {
           last_value: number | null
           metal: string | null
           url: string
+          value_pattern: string | null
         }
         Insert: {
           active?: boolean
           authority?: string
           country: string
           created_at?: string
-          currency?: string | null
+          currency?: string
           id?: string
           last_changed?: string | null
           last_checked?: string | null
@@ -280,13 +290,14 @@ export type Database = {
           last_value?: number | null
           metal?: string | null
           url: string
+          value_pattern?: string | null
         }
         Update: {
           active?: boolean
           authority?: string
           country?: string
           created_at?: string
-          currency?: string | null
+          currency?: string
           id?: string
           last_changed?: string | null
           last_checked?: string | null
@@ -296,6 +307,7 @@ export type Database = {
           last_value?: number | null
           metal?: string | null
           url?: string
+          value_pattern?: string | null
         }
         Relationships: []
       }
@@ -430,35 +442,35 @@ export type Database = {
       profiles: {
         Row: {
           city: string | null
-          contact: string | null
+          contact: string
           country: string | null
           created_at: string
-          display_name: string | null
+          display_name: string
           id: string
-          license: string | null
-          org: string | null
+          license: string
+          org: string
           updated_at: string
         }
         Insert: {
           city?: string | null
-          contact?: string | null
+          contact?: string
           country?: string | null
           created_at?: string
-          display_name?: string | null
+          display_name?: string
           id: string
-          license?: string | null
-          org?: string | null
+          license?: string
+          org?: string
           updated_at?: string
         }
         Update: {
           city?: string | null
-          contact?: string | null
+          contact?: string
           country?: string | null
           created_at?: string
-          display_name?: string | null
+          display_name?: string
           id?: string
-          license?: string | null
-          org?: string | null
+          license?: string
+          org?: string
           updated_at?: string
         }
         Relationships: []
@@ -537,6 +549,16 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      jeweler_leaderboard: {
+        Args: { _country: string }
+        Returns: {
+          approved: number
+          display_name: string
+          org: string
+          score: number
+          user_id: string
+        }[]
       }
       verify_job_token: { Args: { _name: string }; Returns: boolean }
     }

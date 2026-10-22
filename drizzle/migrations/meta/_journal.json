@@ -36,6 +36,13 @@
       "when": 1792671257979,
       "tag": "0004_core_tables",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792671287002,
+      "tag": "0005_schema_fixups",
+      "breakpoints": true
     }
   ]
 }
