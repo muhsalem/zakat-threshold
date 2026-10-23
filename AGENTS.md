@@ -15,3 +15,4 @@
 - Centralize per-metal valuation and manual precedence in the browser-safe valuation module; a manual override for one metal must not suppress the other metal's local quote.
 - Share country-specific public paths and UTC-dated calculated values, never fabricate a city or label a calculated quote as an official announcement.
 - Keep the silver-weight preference hydrated and device-local; persisted comparisons must use the matching historical standard.
+- Keep database query-contract inspection test-only and AST-based against generated database types; it catches schema drift in page queries without importing application clients or changing financial behavior.
