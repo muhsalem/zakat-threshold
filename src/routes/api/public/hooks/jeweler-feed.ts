@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-import { authenticateCronRequest } from "@/integrations/supabase/cron-auth";
+import { withCronAuthorization } from "@/lib/cron-authorization.server";
 import { COUNTRIES } from "@/lib/countries";
 import type { FeedRow } from "@/lib/jeweler-feed.server";
 
@@ -97,10 +97,7 @@ async function recordNisabHistory(
 export const Route = createFileRoute("/api/public/hooks/jeweler-feed")({
   server: {
     handlers: {
-      POST: async ({ request }) => {
-        // Use the shared verified cron credential, not the legacy placeholder RPC.
-        const denied = await authenticateCronRequest(request);
-        if (denied) return denied;
+      POST: async ({ request }) => withCronAuthorization(request, async () => {
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
         const { collectFeed, BIG_CHANGE_PCT, MAX_SPOT_DEVIATION_PCT } =
@@ -252,7 +249,7 @@ export const Route = createFileRoute("/api/public/hooks/jeweler-feed")({
           followers,
           facebook,
         });
-      },
+      }),
     },
   },
 });
