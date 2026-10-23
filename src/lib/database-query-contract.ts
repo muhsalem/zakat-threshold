@@ -38,6 +38,7 @@ export function inspectQueries(source: string, filename: string, schema: Schema)
   let queries = 0;
   let columns = 0;
   let writes = 0;
+  const deferredWrites: string[] = [];
   const declarations = new Map<string, ts.Expression>();
   function collect(node: ts.Node) {
     if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.initializer) declarations.set(node.name.text, node.initializer);
@@ -128,6 +129,7 @@ export function inspectQueries(source: string, filename: string, schema: Schema)
       if (names && ["insert", "upsert", "update"].includes(method)) {
         writes++;
         const keys = objectKeys(node.arguments[0]);
+        if (!keys) deferredWrites.push(`${filename}: ${method}(${node.arguments[0]?.getText(file) ?? ""})`);
         if (keys) for (const name of names) {
           const part = schema.tables.get(name)?.get(method === "update" ? "Update" : "Insert");
           for (const key of keys) if (!part?.has(key)) fail(node, `${name}: unknown write field ${key}`);
@@ -155,5 +157,5 @@ export function inspectQueries(source: string, filename: string, schema: Schema)
     ts.forEachChild(node, visit);
   }
   visit(file);
-  return { errors: [...new Set(errors)], queries, columns, writes };
+  return { errors: [...new Set(errors)], queries, columns, writes, deferredWrites };
 }
