@@ -3,7 +3,9 @@ import { strict as assert } from "node:assert";
 import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join, relative } from "node:path";
+import ts from "typescript";
 import { inspectQueries, readSchema } from "./database-query-contract";
+import { authenticateCronRequest } from "../integrations/supabase/cron-auth";
 
 const root = fileURLToPath(new URL("../../", import.meta.url));
 const schema = readSchema(readFileSync(join(root, "src/integrations/supabase/types.ts"), "utf8"));
@@ -16,6 +18,17 @@ function sourceFiles(directory: string): string[] {
 }
 
 describe("database query contracts", () => {
+  test("query result types, nullability, payload types and RPC enums satisfy compile-only contracts", () => {
+    const program = ts.createProgram([join(root, "src/lib/database-query-types.fixture.ts")], {
+      noEmit: true, strict: true, skipLibCheck: true, types: [],
+      target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext,
+      moduleResolution: ts.ModuleResolutionKind.Bundler,
+    });
+    const diagnostics = ts.getPreEmitDiagnostics(program);
+    assert.equal(diagnostics.length, 0, ts.formatDiagnosticsWithColorAndContext(diagnostics, {
+      getCanonicalFileName: name => name, getCurrentDirectory: () => root, getNewLine: () => "\n",
+    }));
+  });
   test("loads generated table, write and RPC shapes", () => {
     assert.equal(schema.tables.size, 14);
     assert.equal(schema.tables.get("price_submissions")?.get("Insert")?.get("user_id")?.optional, false);
@@ -25,7 +38,7 @@ describe("database query contracts", () => {
   for (const path of ["routes", "components", "lib"].flatMap(folder => sourceFiles(join(root, "src", folder)))) {
     const filename = relative(root, path);
     const source = readFileSync(path, "utf8");
-    if (!/\.(from|rpc)\s*\(/.test(source) || filename.includes("database-query-contract")) continue;
+    if (!/\.(from|rpc)\s*\(/.test(source) || filename.includes("database-query-contract") || filename.endsWith(".fixture.ts")) continue;
     test(`${filename}: database tables, columns, writes and RPC arguments match generated types`, () => {
       const result = inspectQueries(source, filename, schema);
       assert.deepEqual(result.errors, [], result.errors.join("\n"));
@@ -51,5 +64,23 @@ describe("database query contracts", () => {
   test("rejects unreviewed dynamic tables and invalid conflict columns", () => {
     const result = inspectQueries('db.from(target).select("*"); db.from("price_votes").upsert({ submission_id: "s", user_id: "u", vote: 1 }, { onConflict: "submission_id,typo" });', "fixture.ts", schema);
     assert.equal(result.errors.length, 2);
+  });
+
+  test("price refresh authentication rejects legacy tokens and accepts only the verified bearer credential", async () => {
+    const current = process.env["LOVABLE_CRON_SECRET"];
+    const previous = process.env["LOVABLE_CRON_SECRET_PREVIOUS"];
+    process.env["LOVABLE_CRON_SECRET"] = "test-only-cron-credential";
+    delete process.env["LOVABLE_CRON_SECRET_PREVIOUS"];
+    try {
+      const request = (headers: Record<string, string>) => new Request("https://example.test/api/public/hooks/jeweler-feed", { method: "POST", headers });
+      assert.equal((await authenticateCronRequest(request({ "x-job-token": "anything" })))?.status, 401);
+      assert.equal((await authenticateCronRequest(request({ authorization: "Bearer invalid" })))?.status, 401);
+      assert.equal(await authenticateCronRequest(request({ authorization: "Bearer test-only-cron-credential" })), null);
+    } finally {
+      if (current === undefined) delete process.env["LOVABLE_CRON_SECRET"];
+      else process.env["LOVABLE_CRON_SECRET"] = current;
+      if (previous === undefined) delete process.env["LOVABLE_CRON_SECRET_PREVIOUS"];
+      else process.env["LOVABLE_CRON_SECRET_PREVIOUS"] = previous;
+    }
   });
 });
