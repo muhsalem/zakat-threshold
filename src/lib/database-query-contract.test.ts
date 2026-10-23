@@ -9,6 +9,13 @@ import { authenticateCronRequest } from "../integrations/supabase/cron-auth";
 
 const root = fileURLToPath(new URL("../../", import.meta.url));
 const schema = readSchema(readFileSync(join(root, "src/integrations/supabase/types.ts"), "utf8"));
+// Bulk arrays assembled in loops require separate payload/type checks; keep this
+// reviewed list explicit so a newly uninspectable write cannot silently pass.
+const reviewedBulkWrites: Record<string, string[]> = {
+  "src/lib/admin-console.functions.ts": ["insert(fresh.slice(i, i + 500))"],
+  "src/lib/daily-broadcast.server.ts": ["insert(out)"],
+  "src/routes/api/public/hooks/jeweler-feed.ts": ["upsert(rows)"],
+};
 
 function sourceFiles(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
@@ -42,6 +49,7 @@ describe("database query contracts", () => {
     test(`${filename}: database tables, columns, writes and RPC arguments match generated types`, () => {
       const result = inspectQueries(source, filename, schema);
       assert.deepEqual(result.errors, [], result.errors.join("\n"));
+      assert.deepEqual(result.deferredWrites, (reviewedBulkWrites[filename] ?? []).map(write => `${filename}: ${write}`), "Review new dynamic bulk writes explicitly");
     });
   }
 
@@ -60,6 +68,10 @@ describe("database query contracts", () => {
   test("rejects wrong RPC names and argument keys", () => {
     const result = inspectQueries('db.rpc("missing_rpc", {}); db.rpc("jeweler_leaderboard", { country: "EG" });', "fixture.ts", schema);
     assert.equal(result.errors.length, 3);
+  });
+  test("checks write fields in mapped arrays and conditional spreads", () => {
+    assert.match(inspectQueries('db.from("notifications").insert(ids.map(id => ({ user_id: id, typo: true })));', "fixture.ts", schema).errors.join("\n"), /unknown write field typo/);
+    assert.match(inspectQueries('db.from("official_sources").update({ ...(changed ? { typo: "now" } : {}) });', "fixture.ts", schema).errors.join("\n"), /unknown write field typo/);
   });
   test("rejects unreviewed dynamic tables and invalid conflict columns", () => {
     const result = inspectQueries('db.from(target).select("*"); db.from("price_votes").upsert({ submission_id: "s", user_id: "u", vote: 1 }, { onConflict: "submission_id,typo" });', "fixture.ts", schema);

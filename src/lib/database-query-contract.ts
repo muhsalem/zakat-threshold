@@ -90,6 +90,15 @@ export function inspectQueries(source: string, filename: string, schema: Schema)
   function objectKeys(node: ts.Expression | undefined, seen = new Set<string>()): string[] | undefined {
     if (!node) return undefined;
     if (ts.isParenthesizedExpression(node) || ts.isAsExpression(node)) return objectKeys(node.expression, seen);
+    if (ts.isConditionalExpression(node)) {
+      const left = objectKeys(node.whenTrue, new Set(seen));
+      const right = objectKeys(node.whenFalse, new Set(seen));
+      return left && right ? [...new Set([...left, ...right])] : undefined;
+    }
+    if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression) && node.expression.name.text === "map") {
+      const callback = node.arguments[0];
+      if (callback && ts.isArrowFunction(callback) && !ts.isBlock(callback.body)) return objectKeys(callback.body, seen);
+    }
     if (ts.isIdentifier(node)) {
       if (seen.has(node.text)) return undefined;
       seen.add(node.text);

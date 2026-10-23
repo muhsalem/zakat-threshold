@@ -16,3 +16,4 @@
 - Share country-specific public paths and UTC-dated calculated values, never fabricate a city or label a calculated quote as an official announcement.
 - Keep the silver-weight preference hydrated and device-local; persisted comparisons must use the matching historical standard.
 - Keep database query-contract inspection test-only and AST-based against generated database types; it catches schema drift in page queries without importing application clients or changing financial behavior.
+- Authenticate the jeweler-feed hook with the shared cron bearer verifier before loading privileged clients; the legacy job-token RPC is a placeholder and must not authorize writes.
