@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AskRouteImport } from './routes/ask'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CalculatorRouteImport } from './routes/calculator'
 import { Route as ChronologyRouteImport } from './routes/chronology'
@@ -55,6 +56,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AskRoute = AskRouteImport.update({
+  id: '/ask',
+  path: '/ask',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -213,6 +219,7 @@ const ApiPublicV1NisabSnapshotRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/ask': typeof AskRoute
   '/auth': typeof AuthRoute
   '/calculator': typeof CalculatorRoute
   '/chronology': typeof ChronologyRoute
@@ -247,6 +254,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/ask': typeof AskRoute
   '/auth': typeof AuthRoute
   '/calculator': typeof CalculatorRoute
   '/chronology': typeof ChronologyRoute
@@ -283,6 +291,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/admin': typeof AdminRoute
+  '/ask': typeof AskRoute
   '/auth': typeof AuthRoute
   '/calculator': typeof CalculatorRoute
   '/chronology': typeof ChronologyRoute
@@ -319,6 +328,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/ask'
     | '/auth'
     | '/calculator'
     | '/chronology'
@@ -353,6 +363,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
+    | '/ask'
     | '/auth'
     | '/calculator'
     | '/chronology'
@@ -388,6 +399,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/admin'
+    | '/ask'
     | '/auth'
     | '/calculator'
     | '/chronology'
@@ -424,6 +436,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AdminRoute: typeof AdminRoute
+  AskRoute: typeof AskRoute
   AuthRoute: typeof AuthRoute
   CalculatorRoute: typeof CalculatorRoute
   ChronologyRoute: typeof ChronologyRoute
@@ -474,6 +487,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ask': {
+      id: '/ask'
+      path: '/ask'
+      fullPath: '/ask'
+      preLoaderRoute: typeof AskRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -708,6 +728,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AdminRoute: AdminRoute,
+  AskRoute: AskRoute,
   AuthRoute: AuthRoute,
   CalculatorRoute: CalculatorRoute,
   ChronologyRoute: ChronologyRoute,
