@@ -9,6 +9,11 @@ export const Route = createFileRoute("/widget")({
   head: () => ({
     meta: [
       { title: "ودجة نصاب الزكاة اليومي المضمنة" },
+      { name: "description", content: "عرض نصاب الذهب والفضة بعملة الدولة ضمن المواقع الأخرى." },
+      { property: "og:title", content: "ودجة نصاب الزكاة اليومي · نِصاب" },
+      { property: "og:description", content: "نصاب الذهب والفضة بعملة الدولة في عرض مضمّن." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
