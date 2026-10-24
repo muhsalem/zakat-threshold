@@ -17,3 +17,4 @@
 - Keep the silver-weight preference hydrated and device-local; persisted comparisons must use the matching historical standard.
 - Keep database query-contract inspection test-only and AST-based against generated database types; it catches schema drift in page queries without importing application clients or changing financial behavior.
 - Gate the entire jeweler-feed callback with withCronAuthorization using the shared cron bearer verifier before loading privileged clients; this makes refusal-before-update testable, and the legacy job-token RPC must never authorize writes.
+- Zakat visitor questions use a public server function with the AI Gateway SDK and an anonymous read-only client; validate server-owned citation IDs and distinguish official excerpts from app summaries to prevent invented authority or leaked private data.
