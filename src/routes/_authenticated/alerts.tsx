@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 import { COUNTRIES, countryName, flagOf } from "@/lib/countries";
+import { confirmAccountWrite } from "@/lib/account-actions";
 
 export const Route = createFileRoute("/_authenticated/alerts")({
   head: () => ({
@@ -32,7 +33,7 @@ type Notification = {
   id: string;
   title: string;
   body: string;
-  country: string;
+  country: string | null;
   read_at: string | null;
   created_at: string;
 };
@@ -47,15 +48,18 @@ function AlertsPage() {
   const [daily, setDaily] = useState(true);
   const [saved, setSaved] = useState(false);
   const [inbox, setInbox] = useState<Notification[]>([]);
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     if (!user) return;
     void (async () => {
-      const { data } = await supabase
+      const { data, error: prefsError } = await supabase
         .from("notification_prefs")
         .select("*")
         .eq("user_id", user.id)
         .maybeSingle();
+      if (prefsError) { setError(prefsError.message); return; }
       if (data) {
         setCountries(data.countries ?? []);
         setMetals(data.metals ?? ["gold", "silver"]);
@@ -65,18 +69,24 @@ function AlertsPage() {
       } else {
         setCountries([country]);
       }
-      const { data: notes } = await supabase
+      const { data: notes, error: inboxError } = await supabase
         .from("notifications")
         .select("id,title,body,country,read_at,created_at")
+        .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(30);
-      setInbox((notes ?? []) as Notification[]);
+      if (inboxError) setError(inboxError.message);
+      else setInbox(notes ?? []);
     })();
   }, [user, country]);
 
   const save = async () => {
     if (!user) return;
-    await supabase.from("notification_prefs").upsert({
+    setSaved(false);
+    setError("");
+    setBusy(true);
+    try {
+    await confirmAccountWrite(() => supabase.from("notification_prefs").upsert({
       user_id: user.id,
       countries,
       metals,
@@ -84,15 +94,20 @@ function AlertsPage() {
       email,
       daily_digest: daily,
       updated_at: new Date().toISOString(),
-    });
-    setSaved(true);
+    }), () => setSaved(true));
+    } catch {
+      setError(lang === "ar" ? "تعذّر حفظ التنبيهات. حاول مرة أخرى." : "Could not save alerts. Please retry.");
+    } finally { setBusy(false); }
   };
 
   const markRead = async (id: string) => {
-    await supabase.from("notifications").update({ read_at: new Date().toISOString() }).eq("id", id);
-    setInbox((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read_at: new Date().toISOString() } : n)),
-    );
+    if (!user) return;
+    const readAt = new Date().toISOString();
+    try {
+      await confirmAccountWrite(() => supabase.from("notifications").update({ read_at: readAt }).eq("id", id).eq("user_id", user.id), () => {
+        setInbox(prev => prev.map(n => n.id === id ? { ...n, read_at: readAt } : n));
+      });
+    } catch { setError(lang === "ar" ? "تعذّر تحديث الإشعار." : "Could not update notification."); }
   };
 
   const toggle = (list: string[], value: string, set: (v: string[]) => void) =>
@@ -100,6 +115,7 @@ function AlertsPage() {
 
   return (
     <Page eyebrow={t("nav.alerts")} title={t("a.title")} sub={t("a.sub")}>
+      {error && <p role="alert" className="mb-4 text-sm text-destructive">{error}</p>}
       <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
         <section className="rounded-lg border border-border bg-card p-6">
           <h2 className="text-xl text-foreground">{t("a.countries")}</h2>
@@ -146,7 +162,7 @@ function AlertsPage() {
             </label>
           </div>
 
-          <Button className="mt-6" onClick={save}>
+          <Button className="mt-6" disabled={busy} onClick={save}>
             {t("a.save")}
           </Button>
           {saved && <p className="mt-3 text-sm text-muted-foreground">{t("a.saved")}</p>}
