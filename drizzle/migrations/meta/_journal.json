@@ -50,6 +50,13 @@
       "when": 1792671308056,
       "tag": "0006_leaderboard_shape",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792898129218,
+      "tag": "0007_publish_reviewed_prices",
+      "breakpoints": true
     }
   ]
 }
