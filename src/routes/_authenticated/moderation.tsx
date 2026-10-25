@@ -129,7 +129,7 @@ function ModerationPage() {
     setRoleMsg("");
     setBusy(true);
     try {
-      const users = await listUsers();
+      const users: Awaited<ReturnType<typeof listUsersWithRoles>> = await listUsers();
       const target = users.find(item => item.email.toLowerCase() === roleEmail.trim().toLowerCase());
       if (!target) { setRoleMsg("لا يوجد حساب بهذا البريد."); return; }
       const result = await grant({ data: { userId: target.id, role: roleValue, grant: true, reason: "منح صلاحية من لوحة المراجعة" } });
