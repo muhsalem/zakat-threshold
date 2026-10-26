@@ -21,3 +21,4 @@
 - Confirm account writes before showing success or clearing inputs; share this completion boundary across alerts and partner actions to avoid false saved states.
 - Synchronize reviewed price submissions into public quotes through a database trigger, retaining submission IDs for votes; authorize role grants through the existing authenticated admin server function rather than browser writes.
 - Track authorized scheduled jeweler-feed executions in durable admin-only audit rows before and after execution; store structured status and UTC timestamps, never raw exception text or credentials.
+- Keep AI asset organization as proposed typed items requiring per-item user confirmation; aggregate only reviewed values into matching calculator fields without changing valuation, purity, jewelry treatment, hawl or investment-percentage formulas.
