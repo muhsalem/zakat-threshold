@@ -7,16 +7,9 @@ import { CountryPicker } from "@/components/site/Shell";
 import { AsOf, Disclaimer, ManualNotice, StateNote, useNisab } from "@/components/site/Prices";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
-import {
-  DAY_MS,
-  ZAKAT_RATE_SOLAR,
-  formatDays,
-  formatHijri,
-  nextHawl,
-  parseDay,
-  today,
-} from "@/lib/hijri";
-import { KARATS, ZAKAT_RATE } from "@/lib/nisab";
+import { DAY_MS, formatDays, formatHijri, nextHawl, parseDay, today } from "@/lib/hijri";
+import { KARATS } from "@/lib/nisab";
+import { computeZakat, toAmount, type JewelryRule } from "@/lib/zakat-calc";
 
 export const Route = createFileRoute("/calculator")({
   head: () => ({
@@ -82,31 +75,37 @@ function Calculator() {
   const [goldG, setGoldG] = useState("");
   const [karat, setKarat] = useState(21);
   const [jewelryG, setJewelryG] = useState("");
-  const [jewelryRule, setJewelryRule] = useState<"include" | "exclude">("include");
+  const [jewelryRule, setJewelryRule] = useState<JewelryRule>("");
   const [silverG, setSilverG] = useState("");
   const [standard, setStandard] = useState<"silver" | "gold">("silver");
 
-  const purity = KARATS.find((k) => k.k === karat)?.purity ?? 1;
-  const zakatableGoldG = num(goldG) + (jewelryRule === "include" ? num(jewelryG) : 0);
-  const goldValue = values ? zakatableGoldG * values.goldGram * purity : 0;
-  const silverValue = values ? num(silverG) * values.silverGram : 0;
-  const metals = goldValue + silverValue;
-  // Long-term holdings: only the company's zakatable assets are counted (AAOIFI).
-  const pct = longTermPct.trim() === "" ? 100 : Math.min(num(longTermPct), 100);
-  const longTermValue = num(longTerm) * (pct / 100);
-  const net =
-    num(cash) +
-    num(business) +
-    num(investments) +
-    longTermValue +
-    num(receivables) +
-    metals -
-    num(debts);
-  const nisab = values ? (standard === "silver" ? values.silver : values.gold) : 0;
-  // No verdict until live prices (and hence the nisab) are known.
-  const above = Boolean(values) && net > 0 && net >= nisab;
-  const rate = hawl.solar ? ZAKAT_RATE_SOLAR : ZAKAT_RATE;
-  const due = above ? net * rate : 0;
+  const result = computeZakat(
+    {
+      cash: toAmount(cash),
+      business: toAmount(business),
+      investments: toAmount(investments),
+      longTerm: toAmount(longTerm),
+      longTermPct: longTermPct.trim() === "" ? 100 : toAmount(longTermPct),
+      receivables: toAmount(receivables),
+      debts: toAmount(debts),
+      goldG: toAmount(goldG),
+      karat,
+      jewelryG: toAmount(jewelryG),
+      jewelryRule,
+      silverG: toAmount(silverG),
+      standard,
+      solarYear: hawl.solar,
+    },
+    values
+      ? {
+          goldGram: values.goldGram,
+          silverGram: values.silverGram,
+          nisabGold: values.gold,
+          nisabSilver: values.silver,
+        }
+      : null,
+  );
+  const { metals, net, nisab, above, due } = result;
 
   const hawlStart = parseDay(hawl.start);
   const now = today();
@@ -154,8 +153,16 @@ function Calculator() {
           <Field label={t("calc.cash")} value={cash} onChange={setCash} />
           <Field label={t("calc.business")} value={business} onChange={setBusiness} />
           <Field label={t("calc.investments")} value={investments} onChange={setInvestments} />
-          <Field label={t("calc.receivables")} value={receivables} onChange={setReceivables} />
-          <Field label={t("calc.debts")} value={debts} onChange={setDebts} />
+          <div>
+            <Field label={t("calc.receivables")} value={receivables} onChange={setReceivables} />
+            <p className="mt-1 text-xs leading-5 text-muted-foreground">
+              {t("calc.receivablesHint")}
+            </p>
+          </div>
+          <div>
+            <Field label={t("calc.debts")} value={debts} onChange={setDebts} />
+            <p className="mt-1 text-xs leading-5 text-muted-foreground">{t("calc.debtsHint")}</p>
+          </div>
 
           <div className="sm:col-span-2 grid gap-4 border-t border-border pt-4 sm:grid-cols-2">
             <Field label={t("calc.longTerm")} value={longTerm} onChange={setLongTerm} />
@@ -201,12 +208,18 @@ function Calculator() {
               <span className="text-sm text-muted-foreground">{t("calc.jewelryRule")}</span>
               <select
                 value={jewelryRule}
-                onChange={(e) => setJewelryRule(e.target.value as "include" | "exclude")}
+                onChange={(e) => setJewelryRule(e.target.value as JewelryRule)}
                 className="mt-1 w-full rounded-xl border border-input bg-card px-3 py-2.5 text-foreground outline-none focus:ring-2 focus:ring-ring"
               >
+                <option value="">{t("calc.jewelry.choose")}</option>
                 <option value="include">{t("calc.jewelry.include")}</option>
                 <option value="exclude">{t("calc.jewelry.exclude")}</option>
               </select>
+              {result.jewelryUndecided && (
+                <span role="status" className="mt-1 block text-xs leading-5 text-negative">
+                  {t("calc.jewelry.undecided")}
+                </span>
+              )}
             </label>
             <Field
               label={t("calc.silverWeight")}
