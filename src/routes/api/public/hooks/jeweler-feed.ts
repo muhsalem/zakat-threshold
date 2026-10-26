@@ -4,6 +4,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { withCronAuthorization } from "@/lib/cron-authorization.server";
 import { COUNTRIES } from "@/lib/countries";
 import type { FeedRow } from "@/lib/jeweler-feed.server";
+import { trackScheduledFeedRun, type ScheduledFeedRun } from "@/lib/scheduled-feed-run";
 
 const OZ = 31.1034768;
 
@@ -99,6 +100,18 @@ export const Route = createFileRoute("/api/public/hooks/jeweler-feed")({
     handlers: {
       POST: async ({ request }) => withCronAuthorization(request, async () => {
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        const runId = crypto.randomUUID();
+        const saveRun = async (run: ScheduledFeedRun, first: boolean) => {
+          const meta = { ...run };
+          const { error } = first
+            ? await supabaseAdmin.from("audit_log").insert({
+                id: runId, action: "scheduled_feed_run", entity: "jeweler_feed",
+                reason: "scheduled price update", meta,
+              })
+            : await supabaseAdmin.from("audit_log").update({ meta }).eq("id", runId);
+          if (error) throw new Error("Could not save scheduled update status");
+        };
+        return trackScheduledFeedRun(async () => {
 
         const { collectFeed, BIG_CHANGE_PCT, MAX_SPOT_DEVIATION_PCT } =
           await import("@/lib/jeweler-feed.server");
@@ -159,7 +172,7 @@ export const Route = createFileRoute("/api/public/hooks/jeweler-feed")({
             .maybeSingle();
           const before = prev?.gold_gram ? Number(prev.gold_gram) : null;
           const change = before && row.gold_gram ? ((row.gold_gram - before) / before) * 100 : null;
-          await supabaseAdmin.from("jeweler_feed").upsert(
+          const { error: feedError } = await supabaseAdmin.from("jeweler_feed").upsert(
             {
               country: row.country,
               currency: row.currency,
@@ -175,6 +188,7 @@ export const Route = createFileRoute("/api/public/hooks/jeweler-feed")({
             },
             { onConflict: "country,day" },
           );
+          if (feedError) throw new Error("Could not persist jeweler prices");
           if (change != null && Math.abs(change) >= BIG_CHANGE_PCT) {
             alerts.push(
               `${row.country}: ${change > 0 ? "+" : ""}${change.toFixed(1)}% (${row.source})`,
@@ -249,6 +263,7 @@ export const Route = createFileRoute("/api/public/hooks/jeweler-feed")({
           followers,
           facebook,
         });
+        }, saveRun);
       }),
     },
   },

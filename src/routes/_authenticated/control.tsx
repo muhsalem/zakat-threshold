@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/lib/auth";
+import { ScheduledFeedLog } from "@/components/site/ScheduledFeedLog";
 import {
   getFacebookStatus,
   importHistoricalData,
@@ -69,6 +70,7 @@ function ControlPage() {
       title="لوحة التحكم"
       sub="النشر اليومي على فيسبوك، استيراد البيانات القديمة، والمستخدمون والأدوار."
     >
+      <ScheduledFeedLog />
       <Tabs defaultValue="facebook" dir="rtl">
         <TabsList className="mb-4 flex-wrap h-auto">
           <TabsTrigger value="facebook">
