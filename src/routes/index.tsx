@@ -33,6 +33,7 @@ import { usePrices } from "@/lib/use-prices";
 import { homeCopy } from "@/lib/home-copy";
 import { countryName, findCountry, flagOf } from "@/lib/countries";
 import { isCurrentUtcDay } from "@/lib/daily-nisab";
+import { SourceAgreement } from "@/components/site/SourceAgreement";
 import { useSilverStandard } from "@/lib/use-silver-standard";
 
 export const Route = createFileRoute("/")({
@@ -122,6 +123,7 @@ function Home() {
           fetching={isFetching || localFetching}
         />
       </div>
+      <SourceAgreement consensus={data?.consensus} />
       {localError && (
         <p role="alert" className="mt-2 text-sm text-negative">
           {s.unavailable}

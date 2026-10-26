@@ -192,8 +192,8 @@ export function ChronologyPage() {
 
   // Zakat calculation for that specific year
   const wealthNum = parseFloat(testWealth) || 0;
-  const isReachedSilver = wealthNum >= yearDetails.silverNisabLocal;
-  const isReachedGold = wealthNum >= yearDetails.goldNisabLocal;
+  const isReachedSilver = yearDetails.priced && wealthNum >= yearDetails.silverNisabLocal;
+  const isReachedGold = yearDetails.priced && wealthNum >= yearDetails.goldNisabLocal;
   const zakatDue = isReachedSilver ? wealthNum * 0.025 : 0;
 
   // Generate list of years for display (starts from 2 AH)
@@ -400,14 +400,16 @@ export function ChronologyPage() {
           </div>
 
           <div className="rounded-xl border border-border bg-secondary/50 p-3 text-center sm:text-start">
-            <span className="text-xs text-muted-foreground block">نسبة الذهب إلى الفضة حينها</span>
+            <span className="text-xs text-muted-foreground block">
+              نسبة الذهب إلى الفضة حينها{yearDetails.ratioIsEstimate ? " (تقدير)" : ""}
+            </span>
             <span className="num text-xl sm:text-2xl font-bold text-foreground">
               1 : {yearDetails.goldToSilverRatio}
             </span>
             <span className="text-[0.65rem] text-muted-foreground block mt-0.5">
               {yearDetails.goldToSilverRatio === 10.0
-                ? "تطابق تام في القوة الشرائية"
-                : `كل دينار ذهب = ${yearDetails.goldToSilverRatio} درهم فضة`}
+                ? "تعادل تقريبي اعتبره الفقهاء بين النصابين"
+                : `كل جرام ذهب ≈ ${yearDetails.goldToSilverRatio} جرام فضة`}
             </span>
           </div>
         </div>
@@ -424,8 +426,10 @@ export function ChronologyPage() {
               يعادل <strong className="num text-foreground">85 غراماً</strong> ذهب خالص 24K
             </p>
             <div className="mt-3 pt-2 border-t border-border/60 text-xs text-muted-foreground">
-              القيمة المقدرة اليوم:{" "}
-              <strong className="num text-foreground">{money(yearDetails.goldNisabLocal)}</strong>
+              قيمته في ذلك العام:{" "}
+              <strong className="num text-foreground">
+                {yearDetails.priced ? money(yearDetails.goldNisabLocal) : "—"}
+              </strong>
             </div>
           </div>
 
@@ -439,8 +443,10 @@ export function ChronologyPage() {
               يعادل <strong className="num text-foreground">595 غراماً</strong> فضة خالصة
             </p>
             <div className="mt-3 pt-2 border-t border-border/60 text-xs text-muted-foreground">
-              القيمة المقدرة اليوم:{" "}
-              <strong className="num text-foreground">{money(yearDetails.silverNisabLocal)}</strong>
+              قيمتها في ذلك العام:{" "}
+              <strong className="num text-foreground">
+                {yearDetails.priced ? money(yearDetails.silverNisabLocal) : "—"}
+              </strong>
             </div>
           </div>
 
@@ -477,14 +483,24 @@ export function ChronologyPage() {
             <p className="text-xs leading-6 text-foreground">{yearDetails.fiqhiStatusAr}</p>
           </div>
 
-          <div className="rounded-2xl border border-border bg-secondary/30 p-5">
-            <strong className="block text-xs font-bold text-accent mb-2">
-              🛒 القوة الشرائية والكفاية المعيشية للنصاب
-            </strong>
-            <p className="text-xs leading-6 text-foreground">
-              {yearDetails.purchasingPowerEstimateAr}
-            </p>
-          </div>
+          {yearDetails.purchasingPowerEstimateAr && (
+            <div className="rounded-2xl border border-border bg-secondary/30 p-5">
+              <strong className="block text-xs font-bold text-accent mb-2">
+                🛒 القوة الشرائية والكفاية المعيشية للنصاب
+              </strong>
+              <p className="text-xs leading-6 text-foreground">
+                {yearDetails.purchasingPowerEstimateAr}
+              </p>
+            </div>
+          )}
+          {!yearDetails.priced && (
+            <div role="note" className="rounded-2xl border border-border bg-secondary/30 p-5">
+              <p className="text-xs leading-6 text-muted-foreground">
+                لا توجد أسعار سوق موثّقة لهذا العام (تبدأ السلسلة من 1925 م)، فلا تُعرض قيمة نقدية
+                للنصاب؛ والمرجع هنا الوزن الشرعي فقط: 20 ديناراً (نحو 85 جم) و200 درهم (نحو 595 جم).
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Interactive Past Year Calculator for the Selected Year */}
@@ -639,14 +655,14 @@ export function ChronologyPage() {
                     </td>
 
                     <td className="py-3 px-4 num text-foreground">
-                      {money(info.goldNisabLocal)}
+                      {info.priced ? money(info.goldNisabLocal) : "—"}
                       <span className="block text-[0.65rem] text-muted-foreground">
                         20 ديناراً (85 جم)
                       </span>
                     </td>
 
                     <td className="py-3 px-4 num text-foreground">
-                      {money(info.silverNisabLocal)}
+                      {info.priced ? money(info.silverNisabLocal) : "—"}
                       <span className="block text-[0.65rem] text-muted-foreground">
                         200 درهم (595 جم)
                       </span>
@@ -656,6 +672,9 @@ export function ChronologyPage() {
                       <span className="rounded bg-secondary px-2 py-0.5 text-xs font-bold text-foreground">
                         1 : {info.goldToSilverRatio}
                       </span>
+                      {info.ratioIsEstimate && (
+                        <span className="ms-1 text-[0.65rem] text-muted-foreground">تقدير</span>
+                      )}
                     </td>
 
                     <td

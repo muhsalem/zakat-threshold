@@ -29,7 +29,12 @@ export function publicDb() {
         if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`)
           h.delete("Authorization");
         h.set("apikey", key);
-        return fetch(input, { ...init, headers: h });
+        // A dead or slow database must fail fast instead of hanging public endpoints.
+        return fetch(input, {
+          ...init,
+          headers: h,
+          signal: init?.signal ?? AbortSignal.timeout(8_000),
+        });
       },
     },
   });

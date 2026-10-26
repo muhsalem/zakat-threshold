@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - name: Install
+        run: bun install --frozen-lockfile
+      - name: Build (also generates the route tree)
+        run: bun run build
+      - name: Type check
+        run: bunx tsc --noEmit
+      - name: Lint
+        run: bunx eslint . --max-warnings 40
+      - name: Tests
+        run: bun test src/lib

@@ -178,6 +178,11 @@ async function loadLivePrices(): Promise<LivePrices> {
 
       cache = { data, at: Date.now() };
       lastGood = cache;
+      // Minute-level history: best effort, never blocks or breaks serving prices.
+      if (typeof window === "undefined") {
+        const { recordTickOpportunistically } = await import("./market-tick.server");
+        await recordTickOpportunistically(data);
+      }
       return data;
     } catch (error) {
       if (lastGood) {
