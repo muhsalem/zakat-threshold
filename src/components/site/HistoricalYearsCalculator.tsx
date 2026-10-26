@@ -12,7 +12,7 @@ import {
   TrendingDown,
   TrendingUp,
   Compass,
-  ArrowRight,
+  ArrowLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
@@ -241,12 +241,12 @@ export function HistoricalYearsCalculator() {
             الزكاة)
           </h3>
           <Link
-            to="/history"
+            to="/chronology"
             className="flex items-center gap-1 text-xs text-primary font-semibold hover:underline bg-primary/10 px-2.5 py-1 rounded-lg"
           >
             <Compass className="size-3.5" />
             <span>تصفح موسوعة كافة سنوات الهجرة (2 - 1448 هـ)</span>
-            <ArrowRight className="size-3" />
+            <ArrowLeft className="size-3" />
           </Link>
         </div>
 

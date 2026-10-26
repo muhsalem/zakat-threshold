@@ -1,4 +1,5 @@
 import type { SpotQuote } from "./spot-consensus";
+import { ttlCached } from "./ttl-cache";
 
 /** Upstream calls must never hang a request: abort after this long. */
 export const FETCH_TIMEOUT_MS = 8_000;
@@ -91,6 +92,27 @@ export async function quoteFromGoldApiIo(): Promise<SpotQuote | null> {
     silverUsdOz: s,
     at: stamp ? new Date(stamp * 1000).toISOString() : new Date().toISOString(),
   };
+}
+
+let goldApiIoCached: (() => Promise<SpotQuote | null>) | null = null;
+
+/**
+ * GoldAPI.io behind a long cache. Each refresh costs two requests (gold and silver) and the
+ * free plan allows 500 a month, so by default it refreshes every 4 hours (about 360 requests
+ * a month, leaving room for retries). Used as a cross-check for the free live feed, which
+ * is why a four-hour-old quote is acceptable here but never shown as the headline price.
+ * Tune with GOLDAPI_TTL_MINUTES (minimum 30).
+ */
+export function quoteFromGoldApiIoCached(): Promise<SpotQuote | null> {
+  if (!process.env["GOLDAPI_KEY"]) return Promise.resolve(null);
+  if (!goldApiIoCached) {
+    const minutes = Math.max(30, Number(process.env["GOLDAPI_TTL_MINUTES"]) || 240);
+    goldApiIoCached = ttlCached(quoteFromGoldApiIo, {
+      ttlMs: minutes * 60_000,
+      failBackoffMs: 30 * 60_000,
+    });
+  }
+  return goldApiIoCached();
 }
 
 /** Runs providers in parallel; failures are returned, never thrown. */

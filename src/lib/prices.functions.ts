@@ -8,6 +8,7 @@ import {
   collectQuotes,
   fetchJson,
   quoteFromGoldApi,
+  quoteFromGoldApiIoCached,
   quoteFromYahooFutures,
 } from "./spot-providers";
 
@@ -124,6 +125,7 @@ async function loadLivePrices(): Promise<LivePrices> {
         collectQuotes([
           { name: "gold-api", run: quoteFromGoldApi },
           { name: "yahoo-futures", run: quoteFromYahooFutures },
+          { name: "goldapi.io", run: quoteFromGoldApiIoCached },
         ]),
         firstOk<Fx>([{ run: fxFromErApi }, { run: fxFromFrankfurter }]),
       ]);
