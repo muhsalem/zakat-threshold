@@ -69,3 +69,10 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+
+## قاعدة البيانات والتاريخ
+
+- `supabase/schema.sql`: مخطط كامل **أُعيد بناؤه** من `types.ts` لمشروع جديد (راجعه واختبر السياسات قبل التطبيق).
+- `drizzle/migrations/0001_price_snapshots.sql`: لقطة يومية خام غير قابلة للتعديل (سعر الأونصة وأسعار الصرف واتفاق المصادر).
+- `drizzle/migrations/0002_market_ticks.sql`: سعر كل دقيقة. نصاب أي دولة في أي وقت سابق يُشتق من هذا السجل ولقطة الصرف لذلك اليوم عبر `/api/public/v1/nisab/at?country=EG&at=2026-10-20T14:30Z`.
+- جدولة: `POST /api/public/hooks/market-tick` كل دقيقة، و`POST /api/public/hooks/jeweler-feed` يوميًا، بترويسة `Authorization: Bearer <LOVABLE_CRON_SECRET>`.

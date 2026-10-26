@@ -149,6 +149,36 @@ export type Database = {
         };
         Relationships: [];
       };
+      market_ticks: {
+        Row: {
+          deviation_pct: number;
+          gold_usd_oz: number;
+          quality: string;
+          silver_usd_oz: number;
+          source: string;
+          status: string;
+          ts: string;
+        };
+        Insert: {
+          deviation_pct?: number;
+          gold_usd_oz: number;
+          quality?: string;
+          silver_usd_oz: number;
+          source: string;
+          status: string;
+          ts: string;
+        };
+        Update: {
+          deviation_pct?: number;
+          gold_usd_oz?: number;
+          quality?: string;
+          silver_usd_oz?: number;
+          source?: string;
+          status?: string;
+          ts?: string;
+        };
+        Relationships: [];
+      };
       nisab_history: {
         Row: {
           country: string;

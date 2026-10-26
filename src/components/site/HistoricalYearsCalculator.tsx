@@ -87,7 +87,8 @@ export function HistoricalYearsCalculator() {
       );
       const chosenNisab =
         item.nisabStandard === "silver" ? nisabInfo.silverNisab : nisabInfo.goldNisab;
-      const reached = item.wealth >= chosenNisab && item.wealth > 0;
+      // An unpriced year has no nisab value, so it can never be declared reached.
+      const reached = nisabInfo.priced && item.wealth >= chosenNisab && item.wealth > 0;
       const zakatRate = item.yearType === "hijri" ? 0.025 : 0.02577;
       const zakatDue = reached ? item.wealth * zakatRate : 0;
 
@@ -121,7 +122,7 @@ export function HistoricalYearsCalculator() {
 
     const nisabInfo = calculateYearNisab(effectiveYear, isHijri, exchangeRate);
     const chosenNisab = standard === "silver" ? nisabInfo.silverNisab : nisabInfo.goldNisab;
-    const reached = wealthNum >= chosenNisab && wealthNum > 0;
+    const reached = nisabInfo.priced && wealthNum >= chosenNisab && wealthNum > 0;
     const zakatRate = isHijri ? 0.025 : 0.02577;
     const zakatDue = reached ? wealthNum * zakatRate : 0;
 
@@ -347,26 +348,36 @@ export function HistoricalYearsCalculator() {
         </div>
 
         {/* Live preview of that year's historical nisab */}
-        <div className="mt-4 rounded-xl bg-secondary/50 p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground border border-border/60">
-          <div>
-            <span>نصاب الفضة التاريخي لعام {selectedYear}: </span>
-            <strong className="num text-foreground">{money(activeYearNisab.silverNisab)}</strong>
-            <span className="ms-2">({money(activeYearNisab.silverPerGram)} / جم)</span>
+        {activeYearNisab.priced ? (
+          <div className="mt-4 rounded-xl bg-secondary/50 p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground border border-border/60">
+            <div>
+              <span>نصاب الفضة التاريخي لعام {selectedYear}: </span>
+              <strong className="num text-foreground">{money(activeYearNisab.silverNisab)}</strong>
+              <span className="ms-2">({money(activeYearNisab.silverPerGram)} / جم)</span>
+            </div>
+            <div>
+              <span>نصاب الذهب التاريخي لعام {selectedYear}: </span>
+              <strong className="num text-foreground">{money(activeYearNisab.goldNisab)}</strong>
+              <span className="ms-2">({money(activeYearNisab.goldPerGram)} / جم)</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="rounded bg-accent/20 px-2 py-0.5 text-[0.7rem] font-medium text-foreground">
+                {activeYearNisab.eraNameAr}
+              </span>
+              <span className="num text-[0.7rem] text-muted-foreground">
+                نسبة الذهب للفضة 1 : {Number(activeYearNisab.ratio.toFixed(1))}
+              </span>
+            </div>
           </div>
-          <div>
-            <span>نصاب الذهب التاريخي لعام {selectedYear}: </span>
-            <strong className="num text-foreground">{money(activeYearNisab.goldNisab)}</strong>
-            <span className="ms-2">({money(activeYearNisab.goldPerGram)} / جم)</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="rounded bg-accent/20 px-2 py-0.5 text-[0.7rem] font-medium text-foreground">
-              {activeYearNisab.eraNameAr}
-            </span>
-            <span className="num text-[0.7rem] text-muted-foreground">
-              نسبة الذهب للفضة 1 : {activeYearNisab.ratio}
-            </span>
-          </div>
-        </div>
+        ) : (
+          <p
+            role="status"
+            className="mt-4 rounded-xl border border-border/60 bg-secondary/50 p-3.5 text-xs leading-6 text-muted-foreground"
+          >
+            لا توجد أسعار سوق موثّقة لهذا العام (السلسلة تبدأ من 1925 م وتنتهي بآخر عام مسجَّل)، فلا
+            يُحسب له نصاب بالعملة. للسعر الحالي افتح صفحة «اليوم».
+          </p>
+        )}
       </div>
 
       {/* Accumulated Multi-Year Breakdown Table */}

@@ -1,6 +1,7 @@
 import { CenturyChart } from "@/components/site/CenturyChart";
 import { HistoricalYearsCalculator } from "@/components/site/HistoricalYearsCalculator";
 import { NisabEras } from "@/components/site/NisabEras";
+import { PastNisab } from "@/components/site/PastNisab";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -534,6 +535,9 @@ function History() {
       <CityPriceCheck />
       <div className="mt-8">
         <HistoricalYearsCalculator />
+      </div>
+      <div className="mt-8">
+        <PastNisab />
       </div>
       <div className="mt-8">
         <CenturyChart />
