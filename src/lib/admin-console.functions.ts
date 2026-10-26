@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { COUNTRIES } from "@/lib/countries";
+import { scheduledFeedRunSchema, type ScheduledFeedRun } from "@/lib/scheduled-feed-run";
 
 type Ctx = { supabase: any; userId: string };
 
@@ -26,6 +27,20 @@ async function audit(
 }
 
 /* ---------- Facebook ---------- */
+
+export const getScheduledFeedRuns = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<Array<ScheduledFeedRun & { id: string }>> => {
+    await assertAdmin(context);
+    const { data, error } = await context.supabase.from("audit_log")
+      .select("id,meta").eq("action", "scheduled_feed_run").eq("entity", "jeweler_feed")
+      .order("created_at", { ascending: false }).limit(10);
+    if (error) throw new Error("Could not load scheduled update history");
+    return (data ?? []).flatMap(row => {
+      const parsed = scheduledFeedRunSchema.safeParse(row.meta);
+      return parsed.success ? [{ id: row.id, ...parsed.data }] : [];
+    });
+  });
 
 export const getFacebookStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
