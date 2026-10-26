@@ -26,7 +26,6 @@ import { Route as MapRouteImport } from './routes/map'
 import { Route as MethodologyRouteImport } from './routes/methodology'
 import { Route as OutlookRouteImport } from './routes/outlook'
 import { Route as PartnersRouteImport } from './routes/partners'
-import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SourcesRouteImport } from './routes/sources'
 import { Route as TodayRouteImport } from './routes/today'
@@ -127,11 +126,6 @@ const OutlookRoute = OutlookRouteImport.update({
 const PartnersRoute = PartnersRouteImport.update({
   id: '/partners',
   path: '/partners',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
-  id: '/robots.txt',
-  path: '/robots.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -240,7 +234,6 @@ export interface FileRoutesByFullPath {
   '/methodology': typeof MethodologyRoute
   '/outlook': typeof OutlookRoute
   '/partners': typeof PartnersRoute
-  '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sources': typeof SourcesRoute
   '/today': typeof TodayRoute
@@ -276,7 +269,6 @@ export interface FileRoutesByTo {
   '/methodology': typeof MethodologyRoute
   '/outlook': typeof OutlookRoute
   '/partners': typeof PartnersRoute
-  '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sources': typeof SourcesRoute
   '/today': typeof TodayRoute
@@ -314,7 +306,6 @@ export interface FileRoutesById {
   '/methodology': typeof MethodologyRoute
   '/outlook': typeof OutlookRoute
   '/partners': typeof PartnersRoute
-  '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sources': typeof SourcesRoute
   '/today': typeof TodayRoute
@@ -352,7 +343,6 @@ export interface FileRouteTypes {
     | '/methodology'
     | '/outlook'
     | '/partners'
-    | '/robots.txt'
     | '/sitemap.xml'
     | '/sources'
     | '/today'
@@ -388,7 +378,6 @@ export interface FileRouteTypes {
     | '/methodology'
     | '/outlook'
     | '/partners'
-    | '/robots.txt'
     | '/sitemap.xml'
     | '/sources'
     | '/today'
@@ -425,7 +414,6 @@ export interface FileRouteTypes {
     | '/methodology'
     | '/outlook'
     | '/partners'
-    | '/robots.txt'
     | '/sitemap.xml'
     | '/sources'
     | '/today'
@@ -463,7 +451,6 @@ export interface RootRouteChildren {
   MethodologyRoute: typeof MethodologyRoute
   OutlookRoute: typeof OutlookRoute
   PartnersRoute: typeof PartnersRoute
-  RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SourcesRoute: typeof SourcesRoute
   TodayRoute: typeof TodayRoute
@@ -599,13 +586,6 @@ declare module '@tanstack/react-router' {
       path: '/partners'
       fullPath: '/partners'
       preLoaderRoute: typeof PartnersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/robots.txt': {
-      id: '/robots.txt'
-      path: '/robots.txt'
-      fullPath: '/robots.txt'
-      preLoaderRoute: typeof RobotsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -763,7 +743,6 @@ const rootRouteChildren: RootRouteChildren = {
   MethodologyRoute: MethodologyRoute,
   OutlookRoute: OutlookRoute,
   PartnersRoute: PartnersRoute,
-  RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SourcesRoute: SourcesRoute,
   TodayRoute: TodayRoute,
