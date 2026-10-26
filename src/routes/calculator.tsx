@@ -17,6 +17,8 @@ import {
   today,
 } from "@/lib/hijri";
 import { KARATS, ZAKAT_RATE } from "@/lib/nisab";
+import { AssetOrganizer } from "@/components/site/AssetOrganizer";
+import type { AssetValues } from "@/lib/asset-organizer";
 
 export const Route = createFileRoute("/calculator")({
   head: () => ({
@@ -132,6 +134,14 @@ function Calculator() {
     setSilverG("");
   };
 
+  const applyAssets = (assets: AssetValues) => {
+    const setters = { cash: setCash, business: setBusiness, investments: setInvestments, longTerm: setLongTerm, receivables: setReceivables, debts: setDebts, goldG: setGoldG, jewelryG: setJewelryG, silverG: setSilverG };
+    for (const key of Object.keys(setters) as Array<keyof typeof setters>) {
+      const value = assets[key];
+      if (value !== undefined) setters[key](String(value));
+    }
+  };
+
   return (
     <Page eyebrow="CALCULATOR" title={t("calc.title")} sub={t("calc.sub")}>
       <ManualNotice />
@@ -149,6 +159,7 @@ function Calculator() {
         </div>
       )}
 
+      <AssetOrganizer onApply={applyAssets} />
       <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
         <div className="card-surface grid gap-4 p-6 sm:grid-cols-2">
           <Field label={t("calc.cash")} value={cash} onChange={setCash} />
