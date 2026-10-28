@@ -19,6 +19,7 @@ import {
 import { KARATS, ZAKAT_RATE } from "@/lib/nisab";
 import { AssetOrganizer } from "@/components/site/AssetOrganizer";
 import type { AssetValues } from "@/lib/asset-organizer";
+import { CalculatedNisab } from "@/components/site/CalculatedNisab";
 
 export const Route = createFileRoute("/calculator")({
   head: () => ({
@@ -159,6 +160,7 @@ function Calculator() {
         </div>
       )}
 
+      <CalculatedNisab />
       <AssetOrganizer onApply={applyAssets} />
       <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
         <div className="card-surface grid gap-4 p-6 sm:grid-cols-2">
@@ -260,7 +262,7 @@ function Calculator() {
             </div>
             <div className="flex justify-between gap-3">
               <dt className="text-muted-foreground">{t("calc.nisabValue")}</dt>
-              <dd className="num text-foreground">{money(nisab)}</dd>
+              <dd className="num text-foreground" data-testid="calculator-selected-nisab">{values ? money(nisab) : "—"}</dd>
             </div>
           </dl>
           <div className="mt-5 rounded-xl bg-primary p-5 text-primary-foreground">
