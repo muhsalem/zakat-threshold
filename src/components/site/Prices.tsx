@@ -150,7 +150,7 @@ export function priceStrings(lang: string) {
 /** Live prices resolved into the current country's currency (and city, if set). */
 export function useNisab(prefer: PricePreference = "local") {
   const { currency, lang, country, city } = useI18n();
-  const { data: base, overrides, isLoading, isError, refetch } = usePrices();
+  const { data: base, overrides, isLoading, isError, refetch: refetchMarket, isFetching } = usePrices();
   const localQuery = useLocalQuote(country, currency);
   const quote = localQuery.data;
   const { weight: silverWeight } = useSilverStandard();
@@ -227,7 +227,8 @@ export function useNisab(prefer: PricePreference = "local") {
     rate: r,
     isLoading,
     isError,
-    refetch,
+    refetch: () => Promise.all([refetchMarket(), localQuery.refetch()]),
+    isFetching: isFetching || localQuery.isFetching,
     currency,
     scoped: Boolean(scope),
   };
