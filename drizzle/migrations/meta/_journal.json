@@ -57,6 +57,13 @@
       "when": 1792898129218,
       "tag": "0007_publish_reviewed_prices",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1793253610784,
+      "tag": "0008_restrict_price_submission_reads",
+      "breakpoints": true
     }
   ]
 }

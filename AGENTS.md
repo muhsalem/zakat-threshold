@@ -20,6 +20,7 @@
 - Zakat visitor questions use a public server function with the AI Gateway SDK and an anonymous read-only client; validate server-owned citation IDs and distinguish official excerpts from app summaries to prevent invented authority or leaked private data.
 - Confirm account writes before showing success or clearing inputs; share this completion boundary across alerts and partner actions to avoid false saved states.
 - Synchronize reviewed price submissions into public quotes through a database trigger, retaining submission IDs for votes; authorize role grants through the existing authenticated admin server function rather than browser writes.
+- Restrict raw price-submission reads to their owner and admins; public prices must use public_price_quotes so moderation details never become visitor data.
 - Track authorized scheduled jeweler-feed executions in durable admin-only audit rows before and after execution; store structured status and UTC timestamps, never raw exception text or credentials.
 - Keep AI asset organization as proposed typed items requiring per-item user confirmation; aggregate only reviewed values into matching calculator fields without changing valuation, purity, jewelry treatment, hawl or investment-percentage formulas.
 - Display calculated calculator thresholds through the shared useNisab valuation hook; explicit refresh must refresh both market and local quotes so home and calculator retain the same current inputs.
