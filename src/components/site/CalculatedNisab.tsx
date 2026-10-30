@@ -6,7 +6,7 @@ import { goldWeightFor } from "@/lib/nisab-valuation";
 import { isCurrentUtcDay } from "@/lib/daily-nisab";
 import { useEffect, useState } from "react";
 
-export function CalculatedNisab() {
+export function CalculatedNisab({ onRefresh, refreshing = false }: { onRefresh?: () => void; refreshing?: boolean } = {}) {
   const { t, lang } = useI18n();
   const { values, money, silverWeight, priceSource, data, quote, refetch, isFetching, localError } = useNisab();
   const [day, setDay] = useState("");
@@ -18,11 +18,12 @@ export function CalculatedNisab() {
   }, []);
   const ar = lang === "ar";
   const labels = priceStrings(lang);
+  const busy = isFetching || refreshing;
   return (
     <section className="mb-6 border-y border-border py-5" aria-labelledby="calculated-nisab-title">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 id="calculated-nisab-title" className="text-xl">{ar ? "نصاب الزكاة المحسوب" : "Calculated zakat threshold"}</h2>
-        <Button size="icon" variant="outline" disabled={isFetching} aria-label={ar ? "تحديث أسعار النصاب" : "Refresh nisab prices"} title={ar ? "تحديث أسعار النصاب" : "Refresh nisab prices"} onClick={() => { void refetch(); }}><RefreshCw className={`size-4 ${isFetching ? "animate-spin motion-reduce:animate-none" : ""}`} /></Button>
+        <Button size="icon" variant="outline" disabled={busy} aria-label={ar ? "تحديث أسعار النصاب" : "Refresh nisab prices"} title={ar ? "تحديث أسعار النصاب" : "Refresh nisab prices"} onClick={() => { if (onRefresh) onRefresh(); else void refetch(); }}><RefreshCw className={`size-4 ${busy ? "animate-spin motion-reduce:animate-none" : ""}`} /></Button>
       </div>
       {!values && <p role="status" className="mt-3 text-sm text-muted-foreground">{t("common.loading")}</p>}
       {localError && <p role="alert" className="mt-3 text-sm text-destructive">{ar ? "تعذّر التحقق من السعر المحلي؛ راجع المصدر المعروض قبل الحساب." : "Local price check failed; verify the displayed source before calculation."}</p>}
