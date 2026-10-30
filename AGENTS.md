@@ -24,3 +24,4 @@
 - Track authorized scheduled jeweler-feed executions in durable admin-only audit rows before and after execution; store structured status and UTC timestamps, never raw exception text or credentials.
 - Keep AI asset organization as proposed typed items requiring per-item user confirmation; aggregate only reviewed values into matching calculator fields without changing valuation, purity, jewelry treatment, hawl or investment-percentage formulas.
 - Display calculated calculator thresholds through the shared useNisab valuation hook; explicit refresh must refresh both market and local quotes so home and calculator retain the same current inputs.
+- Resolve the calculator's selected threshold per metal from a same-UTC-day, same-country, same-currency official announcement, falling back to shared useNisab values; refresh the official record alongside prices and label historical announcements without reusing them as today's amount.
