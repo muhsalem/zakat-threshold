@@ -116,7 +116,7 @@ function Calculator() {
     num(receivables) +
     metals -
     num(debts);
-  const threshold = resolveCalculatorThreshold({ official: officialQuery.data, country, currency, day: utcDay, metal: standard, calculated: values?.[standard] });
+  const threshold = resolveCalculatorThreshold({ official: officialQuery.data ?? null, country, currency, day: utcDay, metal: standard, calculated: values?.[standard] ?? null });
   const nisab = threshold.value ?? 0;
   const thresholdReady = threshold.value != null && !officialQuery.isPending;
   // No verdict until live prices (and hence the nisab) are known.
