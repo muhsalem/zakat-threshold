@@ -64,6 +64,13 @@
       "when": 1793253610784,
       "tag": "0008_restrict_price_submission_reads",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1793426248939,
+      "tag": "0009_visitor_price_realtime_and_verified_sources",
+      "breakpoints": true
     }
   ]
 }

@@ -272,8 +272,12 @@ export type Database = {
           last_snippet: string | null
           last_value: number | null
           metal: string | null
+          published_on: string | null
+          source_kind: string
           url: string
           value_pattern: string | null
+          verified_at: string | null
+          verified_excerpt: string | null
         }
         Insert: {
           active?: boolean
@@ -289,8 +293,12 @@ export type Database = {
           last_snippet?: string | null
           last_value?: number | null
           metal?: string | null
+          published_on?: string | null
+          source_kind?: string
           url: string
           value_pattern?: string | null
+          verified_at?: string | null
+          verified_excerpt?: string | null
         }
         Update: {
           active?: boolean
@@ -306,8 +314,12 @@ export type Database = {
           last_snippet?: string | null
           last_value?: number | null
           metal?: string | null
+          published_on?: string | null
+          source_kind?: string
           url?: string
           value_pattern?: string | null
+          verified_at?: string | null
+          verified_excerpt?: string | null
         }
         Relationships: []
       }
