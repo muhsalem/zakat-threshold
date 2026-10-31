@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { zakatQuestionSchema, safeSourceUrl, validateZakatAnswer, type ZakatSource } from "./zakat-questions";
+import { verifiedZakatSources } from "./verified-zakat-sources";
 
 export const askZakatQuestion = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => zakatQuestionSchema.parse(input))
@@ -11,29 +12,19 @@ export const askZakatQuestion = createServerFn({ method: "POST" })
     const { GatewayError, streamResponse } = await import("@lovable.dev/ai-gateway");
     try {
       const { publicDb } = await import("./public-api.server");
-      const { ZAKAT_OFFICIAL_EXCERPTS } = await import("./zakat-official-excerpts");
       const { ZAKAT_GUIDE } = await import("./fiqh");
-      const { OFFICIAL_FATWAS } = await import("./official-nisab");
       const db = publicDb();
       const [excerpts, announcements] = await Promise.all([
-        db.from("official_sources").select("id,authority,url,last_snippet,last_checked,country").eq("active", true).eq("country", data.country).limit(12),
+        db.from("official_sources").select("id,authority,url,verified_excerpt,verified_at,published_on,source_kind,country").eq("active", true).eq("country", data.country).not("verified_at", "is", null).order("published_on", { ascending: false, nullsFirst: false }).limit(12),
         db.from("official_nisab").select("id,country,currency,authority,source_url,gold_nisab,silver_nisab,announced_on").eq("country", data.country).order("announced_on", { ascending: false }).limit(3),
       ]);
       if (excerpts.error || announcements.error) {
         return { ok: false as const, error: "SOURCES" };
       }
-      const sources: ZakatSource[] = [...ZAKAT_OFFICIAL_EXCERPTS];
-      for (const source of excerpts.data ?? []) {
-        if (!source.last_snippet?.trim() || !safeSourceUrl(source.url)) continue;
-        sources.push({ id: `official-${source.id}`, title: `${source.authority} · ${source.country}`, url: source.url, kind: "official", text: `مقتطف محفوظ؛ آخر فحص ${source.last_checked ?? "غير معلوم"}: ${source.last_snippet.slice(0, 3000)}` });
-      }
+      const sources: ZakatSource[] = verifiedZakatSources(excerpts.data ?? []);
       for (const row of announcements.data ?? []) {
         if (!row.source_url || !safeSourceUrl(row.source_url)) continue;
         sources.push({ id: `announcement-${row.id}`, title: `${row.authority} · ${row.announced_on}`, url: row.source_url, kind: "official", text: `إعلان محفوظ بتاريخ ${row.announced_on} في ${row.country}. نصاب الذهب: ${row.gold_nisab ?? "غير متاح"}؛ الفضة: ${row.silver_nisab ?? "غير متاح"}؛ العملة: ${row.currency}. لا تصفه بأنه سعر اليوم إلا إذا طابق تاريخ اليوم.` });
-      }
-      const localSummary = OFFICIAL_FATWAS[data.country];
-      if (localSummary?.portalUrl && safeSourceUrl(localSummary.portalUrl)) {
-        sources.push({ id: "country-summary", title: `${localSummary.authorityAr} · ملخص التطبيق غير موثق بنص أصلي`, url: localSummary.portalUrl, kind: "summary", text: `${localSummary.rulingAr}\n${localSummary.notesAr}` });
       }
       for (const guide of ZAKAT_GUIDE) {
         sources.push({ id: `guide-${guide.id}`, title: `موسوعة التطبيق · ${guide.title}`, url: `/fiqh#${guide.id}`, kind: "guide", text: `${guide.summary}\n${guide.facts.join("؛ ")}\n${JSON.stringify(guide.schools)}` });

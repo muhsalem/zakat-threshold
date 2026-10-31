@@ -38,9 +38,12 @@ export async function watchOfficialSources(db: Admin) {
       const text = pageText(await res.text()).slice(0, 400_000);
       const found = snippets(text);
       let value: number | null = null;
-      if (s.value_pattern && s.value_pattern.length <= 300) {
+      if (s.source_kind === "announcement" && s.value_pattern && s.value_pattern.length <= 300) {
         const m = text.match(new RegExp(s.value_pattern, "i"));
-        if (m?.[1]) value = Number(m[1].replace(/,/g, ""));
+        if (m?.[1]) {
+          const parsed = Number(m[1].replace(/,/g, ""));
+          if (Number.isFinite(parsed) && parsed > 0) value = parsed;
+        }
       }
       const basis = value != null ? `v:${value}` : found.join("|");
       const hash = createHash("sha256").update(basis).digest("hex");
@@ -52,6 +55,7 @@ export async function watchOfficialSources(db: Admin) {
         .from("official_sources")
         .update({
           last_hash: hash,
+          // Scraped content must never replace an independently verified excerpt.
           last_snippet: found.slice(0, 3).join(" … "),
           last_value: value,
           last_checked: now,

@@ -37,17 +37,8 @@ export function useLocalQuote(country: string, currency: string) {
     const refresh = () => {
       void client.invalidateQueries({ queryKey: ["local-quote", country, currency] });
     };
-    const channel = supabase
-      .channel(`nisab-quotes-${country}-${currency}-${crypto.randomUUID()}`)
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "jeweler_feed", filter: `country=eq.${country}` },
-        refresh,
-      )
-      .subscribe();
     window.addEventListener("online", refresh);
     return () => {
-      void supabase.removeChannel(channel);
       window.removeEventListener("online", refresh);
     };
   }, [client, country, currency]);
