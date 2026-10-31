@@ -25,3 +25,5 @@
 - Keep AI asset organization as proposed typed items requiring per-item user confirmation; aggregate only reviewed values into matching calculator fields without changing valuation, purity, jewelry treatment, hawl or investment-percentage formulas.
 - Display calculated calculator thresholds through the shared useNisab valuation hook; explicit refresh must refresh both market and local quotes so home and calculator retain the same current inputs.
 - Resolve the calculator's selected threshold per metal from a same-UTC-day, same-country, same-currency official announcement, falling back to shared useNisab values; refresh the official record alongside prices and label historical announcements without reusing them as today's amount.
+- Own public jeweler-price realtime subscriptions in one root-mounted visitor listener, deduplicate actual price changes and invalidate country quote caches; this prevents per-hook subscriptions and timestamp-only alerts.
+- Ground questions in database-owned verified excerpts with separate publication and verification dates, never automatically treat a fatwa or guideline as a daily monetary announcement.
