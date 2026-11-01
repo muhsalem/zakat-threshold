@@ -1,5 +1,3 @@
-import { createServerFn } from "@tanstack/react-start";
-
 export type ZakatStatus = "fully_paid" | "partially_paid" | "due" | "exempt";
 
 export type ZakatYearRecord = {
@@ -26,79 +24,25 @@ export type ZakatYearRecord = {
 
 const STORAGE_KEY = "nisab_zakat_multi_year_ledger_v1";
 
-// Server-side in-memory shared store for demo & cross-device backup
-let serverLedgerStore: ZakatYearRecord[] = [
-  {
-    id: "sample-1445",
-    yearLabel: "1445 هـ",
-    yearType: "hijri",
-    yearNumber: 1445,
-    country: "SA",
-    city: "riyadh",
-    currency: "SAR",
-    nisabStandard: "silver",
-    nisabThreshold: 2280,
-    netWealth: 120000,
-    zakatRate: 0.025,
-    zakatDue: 3000,
-    zakatPaid: 3000,
-    status: "fully_paid",
-    paidDate: "2024-04-08",
-    recipientChannels: "منصة إحسان - تفريج كربة",
-    notes: "تم إخراج زكاة الحول كاملة في أواخر شهر رمضان المبارك.",
-    createdAt: "2024-04-08T18:00:00.000Z",
-    updatedAt: "2024-04-08T18:00:00.000Z",
-  },
-  {
-    id: "sample-1446",
-    yearLabel: "1446 هـ",
-    yearType: "hijri",
-    yearNumber: 1446,
-    country: "SA",
-    city: "riyadh",
-    currency: "SAR",
-    nisabStandard: "silver",
-    nisabThreshold: 2650,
-    netWealth: 154000,
-    zakatRate: 0.025,
-    zakatDue: 3850,
-    zakatPaid: 2000,
-    status: "partially_paid",
-    paidDate: "2025-03-20",
-    recipientChannels: "أسر مستحقة من ذوي القربى",
-    notes: "دُفع قسط أول ومتبقي 1850 ريال جاري سدادها قبل نهاية الحول.",
-    createdAt: "2025-03-20T12:00:00.000Z",
-    updatedAt: "2025-03-20T12:00:00.000Z",
-  },
-];
+/**
+ * Earlier builds seeded every visitor with two made-up example years. They are removed
+ * on read so nobody keeps invented figures as their own record.
+ */
+const isLegacySample = (record: { id?: string }) => String(record?.id ?? "").startsWith("sample-");
 
-export const getServerLedger = createServerFn({ method: "GET" }).handler(
-  async (): Promise<ZakatYearRecord[]> => {
-    return serverLedgerStore;
-  },
-);
-
-export const syncServerLedger = createServerFn({ method: "POST" })
-  .inputValidator((data: { records: ZakatYearRecord[] }) => data)
-  .handler(async ({ data }): Promise<{ success: boolean; count: number }> => {
-    if (Array.isArray(data.records) && data.records.length > 0) {
-      serverLedgerStore = data.records;
-    }
-    return { success: true, count: serverLedgerStore.length };
-  });
-
+/** The ledger lives only in this browser; nothing is sent to or shared by the server. */
 export function getLocalLedger(): ZakatYearRecord[] {
-  if (typeof window === "undefined") return serverLedgerStore;
+  if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(serverLedgerStore));
-      return serverLedgerStore;
-    }
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : serverLedgerStore;
+    if (!raw) return [];
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    const kept = (parsed as ZakatYearRecord[]).filter((record) => !isLegacySample(record));
+    if (kept.length !== parsed.length) saveLocalLedger(kept);
+    return kept;
   } catch {
-    return serverLedgerStore;
+    return [];
   }
 }
 
