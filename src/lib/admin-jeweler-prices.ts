@@ -8,7 +8,8 @@ export const adminJewelerPriceSchema = z.object({
 }).superRefine((value, ctx) => {
   if (!COUNTRIES.some(c => c.code === value.country && c.currency === value.currency)) ctx.addIssue({ code: "custom", message: "Invalid country/currency" });
   if (value.gold === null && value.silver === null) ctx.addIssue({ code: "custom", message: "Enter a metal price" });
-  for (const [ask, bid] of [[value.gold, value.goldBuyback], [value.silver, value.silverBuyback]]) {
+  const pairs: Array<[number | null, number | null]> = [[value.gold, value.goldBuyback], [value.silver, value.silverBuyback]];
+  for (const [ask, bid] of pairs) {
     if (bid !== null && (ask === null || bid > ask)) ctx.addIssue({ code: "custom", message: "Invalid buyback" });
   }
 });
