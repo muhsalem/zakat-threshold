@@ -48,6 +48,10 @@ export const Route = createFileRoute("/chronology")({
         content: "سجل كافة سنوات الهجرة (2 هـ - 1448 هـ) لأنصبة الزكاة",
       },
       { property: "og:type", content: "website" },
+      {
+        property: "og:description",
+        content: "التسلسل التاريخي لأنصبة الذهب والفضة ومقاديرها عبر سنوات الهجرة في منصة نِصاب.",
+      },
       { name: "twitter:card", content: "summary" },
     ],
   }),

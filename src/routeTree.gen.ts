@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AskRouteImport } from './routes/ask'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CalculatorRouteImport } from './routes/calculator'
 import { Route as ChronologyRouteImport } from './routes/chronology'
@@ -35,6 +36,7 @@ import { Route as WaqfRouteImport } from './routes/waqf'
 import { Route as WidgetRouteImport } from './routes/widget'
 import { Route as AuthenticatedAlertsRouteImport } from './routes/_authenticated/alerts'
 import { Route as AuthenticatedControlRouteImport } from './routes/_authenticated/control'
+import { Route as AuthenticatedJewelerPricesRouteImport } from './routes/_authenticated/jeweler-prices'
 import { Route as AuthenticatedModerationRouteImport } from './routes/_authenticated/moderation'
 import { Route as CountryCodeRouteImport } from './routes/country.$code'
 import { Route as ApiPublicHooksJewelerFeedRouteImport } from './routes/api/public/hooks/jeweler-feed'
@@ -56,6 +58,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AskRoute = AskRouteImport.update({
+  id: '/ask',
+  path: '/ask',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -173,6 +180,12 @@ const AuthenticatedControlRoute = AuthenticatedControlRouteImport.update({
   path: '/control',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedJewelerPricesRoute =
+  AuthenticatedJewelerPricesRouteImport.update({
+    id: '/jeweler-prices',
+    path: '/jeweler-prices',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedModerationRoute = AuthenticatedModerationRouteImport.update({
   id: '/moderation',
   path: '/moderation',
@@ -220,6 +233,7 @@ const ApiPublicV1NisabSnapshotRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/ask': typeof AskRoute
   '/auth': typeof AuthRoute
   '/calculator': typeof CalculatorRoute
   '/chronology': typeof ChronologyRoute
@@ -243,6 +257,7 @@ export interface FileRoutesByFullPath {
   '/widget': typeof WidgetRoute
   '/alerts': typeof AuthenticatedAlertsRoute
   '/control': typeof AuthenticatedControlRoute
+  '/jeweler-prices': typeof AuthenticatedJewelerPricesRoute
   '/moderation': typeof AuthenticatedModerationRoute
   '/country/$code': typeof CountryCodeRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
@@ -255,6 +270,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/ask': typeof AskRoute
   '/auth': typeof AuthRoute
   '/calculator': typeof CalculatorRoute
   '/chronology': typeof ChronologyRoute
@@ -278,6 +294,7 @@ export interface FileRoutesByTo {
   '/widget': typeof WidgetRoute
   '/alerts': typeof AuthenticatedAlertsRoute
   '/control': typeof AuthenticatedControlRoute
+  '/jeweler-prices': typeof AuthenticatedJewelerPricesRoute
   '/moderation': typeof AuthenticatedModerationRoute
   '/country/$code': typeof CountryCodeRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
@@ -292,6 +309,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/admin': typeof AdminRoute
+  '/ask': typeof AskRoute
   '/auth': typeof AuthRoute
   '/calculator': typeof CalculatorRoute
   '/chronology': typeof ChronologyRoute
@@ -315,6 +333,7 @@ export interface FileRoutesById {
   '/widget': typeof WidgetRoute
   '/_authenticated/alerts': typeof AuthenticatedAlertsRoute
   '/_authenticated/control': typeof AuthenticatedControlRoute
+  '/_authenticated/jeweler-prices': typeof AuthenticatedJewelerPricesRoute
   '/_authenticated/moderation': typeof AuthenticatedModerationRoute
   '/country/$code': typeof CountryCodeRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
@@ -329,6 +348,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/ask'
     | '/auth'
     | '/calculator'
     | '/chronology'
@@ -352,6 +372,7 @@ export interface FileRouteTypes {
     | '/widget'
     | '/alerts'
     | '/control'
+    | '/jeweler-prices'
     | '/moderation'
     | '/country/$code'
     | '/api/public/hooks/jeweler-feed'
@@ -364,6 +385,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
+    | '/ask'
     | '/auth'
     | '/calculator'
     | '/chronology'
@@ -387,6 +409,7 @@ export interface FileRouteTypes {
     | '/widget'
     | '/alerts'
     | '/control'
+    | '/jeweler-prices'
     | '/moderation'
     | '/country/$code'
     | '/api/public/hooks/jeweler-feed'
@@ -400,6 +423,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/admin'
+    | '/ask'
     | '/auth'
     | '/calculator'
     | '/chronology'
@@ -423,6 +447,7 @@ export interface FileRouteTypes {
     | '/widget'
     | '/_authenticated/alerts'
     | '/_authenticated/control'
+    | '/_authenticated/jeweler-prices'
     | '/_authenticated/moderation'
     | '/country/$code'
     | '/api/public/hooks/jeweler-feed'
@@ -437,6 +462,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AdminRoute: typeof AdminRoute
+  AskRoute: typeof AskRoute
   AuthRoute: typeof AuthRoute
   CalculatorRoute: typeof CalculatorRoute
   ChronologyRoute: typeof ChronologyRoute
@@ -488,6 +514,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ask': {
+      id: '/ask'
+      path: '/ask'
+      fullPath: '/ask'
+      preLoaderRoute: typeof AskRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -651,6 +684,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedControlRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/jeweler-prices': {
+      id: '/_authenticated/jeweler-prices'
+      path: '/jeweler-prices'
+      fullPath: '/jeweler-prices'
+      preLoaderRoute: typeof AuthenticatedJewelerPricesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/moderation': {
       id: '/_authenticated/moderation'
       path: '/moderation'
@@ -713,12 +753,14 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAlertsRoute: typeof AuthenticatedAlertsRoute
   AuthenticatedControlRoute: typeof AuthenticatedControlRoute
+  AuthenticatedJewelerPricesRoute: typeof AuthenticatedJewelerPricesRoute
   AuthenticatedModerationRoute: typeof AuthenticatedModerationRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAlertsRoute: AuthenticatedAlertsRoute,
   AuthenticatedControlRoute: AuthenticatedControlRoute,
+  AuthenticatedJewelerPricesRoute: AuthenticatedJewelerPricesRoute,
   AuthenticatedModerationRoute: AuthenticatedModerationRoute,
 }
 
@@ -729,6 +771,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AdminRoute: AdminRoute,
+  AskRoute: AskRoute,
   AuthRoute: AuthRoute,
   CalculatorRoute: CalculatorRoute,
   ChronologyRoute: ChronologyRoute,

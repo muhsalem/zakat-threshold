@@ -339,7 +339,11 @@ export type Database = {
           last_value: number | null;
           metal: string;
           url: string;
+          published_on: string | null;
+          source_kind: string;
           value_pattern: string | null;
+          verified_at: string | null;
+          verified_excerpt: string | null;
         };
         Insert: {
           active?: boolean;
@@ -356,7 +360,11 @@ export type Database = {
           last_value?: number | null;
           metal?: string;
           url: string;
+          published_on?: string | null;
+          source_kind?: string;
           value_pattern?: string | null;
+          verified_at?: string | null;
+          verified_excerpt?: string | null;
         };
         Update: {
           active?: boolean;
@@ -373,7 +381,11 @@ export type Database = {
           last_value?: number | null;
           metal?: string;
           url?: string;
+          published_on?: string | null;
+          source_kind?: string;
           value_pattern?: string | null;
+          verified_at?: string | null;
+          verified_excerpt?: string | null;
         };
         Relationships: [];
       };
@@ -627,6 +639,19 @@ export type Database = {
           up_votes: number;
           user_id: string;
         }[];
+      };
+      save_admin_jeweler_price: {
+        Args: {
+          _country: string;
+          _currency: string;
+          _gold?: number;
+          _gold_buyback?: number;
+          _reason?: string;
+          _silver?: number;
+          _silver_buyback?: number;
+          _source?: string;
+        };
+        Returns: string;
       };
       verify_job_token: {
         Args: { _name: string; _token: string };

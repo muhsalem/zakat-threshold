@@ -101,7 +101,7 @@ export function PriceSourcesTable() {
                   <td className="p-2">
                     {f ? (
                       <a
-                        href={f.source_url}
+                        href={f.source_url ?? undefined}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 text-primary underline underline-offset-4"

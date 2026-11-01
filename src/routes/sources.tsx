@@ -36,7 +36,7 @@ function SourcesPage() {
     queryFn: async () => {
       const { data } = await supabase
         .from("official_sources")
-        .select("id,country,authority,url,last_checked,active")
+        .select("id,country,authority,url,last_checked,active,verified_excerpt,verified_at,published_on,source_kind")
         .eq("active", true)
         .order("country");
       return data ?? [];
@@ -50,7 +50,7 @@ function SourcesPage() {
     <Page
       eyebrow="SOURCES"
       title="مصادر النصاب الرسمية"
-      sub="الجهات الرسمية التي نتابع إعلاناتها يوميًا؛ عند أي تحديث يصل تنبيه للمشرفين ومتابعي الدولة."
+      sub="فتاوى وأدلة رسمية موثقة؛ تاريخ نشر المصدر يختلف عن تاريخ التحقق منه، ولا يمثل إعلانًا بقيمة نصاب اليوم."
     >
       {isLoading && <p className="text-sm text-muted-foreground">…</p>}
       <div className="grid gap-4 sm:grid-cols-2">
@@ -72,6 +72,12 @@ function SourcesPage() {
                     >
                       {s.authority} <ExternalLink aria-hidden="true" className="size-3.5" />
                     </a>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {s.source_kind === "fatwa" ? "فتوى" : s.source_kind === "guide" ? "دليل خدمة رسمي، وليس فتوى" : "مصدر إعلان"}
+                      {s.published_on ? ` · نشر ${s.published_on}` : ""}
+                      {s.verified_at ? ` · تحقق ${s.verified_at.slice(0, 10)}` : " · لم يوثق مقتطف بعد"}
+                    </p>
+                    {s.verified_excerpt && <blockquote className="mt-2 border-s-2 border-border ps-3 text-sm text-foreground">{s.verified_excerpt}</blockquote>}
                   </li>
                 ))}
               </ul>
