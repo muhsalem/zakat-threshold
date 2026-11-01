@@ -27,3 +27,4 @@
 - Resolve the calculator's selected threshold per metal from a same-UTC-day, same-country, same-currency official announcement, falling back to shared useNisab values; refresh the official record alongside prices and label historical announcements without reusing them as today's amount.
 - Own public jeweler-price realtime subscriptions in one root-mounted visitor listener, deduplicate actual price changes and invalidate country quote caches; this prevents per-hook subscriptions and timestamp-only alerts.
 - Ground questions in database-owned verified excerpts with separate publication and verification dates, never automatically treat a fatwa or guideline as a daily monetary announcement.
+- Save admin-entered jeweler prices through an authenticated, role-checked transactional RPC that updates the live feed, UTC history and audit row together; this prevents activation without a durable update record.

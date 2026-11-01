@@ -71,6 +71,20 @@
       "when": 1793426248939,
       "tag": "0009_visitor_price_realtime_and_verified_sources",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1793505966254,
+      "tag": "0010_admin_manual_jeweler_prices",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1793506027794,
+      "tag": "0011_admin_price_optional_metal_arguments",
+      "breakpoints": true
     }
   ]
 }

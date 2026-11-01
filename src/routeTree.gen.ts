@@ -37,6 +37,7 @@ import { Route as WaqfRouteImport } from './routes/waqf'
 import { Route as WidgetRouteImport } from './routes/widget'
 import { Route as AuthenticatedAlertsRouteImport } from './routes/_authenticated/alerts'
 import { Route as AuthenticatedControlRouteImport } from './routes/_authenticated/control'
+import { Route as AuthenticatedJewelerPricesRouteImport } from './routes/_authenticated/jeweler-prices'
 import { Route as AuthenticatedModerationRouteImport } from './routes/_authenticated/moderation'
 import { Route as CountryCodeRouteImport } from './routes/country.$code'
 import { Route as ApiPublicHooksJewelerFeedRouteImport } from './routes/api/public/hooks/jeweler-feed'
@@ -183,6 +184,12 @@ const AuthenticatedControlRoute = AuthenticatedControlRouteImport.update({
   path: '/control',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedJewelerPricesRoute =
+  AuthenticatedJewelerPricesRouteImport.update({
+    id: '/jeweler-prices',
+    path: '/jeweler-prices',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedModerationRoute = AuthenticatedModerationRouteImport.update({
   id: '/moderation',
   path: '/moderation',
@@ -244,6 +251,7 @@ export interface FileRoutesByFullPath {
   '/widget': typeof WidgetRoute
   '/alerts': typeof AuthenticatedAlertsRoute
   '/control': typeof AuthenticatedControlRoute
+  '/jeweler-prices': typeof AuthenticatedJewelerPricesRoute
   '/moderation': typeof AuthenticatedModerationRoute
   '/country/$code': typeof CountryCodeRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
@@ -279,6 +287,7 @@ export interface FileRoutesByTo {
   '/widget': typeof WidgetRoute
   '/alerts': typeof AuthenticatedAlertsRoute
   '/control': typeof AuthenticatedControlRoute
+  '/jeweler-prices': typeof AuthenticatedJewelerPricesRoute
   '/moderation': typeof AuthenticatedModerationRoute
   '/country/$code': typeof CountryCodeRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
@@ -316,6 +325,7 @@ export interface FileRoutesById {
   '/widget': typeof WidgetRoute
   '/_authenticated/alerts': typeof AuthenticatedAlertsRoute
   '/_authenticated/control': typeof AuthenticatedControlRoute
+  '/_authenticated/jeweler-prices': typeof AuthenticatedJewelerPricesRoute
   '/_authenticated/moderation': typeof AuthenticatedModerationRoute
   '/country/$code': typeof CountryCodeRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
@@ -353,6 +363,7 @@ export interface FileRouteTypes {
     | '/widget'
     | '/alerts'
     | '/control'
+    | '/jeweler-prices'
     | '/moderation'
     | '/country/$code'
     | '/api/public/hooks/jeweler-feed'
@@ -388,6 +399,7 @@ export interface FileRouteTypes {
     | '/widget'
     | '/alerts'
     | '/control'
+    | '/jeweler-prices'
     | '/moderation'
     | '/country/$code'
     | '/api/public/hooks/jeweler-feed'
@@ -424,6 +436,7 @@ export interface FileRouteTypes {
     | '/widget'
     | '/_authenticated/alerts'
     | '/_authenticated/control'
+    | '/_authenticated/jeweler-prices'
     | '/_authenticated/moderation'
     | '/country/$code'
     | '/api/public/hooks/jeweler-feed'
@@ -664,6 +677,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedControlRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/jeweler-prices': {
+      id: '/_authenticated/jeweler-prices'
+      path: '/jeweler-prices'
+      fullPath: '/jeweler-prices'
+      preLoaderRoute: typeof AuthenticatedJewelerPricesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/moderation': {
       id: '/_authenticated/moderation'
       path: '/moderation'
@@ -712,12 +732,14 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAlertsRoute: typeof AuthenticatedAlertsRoute
   AuthenticatedControlRoute: typeof AuthenticatedControlRoute
+  AuthenticatedJewelerPricesRoute: typeof AuthenticatedJewelerPricesRoute
   AuthenticatedModerationRoute: typeof AuthenticatedModerationRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAlertsRoute: AuthenticatedAlertsRoute,
   AuthenticatedControlRoute: AuthenticatedControlRoute,
+  AuthenticatedJewelerPricesRoute: AuthenticatedJewelerPricesRoute,
   AuthenticatedModerationRoute: AuthenticatedModerationRoute,
 }
 
