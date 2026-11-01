@@ -12,6 +12,10 @@ export type ZakatSource = {
   url: string;
   kind: "official" | "summary" | "guide";
   text: string;
+  sourceKind?: "fatwa" | "official-guide" | "announcement" | "app-guide";
+  publishedOn?: string | null;
+  verifiedAt?: string | null;
+  excerpt?: string;
 };
 
 const answerSchema = z.object({
