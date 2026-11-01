@@ -574,6 +574,19 @@ export type Database = {
           user_id: string
         }[]
       }
+      save_admin_jeweler_price: {
+        Args: {
+          _country: string
+          _currency: string
+          _gold: number
+          _gold_buyback: number
+          _reason: string
+          _silver: number
+          _silver_buyback: number
+          _source: string
+        }
+        Returns: string
+      }
       verify_job_token: { Args: { _name: string }; Returns: boolean }
     }
     Enums: {
