@@ -48,6 +48,8 @@ test("unexpected failures record a finish time without saving private exception 
   assert.equal(JSON.stringify(records).includes("private-test-credential"), false);
 });
 test("unauthorized cron calls cannot write execution history or update prices", async () => {
+  const previousSecret = process.env["LOVABLE_CRON_SECRET"];
+  process.env["LOVABLE_CRON_SECRET"] = "test-only-secret";
   let writes = 0;
   let updates = 0;
   const response = await withCronAuthorization(
@@ -63,6 +65,8 @@ test("unauthorized cron calls cannot write execution history or update prices", 
         },
       ),
   );
+  if (previousSecret === undefined) delete process.env["LOVABLE_CRON_SECRET"];
+  else process.env["LOVABLE_CRON_SECRET"] = previousSecret;
   assert.equal(response.status, 401);
   assert.equal(writes, 0);
   assert.equal(updates, 0);
