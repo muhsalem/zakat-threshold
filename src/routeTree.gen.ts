@@ -22,6 +22,7 @@ import { Route as DevelopersRouteImport } from './routes/developers'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as FiqhRouteImport } from './routes/fiqh'
 import { Route as HistoryRouteImport } from './routes/history'
+import { Route as InviteRouteImport } from './routes/invite'
 import { Route as LedgerRouteImport } from './routes/ledger'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as MethodologyRouteImport } from './routes/methodology'
@@ -44,6 +45,7 @@ import { Route as ApiPublicHooksMarketTickRouteImport } from './routes/api/publi
 import { Route as ApiPublicV1NisabIndexRouteImport } from './routes/api/public/v1/nisab/index'
 import { Route as ApiPublicV1NisabAtRouteImport } from './routes/api/public/v1/nisab/at'
 import { Route as ApiPublicV1NisabBulletinRouteImport } from './routes/api/public/v1/nisab/bulletin'
+import { Route as ApiPublicV1NisabCsvRouteImport } from './routes/api/public/v1/nisab/csv'
 import { Route as ApiPublicV1NisabHistoryRouteImport } from './routes/api/public/v1/nisab/history'
 import { Route as ApiPublicV1NisabSnapshotRouteImport } from './routes/api/public/v1/nisab/snapshot'
 
@@ -109,6 +111,11 @@ const FiqhRoute = FiqhRouteImport.update({
 const HistoryRoute = HistoryRouteImport.update({
   id: '/history',
   path: '/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InviteRoute = InviteRouteImport.update({
+  id: '/invite',
+  path: '/invite',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LedgerRoute = LedgerRouteImport.update({
@@ -225,6 +232,11 @@ const ApiPublicV1NisabBulletinRoute =
     path: '/api/public/v1/nisab/bulletin',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicV1NisabCsvRoute = ApiPublicV1NisabCsvRouteImport.update({
+  id: '/api/public/v1/nisab/csv',
+  path: '/api/public/v1/nisab/csv',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicV1NisabHistoryRoute = ApiPublicV1NisabHistoryRouteImport.update({
   id: '/api/public/v1/nisab/history',
   path: '/api/public/v1/nisab/history',
@@ -250,6 +262,7 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
+  '/invite': typeof InviteRoute
   '/ledger': typeof LedgerRoute
   '/map': typeof MapRoute
   '/methodology': typeof MethodologyRoute
@@ -271,6 +284,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/market-tick': typeof ApiPublicHooksMarketTickRoute
   '/api/public/v1/nisab/at': typeof ApiPublicV1NisabAtRoute
   '/api/public/v1/nisab/bulletin': typeof ApiPublicV1NisabBulletinRoute
+  '/api/public/v1/nisab/csv': typeof ApiPublicV1NisabCsvRoute
   '/api/public/v1/nisab/history': typeof ApiPublicV1NisabHistoryRoute
   '/api/public/v1/nisab/snapshot': typeof ApiPublicV1NisabSnapshotRoute
   '/api/public/v1/nisab/': typeof ApiPublicV1NisabIndexRoute
@@ -288,6 +302,7 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
+  '/invite': typeof InviteRoute
   '/ledger': typeof LedgerRoute
   '/map': typeof MapRoute
   '/methodology': typeof MethodologyRoute
@@ -309,6 +324,7 @@ export interface FileRoutesByTo {
   '/api/public/hooks/market-tick': typeof ApiPublicHooksMarketTickRoute
   '/api/public/v1/nisab/at': typeof ApiPublicV1NisabAtRoute
   '/api/public/v1/nisab/bulletin': typeof ApiPublicV1NisabBulletinRoute
+  '/api/public/v1/nisab/csv': typeof ApiPublicV1NisabCsvRoute
   '/api/public/v1/nisab/history': typeof ApiPublicV1NisabHistoryRoute
   '/api/public/v1/nisab/snapshot': typeof ApiPublicV1NisabSnapshotRoute
   '/api/public/v1/nisab': typeof ApiPublicV1NisabIndexRoute
@@ -328,6 +344,7 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
+  '/invite': typeof InviteRoute
   '/ledger': typeof LedgerRoute
   '/map': typeof MapRoute
   '/methodology': typeof MethodologyRoute
@@ -349,6 +366,7 @@ export interface FileRoutesById {
   '/api/public/hooks/market-tick': typeof ApiPublicHooksMarketTickRoute
   '/api/public/v1/nisab/at': typeof ApiPublicV1NisabAtRoute
   '/api/public/v1/nisab/bulletin': typeof ApiPublicV1NisabBulletinRoute
+  '/api/public/v1/nisab/csv': typeof ApiPublicV1NisabCsvRoute
   '/api/public/v1/nisab/history': typeof ApiPublicV1NisabHistoryRoute
   '/api/public/v1/nisab/snapshot': typeof ApiPublicV1NisabSnapshotRoute
   '/api/public/v1/nisab/': typeof ApiPublicV1NisabIndexRoute
@@ -368,6 +386,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/fiqh'
     | '/history'
+    | '/invite'
     | '/ledger'
     | '/map'
     | '/methodology'
@@ -389,6 +408,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/market-tick'
     | '/api/public/v1/nisab/at'
     | '/api/public/v1/nisab/bulletin'
+    | '/api/public/v1/nisab/csv'
     | '/api/public/v1/nisab/history'
     | '/api/public/v1/nisab/snapshot'
     | '/api/public/v1/nisab/'
@@ -406,6 +426,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/fiqh'
     | '/history'
+    | '/invite'
     | '/ledger'
     | '/map'
     | '/methodology'
@@ -427,6 +448,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/market-tick'
     | '/api/public/v1/nisab/at'
     | '/api/public/v1/nisab/bulletin'
+    | '/api/public/v1/nisab/csv'
     | '/api/public/v1/nisab/history'
     | '/api/public/v1/nisab/snapshot'
     | '/api/public/v1/nisab'
@@ -445,6 +467,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/fiqh'
     | '/history'
+    | '/invite'
     | '/ledger'
     | '/map'
     | '/methodology'
@@ -466,6 +489,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/market-tick'
     | '/api/public/v1/nisab/at'
     | '/api/public/v1/nisab/bulletin'
+    | '/api/public/v1/nisab/csv'
     | '/api/public/v1/nisab/history'
     | '/api/public/v1/nisab/snapshot'
     | '/api/public/v1/nisab/'
@@ -485,6 +509,7 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   FiqhRoute: typeof FiqhRoute
   HistoryRoute: typeof HistoryRoute
+  InviteRoute: typeof InviteRoute
   LedgerRoute: typeof LedgerRoute
   MapRoute: typeof MapRoute
   MethodologyRoute: typeof MethodologyRoute
@@ -502,6 +527,7 @@ export interface RootRouteChildren {
   ApiPublicHooksMarketTickRoute: typeof ApiPublicHooksMarketTickRoute
   ApiPublicV1NisabAtRoute: typeof ApiPublicV1NisabAtRoute
   ApiPublicV1NisabBulletinRoute: typeof ApiPublicV1NisabBulletinRoute
+  ApiPublicV1NisabCsvRoute: typeof ApiPublicV1NisabCsvRoute
   ApiPublicV1NisabHistoryRoute: typeof ApiPublicV1NisabHistoryRoute
   ApiPublicV1NisabSnapshotRoute: typeof ApiPublicV1NisabSnapshotRoute
   ApiPublicV1NisabIndexRoute: typeof ApiPublicV1NisabIndexRoute
@@ -598,6 +624,13 @@ declare module '@tanstack/react-router' {
       path: '/history'
       fullPath: '/history'
       preLoaderRoute: typeof HistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invite': {
+      id: '/invite'
+      path: '/invite'
+      fullPath: '/invite'
+      preLoaderRoute: typeof InviteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ledger': {
@@ -754,6 +787,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1NisabBulletinRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/nisab/csv': {
+      id: '/api/public/v1/nisab/csv'
+      path: '/api/public/v1/nisab/csv'
+      fullPath: '/api/public/v1/nisab/csv'
+      preLoaderRoute: typeof ApiPublicV1NisabCsvRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/v1/nisab/history': {
       id: '/api/public/v1/nisab/history'
       path: '/api/public/v1/nisab/history'
@@ -802,6 +842,7 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   FiqhRoute: FiqhRoute,
   HistoryRoute: HistoryRoute,
+  InviteRoute: InviteRoute,
   LedgerRoute: LedgerRoute,
   MapRoute: MapRoute,
   MethodologyRoute: MethodologyRoute,
@@ -819,6 +860,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicHooksMarketTickRoute: ApiPublicHooksMarketTickRoute,
   ApiPublicV1NisabAtRoute: ApiPublicV1NisabAtRoute,
   ApiPublicV1NisabBulletinRoute: ApiPublicV1NisabBulletinRoute,
+  ApiPublicV1NisabCsvRoute: ApiPublicV1NisabCsvRoute,
   ApiPublicV1NisabHistoryRoute: ApiPublicV1NisabHistoryRoute,
   ApiPublicV1NisabSnapshotRoute: ApiPublicV1NisabSnapshotRoute,
   ApiPublicV1NisabIndexRoute: ApiPublicV1NisabIndexRoute,

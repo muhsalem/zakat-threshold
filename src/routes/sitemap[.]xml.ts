@@ -19,6 +19,7 @@ const PAGES = [
   "/developers",
   "/outlook",
   "/waqf",
+  "/invite",
 ];
 
 export const Route = createFileRoute("/sitemap.xml")({

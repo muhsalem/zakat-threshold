@@ -63,6 +63,14 @@ function Developers() {
 { "keyId": "…", "alg": "ES256", "payload": "{…}", "signature": "…" }`}</Code>
       </section>
       <section className="card-surface mt-6 p-6">
+        <h2 className="text-xl text-foreground">جداول البيانات (CSV)</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          صفّ واحد برؤوس أعمدة ثابتة لدالة IMPORTDATA في Excel وGoogle Sheets: نصاب الذهب والفضة
+          والأدنى منهما وسعر الجرام عيار ٢٤ و٢١ والفضة ووقت التحديث.
+        </p>
+        <Code>{`=IMPORTDATA("${BASE}/api/public/v1/nisab/csv?country=EG")`}</Code>
+      </section>
+      <section className="card-surface mt-6 p-6">
         <h2 className="text-xl text-foreground">النصاب التاريخي</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           المدى: 1mo, 6mo, 1y, 5y, 10y, 20y…100y. أضف date لإرجاع أقرب قيمة لتاريخ معيّن. المدد
@@ -79,6 +87,13 @@ console.log(market.gold_nisab, official?.gold_nisab);`}</Code>
         <p className="mt-3 text-sm text-muted-foreground">
           الواجهة تسمح بالطلبات من أي موقع، والنتائج تُخزَّن ١٥ دقيقة. يُرجى ذكر «نِصاب» مصدرًا.
           الأرقام استرشادية وليست فتوى.
+        </p>
+        <p className="mt-3 text-sm text-muted-foreground">
+          تدعو غيرك لمراجعة المنصة؟{" "}
+          <a className="text-primary underline" href="/invite">
+            نصوص دعوة جاهزة
+          </a>
+          .
         </p>
       </section>
     </Page>
