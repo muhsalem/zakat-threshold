@@ -578,12 +578,12 @@ export type Database = {
         Args: {
           _country: string
           _currency: string
-          _gold: number
-          _gold_buyback: number
-          _reason: string
-          _silver: number
-          _silver_buyback: number
-          _source: string
+          _gold?: number
+          _gold_buyback?: number
+          _reason?: string
+          _silver?: number
+          _silver_buyback?: number
+          _source?: string
         }
         Returns: string
       }
