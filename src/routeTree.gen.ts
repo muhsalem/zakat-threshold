@@ -43,6 +43,7 @@ import { Route as ApiPublicHooksJewelerFeedRouteImport } from './routes/api/publ
 import { Route as ApiPublicHooksMarketTickRouteImport } from './routes/api/public/hooks/market-tick'
 import { Route as ApiPublicV1NisabIndexRouteImport } from './routes/api/public/v1/nisab/index'
 import { Route as ApiPublicV1NisabAtRouteImport } from './routes/api/public/v1/nisab/at'
+import { Route as ApiPublicV1NisabBulletinRouteImport } from './routes/api/public/v1/nisab/bulletin'
 import { Route as ApiPublicV1NisabHistoryRouteImport } from './routes/api/public/v1/nisab/history'
 import { Route as ApiPublicV1NisabSnapshotRouteImport } from './routes/api/public/v1/nisab/snapshot'
 
@@ -218,6 +219,12 @@ const ApiPublicV1NisabAtRoute = ApiPublicV1NisabAtRouteImport.update({
   path: '/api/public/v1/nisab/at',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicV1NisabBulletinRoute =
+  ApiPublicV1NisabBulletinRouteImport.update({
+    id: '/api/public/v1/nisab/bulletin',
+    path: '/api/public/v1/nisab/bulletin',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicV1NisabHistoryRoute = ApiPublicV1NisabHistoryRouteImport.update({
   id: '/api/public/v1/nisab/history',
   path: '/api/public/v1/nisab/history',
@@ -263,6 +270,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
   '/api/public/hooks/market-tick': typeof ApiPublicHooksMarketTickRoute
   '/api/public/v1/nisab/at': typeof ApiPublicV1NisabAtRoute
+  '/api/public/v1/nisab/bulletin': typeof ApiPublicV1NisabBulletinRoute
   '/api/public/v1/nisab/history': typeof ApiPublicV1NisabHistoryRoute
   '/api/public/v1/nisab/snapshot': typeof ApiPublicV1NisabSnapshotRoute
   '/api/public/v1/nisab/': typeof ApiPublicV1NisabIndexRoute
@@ -300,6 +308,7 @@ export interface FileRoutesByTo {
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
   '/api/public/hooks/market-tick': typeof ApiPublicHooksMarketTickRoute
   '/api/public/v1/nisab/at': typeof ApiPublicV1NisabAtRoute
+  '/api/public/v1/nisab/bulletin': typeof ApiPublicV1NisabBulletinRoute
   '/api/public/v1/nisab/history': typeof ApiPublicV1NisabHistoryRoute
   '/api/public/v1/nisab/snapshot': typeof ApiPublicV1NisabSnapshotRoute
   '/api/public/v1/nisab': typeof ApiPublicV1NisabIndexRoute
@@ -339,6 +348,7 @@ export interface FileRoutesById {
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
   '/api/public/hooks/market-tick': typeof ApiPublicHooksMarketTickRoute
   '/api/public/v1/nisab/at': typeof ApiPublicV1NisabAtRoute
+  '/api/public/v1/nisab/bulletin': typeof ApiPublicV1NisabBulletinRoute
   '/api/public/v1/nisab/history': typeof ApiPublicV1NisabHistoryRoute
   '/api/public/v1/nisab/snapshot': typeof ApiPublicV1NisabSnapshotRoute
   '/api/public/v1/nisab/': typeof ApiPublicV1NisabIndexRoute
@@ -378,6 +388,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/jeweler-feed'
     | '/api/public/hooks/market-tick'
     | '/api/public/v1/nisab/at'
+    | '/api/public/v1/nisab/bulletin'
     | '/api/public/v1/nisab/history'
     | '/api/public/v1/nisab/snapshot'
     | '/api/public/v1/nisab/'
@@ -415,6 +426,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/jeweler-feed'
     | '/api/public/hooks/market-tick'
     | '/api/public/v1/nisab/at'
+    | '/api/public/v1/nisab/bulletin'
     | '/api/public/v1/nisab/history'
     | '/api/public/v1/nisab/snapshot'
     | '/api/public/v1/nisab'
@@ -453,6 +465,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/jeweler-feed'
     | '/api/public/hooks/market-tick'
     | '/api/public/v1/nisab/at'
+    | '/api/public/v1/nisab/bulletin'
     | '/api/public/v1/nisab/history'
     | '/api/public/v1/nisab/snapshot'
     | '/api/public/v1/nisab/'
@@ -488,6 +501,7 @@ export interface RootRouteChildren {
   ApiPublicHooksJewelerFeedRoute: typeof ApiPublicHooksJewelerFeedRoute
   ApiPublicHooksMarketTickRoute: typeof ApiPublicHooksMarketTickRoute
   ApiPublicV1NisabAtRoute: typeof ApiPublicV1NisabAtRoute
+  ApiPublicV1NisabBulletinRoute: typeof ApiPublicV1NisabBulletinRoute
   ApiPublicV1NisabHistoryRoute: typeof ApiPublicV1NisabHistoryRoute
   ApiPublicV1NisabSnapshotRoute: typeof ApiPublicV1NisabSnapshotRoute
   ApiPublicV1NisabIndexRoute: typeof ApiPublicV1NisabIndexRoute
@@ -733,6 +747,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1NisabAtRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/nisab/bulletin': {
+      id: '/api/public/v1/nisab/bulletin'
+      path: '/api/public/v1/nisab/bulletin'
+      fullPath: '/api/public/v1/nisab/bulletin'
+      preLoaderRoute: typeof ApiPublicV1NisabBulletinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/v1/nisab/history': {
       id: '/api/public/v1/nisab/history'
       path: '/api/public/v1/nisab/history'
@@ -797,6 +818,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicHooksJewelerFeedRoute: ApiPublicHooksJewelerFeedRoute,
   ApiPublicHooksMarketTickRoute: ApiPublicHooksMarketTickRoute,
   ApiPublicV1NisabAtRoute: ApiPublicV1NisabAtRoute,
+  ApiPublicV1NisabBulletinRoute: ApiPublicV1NisabBulletinRoute,
   ApiPublicV1NisabHistoryRoute: ApiPublicV1NisabHistoryRoute,
   ApiPublicV1NisabSnapshotRoute: ApiPublicV1NisabSnapshotRoute,
   ApiPublicV1NisabIndexRoute: ApiPublicV1NisabIndexRoute,

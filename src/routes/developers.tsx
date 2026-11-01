@@ -52,6 +52,17 @@ function Developers() {
         <Code>{`GET ${BASE}/api/public/v1/nisab?country=EG`}</Code>
       </section>
       <section className="card-surface mt-6 p-6">
+        <h2 className="text-xl text-foreground">النشرة الموقّعة (للبرامج)</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          أوثق نسخة: آخر لقطة يومية غير قابلة للتعديل (أسعار الأونصة وأسعار الصرف وحالة إجماع
+          المصادر)، موقّعة بـ ES256 (ECDSA P-256 وSHA-256، توقيع IEEE P1363 بصيغة base64). حقل
+          payload نصّ JSON يُتحقَّق من توقيعه كما هو بالمفتاح العام، ولا يُستعمل قبل التحقق. تُرجع
+          الواجهة 503 بدل أي ردّ غير موقّع.
+        </p>
+        <Code>{`GET ${BASE}/api/public/v1/nisab/bulletin
+{ "keyId": "…", "alg": "ES256", "payload": "{…}", "signature": "…" }`}</Code>
+      </section>
+      <section className="card-surface mt-6 p-6">
         <h2 className="text-xl text-foreground">النصاب التاريخي</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           المدى: 1mo, 6mo, 1y, 5y, 10y, 20y…100y. أضف date لإرجاع أقرب قيمة لتاريخ معيّن. المدد
