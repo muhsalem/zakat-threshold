@@ -8,9 +8,19 @@ export async function confirmAccountWrite(
   complete();
 }
 
+/** A backslash, a space or any control character can make browsers parse the path differently. */
+function hasUnsafeCharacter(value: string): boolean {
+  for (let i = 0; i < value.length; i++) {
+    const code = value.charCodeAt(i);
+    if (code === 0x5c || code <= 0x20) return true;
+  }
+  return false;
+}
+
 /** Auth destinations must stay on this origin, including URL normalization. */
 export function safeAuthNext(value?: string): string {
-  if (!value || !value.startsWith("/") || value.startsWith("//") || /[\\\u0000-\u0020]/.test(value)) return "/partners";
+  if (!value || !value.startsWith("/") || value.startsWith("//") || hasUnsafeCharacter(value))
+    return "/partners";
   const base = "https://nisab.invalid";
   try {
     const url = new URL(value, base);

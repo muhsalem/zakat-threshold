@@ -1,7 +1,16 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { verifiedZakatSources } from "./verified-zakat-sources";
-const source = { id: "recent", country: "EG", authority: "دار الإفتاء", url: "https://www.dar-alifta.org/ar/fatwa/details/19768", source_kind: "fatwa", verified_excerpt: "خمسة وثمانين جرامًا", published_on: "2023-10-31", verified_at: "2026-10-31T06:00:00Z" };
+const source = {
+  id: "recent",
+  country: "EG",
+  authority: "دار الإفتاء",
+  url: "https://www.dar-alifta.org/ar/fatwa/details/19768",
+  source_kind: "fatwa",
+  verified_excerpt: "خمسة وثمانين جرامًا",
+  published_on: "2023-10-31",
+  verified_at: "2026-10-31T06:00:00Z",
+};
 describe("database verified official excerpts", () => {
   it("retains server-owned reference and actual publication date", () => {
     const result = verifiedZakatSources([source]);

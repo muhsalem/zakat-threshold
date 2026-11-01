@@ -99,12 +99,23 @@ function PartnersPage() {
   const [priceSent, setPriceSent] = useState(false);
   const [actionError, setActionError] = useState("");
   const [actionBusy, setActionBusy] = useState(false);
-  const performWrite = async (write: () => PromiseLike<{ error: { message: string } | null }>, complete: () => void) => {
+  const performWrite = async (
+    write: () => PromiseLike<{ error: { message: string } | null }>,
+    complete: () => void,
+  ) => {
     setActionError("");
     setActionBusy(true);
-    try { await confirmAccountWrite(write, complete); }
-    catch { setActionError(lang === "ar" ? "تعذّر حفظ التغيير. لم يتم الإرسال؛ حاول مرة أخرى." : "Could not save. Nothing was submitted; please retry."); }
-    finally { setActionBusy(false); }
+    try {
+      await confirmAccountWrite(write, complete);
+    } catch {
+      setActionError(
+        lang === "ar"
+          ? "تعذّر حفظ التغيير. لم يتم الإرسال؛ حاول مرة أخرى."
+          : "Could not save. Nothing was submitted; please retry.",
+      );
+    } finally {
+      setActionBusy(false);
+    }
   };
 
   const [rows, setRows] = useState<Submission[]>([]);
@@ -190,28 +201,36 @@ function PartnersPage() {
   const saveProfile = async () => {
     if (!user) return;
     setProfileSaved(false);
-    await performWrite(() => supabase.from("profiles").upsert({
-      id: user.id,
-      display_name: profile.name,
-      org: profile.org,
-      contact: profile.contact,
-      license: profile.license,
-      country,
-      city,
-    }), () => setProfileSaved(true));
+    await performWrite(
+      () =>
+        supabase.from("profiles").upsert({
+          id: user.id,
+          display_name: profile.name,
+          org: profile.org,
+          contact: profile.contact,
+          license: profile.license,
+          country,
+          city,
+        }),
+      () => setProfileSaved(true),
+    );
   };
 
   const requestRole = async () => {
     if (!user) return;
     setRequested(false);
-    await performWrite(() => supabase.from("audit_log").insert({
-      actor_id: user.id,
-      action: "role_request",
-      entity: "profile",
-      entity_id: user.id,
-      reason: profile.org || profile.name,
-      meta: { country, city },
-    }), () => setRequested(true));
+    await performWrite(
+      () =>
+        supabase.from("audit_log").insert({
+          actor_id: user.id,
+          action: "role_request",
+          entity: "profile",
+          entity_id: user.id,
+          reason: profile.org || profile.name,
+          meta: { country, city },
+        }),
+      () => setRequested(true),
+    );
   };
 
   const publish = async () => {
@@ -221,34 +240,46 @@ function PartnersPage() {
     const buyback = Number(price.buyback);
     setPriceSent(false);
     if (!Number.isFinite(gold) || gold <= 0) {
-      setActionError(lang === "ar" ? "أدخل سعر ذهب موجبًا وصحيحًا." : "Enter a valid positive gold price.");
+      setActionError(
+        lang === "ar" ? "أدخل سعر ذهب موجبًا وصحيحًا." : "Enter a valid positive gold price.",
+      );
       return;
     }
-    await performWrite(() => supabase.from("price_submissions").insert({
-      user_id: user.id,
-      country,
-      city,
-      currency,
-      metal: "gold",
-      gold_gram: gold,
-      silver_gram: Number.isFinite(silver) && silver > 0 ? silver : null,
-      buyback_gram: Number.isFinite(buyback) && buyback > 0 ? buyback : null,
-      source: price.source,
-    }), () => {
-      setPrice({ gold: "", silver: "", buyback: "", source: "" });
-      setPriceSent(true);
-      void loadPrices();
-    });
+    await performWrite(
+      () =>
+        supabase.from("price_submissions").insert({
+          user_id: user.id,
+          country,
+          city,
+          currency,
+          metal: "gold",
+          gold_gram: gold,
+          silver_gram: Number.isFinite(silver) && silver > 0 ? silver : null,
+          buyback_gram: Number.isFinite(buyback) && buyback > 0 ? buyback : null,
+          source: price.source,
+        }),
+      () => {
+        setPrice({ gold: "", silver: "", buyback: "", source: "" });
+        setPriceSent(true);
+        void loadPrices();
+      },
+    );
   };
 
   const vote = async (id: string, value: 1 | -1) => {
     if (!user) return;
-    await performWrite(() => supabase
-      .from("price_votes")
-      .upsert(
-        { submission_id: id, user_id: user.id, vote: value },
-        { onConflict: "submission_id,user_id" },
-      ), () => { void loadPrices(); });
+    await performWrite(
+      () =>
+        supabase
+          .from("price_votes")
+          .upsert(
+            { submission_id: id, user_id: user.id, vote: value },
+            { onConflict: "submission_id,user_id" },
+          ),
+      () => {
+        void loadPrices();
+      },
+    );
   };
 
   const runAi = async () => {
@@ -283,7 +314,11 @@ function PartnersPage() {
 
   return (
     <Page eyebrow={t("p.eyebrow")} title={t("p.title")} sub={t("p.sub")}>
-      {actionError && <p role="alert" className="mb-4 text-sm text-destructive">{actionError}</p>}
+      {actionError && (
+        <p role="alert" className="mb-4 text-sm text-destructive">
+          {actionError}
+        </p>
+      )}
       <section className="grid gap-4 md:grid-cols-3">
         {[
           { icon: BadgeCheck, title: t("p.card1.t"), body: t("p.card1.b") },
@@ -351,7 +386,9 @@ function PartnersPage() {
               />
             </div>
             <div className="mt-5 flex flex-wrap gap-3">
-              <Button disabled={actionBusy} onClick={saveProfile}>{t("p.save")}</Button>
+              <Button disabled={actionBusy} onClick={saveProfile}>
+                {t("p.save")}
+              </Button>
               <Button disabled={actionBusy} variant="outline" onClick={requestRole}>
                 {t("p.requestRole")}
               </Button>

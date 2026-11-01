@@ -44,7 +44,18 @@ export const SOURCE_TYPE_LABELS: Record<SourceType, { ar: string; en: string }> 
  * counts, a verified status). They were never real, so they are no longer shown, and any
  * copy already stored in a browser is removed on read.
  */
-const LEGACY_SEED_IDS = new Set<string>(["ver-sa-01", "ver-eg-01", "ver-ae-01", "ver-kw-01", "ver-jo-01", "ver-ma-01", "ver-dz-01", "ver-qa-01", "ver-om-01", "ver-tr-01"]);
+const LEGACY_SEED_IDS = new Set<string>([
+  "ver-sa-01",
+  "ver-eg-01",
+  "ver-ae-01",
+  "ver-kw-01",
+  "ver-jo-01",
+  "ver-ma-01",
+  "ver-dz-01",
+  "ver-qa-01",
+  "ver-om-01",
+  "ver-tr-01",
+]);
 
 const LS_VERIFICATIONS = "nisab_community_verifications_v2";
 const LS_USER_CONFIRMED = "nisab_user_confirmed_ids_v2";
@@ -293,8 +304,7 @@ export function getOverallCommunityStats() {
   const totalConfirmations = all.reduce((sum, r) => sum + r.confirmations, 0);
   const totalDisputes = all.reduce((sum, r) => sum + r.disputes, 0);
   const totalVotes = totalConfirmations + totalDisputes;
-  const overallConsensus =
-    totalVotes > 0 ? Math.round((totalConfirmations / totalVotes) * 100) : 0;
+  const overallConsensus = totalVotes > 0 ? Math.round((totalConfirmations / totalVotes) * 100) : 0;
 
   return {
     totalRecords: all.length,

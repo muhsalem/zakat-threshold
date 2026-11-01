@@ -100,174 +100,176 @@ export const Route = createFileRoute("/api/public/hooks/jeweler-feed")({
     handlers: {
       POST: async ({ request }) =>
         withCronAuthorization(request, async () => {
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const runId = crypto.randomUUID();
-        const saveRun = async (run: ScheduledFeedRun, first: boolean) => {
-          const meta = { ...run };
-          const { error } = first
-            ? await supabaseAdmin.from("audit_log").insert({
-                id: runId,
-                action: "scheduled_feed_run",
-                entity: "jeweler_feed",
-                reason: "scheduled price update",
-                meta,
-              })
-            : await supabaseAdmin.from("audit_log").update({ meta }).eq("id", runId);
-          if (error) throw new Error("Could not save scheduled update status");
-        };
-        return trackScheduledFeedRun(async () => {
+          const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+          const runId = crypto.randomUUID();
+          const saveRun = async (run: ScheduledFeedRun, first: boolean) => {
+            const meta = { ...run };
+            const { error } = first
+              ? await supabaseAdmin.from("audit_log").insert({
+                  id: runId,
+                  action: "scheduled_feed_run",
+                  entity: "jeweler_feed",
+                  reason: "scheduled price update",
+                  meta,
+                })
+              : await supabaseAdmin.from("audit_log").update({ meta }).eq("id", runId);
+            if (error) throw new Error("Could not save scheduled update status");
+          };
+          return trackScheduledFeedRun(async () => {
+            const { collectFeed, BIG_CHANGE_PCT, MAX_SPOT_DEVIATION_PCT } =
+              await import("@/lib/jeweler-feed.server");
+            const collected = await collectFeed();
+            const errors = collected.errors;
 
-        const { collectFeed, BIG_CHANGE_PCT, MAX_SPOT_DEVIATION_PCT } =
-          await import("@/lib/jeweler-feed.server");
-        const collected = await collectFeed();
-        const errors = collected.errors;
+            // Sanity check: skip rows that deviate > 15% from the spot conversion.
+            let spotGoldOz = 0;
+            let fx: Record<string, number> = {};
+            try {
+              const [g, r] = await Promise.all([
+                fetch("https://api.gold-api.com/price/XAU", {
+                  signal: AbortSignal.timeout(10_000),
+                }).then((x) => x.json()),
+                fetch("https://open.er-api.com/v6/latest/USD", {
+                  signal: AbortSignal.timeout(10_000),
+                }).then((x) => x.json()),
+              ]);
+              spotGoldOz = Number(g?.price) || 0;
+              fx = (r?.rates ?? {}) as Record<string, number>;
+            } catch {
+              /* no spot: rows pass unchecked */
+            }
+            const rows: FeedRow[] = [];
+            for (const row of collected.rows) {
+              const rate = row.currency === "USD" ? 1 : fx[row.currency];
+              const spot = spotGoldOz && rate ? (spotGoldOz / OZ) * rate : 0;
+              const dev = spot && row.gold_gram ? ((row.gold_gram - spot) / spot) * 100 : 0;
+              if (Math.abs(dev) > MAX_SPOT_DEVIATION_PCT) {
+                errors.push(
+                  `${row.country}: انحراف ${dev.toFixed(1)}% عن السعر العالمي — تم التجاهل`,
+                );
+                await supabaseAdmin.from("audit_log").insert({
+                  action: "feed_row_skipped",
+                  entity: "jeweler_feed",
+                  entity_id: null,
+                  reason: `deviation ${dev.toFixed(1)}% > ${MAX_SPOT_DEVIATION_PCT}%`,
+                  meta: {
+                    country: row.country,
+                    source: row.source,
+                    gold_gram: row.gold_gram,
+                    spot_gram: spot,
+                  },
+                });
+                continue;
+              }
+              rows.push(row);
+            }
+            const today = new Date().toISOString().slice(0, 10);
+            const alerts: string[] = [];
 
-        // Sanity check: skip rows that deviate > 15% from the spot conversion.
-        let spotGoldOz = 0;
-        let fx: Record<string, number> = {};
-        try {
-          const [g, r] = await Promise.all([
-            fetch("https://api.gold-api.com/price/XAU", {
-              signal: AbortSignal.timeout(10_000),
-            }).then((x) => x.json()),
-            fetch("https://open.er-api.com/v6/latest/USD", {
-              signal: AbortSignal.timeout(10_000),
-            }).then((x) => x.json()),
-          ]);
-          spotGoldOz = Number(g?.price) || 0;
-          fx = (r?.rates ?? {}) as Record<string, number>;
-        } catch {
-          /* no spot: rows pass unchecked */
-        }
-        const rows: FeedRow[] = [];
-        for (const row of collected.rows) {
-          const rate = row.currency === "USD" ? 1 : fx[row.currency];
-          const spot = spotGoldOz && rate ? (spotGoldOz / OZ) * rate : 0;
-          const dev = spot && row.gold_gram ? ((row.gold_gram - spot) / spot) * 100 : 0;
-          if (Math.abs(dev) > MAX_SPOT_DEVIATION_PCT) {
-            errors.push(`${row.country}: انحراف ${dev.toFixed(1)}% عن السعر العالمي — تم التجاهل`);
-            await supabaseAdmin.from("audit_log").insert({
-              action: "feed_row_skipped",
-              entity: "jeweler_feed",
-              entity_id: null,
-              reason: `deviation ${dev.toFixed(1)}% > ${MAX_SPOT_DEVIATION_PCT}%`,
-              meta: {
-                country: row.country,
-                source: row.source,
-                gold_gram: row.gold_gram,
-                spot_gram: spot,
-              },
+            for (const row of rows) {
+              const { data: prev } = await supabaseAdmin
+                .from("jeweler_feed")
+                .select("gold_gram")
+                .eq("country", row.country)
+                .lt("day", today)
+                .order("day", { ascending: false })
+                .limit(1)
+                .maybeSingle();
+              const before = prev?.gold_gram ? Number(prev.gold_gram) : null;
+              const change =
+                before && row.gold_gram ? ((row.gold_gram - before) / before) * 100 : null;
+              const { error: feedError } = await supabaseAdmin.from("jeweler_feed").upsert(
+                {
+                  country: row.country,
+                  currency: row.currency,
+                  source: row.source,
+                  source_url: row.source_url,
+                  gold_gram: row.gold_gram,
+                  buyback_gram: row.buyback_gram,
+                  silver_gram: row.silver_gram,
+                  silver_buyback_gram: row.silver_buyback_gram ?? null,
+                  day: today,
+                  change_pct: change,
+                  fetched_at: new Date().toISOString(),
+                },
+                { onConflict: "country,day" },
+              );
+              if (feedError) throw new Error("Could not persist jeweler prices");
+              if (change != null && Math.abs(change) >= BIG_CHANGE_PCT) {
+                alerts.push(
+                  `${row.country}: ${change > 0 ? "+" : ""}${change.toFixed(1)}% (${row.source})`,
+                );
+              }
+            }
+
+            // Raw daily snapshot (USD/oz, FX, source agreement). Never fails the whole job.
+            const { recordPriceSnapshot } = await import("@/lib/price-snapshot.server");
+            const snapshot = await recordPriceSnapshot(supabaseAdmin, today).catch((e) => ({
+              recorded: false,
+              reason: String(e),
+              errors: [] as string[],
+            }));
+            if (
+              "status" in snapshot &&
+              (snapshot.status === "diverged" || snapshot.status === "warn")
+            ) {
+              errors.push(
+                `مصادر الذهب والفضة متباعدة ${(snapshot.deviationPct ?? 0).toFixed(1)}% (${snapshot.status})`,
+              );
+            }
+
+            if (alerts.length || errors.length) {
+              const { data: admins } = await supabaseAdmin
+                .from("user_roles")
+                .select("user_id")
+                .eq("role", "admin");
+              const body = [
+                alerts.length ? `تغيّر كبير في سعر الصاغة: ${alerts.join(" · ")}` : "",
+                errors.length ? `مصادر تعذّرت قراءتها: ${errors.join(" · ")}` : "",
+              ]
+                .filter(Boolean)
+                .join("\n");
+              if (admins?.length) {
+                await supabaseAdmin.from("notifications").insert(
+                  admins.map((a) => ({
+                    user_id: a.user_id,
+                    kind: alerts.length ? "jeweler_big_change" : "jeweler_feed_error",
+                    title: alerts.length
+                      ? "تنبيه: تغيّر كبير في أسعار الصاغة"
+                      : "تنبيه: تعذّر تحديث بعض مصادر الصاغة",
+                    body,
+                  })),
+                );
+              }
+            }
+
+            const { watchOfficialSources } = await import("@/lib/official-watch.server");
+            const official = await watchOfficialSources(supabaseAdmin);
+
+            // Daily nisab history snapshot: local jeweller prices where available,
+            // global spot (converted per currency) everywhere else.
+            const history = await recordNisabHistory(supabaseAdmin, rows, today);
+
+            const { notifyNisabChanges, postDailyToFacebook } =
+              await import("@/lib/daily-broadcast.server");
+            const followers = await notifyNisabChanges(supabaseAdmin, today);
+            const facebook = await postDailyToFacebook(supabaseAdmin, today).catch((e) => ({
+              posted: false,
+              reason: String(e),
+            }));
+
+            return Response.json({
+              ok: true,
+              updated: rows.map((r) => r.country),
+              alerts,
+              errors,
+              official,
+              history,
+              snapshot,
+              followers,
+              facebook,
             });
-            continue;
-          }
-          rows.push(row);
-        }
-        const today = new Date().toISOString().slice(0, 10);
-        const alerts: string[] = [];
-
-        for (const row of rows) {
-          const { data: prev } = await supabaseAdmin
-            .from("jeweler_feed")
-            .select("gold_gram")
-            .eq("country", row.country)
-            .lt("day", today)
-            .order("day", { ascending: false })
-            .limit(1)
-            .maybeSingle();
-          const before = prev?.gold_gram ? Number(prev.gold_gram) : null;
-          const change = before && row.gold_gram ? ((row.gold_gram - before) / before) * 100 : null;
-          const { error: feedError } = await supabaseAdmin.from("jeweler_feed").upsert(
-            {
-              country: row.country,
-              currency: row.currency,
-              source: row.source,
-              source_url: row.source_url,
-              gold_gram: row.gold_gram,
-              buyback_gram: row.buyback_gram,
-              silver_gram: row.silver_gram,
-              silver_buyback_gram: row.silver_buyback_gram ?? null,
-              day: today,
-              change_pct: change,
-              fetched_at: new Date().toISOString(),
-            },
-            { onConflict: "country,day" },
-          );
-          if (feedError) throw new Error("Could not persist jeweler prices");
-          if (change != null && Math.abs(change) >= BIG_CHANGE_PCT) {
-            alerts.push(
-              `${row.country}: ${change > 0 ? "+" : ""}${change.toFixed(1)}% (${row.source})`,
-            );
-          }
-        }
-
-        // Raw daily snapshot (USD/oz, FX, source agreement). Never fails the whole job.
-        const { recordPriceSnapshot } = await import("@/lib/price-snapshot.server");
-        const snapshot = await recordPriceSnapshot(supabaseAdmin, today).catch((e) => ({
-          recorded: false,
-          reason: String(e),
-          errors: [] as string[],
-        }));
-        if (
-          "status" in snapshot &&
-          (snapshot.status === "diverged" || snapshot.status === "warn")
-        ) {
-          errors.push(
-            `مصادر الذهب والفضة متباعدة ${(snapshot.deviationPct ?? 0).toFixed(1)}% (${snapshot.status})`,
-          );
-        }
-
-        if (alerts.length || errors.length) {
-          const { data: admins } = await supabaseAdmin
-            .from("user_roles")
-            .select("user_id")
-            .eq("role", "admin");
-          const body = [
-            alerts.length ? `تغيّر كبير في سعر الصاغة: ${alerts.join(" · ")}` : "",
-            errors.length ? `مصادر تعذّرت قراءتها: ${errors.join(" · ")}` : "",
-          ]
-            .filter(Boolean)
-            .join("\n");
-          if (admins?.length) {
-            await supabaseAdmin.from("notifications").insert(
-              admins.map((a) => ({
-                user_id: a.user_id,
-                kind: alerts.length ? "jeweler_big_change" : "jeweler_feed_error",
-                title: alerts.length
-                  ? "تنبيه: تغيّر كبير في أسعار الصاغة"
-                  : "تنبيه: تعذّر تحديث بعض مصادر الصاغة",
-                body,
-              })),
-            );
-          }
-        }
-
-        const { watchOfficialSources } = await import("@/lib/official-watch.server");
-        const official = await watchOfficialSources(supabaseAdmin);
-
-        // Daily nisab history snapshot: local jeweller prices where available,
-        // global spot (converted per currency) everywhere else.
-        const history = await recordNisabHistory(supabaseAdmin, rows, today);
-
-        const { notifyNisabChanges, postDailyToFacebook } =
-          await import("@/lib/daily-broadcast.server");
-        const followers = await notifyNisabChanges(supabaseAdmin, today);
-        const facebook = await postDailyToFacebook(supabaseAdmin, today).catch((e) => ({
-          posted: false,
-          reason: String(e),
-        }));
-
-        return Response.json({
-          ok: true,
-          updated: rows.map((r) => r.country),
-          alerts,
-          errors,
-          official,
-          history,
-          snapshot,
-          followers,
-          facebook,
-        });
-        }, saveRun);
+          }, saveRun);
         }),
     },
   },

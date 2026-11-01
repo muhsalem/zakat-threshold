@@ -17,7 +17,10 @@ export function useAuth() {
 
     const loadRoles = async (user: User | null) => {
       const current = ++generation;
-      if (alive) { setRoles([]); setLoading(true); }
+      if (alive) {
+        setRoles([]);
+        setLoading(true);
+      }
       if (!user) {
         if (alive) setLoading(false);
         return;

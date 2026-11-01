@@ -19,9 +19,21 @@ export function resolveCalculatorThreshold(input: {
 }) {
   const row = input.official;
   const announced = row?.[input.metal === "gold" ? "gold_nisab" : "silver_nisab"];
-  if (row && row.country === input.country && row.currency === input.currency && row.announced_on === input.day && announced != null && Number.isFinite(announced) && announced > 0) {
+  if (
+    row &&
+    row.country === input.country &&
+    row.currency === input.currency &&
+    row.announced_on === input.day &&
+    announced != null &&
+    Number.isFinite(announced) &&
+    announced > 0
+  ) {
     return { value: announced, origin: "official" as const, official: row };
   }
   const value = input.calculated;
-  return { value: value != null && Number.isFinite(value) && value > 0 ? value : null, origin: "calculated" as const, official: null };
+  return {
+    value: value != null && Number.isFinite(value) && value > 0 ? value : null,
+    origin: "calculated" as const,
+    official: null,
+  };
 }

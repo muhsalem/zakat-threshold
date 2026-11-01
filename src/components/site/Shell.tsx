@@ -261,7 +261,8 @@ function LangPicker() {
 
 function MobileNav() {
   const { t, rtl } = useI18n();
-  const navLabel = (key: string) => key === "nav.ask" ? (rtl ? "اسأل عن الزكاة" : "Ask about zakat") : t(key);
+  const navLabel = (key: string) =>
+    key === "nav.ask" ? (rtl ? "اسأل عن الزكاة" : "Ask about zakat") : t(key);
   const { isAdmin } = useAuth();
   const [open, setOpen] = useState(false);
   return (
@@ -332,7 +333,8 @@ function MobileNav() {
 
 export function Shell({ children }: { children: ReactNode }) {
   const { t, rtl } = useI18n();
-  const navLabel = (key: string) => key === "nav.ask" ? (rtl ? "اسأل عن الزكاة" : "Ask about zakat") : t(key);
+  const navLabel = (key: string) =>
+    key === "nav.ask" ? (rtl ? "اسأل عن الزكاة" : "Ask about zakat") : t(key);
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur-xl">

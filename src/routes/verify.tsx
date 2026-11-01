@@ -253,7 +253,9 @@ function VerifyCommunityPage() {
             {stats.totalRecords > 0 ? `${stats.overallConsensus}%` : "—"}
           </p>
           <p className="mt-1 text-xs text-muted-foreground">
-            {isAr ? "المصادقات إلى الاعتراضات على هذا الجهاز" : "endorsements versus disputes on this device"}
+            {isAr
+              ? "المصادقات إلى الاعتراضات على هذا الجهاز"
+              : "endorsements versus disputes on this device"}
           </p>
         </div>
 

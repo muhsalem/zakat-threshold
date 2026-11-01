@@ -1,8 +1,18 @@
 import assert from "node:assert/strict";
 import { it } from "node:test";
 import { adminJewelerPriceSchema } from "./admin-jeweler-prices";
-const input = { country: "EG", currency: "EGP", gold: 7000, silver: null, goldBuyback: 6900, silverBuyback: null, source: "صائغ معتمد", reason: "تحديث سعر اليوم" };
-it("allows a single metal with its matching currency", () => assert.equal(adminJewelerPriceSchema.safeParse(input).success, true));
+const input = {
+  country: "EG",
+  currency: "EGP",
+  gold: 7000,
+  silver: null,
+  goldBuyback: 6900,
+  silverBuyback: null,
+  source: "صائغ معتمد",
+  reason: "تحديث سعر اليوم",
+};
+it("allows a single metal with its matching currency", () =>
+  assert.equal(adminJewelerPriceSchema.safeParse(input).success, true));
 it("rejects missing prices and mismatched currency", () => {
   assert.equal(adminJewelerPriceSchema.safeParse({ ...input, gold: null }).success, false);
   assert.equal(adminJewelerPriceSchema.safeParse({ ...input, currency: "SAR" }).success, false);
