@@ -323,6 +323,71 @@ export type Database = {
         }
         Relationships: []
       }
+      personal_zakat_calculations: {
+        Row: {
+          country: string
+          created_at: string
+          currency: string
+          history_id: string
+          id: string
+          metal: string
+          net_wealth: number
+          nisab_threshold: number
+          price_gram: number
+          price_source: string
+          user_id: string
+          valuation_day: string
+          weight_grams: number
+          year_basis: string
+          zakat_due: number
+          zakat_rate: number
+        }
+        Insert: {
+          country: string
+          created_at?: string
+          currency: string
+          history_id: string
+          id?: string
+          metal: string
+          net_wealth: number
+          nisab_threshold: number
+          price_gram: number
+          price_source: string
+          user_id: string
+          valuation_day: string
+          weight_grams: number
+          year_basis: string
+          zakat_due: number
+          zakat_rate: number
+        }
+        Update: {
+          country?: string
+          created_at?: string
+          currency?: string
+          history_id?: string
+          id?: string
+          metal?: string
+          net_wealth?: number
+          nisab_threshold?: number
+          price_gram?: number
+          price_source?: string
+          user_id?: string
+          valuation_day?: string
+          weight_grams?: number
+          year_basis?: string
+          zakat_due?: number
+          zakat_rate?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "personal_zakat_calculations_history_id_fkey"
+            columns: ["history_id"]
+            isOneToOne: false
+            referencedRelation: "nisab_history"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       price_snapshots: {
         Row: {
           consensus_status: string

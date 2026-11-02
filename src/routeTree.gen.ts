@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AnnualNisabRouteImport } from './routes/annual-nisab'
 import { Route as AskRouteImport } from './routes/ask'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CalculatorRouteImport } from './routes/calculator'
@@ -39,6 +40,7 @@ import { Route as AuthenticatedAlertsRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedControlRouteImport } from './routes/_authenticated/control'
 import { Route as AuthenticatedJewelerPricesRouteImport } from './routes/_authenticated/jeweler-prices'
 import { Route as AuthenticatedModerationRouteImport } from './routes/_authenticated/moderation'
+import { Route as AuthenticatedPersonalCalculationsRouteImport } from './routes/_authenticated/personal-calculations'
 import { Route as CountryCodeRouteImport } from './routes/country.$code'
 import { Route as ApiPublicHooksJewelerFeedRouteImport } from './routes/api/public/hooks/jeweler-feed'
 import { Route as ApiPublicV1NisabIndexRouteImport } from './routes/api/public/v1/nisab/index'
@@ -57,6 +59,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnnualNisabRoute = AnnualNisabRouteImport.update({
+  id: '/annual-nisab',
+  path: '/annual-nisab',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AskRoute = AskRouteImport.update({
@@ -195,6 +202,12 @@ const AuthenticatedModerationRoute = AuthenticatedModerationRouteImport.update({
   path: '/moderation',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPersonalCalculationsRoute =
+  AuthenticatedPersonalCalculationsRouteImport.update({
+    id: '/personal-calculations',
+    path: '/personal-calculations',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const CountryCodeRoute = CountryCodeRouteImport.update({
   id: '/country/$code',
   path: '/country/$code',
@@ -226,6 +239,7 @@ const ApiPublicV1NisabSnapshotRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/annual-nisab': typeof AnnualNisabRoute
   '/ask': typeof AskRoute
   '/auth': typeof AuthRoute
   '/calculator': typeof CalculatorRoute
@@ -253,6 +267,7 @@ export interface FileRoutesByFullPath {
   '/control': typeof AuthenticatedControlRoute
   '/jeweler-prices': typeof AuthenticatedJewelerPricesRoute
   '/moderation': typeof AuthenticatedModerationRoute
+  '/personal-calculations': typeof AuthenticatedPersonalCalculationsRoute
   '/country/$code': typeof CountryCodeRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
   '/api/public/v1/nisab/history': typeof ApiPublicV1NisabHistoryRoute
@@ -262,6 +277,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/annual-nisab': typeof AnnualNisabRoute
   '/ask': typeof AskRoute
   '/auth': typeof AuthRoute
   '/calculator': typeof CalculatorRoute
@@ -289,6 +305,7 @@ export interface FileRoutesByTo {
   '/control': typeof AuthenticatedControlRoute
   '/jeweler-prices': typeof AuthenticatedJewelerPricesRoute
   '/moderation': typeof AuthenticatedModerationRoute
+  '/personal-calculations': typeof AuthenticatedPersonalCalculationsRoute
   '/country/$code': typeof CountryCodeRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
   '/api/public/v1/nisab/history': typeof ApiPublicV1NisabHistoryRoute
@@ -300,6 +317,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/admin': typeof AdminRoute
+  '/annual-nisab': typeof AnnualNisabRoute
   '/ask': typeof AskRoute
   '/auth': typeof AuthRoute
   '/calculator': typeof CalculatorRoute
@@ -327,6 +345,7 @@ export interface FileRoutesById {
   '/_authenticated/control': typeof AuthenticatedControlRoute
   '/_authenticated/jeweler-prices': typeof AuthenticatedJewelerPricesRoute
   '/_authenticated/moderation': typeof AuthenticatedModerationRoute
+  '/_authenticated/personal-calculations': typeof AuthenticatedPersonalCalculationsRoute
   '/country/$code': typeof CountryCodeRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
   '/api/public/v1/nisab/history': typeof ApiPublicV1NisabHistoryRoute
@@ -338,6 +357,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/annual-nisab'
     | '/ask'
     | '/auth'
     | '/calculator'
@@ -365,6 +385,7 @@ export interface FileRouteTypes {
     | '/control'
     | '/jeweler-prices'
     | '/moderation'
+    | '/personal-calculations'
     | '/country/$code'
     | '/api/public/hooks/jeweler-feed'
     | '/api/public/v1/nisab/history'
@@ -374,6 +395,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
+    | '/annual-nisab'
     | '/ask'
     | '/auth'
     | '/calculator'
@@ -401,6 +423,7 @@ export interface FileRouteTypes {
     | '/control'
     | '/jeweler-prices'
     | '/moderation'
+    | '/personal-calculations'
     | '/country/$code'
     | '/api/public/hooks/jeweler-feed'
     | '/api/public/v1/nisab/history'
@@ -411,6 +434,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/admin'
+    | '/annual-nisab'
     | '/ask'
     | '/auth'
     | '/calculator'
@@ -438,6 +462,7 @@ export interface FileRouteTypes {
     | '/_authenticated/control'
     | '/_authenticated/jeweler-prices'
     | '/_authenticated/moderation'
+    | '/_authenticated/personal-calculations'
     | '/country/$code'
     | '/api/public/hooks/jeweler-feed'
     | '/api/public/v1/nisab/history'
@@ -449,6 +474,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AdminRoute: typeof AdminRoute
+  AnnualNisabRoute: typeof AnnualNisabRoute
   AskRoute: typeof AskRoute
   AuthRoute: typeof AuthRoute
   CalculatorRoute: typeof CalculatorRoute
@@ -500,6 +526,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/annual-nisab': {
+      id: '/annual-nisab'
+      path: '/annual-nisab'
+      fullPath: '/annual-nisab'
+      preLoaderRoute: typeof AnnualNisabRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ask': {
@@ -691,6 +724,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedModerationRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/personal-calculations': {
+      id: '/_authenticated/personal-calculations'
+      path: '/personal-calculations'
+      fullPath: '/personal-calculations'
+      preLoaderRoute: typeof AuthenticatedPersonalCalculationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/country/$code': {
       id: '/country/$code'
       path: '/country/$code'
@@ -734,6 +774,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedControlRoute: typeof AuthenticatedControlRoute
   AuthenticatedJewelerPricesRoute: typeof AuthenticatedJewelerPricesRoute
   AuthenticatedModerationRoute: typeof AuthenticatedModerationRoute
+  AuthenticatedPersonalCalculationsRoute: typeof AuthenticatedPersonalCalculationsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -741,6 +782,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedControlRoute: AuthenticatedControlRoute,
   AuthenticatedJewelerPricesRoute: AuthenticatedJewelerPricesRoute,
   AuthenticatedModerationRoute: AuthenticatedModerationRoute,
+  AuthenticatedPersonalCalculationsRoute:
+    AuthenticatedPersonalCalculationsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -750,6 +793,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AdminRoute: AdminRoute,
+  AnnualNisabRoute: AnnualNisabRoute,
   AskRoute: AskRoute,
   AuthRoute: AuthRoute,
   CalculatorRoute: CalculatorRoute,

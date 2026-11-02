@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { RotateCcw } from "lucide-react";
 
@@ -22,6 +22,7 @@ import type { AssetValues } from "@/lib/asset-organizer";
 import { CalculatedNisab } from "@/components/site/CalculatedNisab";
 import { useOfficialThreshold } from "@/lib/use-official-threshold";
 import { resolveCalculatorThreshold } from "@/lib/calculator-threshold";
+import { annualSearchSchema } from "@/lib/annual-nisab";
 
 export const Route = createFileRoute("/calculator")({
   head: () => ({
@@ -174,6 +175,10 @@ function Calculator() {
       )}
 
       <CalculatedNisab onRefresh={refreshThreshold} refreshing={officialQuery.isFetching} />
+      <div className="mb-6 flex flex-wrap gap-3">
+        <Button asChild variant="outline"><Link to="/annual-nisab" search={annualSearchSchema.parse({ country })}>{lang === "ar" ? "حساب الزكاة بتاريخ سابق" : "Calculate for a historical day"}</Link></Button>
+        <Button asChild variant="ghost"><Link to="/personal-calculations">{lang === "ar" ? "حساباتي التاريخية" : "My historical calculations"}</Link></Button>
+      </div>
       <AssetOrganizer onApply={applyAssets} />
       <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
         <div className="card-surface grid gap-4 p-6 sm:grid-cols-2">
