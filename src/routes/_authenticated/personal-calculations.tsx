@@ -16,7 +16,7 @@ export const Route = createFileRoute("/_authenticated/personal-calculations")({
     { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" },
   ] }),
   errorComponent: PersonalError,
-  notFoundComponent: () => <Page title="الحساب غير متاح" />,
+  notFoundComponent: () => <Page title="الحساب غير متاح"><Link to="/calculator">حاسبة الزكاة</Link></Page>,
   component: PersonalCalculations,
 });
 function PersonalError() { const router = useRouter(); return <Page title="تعذّر تحميل حساباتك"><Button onClick={() => void router.invalidate()}><RefreshCw />إعادة المحاولة</Button></Page>; }
