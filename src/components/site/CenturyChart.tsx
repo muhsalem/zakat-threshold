@@ -116,7 +116,7 @@ export function CenturyChart() {
                   scale={log ? "log" : "linear"}
                   domain={log ? logDomain : [0, "auto"]}
                   tick={{ fontSize: 11 }}
-                  tickFormatter={(v: number) => formatNumber(v, v < 10 ? 1 : 0)}
+                  tickFormatter={(v: number) => formatNumber(v, v < 0.1 ? 2 : v < 10 ? 1 : 0)}
                   width={56}
                   label={{
                     value: `سعر الجرام (${country.currency})`,

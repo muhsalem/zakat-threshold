@@ -51,18 +51,18 @@ function AuthPage() {
     const redirect = `${window.location.origin}/auth?next=${encodeURIComponent(safeAuthNext(search.next))}`;
     try {
       const res =
-      mode === "up"
-        ? await supabase.auth.signUp({
-            email,
-            password,
-            options: { emailRedirectTo: redirect, data: { display_name: name } },
-          })
-        : await supabase.auth.signInWithPassword({ email, password });
-    if (res.error) {
-      setMsg(res.error.message);
-      return;
-    }
-    if (mode === "up" && !res.data.session) setMsg(t("auth.checkEmail"));
+        mode === "up"
+          ? await supabase.auth.signUp({
+              email,
+              password,
+              options: { emailRedirectTo: redirect, data: { display_name: name } },
+            })
+          : await supabase.auth.signInWithPassword({ email, password });
+      if (res.error) {
+        setMsg(res.error.message);
+        return;
+      }
+      if (mode === "up" && !res.data.session) setMsg(t("auth.checkEmail"));
     } catch {
       setMsg("تعذّر الاتصال. حاول مرة أخرى. · Connection failed. Please retry.");
     } finally {
@@ -97,45 +97,50 @@ function AuthPage() {
           </Button>
         </div>
 
-        <form onSubmit={(event) => { event.preventDefault(); void submit(); }}>
-        <div className="mt-5 grid gap-4">
-          {mode === "up" && (
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            void submit();
+          }}
+        >
+          <div className="mt-5 grid gap-4">
+            {mode === "up" && (
+              <label className="grid gap-1.5 text-sm">
+                <span className="text-muted-foreground">{t("auth.name")}</span>
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="rounded-lg border border-border bg-background px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring"
+                />
+              </label>
+            )}
             <label className="grid gap-1.5 text-sm">
-              <span className="text-muted-foreground">{t("auth.name")}</span>
+              <span className="text-muted-foreground">{t("auth.email")}</span>
               <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="rounded-lg border border-border bg-background px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring"
+                type="email"
+                required
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="num rounded-lg border border-border bg-background px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring"
               />
             </label>
-          )}
-          <label className="grid gap-1.5 text-sm">
-            <span className="text-muted-foreground">{t("auth.email")}</span>
-            <input
-              type="email"
-              required
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="num rounded-lg border border-border bg-background px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring"
-            />
-          </label>
-          <label className="grid gap-1.5 text-sm">
-            <span className="text-muted-foreground">{t("auth.password")}</span>
-            <input
-              type="password"
-              required
-              autoComplete={mode === "up" ? "new-password" : "current-password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="num rounded-lg border border-border bg-background px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring"
-            />
-          </label>
-        </div>
+            <label className="grid gap-1.5 text-sm">
+              <span className="text-muted-foreground">{t("auth.password")}</span>
+              <input
+                type="password"
+                required
+                autoComplete={mode === "up" ? "new-password" : "current-password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="num rounded-lg border border-border bg-background px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring"
+              />
+            </label>
+          </div>
 
-        <Button type="submit" className="mt-5 w-full" disabled={busy}>
-          {mode === "up" ? t("auth.signUp") : t("auth.signIn")}
-        </Button>
+          <Button type="submit" className="mt-5 w-full" disabled={busy}>
+            {mode === "up" ? t("auth.signUp") : t("auth.signIn")}
+          </Button>
         </form>
         <Button className="mt-3 w-full" variant="outline" onClick={google}>
           {t("auth.google")}

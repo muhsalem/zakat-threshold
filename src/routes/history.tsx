@@ -1,6 +1,7 @@
 import { CenturyChart } from "@/components/site/CenturyChart";
 import { HistoricalYearsCalculator } from "@/components/site/HistoricalYearsCalculator";
 import { NisabEras } from "@/components/site/NisabEras";
+import { PastNisab } from "@/components/site/PastNisab";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -216,7 +217,12 @@ function History() {
   return (
     <Page eyebrow="HISTORY" title={t("history.title")} sub={t("history.sub")}>
       <ManualNotice />
-      <Button asChild variant="outline" className="mb-5"><Link to="/annual-nisab" search={annualSearchSchema.parse({ country })}><CalendarSearch />{lang === "ar" ? "سجل النصاب لكل سنة ويوم" : "Annual and daily nisab archive"}</Link></Button>
+      <Button asChild variant="outline" className="mb-5">
+        <Link to="/annual-nisab" search={annualSearchSchema.parse({ country })}>
+          <CalendarSearch />
+          {lang === "ar" ? "سجل النصاب لكل سنة ويوم" : "Annual and daily nisab archive"}
+        </Link>
+      </Button>
       <div className="mb-6 flex flex-wrap items-center gap-3">
         <CountryPicker />
         <CityPicker />
@@ -536,6 +542,9 @@ function History() {
       <CityPriceCheck />
       <div className="mt-8">
         <HistoricalYearsCalculator />
+      </div>
+      <div className="mt-8">
+        <PastNisab />
       </div>
       <div className="mt-8">
         <CenturyChart />

@@ -59,7 +59,10 @@ function AlertsPage() {
         .select("*")
         .eq("user_id", user.id)
         .maybeSingle();
-      if (prefsError) { setError(prefsError.message); return; }
+      if (prefsError) {
+        setError(prefsError.message);
+        return;
+      }
       if (data) {
         setCountries(data.countries ?? []);
         setMetals(data.metals ?? ["gold", "silver"]);
@@ -86,28 +89,48 @@ function AlertsPage() {
     setError("");
     setBusy(true);
     try {
-    await confirmAccountWrite(() => supabase.from("notification_prefs").upsert({
-      user_id: user.id,
-      countries,
-      metals,
-      in_app: inApp,
-      email,
-      daily_digest: daily,
-      updated_at: new Date().toISOString(),
-    }), () => setSaved(true));
+      await confirmAccountWrite(
+        () =>
+          supabase.from("notification_prefs").upsert({
+            user_id: user.id,
+            countries,
+            metals,
+            in_app: inApp,
+            email,
+            daily_digest: daily,
+            updated_at: new Date().toISOString(),
+          }),
+        () => setSaved(true),
+      );
     } catch {
-      setError(lang === "ar" ? "تعذّر حفظ التنبيهات. حاول مرة أخرى." : "Could not save alerts. Please retry.");
-    } finally { setBusy(false); }
+      setError(
+        lang === "ar"
+          ? "تعذّر حفظ التنبيهات. حاول مرة أخرى."
+          : "Could not save alerts. Please retry.",
+      );
+    } finally {
+      setBusy(false);
+    }
   };
 
   const markRead = async (id: string) => {
     if (!user) return;
     const readAt = new Date().toISOString();
     try {
-      await confirmAccountWrite(() => supabase.from("notifications").update({ read_at: readAt }).eq("id", id).eq("user_id", user.id), () => {
-        setInbox(prev => prev.map(n => n.id === id ? { ...n, read_at: readAt } : n));
-      });
-    } catch { setError(lang === "ar" ? "تعذّر تحديث الإشعار." : "Could not update notification."); }
+      await confirmAccountWrite(
+        () =>
+          supabase
+            .from("notifications")
+            .update({ read_at: readAt })
+            .eq("id", id)
+            .eq("user_id", user.id),
+        () => {
+          setInbox((prev) => prev.map((n) => (n.id === id ? { ...n, read_at: readAt } : n)));
+        },
+      );
+    } catch {
+      setError(lang === "ar" ? "تعذّر تحديث الإشعار." : "Could not update notification.");
+    }
   };
 
   const toggle = (list: string[], value: string, set: (v: string[]) => void) =>
@@ -115,7 +138,11 @@ function AlertsPage() {
 
   return (
     <Page eyebrow={t("nav.alerts")} title={t("a.title")} sub={t("a.sub")}>
-      {error && <p role="alert" className="mb-4 text-sm text-destructive">{error}</p>}
+      {error && (
+        <p role="alert" className="mb-4 text-sm text-destructive">
+          {error}
+        </p>
+      )}
       <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
         <section className="rounded-lg border border-border bg-card p-6">
           <h2 className="text-xl text-foreground">{t("a.countries")}</h2>

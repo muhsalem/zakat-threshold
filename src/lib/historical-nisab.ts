@@ -44,14 +44,31 @@ export function calculateYearNisab(
       goldNisab: details.goldNisabLocal,
       silverNisab: details.silverNisabLocal,
       ratio: details.goldToSilverRatio,
+      priced: details.priced,
       eraNameAr: details.eraNameAr,
       historicalContextAr: details.historicalEventAr,
       currencyName: details.regionalCurrencyAr,
     };
   }
 
-  // Gregorian calculation
-  const match = ANNUAL_METALS.find((m) => m.year === year) ?? ANNUAL_METALS[0]!;
+  // Gregorian calculation: only years with recorded annual prices can be priced.
+  const match = ANNUAL_METALS.find((m) => m.year === year);
+  if (!match) {
+    return {
+      gregorianYear: year,
+      goldUsdOz: 0,
+      silverUsdOz: 0,
+      goldPerGram: 0,
+      silverPerGram: 0,
+      goldNisab: 0,
+      silverNisab: 0,
+      ratio: 0,
+      priced: false,
+      eraNameAr: "التقويم الميلادي المعاصر",
+      historicalContextAr: `لا توجد أسعار مسجَّلة لعام ${year} م`,
+      currencyName: "العملة المحلية المحددة",
+    };
+  }
   const goldPerGram = (match.gold / TROY_OUNCE_G) * exchangeRate;
   const silverPerGram = (match.silver / TROY_OUNCE_G) * exchangeRate;
   const goldNisab = goldPerGram * GOLD_NISAB_G;
@@ -66,6 +83,7 @@ export function calculateYearNisab(
     goldNisab,
     silverNisab,
     ratio: match.gold / match.silver,
+    priced: true,
     eraNameAr: "التقويم الميلادي المعاصر",
     historicalContextAr: `أسعار الذهب والفضة لعام ${year} م`,
     currencyName: "العملة المحلية المحددة",

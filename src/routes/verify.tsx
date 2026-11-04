@@ -204,10 +204,18 @@ function VerifyCommunityPage() {
       }
       sub={
         isAr
-          ? "مبادرة تشاركية لتوثيق أسعار الذهب والفضة الحقيقية في أسواق الصاغة المحلية لكل دولة، وتأكيد النصاب الشرعي بإجماع المزكّين والخبراء."
-          : "A collaborative initiative allowing visitors and gold merchants to verify real-time local bullion prices and confirm the Nisab threshold across all countries."
+          ? "سجل شخصي لتدوين أسعار الذهب والفضة التي تراها في سوق بلدك ومقارنتها بالنصاب المحسوب. المدخلات تُحفظ في متصفحك فقط ولا تُرسل إلى أحد."
+          : "A personal log for the gold and silver prices you see in your local market, compared with the calculated nisab. Entries stay in this browser and are not sent anywhere."
       }
     >
+      <p
+        role="note"
+        className="mb-4 rounded-xl border border-border/60 bg-secondary/50 p-3.5 text-xs leading-6 text-muted-foreground"
+      >
+        {isAr
+          ? "لا توجد قاعدة بيانات مشتركة بعد: ما تدخله هنا يظهر لك وحدك على هذا الجهاز، ولا يُعدّ توثيقًا من أحد غيرك. الأرقام أدناه تخص هذا الجهاز فقط."
+          : "No shared database is connected yet: what you enter here is visible only to you on this device and is not verification by anyone else. The figures below count this device only."}
+      </p>
       {/* KPI Stats Header Bar */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="card-surface p-5 border-primary/20 bg-primary/5">
@@ -216,36 +224,38 @@ function VerifyCommunityPage() {
             <Users className="size-4 text-primary" />
           </div>
           <p className="num mt-2 text-3xl font-bold font-mono text-primary">
-            {formatNumber(stats.totalConfirmations)}+
+            {formatNumber(stats.totalConfirmations)}
           </p>
           <p className="mt-1 text-xs text-muted-foreground">
-            {isAr ? "مصادقة ميدانية مؤكدة من الزوار" : "verified community endorsements"}
+            {isAr ? "مصادقات مسجّلة على هذا الجهاز" : "endorsements recorded on this device"}
           </p>
         </div>
 
         <div className="card-surface p-5">
           <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>{isAr ? "الدول الموثقة ميدانياً" : "Active Countries"}</span>
+            <span>{isAr ? "الدول التي لها إدخالات" : "Countries with entries"}</span>
             <MapPin className="size-4 text-emerald-500" />
           </div>
           <p className="num mt-2 text-3xl font-bold font-mono text-foreground">
             {stats.countriesCount}
           </p>
           <p className="mt-1 text-xs text-muted-foreground">
-            {isAr ? "دولة وعاصمة إسلامية مشاركة" : "countries with active price feeds"}
+            {isAr ? "دول لها إدخالات على هذا الجهاز" : "countries with entries on this device"}
           </p>
         </div>
 
         <div className="card-surface p-5">
           <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>{isAr ? "مؤشر التوافق والإجماع" : "Consensus Confidence"}</span>
+            <span>{isAr ? "نسبة المصادقات" : "Endorsement share"}</span>
             <ShieldCheck className="size-4 text-emerald-500" />
           </div>
           <p className="num mt-2 text-3xl font-bold font-mono text-emerald-600 dark:text-emerald-400">
-            {stats.overallConsensus}%
+            {stats.totalRecords > 0 ? `${stats.overallConsensus}%` : "—"}
           </p>
           <p className="mt-1 text-xs text-muted-foreground">
-            {isAr ? "مطابقة مع أسواق الصاغة والنشرات" : "consensus between souqs & fatwas"}
+            {isAr
+              ? "المصادقات إلى الاعتراضات على هذا الجهاز"
+              : "endorsements versus disputes on this device"}
           </p>
         </div>
 

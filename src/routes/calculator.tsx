@@ -7,16 +7,9 @@ import { CountryPicker } from "@/components/site/Shell";
 import { AsOf, Disclaimer, ManualNotice, StateNote, useNisab } from "@/components/site/Prices";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
-import {
-  DAY_MS,
-  ZAKAT_RATE_SOLAR,
-  formatDays,
-  formatHijri,
-  nextHawl,
-  parseDay,
-  today,
-} from "@/lib/hijri";
-import { KARATS, ZAKAT_RATE } from "@/lib/nisab";
+import { DAY_MS, formatDays, formatHijri, nextHawl, parseDay, today } from "@/lib/hijri";
+import { KARATS } from "@/lib/nisab";
+import { computeZakat, toAmount, type JewelryRule } from "@/lib/zakat-calc";
 import { AssetOrganizer } from "@/components/site/AssetOrganizer";
 import type { AssetValues } from "@/lib/asset-organizer";
 import { CalculatedNisab } from "@/components/site/CalculatedNisab";
@@ -78,7 +71,9 @@ function Calculator() {
     return () => clearInterval(timer);
   }, []);
   const officialQuery = useOfficialThreshold(country, currency, utcDay);
-  const refreshThreshold = () => { void Promise.all([refetch(), officialQuery.refetch()]); };
+  const refreshThreshold = () => {
+    void Promise.all([refetch(), officialQuery.refetch()]);
+  };
 
   const [hawl, setHawlState] = useState<HawlPrefs>({ start: "", solar: false });
   useEffect(() => setHawlState(readHawl()), []);
@@ -97,33 +92,69 @@ function Calculator() {
   const [goldG, setGoldG] = useState("");
   const [karat, setKarat] = useState(21);
   const [jewelryG, setJewelryG] = useState("");
-  const [jewelryRule, setJewelryRule] = useState<"include" | "exclude">("include");
+  const [jewelryRule, setJewelryRule] = useState<JewelryRule>("");
   const [silverG, setSilverG] = useState("");
   const [standard, setStandard] = useState<"silver" | "gold">("silver");
 
-  const purity = KARATS.find((k) => k.k === karat)?.purity ?? 1;
-  const zakatableGoldG = num(goldG) + (jewelryRule === "include" ? num(jewelryG) : 0);
-  const goldValue = values ? zakatableGoldG * values.goldGram * purity : 0;
-  const silverValue = values ? num(silverG) * values.silverGram : 0;
-  const metals = goldValue + silverValue;
-  // Long-term holdings: only the company's zakatable assets are counted (AAOIFI).
-  const pct = longTermPct.trim() === "" ? 100 : Math.min(num(longTermPct), 100);
-  const longTermValue = num(longTerm) * (pct / 100);
-  const net =
-    num(cash) +
-    num(business) +
-    num(investments) +
-    longTermValue +
-    num(receivables) +
-    metals -
-    num(debts);
-  const threshold = resolveCalculatorThreshold({ official: officialQuery.data ?? null, country, currency, day: utcDay, metal: standard, calculated: values?.[standard] ?? null });
+  const result = computeZakat(
+    {
+      cash: toAmount(cash),
+      business: toAmount(business),
+      investments: toAmount(investments),
+      longTerm: toAmount(longTerm),
+      longTermPct: longTermPct.trim() === "" ? 100 : toAmount(longTermPct),
+      receivables: toAmount(receivables),
+      debts: toAmount(debts),
+      goldG: toAmount(goldG),
+      karat,
+      jewelryG: toAmount(jewelryG),
+      jewelryRule,
+      silverG: toAmount(silverG),
+      standard,
+      solarYear: hawl.solar,
+    },
+    values
+      ? {
+          goldGram: values.goldGram,
+          silverGram: values.silverGram,
+          nisabGold: values.gold,
+          nisabSilver: values.silver,
+        }
+      : null,
+  );
+  const { metals, net } = result;
+  // Same-day, same-country, same-currency official announcement wins; otherwise the shared useNisab value.
+  const threshold = resolveCalculatorThreshold({
+    official: officialQuery.data ?? null,
+    country,
+    currency,
+    day: utcDay,
+    metal: standard,
+    calculated: values?.[standard] ?? null,
+  });
   const nisab = threshold.value ?? 0;
   const thresholdReady = threshold.value != null && !officialQuery.isPending;
   // No verdict until live prices (and hence the nisab) are known.
   const above = Boolean(values) && thresholdReady && net > 0 && net >= nisab;
-  const rate = hawl.solar ? ZAKAT_RATE_SOLAR : ZAKAT_RATE;
-  const due = above ? net * rate : 0;
+  const due = above ? net * result.rate : 0;
+
+  const applyAssets = (assets: AssetValues) => {
+    const setters = {
+      cash: setCash,
+      business: setBusiness,
+      investments: setInvestments,
+      longTerm: setLongTerm,
+      receivables: setReceivables,
+      debts: setDebts,
+      goldG: setGoldG,
+      jewelryG: setJewelryG,
+      silverG: setSilverG,
+    };
+    for (const key of Object.keys(setters) as Array<keyof typeof setters>) {
+      const value = assets[key];
+      if (value !== undefined) setters[key](String(value));
+    }
+  };
 
   const hawlStart = parseDay(hawl.start);
   const now = today();
@@ -149,14 +180,6 @@ function Calculator() {
     setSilverG("");
   };
 
-  const applyAssets = (assets: AssetValues) => {
-    const setters = { cash: setCash, business: setBusiness, investments: setInvestments, longTerm: setLongTerm, receivables: setReceivables, debts: setDebts, goldG: setGoldG, jewelryG: setJewelryG, silverG: setSilverG };
-    for (const key of Object.keys(setters) as Array<keyof typeof setters>) {
-      const value = assets[key];
-      if (value !== undefined) setters[key](String(value));
-    }
-  };
-
   return (
     <Page eyebrow="CALCULATOR" title={t("calc.title")} sub={t("calc.sub")}>
       <ManualNotice />
@@ -176,8 +199,16 @@ function Calculator() {
 
       <CalculatedNisab onRefresh={refreshThreshold} refreshing={officialQuery.isFetching} />
       <div className="mb-6 flex flex-wrap gap-3">
-        <Button asChild variant="outline"><Link to="/annual-nisab" search={annualSearchSchema.parse({ country })}>{lang === "ar" ? "حساب الزكاة بتاريخ سابق" : "Calculate for a historical day"}</Link></Button>
-        <Button asChild variant="ghost"><Link to="/personal-calculations">{lang === "ar" ? "حساباتي التاريخية" : "My historical calculations"}</Link></Button>
+        <Button asChild variant="outline">
+          <Link to="/annual-nisab" search={annualSearchSchema.parse({ country })}>
+            {lang === "ar" ? "حساب الزكاة بتاريخ سابق" : "Calculate for a historical day"}
+          </Link>
+        </Button>
+        <Button asChild variant="ghost">
+          <Link to="/personal-calculations">
+            {lang === "ar" ? "حساباتي التاريخية" : "My historical calculations"}
+          </Link>
+        </Button>
       </div>
       <AssetOrganizer onApply={applyAssets} />
       <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
@@ -185,8 +216,16 @@ function Calculator() {
           <Field label={t("calc.cash")} value={cash} onChange={setCash} />
           <Field label={t("calc.business")} value={business} onChange={setBusiness} />
           <Field label={t("calc.investments")} value={investments} onChange={setInvestments} />
-          <Field label={t("calc.receivables")} value={receivables} onChange={setReceivables} />
-          <Field label={t("calc.debts")} value={debts} onChange={setDebts} />
+          <div>
+            <Field label={t("calc.receivables")} value={receivables} onChange={setReceivables} />
+            <p className="mt-1 text-xs leading-5 text-muted-foreground">
+              {t("calc.receivablesHint")}
+            </p>
+          </div>
+          <div>
+            <Field label={t("calc.debts")} value={debts} onChange={setDebts} />
+            <p className="mt-1 text-xs leading-5 text-muted-foreground">{t("calc.debtsHint")}</p>
+          </div>
 
           <div className="sm:col-span-2 grid gap-4 border-t border-border pt-4 sm:grid-cols-2">
             <Field label={t("calc.longTerm")} value={longTerm} onChange={setLongTerm} />
@@ -232,12 +271,18 @@ function Calculator() {
               <span className="text-sm text-muted-foreground">{t("calc.jewelryRule")}</span>
               <select
                 value={jewelryRule}
-                onChange={(e) => setJewelryRule(e.target.value as "include" | "exclude")}
+                onChange={(e) => setJewelryRule(e.target.value as JewelryRule)}
                 className="mt-1 w-full rounded-xl border border-input bg-card px-3 py-2.5 text-foreground outline-none focus:ring-2 focus:ring-ring"
               >
+                <option value="">{t("calc.jewelry.choose")}</option>
                 <option value="include">{t("calc.jewelry.include")}</option>
                 <option value="exclude">{t("calc.jewelry.exclude")}</option>
               </select>
+              {result.jewelryUndecided && (
+                <span role="status" className="mt-1 block text-xs leading-5 text-negative">
+                  {t("calc.jewelry.undecided")}
+                </span>
+              )}
             </label>
             <Field
               label={t("calc.silverWeight")}
@@ -280,22 +325,69 @@ function Calculator() {
             </div>
             <div className="flex justify-between gap-3">
               <dt className="text-muted-foreground">{t("calc.nisabValue")}</dt>
-              <dd className="num text-foreground" data-testid="calculator-selected-nisab" data-origin={threshold.origin}>{thresholdReady ? money(nisab) : "—"}</dd>
+              <dd
+                className="num text-foreground"
+                data-testid="calculator-selected-nisab"
+                data-origin={threshold.origin}
+              >
+                {thresholdReady ? money(nisab) : "—"}
+              </dd>
             </div>
           </dl>
           <div className="mt-3 text-xs leading-6 text-muted-foreground" aria-live="polite">
-            {threshold.official ? <p>{lang === "ar" ? "النصاب الرسمي المعلن" : "Official announced threshold"} · {threshold.official.authority} · <span className="num">{threshold.official.announced_on} UTC</span>{threshold.official.source_url?.startsWith("https://") && <a className="ms-2 text-primary underline" href={threshold.official.source_url} target="_blank" rel="noopener noreferrer">{lang === "ar" ? "المصدر" : "Source"}</a>}</p> : <p>{lang === "ar" ? "نصاب محسوب تلقائيًا من أسعار المعادن المعروضة؛ لا يوجد إعلان رسمي مطابق لليوم والعملة والمعيار المختار." : "Automatically calculated from the displayed metal prices; no matching official announcement for today, currency and selected metal."}</p>}
-            {officialQuery.data && threshold.origin !== "official" && <p>{lang === "ar" ? "آخر إعلان محفوظ" : "Latest saved announcement"}: {officialQuery.data.authority} · <span className="num">{officialQuery.data.announced_on}</span> · {lang === "ar" ? "ليس هو النصاب المستخدم اليوم" : "Not used as today's threshold"}</p>}
-            {officialQuery.isError && <p role="alert" className="text-destructive">{lang === "ar" ? "تعذّر التحقق من السجل الرسمي؛ النتيجة مبنية على الأسعار المعروضة." : "Official record check failed; the result uses the displayed prices."}</p>}
+            {threshold.official ? (
+              <p>
+                {lang === "ar" ? "النصاب الرسمي المعلن" : "Official announced threshold"} ·{" "}
+                {threshold.official.authority} ·{" "}
+                <span className="num">{threshold.official.announced_on} UTC</span>
+                {threshold.official.source_url?.startsWith("https://") && (
+                  <a
+                    className="ms-2 text-primary underline"
+                    href={threshold.official.source_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {lang === "ar" ? "المصدر" : "Source"}
+                  </a>
+                )}
+              </p>
+            ) : (
+              <p>
+                {lang === "ar"
+                  ? "نصاب محسوب تلقائيًا من أسعار المعادن المعروضة؛ لا يوجد إعلان رسمي مطابق لليوم والعملة والمعيار المختار."
+                  : "Automatically calculated from the displayed metal prices; no matching official announcement for today, currency and selected metal."}
+              </p>
+            )}
+            {officialQuery.data && threshold.origin !== "official" && (
+              <p>
+                {lang === "ar" ? "آخر إعلان محفوظ" : "Latest saved announcement"}:{" "}
+                {officialQuery.data.authority} ·{" "}
+                <span className="num">{officialQuery.data.announced_on}</span> ·{" "}
+                {lang === "ar" ? "ليس هو النصاب المستخدم اليوم" : "Not used as today's threshold"}
+              </p>
+            )}
+            {officialQuery.isError && (
+              <p role="alert" className="text-destructive">
+                {lang === "ar"
+                  ? "تعذّر التحقق من السجل الرسمي؛ النتيجة مبنية على الأسعار المعروضة."
+                  : "Official record check failed; the result uses the displayed prices."}
+              </p>
+            )}
           </div>
           <div className="mt-5 rounded-xl bg-primary p-5 text-primary-foreground">
             <p className="text-xs opacity-80">
               {t("calc.due")} · {hawl.solar ? t("calc.rateSolar") : t("calc.rate")}
             </p>
-            <p className="num mt-1 text-3xl" data-testid="calculator-zakat-due">{values && thresholdReady ? money(due) : "—"}</p>
+            <p className="num mt-1 text-3xl" data-testid="calculator-zakat-due">
+              {values && thresholdReady ? money(due) : "—"}
+            </p>
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
-            {!values || !thresholdReady ? t("common.loading") : above ? t("calc.above") : t("calc.below")}
+            {!values || !thresholdReady
+              ? t("common.loading")
+              : above
+                ? t("calc.above")
+                : t("calc.below")}
           </p>
         </aside>
       </div>

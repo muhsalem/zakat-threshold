@@ -16,18 +16,32 @@ export async function trackScheduledFeedRun(
   now: () => Date = () => new Date(),
 ): Promise<Response> {
   const run: ScheduledFeedRun = {
-    startedAt: now().toISOString(), finishedAt: null,
-    status: "running", updated: [], warningCount: 0,
+    startedAt: now().toISOString(),
+    finishedAt: null,
+    status: "running",
+    updated: [],
+    warningCount: 0,
   };
   await save(run, true);
   try {
     const response = await execute();
     const result: unknown = await response.clone().json();
-    const parsed = z.object({ ok: z.boolean(), updated: z.array(z.string()), errors: z.array(z.string()) }).safeParse(result);
+    const parsed = z
+      .object({
+        ok: z.boolean(),
+        idle: z.boolean().optional(),
+        updated: z.array(z.string()),
+        errors: z.array(z.string()),
+      })
+      .safeParse(result);
     const updated = parsed.success ? parsed.data.updated : [];
     const warningCount = parsed.success ? parsed.data.errors.length : 0;
-    const status = !response.ok || !parsed.success || !parsed.data.ok || !updated.length
-      ? "failed" : warningCount ? "partial" : "success";
+    const status =
+      !response.ok || !parsed.success || !parsed.data.ok || (!updated.length && !parsed.data.idle)
+        ? "failed"
+        : warningCount
+          ? "partial"
+          : "success";
     await save({ ...run, finishedAt: now().toISOString(), status, updated, warningCount }, false);
     return response;
   } catch {

@@ -31,6 +31,13 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "calc.jewelryRule": "Ruling on worn jewelry",
     "calc.jewelry.include": "Zakatable (Hanafi view, more cautious)",
     "calc.jewelry.exclude": "Exempt (view of the majority)",
+    "calc.jewelry.choose": "Choose a ruling…",
+    "calc.jewelry.undecided":
+      "Worn jewellery is not counted until you choose a ruling; scholars differ on it.",
+    "calc.receivablesHint":
+      "Enter only debts you expect to be repaid. Debts owed by someone unable or unwilling to pay are treated differently by scholars (many require zakat only once received).",
+    "calc.debtsHint":
+      "Enter debts due now and the instalments falling due within your zakat year, not the whole long-term loan. Scholars differ on deducting debts (the Shafi'i school's later view does not deduct them); follow your country's fatwa authority.",
     "calc.standardNote":
       "Scholars differ on measuring the cash nisab by silver or by gold; follow the fatwa authority in your country.",
     "history.pick": "Metal",
@@ -160,6 +167,12 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
     "calc.jewelryRule": "حكم الحُليّ المستعمل",
     "calc.jewelry.include": "تجب فيه الزكاة (الحنفية، وهو الأحوط)",
     "calc.jewelry.exclude": "لا زكاة فيه (الجمهور)",
+    "calc.jewelry.choose": "اختر الحكم…",
+    "calc.jewelry.undecided": "لا يُحتسب الحُليّ المستعمل حتى تختار الحكم؛ فالعلماء مختلفون فيه.",
+    "calc.receivablesHint":
+      "اكتب هنا الدين الذي ترجو سداده فقط. أما الدين على معسر أو جاحد أو المشكوك فيه فيختلف حكمه عند العلماء (وكثير منهم يرى زكاته عند القبض).",
+    "calc.debtsHint":
+      "اكتب الديون الحالّة الآن وأقساط القروض التي تستحق خلال حولك فقط، لا كامل القرض طويل الأجل. والعلماء مختلفون في خصم الدين (والشافعية في الجديد لا يخصمونه)؛ فاتبع جهة الفتوى في بلدك.",
     "calc.standardNote":
       "اختلف أهل العلم في تقدير نصاب النقود بالفضّة أو بالذهب؛ والأَولى اتّباع جهة الفتوى في بلدك.",
     "history.pick": "المعدن",

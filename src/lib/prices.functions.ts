@@ -8,6 +8,7 @@ import {
   collectQuotes,
   fetchJson,
   quoteFromGoldApi,
+  quoteFromGoldApiIoCached,
   quoteFromYahooFutures,
 } from "./spot-providers";
 
@@ -124,6 +125,7 @@ async function loadLivePrices(): Promise<LivePrices> {
         collectQuotes([
           { name: "gold-api", run: quoteFromGoldApi },
           { name: "yahoo-futures", run: quoteFromYahooFutures },
+          { name: "goldapi.io", run: quoteFromGoldApiIoCached },
         ]),
         firstOk<Fx>([{ run: fxFromErApi }, { run: fxFromFrankfurter }]),
       ]);
@@ -178,6 +180,11 @@ async function loadLivePrices(): Promise<LivePrices> {
 
       cache = { data, at: Date.now() };
       lastGood = cache;
+      // Minute-level history: best effort, never blocks or breaks serving prices.
+      if (typeof window === "undefined") {
+        const { recordTickOpportunistically } = await import("./market-tick.server");
+        await recordTickOpportunistically(data);
+      }
       return data;
     } catch (error) {
       if (lastGood) {

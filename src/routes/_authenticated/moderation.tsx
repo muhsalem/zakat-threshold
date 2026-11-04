@@ -102,27 +102,36 @@ function ModerationPage() {
     setBusy(true);
     setError("");
     try {
-    await confirmAccountWrite(() => supabase
-      .from("price_submissions")
-      .update({
-        status,
-        review_reason: reason,
-        reviewed_by: user.id,
-        reviewed_at: new Date().toISOString(),
-      })
-      .eq("id", row.id).select("id").single(), () => {});
-    const { error: auditError } = await supabase.from("audit_log").insert({
-      actor_id: user.id,
-      action: status,
-      entity: "price_submission",
-      entity_id: row.id,
-      reason,
-      meta: { country: row.country, currency: row.currency },
-    });
-    if (auditError) setError("تمت المراجعة، لكن تعذّر حفظ سجل القرار.");
-    await load();
-    } catch { setError("تعذّر حفظ قرار المراجعة. حاول مرة أخرى."); }
-    finally { setBusy(false); }
+      await confirmAccountWrite(
+        () =>
+          supabase
+            .from("price_submissions")
+            .update({
+              status,
+              review_reason: reason,
+              reviewed_by: user.id,
+              reviewed_at: new Date().toISOString(),
+            })
+            .eq("id", row.id)
+            .select("id")
+            .single(),
+        () => {},
+      );
+      const { error: auditError } = await supabase.from("audit_log").insert({
+        actor_id: user.id,
+        action: status,
+        entity: "price_submission",
+        entity_id: row.id,
+        reason,
+        meta: { country: row.country, currency: row.currency },
+      });
+      if (auditError) setError("تمت المراجعة، لكن تعذّر حفظ سجل القرار.");
+      await load();
+    } catch {
+      setError("تعذّر حفظ قرار المراجعة. حاول مرة أخرى.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   const grantRole = async () => {
@@ -130,12 +139,28 @@ function ModerationPage() {
     setBusy(true);
     try {
       const users: Awaited<ReturnType<typeof listUsersWithRoles>> = await listUsers();
-      const target = users.find((item: { id: string; email: string }) => item.email.toLowerCase() === roleEmail.trim().toLowerCase());
-      if (!target) { setRoleMsg("لا يوجد حساب بهذا البريد."); return; }
-      const result = await grant({ data: { userId: target.id, role: roleValue, grant: true, reason: "منح صلاحية من لوحة المراجعة" } });
-      setRoleMsg(result.ok ? "تم منح الصلاحية." : result.reason ?? "تعذّر منح الصلاحية.");
-    } catch { setRoleMsg("تعذّر منح الصلاحية. حاول مرة أخرى."); }
-    finally { setBusy(false); }
+      const target = users.find(
+        (item: { id: string; email: string }) =>
+          item.email.toLowerCase() === roleEmail.trim().toLowerCase(),
+      );
+      if (!target) {
+        setRoleMsg("لا يوجد حساب بهذا البريد.");
+        return;
+      }
+      const result = await grant({
+        data: {
+          userId: target.id,
+          role: roleValue,
+          grant: true,
+          reason: "منح صلاحية من لوحة المراجعة",
+        },
+      });
+      setRoleMsg(result.ok ? "تم منح الصلاحية." : (result.reason ?? "تعذّر منح الصلاحية."));
+    } catch {
+      setRoleMsg("تعذّر منح الصلاحية. حاول مرة أخرى.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   if (loading || !isAdmin) {
@@ -168,7 +193,11 @@ function ModerationPage() {
 
   return (
     <Page eyebrow={t("nav.moderation")} title={t("m.title")} sub={t("m.sub")}>
-      {error && <p role="alert" className="mb-4 text-sm text-destructive">{error}</p>}
+      {error && (
+        <p role="alert" className="mb-4 text-sm text-destructive">
+          {error}
+        </p>
+      )}
       <section className="rounded-lg border border-border bg-card p-6">
         <h2 className="flex items-center gap-2 text-xl text-foreground">
           <ShieldCheck aria-hidden="true" className="size-5 text-primary" />
@@ -200,7 +229,12 @@ function ModerationPage() {
                 <Button disabled={busy} size="sm" onClick={() => decide(row, "approved")}>
                   {t("m.approve")}
                 </Button>
-                <Button disabled={busy} size="sm" variant="outline" onClick={() => decide(row, "rejected")}>
+                <Button
+                  disabled={busy}
+                  size="sm"
+                  variant="outline"
+                  onClick={() => decide(row, "rejected")}
+                >
                   {t("m.reject")}
                 </Button>
               </div>
@@ -232,7 +266,9 @@ function ModerationPage() {
               </option>
             ))}
           </select>
-          <Button disabled={busy} onClick={grantRole}>{t("m.grant")}</Button>
+          <Button disabled={busy} onClick={grantRole}>
+            {t("m.grant")}
+          </Button>
           {roleMsg && <span className="text-sm text-muted-foreground">{roleMsg}</span>}
         </div>
       </section>

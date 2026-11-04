@@ -9,23 +9,42 @@ export const annualSearchSchema = z.object({
   country: z.string().default("EG").catch("EG"),
   calendar: z.enum(["gregorian", "hijri"]).default("gregorian").catch("gregorian"),
   year: z.coerce.number().int().min(2).max(9998).optional().catch(undefined),
-  day: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().catch(undefined),
+  day: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional()
+    .catch(undefined),
   metal: z.enum(["gold", "silver"]).default("silver").catch("silver"),
 });
 export type AnnualSearch = z.infer<typeof annualSearchSchema>;
-export const annualRequestSchema = annualSearchSchema.refine(
-  (v) => COUNTRIES.some((c) => c.code === v.country), "Invalid country",
-).refine((v) => !v.year || (v.calendar === "gregorian" ? v.year >= 1900 : v.year >= 1300), "Invalid year");
+export const annualRequestSchema = annualSearchSchema
+  .refine((v) => COUNTRIES.some((c) => c.code === v.country), "Invalid country")
+  .refine(
+    (v) => !v.year || (v.calendar === "gregorian" ? v.year >= 1900 : v.year >= 1300),
+    "Invalid year",
+  );
 
 export type HistoryDay = {
-  id: string; day: string; country: string; currency: string;
-  gold_gram: number | null; silver_gram: number | null;
-  gold_nisab: number | null; silver_nisab: number | null; source: string | null;
+  id: string;
+  day: string;
+  country: string;
+  currency: string;
+  gold_gram: number | null;
+  silver_gram: number | null;
+  gold_nisab: number | null;
+  silver_nisab: number | null;
+  source: string | null;
 };
 
 export function yearWindow(year: number, calendar: "hijri" | "gregorian") {
-  const start = calendar === "gregorian" ? new Date(Date.UTC(year, 0, 1)) : hijriToGregorian({ year, month: 1, day: 1 });
-  const end = calendar === "gregorian" ? new Date(Date.UTC(year + 1, 0, 1)) : hijriToGregorian({ year: year + 1, month: 1, day: 1 });
+  const start =
+    calendar === "gregorian"
+      ? new Date(Date.UTC(year, 0, 1))
+      : hijriToGregorian({ year, month: 1, day: 1 });
+  const end =
+    calendar === "gregorian"
+      ? new Date(Date.UTC(year + 1, 0, 1))
+      : hijriToGregorian({ year: year + 1, month: 1, day: 1 });
   return { start: start.toISOString().slice(0, 10), end: end.toISOString().slice(0, 10) };
 }
 
@@ -38,10 +57,16 @@ export function daysOfYear(year: number, calendar: "hijri" | "gregorian") {
 }
 
 export function yearOf(day: string, calendar: "hijri" | "gregorian") {
-  return calendar === "gregorian" ? Number(day.slice(0, 4)) : gregorianToHijri(new Date(`${day}T00:00:00Z`)).year;
+  return calendar === "gregorian"
+    ? Number(day.slice(0, 4))
+    : gregorianToHijri(new Date(`${day}T00:00:00Z`)).year;
 }
 
-export function historicalValuation(row: HistoryDay | null | undefined, metal: "gold" | "silver", silverWeight = SILVER_NISAB_G) {
+export function historicalValuation(
+  row: HistoryDay | null | undefined,
+  metal: "gold" | "silver",
+  silverWeight = SILVER_NISAB_G,
+) {
   if (!row) return null;
   const gram = metal === "gold" ? row.gold_gram : row.silver_gram;
   // A saved amount is not enough to reconstruct its underlying valuation standard.
@@ -51,7 +76,8 @@ export function historicalValuation(row: HistoryDay | null | undefined, metal: "
 }
 
 export const personalCalculationSchema = z.object({
-  historyId: z.string().uuid(), metal: z.enum(["gold", "silver"]),
+  historyId: z.string().uuid(),
+  metal: z.enum(["gold", "silver"]),
   silverWeight: z.union([z.literal(SILVER_NISAB_G), z.literal(ALTERNATIVE_SILVER_NISAB_G)]),
   netWealth: z.number().finite().min(0).max(1e15),
   basis: z.enum(["hijri", "gregorian"]),

@@ -71,7 +71,9 @@ function ControlPage() {
       sub="النشر اليومي على فيسبوك، استيراد البيانات القديمة، والمستخدمون والأدوار."
     >
       <ScheduledFeedLog />
-      <Button asChild variant="outline" className="mb-6"><Link to="/jeweler-prices">إدخال أسعار الصاغة وسجلها</Link></Button>
+      <Button asChild variant="outline" className="mb-6">
+        <Link to="/jeweler-prices">إدخال أسعار الصاغة وسجلها</Link>
+      </Button>
       <Tabs defaultValue="facebook" dir="rtl">
         <TabsList className="mb-4 flex-wrap h-auto">
           <TabsTrigger value="facebook">

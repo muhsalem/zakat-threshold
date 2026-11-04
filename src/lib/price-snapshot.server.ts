@@ -6,7 +6,7 @@ import {
   collectQuotes,
   fetchJson,
   quoteFromGoldApi,
-  quoteFromGoldApiIo,
+  quoteFromGoldApiIoCached,
   quoteFromYahooFutures,
 } from "./spot-providers";
 
@@ -52,11 +52,11 @@ export async function recordPriceSnapshot(
   db: SupabaseClient,
   day: string,
 ): Promise<SnapshotResult> {
-  // The keyed provider is rate-limited, so it only runs here, once a day.
+  // The keyed provider is cached (it is rate-limited), so this reuses the live path's quote.
   const { quotes, errors } = await collectQuotes([
     { name: "gold-api", run: quoteFromGoldApi },
     { name: "yahoo-futures", run: quoteFromYahooFutures },
-    { name: "goldapi.io", run: quoteFromGoldApiIo },
+    { name: "goldapi.io", run: quoteFromGoldApiIoCached },
   ]);
   const consensus = reachConsensus(quotes);
   if (!consensus) return { recorded: false, reason: "no usable metal quote", errors };

@@ -3,6 +3,7 @@
  * Complete historical and regional database for every Hijri year from 2 AH (Institution of Zakat) to 1448 AH (624 CE - 2026 CE).
  */
 
+import { ANNUAL_METALS } from "./long-history";
 import { TROY_OUNCE_G } from "./nisab";
 
 export type IslamicEra =
@@ -420,7 +421,7 @@ export const ISLAMIC_CHRONOLOGY: ChronologyMilestone[] = [
     titleEn: "Severing the Gold Standard (Nixon Shock)",
     goldDinarGrams: 4.25,
     silverDirhamGrams: 2.975,
-    goldToSilverRatio: 35.0,
+    goldToSilverRatio: 26.2,
     goldNisabGrams: 85,
     silverNisabGrams: 595,
     goldUsdOzEquivalent: 40.62,
@@ -439,7 +440,8 @@ export const ISLAMIC_CHRONOLOGY: ChronologyMilestone[] = [
     era: "contemporary",
     eraNameAr: "الوقت الراهن (عصر التضخم والملاذات الآمنة)",
     eraNameEn: "Contemporary Market Reality",
-    titleAr: "اتساع الفجوة التاريخية بين نصابي الذهب والفضة وارتفاع النسبة لـ 90:1",
+    titleAr:
+      "اتساع الفجوة التاريخية بين نصابي الذهب والفضة وارتفاع النسبة إلى نحو 93:1 (متوسط 2025)",
     titleEn: "Record Disparity: Gold-to-Silver Ratio Reaches ~90:1",
     goldDinarGrams: 4.25,
     silverDirhamGrams: 2.975,
@@ -470,6 +472,10 @@ export type AnyHijriYearDetails = {
   goldNisabGrams: number;
   silverNisabGrams: number;
   goldToSilverRatio: number;
+  /** The ratio is a market figure only where annual price data exists; earlier it is an estimate. */
+  ratioIsEstimate: boolean;
+  /** False when no market price data exists for this year: the money values below are 0, not guesses. */
+  priced: boolean;
   goldPriceUsdOz: number;
   silverPriceUsdOz: number;
   goldNisabLocal: number;
@@ -607,7 +613,8 @@ export function getAnyHijriYearDetails(
     if (safeYear < 11) {
       historicalEventAr = `العام ${safeYear} من الهجرة النبوية المباركة بالمدينة المنورة.`;
       rulerOrContextAr = "رسول الله محمد ﷺ";
-      fiqhiStatusAr = "النصابان متطابقان في القيمة والغنى تماماً (20 ديناراً = 200 درهم).";
+      fiqhiStatusAr =
+        "النصابان متقاربان في القيمة؛ فقد عُدَّت العشرون ديناراً معادِلةً تقريباً للمائتي درهم.";
     } else if (safeYear <= 40) {
       historicalEventAr = `العام ${safeYear} هـ في عهد الخلافة الراشدة والفتوحات الإسلامية الكبرى.`;
       rulerOrContextAr = "الخلفاء الراشدون رضي الله عنهم";
@@ -636,42 +643,23 @@ export function getAnyHijriYearDetails(
     }
   }
 
-  // Representative gold price in USD/oz for calculation context
-  let goldPriceUsdOz = 20.67;
-  if (safeYear < 1342) {
-    goldPriceUsdOz = 20.67;
-  } else if (safeYear <= 1391) {
-    goldPriceUsdOz = 35.0;
-  } else if (safeYear <= 1421) {
-    goldPriceUsdOz = 350.0;
-  } else {
-    // 2000-2026 growth
-    goldPriceUsdOz = 350.0 + ((safeYear - 1421) / 27) * (3120.0 - 350.0);
-  }
-  const silverPriceUsdOz = goldPriceUsdOz / ratio;
+  // Real annual-average prices exist only from 1925; earlier years carry no money values.
+  const market = ANNUAL_METALS.find((m) => m.year === gregorianYear);
+  const priced = market != null;
+  const goldPriceUsdOz = market?.gold ?? 0;
+  const silverPriceUsdOz = market?.silver ?? 0;
+  if (market) ratio = Number((market.gold / market.silver).toFixed(1));
 
   // Local currency values (85g 24K and 595g Silver)
   const goldPerGramLocal = (goldPriceUsdOz / TROY_OUNCE_G) * exchangeRate;
   const silverPerGramLocal = (silverPriceUsdOz / TROY_OUNCE_G) * exchangeRate;
 
-  const goldNisabLocal = Number((goldPerGramLocal * 85).toFixed(2));
-  const silverNisabLocal = Number((silverPerGramLocal * 595).toFixed(2));
+  const goldNisabLocal = priced ? Number((goldPerGramLocal * 85).toFixed(2)) : 0;
+  const silverNisabLocal = priced ? Number((silverPerGramLocal * 595).toFixed(2)) : 0;
   const lowerNisabLocal = Math.min(goldNisabLocal, silverNisabLocal);
 
-  // Purchasing power estimate description
-  let purchasingPowerEstimateAr = "";
-  if (safeYear <= 40) {
-    purchasingPowerEstimateAr =
-      "نصاب الذهب (20 ديناراً) أو نصاب الفضة (200 درهم) كان يشتري نحو 20 شاة سمينة، أو كفاية أسرة كاملة لعام ونصف.";
-  } else if (safeYear <= 656) {
-    purchasingPowerEstimateAr =
-      "نصاب الذهب 20 ديناراً يشتري نحو 20-30 شاة أو حمل بعير من الحنطة، بينما نصاب الفضة تراجع قليلاً وبدأ يشتري نحو 15-18 شاة.";
-  } else if (safeYear <= 1342) {
-    purchasingPowerEstimateAr =
-      "نصاب الذهب بقي محافظاً على شراء قطيع من الماشية، بينما انحدرت القوة الشرائية لنصاب الفضة ليشتري نحو 8-10 شياه فقط.";
-  } else {
-    purchasingPowerEstimateAr = `نصاب الذهب (85 جم) يمثل ثروة تكفي لشراء نحو 25-35 شاة أو كفاية أسرة لعدة أشهر، بينما نصاب الفضة تراجع ليشتري نحو 2-3 شياه فقط.`;
-  }
+  // No purchasing-power figures: the sheep-equivalent estimates had no source.
+  const purchasingPowerEstimateAr = "";
 
   return {
     hijriYear: safeYear,
@@ -686,6 +674,8 @@ export function getAnyHijriYearDetails(
     goldNisabGrams: 85,
     silverNisabGrams: 595,
     goldToSilverRatio: ratio,
+    ratioIsEstimate: !priced,
+    priced,
     goldPriceUsdOz: Number(goldPriceUsdOz.toFixed(2)),
     silverPriceUsdOz: Number(silverPriceUsdOz.toFixed(2)),
     goldNisabLocal,

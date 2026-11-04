@@ -1,7 +1,23 @@
 import assert from "node:assert/strict";
 import { it } from "node:test";
-import { daysOfYear, historicalDue, historicalValuation, personalCalculationSchema, yearWindow } from "./annual-nisab";
-const row = { id: "x", day: "2024-01-01", country: "EG", currency: "EGP", gold_gram: 4000, silver_gram: 50, gold_nisab: null, silver_nisab: null, source: "Saved source" };
+import {
+  daysOfYear,
+  historicalDue,
+  historicalValuation,
+  personalCalculationSchema,
+  yearWindow,
+} from "./annual-nisab";
+const row = {
+  id: "x",
+  day: "2024-01-01",
+  country: "EG",
+  currency: "EGP",
+  gold_gram: 4000,
+  silver_gram: 50,
+  gold_nisab: null,
+  silver_nisab: null,
+  source: "Saved source",
+};
 it("includes each UTC day of a leap year", () => {
   const days = daysOfYear(2024, "gregorian");
   assert.equal(days.length, 366);
@@ -32,7 +48,13 @@ it("retains lunar and solar calculation rates and exact threshold comparison", (
   assert.equal(historicalDue(29750, 29750, "hijri").due, 743.75);
 });
 it("rejects unsupported historical standards and negative personal wealth", () => {
-  const v = { historyId: "00000000-0000-4000-8000-000000000000", metal: "silver", silverWeight: 595, netWealth: 100000, basis: "hijri" };
+  const v = {
+    historyId: "00000000-0000-4000-8000-000000000000",
+    metal: "silver",
+    silverWeight: 595,
+    netWealth: 100000,
+    basis: "hijri",
+  };
   assert.equal(personalCalculationSchema.safeParse(v).success, true);
   assert.equal(personalCalculationSchema.safeParse({ ...v, silverWeight: 600 }).success, false);
   assert.equal(personalCalculationSchema.safeParse({ ...v, netWealth: -1 }).success, false);

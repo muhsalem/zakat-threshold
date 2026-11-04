@@ -39,257 +39,41 @@ export const SOURCE_TYPE_LABELS: Record<SourceType, { ar: string; en: string }> 
   other: { ar: "مصادر ميدانية أخرى", en: "Other Field Sources" },
 };
 
-const SEED_VERIFICATIONS: PriceVerification[] = [
-  {
-    id: "ver-sa-01",
-    countryCode: "SA",
-    countryName: "السعودية",
-    currency: "SAR",
-    city: "الرياض (سوق البطحاء للذهب)",
-    goldGram24k: 338.5,
-    goldGram21k: 296.2,
-    silverGramPure: 4.15,
-    goldNisab: 338.5 * 85, // 28,772.50 SAR
-    silverNisab: 4.15 * 595, // 2,469.25 SAR
-    sourceType: "gold_souq",
-    sourceLabel: "سوق الذهب المركزي بالبطحاء وجمعية المعادن الثمينة",
-    contributorName: "الشيخ صالح بن عبد الله العتيبي",
-    contributorRole: "تاجر مجوهرات وعضو لجنة الصاغة",
-    confirmations: 248,
-    disputes: 1,
-    status: "verified",
-    date: "2026-10-08",
-    timestamp: "2026-10-08T06:30:00Z",
-    notes:
-      "تمت المعاينة صباح اليوم في أسواق الذهب بالرياض، السعر صافي دون مصنعية للسبائك 24 قيراط نقاء 999.9.",
-  },
-  {
-    id: "ver-eg-01",
-    countryCode: "EG",
-    countryName: "مصر",
-    currency: "EGP",
-    city: "القاهرة (الصاغة - الحسين)",
-    goldGram24k: 4120,
-    goldGram21k: 3605,
-    silverGramPure: 52.8,
-    goldNisab: 4120 * 85, // 350,200 EGP
-    silverNisab: 52.8 * 595, // 31,416 EGP
-    sourceType: "gold_souq",
-    sourceLabel: "شعبة الذهب بالاتحاد العام للغرف التجارية المصرية",
-    contributorName: "م. أحمد عبد الرحمن",
-    contributorRole: "باحث اقتصادي ومهتم بالمعاملات المالية",
-    confirmations: 384,
-    disputes: 3,
-    status: "verified",
-    date: "2026-10-08",
-    timestamp: "2026-10-08T07:15:00Z",
-    notes:
-      "سعر جرام الذهب عيار 24 بدون مصنعية أو ضريبة دمغة، متطابق مع تسعيرة الصاغة الرسمية لليوم.",
-  },
-  {
-    id: "ver-ae-01",
-    countryCode: "AE",
-    countryName: "الإمارات",
-    currency: "AED",
-    city: "دبي (سوق ديرة التاريخي للذهب)",
-    goldGram24k: 332.0,
-    goldGram21k: 290.5,
-    silverGramPure: 4.08,
-    goldNisab: 332.0 * 85, // 28,220 AED
-    silverNisab: 4.08 * 595, // 2,427.60 AED
-    sourceType: "gold_souq",
-    sourceLabel: "مجموعة دبي للذهب والمجوهرات (Dubai Jewellery Group)",
-    contributorName: "محمد الشامسي",
-    contributorRole: "خبير معادن ثمينة معتمد",
-    confirmations: 176,
-    disputes: 0,
-    status: "verified",
-    date: "2026-10-08",
-    timestamp: "2026-10-08T05:45:00Z",
-    notes:
-      "التسعيرة الصباحية الصادرة عن مجمع دبي للذهب للمعدن الصافي عيار 24 والفضة السويسرية الخالصة.",
-  },
-  {
-    id: "ver-kw-01",
-    countryCode: "KW",
-    countryName: "الكويت",
-    currency: "KWD",
-    city: "مدينة الكويت (سوق المباركية)",
-    goldGram24k: 27.8,
-    goldGram21k: 24.3,
-    silverGramPure: 0.345,
-    goldNisab: 27.8 * 85, // 2,363 KWD
-    silverNisab: 0.345 * 595, // 205.28 KWD
-    sourceType: "central_bank",
-    sourceLabel: "نشرة وزارة التجارة والصناعة وسوق المباركية",
-    contributorName: "فيصل الكندري",
-    contributorRole: "متابع شرعي ومالي",
-    confirmations: 142,
-    disputes: 0,
-    status: "verified",
-    date: "2026-10-08",
-    timestamp: "2026-10-08T04:30:00Z",
-    notes: "الأسعار متوافقة مع مؤشر بيت الزكاة الكويتي لنصاب الفضة والذهب لليوم.",
-  },
-  {
-    id: "ver-jo-01",
-    countryCode: "JO",
-    countryName: "الأردن",
-    currency: "JOD",
-    city: "عمان (وسط البلد - شارع الصاغة)",
-    goldGram24k: 64.2,
-    goldGram21k: 56.1,
-    silverGramPure: 0.79,
-    goldNisab: 64.2 * 85, // 5,457 JOD
-    silverNisab: 0.79 * 595, // 470.05 JOD
-    sourceType: "gold_souq",
-    sourceLabel: "نقابة أصحاب محلات تجارة وصياغة الحلي والمجوهرات",
-    contributorName: "د. عمر المجالي",
-    contributorRole: "أكاديمي وباحث في الفقه المالي",
-    confirmations: 119,
-    disputes: 1,
-    status: "verified",
-    date: "2026-10-08",
-    timestamp: "2026-10-08T06:00:00Z",
-    notes: "التسعيرة اليومية المعتمدة رسمياً للنقابة العامة في المملكة الأردنية الهاشمية.",
-  },
-  {
-    id: "ver-ma-01",
-    countryCode: "MA",
-    countryName: "المغرب",
-    currency: "MAD",
-    city: "الدار البيضاء (قيسارية الحفاري)",
-    goldGram24k: 890,
-    goldGram21k: 778,
-    silverGramPure: 10.9,
-    goldNisab: 890 * 85, // 75,650 MAD
-    silverNisab: 10.9 * 595, // 6,485.50 MAD
-    sourceType: "gold_souq",
-    sourceLabel: "فيدرالية تجار وصاغة المجوهرات بالمغرب",
-    contributorName: "حمزة التازي",
-    contributorRole: "تاجر صاغة بالدار البيضاء",
-    confirmations: 95,
-    disputes: 0,
-    status: "verified",
-    date: "2026-10-08",
-    timestamp: "2026-10-08T03:30:00Z",
-    notes: "سعر السبائك الخالصة عيار 24 بدون مصنعية، وتأكيد نصاب الفضة المتداول.",
-  },
-  {
-    id: "ver-dz-01",
-    countryCode: "DZ",
-    countryName: "الجزائر",
-    currency: "DZD",
-    city: "الجزائر العاصمة (ساحة الشهداء والقصبة)",
-    goldGram24k: 12100,
-    goldGram21k: 10580,
-    silverGramPure: 148,
-    goldNisab: 12100 * 85, // 1,028,500 DZD
-    silverNisab: 148 * 595, // 88,060 DZD
-    sourceType: "dar_alifta",
-    sourceLabel: "بيان وزارة الشؤون الدينية والأوقاف وسوق الصاغة المحلي",
-    contributorName: "كريم بلحاج",
-    contributorRole: "باحث ومهتم بأوقاف الزكاة",
-    confirmations: 82,
-    disputes: 2,
-    status: "verified",
-    date: "2026-10-08",
-    timestamp: "2026-10-08T05:10:00Z",
-    notes: "مطابق للنصاب الشرعي المحتسب رسمياً بالجزائر استناداً لنصاب الذهب عيار 18/24.",
-  },
-  {
-    id: "ver-qa-01",
-    countryCode: "QA",
-    countryName: "قطر",
-    currency: "QAR",
-    city: "الدوحة (سوق الذهب - سوق واقف)",
-    goldGram24k: 329.5,
-    goldGram21k: 288.3,
-    silverGramPure: 4.05,
-    goldNisab: 329.5 * 85, // 28,007.50 QAR
-    silverNisab: 4.05 * 595, // 2,409.75 QAR
-    sourceType: "gold_souq",
-    sourceLabel: "محلات سوق الذهب المركزي بالدوحة",
-    contributorName: "عبد الله الهاجري",
-    contributorRole: "زائر وموثق محلي",
-    confirmations: 91,
-    disputes: 0,
-    status: "verified",
-    date: "2026-10-08",
-    timestamp: "2026-10-08T06:10:00Z",
-    notes: "سعر سبيكة الذهب الخالص 999.9 وسعر أونصة الفضة المعتمدة لصندوق الزكاة القطري.",
-  },
-  {
-    id: "ver-om-01",
-    countryCode: "OM",
-    countryName: "عُمان",
-    currency: "OMR",
-    city: "مسقط (سوق مطرح للذهب)",
-    goldGram24k: 34.8,
-    goldGram21k: 30.4,
-    silverGramPure: 0.43,
-    goldNisab: 34.8 * 85, // 2,958 OMR
-    silverNisab: 0.43 * 595, // 255.85 OMR
-    sourceType: "gold_souq",
-    sourceLabel: "محلات صاغة الذهب بسوق مطرح العريق",
-    contributorName: "سعيد البوسعيدي",
-    contributorRole: "باحث شرعي مستقل",
-    confirmations: 74,
-    disputes: 0,
-    status: "verified",
-    date: "2026-10-08",
-    timestamp: "2026-10-08T05:20:00Z",
-    notes: "تمت مراجعة التسعيرة بالتنسيق مع الصاغة، والفضة خالصة بنسبة 99.9%.",
-  },
-  {
-    id: "ver-tr-01",
-    countryCode: "TR",
-    countryName: "تركيا",
-    currency: "TRY",
-    city: "إسطنبول (البازار الكبير - Kapalıçarşı)",
-    goldGram24k: 3020,
-    goldGram21k: 2642,
-    silverGramPure: 37.5,
-    goldNisab: 3020 * 85, // 256,700 TRY
-    silverNisab: 37.5 * 595, // 22,312.50 TRY
-    sourceType: "gold_souq",
-    sourceLabel: "بورصة الذهب بالبازار الكبير ومجلس الإفتاء التركي (ديانت)",
-    contributorName: "محمد الفاتح أوزتورك",
-    contributorRole: "خبير أسواق صاغة",
-    confirmations: 88,
-    disputes: 1,
-    status: "verified",
-    date: "2026-10-08",
-    timestamp: "2026-10-08T06:50:00Z",
-    notes: "سعر الجرام بالليرة التركية للذهب الصافي 24 قيراط، وموافق لفتوى رئاسة الشؤون الدينية.",
-  },
-];
+/**
+ * Earlier builds shipped invented "field verifications" (named contributors, confirmation
+ * counts, a verified status). They were never real, so they are no longer shown, and any
+ * copy already stored in a browser is removed on read.
+ */
+const LEGACY_SEED_IDS = new Set<string>([
+  "ver-sa-01",
+  "ver-eg-01",
+  "ver-ae-01",
+  "ver-kw-01",
+  "ver-jo-01",
+  "ver-ma-01",
+  "ver-dz-01",
+  "ver-qa-01",
+  "ver-om-01",
+  "ver-tr-01",
+]);
 
 const LS_VERIFICATIONS = "nisab_community_verifications_v2";
 const LS_USER_CONFIRMED = "nisab_user_confirmed_ids_v2";
 
+/** Entries exist only in this browser: no shared database is connected. */
 export function getCommunityVerifications(): PriceVerification[] {
-  if (typeof window === "undefined") return SEED_VERIFICATIONS;
+  if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(LS_VERIFICATIONS);
+    if (!raw) return [];
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
     const userConfirmed = getUserConfirmedIds();
-    let list: PriceVerification[];
-    if (!raw) {
-      localStorage.setItem(LS_VERIFICATIONS, JSON.stringify(SEED_VERIFICATIONS));
-      list = SEED_VERIFICATIONS;
-    } else {
-      list = JSON.parse(raw) as PriceVerification[];
-      if (!Array.isArray(list) || list.length === 0) {
-        list = SEED_VERIFICATIONS;
-      }
-    }
-
-    return list.map((item) => ({
-      ...item,
-      userConfirmed: userConfirmed.has(item.id),
-    }));
+    const list = (parsed as PriceVerification[]).filter((item) => !LEGACY_SEED_IDS.has(item.id));
+    if (list.length !== parsed.length) localStorage.setItem(LS_VERIFICATIONS, JSON.stringify(list));
+    return list.map((item) => ({ ...item, userConfirmed: userConfirmed.has(item.id) }));
   } catch {
-    return SEED_VERIFICATIONS;
+    return [];
   }
 }
 
@@ -520,8 +304,7 @@ export function getOverallCommunityStats() {
   const totalConfirmations = all.reduce((sum, r) => sum + r.confirmations, 0);
   const totalDisputes = all.reduce((sum, r) => sum + r.disputes, 0);
   const totalVotes = totalConfirmations + totalDisputes;
-  const overallConsensus =
-    totalVotes > 0 ? Math.round((totalConfirmations / totalVotes) * 100) : 99;
+  const overallConsensus = totalVotes > 0 ? Math.round((totalConfirmations / totalVotes) * 100) : 0;
 
   return {
     totalRecords: all.length,

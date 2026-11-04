@@ -69,3 +69,8 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+
+## قاعدة البيانات والتاريخ
+
+- `drizzle/migrations/0013_market_ticks.sql`: سعر كل دقيقة. نصاب أي دولة في أي وقت سابق يُشتق من هذا السجل ولقطة الصرف لذلك اليوم عبر `/api/public/v1/nisab/at?country=EG&at=2026-10-20T14:30Z`.
+- جدولة: `POST /api/public/hooks/market-tick` كل دقيقة، و`POST /api/public/hooks/country-prices` كل 15 دقيقة (يحدّث أسعار كل دولة عند 11 صباحًا و11 مساءً بتوقيتها)، و`POST /api/public/hooks/jeweler-feed` يوميًا (اللقطة والتنبيهات والنشر، ويكمل فقط الدول التي لا سعر لها اليوم)، بترويسة `Authorization: Bearer <LOVABLE_CRON_SECRET>`.
