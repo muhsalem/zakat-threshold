@@ -28,3 +28,5 @@
 - Own public jeweler-price realtime subscriptions in one root-mounted visitor listener, deduplicate actual price changes and invalidate country quote caches; this prevents per-hook subscriptions and timestamp-only alerts.
 - Ground questions in database-owned verified excerpts with separate publication and verification dates, never automatically treat a fatwa or guideline as a daily monetary announcement.
 - Save admin-entered jeweler prices through an authenticated, role-checked transactional RPC that updates the live feed, UTC history and audit row together; this prevents activation without a durable update record.
+- Annual daily archives read persisted country/currency-matched UTC history through a public read-only function; missing metal prices remain missing, and historical standards use shared valuation weights rather than current FX or reconstructed annual estimates.
+- Personal historical calculations live in an owner-only persistent table behind authenticated functions; derive threshold, rate and due server-side from the selected history row and snapshot its provenance so public visitors never receive private calculations.

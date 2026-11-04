@@ -10,6 +10,7 @@ const PAGES = [
   "/map",
   "/compare",
   "/history",
+  "/annual-nisab",
   "/chronology",
   "/methodology",
   "/fiqh",

@@ -36,6 +36,13 @@
       "when": 1793253610784,
       "tag": "0004_restrict_price_submission_reads",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793608600016,
+      "tag": "0005_personal_historical_calculations",
+      "breakpoints": true
     }
   ]
 }

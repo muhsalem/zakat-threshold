@@ -51,8 +51,8 @@ describe("database query contracts", () => {
     );
   });
   test("loads generated table, write and RPC shapes", () => {
-    // 14 tables plus the public_price_quotes and public_profiles views.
-    assert.equal(schema.tables.size, 16);
+    // 15 tables plus the public_price_quotes and public_profiles views.
+    assert.equal(schema.tables.size, 17);
     assert.equal(
       schema.tables.get("price_submissions")?.get("Insert")?.get("user_id")?.optional,
       false,
