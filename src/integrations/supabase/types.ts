@@ -62,6 +62,33 @@ export type Database = {
         };
         Relationships: [];
       };
+      country_price_updates: {
+        Row: {
+          country: string;
+          local_date: string;
+          local_hour: number;
+          slot_at: string;
+          time_zone: string;
+          updated_at: string;
+        };
+        Insert: {
+          country: string;
+          local_date: string;
+          local_hour: number;
+          slot_at: string;
+          time_zone: string;
+          updated_at?: string;
+        };
+        Update: {
+          country?: string;
+          local_date?: string;
+          local_hour?: number;
+          slot_at?: string;
+          time_zone?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       jeweler_feed: {
         Row: {
           buyback_gram: number | null;

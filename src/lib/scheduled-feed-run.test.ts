@@ -71,3 +71,13 @@ test("unauthorized cron calls cannot write execution history or update prices", 
   assert.equal(writes, 0);
   assert.equal(updates, 0);
 });
+test("an idle run with nothing to update is not a failure", async () => {
+  const records: ScheduledFeedRun[] = [];
+  await trackScheduledFeedRun(
+    async () => Response.json({ ok: true, idle: true, updated: [], errors: [] }),
+    async (run) => {
+      records.push(run);
+    },
+  );
+  assert.equal(records[1]?.status, "success");
+});

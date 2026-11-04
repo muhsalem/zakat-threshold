@@ -371,6 +371,20 @@ DROP POLICY IF EXISTS "calculations owner insert" ON public.personal_zakat_calcu
 CREATE POLICY "calculations owner insert" ON public.personal_zakat_calculations FOR INSERT TO authenticated WITH CHECK (user_id = (SELECT auth.uid()));
 CREATE INDEX IF NOT EXISTS personal_calculations_owner_day ON public.personal_zakat_calculations(user_id, valuation_day DESC);
 
+-- ---------------------------------------------------------------- country price slots
+CREATE TABLE IF NOT EXISTS public.country_price_updates (
+ country text NOT NULL,
+ local_date date NOT NULL,
+ local_hour smallint NOT NULL CHECK (local_hour IN (11,23)),
+ time_zone text NOT NULL,
+ slot_at timestamptz NOT NULL,
+ updated_at timestamptz NOT NULL DEFAULT now(),
+ PRIMARY KEY (country, local_date, local_hour)
+);
+GRANT ALL ON public.country_price_updates TO service_role;
+ALTER TABLE public.country_price_updates ENABLE ROW LEVEL SECURITY;
+CREATE INDEX IF NOT EXISTS country_price_updates_slot_at ON public.country_price_updates(slot_at DESC);
+
 -- ---------------------------------------------------------------- indexes
 CREATE INDEX IF NOT EXISTS nisab_history_country_day ON public.nisab_history (country, day DESC);
 CREATE INDEX IF NOT EXISTS jeweler_feed_country_day ON public.jeweler_feed (country, day DESC);

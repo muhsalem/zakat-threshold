@@ -27,12 +27,17 @@ export async function trackScheduledFeedRun(
     const response = await execute();
     const result: unknown = await response.clone().json();
     const parsed = z
-      .object({ ok: z.boolean(), updated: z.array(z.string()), errors: z.array(z.string()) })
+      .object({
+        ok: z.boolean(),
+        idle: z.boolean().optional(),
+        updated: z.array(z.string()),
+        errors: z.array(z.string()),
+      })
       .safeParse(result);
     const updated = parsed.success ? parsed.data.updated : [];
     const warningCount = parsed.success ? parsed.data.errors.length : 0;
     const status =
-      !response.ok || !parsed.success || !parsed.data.ok || !updated.length
+      !response.ok || !parsed.success || !parsed.data.ok || (!updated.length && !parsed.data.idle)
         ? "failed"
         : warningCount
           ? "partial"

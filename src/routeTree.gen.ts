@@ -42,6 +42,7 @@ import { Route as AuthenticatedJewelerPricesRouteImport } from './routes/_authen
 import { Route as AuthenticatedModerationRouteImport } from './routes/_authenticated/moderation'
 import { Route as AuthenticatedPersonalCalculationsRouteImport } from './routes/_authenticated/personal-calculations'
 import { Route as CountryCodeRouteImport } from './routes/country.$code'
+import { Route as ApiPublicHooksCountryPricesRouteImport } from './routes/api/public/hooks/country-prices'
 import { Route as ApiPublicHooksJewelerFeedRouteImport } from './routes/api/public/hooks/jeweler-feed'
 import { Route as ApiPublicHooksMarketTickRouteImport } from './routes/api/public/hooks/market-tick'
 import { Route as ApiPublicV1NisabIndexRouteImport } from './routes/api/public/v1/nisab/index'
@@ -217,6 +218,12 @@ const CountryCodeRoute = CountryCodeRouteImport.update({
   path: '/country/$code',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHooksCountryPricesRoute =
+  ApiPublicHooksCountryPricesRouteImport.update({
+    id: '/api/public/hooks/country-prices',
+    path: '/api/public/hooks/country-prices',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksJewelerFeedRoute =
   ApiPublicHooksJewelerFeedRouteImport.update({
     id: '/api/public/hooks/jeweler-feed',
@@ -295,6 +302,7 @@ export interface FileRoutesByFullPath {
   '/moderation': typeof AuthenticatedModerationRoute
   '/personal-calculations': typeof AuthenticatedPersonalCalculationsRoute
   '/country/$code': typeof CountryCodeRoute
+  '/api/public/hooks/country-prices': typeof ApiPublicHooksCountryPricesRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
   '/api/public/hooks/market-tick': typeof ApiPublicHooksMarketTickRoute
   '/api/public/v1/nisab/at': typeof ApiPublicV1NisabAtRoute
@@ -337,6 +345,7 @@ export interface FileRoutesByTo {
   '/moderation': typeof AuthenticatedModerationRoute
   '/personal-calculations': typeof AuthenticatedPersonalCalculationsRoute
   '/country/$code': typeof CountryCodeRoute
+  '/api/public/hooks/country-prices': typeof ApiPublicHooksCountryPricesRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
   '/api/public/hooks/market-tick': typeof ApiPublicHooksMarketTickRoute
   '/api/public/v1/nisab/at': typeof ApiPublicV1NisabAtRoute
@@ -381,6 +390,7 @@ export interface FileRoutesById {
   '/_authenticated/moderation': typeof AuthenticatedModerationRoute
   '/_authenticated/personal-calculations': typeof AuthenticatedPersonalCalculationsRoute
   '/country/$code': typeof CountryCodeRoute
+  '/api/public/hooks/country-prices': typeof ApiPublicHooksCountryPricesRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
   '/api/public/hooks/market-tick': typeof ApiPublicHooksMarketTickRoute
   '/api/public/v1/nisab/at': typeof ApiPublicV1NisabAtRoute
@@ -425,6 +435,7 @@ export interface FileRouteTypes {
     | '/moderation'
     | '/personal-calculations'
     | '/country/$code'
+    | '/api/public/hooks/country-prices'
     | '/api/public/hooks/jeweler-feed'
     | '/api/public/hooks/market-tick'
     | '/api/public/v1/nisab/at'
@@ -467,6 +478,7 @@ export interface FileRouteTypes {
     | '/moderation'
     | '/personal-calculations'
     | '/country/$code'
+    | '/api/public/hooks/country-prices'
     | '/api/public/hooks/jeweler-feed'
     | '/api/public/hooks/market-tick'
     | '/api/public/v1/nisab/at'
@@ -510,6 +522,7 @@ export interface FileRouteTypes {
     | '/_authenticated/moderation'
     | '/_authenticated/personal-calculations'
     | '/country/$code'
+    | '/api/public/hooks/country-prices'
     | '/api/public/hooks/jeweler-feed'
     | '/api/public/hooks/market-tick'
     | '/api/public/v1/nisab/at'
@@ -549,6 +562,7 @@ export interface RootRouteChildren {
   WaqfRoute: typeof WaqfRoute
   WidgetRoute: typeof WidgetRoute
   CountryCodeRoute: typeof CountryCodeRoute
+  ApiPublicHooksCountryPricesRoute: typeof ApiPublicHooksCountryPricesRoute
   ApiPublicHooksJewelerFeedRoute: typeof ApiPublicHooksJewelerFeedRoute
   ApiPublicHooksMarketTickRoute: typeof ApiPublicHooksMarketTickRoute
   ApiPublicV1NisabAtRoute: typeof ApiPublicV1NisabAtRoute
@@ -792,6 +806,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CountryCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/country-prices': {
+      id: '/api/public/hooks/country-prices'
+      path: '/api/public/hooks/country-prices'
+      fullPath: '/api/public/hooks/country-prices'
+      preLoaderRoute: typeof ApiPublicHooksCountryPricesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/jeweler-feed': {
       id: '/api/public/hooks/jeweler-feed'
       path: '/api/public/hooks/jeweler-feed'
@@ -900,6 +921,7 @@ const rootRouteChildren: RootRouteChildren = {
   WaqfRoute: WaqfRoute,
   WidgetRoute: WidgetRoute,
   CountryCodeRoute: CountryCodeRoute,
+  ApiPublicHooksCountryPricesRoute: ApiPublicHooksCountryPricesRoute,
   ApiPublicHooksJewelerFeedRoute: ApiPublicHooksJewelerFeedRoute,
   ApiPublicHooksMarketTickRoute: ApiPublicHooksMarketTickRoute,
   ApiPublicV1NisabAtRoute: ApiPublicV1NisabAtRoute,

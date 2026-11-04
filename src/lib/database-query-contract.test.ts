@@ -14,7 +14,7 @@ const schema = readSchema(readFileSync(join(root, "src/integrations/supabase/typ
 const reviewedBulkWrites: Record<string, string[]> = {
   "src/lib/admin-console.functions.ts": ["insert(fresh.slice(i, i + 500))"],
   "src/lib/daily-broadcast.server.ts": ["insert(out)"],
-  "src/routes/api/public/hooks/jeweler-feed.ts": ["upsert(rows)"],
+  "src/lib/price-update.server.ts": ["upsert(rows)"],
 };
 
 function sourceFiles(directory: string): string[] {
@@ -51,8 +51,8 @@ describe("database query contracts", () => {
     );
   });
   test("loads generated table, write and RPC shapes", () => {
-    // 15 tables plus the public_price_quotes and public_profiles views.
-    assert.equal(schema.tables.size, 17);
+    // 16 tables plus the public_price_quotes and public_profiles views.
+    assert.equal(schema.tables.size, 18);
     assert.equal(
       schema.tables.get("price_submissions")?.get("Insert")?.get("user_id")?.optional,
       false,
