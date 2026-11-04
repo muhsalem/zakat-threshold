@@ -9,3 +9,4 @@ routeTree.gen.ts
 src/lib/database-query-types.fixture.ts
 src/generated
 src/ai-gateway.types.ts
+src/integrations/supabase
