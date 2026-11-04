@@ -62,7 +62,6 @@ export async function recordNisabHistory(
           gold_gram: (goldOz / OZ) * rate0,
           silver_gram: feed.silver_gram,
           source: `spot + ${feed.source}`,
-          source_url: feed.source_url,
         });
       continue;
     }
@@ -75,7 +74,6 @@ export async function recordNisabHistory(
         // Local board without silver: fall back to converted global spot.
         silver_gram: feed.silver_gram ?? (silverOz && rate0 ? (silverOz / OZ) * rate0 : null),
         source: feed.silver_gram ? feed.source : `${feed.source} + spot silver`,
-        source_url: feed.source_url,
       });
       continue;
     }
@@ -88,7 +86,6 @@ export async function recordNisabHistory(
       gold_gram: (goldOz / OZ) * rate,
       silver_gram: silverOz ? (silverOz / OZ) * rate : null,
       source: "gold-api.com — spot XAU/XAG",
-      source_url: "https://api.gold-api.com/price/XAU",
     });
   }
 

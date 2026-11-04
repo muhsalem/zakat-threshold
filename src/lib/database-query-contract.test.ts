@@ -51,8 +51,8 @@ describe("database query contracts", () => {
     );
   });
   test("loads generated table, write and RPC shapes", () => {
-    // 16 tables plus the public_price_quotes and public_profiles views.
-    assert.equal(schema.tables.size, 18);
+    // 17 tables, public_price_quotes included.
+    assert.equal(schema.tables.size, 17);
     assert.equal(
       schema.tables.get("price_submissions")?.get("Insert")?.get("user_id")?.optional,
       false,
@@ -113,8 +113,8 @@ describe("database query contracts", () => {
       "fixture.ts",
       schema,
     );
-    // Unknown RPC and unknown argument key; _country is optional in this database.
-    assert.equal(result.errors.length, 2);
+    // Unknown RPC, unknown argument key and the missing required _country.
+    assert.equal(result.errors.length, 3);
   });
   test("checks write fields in mapped arrays and conditional spreads", () => {
     assert.match(

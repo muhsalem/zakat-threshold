@@ -16,7 +16,7 @@ type NisabIsNullableNumber = Assert<Equal<QueryData<typeof official>[number]["go
 const history = db.from("nisab_history").select("day,gold_nisab,silver_nisab,source");
 type HistoryDayIsString = Assert<Equal<QueryData<typeof history>[number]["day"], string>>;
 const sources = db.from("official_sources").select("last_error,last_value,last_checked");
-type SourceErrorIsString = Assert<Equal<QueryData<typeof sources>[number]["last_error"], string>>;
+type SourceErrorIsNullable = Assert<Equal<QueryData<typeof sources>[number]["last_error"], string | null>>;
 
 const votes = db.from("price_votes").select("submission_id,user_id,vote");
 type VoteIsNumber = Assert<Equal<QueryData<typeof votes>[number]["vote"], number>>;
