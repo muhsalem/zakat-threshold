@@ -68,33 +68,6 @@ export type Database = {
         }
         Relationships: []
       }
-      country_price_updates: {
-        Row: {
-          country: string
-          local_date: string
-          local_hour: number
-          slot_at: string
-          time_zone: string
-          updated_at: string
-        }
-        Insert: {
-          country: string
-          local_date: string
-          local_hour: number
-          slot_at: string
-          time_zone: string
-          updated_at?: string
-        }
-        Update: {
-          country?: string
-          local_date?: string
-          local_hour?: number
-          slot_at?: string
-          time_zone?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       jeweler_feed: {
         Row: {
           buyback_gram: number | null
@@ -137,36 +110,6 @@ export type Database = {
           silver_gram?: number | null
           source?: string
           source_url?: string | null
-        }
-        Relationships: []
-      }
-      market_ticks: {
-        Row: {
-          deviation_pct: number
-          gold_usd_oz: number
-          quality: string
-          silver_usd_oz: number
-          source: string
-          status: string
-          ts: string
-        }
-        Insert: {
-          deviation_pct?: number
-          gold_usd_oz: number
-          quality?: string
-          silver_usd_oz: number
-          source: string
-          status: string
-          ts: string
-        }
-        Update: {
-          deviation_pct?: number
-          gold_usd_oz?: number
-          quality?: string
-          silver_usd_oz?: number
-          source?: string
-          status?: string
-          ts?: string
         }
         Relationships: []
       }
