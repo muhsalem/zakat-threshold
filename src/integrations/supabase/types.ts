@@ -674,7 +674,21 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      market_daily: {
+        Row: {
+          day: string | null
+          gold_close: number | null
+          gold_high: number | null
+          gold_low: number | null
+          gold_open: number | null
+          silver_close: number | null
+          silver_high: number | null
+          silver_low: number | null
+          silver_open: number | null
+          ticks: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
