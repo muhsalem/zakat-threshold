@@ -46,7 +46,41 @@ async function iSaghaSilver(path = ""): Promise<{ sell: number | null; buy: numb
 }
 const egyptSilver = () => iSaghaSilver();
 
+/** Nagmadin public live-price JSON (EGP per gram, 24K gold and pure silver). */
+export function parseNagmadin(json: unknown): { gold: number | null; silver: number | null } {
+  const d = (json as { data?: any })?.data;
+  const pos = (v: unknown) => (typeof v === "number" && Number.isFinite(v) && v > 0 ? v : null);
+  return {
+    gold: pos(d?.gold_latest?.metal_prices?.XAU?.price_24k),
+    silver: pos(d?.market_data?.rates_per_gram?.XAG?.current),
+  };
+}
+
 async function egypt(): Promise<FeedRow> {
+  try {
+    const res = await fetch("https://api2.nagmadin.com/api/live-prices", {
+      headers: UA,
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (!res.ok) throw new Error(`nagmadin ${res.status}`);
+    const p = parseNagmadin(await res.json());
+    if (!p.gold) throw new Error("nagmadin: no 24K price");
+    return {
+      country: "EG",
+      currency: "EGP",
+      source: "نجم الدين (مصر)",
+      source_url: "https://nagmadin.com/home",
+      gold_gram: p.gold,
+      buyback_gram: null,
+      silver_gram: p.silver,
+      silver_buyback_gram: null,
+    };
+  } catch {
+    return egyptEdahab();
+  }
+}
+
+async function egyptEdahab(): Promise<FeedRow> {
   const url = "https://edahabapp.com/";
   const t = await text(url);
   const m = /عيار 24:\s*بيع:\s*([\d.,]+)\s*جنيه\s*شراء:\s*([\d.,]+)/.exec(t);
