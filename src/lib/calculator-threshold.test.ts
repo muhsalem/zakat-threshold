@@ -20,6 +20,12 @@ const input = {
   calculated: 410000,
 };
 describe("automatic calculator threshold", () => {
+  it("adopts an announcement arriving between the two price-update slots without changing calculated prices", () => {
+    const base = { ...input, day: "2026-11-06", calculated: 410000 };
+    assert.equal(resolveCalculatorThreshold({ ...base, official: null }).value, 410000);
+    assert.equal(resolveCalculatorThreshold({ ...base, official: { ...official, announced_on: "2026-11-06", gold_nisab: 430000 } }).value, 430000);
+    assert.equal(base.calculated, 410000);
+  });
   it("uses today's matching official metal value", () => {
     assert.equal(resolveCalculatorThreshold(input).value, 420000);
     assert.equal(resolveCalculatorThreshold({ ...input, metal: "silver" }).value, 50000);

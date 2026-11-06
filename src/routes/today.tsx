@@ -58,8 +58,8 @@ function TodayPage() {
   }, []);
   const officialQuery = useOfficialThreshold(country, currency, utcDay);
   const thresholds = {
-    gold: resolveCalculatorThreshold({ official: officialQuery.data, country, currency, day: utcDay, metal: "gold", calculated: values?.gold }),
-    silver: resolveCalculatorThreshold({ official: officialQuery.data, country, currency, day: utcDay, metal: "silver", calculated: values?.silver }),
+    gold: resolveCalculatorThreshold({ official: officialQuery.data ?? null, country, currency, day: utcDay, metal: "gold", calculated: values?.gold ?? null }),
+    silver: resolveCalculatorThreshold({ official: officialQuery.data ?? null, country, currency, day: utcDay, metal: "silver", calculated: values?.silver ?? null }),
   };
   const announcement = thresholds.gold.official ?? thresholds.silver.official;
 
