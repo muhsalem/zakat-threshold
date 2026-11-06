@@ -31,6 +31,14 @@ export function valuationQuote(bid: number | null | undefined, ask: number | nul
   return ask != null && Number.isFinite(ask) && ask > 0 ? ask : null;
 }
 
+/** Display-only comparison: never substitute an ask or estimated spread for a published bid. */
+export function comparePublishedBuyback(bid: number | null | undefined, weight: number, threshold: number | null | undefined) {
+  if (bid == null || !Number.isFinite(bid) || bid <= 0 || !Number.isFinite(weight) || weight <= 0) return null;
+  const proceeds = bid * weight;
+  const validThreshold = threshold != null && Number.isFinite(threshold) && threshold > 0 ? threshold : null;
+  return { gram: bid, proceeds, difference: validThreshold == null ? null : proceeds - validThreshold, threshold: validThreshold };
+}
+
 export function manualMetals(
   overrides: Overrides,
   scope: ScopeOverride | undefined,

@@ -13,6 +13,7 @@
 - Use UTC for homepage day boundaries and compare only the exact previous UTC day's persisted history, because the history writer keys daily rows in UTC; do not substitute another date when yesterday is missing.
 - Share price-check timing through the browser-safe daily-nisab module and retain separate historical cache timing, so intraday refreshes do not multiply historical-series fetches.
 - Centralize per-metal valuation and manual precedence in the browser-safe valuation module; a manual override for one metal must not suppress the other metal's local quote.
+- Compare published dealer bids with today's selected thresholds in a display-only component using shared weights; never fill missing bids with asks or estimated spreads, because proceeds must not imply an unquoted purchase offer.
 - Share country-specific public paths and UTC-dated calculated values, never fabricate a city or label a calculated quote as an official announcement.
 - Keep the silver-weight preference hydrated and device-local; persisted comparisons must use the matching historical standard.
 - Keep database query-contract inspection test-only and AST-based against generated database types; it catches schema drift in page queries without importing application clients or changing financial behavior.

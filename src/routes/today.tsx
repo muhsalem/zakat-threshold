@@ -22,6 +22,7 @@ import { SILVER_NISAB_G, TROY_OUNCE_G, formatNumber } from "@/lib/nisab";
 import { goldWeightFor } from "@/lib/nisab-valuation";
 import { useOfficialThreshold } from "@/lib/use-official-threshold";
 import { resolveCalculatorThreshold } from "@/lib/calculator-threshold";
+import { BuybackComparison } from "@/components/site/BuybackComparison";
 
 export const Route = createFileRoute("/today")({
   head: () => ({
@@ -195,6 +196,7 @@ function TodayPage() {
               </div>
             ))}
           </section>
+          <BuybackComparison goldThreshold={thresholds.gold.value} silverThreshold={thresholds.silver.value} officialGold={thresholds.gold.origin === "official"} officialSilver={thresholds.silver.origin === "official"} />
           <LocalMarket />
           <SourceQuality />
           <HawlReminder />
