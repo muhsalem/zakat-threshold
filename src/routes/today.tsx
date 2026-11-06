@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, CircleCheck, Database, Scale, ShieldCheck } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { CityPicker, CountryPicker } from "@/components/site/Shell";
 import {
@@ -20,6 +20,8 @@ import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
 import { SILVER_NISAB_G, TROY_OUNCE_G, formatNumber } from "@/lib/nisab";
 import { goldWeightFor } from "@/lib/nisab-valuation";
+import { useOfficialThreshold } from "@/lib/use-official-threshold";
+import { resolveCalculatorThreshold } from "@/lib/calculator-threshold";
 
 export const Route = createFileRoute("/today")({
   head: () => ({
@@ -43,10 +45,23 @@ export const Route = createFileRoute("/today")({
 });
 
 function TodayPage() {
-  const { t, currency, lang } = useI18n();
+  const { t, country, currency, lang } = useI18n();
   const [prefer, setPrefer] = useState<PricePreference>("local");
   const ps = priceStrings(lang);
   const { values, data, rate, money, isLoading, isError, refetch, silverWeight } = useNisab(prefer);
+  const [utcDay, setUtcDay] = useState("");
+  useEffect(() => {
+    const tick = () => setUtcDay(new Date().toISOString().slice(0, 10));
+    tick();
+    const timer = setInterval(tick, 1000);
+    return () => clearInterval(timer);
+  }, []);
+  const officialQuery = useOfficialThreshold(country, currency, utcDay);
+  const thresholds = {
+    gold: resolveCalculatorThreshold({ official: officialQuery.data ?? null, country, currency, day: utcDay, metal: "gold", calculated: values?.gold ?? null }),
+    silver: resolveCalculatorThreshold({ official: officialQuery.data ?? null, country, currency, day: utcDay, metal: "silver", calculated: values?.silver ?? null }),
+  };
+  const announcement = thresholds.gold.official ?? thresholds.silver.official;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
@@ -82,6 +97,20 @@ function TodayPage() {
         </div>
       </header>
 
+      {announcement && (
+        <section className="mt-6 border-y border-primary py-5" aria-live="polite" data-testid="today-official-announcement">
+          <h2 className="text-lg font-semibold text-primary">{lang === "ar" ? "إعلان النصاب الرسمي" : "Official nisab announcement"}</h2>
+          <p className="mt-2 text-sm">{announcement.authority} · <time dateTime={announcement.announced_on} className="num">{announcement.announced_on} UTC</time></p>
+          <dl className="mt-3 flex flex-wrap gap-6">
+            {(["gold", "silver"] as const).map((metal) => thresholds[metal].origin === "official" && (
+              <div key={metal}><dt className="text-sm text-muted-foreground">{t(`nisab.${metal}`)}</dt><dd className="num text-2xl" data-testid={`today-official-${metal}`}>{money(thresholds[metal].value ?? 0)}</dd></div>
+            ))}
+          </dl>
+          {announcement.source_url?.startsWith("https://") && <a className="mt-3 inline-block text-sm text-primary underline" href={announcement.source_url} target="_blank" rel="noopener noreferrer">{lang === "ar" ? "مصدر الإعلان الرسمي" : "Official announcement source"}</a>}
+        </section>
+      )}
+      {officialQuery.isError && <p role="alert" className="mt-4 text-sm text-destructive">{lang === "ar" ? "تعذّر التحقق من الإعلان الرسمي؛ القيم المحسوبة مبنية على أسعار المعادن." : "Official announcement unavailable; calculated values use metal prices."}</p>}
+
       {(isLoading || isError) && (
         <div className="mt-8">
           <StateNote isLoading={isLoading} isError={isError} refetch={refetch} />
@@ -97,7 +126,8 @@ function TodayPage() {
                 title: t("nisab.gold"),
                 grams: goldWeightFor(silverWeight),
                 gram: values.goldGram,
-                total: values.gold,
+                total: thresholds.gold.value ?? values.gold,
+                official: thresholds.gold.official,
                 oz: data.goldUsdOz,
               },
               {
@@ -105,7 +135,8 @@ function TodayPage() {
                 title: t("nisab.silver"),
                 grams: silverWeight,
                 gram: values.silverGram,
-                total: values.silver,
+                total: thresholds.silver.value ?? values.silver,
+                official: thresholds.silver.official,
                 oz: data.silverUsdOz,
               },
             ].map((item, index) => (
@@ -120,6 +151,7 @@ function TodayPage() {
                   </span>
                 </div>
                 <p className="num mt-8 text-4xl text-foreground sm:text-5xl">{money(item.total)}</p>
+                <p className="mt-2 text-xs text-muted-foreground">{item.official ? (lang === "ar" ? "النصاب الرسمي المعلن" : "Official announced threshold") : (lang === "ar" ? "نصاب محسوب من سعر المعدن" : "Calculated from metal price")}</p>
                 <div className="mt-5 grid grid-cols-2 gap-3 border-t border-border pt-5 text-sm">
                   <div>
                     <p className="text-muted-foreground">{t("perGram")}</p>
@@ -135,7 +167,7 @@ function TodayPage() {
                     {t("country.how")}
                   </summary>
                   <p className="num mt-3 leading-7 text-muted-foreground">
-                    {money(item.gram)} / g × {item.grams}g = {money(item.total)}
+                    {item.official ? `${item.official.authority} · ${item.official.announced_on} UTC` : `${money(item.gram)} / g × ${item.grams}g = ${money(item.total)}`}
                   </p>
                 </details>
               </article>

@@ -113,6 +113,13 @@
       "when": 1793859894849,
       "tag": "0015_market_ticks_and_country_price_updates",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1793940674636,
+      "tag": "0016_official_nisab_realtime",
+      "breakpoints": true
     }
   ]
 }

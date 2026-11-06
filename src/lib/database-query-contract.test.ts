@@ -51,8 +51,8 @@ describe("database query contracts", () => {
     );
   });
   test("loads generated table, write and RPC shapes", () => {
-    // 17 tables, public_price_quotes included.
-    assert.equal(schema.tables.size, 17);
+    // Current generated schema includes personal historical calculations.
+    assert.equal(schema.tables.size, 18);
     assert.equal(
       schema.tables.get("price_submissions")?.get("Insert")?.get("user_id")?.optional,
       false,
