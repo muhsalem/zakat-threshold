@@ -53,7 +53,17 @@ export function VisitorPriceAlerts() {
         },
       );
     }
-    channel.subscribe();
+    channel.on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "official_nisab" },
+      () => {
+        if (!disposed) void client.invalidateQueries({ queryKey: ["calculator-official-nisab", country] });
+      },
+    );
+    channel.subscribe((status) => {
+      if (status === "SUBSCRIBED" && !disposed)
+        void client.invalidateQueries({ queryKey: ["calculator-official-nisab", country] });
+    });
     void Promise.all([
       supabase
         .from("jeweler_feed")
