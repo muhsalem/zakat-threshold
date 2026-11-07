@@ -7,9 +7,10 @@ import {
   pendingCountrySlots,
 } from "@/lib/country-price-schedule";
 import { trackScheduledFeedRun } from "@/lib/scheduled-feed-run";
+import { countryPriceRequestSchema, requestedPriceCountries } from "@/lib/country-price-request";
 
 /**
- * Schedule a POST here every 15 minutes with the cron secret: UTC offsets reach quarter hours.
+ * Managed POST every 15 minutes: UTC offsets reach quarter hours.
  * Each call refreshes only the countries that just reached 11:00 or 23:00 local time.
  */
 export const Route = createFileRoute("/api/public/hooks/country-prices")({
@@ -17,10 +18,13 @@ export const Route = createFileRoute("/api/public/hooks/country-prices")({
     handlers: {
       POST: async ({ request }) =>
         withCronAuthorization(request, async () => {
+          const input = countryPriceRequestSchema.safeParse(await request.json().catch(() => null));
+          if (!input.success) return Response.json({ ok: false, error: "invalid_request" }, { status: 400 });
+          const requested = requestedPriceCountries(input.data.kind);
           const idle = Response.json({ ok: true, idle: true, updated: [], errors: [] });
           const now = new Date();
-          const slots = dueCountrySlots(now);
-          if (!slots.length) return idle;
+          const slots = requested ? [] : dueCountrySlots(now);
+          if (!requested && !slots.length) return idle;
 
           const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
           const since = new Date(now.getTime() - (PRICE_SLOT_GRACE_MINUTES + 1) * 60_000);
@@ -32,16 +36,20 @@ export const Route = createFileRoute("/api/public/hooks/country-prices")({
             return Response.json({ ok: false, error: "slots_unavailable" }, { status: 503 });
           }
           const pending = pendingCountrySlots(slots, completed ?? []);
-          if (!pending.length) return idle;
+          if (!requested && !pending.length) return idle;
 
           const { notifyFeedAdmins, recordNisabHistory, saveJewelerFeed, scheduledRunSaver } =
             await import("@/lib/price-update.server");
-          const saveRun = scheduledRunSaver(supabaseAdmin, "country price slot update");
+          const saveRun = scheduledRunSaver(supabaseAdmin, requested ? "Egypt hourly price check" : "country price slot update");
           return trackScheduledFeedRun(async () => {
             const today = now.toISOString().slice(0, 10);
-            const only = new Set(pending.map((s) => s.country));
+            const only = requested ?? new Set(pending.map((s) => s.country));
             const { rows, alerts, errors } = await saveJewelerFeed(supabaseAdmin, today, only);
             await notifyFeedAdmins(supabaseAdmin, alerts, errors);
+            // An Egypt test must read a real local quote, not silently substitute spot.
+            if (requested && !rows.some((row) => row.country === "EG")) {
+              return Response.json({ ok: false, updated: [], errors: [...errors, "egypt_quote_unavailable"] }, { status: 503 });
+            }
             const history = await recordNisabHistory(supabaseAdmin, rows, today, only);
 
             // Only recorded countries close their slot; the rest retry on the next call.
