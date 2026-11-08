@@ -738,7 +738,10 @@ export function ChronologyPage() {
                   <span className="text-muted-foreground block text-[0.7rem]">
                     نسبة الذهب للفضة
                   </span>
-                  <span className="num font-bold text-foreground">1 : {m.goldToSilverRatio}</span>
+                  <span className="num font-bold text-foreground">
+                    1 : {m.goldToSilverRatio}
+                    {m.gregorianYear < 1925 ? " (توضيحي)" : ""}
+                  </span>
                 </div>
                 <Button size="sm" variant="ghost" className="text-xs">
                   عرض السنة ←

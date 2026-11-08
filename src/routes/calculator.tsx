@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
 import { DAY_MS, formatDays, formatHijri, nextHawl, parseDay, today } from "@/lib/hijri";
 import { KARATS } from "@/lib/nisab";
+import { nisabBand, nisabZone } from "@/lib/nisab-basis";
 import { computeZakat, toAmount, type JewelryRule } from "@/lib/zakat-calc";
 import { AssetOrganizer } from "@/components/site/AssetOrganizer";
 import type { AssetValues } from "@/lib/asset-organizer";
@@ -137,6 +138,8 @@ function Calculator() {
   // No verdict until live prices (and hence the nisab) are known.
   const above = Boolean(values) && thresholdReady && net > 0 && net >= nisab;
   const due = above ? net * result.rate : 0;
+  const band = values ? nisabBand(values.gold, values.silver) : null;
+  const zone = thresholdReady ? nisabZone(net, band) : null;
 
   const applyAssets = (assets: AssetValues) => {
     const setters = {
@@ -389,6 +392,18 @@ function Calculator() {
                 ? t("calc.above")
                 : t("calc.below")}
           </p>
+          {zone === "between" && band && (
+            <div
+              role="note"
+              data-testid="calculator-between-nisabs"
+              className="mt-3 rounded-xl border border-amber-500/40 bg-amber-500/10 p-3 text-sm leading-6 text-foreground"
+            >
+              <p>{t("calc.zone.between")}</p>
+              <p className="num mt-1 text-xs text-muted-foreground">
+                {t("calc.zone.gap")}: {money(band.gap)} · ×{band.multiple.toFixed(1)}
+              </p>
+            </div>
+          )}
         </aside>
       </div>
 

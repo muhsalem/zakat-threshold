@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { Page } from "@/components/site/Page";
 
-const BASE = "https://nissab-rates.lovable.app";
+const BASE = "https://zakat-threshold.lovable.app";
 
 export const Route = createFileRoute("/developers")({
   head: () => ({

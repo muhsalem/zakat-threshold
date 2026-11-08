@@ -84,7 +84,7 @@ export const Route = createFileRoute("/api/public/v1/nisab/")({
           local_jewelers: feed.data ?? null,
           official: official.data ?? null,
           disclaimer: "Indicative figures, not a fatwa. / أرقام استرشادية وليست فتوى.",
-          attribution: "Nisab · https://nissab-rates.lovable.app",
+          attribution: "Nisab · https://zakat-threshold.lovable.app",
         });
       },
     },

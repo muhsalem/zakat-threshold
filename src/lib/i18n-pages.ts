@@ -40,6 +40,9 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
       "Enter debts due now and the instalments falling due within your zakat year, not the whole long-term loan. Scholars differ on deducting debts (the Shafi'i school's later view does not deduct them); follow your country's fatwa authority.",
     "calc.standardNote":
       "Scholars differ on measuring the cash nisab by silver or by gold; follow the fatwa authority in your country.",
+    "calc.zone.between":
+      "Your net wealth is between the two nisabs: it passes the silver nisab but not the gold one (or the reverse). Zakat is due on one view and not on the other, so follow your country's fatwa authority; paying is the cautious course.",
+    "calc.zone.gap": "Gap between the nisabs",
     "history.pick": "Metal",
     "history.note":
       "Closing prices from the international futures market, converted to your currency.",
@@ -175,6 +178,9 @@ export const PAGE_STRINGS: Record<string, Record<string, string>> = {
       "اكتب الديون الحالّة الآن وأقساط القروض التي تستحق خلال حولك فقط، لا كامل القرض طويل الأجل. والعلماء مختلفون في خصم الدين (والشافعية في الجديد لا يخصمونه)؛ فاتبع جهة الفتوى في بلدك.",
     "calc.standardNote":
       "اختلف أهل العلم في تقدير نصاب النقود بالفضّة أو بالذهب؛ والأَولى اتّباع جهة الفتوى في بلدك.",
+    "calc.zone.between":
+      "صافي مالك بين النصابين: بلغ نصاب الفضة ولم يبلغ نصاب الذهب (أو العكس). فالزكاة واجبة على قول وغير واجبة على آخر، فاتبع جهة الإفتاء في بلدك، والإخراج أحوط.",
+    "calc.zone.gap": "الفجوة بين النصابين",
     "history.pick": "المعدن",
     "history.note": "أسعار الإغلاق من سوق العقود العالمية، محوَّلة إلى عملتك.",
     "history.period": "الفترة التاريخية",
