@@ -10,6 +10,7 @@ const PAGES = [
   "/map",
   "/compare",
   "/history",
+  "/annual-nisab",
   "/chronology",
   "/methodology",
   "/fiqh",
@@ -19,6 +20,7 @@ const PAGES = [
   "/developers",
   "/outlook",
   "/waqf",
+  "/invite",
 ];
 
 export const Route = createFileRoute("/sitemap.xml")({

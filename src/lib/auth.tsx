@@ -13,20 +13,28 @@ export function useAuth() {
 
   useEffect(() => {
     let alive = true;
+    let generation = 0;
 
     const loadRoles = async (user: User | null) => {
+      const current = ++generation;
+      if (alive) {
+        setRoles([]);
+        setLoading(true);
+      }
       if (!user) {
-        if (alive) setRoles([]);
+        if (alive) setLoading(false);
         return;
       }
       const { data } = await supabase.from("user_roles").select("role").eq("user_id", user.id);
-      if (alive) setRoles((data ?? []).map((r) => r.role as AppRole));
+      if (alive && current === generation) {
+        setRoles((data ?? []).map((r) => r.role as AppRole));
+        setLoading(false);
+      }
     };
 
     supabase.auth.getSession().then(({ data }) => {
       if (!alive) return;
       setSession(data.session);
-      setLoading(false);
       void loadRoles(data.session?.user ?? null);
     });
 

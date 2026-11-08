@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
+import { safeAuthNext } from "@/lib/account-actions";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>): { next?: string } =>
@@ -28,10 +29,6 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
-function safeNext(value?: string) {
-  return value && value.startsWith("/") && !value.startsWith("//") ? value : "/partners";
-}
-
 function AuthPage() {
   const { t } = useI18n();
   const { session } = useAuth();
@@ -45,27 +42,32 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (session) void navigate({ to: safeNext(search.next) });
+    if (session) void navigate({ to: safeAuthNext(search.next) });
   }, [session, navigate, search.next]);
 
   const submit = async () => {
     setBusy(true);
     setMsg("");
-    const redirect = `${window.location.origin}${safeNext(search.next)}`;
-    const res =
-      mode === "up"
-        ? await supabase.auth.signUp({
-            email,
-            password,
-            options: { emailRedirectTo: redirect, data: { display_name: name } },
-          })
-        : await supabase.auth.signInWithPassword({ email, password });
-    setBusy(false);
-    if (res.error) {
-      setMsg(res.error.message);
-      return;
+    const redirect = `${window.location.origin}/auth?next=${encodeURIComponent(safeAuthNext(search.next))}`;
+    try {
+      const res =
+        mode === "up"
+          ? await supabase.auth.signUp({
+              email,
+              password,
+              options: { emailRedirectTo: redirect, data: { display_name: name } },
+            })
+          : await supabase.auth.signInWithPassword({ email, password });
+      if (res.error) {
+        setMsg(res.error.message);
+        return;
+      }
+      if (mode === "up" && !res.data.session) setMsg(t("auth.checkEmail"));
+    } catch {
+      setMsg("تعذّر الاتصال. حاول مرة أخرى. · Connection failed. Please retry.");
+    } finally {
+      setBusy(false);
     }
-    if (mode === "up" && !res.data.session) setMsg(t("auth.checkEmail"));
   };
 
   const google = async () => {
@@ -95,42 +97,51 @@ function AuthPage() {
           </Button>
         </div>
 
-        <div className="mt-5 grid gap-4">
-          {mode === "up" && (
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            void submit();
+          }}
+        >
+          <div className="mt-5 grid gap-4">
+            {mode === "up" && (
+              <label className="grid gap-1.5 text-sm">
+                <span className="text-muted-foreground">{t("auth.name")}</span>
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="rounded-lg border border-border bg-background px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring"
+                />
+              </label>
+            )}
             <label className="grid gap-1.5 text-sm">
-              <span className="text-muted-foreground">{t("auth.name")}</span>
+              <span className="text-muted-foreground">{t("auth.email")}</span>
               <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="rounded-lg border border-border bg-background px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring"
+                type="email"
+                required
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="num rounded-lg border border-border bg-background px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring"
               />
             </label>
-          )}
-          <label className="grid gap-1.5 text-sm">
-            <span className="text-muted-foreground">{t("auth.email")}</span>
-            <input
-              type="email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="num rounded-lg border border-border bg-background px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring"
-            />
-          </label>
-          <label className="grid gap-1.5 text-sm">
-            <span className="text-muted-foreground">{t("auth.password")}</span>
-            <input
-              type="password"
-              autoComplete={mode === "up" ? "new-password" : "current-password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="num rounded-lg border border-border bg-background px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring"
-            />
-          </label>
-        </div>
+            <label className="grid gap-1.5 text-sm">
+              <span className="text-muted-foreground">{t("auth.password")}</span>
+              <input
+                type="password"
+                required
+                autoComplete={mode === "up" ? "new-password" : "current-password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="num rounded-lg border border-border bg-background px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring"
+              />
+            </label>
+          </div>
 
-        <Button className="mt-5 w-full" disabled={busy} onClick={submit}>
-          {mode === "up" ? t("auth.signUp") : t("auth.signIn")}
-        </Button>
+          <Button type="submit" className="mt-5 w-full" disabled={busy}>
+            {mode === "up" ? t("auth.signUp") : t("auth.signIn")}
+          </Button>
+        </form>
         <Button className="mt-3 w-full" variant="outline" onClick={google}>
           {t("auth.google")}
         </Button>

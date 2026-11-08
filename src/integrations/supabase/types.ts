@@ -1,757 +1,855 @@
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
 
 export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.18";
-  };
+    PostgrestVersion: "14.18"
+  }
   public: {
     Tables: {
       app_settings: {
         Row: {
-          key: string;
-          updated_at: string;
-          updated_by: string | null;
-          value: Json;
-        };
+          key: string
+          updated_at: string
+          updated_by: string | null
+          value: Json
+        }
         Insert: {
-          key: string;
-          updated_at?: string;
-          updated_by?: string | null;
-          value?: Json;
-        };
+          key: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json
+        }
         Update: {
-          key?: string;
-          updated_at?: string;
-          updated_by?: string | null;
-          value?: Json;
-        };
-        Relationships: [];
-      };
+          key?: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json
+        }
+        Relationships: []
+      }
       audit_log: {
         Row: {
-          action: string;
-          actor_id: string | null;
-          created_at: string;
-          entity: string;
-          entity_id: string | null;
-          id: string;
-          meta: Json;
-          reason: string;
-        };
+          action: string
+          actor_id: string | null
+          created_at: string
+          entity: string
+          entity_id: string | null
+          id: string
+          meta: Json
+          reason: string
+        }
         Insert: {
-          action: string;
-          actor_id?: string | null;
-          created_at?: string;
-          entity: string;
-          entity_id?: string | null;
-          id?: string;
-          meta?: Json;
-          reason?: string;
-        };
+          action: string
+          actor_id?: string | null
+          created_at?: string
+          entity?: string
+          entity_id?: string | null
+          id?: string
+          meta?: Json
+          reason?: string
+        }
         Update: {
-          action?: string;
-          actor_id?: string | null;
-          created_at?: string;
-          entity?: string;
-          entity_id?: string | null;
-          id?: string;
-          meta?: Json;
-          reason?: string;
-        };
-        Relationships: [];
-      };
+          action?: string
+          actor_id?: string | null
+          created_at?: string
+          entity?: string
+          entity_id?: string | null
+          id?: string
+          meta?: Json
+          reason?: string
+        }
+        Relationships: []
+      }
+      country_price_updates: {
+        Row: {
+          country: string
+          local_date: string
+          local_hour: number
+          slot_at: string
+          time_zone: string
+          updated_at: string
+        }
+        Insert: {
+          country: string
+          local_date: string
+          local_hour: number
+          slot_at: string
+          time_zone: string
+          updated_at?: string
+        }
+        Update: {
+          country?: string
+          local_date?: string
+          local_hour?: number
+          slot_at?: string
+          time_zone?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       jeweler_feed: {
         Row: {
-          buyback_gram: number | null;
-          change_pct: number | null;
-          country: string;
-          currency: string;
-          day: string;
-          fetched_at: string;
-          gold_gram: number | null;
-          id: string;
-          silver_buyback_gram: number | null;
-          silver_gram: number | null;
-          source: string;
-          source_url: string;
-        };
+          buyback_gram: number | null
+          change_pct: number | null
+          country: string
+          currency: string
+          day: string
+          fetched_at: string
+          gold_gram: number | null
+          id: string
+          silver_buyback_gram: number | null
+          silver_gram: number | null
+          source: string
+          source_url: string | null
+        }
         Insert: {
-          buyback_gram?: number | null;
-          change_pct?: number | null;
-          country: string;
-          currency: string;
-          day?: string;
-          fetched_at?: string;
-          gold_gram?: number | null;
-          id?: string;
-          silver_buyback_gram?: number | null;
-          silver_gram?: number | null;
-          source: string;
-          source_url: string;
-        };
+          buyback_gram?: number | null
+          change_pct?: number | null
+          country: string
+          currency: string
+          day?: string
+          fetched_at?: string
+          gold_gram?: number | null
+          id?: string
+          silver_buyback_gram?: number | null
+          silver_gram?: number | null
+          source?: string
+          source_url?: string | null
+        }
         Update: {
-          buyback_gram?: number | null;
-          change_pct?: number | null;
-          country?: string;
-          currency?: string;
-          day?: string;
-          fetched_at?: string;
-          gold_gram?: number | null;
-          id?: string;
-          silver_buyback_gram?: number | null;
-          silver_gram?: number | null;
-          source?: string;
-          source_url?: string;
-        };
-        Relationships: [];
-      };
-      price_snapshots: {
-        Row: {
-          consensus_status: string;
-          day: string;
-          deviation_pct: number;
-          fx_rates: Json;
-          fx_source: string;
-          gold_usd_oz: number;
-          metals_source: string;
-          rejected: Json;
-          silver_usd_oz: number;
-          sources: Json;
-          taken_at: string;
-        };
-        Insert: {
-          consensus_status: string;
-          day: string;
-          deviation_pct?: number;
-          fx_rates?: Json;
-          fx_source?: string;
-          gold_usd_oz: number;
-          metals_source: string;
-          rejected?: Json;
-          silver_usd_oz: number;
-          sources?: Json;
-          taken_at?: string;
-        };
-        Update: {
-          consensus_status?: string;
-          day?: string;
-          deviation_pct?: number;
-          fx_rates?: Json;
-          fx_source?: string;
-          gold_usd_oz?: number;
-          metals_source?: string;
-          rejected?: Json;
-          silver_usd_oz?: number;
-          sources?: Json;
-          taken_at?: string;
-        };
-        Relationships: [];
-      };
+          buyback_gram?: number | null
+          change_pct?: number | null
+          country?: string
+          currency?: string
+          day?: string
+          fetched_at?: string
+          gold_gram?: number | null
+          id?: string
+          silver_buyback_gram?: number | null
+          silver_gram?: number | null
+          source?: string
+          source_url?: string | null
+        }
+        Relationships: []
+      }
       market_ticks: {
         Row: {
-          deviation_pct: number;
-          gold_usd_oz: number;
-          quality: string;
-          silver_usd_oz: number;
-          source: string;
-          status: string;
-          ts: string;
-        };
+          deviation_pct: number
+          gold_usd_oz: number
+          quality: string
+          silver_usd_oz: number
+          source: string
+          status: string
+          ts: string
+        }
         Insert: {
-          deviation_pct?: number;
-          gold_usd_oz: number;
-          quality?: string;
-          silver_usd_oz: number;
-          source: string;
-          status: string;
-          ts: string;
-        };
+          deviation_pct?: number
+          gold_usd_oz: number
+          quality?: string
+          silver_usd_oz: number
+          source: string
+          status: string
+          ts: string
+        }
         Update: {
-          deviation_pct?: number;
-          gold_usd_oz?: number;
-          quality?: string;
-          silver_usd_oz?: number;
-          source?: string;
-          status?: string;
-          ts?: string;
-        };
-        Relationships: [];
-      };
+          deviation_pct?: number
+          gold_usd_oz?: number
+          quality?: string
+          silver_usd_oz?: number
+          source?: string
+          status?: string
+          ts?: string
+        }
+        Relationships: []
+      }
       nisab_history: {
         Row: {
-          country: string;
-          created_at: string;
-          currency: string;
-          day: string;
-          gold_gram: number | null;
-          gold_nisab: number | null;
-          id: string;
-          silver_gram: number | null;
-          silver_nisab: number | null;
-          source: string;
-          source_url: string;
-        };
+          country: string
+          created_at: string
+          currency: string
+          day: string
+          gold_gram: number | null
+          gold_nisab: number | null
+          id: string
+          silver_gram: number | null
+          silver_nisab: number | null
+          source: string | null
+          spot_gram: number | null
+        }
         Insert: {
-          country: string;
-          created_at?: string;
-          currency: string;
-          day?: string;
-          gold_gram?: number | null;
-          gold_nisab?: number | null;
-          id?: string;
-          silver_gram?: number | null;
-          silver_nisab?: number | null;
-          source?: string;
-          source_url?: string;
-        };
+          country: string
+          created_at?: string
+          currency?: string
+          day: string
+          gold_gram?: number | null
+          gold_nisab?: number | null
+          id?: string
+          silver_gram?: number | null
+          silver_nisab?: number | null
+          source?: string | null
+          spot_gram?: number | null
+        }
         Update: {
-          country?: string;
-          created_at?: string;
-          currency?: string;
-          day?: string;
-          gold_gram?: number | null;
-          gold_nisab?: number | null;
-          id?: string;
-          silver_gram?: number | null;
-          silver_nisab?: number | null;
-          source?: string;
-          source_url?: string;
-        };
-        Relationships: [];
-      };
+          country?: string
+          created_at?: string
+          currency?: string
+          day?: string
+          gold_gram?: number | null
+          gold_nisab?: number | null
+          id?: string
+          silver_gram?: number | null
+          silver_nisab?: number | null
+          source?: string | null
+          spot_gram?: number | null
+        }
+        Relationships: []
+      }
       notification_prefs: {
         Row: {
-          countries: string[];
-          daily_digest: boolean;
-          email: boolean;
-          in_app: boolean;
-          metals: string[];
-          updated_at: string;
-          user_id: string;
-        };
+          countries: string[]
+          daily_digest: boolean
+          email: boolean
+          in_app: boolean
+          metals: string[]
+          updated_at: string
+          user_id: string
+        }
         Insert: {
-          countries?: string[];
-          daily_digest?: boolean;
-          email?: boolean;
-          in_app?: boolean;
-          metals?: string[];
-          updated_at?: string;
-          user_id: string;
-        };
+          countries?: string[]
+          daily_digest?: boolean
+          email?: boolean
+          in_app?: boolean
+          metals?: string[]
+          updated_at?: string
+          user_id: string
+        }
         Update: {
-          countries?: string[];
-          daily_digest?: boolean;
-          email?: boolean;
-          in_app?: boolean;
-          metals?: string[];
-          updated_at?: string;
-          user_id?: string;
-        };
-        Relationships: [];
-      };
+          countries?: string[]
+          daily_digest?: boolean
+          email?: boolean
+          in_app?: boolean
+          metals?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
-          body: string;
-          country: string;
-          created_at: string;
-          id: string;
-          kind: string;
-          read_at: string | null;
-          title: string;
-          user_id: string;
-        };
+          body: string
+          country: string | null
+          created_at: string
+          id: string
+          kind: string
+          read_at: string | null
+          title: string
+          user_id: string
+        }
         Insert: {
-          body?: string;
-          country?: string;
-          created_at?: string;
-          id?: string;
-          kind: string;
-          read_at?: string | null;
-          title: string;
-          user_id: string;
-        };
+          body?: string
+          country?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          read_at?: string | null
+          title?: string
+          user_id: string
+        }
         Update: {
-          body?: string;
-          country?: string;
-          created_at?: string;
-          id?: string;
-          kind?: string;
-          read_at?: string | null;
-          title?: string;
-          user_id?: string;
-        };
-        Relationships: [];
-      };
+          body?: string
+          country?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          read_at?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       official_nisab: {
         Row: {
-          announced_on: string;
-          authority: string;
-          country: string;
-          created_at: string;
-          created_by: string | null;
-          currency: string;
-          gold_nisab: number | null;
-          id: string;
-          silver_nisab: number | null;
-          source_url: string;
-        };
+          announced_on: string
+          authority: string
+          country: string
+          created_at: string
+          created_by: string | null
+          currency: string
+          gold_nisab: number | null
+          id: string
+          silver_nisab: number | null
+          source_url: string | null
+        }
         Insert: {
-          announced_on?: string;
-          authority: string;
-          country: string;
-          created_at?: string;
-          created_by?: string | null;
-          currency: string;
-          gold_nisab?: number | null;
-          id?: string;
-          silver_nisab?: number | null;
-          source_url?: string;
-        };
+          announced_on?: string
+          authority?: string
+          country: string
+          created_at?: string
+          created_by?: string | null
+          currency: string
+          gold_nisab?: number | null
+          id?: string
+          silver_nisab?: number | null
+          source_url?: string | null
+        }
         Update: {
-          announced_on?: string;
-          authority?: string;
-          country?: string;
-          created_at?: string;
-          created_by?: string | null;
-          currency?: string;
-          gold_nisab?: number | null;
-          id?: string;
-          silver_nisab?: number | null;
-          source_url?: string;
-        };
-        Relationships: [];
-      };
+          announced_on?: string
+          authority?: string
+          country?: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          gold_nisab?: number | null
+          id?: string
+          silver_nisab?: number | null
+          source_url?: string | null
+        }
+        Relationships: []
+      }
       official_sources: {
         Row: {
-          active: boolean;
-          authority: string;
-          country: string;
-          created_at: string;
-          currency: string;
-          id: string;
-          last_changed: string | null;
-          last_checked: string | null;
-          last_error: string;
-          last_hash: string | null;
-          last_snippet: string;
-          last_value: number | null;
-          metal: string;
-          url: string;
-          value_pattern: string | null;
-        };
+          active: boolean
+          authority: string
+          country: string
+          created_at: string
+          currency: string
+          id: string
+          last_changed: string | null
+          last_checked: string | null
+          last_error: string | null
+          last_hash: string | null
+          last_snippet: string | null
+          last_value: number | null
+          metal: string | null
+          published_on: string | null
+          source_kind: string
+          url: string
+          value_pattern: string | null
+          verified_at: string | null
+          verified_excerpt: string | null
+        }
         Insert: {
-          active?: boolean;
-          authority: string;
-          country: string;
-          created_at?: string;
-          currency: string;
-          id?: string;
-          last_changed?: string | null;
-          last_checked?: string | null;
-          last_error?: string;
-          last_hash?: string | null;
-          last_snippet?: string;
-          last_value?: number | null;
-          metal?: string;
-          url: string;
-          value_pattern?: string | null;
-        };
+          active?: boolean
+          authority?: string
+          country: string
+          created_at?: string
+          currency?: string
+          id?: string
+          last_changed?: string | null
+          last_checked?: string | null
+          last_error?: string | null
+          last_hash?: string | null
+          last_snippet?: string | null
+          last_value?: number | null
+          metal?: string | null
+          published_on?: string | null
+          source_kind?: string
+          url: string
+          value_pattern?: string | null
+          verified_at?: string | null
+          verified_excerpt?: string | null
+        }
         Update: {
-          active?: boolean;
-          authority?: string;
-          country?: string;
-          created_at?: string;
-          currency?: string;
-          id?: string;
-          last_changed?: string | null;
-          last_checked?: string | null;
-          last_error?: string;
-          last_hash?: string | null;
-          last_snippet?: string;
-          last_value?: number | null;
-          metal?: string;
-          url?: string;
-          value_pattern?: string | null;
-        };
-        Relationships: [];
-      };
-      price_submissions: {
+          active?: boolean
+          authority?: string
+          country?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          last_changed?: string | null
+          last_checked?: string | null
+          last_error?: string | null
+          last_hash?: string | null
+          last_snippet?: string | null
+          last_value?: number | null
+          metal?: string | null
+          published_on?: string | null
+          source_kind?: string
+          url?: string
+          value_pattern?: string | null
+          verified_at?: string | null
+          verified_excerpt?: string | null
+        }
+        Relationships: []
+      }
+      personal_zakat_calculations: {
         Row: {
-          ai_summary: string | null;
-          auto_approved: boolean;
-          buyback_gram: number | null;
-          city: string;
-          country: string;
-          created_at: string;
-          currency: string;
-          gold_gram: number | null;
-          id: string;
-          metal: string;
-          note: string;
-          quality: number | null;
-          review_reason: string;
-          reviewed_at: string | null;
-          reviewed_by: string | null;
-          silver_gram: number | null;
-          source: string;
-          status: string;
-          user_id: string;
-        };
+          country: string
+          created_at: string
+          currency: string
+          history_id: string
+          id: string
+          metal: string
+          net_wealth: number
+          nisab_threshold: number
+          price_gram: number
+          price_source: string
+          user_id: string
+          valuation_day: string
+          weight_grams: number
+          year_basis: string
+          zakat_due: number
+          zakat_rate: number
+        }
         Insert: {
-          ai_summary?: string | null;
-          auto_approved?: boolean;
-          buyback_gram?: number | null;
-          city?: string;
-          country: string;
-          created_at?: string;
-          currency: string;
-          gold_gram?: number | null;
-          id?: string;
-          metal?: string;
-          note?: string;
-          quality?: number | null;
-          review_reason?: string;
-          reviewed_at?: string | null;
-          reviewed_by?: string | null;
-          silver_gram?: number | null;
-          source?: string;
-          status?: string;
-          user_id: string;
-        };
+          country: string
+          created_at?: string
+          currency: string
+          history_id: string
+          id?: string
+          metal: string
+          net_wealth: number
+          nisab_threshold: number
+          price_gram: number
+          price_source: string
+          user_id: string
+          valuation_day: string
+          weight_grams: number
+          year_basis: string
+          zakat_due: number
+          zakat_rate: number
+        }
         Update: {
-          ai_summary?: string | null;
-          auto_approved?: boolean;
-          buyback_gram?: number | null;
-          city?: string;
-          country?: string;
-          created_at?: string;
-          currency?: string;
-          gold_gram?: number | null;
-          id?: string;
-          metal?: string;
-          note?: string;
-          quality?: number | null;
-          review_reason?: string;
-          reviewed_at?: string | null;
-          reviewed_by?: string | null;
-          silver_gram?: number | null;
-          source?: string;
-          status?: string;
-          user_id?: string;
-        };
-        Relationships: [];
-      };
-      price_votes: {
-        Row: {
-          created_at: string;
-          id: string;
-          submission_id: string;
-          user_id: string;
-          vote: number;
-        };
-        Insert: {
-          created_at?: string;
-          id?: string;
-          submission_id: string;
-          user_id: string;
-          vote: number;
-        };
-        Update: {
-          created_at?: string;
-          id?: string;
-          submission_id?: string;
-          user_id?: string;
-          vote?: number;
-        };
+          country?: string
+          created_at?: string
+          currency?: string
+          history_id?: string
+          id?: string
+          metal?: string
+          net_wealth?: number
+          nisab_threshold?: number
+          price_gram?: number
+          price_source?: string
+          user_id?: string
+          valuation_day?: string
+          weight_grams?: number
+          year_basis?: string
+          zakat_due?: number
+          zakat_rate?: number
+        }
         Relationships: [
           {
-            foreignKeyName: "price_votes_submission_id_fkey";
-            columns: ["submission_id"];
-            isOneToOne: false;
-            referencedRelation: "price_submissions";
-            referencedColumns: ["id"];
+            foreignKeyName: "personal_zakat_calculations_history_id_fkey"
+            columns: ["history_id"]
+            isOneToOne: false
+            referencedRelation: "nisab_history"
+            referencedColumns: ["id"]
           },
+        ]
+      }
+      price_snapshots: {
+        Row: {
+          consensus_status: string
+          day: string
+          deviation_pct: number
+          fx_rates: Json
+          fx_source: string
+          gold_usd_oz: number
+          metals_source: string
+          rejected: Json
+          silver_usd_oz: number
+          sources: Json
+          taken_at: string
+        }
+        Insert: {
+          consensus_status: string
+          day: string
+          deviation_pct?: number
+          fx_rates?: Json
+          fx_source?: string
+          gold_usd_oz: number
+          metals_source: string
+          rejected?: Json
+          silver_usd_oz: number
+          sources?: Json
+          taken_at?: string
+        }
+        Update: {
+          consensus_status?: string
+          day?: string
+          deviation_pct?: number
+          fx_rates?: Json
+          fx_source?: string
+          gold_usd_oz?: number
+          metals_source?: string
+          rejected?: Json
+          silver_usd_oz?: number
+          sources?: Json
+          taken_at?: string
+        }
+        Relationships: []
+      }
+      price_submissions: {
+        Row: {
+          buyback_gram: number | null
+          city: string
+          country: string
+          created_at: string
+          currency: string
+          gold_gram: number | null
+          id: string
+          metal: string
+          review_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          silver_gram: number | null
+          source: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          buyback_gram?: number | null
+          city?: string
+          country: string
+          created_at?: string
+          currency: string
+          gold_gram?: number | null
+          id?: string
+          metal?: string
+          review_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          silver_gram?: number | null
+          source?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          buyback_gram?: number | null
+          city?: string
+          country?: string
+          created_at?: string
+          currency?: string
+          gold_gram?: number | null
+          id?: string
+          metal?: string
+          review_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          silver_gram?: number | null
+          source?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      price_votes: {
+        Row: {
+          created_at: string
+          id: string
+          submission_id: string
+          user_id: string
+          vote: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          submission_id: string
+          user_id: string
+          vote: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          submission_id?: string
+          user_id?: string
+          vote?: number
+        }
+        Relationships: [
           {
-            foreignKeyName: "price_votes_submission_id_fkey";
-            columns: ["submission_id"];
-            isOneToOne: false;
-            referencedRelation: "public_price_quotes";
-            referencedColumns: ["id"];
+            foreignKeyName: "price_votes_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "price_submissions"
+            referencedColumns: ["id"]
           },
-        ];
-      };
+        ]
+      }
       profiles: {
         Row: {
-          city: string;
-          contact: string;
-          country: string;
-          created_at: string;
-          display_name: string;
-          id: string;
-          license: string;
-          org: string;
-        };
+          city: string | null
+          contact: string
+          country: string | null
+          created_at: string
+          display_name: string
+          id: string
+          license: string
+          org: string
+          updated_at: string
+        }
         Insert: {
-          city?: string;
-          contact?: string;
-          country?: string;
-          created_at?: string;
-          display_name?: string;
-          id: string;
-          license?: string;
-          org?: string;
-        };
+          city?: string | null
+          contact?: string
+          country?: string | null
+          created_at?: string
+          display_name?: string
+          id: string
+          license?: string
+          org?: string
+          updated_at?: string
+        }
         Update: {
-          city?: string;
-          contact?: string;
-          country?: string;
-          created_at?: string;
-          display_name?: string;
-          id?: string;
-          license?: string;
-          org?: string;
-        };
-        Relationships: [];
-      };
-      user_roles: {
-        Row: {
-          created_at: string;
-          id: string;
-          role: Database["public"]["Enums"]["app_role"];
-          user_id: string;
-        };
-        Insert: {
-          created_at?: string;
-          id?: string;
-          role: Database["public"]["Enums"]["app_role"];
-          user_id: string;
-        };
-        Update: {
-          created_at?: string;
-          id?: string;
-          role?: Database["public"]["Enums"]["app_role"];
-          user_id?: string;
-        };
-        Relationships: [];
-      };
-    };
-    Views: {
+          city?: string | null
+          contact?: string
+          country?: string | null
+          created_at?: string
+          display_name?: string
+          id?: string
+          license?: string
+          org?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       public_price_quotes: {
         Row: {
-          buyback_gram: number | null;
-          city: string | null;
-          country: string | null;
-          created_at: string | null;
-          currency: string | null;
-          gold_gram: number | null;
-          id: string | null;
-          metal: string | null;
-          reviewed_at: string | null;
-          silver_gram: number | null;
-          source: string | null;
-        };
+          buyback_gram: number | null
+          city: string
+          country: string
+          created_at: string
+          currency: string
+          gold_gram: number | null
+          id: string
+          metal: string
+          reviewed_at: string | null
+          silver_gram: number | null
+          source: string
+        }
         Insert: {
-          buyback_gram?: number | null;
-          city?: string | null;
-          country?: string | null;
-          created_at?: string | null;
-          currency?: string | null;
-          gold_gram?: number | null;
-          id?: string | null;
-          metal?: string | null;
-          reviewed_at?: string | null;
-          silver_gram?: number | null;
-          source?: string | null;
-        };
+          buyback_gram?: number | null
+          city?: string
+          country: string
+          created_at?: string
+          currency: string
+          gold_gram?: number | null
+          id?: string
+          metal?: string
+          reviewed_at?: string | null
+          silver_gram?: number | null
+          source?: string
+        }
         Update: {
-          buyback_gram?: number | null;
-          city?: string | null;
-          country?: string | null;
-          created_at?: string | null;
-          currency?: string | null;
-          gold_gram?: number | null;
-          id?: string | null;
-          metal?: string | null;
-          reviewed_at?: string | null;
-          silver_gram?: number | null;
-          source?: string | null;
-        };
-        Relationships: [];
-      };
-      public_profiles: {
+          buyback_gram?: number | null
+          city?: string
+          country?: string
+          created_at?: string
+          currency?: string
+          gold_gram?: number | null
+          id?: string
+          metal?: string
+          reviewed_at?: string | null
+          silver_gram?: number | null
+          source?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
         Row: {
-          city: string | null;
-          country: string | null;
-          display_name: string | null;
-          id: string | null;
-          org: string | null;
-        };
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
         Insert: {
-          city?: string | null;
-          country?: string | null;
-          display_name?: string | null;
-          id?: string | null;
-          org?: string | null;
-        };
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
         Update: {
-          city?: string | null;
-          country?: string | null;
-          display_name?: string | null;
-          id?: string | null;
-          org?: string | null;
-        };
-        Relationships: [];
-      };
-    };
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+    }
+    Views: {
+      market_daily: {
+        Row: {
+          day: string | null
+          gold_close: number | null
+          gold_high: number | null
+          gold_low: number | null
+          gold_open: number | null
+          silver_close: number | null
+          silver_high: number | null
+          silver_low: number | null
+          silver_open: number | null
+          ticks: number | null
+        }
+        Relationships: []
+      }
+    }
     Functions: {
       has_role: {
         Args: {
-          _role: Database["public"]["Enums"]["app_role"];
-          _user_id: string;
-        };
-        Returns: boolean;
-      };
-      is_trusted: { Args: { _user_id: string }; Returns: boolean };
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       jeweler_leaderboard: {
-        Args: { _country?: string };
+        Args: { _country: string }
         Returns: {
-          accuracy: number;
-          approved: number;
-          country: string;
-          display_name: string;
-          down_votes: number;
-          org: string;
-          points: number;
-          up_votes: number;
-          user_id: string;
-        }[];
-      };
-      verify_job_token: {
-        Args: { _name: string; _token: string };
-        Returns: boolean;
-      };
-    };
+          accuracy: number
+          approved: number
+          country: string
+          display_name: string
+          org: string
+          points: number
+          user_id: string
+        }[]
+      }
+      save_admin_jeweler_price: {
+        Args: {
+          _country: string
+          _currency: string
+          _gold?: number
+          _gold_buyback?: number
+          _reason?: string
+          _silver?: number
+          _silver_buyback?: number
+          _source?: string
+        }
+        Returns: string
+      }
+      verify_job_token: { Args: { _name: string }; Returns: boolean }
+    }
     Enums: {
-      app_role: "admin" | "jeweler" | "ambassador" | "volunteer";
-    };
+      app_role: "admin" | "jeweler" | "ambassador" | "volunteer"
+    }
     CompositeTypes: {
-      [_ in never]: never;
-    };
-  };
-};
+      [_ in never]: never
+    }
+  }
+}
 
-type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">;
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
 
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">];
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends (DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
       DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
-      Row: infer R;
+      Row: infer R
     }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    ? (DefaultSchema["Tables"] & DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
-        Row: infer R;
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
       }
       ? R
       : never
-    : never;
+    : never
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
-    keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends (DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I;
+      Insert: infer I
     }
     ? I
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
     ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Insert: infer I;
+        Insert: infer I
       }
       ? I
       : never
-    : never;
+    : never
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
-    keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends (DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U;
+      Update: infer U
     }
     ? U
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
     ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Update: infer U;
+        Update: infer U
       }
       ? U
       : never
-    : never;
+    : never
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
-    keyof DefaultSchema["Enums"] | { schema: keyof DatabaseWithoutInternals },
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
   EnumName extends (DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
     ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
-    : never;
+    : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    keyof DefaultSchema["CompositeTypes"] | { schema: keyof DatabaseWithoutInternals },
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals;
+    schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals;
+  schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
-    : never;
+    : never
 
 export const Constants = {
   public: {
@@ -759,4 +857,4 @@ export const Constants = {
       app_role: ["admin", "jeweler", "ambassador", "volunteer"],
     },
   },
-} as const;
+} as const

@@ -20,6 +20,7 @@ import { ACCREDITATION_STEPS, AMBASSADOR_DUTIES } from "@/lib/community";
 import { countryName, findCountry, flagOf } from "@/lib/countries";
 import { useI18n } from "@/lib/i18n";
 import { formatNumber } from "@/lib/nisab";
+import { confirmAccountWrite } from "@/lib/account-actions";
 
 export const Route = createFileRoute("/partners")({
   head: () => ({
@@ -96,6 +97,26 @@ function PartnersPage() {
 
   const [price, setPrice] = useState({ gold: "", silver: "", buyback: "", source: "" });
   const [priceSent, setPriceSent] = useState(false);
+  const [actionError, setActionError] = useState("");
+  const [actionBusy, setActionBusy] = useState(false);
+  const performWrite = async (
+    write: () => PromiseLike<{ error: { message: string } | null }>,
+    complete: () => void,
+  ) => {
+    setActionError("");
+    setActionBusy(true);
+    try {
+      await confirmAccountWrite(write, complete);
+    } catch {
+      setActionError(
+        lang === "ar"
+          ? "تعذّر حفظ التغيير. لم يتم الإرسال؛ حاول مرة أخرى."
+          : "Could not save. Nothing was submitted; please retry.",
+      );
+    } finally {
+      setActionBusy(false);
+    }
+  };
 
   const [rows, setRows] = useState<Submission[]>([]);
   const [votes, setVotes] = useState<Record<string, { up: number; down: number; mine?: number }>>(
@@ -133,7 +154,7 @@ function PartnersPage() {
     }));
     setRows(list);
 
-    if (list.length > 0) {
+    if (user && list.length > 0) {
       const { data: voteRows } = await supabase
         .from("price_votes")
         .select("submission_id,user_id,vote")
@@ -179,29 +200,37 @@ function PartnersPage() {
 
   const saveProfile = async () => {
     if (!user) return;
-    await supabase.from("profiles").upsert({
-      id: user.id,
-      display_name: profile.name,
-      org: profile.org,
-      contact: profile.contact,
-      license: profile.license,
-      country,
-      city,
-    });
-    setProfileSaved(true);
+    setProfileSaved(false);
+    await performWrite(
+      () =>
+        supabase.from("profiles").upsert({
+          id: user.id,
+          display_name: profile.name,
+          org: profile.org,
+          contact: profile.contact,
+          license: profile.license,
+          country,
+          city,
+        }),
+      () => setProfileSaved(true),
+    );
   };
 
   const requestRole = async () => {
     if (!user) return;
-    await supabase.from("audit_log").insert({
-      actor_id: user.id,
-      action: "role_request",
-      entity: "profile",
-      entity_id: user.id,
-      reason: profile.org || profile.name,
-      meta: { country, city },
-    });
-    setRequested(true);
+    setRequested(false);
+    await performWrite(
+      () =>
+        supabase.from("audit_log").insert({
+          actor_id: user.id,
+          action: "role_request",
+          entity: "profile",
+          entity_id: user.id,
+          reason: profile.org || profile.name,
+          meta: { country, city },
+        }),
+      () => setRequested(true),
+    );
   };
 
   const publish = async () => {
@@ -209,32 +238,48 @@ function PartnersPage() {
     const gold = Number(price.gold);
     const silver = Number(price.silver);
     const buyback = Number(price.buyback);
-    if (!Number.isFinite(gold) || gold <= 0) return;
-    await supabase.from("price_submissions").insert({
-      user_id: user.id,
-      country,
-      city,
-      currency,
-      metal: "gold",
-      gold_gram: gold,
-      silver_gram: Number.isFinite(silver) && silver > 0 ? silver : null,
-      buyback_gram: Number.isFinite(buyback) && buyback > 0 ? buyback : null,
-      source: price.source,
-    });
-    setPrice({ gold: "", silver: "", buyback: "", source: "" });
-    setPriceSent(true);
-    void loadPrices();
+    setPriceSent(false);
+    if (!Number.isFinite(gold) || gold <= 0) {
+      setActionError(
+        lang === "ar" ? "أدخل سعر ذهب موجبًا وصحيحًا." : "Enter a valid positive gold price.",
+      );
+      return;
+    }
+    await performWrite(
+      () =>
+        supabase.from("price_submissions").insert({
+          user_id: user.id,
+          country,
+          city,
+          currency,
+          metal: "gold",
+          gold_gram: gold,
+          silver_gram: Number.isFinite(silver) && silver > 0 ? silver : null,
+          buyback_gram: Number.isFinite(buyback) && buyback > 0 ? buyback : null,
+          source: price.source,
+        }),
+      () => {
+        setPrice({ gold: "", silver: "", buyback: "", source: "" });
+        setPriceSent(true);
+        void loadPrices();
+      },
+    );
   };
 
   const vote = async (id: string, value: 1 | -1) => {
     if (!user) return;
-    await supabase
-      .from("price_votes")
-      .upsert(
-        { submission_id: id, user_id: user.id, vote: value },
-        { onConflict: "submission_id,user_id" },
-      );
-    void loadPrices();
+    await performWrite(
+      () =>
+        supabase
+          .from("price_votes")
+          .upsert(
+            { submission_id: id, user_id: user.id, vote: value },
+            { onConflict: "submission_id,user_id" },
+          ),
+      () => {
+        void loadPrices();
+      },
+    );
   };
 
   const runAi = async () => {
@@ -247,7 +292,7 @@ function PartnersPage() {
         .split("\n")
         .map((line) => line.split("="))
         .filter((parts) => parts.length === 2 && Number.isFinite(Number(parts[1])))
-        .map((parts) => ({ date: parts[0]!.trim(), price: Number(parts[1]) }));
+        .map((parts) => ({ date: (parts[0] ?? "").trim(), price: Number(parts[1]) }));
       const result = await assess({
         data: {
           country,
@@ -269,6 +314,11 @@ function PartnersPage() {
 
   return (
     <Page eyebrow={t("p.eyebrow")} title={t("p.title")} sub={t("p.sub")}>
+      {actionError && (
+        <p role="alert" className="mb-4 text-sm text-destructive">
+          {actionError}
+        </p>
+      )}
       <section className="grid gap-4 md:grid-cols-3">
         {[
           { icon: BadgeCheck, title: t("p.card1.t"), body: t("p.card1.b") },
@@ -336,8 +386,10 @@ function PartnersPage() {
               />
             </div>
             <div className="mt-5 flex flex-wrap gap-3">
-              <Button onClick={saveProfile}>{t("p.save")}</Button>
-              <Button variant="outline" onClick={requestRole}>
+              <Button disabled={actionBusy} onClick={saveProfile}>
+                {t("p.save")}
+              </Button>
+              <Button disabled={actionBusy} variant="outline" onClick={requestRole}>
                 {t("p.requestRole")}
               </Button>
             </div>
@@ -387,7 +439,7 @@ function PartnersPage() {
               onChange={(v) => setPrice({ ...price, source: v })}
             />
           </div>
-          <Button className="mt-5" onClick={publish}>
+          <Button disabled={actionBusy} className="mt-5" onClick={publish}>
             {t("p.publish")}
           </Button>
           {priceSent && <p className="mt-3 text-sm text-muted-foreground">{t("p.sent")}</p>}
@@ -458,7 +510,7 @@ function PartnersPage() {
                   <Button
                     size="sm"
                     variant={v?.mine === 1 ? "default" : "outline"}
-                    disabled={!user}
+                    disabled={!user || actionBusy}
                     onClick={() => vote(item.id, 1)}
                     aria-label={t("p.approved")}
                   >
@@ -467,7 +519,7 @@ function PartnersPage() {
                   <Button
                     size="sm"
                     variant={v?.mine === -1 ? "default" : "outline"}
-                    disabled={!user}
+                    disabled={!user || actionBusy}
                     onClick={() => vote(item.id, -1)}
                     aria-label={t("p.rejected")}
                   >

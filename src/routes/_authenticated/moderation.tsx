@@ -13,6 +13,8 @@ import { useAuth, type AppRole } from "@/lib/auth";
 import { useI18n } from "@/lib/i18n";
 import { flagOf } from "@/lib/countries";
 import { formatNumber } from "@/lib/nisab";
+import { setUserRole, listUsersWithRoles } from "@/lib/admin-console.functions";
+import { confirmAccountWrite } from "@/lib/account-actions";
 
 export const Route = createFileRoute("/_authenticated/moderation")({
   head: () => ({
@@ -69,6 +71,10 @@ function ModerationPage() {
   const [roleEmail, setRoleEmail] = useState("");
   const [roleValue, setRoleValue] = useState<AppRole>("jeweler");
   const [roleMsg, setRoleMsg] = useState("");
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  const grant = useServerFn(setUserRole);
+  const listUsers = useServerFn(listUsersWithRoles);
 
   const load = useCallback(async () => {
     const { data } = await supabase
@@ -93,47 +99,68 @@ function ModerationPage() {
   const decide = async (row: Submission, status: "approved" | "rejected") => {
     if (!user) return;
     const reason = reasons[row.id]?.trim() ?? "";
-    await supabase
-      .from("price_submissions")
-      .update({
-        status,
-        review_reason: reason,
-        reviewed_by: user.id,
-        reviewed_at: new Date().toISOString(),
-      })
-      .eq("id", row.id);
-    await supabase.from("audit_log").insert({
-      actor_id: user.id,
-      action: status,
-      entity: "price_submission",
-      entity_id: row.id,
-      reason,
-      meta: { country: row.country, currency: row.currency },
-    });
-    await load();
+    setBusy(true);
+    setError("");
+    try {
+      await confirmAccountWrite(
+        () =>
+          supabase
+            .from("price_submissions")
+            .update({
+              status,
+              review_reason: reason,
+              reviewed_by: user.id,
+              reviewed_at: new Date().toISOString(),
+            })
+            .eq("id", row.id)
+            .select("id")
+            .single(),
+        () => {},
+      );
+      const { error: auditError } = await supabase.from("audit_log").insert({
+        actor_id: user.id,
+        action: status,
+        entity: "price_submission",
+        entity_id: row.id,
+        reason,
+        meta: { country: row.country, currency: row.currency },
+      });
+      if (auditError) setError("تمت المراجعة، لكن تعذّر حفظ سجل القرار.");
+      await load();
+    } catch {
+      setError("تعذّر حفظ قرار المراجعة. حاول مرة أخرى.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   const grantRole = async () => {
     setRoleMsg("");
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("contact", roleEmail.trim())
-      .maybeSingle();
-    if (!profile || !user) {
-      setRoleMsg("—");
-      return;
+    setBusy(true);
+    try {
+      const users: Awaited<ReturnType<typeof listUsersWithRoles>> = await listUsers();
+      const target = users.find(
+        (item: { id: string; email: string }) =>
+          item.email.toLowerCase() === roleEmail.trim().toLowerCase(),
+      );
+      if (!target) {
+        setRoleMsg("لا يوجد حساب بهذا البريد.");
+        return;
+      }
+      const result = await grant({
+        data: {
+          userId: target.id,
+          role: roleValue,
+          grant: true,
+          reason: "منح صلاحية من لوحة المراجعة",
+        },
+      });
+      setRoleMsg(result.ok ? "تم منح الصلاحية." : (result.reason ?? "تعذّر منح الصلاحية."));
+    } catch {
+      setRoleMsg("تعذّر منح الصلاحية. حاول مرة أخرى.");
+    } finally {
+      setBusy(false);
     }
-    await supabase.from("user_roles").insert({ user_id: profile.id, role: roleValue });
-    await supabase.from("audit_log").insert({
-      actor_id: user.id,
-      action: "grant_role",
-      entity: "user_role",
-      entity_id: profile.id,
-      reason: roleValue,
-    });
-    setRoleMsg("✓");
-    void load();
   };
 
   if (loading || !isAdmin) {
@@ -166,6 +193,11 @@ function ModerationPage() {
 
   return (
     <Page eyebrow={t("nav.moderation")} title={t("m.title")} sub={t("m.sub")}>
+      {error && (
+        <p role="alert" className="mb-4 text-sm text-destructive">
+          {error}
+        </p>
+      )}
       <section className="rounded-lg border border-border bg-card p-6">
         <h2 className="flex items-center gap-2 text-xl text-foreground">
           <ShieldCheck aria-hidden="true" className="size-5 text-primary" />
@@ -194,10 +226,15 @@ function ModerationPage() {
                 className="mt-3 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring"
               />
               <div className="mt-3 flex gap-2">
-                <Button size="sm" onClick={() => decide(row, "approved")}>
+                <Button disabled={busy} size="sm" onClick={() => decide(row, "approved")}>
                   {t("m.approve")}
                 </Button>
-                <Button size="sm" variant="outline" onClick={() => decide(row, "rejected")}>
+                <Button
+                  disabled={busy}
+                  size="sm"
+                  variant="outline"
+                  onClick={() => decide(row, "rejected")}
+                >
                   {t("m.reject")}
                 </Button>
               </div>
@@ -229,7 +266,9 @@ function ModerationPage() {
               </option>
             ))}
           </select>
-          <Button onClick={grantRole}>{t("m.grant")}</Button>
+          <Button disabled={busy} onClick={grantRole}>
+            {t("m.grant")}
+          </Button>
           {roleMsg && <span className="text-sm text-muted-foreground">{roleMsg}</span>}
         </div>
       </section>

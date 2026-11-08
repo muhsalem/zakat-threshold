@@ -2,7 +2,7 @@ import { CenturyChart } from "@/components/site/CenturyChart";
 import { HistoricalYearsCalculator } from "@/components/site/HistoricalYearsCalculator";
 import { NisabEras } from "@/components/site/NisabEras";
 import { PastNisab } from "@/components/site/PastNisab";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState } from "react";
@@ -31,6 +31,7 @@ import {
   HIJRI_MONTHS_EN,
 } from "@/lib/calendars";
 import { useI18n } from "@/lib/i18n";
+import { annualSearchSchema } from "@/lib/annual-nisab";
 import { GOLD_NISAB_G, SILVER_NISAB_G, TROY_OUNCE_G } from "@/lib/nisab";
 import { readManualHistory, type ManualPricePoint } from "@/lib/overrides";
 import {
@@ -86,7 +87,7 @@ const SILVER_VIEWS = [
 ];
 
 function History() {
-  const { t, lang, currency, city } = useI18n();
+  const { t, lang, currency, city, country } = useI18n();
   const { money } = useNisab();
   const [range, setRange] = useState<HistoryRange>("1y");
   const [metal, setMetal] = useState<"gold" | "silver">("gold");
@@ -216,6 +217,12 @@ function History() {
   return (
     <Page eyebrow="HISTORY" title={t("history.title")} sub={t("history.sub")}>
       <ManualNotice />
+      <Button asChild variant="outline" className="mb-5">
+        <Link to="/annual-nisab" search={annualSearchSchema.parse({ country })}>
+          <CalendarSearch />
+          {lang === "ar" ? "سجل النصاب لكل سنة ويوم" : "Annual and daily nisab archive"}
+        </Link>
+      </Button>
       <div className="mb-6 flex flex-wrap items-center gap-3">
         <CountryPicker />
         <CityPicker />

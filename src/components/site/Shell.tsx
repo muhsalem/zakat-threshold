@@ -33,6 +33,7 @@ const NAV_GROUPS = [
     key: "nav.group.tools",
     items: [
       { to: "/calculator", key: "nav.calculator" },
+      { to: "/ask", key: "nav.ask" },
       { to: "/alerts", key: "nav.alerts" },
       { to: "/outlook", key: "nav.outlook" },
       { to: "/ledger", key: "nav.ledger" },
@@ -84,6 +85,7 @@ const NAV_MOBILE = [
     key: "nav.group.tools",
     items: [
       { to: "/calculator", key: "nav.calculator" },
+      { to: "/ask", key: "nav.ask" },
       { to: "/alerts", key: "nav.alerts" },
       { to: "/outlook", key: "nav.outlook" },
       { to: "/ledger", key: "nav.ledger" },
@@ -259,6 +261,8 @@ function LangPicker() {
 
 function MobileNav() {
   const { t, rtl } = useI18n();
+  const navLabel = (key: string) =>
+    key === "nav.ask" ? (rtl ? "اسأل عن الزكاة" : "Ask about zakat") : t(key);
   const { isAdmin } = useAuth();
   const [open, setOpen] = useState(false);
   return (
@@ -296,7 +300,7 @@ function MobileNav() {
                     activeProps={{ className: "text-foreground font-medium" }}
                     className="rounded-lg px-2 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
                   >
-                    {t(item.key)}
+                    {navLabel(item.key)}
                   </Link>
                 ))}
               </div>
@@ -328,7 +332,9 @@ function MobileNav() {
 }
 
 export function Shell({ children }: { children: ReactNode }) {
-  const { t } = useI18n();
+  const { t, rtl } = useI18n();
+  const navLabel = (key: string) =>
+    key === "nav.ask" ? (rtl ? "اسأل عن الزكاة" : "Ask about zakat") : t(key);
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur-xl">
@@ -373,7 +379,7 @@ export function Shell({ children }: { children: ReactNode }) {
                     {group.items.map((item) => (
                       <DropdownMenuItem key={item.to} asChild>
                         <Link to={item.to} activeOptions={{ exact: true }}>
-                          {t(item.key)}
+                          {navLabel(item.key)}
                         </Link>
                       </DropdownMenuItem>
                     ))}
@@ -418,7 +424,7 @@ export function Shell({ children }: { children: ReactNode }) {
                       to={item.to}
                       className="text-muted-foreground transition-colors hover:text-foreground"
                     >
-                      {t(item.key)}
+                      {navLabel(item.key)}
                     </Link>
                   ))}
                 </div>

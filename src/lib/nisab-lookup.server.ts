@@ -168,7 +168,7 @@ export async function lookupNisabAt(
       goldUsdOz: null,
       silverUsdOz: null,
       fxDay: null,
-      source: row.source,
+      source: row.source ?? "",
       status: null,
       nisab: {
         goldGram,

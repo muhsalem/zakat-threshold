@@ -48,6 +48,10 @@ export const Route = createFileRoute("/chronology")({
         content: "سجل كافة سنوات الهجرة (2 هـ - 1448 هـ) لأنصبة الزكاة",
       },
       { property: "og:type", content: "website" },
+      {
+        property: "og:description",
+        content: "التسلسل التاريخي لأنصبة الذهب والفضة ومقاديرها عبر سنوات الهجرة في منصة نِصاب.",
+      },
       { name: "twitter:card", content: "summary" },
     ],
   }),
@@ -734,7 +738,10 @@ export function ChronologyPage() {
                   <span className="text-muted-foreground block text-[0.7rem]">
                     نسبة الذهب للفضة
                   </span>
-                  <span className="num font-bold text-foreground">1 : {m.goldToSilverRatio}</span>
+                  <span className="num font-bold text-foreground">
+                    1 : {m.goldToSilverRatio}
+                    {m.gregorianYear < 1925 ? " (توضيحي)" : ""}
+                  </span>
                 </div>
                 <Button size="sm" variant="ghost" className="text-xs">
                   عرض السنة ←

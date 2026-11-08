@@ -150,7 +150,14 @@ export function priceStrings(lang: string) {
 /** Live prices resolved into the current country's currency (and city, if set). */
 export function useNisab(prefer: PricePreference = "local") {
   const { currency, lang, country, city } = useI18n();
-  const { data: base, overrides, isLoading, isError, refetch } = usePrices();
+  const {
+    data: base,
+    overrides,
+    isLoading,
+    isError,
+    refetch: refetchMarket,
+    isFetching,
+  } = usePrices();
   const localQuery = useLocalQuote(country, currency);
   const quote = localQuery.data;
   const { weight: silverWeight } = useSilverStandard();
@@ -227,7 +234,8 @@ export function useNisab(prefer: PricePreference = "local") {
     rate: r,
     isLoading,
     isError,
-    refetch,
+    refetch: () => Promise.all([refetchMarket(), localQuery.refetch()]),
+    isFetching: isFetching || localQuery.isFetching,
     currency,
     scoped: Boolean(scope),
   };
@@ -781,10 +789,10 @@ export function LocalMarket({
         {[
           { label: t("local.goldQuote"), value: money(goldGram) },
           { label: t("local.silverQuote"), value: money(silverGram) },
-          { label: t("local.goldBuy"), value: money(goldBuy) },
-          { label: t("local.silverBuy"), value: money(silverBuy) },
-          { label: t("local.goldNisab"), value: money(goldBuy * goldWeightFor(standardWeight)) },
-          { label: t("local.silverNisab"), value: money(silverBuy * standardWeight) },
+          { label: `${t("local.goldBuy")} · ${quote?.buybackGram ? (lang === "ar" ? "منشور" : "Published") : (lang === "ar" ? "تقديري" : "Estimated")}`, value: money(goldBuy) },
+          { label: `${t("local.silverBuy")} · ${quote?.silverBuybackGram ? (lang === "ar" ? "منشور" : "Published") : (lang === "ar" ? "تقديري" : "Estimated")}`, value: money(silverBuy) },
+          { label: `${t("local.goldNisab")}${quote?.buybackGram ? "" : (lang === "ar" ? " · تقديري" : " · Estimated")}`, value: money(goldBuy * goldWeightFor(standardWeight)) },
+          { label: `${t("local.silverNisab")}${quote?.silverBuybackGram ? "" : (lang === "ar" ? " · تقديري" : " · Estimated")}`, value: money(silverBuy * standardWeight) },
         ].map((row) => (
           <div
             key={row.label}
@@ -806,12 +814,12 @@ export function LocalMarket({
             className="num mt-1 w-32 rounded-lg border border-input bg-card px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring"
           />
         </label>
-        <button
+        <Button
           onClick={apply}
           className="rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground"
         >
           {t("local.apply")}
-        </button>
+        </Button>
         {local.updatedAt && (
           <span className="text-xs text-muted-foreground">
             {t("verify.confirmed")}: <span className="num">{fmtDate(local.updatedAt, lang)}</span>

@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AnnualNisabRouteImport } from './routes/annual-nisab'
+import { Route as AskRouteImport } from './routes/ask'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CalculatorRouteImport } from './routes/calculator'
 import { Route as ChronologyRouteImport } from './routes/chronology'
@@ -21,6 +23,7 @@ import { Route as DevelopersRouteImport } from './routes/developers'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as FiqhRouteImport } from './routes/fiqh'
 import { Route as HistoryRouteImport } from './routes/history'
+import { Route as InviteRouteImport } from './routes/invite'
 import { Route as LedgerRouteImport } from './routes/ledger'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as MethodologyRouteImport } from './routes/methodology'
@@ -35,12 +38,17 @@ import { Route as WaqfRouteImport } from './routes/waqf'
 import { Route as WidgetRouteImport } from './routes/widget'
 import { Route as AuthenticatedAlertsRouteImport } from './routes/_authenticated/alerts'
 import { Route as AuthenticatedControlRouteImport } from './routes/_authenticated/control'
+import { Route as AuthenticatedJewelerPricesRouteImport } from './routes/_authenticated/jeweler-prices'
 import { Route as AuthenticatedModerationRouteImport } from './routes/_authenticated/moderation'
+import { Route as AuthenticatedPersonalCalculationsRouteImport } from './routes/_authenticated/personal-calculations'
 import { Route as CountryCodeRouteImport } from './routes/country.$code'
+import { Route as ApiPublicHooksCountryPricesRouteImport } from './routes/api/public/hooks/country-prices'
 import { Route as ApiPublicHooksJewelerFeedRouteImport } from './routes/api/public/hooks/jeweler-feed'
 import { Route as ApiPublicHooksMarketTickRouteImport } from './routes/api/public/hooks/market-tick'
 import { Route as ApiPublicV1NisabIndexRouteImport } from './routes/api/public/v1/nisab/index'
 import { Route as ApiPublicV1NisabAtRouteImport } from './routes/api/public/v1/nisab/at'
+import { Route as ApiPublicV1NisabBulletinRouteImport } from './routes/api/public/v1/nisab/bulletin'
+import { Route as ApiPublicV1NisabCsvRouteImport } from './routes/api/public/v1/nisab/csv'
 import { Route as ApiPublicV1NisabHistoryRouteImport } from './routes/api/public/v1/nisab/history'
 import { Route as ApiPublicV1NisabSnapshotRouteImport } from './routes/api/public/v1/nisab/snapshot'
 
@@ -56,6 +64,16 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnnualNisabRoute = AnnualNisabRouteImport.update({
+  id: '/annual-nisab',
+  path: '/annual-nisab',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AskRoute = AskRouteImport.update({
+  id: '/ask',
+  path: '/ask',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -101,6 +119,11 @@ const FiqhRoute = FiqhRouteImport.update({
 const HistoryRoute = HistoryRouteImport.update({
   id: '/history',
   path: '/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InviteRoute = InviteRouteImport.update({
+  id: '/invite',
+  path: '/invite',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LedgerRoute = LedgerRouteImport.update({
@@ -173,16 +196,34 @@ const AuthenticatedControlRoute = AuthenticatedControlRouteImport.update({
   path: '/control',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedJewelerPricesRoute =
+  AuthenticatedJewelerPricesRouteImport.update({
+    id: '/jeweler-prices',
+    path: '/jeweler-prices',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedModerationRoute = AuthenticatedModerationRouteImport.update({
   id: '/moderation',
   path: '/moderation',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPersonalCalculationsRoute =
+  AuthenticatedPersonalCalculationsRouteImport.update({
+    id: '/personal-calculations',
+    path: '/personal-calculations',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const CountryCodeRoute = CountryCodeRouteImport.update({
   id: '/country/$code',
   path: '/country/$code',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHooksCountryPricesRoute =
+  ApiPublicHooksCountryPricesRouteImport.update({
+    id: '/api/public/hooks/country-prices',
+    path: '/api/public/hooks/country-prices',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksJewelerFeedRoute =
   ApiPublicHooksJewelerFeedRouteImport.update({
     id: '/api/public/hooks/jeweler-feed',
@@ -205,6 +246,17 @@ const ApiPublicV1NisabAtRoute = ApiPublicV1NisabAtRouteImport.update({
   path: '/api/public/v1/nisab/at',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicV1NisabBulletinRoute =
+  ApiPublicV1NisabBulletinRouteImport.update({
+    id: '/api/public/v1/nisab/bulletin',
+    path: '/api/public/v1/nisab/bulletin',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicV1NisabCsvRoute = ApiPublicV1NisabCsvRouteImport.update({
+  id: '/api/public/v1/nisab/csv',
+  path: '/api/public/v1/nisab/csv',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicV1NisabHistoryRoute = ApiPublicV1NisabHistoryRouteImport.update({
   id: '/api/public/v1/nisab/history',
   path: '/api/public/v1/nisab/history',
@@ -220,6 +272,8 @@ const ApiPublicV1NisabSnapshotRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/annual-nisab': typeof AnnualNisabRoute
+  '/ask': typeof AskRoute
   '/auth': typeof AuthRoute
   '/calculator': typeof CalculatorRoute
   '/chronology': typeof ChronologyRoute
@@ -229,6 +283,7 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
+  '/invite': typeof InviteRoute
   '/ledger': typeof LedgerRoute
   '/map': typeof MapRoute
   '/methodology': typeof MethodologyRoute
@@ -243,11 +298,16 @@ export interface FileRoutesByFullPath {
   '/widget': typeof WidgetRoute
   '/alerts': typeof AuthenticatedAlertsRoute
   '/control': typeof AuthenticatedControlRoute
+  '/jeweler-prices': typeof AuthenticatedJewelerPricesRoute
   '/moderation': typeof AuthenticatedModerationRoute
+  '/personal-calculations': typeof AuthenticatedPersonalCalculationsRoute
   '/country/$code': typeof CountryCodeRoute
+  '/api/public/hooks/country-prices': typeof ApiPublicHooksCountryPricesRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
   '/api/public/hooks/market-tick': typeof ApiPublicHooksMarketTickRoute
   '/api/public/v1/nisab/at': typeof ApiPublicV1NisabAtRoute
+  '/api/public/v1/nisab/bulletin': typeof ApiPublicV1NisabBulletinRoute
+  '/api/public/v1/nisab/csv': typeof ApiPublicV1NisabCsvRoute
   '/api/public/v1/nisab/history': typeof ApiPublicV1NisabHistoryRoute
   '/api/public/v1/nisab/snapshot': typeof ApiPublicV1NisabSnapshotRoute
   '/api/public/v1/nisab/': typeof ApiPublicV1NisabIndexRoute
@@ -255,6 +315,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/annual-nisab': typeof AnnualNisabRoute
+  '/ask': typeof AskRoute
   '/auth': typeof AuthRoute
   '/calculator': typeof CalculatorRoute
   '/chronology': typeof ChronologyRoute
@@ -264,6 +326,7 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
+  '/invite': typeof InviteRoute
   '/ledger': typeof LedgerRoute
   '/map': typeof MapRoute
   '/methodology': typeof MethodologyRoute
@@ -278,11 +341,16 @@ export interface FileRoutesByTo {
   '/widget': typeof WidgetRoute
   '/alerts': typeof AuthenticatedAlertsRoute
   '/control': typeof AuthenticatedControlRoute
+  '/jeweler-prices': typeof AuthenticatedJewelerPricesRoute
   '/moderation': typeof AuthenticatedModerationRoute
+  '/personal-calculations': typeof AuthenticatedPersonalCalculationsRoute
   '/country/$code': typeof CountryCodeRoute
+  '/api/public/hooks/country-prices': typeof ApiPublicHooksCountryPricesRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
   '/api/public/hooks/market-tick': typeof ApiPublicHooksMarketTickRoute
   '/api/public/v1/nisab/at': typeof ApiPublicV1NisabAtRoute
+  '/api/public/v1/nisab/bulletin': typeof ApiPublicV1NisabBulletinRoute
+  '/api/public/v1/nisab/csv': typeof ApiPublicV1NisabCsvRoute
   '/api/public/v1/nisab/history': typeof ApiPublicV1NisabHistoryRoute
   '/api/public/v1/nisab/snapshot': typeof ApiPublicV1NisabSnapshotRoute
   '/api/public/v1/nisab': typeof ApiPublicV1NisabIndexRoute
@@ -292,6 +360,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/admin': typeof AdminRoute
+  '/annual-nisab': typeof AnnualNisabRoute
+  '/ask': typeof AskRoute
   '/auth': typeof AuthRoute
   '/calculator': typeof CalculatorRoute
   '/chronology': typeof ChronologyRoute
@@ -301,6 +371,7 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/fiqh': typeof FiqhRoute
   '/history': typeof HistoryRoute
+  '/invite': typeof InviteRoute
   '/ledger': typeof LedgerRoute
   '/map': typeof MapRoute
   '/methodology': typeof MethodologyRoute
@@ -315,11 +386,16 @@ export interface FileRoutesById {
   '/widget': typeof WidgetRoute
   '/_authenticated/alerts': typeof AuthenticatedAlertsRoute
   '/_authenticated/control': typeof AuthenticatedControlRoute
+  '/_authenticated/jeweler-prices': typeof AuthenticatedJewelerPricesRoute
   '/_authenticated/moderation': typeof AuthenticatedModerationRoute
+  '/_authenticated/personal-calculations': typeof AuthenticatedPersonalCalculationsRoute
   '/country/$code': typeof CountryCodeRoute
+  '/api/public/hooks/country-prices': typeof ApiPublicHooksCountryPricesRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
   '/api/public/hooks/market-tick': typeof ApiPublicHooksMarketTickRoute
   '/api/public/v1/nisab/at': typeof ApiPublicV1NisabAtRoute
+  '/api/public/v1/nisab/bulletin': typeof ApiPublicV1NisabBulletinRoute
+  '/api/public/v1/nisab/csv': typeof ApiPublicV1NisabCsvRoute
   '/api/public/v1/nisab/history': typeof ApiPublicV1NisabHistoryRoute
   '/api/public/v1/nisab/snapshot': typeof ApiPublicV1NisabSnapshotRoute
   '/api/public/v1/nisab/': typeof ApiPublicV1NisabIndexRoute
@@ -329,6 +405,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/annual-nisab'
+    | '/ask'
     | '/auth'
     | '/calculator'
     | '/chronology'
@@ -338,6 +416,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/fiqh'
     | '/history'
+    | '/invite'
     | '/ledger'
     | '/map'
     | '/methodology'
@@ -352,11 +431,16 @@ export interface FileRouteTypes {
     | '/widget'
     | '/alerts'
     | '/control'
+    | '/jeweler-prices'
     | '/moderation'
+    | '/personal-calculations'
     | '/country/$code'
+    | '/api/public/hooks/country-prices'
     | '/api/public/hooks/jeweler-feed'
     | '/api/public/hooks/market-tick'
     | '/api/public/v1/nisab/at'
+    | '/api/public/v1/nisab/bulletin'
+    | '/api/public/v1/nisab/csv'
     | '/api/public/v1/nisab/history'
     | '/api/public/v1/nisab/snapshot'
     | '/api/public/v1/nisab/'
@@ -364,6 +448,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
+    | '/annual-nisab'
+    | '/ask'
     | '/auth'
     | '/calculator'
     | '/chronology'
@@ -373,6 +459,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/fiqh'
     | '/history'
+    | '/invite'
     | '/ledger'
     | '/map'
     | '/methodology'
@@ -387,11 +474,16 @@ export interface FileRouteTypes {
     | '/widget'
     | '/alerts'
     | '/control'
+    | '/jeweler-prices'
     | '/moderation'
+    | '/personal-calculations'
     | '/country/$code'
+    | '/api/public/hooks/country-prices'
     | '/api/public/hooks/jeweler-feed'
     | '/api/public/hooks/market-tick'
     | '/api/public/v1/nisab/at'
+    | '/api/public/v1/nisab/bulletin'
+    | '/api/public/v1/nisab/csv'
     | '/api/public/v1/nisab/history'
     | '/api/public/v1/nisab/snapshot'
     | '/api/public/v1/nisab'
@@ -400,6 +492,8 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/admin'
+    | '/annual-nisab'
+    | '/ask'
     | '/auth'
     | '/calculator'
     | '/chronology'
@@ -409,6 +503,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/fiqh'
     | '/history'
+    | '/invite'
     | '/ledger'
     | '/map'
     | '/methodology'
@@ -423,11 +518,16 @@ export interface FileRouteTypes {
     | '/widget'
     | '/_authenticated/alerts'
     | '/_authenticated/control'
+    | '/_authenticated/jeweler-prices'
     | '/_authenticated/moderation'
+    | '/_authenticated/personal-calculations'
     | '/country/$code'
+    | '/api/public/hooks/country-prices'
     | '/api/public/hooks/jeweler-feed'
     | '/api/public/hooks/market-tick'
     | '/api/public/v1/nisab/at'
+    | '/api/public/v1/nisab/bulletin'
+    | '/api/public/v1/nisab/csv'
     | '/api/public/v1/nisab/history'
     | '/api/public/v1/nisab/snapshot'
     | '/api/public/v1/nisab/'
@@ -437,6 +537,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AdminRoute: typeof AdminRoute
+  AnnualNisabRoute: typeof AnnualNisabRoute
+  AskRoute: typeof AskRoute
   AuthRoute: typeof AuthRoute
   CalculatorRoute: typeof CalculatorRoute
   ChronologyRoute: typeof ChronologyRoute
@@ -446,6 +548,7 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   FiqhRoute: typeof FiqhRoute
   HistoryRoute: typeof HistoryRoute
+  InviteRoute: typeof InviteRoute
   LedgerRoute: typeof LedgerRoute
   MapRoute: typeof MapRoute
   MethodologyRoute: typeof MethodologyRoute
@@ -459,9 +562,12 @@ export interface RootRouteChildren {
   WaqfRoute: typeof WaqfRoute
   WidgetRoute: typeof WidgetRoute
   CountryCodeRoute: typeof CountryCodeRoute
+  ApiPublicHooksCountryPricesRoute: typeof ApiPublicHooksCountryPricesRoute
   ApiPublicHooksJewelerFeedRoute: typeof ApiPublicHooksJewelerFeedRoute
   ApiPublicHooksMarketTickRoute: typeof ApiPublicHooksMarketTickRoute
   ApiPublicV1NisabAtRoute: typeof ApiPublicV1NisabAtRoute
+  ApiPublicV1NisabBulletinRoute: typeof ApiPublicV1NisabBulletinRoute
+  ApiPublicV1NisabCsvRoute: typeof ApiPublicV1NisabCsvRoute
   ApiPublicV1NisabHistoryRoute: typeof ApiPublicV1NisabHistoryRoute
   ApiPublicV1NisabSnapshotRoute: typeof ApiPublicV1NisabSnapshotRoute
   ApiPublicV1NisabIndexRoute: typeof ApiPublicV1NisabIndexRoute
@@ -488,6 +594,20 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/annual-nisab': {
+      id: '/annual-nisab'
+      path: '/annual-nisab'
+      fullPath: '/annual-nisab'
+      preLoaderRoute: typeof AnnualNisabRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ask': {
+      id: '/ask'
+      path: '/ask'
+      fullPath: '/ask'
+      preLoaderRoute: typeof AskRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -551,6 +671,13 @@ declare module '@tanstack/react-router' {
       path: '/history'
       fullPath: '/history'
       preLoaderRoute: typeof HistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invite': {
+      id: '/invite'
+      path: '/invite'
+      fullPath: '/invite'
+      preLoaderRoute: typeof InviteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ledger': {
@@ -651,6 +778,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedControlRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/jeweler-prices': {
+      id: '/_authenticated/jeweler-prices'
+      path: '/jeweler-prices'
+      fullPath: '/jeweler-prices'
+      preLoaderRoute: typeof AuthenticatedJewelerPricesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/moderation': {
       id: '/_authenticated/moderation'
       path: '/moderation'
@@ -658,11 +792,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedModerationRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/personal-calculations': {
+      id: '/_authenticated/personal-calculations'
+      path: '/personal-calculations'
+      fullPath: '/personal-calculations'
+      preLoaderRoute: typeof AuthenticatedPersonalCalculationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/country/$code': {
       id: '/country/$code'
       path: '/country/$code'
       fullPath: '/country/$code'
       preLoaderRoute: typeof CountryCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/country-prices': {
+      id: '/api/public/hooks/country-prices'
+      path: '/api/public/hooks/country-prices'
+      fullPath: '/api/public/hooks/country-prices'
+      preLoaderRoute: typeof ApiPublicHooksCountryPricesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/hooks/jeweler-feed': {
@@ -693,6 +841,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1NisabAtRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/nisab/bulletin': {
+      id: '/api/public/v1/nisab/bulletin'
+      path: '/api/public/v1/nisab/bulletin'
+      fullPath: '/api/public/v1/nisab/bulletin'
+      preLoaderRoute: typeof ApiPublicV1NisabBulletinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/nisab/csv': {
+      id: '/api/public/v1/nisab/csv'
+      path: '/api/public/v1/nisab/csv'
+      fullPath: '/api/public/v1/nisab/csv'
+      preLoaderRoute: typeof ApiPublicV1NisabCsvRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/v1/nisab/history': {
       id: '/api/public/v1/nisab/history'
       path: '/api/public/v1/nisab/history'
@@ -713,13 +875,18 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAlertsRoute: typeof AuthenticatedAlertsRoute
   AuthenticatedControlRoute: typeof AuthenticatedControlRoute
+  AuthenticatedJewelerPricesRoute: typeof AuthenticatedJewelerPricesRoute
   AuthenticatedModerationRoute: typeof AuthenticatedModerationRoute
+  AuthenticatedPersonalCalculationsRoute: typeof AuthenticatedPersonalCalculationsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAlertsRoute: AuthenticatedAlertsRoute,
   AuthenticatedControlRoute: AuthenticatedControlRoute,
+  AuthenticatedJewelerPricesRoute: AuthenticatedJewelerPricesRoute,
   AuthenticatedModerationRoute: AuthenticatedModerationRoute,
+  AuthenticatedPersonalCalculationsRoute:
+    AuthenticatedPersonalCalculationsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -729,6 +896,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AdminRoute: AdminRoute,
+  AnnualNisabRoute: AnnualNisabRoute,
+  AskRoute: AskRoute,
   AuthRoute: AuthRoute,
   CalculatorRoute: CalculatorRoute,
   ChronologyRoute: ChronologyRoute,
@@ -738,6 +907,7 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   FiqhRoute: FiqhRoute,
   HistoryRoute: HistoryRoute,
+  InviteRoute: InviteRoute,
   LedgerRoute: LedgerRoute,
   MapRoute: MapRoute,
   MethodologyRoute: MethodologyRoute,
@@ -751,9 +921,12 @@ const rootRouteChildren: RootRouteChildren = {
   WaqfRoute: WaqfRoute,
   WidgetRoute: WidgetRoute,
   CountryCodeRoute: CountryCodeRoute,
+  ApiPublicHooksCountryPricesRoute: ApiPublicHooksCountryPricesRoute,
   ApiPublicHooksJewelerFeedRoute: ApiPublicHooksJewelerFeedRoute,
   ApiPublicHooksMarketTickRoute: ApiPublicHooksMarketTickRoute,
   ApiPublicV1NisabAtRoute: ApiPublicV1NisabAtRoute,
+  ApiPublicV1NisabBulletinRoute: ApiPublicV1NisabBulletinRoute,
+  ApiPublicV1NisabCsvRoute: ApiPublicV1NisabCsvRoute,
   ApiPublicV1NisabHistoryRoute: ApiPublicV1NisabHistoryRoute,
   ApiPublicV1NisabSnapshotRoute: ApiPublicV1NisabSnapshotRoute,
   ApiPublicV1NisabIndexRoute: ApiPublicV1NisabIndexRoute,

@@ -333,7 +333,7 @@ export const COUNTRIES: Country[] = [
   {
     code: "PS",
     numericCode: "275",
-    currency: "EGP",
+    currency: "ILS",
     ar: "فلسطين",
     en: "Palestine",
     muslim: true,

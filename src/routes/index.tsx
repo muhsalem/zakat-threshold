@@ -247,6 +247,11 @@ function Home() {
                 <p className="mt-5 border-t border-border pt-3 text-sm text-muted-foreground">
                   {t("perGram")}: <span className="num">{money(c.gram)}</span>
                 </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  <span className="num">
+                    {c.grams} × {money(c.gram)} = {money(c.total)}
+                  </span>
+                </p>
                 {c.kind === "silver" && silverWeight !== SILVER_NISAB_G ? (
                   <p className="mt-4 border-t border-border pt-3 text-xs text-muted-foreground">
                     {s.history}
