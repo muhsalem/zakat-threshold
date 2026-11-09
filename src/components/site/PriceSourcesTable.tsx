@@ -49,14 +49,14 @@ export function PriceSourcesTable() {
               const o = data?.off.get(code);
               const cur = f?.currency ?? o?.currency ?? c?.currency ?? "";
               const rate = prices?.rates[cur];
-              const gSpot = rate ? perGram(prices!.goldUsdOz, rate) : null;
-              const sSpot = rate ? perGram(prices!.silverUsdOz, rate) : null;
+              const gSpot = rate && prices ? perGram(prices.goldUsdOz, rate) : null;
+              const sSpot = rate && prices ? perGram(prices.silverUsdOz, rate) : null;
               const g = f?.buyback_gram ?? f?.gold_gram;
               const s = f?.silver_buyback_gram ?? f?.silver_gram;
               return (
                 <tr key={code} className="border-t border-border align-top">
                   <td className="p-2">{c?.ar ?? code} <span className="text-muted-foreground">{cur}</span></td>
-                  <td className="p-2">{f ? <a href={f.source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary underline underline-offset-4">{f.source} <ExternalLink aria-hidden="true" className="size-3" /></a> : <span className="text-muted-foreground">لا يوجد مصدر محلي — سعر عالمي محوَّل</span>}
+                  <td className="p-2">{f ? <a href={f.source_url ?? undefined} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary underline underline-offset-4">{f.source} <ExternalLink aria-hidden="true" className="size-3" /></a> : <span className="text-muted-foreground">لا يوجد مصدر محلي — سعر عالمي محوَّل</span>}
                     {f && <p className="num text-xs text-muted-foreground">{f.day}</p>}</td>
                   <td className="num p-2">{fmt(g ?? gSpot)}{!g && gSpot ? " *" : ""}</td>
                   <td className="num p-2">{diff(g, gSpot)}</td>
@@ -78,7 +78,7 @@ export function PriceSourcesTable() {
         {ISAGHA.map((i) => {
           const f = data?.latest.get(i.country);
           const rate = prices?.rates[i.country === "KW" ? "KWD" : "EGP"];
-          const sSpot = rate ? perGram(prices!.silverUsdOz, rate) : null;
+          const sSpot = rate && prices ? perGram(prices.silverUsdOz, rate) : null;
           const s = f?.silver_buyback_gram ?? f?.silver_gram;
           return (
             <li key={i.country} className="card-surface p-4 text-sm">
