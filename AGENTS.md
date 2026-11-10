@@ -15,3 +15,4 @@
 - Centralize per-metal valuation and manual precedence in the browser-safe valuation module; a manual override for one metal must not suppress the other metal's local quote.
 - Share country-specific public paths and UTC-dated calculated values, never fabricate a city or label a calculated quote as an official announcement.
 - Keep the silver-weight preference hydrated and device-local; persisted comparisons must use the matching historical standard.
+- Mount one public price watcher at the root to invalidate quotes and official announcements on realtime events, reconnection, and UTC midnight; keep historical-series caching separate to avoid multiplying source fetches.
