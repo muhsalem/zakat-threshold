@@ -1,3 +1,6 @@
+// @refresh reset
+// Reset consumers on hot updates: removing the former subscription hooks changes
+// their hook layout, so preserving the old React state can corrupt query queues.
 import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/integrations/supabase/client";
