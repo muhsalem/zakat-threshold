@@ -15,6 +15,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { I18nProvider } from "../lib/i18n";
 import { ThemeProvider } from "../lib/theme";
 import { Shell } from "../components/site/Shell";
+import { LivePriceWatch } from "../components/site/LivePriceWatch";
 
 function NotFoundComponent() {
   return (
@@ -134,6 +135,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <LivePriceWatch />
       <I18nProvider>
         <ThemeProvider>
           <Shell>
