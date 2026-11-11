@@ -7,6 +7,7 @@ import { AsOf, Disclaimer, LocalMarket, ManualNotice, SourceQuality, StateNote, 
 import { HawlReminder } from "@/components/site/Reminders";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
+import type { PriceOrigin } from "@/lib/nisab-valuation";
 import { GOLD_NISAB_G, SILVER_NISAB_G, TROY_OUNCE_G, formatNumber } from "@/lib/nisab";
 
 export const Route = createFileRoute("/today")({
@@ -27,7 +28,22 @@ function TodayPage() {
   const { t, currency, lang } = useI18n();
   const [prefer, setPrefer] = useState<PricePreference>("local");
   const ps = priceStrings(lang);
-  const { values, data, rate, money, isLoading, isError, refetch, silverWeight } = useNisab(prefer);
+  const { values, data, rate, money, isLoading, isError, refetch, silverWeight, priceSource, localFetching } = useNisab(prefer);
+  const ar = lang === "ar";
+  const originLabel = (o: PriceOrigin) =>
+    o === "local"
+      ? `${ar ? "سعر صاغة محلي" : "Local jeweller price"}: ${priceSource?.name || "—"}`
+      : o === "manual"
+        ? ar ? "سعر أدخلته يدويًا" : "Price you entered manually"
+        : `${ar ? "سعر عالمي محوّل بسعر الصرف" : "Global price converted at FX rate"}: ${data?.metalsSource ?? ""}`;
+  const sourceBody = priceSource
+    ? `${t("nisab.gold")}: ${originLabel(priceSource.gold)} · ${t("nisab.silver")}: ${originLabel(priceSource.silver)}${
+        priceSource.name && priceSource.at && (priceSource.gold === "local" || priceSource.silver === "local")
+          ? ` · ${new Date(priceSource.at).toLocaleString(ar ? "ar-EG" : "en-GB", { dateStyle: "medium", timeStyle: "short" })}`
+          : ""
+      }`
+    : data?.metalsSource ?? "";
+  const noLocal = !localFetching && priceSource && priceSource.gold !== "local" && priceSource.silver !== "local" && !priceSource.name;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
@@ -87,7 +103,7 @@ function TodayPage() {
 
           <section className="mt-6 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
             {[
-              { icon: Database, title: t("today.trace.source"), body: data.metalsSource },
+              { icon: Database, title: t("today.trace.source"), body: sourceBody },
               { icon: CircleCheck, title: t("today.trace.status"), body: data.manual ? t("update.manual") : t("update.auto") },
               { icon: ShieldCheck, title: t("today.trace.method"), body: t("today.trace.methodBody") },
             ].map((item) => (
@@ -98,6 +114,13 @@ function TodayPage() {
               </div>
             ))}
           </section>
+          {noLocal && (
+            <p data-testid="no-local-price" role="status" className="mt-4 rounded-lg border border-border bg-muted p-4 text-sm text-foreground">
+              {ar
+                ? "لا يتوفر سعر صاغة محلي حديث لهذا البلد؛ الأرقام أعلاه محسوبة من السعر العالمي محوّلًا بسعر الصرف، وقد تختلف عن أسعار السوق المحلية."
+                : "No recent local jeweller price is available for this country; figures above use the global price converted at the FX rate and may differ from local market prices."}
+            </p>
+          )}
           <LocalMarket />
           <SourceQuality />
           <HawlReminder />
