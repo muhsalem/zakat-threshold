@@ -43,7 +43,29 @@ async function iSaghaSilver(path = ""): Promise<{ sell: number | null; buy: numb
 }
 const egyptSilver = () => iSaghaSilver();
 
+/** Nagmadin live board (EGP): 24K gram and pure silver gram. */
+export function parseNagmadin(json: unknown): { gold: number | null; silver: number | null } {
+  const d = (json as { data?: Record<string, any> })?.data;
+  const gold = Number(d?.gold_latest?.metal_prices?.XAU?.price_24k);
+  const silver = Number(d?.market_data?.rates_per_gram?.XAG?.current);
+  return { gold: gold > 0 ? gold : null, silver: silver > 0 ? silver : null };
+}
+
 async function egypt(): Promise<FeedRow> {
+  try {
+    const res = await fetch("https://api2.nagmadin.com/api/live-prices", { headers: { ...UA, accept: "application/json" } });
+    if (!res.ok) throw new Error(`Nagmadin ${res.status}`);
+    const n = parseNagmadin(await res.json());
+    if (n.gold) {
+      return { country: "EG", currency: "EGP", source: "نجم الدين Nagmadin (مصر)", source_url: "https://nagmadin.com/home", gold_gram: n.gold, buyback_gram: null, silver_gram: n.silver };
+    }
+  } catch {
+    /* fall back to eDahab */
+  }
+  return egyptEdahab();
+}
+
+async function egyptEdahab(): Promise<FeedRow> {
   const url = "https://edahabapp.com/";
   const t = await text(url);
   const m = /عيار 24:\s*بيع:\s*([\d.,]+)\s*جنيه\s*شراء:\s*([\d.,]+)/.exec(t);
@@ -114,8 +136,28 @@ async function northAmerica(): Promise<FeedRow[]> {
   return rows;
 }
 
-export async function collectFeed(): Promise<{ rows: FeedRow[]; errors: string[] }> {
-  const jobs: Promise<FeedRow | FeedRow[]>[] = [egypt(), saudi(), uae(), northAmerica()];
+/** IANA zone used for each country's 11:00/23:00 local update slots. */
+export const FEED_TIME_ZONES: Record<string, string> = {
+  EG: "Africa/Cairo", SA: "Asia/Riyadh", AE: "Asia/Dubai", US: "America/New_York", CA: "America/Toronto",
+};
+
+/** Countries whose local hour is 11 or 23 at `now`. */
+export function dueFeedCountries(now: Date): Set<string> {
+  const due = new Set<string>();
+  for (const [c, tz] of Object.entries(FEED_TIME_ZONES)) {
+    const h = Number(new Intl.DateTimeFormat("en-GB", { timeZone: tz, hour: "2-digit", hourCycle: "h23" }).format(now));
+    if (h === 11 || h === 23) due.add(c);
+  }
+  return due;
+}
+
+export async function collectFeed(only?: Set<string>): Promise<{ rows: FeedRow[]; errors: string[] }> {
+  const want = (...cs: string[]) => !only || cs.some((c) => only.has(c));
+  const jobs: Promise<FeedRow | FeedRow[]>[] = [];
+  if (want("EG")) jobs.push(egypt());
+  if (want("SA")) jobs.push(saudi());
+  if (want("AE")) jobs.push(uae());
+  if (want("US", "CA")) jobs.push(northAmerica());
   const settled = await Promise.allSettled(jobs);
   const rows: FeedRow[] = [];
   const errors: string[] = [];
@@ -132,7 +174,7 @@ export async function collectFeed(): Promise<{ rows: FeedRow[]; errors: string[]
     }
     r.karat = 24;
   }
-  return { rows: rows.filter((r) => r.gold_gram || r.silver_gram), errors };
+  return { rows: rows.filter((r) => (r.gold_gram || r.silver_gram) && (!only || only.has(r.country))), errors };
 }
 
 export const BIG_CHANGE_PCT = 3;
