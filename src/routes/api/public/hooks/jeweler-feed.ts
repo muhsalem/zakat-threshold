@@ -93,7 +93,12 @@ export const Route = createFileRoute("/api/public/hooks/jeweler-feed")({
         }
 
         const { collectFeed, BIG_CHANGE_PCT, MAX_SPOT_DEVIATION_PCT } = await import("@/lib/jeweler-feed.server");
-        const collected = await collectFeed();
+        // Optional body: {"kind":"hourly"} = only countries at 11:00/23:00 local; {"kind":"egypt-now"} = Egypt only.
+        const body = (await request.json().catch(() => ({}))) as { kind?: string };
+        const { dueFeedCountries } = await import("@/lib/jeweler-feed.server");
+        const only = body.kind === "egypt-now" ? new Set(["EG"]) : body.kind === "hourly" ? dueFeedCountries(new Date()) : undefined;
+        if (only && only.size === 0) return Response.json({ ok: true, updated: [], skipped: "no country at 11:00/23:00 local" });
+        const collected = await collectFeed(only);
         const errors = collected.errors;
 
         // Sanity check: skip rows that deviate > 15% from the spot conversion.
