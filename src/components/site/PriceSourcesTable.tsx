@@ -89,8 +89,8 @@ export function PriceSourcesTable() {
               const o = data?.off.get(code);
               const cur = f?.currency ?? o?.currency ?? c?.currency ?? "";
               const rate = prices?.rates[cur];
-              const gSpot = rate ? perGram(prices!.goldUsdOz, rate) : null;
-              const sSpot = rate ? perGram(prices!.silverUsdOz, rate) : null;
+              const gSpot = rate && prices ? perGram(prices.goldUsdOz, rate) : null;
+              const sSpot = rate && prices ? perGram(prices.silverUsdOz, rate) : null;
               const g = f?.buyback_gram ?? f?.gold_gram;
               const s = f?.silver_buyback_gram ?? f?.silver_gram;
               return (
@@ -162,7 +162,7 @@ export function PriceSourcesTable() {
         {ISAGHA.map((i) => {
           const f = data?.latest.get(i.country);
           const rate = prices?.rates[i.country === "KW" ? "KWD" : "EGP"];
-          const sSpot = rate ? perGram(prices!.silverUsdOz, rate) : null;
+          const sSpot = rate && prices ? perGram(prices.silverUsdOz, rate) : null;
           const s = f?.silver_buyback_gram ?? f?.silver_gram;
           return (
             <li key={i.country} className="card-surface p-4 text-sm">

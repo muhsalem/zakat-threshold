@@ -19,7 +19,7 @@ import { HawlReminder } from "@/components/site/Reminders";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
 import { SILVER_NISAB_G, TROY_OUNCE_G, formatNumber } from "@/lib/nisab";
-import { goldWeightFor } from "@/lib/nisab-valuation";
+import { goldWeightFor, type PriceOrigin } from "@/lib/nisab-valuation";
 import { useOfficialThreshold } from "@/lib/use-official-threshold";
 import { resolveCalculatorThreshold } from "@/lib/calculator-threshold";
 import { BuybackComparison } from "@/components/site/BuybackComparison";
@@ -49,7 +49,7 @@ function TodayPage() {
   const { t, country, currency, lang } = useI18n();
   const [prefer, setPrefer] = useState<PricePreference>("local");
   const ps = priceStrings(lang);
-  const { values, data, rate, money, isLoading, isError, refetch, silverWeight } = useNisab(prefer);
+  const { values, data, rate, money, isLoading, isError, refetch, silverWeight, priceSource, localFetching } = useNisab(prefer);
   const [utcDay, setUtcDay] = useState("");
   useEffect(() => {
     const tick = () => setUtcDay(new Date().toISOString().slice(0, 10));
@@ -63,6 +63,21 @@ function TodayPage() {
     silver: resolveCalculatorThreshold({ official: officialQuery.data ?? null, country, currency, day: utcDay, metal: "silver", calculated: values?.silver ?? null }),
   };
   const announcement = thresholds.gold.official ?? thresholds.silver.official;
+  const ar = lang === "ar";
+  const originLabel = (o: PriceOrigin) =>
+    o === "local"
+      ? `${ar ? "سعر صاغة محلي" : "Local jeweller price"}: ${priceSource?.name || "—"}`
+      : o === "manual"
+        ? ar ? "سعر أدخلته يدويًا" : "Price you entered manually"
+        : `${ar ? "سعر عالمي محوّل بسعر الصرف" : "Global price converted at FX rate"}: ${data?.metalsSource ?? ""}`;
+  const sourceBody = priceSource
+    ? `${t("nisab.gold")}: ${originLabel(priceSource.gold)} · ${t("nisab.silver")}: ${originLabel(priceSource.silver)}${
+        priceSource.name && priceSource.at && (priceSource.gold === "local" || priceSource.silver === "local")
+          ? ` · ${new Date(priceSource.at).toLocaleString(ar ? "ar-EG" : "en-GB", { dateStyle: "medium", timeStyle: "short" })}`
+          : ""
+      }`
+    : data?.metalsSource ?? "";
+  const noLocal = !localFetching && priceSource && priceSource.gold !== "local" && priceSource.silver !== "local" && !priceSource.name;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
@@ -177,17 +192,9 @@ function TodayPage() {
 
           <section className="mt-6 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
             {[
-              { icon: Database, title: t("today.trace.source"), body: data.metalsSource },
-              {
-                icon: CircleCheck,
-                title: t("today.trace.status"),
-                body: data.manual ? t("update.manual") : t("update.auto"),
-              },
-              {
-                icon: ShieldCheck,
-                title: t("today.trace.method"),
-                body: t("today.trace.methodBody"),
-              },
+              { icon: Database, title: t("today.trace.source"), body: sourceBody },
+              { icon: CircleCheck, title: t("today.trace.status"), body: data.manual ? t("update.manual") : t("update.auto") },
+              { icon: ShieldCheck, title: t("today.trace.method"), body: t("today.trace.methodBody") },
             ].map((item) => (
               <div key={item.title} className="bg-card p-5">
                 <item.icon aria-hidden="true" className="size-5 text-primary" />
@@ -197,6 +204,13 @@ function TodayPage() {
             ))}
           </section>
           <BuybackComparison goldThreshold={thresholds.gold.value} silverThreshold={thresholds.silver.value} officialGold={thresholds.gold.origin === "official"} officialSilver={thresholds.silver.origin === "official"} />
+          {noLocal && (
+            <p data-testid="no-local-price" role="status" className="mt-4 rounded-lg border border-border bg-muted p-4 text-sm text-foreground">
+              {ar
+                ? "لا يتوفر سعر صاغة محلي حديث لهذا البلد؛ الأرقام أعلاه محسوبة من السعر العالمي محوّلًا بسعر الصرف، وقد تختلف عن أسعار السوق المحلية."
+                : "No recent local jeweller price is available for this country; figures above use the global price converted at the FX rate and may differ from local market prices."}
+            </p>
+          )}
           <LocalMarket />
           <SourceQuality />
           <HawlReminder />
