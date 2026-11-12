@@ -11,7 +11,14 @@ export function LivePriceWatch() {
     const refresh = (keys: string[]) => {
       for (const key of keys) void client.invalidateQueries({ queryKey: [key] });
     };
-    const refreshAll = () => refresh(["live-prices", "local-quote", "official-nisab", "calculator-official-nisab", "previous-day-nisab"]);
+    const refreshAll = () =>
+      refresh([
+        "live-prices",
+        "local-quote",
+        "official-nisab",
+        "calculator-official-nisab",
+        "previous-day-nisab",
+      ]);
     const clock = watchUtcDay({
       now: () => new Date(),
       schedule: (callback, delay) => {
@@ -27,9 +34,12 @@ export function LivePriceWatch() {
         refresh(priceUpdateKeys(table));
       });
     }
-    channel.subscribe(status => {
+    channel.subscribe((status) => {
       // Re-read after every successful connection, including reconnections with missed events.
-      if (status === "SUBSCRIBED") { clock.check(); refreshAll(); }
+      if (status === "SUBSCRIBED") {
+        clock.check();
+        refreshAll();
+      }
     });
     const resume = () => {
       if (document.visibilityState === "hidden") return;

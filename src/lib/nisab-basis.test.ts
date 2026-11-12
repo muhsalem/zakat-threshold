@@ -1,50 +1,51 @@
-import { describe, expect, test } from "bun:test";
+import { describe, test } from "node:test";
+import { strict as assert } from "node:assert";
 import { nisabBand, nisabZone, suggestedMetal } from "./nisab-basis";
 
 describe("nisabBand", () => {
   test("silver is the cheaper nisab at today's ratio", () => {
     const b = nisabBand(8500, 640)!;
-    expect(b.lowerMetal).toBe("silver");
-    expect(b.lower).toBe(640);
-    expect(b.higher).toBe(8500);
-    expect(b.gap).toBe(7860);
-    expect(b.multiple).toBeCloseTo(13.28, 2);
+    assert.equal(b.lowerMetal, "silver");
+    assert.equal(b.lower, 640);
+    assert.equal(b.higher, 8500);
+    assert.equal(b.gap, 7860);
+    assert.ok(Math.abs(b.multiple - 13.28) < 0.005);
   });
 
   test("gold is the cheaper nisab if the ratio ever inverts", () => {
     const b = nisabBand(500, 600)!;
-    expect(b.lowerMetal).toBe("gold");
-    expect(b.higherMetal).toBe("silver");
+    assert.equal(b.lowerMetal, "gold");
+    assert.equal(b.higherMetal, "silver");
   });
 
   test("unusable inputs give no band", () => {
-    expect(nisabBand(0, 100)).toBeNull();
-    expect(nisabBand(100, NaN)).toBeNull();
-    expect(nisabBand(-1, 100)).toBeNull();
+    assert.equal(nisabBand(0, 100), null);
+    assert.equal(nisabBand(100, NaN), null);
+    assert.equal(nisabBand(-1, 100), null);
   });
 });
 
 describe("nisabZone", () => {
   const band = nisabBand(8500, 640);
   test("classifies against both nisabs", () => {
-    expect(nisabZone(100, band)).toBe("below");
-    expect(nisabZone(5000, band)).toBe("between");
-    expect(nisabZone(9000, band)).toBe("above");
+    assert.equal(nisabZone(100, band), "below");
+    assert.equal(nisabZone(5000, band), "between");
+    assert.equal(nisabZone(9000, band), "above");
   });
   test("a net exactly at a nisab has reached it", () => {
-    expect(nisabZone(640, band)).toBe("between");
-    expect(nisabZone(8500, band)).toBe("above");
+    assert.equal(nisabZone(640, band), "between");
+    assert.equal(nisabZone(8500, band), "above");
   });
   test("no verdict without a band", () => {
-    expect(nisabZone(5000, null)).toBeNull();
+    assert.equal(nisabZone(5000, null), null);
   });
 });
 
 describe("suggestedMetal", () => {
   test("only schools whose text names the better-for-the-poor rule get a suggestion", () => {
-    expect(suggestedMetal("hanafi")).toBe("lower");
-    expect(suggestedMetal("hanbali")).toBe("lower");
-    expect(suggestedMetal("shafii")).toBeNull();
-    expect(suggestedMetal("maliki")).toBeNull();
+    assert.equal(suggestedMetal("hanafi"), "lower");
+    assert.equal(suggestedMetal("hanbali"), "lower");
+    assert.equal(suggestedMetal("shafii"), null);
+    assert.equal(suggestedMetal("maliki"), null);
   });
 });

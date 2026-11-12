@@ -8,10 +8,16 @@ test("a published jeweller update re-fetches an already open quote and changes i
   let price = 7260.12;
   const key = ["local-quote", "EG", "EGP"];
   client.setQueryData(key, price);
-  const observer = new QueryObserver(client, { queryKey: key, staleTime: Infinity, queryFn: async () => price });
+  const observer = new QueryObserver(client, {
+    queryKey: key,
+    staleTime: Infinity,
+    queryFn: async () => price,
+  });
   const unsubscribe = observer.subscribe(() => {});
   price = 7300;
-  await Promise.all(priceUpdateKeys("jeweler_feed").map(key => client.invalidateQueries({ queryKey: [key] })));
+  await Promise.all(
+    priceUpdateKeys("jeweler_feed").map((key) => client.invalidateQueries({ queryKey: [key] })),
+  );
   assert.equal(client.getQueryData(key), 7300);
   unsubscribe();
   client.clear();
@@ -28,9 +34,15 @@ test("an open page re-checks exactly at UTC midnight without waiting for a minut
   let checks = 0;
   let scheduled: (() => void) | undefined;
   let delay = 0;
-  const clock = watchUtcDay({ now: () => now, refresh: () => checks++, schedule: (callback, ms) => {
-    scheduled = callback; delay = ms; return () => {};
-  } });
+  const clock = watchUtcDay({
+    now: () => now,
+    refresh: () => checks++,
+    schedule: (callback, ms) => {
+      scheduled = callback;
+      delay = ms;
+      return () => {};
+    },
+  });
   assert.equal(delay, 500);
   now = new Date("2026-11-11T00:00:00Z");
   scheduled?.();

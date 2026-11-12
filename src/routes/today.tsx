@@ -49,7 +49,18 @@ function TodayPage() {
   const { t, country, currency, lang } = useI18n();
   const [prefer, setPrefer] = useState<PricePreference>("local");
   const ps = priceStrings(lang);
-  const { values, data, rate, money, isLoading, isError, refetch, silverWeight, priceSource, localFetching } = useNisab(prefer);
+  const {
+    values,
+    data,
+    rate,
+    money,
+    isLoading,
+    isError,
+    refetch,
+    silverWeight,
+    priceSource,
+    localFetching,
+  } = useNisab(prefer);
   const [utcDay, setUtcDay] = useState("");
   useEffect(() => {
     const tick = () => setUtcDay(new Date().toISOString().slice(0, 10));
@@ -59,8 +70,22 @@ function TodayPage() {
   }, []);
   const officialQuery = useOfficialThreshold(country, currency, utcDay);
   const thresholds = {
-    gold: resolveCalculatorThreshold({ official: officialQuery.data ?? null, country, currency, day: utcDay, metal: "gold", calculated: values?.gold ?? null }),
-    silver: resolveCalculatorThreshold({ official: officialQuery.data ?? null, country, currency, day: utcDay, metal: "silver", calculated: values?.silver ?? null }),
+    gold: resolveCalculatorThreshold({
+      official: officialQuery.data ?? null,
+      country,
+      currency,
+      day: utcDay,
+      metal: "gold",
+      calculated: values?.gold ?? null,
+    }),
+    silver: resolveCalculatorThreshold({
+      official: officialQuery.data ?? null,
+      country,
+      currency,
+      day: utcDay,
+      metal: "silver",
+      calculated: values?.silver ?? null,
+    }),
   };
   const announcement = thresholds.gold.official ?? thresholds.silver.official;
   const ar = lang === "ar";
@@ -68,16 +93,25 @@ function TodayPage() {
     o === "local"
       ? `${ar ? "سعر صاغة محلي" : "Local jeweller price"}: ${priceSource?.name || "—"}`
       : o === "manual"
-        ? ar ? "سعر أدخلته يدويًا" : "Price you entered manually"
+        ? ar
+          ? "سعر أدخلته يدويًا"
+          : "Price you entered manually"
         : `${ar ? "سعر عالمي محوّل بسعر الصرف" : "Global price converted at FX rate"}: ${data?.metalsSource ?? ""}`;
   const sourceBody = priceSource
     ? `${t("nisab.gold")}: ${originLabel(priceSource.gold)} · ${t("nisab.silver")}: ${originLabel(priceSource.silver)}${
-        priceSource.name && priceSource.at && (priceSource.gold === "local" || priceSource.silver === "local")
+        priceSource.name &&
+        priceSource.at &&
+        (priceSource.gold === "local" || priceSource.silver === "local")
           ? ` · ${new Date(priceSource.at).toLocaleString(ar ? "ar-EG" : "en-GB", { dateStyle: "medium", timeStyle: "short" })}`
           : ""
       }`
-    : data?.metalsSource ?? "";
-  const noLocal = !localFetching && priceSource && priceSource.gold !== "local" && priceSource.silver !== "local" && !priceSource.name;
+    : (data?.metalsSource ?? "");
+  const noLocal =
+    !localFetching &&
+    priceSource &&
+    priceSource.gold !== "local" &&
+    priceSource.silver !== "local" &&
+    !priceSource.name;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
@@ -114,18 +148,52 @@ function TodayPage() {
       </header>
 
       {announcement && (
-        <section className="mt-6 border-y border-primary py-5" aria-live="polite" data-testid="today-official-announcement">
-          <h2 className="text-lg font-semibold text-primary">{lang === "ar" ? "إعلان النصاب الرسمي" : "Official nisab announcement"}</h2>
-          <p className="mt-2 text-sm">{announcement.authority} · <time dateTime={announcement.announced_on} className="num">{announcement.announced_on} UTC</time></p>
+        <section
+          className="mt-6 border-y border-primary py-5"
+          aria-live="polite"
+          data-testid="today-official-announcement"
+        >
+          <h2 className="text-lg font-semibold text-primary">
+            {lang === "ar" ? "إعلان النصاب الرسمي" : "Official nisab announcement"}
+          </h2>
+          <p className="mt-2 text-sm">
+            {announcement.authority} ·{" "}
+            <time dateTime={announcement.announced_on} className="num">
+              {announcement.announced_on} UTC
+            </time>
+          </p>
           <dl className="mt-3 flex flex-wrap gap-6">
-            {(["gold", "silver"] as const).map((metal) => thresholds[metal].origin === "official" && (
-              <div key={metal}><dt className="text-sm text-muted-foreground">{t(`nisab.${metal}`)}</dt><dd className="num text-2xl" data-testid={`today-official-${metal}`}>{money(thresholds[metal].value ?? 0)}</dd></div>
-            ))}
+            {(["gold", "silver"] as const).map(
+              (metal) =>
+                thresholds[metal].origin === "official" && (
+                  <div key={metal}>
+                    <dt className="text-sm text-muted-foreground">{t(`nisab.${metal}`)}</dt>
+                    <dd className="num text-2xl" data-testid={`today-official-${metal}`}>
+                      {money(thresholds[metal].value ?? 0)}
+                    </dd>
+                  </div>
+                ),
+            )}
           </dl>
-          {announcement.source_url?.startsWith("https://") && <a className="mt-3 inline-block text-sm text-primary underline" href={announcement.source_url} target="_blank" rel="noopener noreferrer">{lang === "ar" ? "مصدر الإعلان الرسمي" : "Official announcement source"}</a>}
+          {announcement.source_url?.startsWith("https://") && (
+            <a
+              className="mt-3 inline-block text-sm text-primary underline"
+              href={announcement.source_url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {lang === "ar" ? "مصدر الإعلان الرسمي" : "Official announcement source"}
+            </a>
+          )}
         </section>
       )}
-      {officialQuery.isError && <p role="alert" className="mt-4 text-sm text-destructive">{lang === "ar" ? "تعذّر التحقق من الإعلان الرسمي؛ القيم المحسوبة مبنية على أسعار المعادن." : "Official announcement unavailable; calculated values use metal prices."}</p>}
+      {officialQuery.isError && (
+        <p role="alert" className="mt-4 text-sm text-destructive">
+          {lang === "ar"
+            ? "تعذّر التحقق من الإعلان الرسمي؛ القيم المحسوبة مبنية على أسعار المعادن."
+            : "Official announcement unavailable; calculated values use metal prices."}
+        </p>
+      )}
 
       {(isLoading || isError) && (
         <div className="mt-8">
@@ -167,7 +235,15 @@ function TodayPage() {
                   </span>
                 </div>
                 <p className="num mt-8 text-4xl text-foreground sm:text-5xl">{money(item.total)}</p>
-                <p className="mt-2 text-xs text-muted-foreground">{item.official ? (lang === "ar" ? "النصاب الرسمي المعلن" : "Official announced threshold") : (lang === "ar" ? "نصاب محسوب من سعر المعدن" : "Calculated from metal price")}</p>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  {item.official
+                    ? lang === "ar"
+                      ? "النصاب الرسمي المعلن"
+                      : "Official announced threshold"
+                    : lang === "ar"
+                      ? "نصاب محسوب من سعر المعدن"
+                      : "Calculated from metal price"}
+                </p>
                 <div className="mt-5 grid grid-cols-2 gap-3 border-t border-border pt-5 text-sm">
                   <div>
                     <p className="text-muted-foreground">{t("perGram")}</p>
@@ -183,7 +259,9 @@ function TodayPage() {
                     {t("country.how")}
                   </summary>
                   <p className="num mt-3 leading-7 text-muted-foreground">
-                    {item.official ? `${item.official.authority} · ${item.official.announced_on} UTC` : `${money(item.gram)} / g × ${item.grams}g = ${money(item.total)}`}
+                    {item.official
+                      ? `${item.official.authority} · ${item.official.announced_on} UTC`
+                      : `${money(item.gram)} / g × ${item.grams}g = ${money(item.total)}`}
                   </p>
                 </details>
               </article>
@@ -193,8 +271,16 @@ function TodayPage() {
           <section className="mt-6 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
             {[
               { icon: Database, title: t("today.trace.source"), body: sourceBody },
-              { icon: CircleCheck, title: t("today.trace.status"), body: data.manual ? t("update.manual") : t("update.auto") },
-              { icon: ShieldCheck, title: t("today.trace.method"), body: t("today.trace.methodBody") },
+              {
+                icon: CircleCheck,
+                title: t("today.trace.status"),
+                body: data.manual ? t("update.manual") : t("update.auto"),
+              },
+              {
+                icon: ShieldCheck,
+                title: t("today.trace.method"),
+                body: t("today.trace.methodBody"),
+              },
             ].map((item) => (
               <div key={item.title} className="bg-card p-5">
                 <item.icon aria-hidden="true" className="size-5 text-primary" />
@@ -203,9 +289,18 @@ function TodayPage() {
               </div>
             ))}
           </section>
-          <BuybackComparison goldThreshold={thresholds.gold.value} silverThreshold={thresholds.silver.value} officialGold={thresholds.gold.origin === "official"} officialSilver={thresholds.silver.origin === "official"} />
+          <BuybackComparison
+            goldThreshold={thresholds.gold.value}
+            silverThreshold={thresholds.silver.value}
+            officialGold={thresholds.gold.origin === "official"}
+            officialSilver={thresholds.silver.origin === "official"}
+          />
           {noLocal && (
-            <p data-testid="no-local-price" role="status" className="mt-4 rounded-lg border border-border bg-muted p-4 text-sm text-foreground">
+            <p
+              data-testid="no-local-price"
+              role="status"
+              className="mt-4 rounded-lg border border-border bg-muted p-4 text-sm text-foreground"
+            >
               {ar
                 ? "لا يتوفر سعر صاغة محلي حديث لهذا البلد؛ الأرقام أعلاه محسوبة من السعر العالمي محوّلًا بسعر الصرف، وقد تختلف عن أسعار السوق المحلية."
                 : "No recent local jeweller price is available for this country; figures above use the global price converted at the FX rate and may differ from local market prices."}
