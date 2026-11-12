@@ -3,9 +3,7 @@ import { dailyWindow } from "./daily-nisab";
 export type PriceTable = "jeweler_feed" | "public_price_quotes" | "official_nisab";
 
 export function priceUpdateKeys(table: PriceTable): string[] {
-  return table === "official_nisab"
-    ? ["official-nisab"]
-    : ["local-quote", "previous-day-nisab"];
+  return table === "official_nisab" ? ["official-nisab"] : ["local-quote", "previous-day-nisab"];
 }
 
 /** Re-check at the UTC boundary, and recover immediately after a suspended tab wakes. */
@@ -30,6 +28,9 @@ export function watchUtcDay(options: {
   check();
   return {
     check,
-    stop: () => { stopped = true; cancel?.(); },
+    stop: () => {
+      stopped = true;
+      cancel?.();
+    },
   };
 }
