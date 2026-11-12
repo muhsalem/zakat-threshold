@@ -1,5 +1,7 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
+// @refresh reset
+// Reset consumers on hot updates: removing the former subscription hooks changes
+// their hook layout, so preserving the old React state can corrupt query queues.
+import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/integrations/supabase/client";
 import { PRICE_REFRESH_MS } from "./daily-nisab";
@@ -32,16 +34,6 @@ function median(values: number[]): number | null {
  * or null when no current local quote exists.
  */
 export function useLocalQuote(country: string, currency: string) {
-  const client = useQueryClient();
-  useEffect(() => {
-    const refresh = () => {
-      void client.invalidateQueries({ queryKey: ["local-quote", country, currency] });
-    };
-    window.addEventListener("online", refresh);
-    return () => {
-      window.removeEventListener("online", refresh);
-    };
-  }, [client, country, currency]);
   return useQuery<LocalQuote | null>({
     queryKey: ["local-quote", country, currency],
     enabled: Boolean(country && currency),

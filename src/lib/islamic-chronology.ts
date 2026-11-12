@@ -1,6 +1,10 @@
 /**
  * Islamic Monetary Chronology & Nisab Reference Engine
- * Complete historical and regional database for every Hijri year from 2 AH (Institution of Zakat) to 1448 AH (624 CE - 2026 CE).
+ *
+ * What is recorded: the hand-written milestones below and the annual-average prices from 1925 CE
+ * (ANNUAL_METALS, itself hand-entered). What is modelled: every other Hijri year between 2 and 1448 AH
+ * is generated from a template per era, and its gold/silver ratio is a linear interpolation between
+ * assumed points, not a historical record. Such years are flagged `ratioIsEstimate` and carry no money values.
  */
 
 import { ANNUAL_METALS } from "./long-history";
@@ -31,8 +35,9 @@ export type ChronologyMilestone = {
   goldToSilverRatio: number; // e.g. 10.0 in prophetic era, now ~85-95
   goldNisabGrams: number; // 85 g
   silverNisabGrams: number; // 595 g
-  goldUsdOzEquivalent: number;
-  silverUsdOzEquivalent: number;
+  /** Null before 1925 CE: no market series exists, and an invented figure would mislead. */
+  goldUsdOzEquivalent: number | null;
+  silverUsdOzEquivalent: number | null;
   purchasingPowerNoteAr: string;
   historicalContextAr: string;
   fiqhiVerdictAr: string;
@@ -56,10 +61,11 @@ export const SPECIFIC_YEAR_EVENTS: Record<
     ratio: 10.0,
   },
   2: {
-    eventAr: "فرض زكاة الفطر وزكاة الأموال، وتحويل القبلة إلى الكعبة المشرفة، وغزوة بدر الكبرى.",
+    eventAr:
+      "تحويل القبلة إلى الكعبة المشرفة وغزوة بدر الكبرى، وفيها يُذكر فرض زكاة الفطر، واختُلف في وقت فرض زكاة الأموال وتفصيل أنصبتها.",
     rulerAr: "رسول الله محمد ﷺ",
     fiqhNoteAr:
-      "نزول فرض الزكاة ربع العشر (2.5%) على الأثمان، وتحديد مقادير زكاة الفطر بصاع من طعام.",
+      "اختُلف في وقت فرض زكاة الأموال (قيل في السنة الثانية، وقيل بعدها)؛ والمستقر أن مقدارها ربع العشر (2.5%) في الأثمان، وأن زكاة الفطر صاع من طعام.",
     ratio: 10.0,
   },
   3: {
@@ -240,8 +246,8 @@ export const ISLAMIC_CHRONOLOGY: ChronologyMilestone[] = [
     goldToSilverRatio: 10.0,
     goldNisabGrams: 85,
     silverNisabGrams: 595,
-    goldUsdOzEquivalent: 15.0,
-    silverUsdOzEquivalent: 1.5,
+    goldUsdOzEquivalent: null,
+    silverUsdOzEquivalent: null,
     purchasingPowerNoteAr:
       "الدينار الذهبي يشتري شاة كاملة، والدرهم الفضي يشتري صاعاً من التمر أو وجبة كافية. كان نصاب الفضة (200 درهم) يكافئ تماماً نصاب الذهب (20 ديناراً) في القوة الشرائية عند بدء فرض الزكاة.",
     historicalContextAr:
@@ -263,8 +269,8 @@ export const ISLAMIC_CHRONOLOGY: ChronologyMilestone[] = [
     goldToSilverRatio: 10.0,
     goldNisabGrams: 85,
     silverNisabGrams: 595,
-    goldUsdOzEquivalent: 15.0,
-    silverUsdOzEquivalent: 1.5,
+    goldUsdOzEquivalent: null,
+    silverUsdOzEquivalent: null,
     purchasingPowerNoteAr:
       "كفاية سنوية لأسرة متوسطة بحدود 10-20 ديناراً. أجر العامل اليومي نحو نصف درهم إلى درهم.",
     historicalContextAr:
@@ -286,8 +292,8 @@ export const ISLAMIC_CHRONOLOGY: ChronologyMilestone[] = [
     goldToSilverRatio: 10.5,
     goldNisabGrams: 85,
     silverNisabGrams: 595,
-    goldUsdOzEquivalent: 16.0,
-    silverUsdOzEquivalent: 1.52,
+    goldUsdOzEquivalent: null,
+    silverUsdOzEquivalent: null,
     purchasingPowerNoteAr:
       "استقرار نقدي واقتصادي غير مسبوق في الشام ومصر والعراق، وامتلاء بيت المال حتى فاضت أموال الزكاة في عهد عمر بن عبد العزيز (99-101 هـ).",
     historicalContextAr:
@@ -309,8 +315,8 @@ export const ISLAMIC_CHRONOLOGY: ChronologyMilestone[] = [
     goldToSilverRatio: 12.0,
     goldNisabGrams: 85,
     silverNisabGrams: 595,
-    goldUsdOzEquivalent: 18.0,
-    silverUsdOzEquivalent: 1.5,
+    goldUsdOzEquivalent: null,
+    silverUsdOzEquivalent: null,
     purchasingPowerNoteAr:
       "ازدهار التجارة العالمية على طريق الحرير. الدينار يشتري حمل بعير من الحبوب أو شاتين سمينتين في مواسم الرخاء.",
     historicalContextAr:
@@ -332,8 +338,8 @@ export const ISLAMIC_CHRONOLOGY: ChronologyMilestone[] = [
     goldToSilverRatio: 13.5,
     goldNisabGrams: 85,
     silverNisabGrams: 595,
-    goldUsdOzEquivalent: 19.5,
-    silverUsdOzEquivalent: 1.44,
+    goldUsdOzEquivalent: null,
+    silverUsdOzEquivalent: null,
     purchasingPowerNoteAr:
       "ارتفاع عيار الذهب في مصر بفضل الدنانير الفاطمية عالية النقاوة، مع تقلبات في أوزان الدراهم الفضية والفلوس النحاسية.",
     historicalContextAr:
@@ -355,8 +361,8 @@ export const ISLAMIC_CHRONOLOGY: ChronologyMilestone[] = [
     goldToSilverRatio: 15.0,
     goldNisabGrams: 85,
     silverNisabGrams: 595,
-    goldUsdOzEquivalent: 20.0,
-    silverUsdOzEquivalent: 1.33,
+    goldUsdOzEquivalent: null,
+    silverUsdOzEquivalent: null,
     purchasingPowerNoteAr:
       "أزمة التضخم بالفلوس النحاسية؛ رصد المقريزي اختفاء الفضة والذهب من السوق وغلبة النحاس على المعاملات وارتفاع الأسعار.",
     historicalContextAr:
@@ -378,8 +384,8 @@ export const ISLAMIC_CHRONOLOGY: ChronologyMilestone[] = [
     goldToSilverRatio: 16.5,
     goldNisabGrams: 85,
     silverNisabGrams: 595,
-    goldUsdOzEquivalent: 20.5,
-    silverUsdOzEquivalent: 1.24,
+    goldUsdOzEquivalent: null,
+    silverUsdOzEquivalent: null,
     purchasingPowerNoteAr:
       "بدء تراجع القوة الشرائية للفضة لأول مرة في التاريخ بسبب جلب أطنان الفضة من مناجم بوتوسي والمكسيك إلى أوروبا والدولة العثمانية.",
     historicalContextAr:
@@ -401,8 +407,8 @@ export const ISLAMIC_CHRONOLOGY: ChronologyMilestone[] = [
     goldToSilverRatio: 22.0,
     goldNisabGrams: 85,
     silverNisabGrams: 595,
-    goldUsdOzEquivalent: 20.67,
-    silverUsdOzEquivalent: 0.94,
+    goldUsdOzEquivalent: null,
+    silverUsdOzEquivalent: null,
     purchasingPowerNoteAr:
       "الدول الغربية تتخلى عن الفضة كمعيار نقدي وتتبنى الذهب فقط، مما هبط بقيمة الفضة العالمية.",
     historicalContextAr:
@@ -455,7 +461,7 @@ export const ISLAMIC_CHRONOLOGY: ChronologyMilestone[] = [
     historicalContextAr:
       "تحول الفضة إلى معدن صناعي خاضع للطلب التكنولوجي، بينما بقي الذهب الملاذ الآمن الأول واحتياطي البنوك المركزية الكبرى، مما فكك الترابط الذي دام لآلاف السنين.",
     fiqhiVerdictAr:
-      "انقسام الفتوى المعاصرة: دور الإفتاء التقليدية تأخذ بالفضة (الأحظ للفقراء)، بينما يرجح مجمع الفقه الدولي وهيئة كبار العلماء نصاب الذهب للأوراق النقدية نظراً لأن الفضة لم تعد تحقق وصف الغنى الشرعي.",
+      "اختلف المعاصرون في تقويم نصاب الأوراق النقدية: فمنهم من يأخذ بنصاب الفضة احتياطاً وأنفعَ للفقراء، ومنهم من يأخذ بنصاب الذهب لأن الفضة لم تعد تدلّ على الغنى. ولم نوثّق هنا قراراً بعينه لجهة بعينها، فيُرجع إلى جهة الإفتاء في بلدك.",
   },
 ];
 
@@ -618,7 +624,7 @@ export function getAnyHijriYearDetails(
     } else if (safeYear <= 40) {
       historicalEventAr = `العام ${safeYear} هـ في عهد الخلافة الراشدة والفتوحات الإسلامية الكبرى.`;
       rulerOrContextAr = "الخلفاء الراشدون رضي الله عنهم";
-      fiqhiStatusAr = "استمرار ميزان سبعة الشرعي وتوزيع الزكاة في الدواوين على المستحقين.";
+      fiqhiStatusAr = "استمرار الدينار والدرهم وزناً في المعاملات، وتوزيع الزكاة على المستحقين.";
     } else if (safeYear <= 132) {
       historicalEventAr = `العام ${safeYear} هـ في عهد الخلافة الأموية وتوسع الدولة من الأندلس إلى حدود الصين.`;
       rulerOrContextAr = "خلفاء بني أمية بدمشق";
@@ -639,7 +645,7 @@ export function getAnyHijriYearDetails(
       historicalEventAr = `العام ${safeYear} هـ (الموافق نحو ${gregorianYear} م) في العصر المعاصر.`;
       rulerOrContextAr = "الدول الإسلامية المعاصرة";
       fiqhiStatusAr =
-        "انفصال حاد بين نصاب الذهب والفضة؛ ومجمع الفقه الدولي يرجح نصاب الذهب للأوراق النقدية.";
+        "انفصال حاد بين نصاب الذهب والفضة؛ واختلف المعاصرون في أيّهما يُعتمد للأوراق النقدية.";
     }
   }
 
