@@ -10,6 +10,21 @@
 import { ANNUAL_METALS } from "./long-history";
 import { TROY_OUNCE_G } from "./nisab";
 
+const DINAR_G = 4.25;
+const DIRHAM_G = 2.975;
+/** Early Islamic par: one dinar exchanged for ten dirhams, which is what makes 20 dinars = 200 dirhams. */
+export const PAR_DIRHAMS_PER_DINAR = 10;
+
+/**
+ * Grams of silver worth one gram of gold, given how many dirhams one dinar fetched.
+ * The par of 10 dirhams per dinar is 7 by weight (10 × 2.975 ÷ 4.25), not 10.
+ */
+export function weightRatio(dirhamsPerDinar: number): number {
+  return Number(((dirhamsPerDinar * DIRHAM_G) / DINAR_G).toFixed(1));
+}
+/** The weight ratio at the early Islamic par: 7. */
+export const PAR_WEIGHT_RATIO = weightRatio(PAR_DIRHAMS_PER_DINAR);
+
 export type IslamicEra =
   | "prophetic"
   | "rashidun"
@@ -32,7 +47,7 @@ export type ChronologyMilestone = {
   titleEn: string;
   goldDinarGrams: number; // 4.25 g standard
   silverDirhamGrams: number; // 2.975 g standard
-  goldToSilverRatio: number; // e.g. 10.0 in prophetic era, now ~85-95
+  goldToSilverRatio: number; // by weight: 7 at the early par (10 dirhams per dinar), now ~85-95
   goldNisabGrams: number; // 85 g
   silverNisabGrams: number; // 595 g
   /** Null before 1925 CE: no market series exists, and an invented figure would mislead. */
@@ -57,8 +72,8 @@ export const SPECIFIC_YEAR_EVENTS: Record<
     eventAr: "الهجرة النبوية المباركة إلى المدينة المنورة وتأسيس أول مسجد وأول مجتمع للمسلمين.",
     rulerAr: "رسول الله محمد ﷺ",
     fiqhNoteAr:
-      "إقرار الوزن المكي (المثقال 4.25 جم) والمكيال المدني (الصاع)، وتطابق نصابي الذهب والفضة (1 : 10).",
-    ratio: 10.0,
+      "إقرار الوزن المكي (المثقال 4.25 جم) والمكيال المدني (الصاع)، وتكافؤ نصابي الذهب والفضة في القيمة (الدينار بعشرة دراهم، أي نحو 7 : 1 بالوزن).",
+    ratio: weightRatio(10.0),
   },
   2: {
     eventAr:
@@ -66,71 +81,71 @@ export const SPECIFIC_YEAR_EVENTS: Record<
     rulerAr: "رسول الله محمد ﷺ",
     fiqhNoteAr:
       "اختُلف في وقت فرض زكاة الأموال (قيل في السنة الثانية، وقيل بعدها)؛ والمستقر أن مقدارها ربع العشر (2.5%) في الأثمان، وأن زكاة الفطر صاع من طعام.",
-    ratio: 10.0,
+    ratio: weightRatio(10.0),
   },
   3: {
     eventAr: "غزوة أحد، واستقرار المجتمع المدني وتنظيم الصدقات وإعانة الأرامل واليتامى.",
     rulerAr: "رسول الله محمد ﷺ",
     fiqhNoteAr: "بيان أنصبة بهيمة الأنعام من الإبل والبقر والغنم وتفصيل شروط السوم.",
-    ratio: 10.0,
+    ratio: weightRatio(10.0),
   },
   4: {
     eventAr: "إجلاء بني النضير وقسمة أموال الفيء على المهاجرين والفقراء وفق الآيات الكريمة.",
     rulerAr: "رسول الله محمد ﷺ",
     fiqhNoteAr: "التفريق بين أموال الغنائم وأموال الفيء وأموال الزكاة ومصارف كل منها.",
-    ratio: 10.0,
+    ratio: weightRatio(10.0),
   },
   5: {
     eventAr: "غزوة الخندق (الأحزاب) وبني قريظة، وازدياد الموارد الاقتصادية للمدينة.",
     rulerAr: "رسول الله محمد ﷺ",
     fiqhNoteAr:
       "التأكيد على أن الزكاة لا تسقط في أوقات الحصار أو النوازل ما دامت الأموال بلغت النصاب وحال الحول.",
-    ratio: 10.0,
+    ratio: weightRatio(10.0),
   },
   6: {
     eventAr: "صلح الحديبية، وبدء مراسلة ملوك وأمراء العالم (كسرى وقيصر والمقوقس والنجاشي).",
     rulerAr: "رسول الله محمد ﷺ",
     fiqhNoteAr: "التعامل بالدنانير الرومية الذهبية والدراهم الساسانية الفضية بالوزن لا بالعدد.",
-    ratio: 10.0,
+    ratio: weightRatio(10.0),
   },
   7: {
     eventAr: "فتح خيبر وتأمين أكبر واحة زراعية للمسلمين، وإقرار أهلها على الشطر مما يخرج منها.",
     rulerAr: "رسول الله محمد ﷺ",
     fiqhNoteAr: "تشريع زكاة الزروع والثمار وخمسة أوسق (نحو 653 كجم) والعشر فيما سُقي بغير كلفة.",
-    ratio: 10.0,
+    ratio: weightRatio(10.0),
   },
   8: {
     eventAr: "فتح مكة المكرمة وتطهير الكعبة من الأصنام، وغزوة حنين وحصار الطائف.",
     rulerAr: "رسول الله محمد ﷺ",
     fiqhNoteAr: "إعطاء سهم المؤلفة قلوبهم لتثبيت الإسلام، ووجوب الزكاة على أموال تجار قريش ومكة.",
-    ratio: 10.0,
+    ratio: weightRatio(10.0),
   },
   9: {
     eventAr: "عام الوفود، وغزوة تبوك، ونزول آية مصارف الزكاة الثمانية في سورة التوبة.",
     rulerAr: "رسول الله محمد ﷺ",
     fiqhNoteAr:
       "إرسال الجباة والمصدقين (كمعاذ بن جبل إلى اليمن) مع الأمر بأخذ الزكاة من أغنيائهم وردها على فقرائهم.",
-    ratio: 10.0,
+    ratio: weightRatio(10.0),
   },
   10: {
     eventAr: "حجة الوداع وخطبة النبي ﷺ الجامعة التي قررت حرمة الدماء والأموال والأعراض.",
     rulerAr: "رسول الله محمد ﷺ",
     fiqhNoteAr: "إبطال ربا الجاهلية بالكامل، وتأكيد فريضة الزكاة كركن ثالث من أركان الإسلام.",
-    ratio: 10.0,
+    ratio: weightRatio(10.0),
   },
   11: {
     eventAr: "وفاة النبي ﷺ، وبيعة أبي بكر الصديق خليفة للمسلمين، وحروب الردة ومانعي الزكاة.",
     rulerAr: "أبو بكر الصديق رضي الله عنه",
     fiqhNoteAr:
       "موقف الصديق الحاسم: «والله لو منعوني عقالاً كانوا يؤدونه إلى رسول الله لقاتلتهم عليه»، وتثبيت شأن الفريضة.",
-    ratio: 10.0,
+    ratio: weightRatio(10.0),
   },
   18: {
     eventAr: "عام الرمادة ومجاعة الحجاز الشديدة، وطاعون عمواس بالشام، ووقف حد السرقة استثنائياً.",
     rulerAr: "عمر بن الخطاب رضي الله عنه",
     fiqhNoteAr:
       "تقنين الفاروق لميزان «وزن سبعة» (كل 10 دراهم = 7 مثاقيل)، وتوجيه أموال الزكاة والمؤن من مصر والعراق للمدينة.",
-    ratio: 10.0,
+    ratio: weightRatio(10.0),
   },
   23: {
     eventAr:
@@ -138,7 +153,7 @@ export const SPECIFIC_YEAR_EVENTS: Record<
     rulerAr: "عثمان بن عفان رضي الله عنه",
     fiqhNoteAr:
       "تقسيم الأموال إلى «أموال ظاهرة» كالماشية والزروع يجبيها الإمام، و«أموال باطنة» كالنقد يخرجها صاحبها بنفسه.",
-    ratio: 10.0,
+    ratio: weightRatio(10.0),
   },
   35: {
     eventAr:
@@ -146,14 +161,14 @@ export const SPECIFIC_YEAR_EVENTS: Record<
     rulerAr: "علي بن أبي طالب رضي الله عنه",
     fiqhNoteAr:
       "عهود أمير المؤمنين علي بن أبي طالب لعمال الصدقات بعدم ترويع الناس وأخذ أوسط المال دون خياره.",
-    ratio: 10.0,
+    ratio: weightRatio(10.0),
   },
   41: {
     eventAr: "عام الجماعة، تنازل الحسن لمعاوية وتأسيس الدولة الأموية وعاصمتها دمشق.",
     rulerAr: "معاوية بن أبي سفيان",
     fiqhNoteAr:
       "انتظام جباية الزكاة في الدواوين الشامية والمصرية والعراقية مع بقاء النصاب على وزنه النبوي.",
-    ratio: 10.0,
+    ratio: weightRatio(10.0),
   },
   77: {
     eventAr:
@@ -161,21 +176,21 @@ export const SPECIFIC_YEAR_EVENTS: Record<
     rulerAr: "عبد الملك بن مروان",
     fiqhNoteAr:
       "اعتماد الدينار الأموي 4.25 جم والدرهم 2.975 جم كمعيار صلب مطبق في كل أرجاء العالم الإسلامي.",
-    ratio: 10.5,
+    ratio: weightRatio(10.5),
   },
   99: {
     eventAr: "خلافة عمر بن عبد العزيز، خامس الخلفاء الراشدين، وتحقيق العدالة الاجتماعية الكبرى.",
     rulerAr: "عمر بن عبد العزيز رحمه الله",
     fiqhNoteAr:
       "فيضان أموال الزكاة في إفريقية والشام والعراق حتى قال يحيى بن سعيد: «بعثني عمر أصدق أموال إفريقية فطلبت فقيراً فلم أجد».",
-    ratio: 10.5,
+    ratio: weightRatio(10.5),
   },
   132: {
     eventAr: "سقوط الدولة الأموية وقيام الدولة العباسية وبدء العصر العباسي الأول.",
     rulerAr: "أبو العباس السفاح",
     fiqhNoteAr:
       "استمرار العمل بالدينار والدرهم الشرعي وتأسيس أولى مدونات الفقه الشاملة في بغداد والكوفة والمدينة.",
-    ratio: 11.0,
+    ratio: weightRatio(11.0),
   },
   160: {
     eventAr:
@@ -183,14 +198,14 @@ export const SPECIFIC_YEAR_EVENTS: Record<
     rulerAr: "محمد المهدي / هارون الرشيد",
     fiqhNoteAr:
       "تدفق الفضة وتغير نسبي طفيف في سعر الصرف، وظهور كتاب «الخراج» للقاضي أبي يوسف مبيناً أحكام الزكاة والجباية.",
-    ratio: 12.0,
+    ratio: weightRatio(12.0),
   },
   450: {
     eventAr: "الدينار الآمري والدراهم المصرية في العصر الفاطمي، والنزاع على نقاوة العيار الذهبي.",
     rulerAr: "الخلفاء الفاطميون بمصر والسلاجقة ببغداد",
     fiqhNoteAr:
       "تشديد فقهاء الشافعية والمالكية على ضرورة تنقية الذهب والفضة وإسقاط الشوائب والنحاس عند تقدير النصاب.",
-    ratio: 13.5,
+    ratio: weightRatio(13.5),
   },
   800: {
     eventAr:
@@ -198,14 +213,14 @@ export const SPECIFIC_YEAR_EVENTS: Record<
     rulerAr: "سلاطين المماليك بمصر والشام",
     fiqhNoteAr:
       "تحذير العلماء من التخلي عن معيار النقدين ووجوب ربط تقويم الفلوس بالنصاب الشرعي للذهب أو الفضة.",
-    ratio: 15.0,
+    ratio: weightRatio(15.0),
   },
   1000: {
     eventAr: "ثورة الفضة العالمية عقب تدفق فضة جبال بوتوسي والمكسيك إلى أوروبا والدولة العثمانية.",
     rulerAr: "السلطان العثماني مراد الثالث",
     fiqhNoteAr:
       "هبوط القوة الشرائية للفضة لأول مرة في التاريخ الإسلامي وبدء ارتفاع نسبة الذهب للفضة متجاوزة 1 : 16.",
-    ratio: 16.5,
+    ratio: weightRatio(16.5),
   },
   1300: {
     eventAr:
@@ -243,7 +258,7 @@ export const ISLAMIC_CHRONOLOGY: ChronologyMilestone[] = [
     titleEn: "Institution of Zakat & Bimetallic Nisab Establishment (2 AH)",
     goldDinarGrams: 4.25,
     silverDirhamGrams: 2.975,
-    goldToSilverRatio: 10.0,
+    goldToSilverRatio: weightRatio(10.0),
     goldNisabGrams: 85,
     silverNisabGrams: 595,
     goldUsdOzEquivalent: null,
@@ -266,7 +281,7 @@ export const ISLAMIC_CHRONOLOGY: ChronologyMilestone[] = [
     titleEn: "Umar's Coinage Standard and Zakat Diwan",
     goldDinarGrams: 4.25,
     silverDirhamGrams: 2.975,
-    goldToSilverRatio: 10.0,
+    goldToSilverRatio: weightRatio(10.0),
     goldNisabGrams: 85,
     silverNisabGrams: 595,
     goldUsdOzEquivalent: null,
@@ -289,7 +304,7 @@ export const ISLAMIC_CHRONOLOGY: ChronologyMilestone[] = [
     titleEn: "Abd al-Malik's Historic Islamic Coinage Reform",
     goldDinarGrams: 4.25,
     silverDirhamGrams: 2.975,
-    goldToSilverRatio: 10.5,
+    goldToSilverRatio: weightRatio(10.5),
     goldNisabGrams: 85,
     silverNisabGrams: 595,
     goldUsdOzEquivalent: null,
@@ -312,7 +327,7 @@ export const ISLAMIC_CHRONOLOGY: ChronologyMilestone[] = [
     titleEn: "Silver Surges & Classical Fiqh Codification",
     goldDinarGrams: 4.25,
     silverDirhamGrams: 2.975,
-    goldToSilverRatio: 12.0,
+    goldToSilverRatio: weightRatio(12.0),
     goldNisabGrams: 85,
     silverNisabGrams: 595,
     goldUsdOzEquivalent: null,
@@ -335,7 +350,7 @@ export const ISLAMIC_CHRONOLOGY: ChronologyMilestone[] = [
     titleEn: "Amiri Dinar & Mediterranean Monetary Shifts",
     goldDinarGrams: 4.25,
     silverDirhamGrams: 2.975,
-    goldToSilverRatio: 13.5,
+    goldToSilverRatio: weightRatio(13.5),
     goldNisabGrams: 85,
     silverNisabGrams: 595,
     goldUsdOzEquivalent: null,
@@ -358,7 +373,7 @@ export const ISLAMIC_CHRONOLOGY: ChronologyMilestone[] = [
     titleEn: "Al-Maqrizi's Monetary Treatise on Currency Crisis",
     goldDinarGrams: 4.25,
     silverDirhamGrams: 2.975,
-    goldToSilverRatio: 15.0,
+    goldToSilverRatio: weightRatio(15.0),
     goldNisabGrams: 85,
     silverNisabGrams: 595,
     goldUsdOzEquivalent: null,
@@ -381,7 +396,7 @@ export const ISLAMIC_CHRONOLOGY: ChronologyMilestone[] = [
     titleEn: "New World Silver Influx and Price Revolution",
     goldDinarGrams: 4.25,
     silverDirhamGrams: 2.975,
-    goldToSilverRatio: 16.5,
+    goldToSilverRatio: weightRatio(16.5),
     goldNisabGrams: 85,
     silverNisabGrams: 595,
     goldUsdOzEquivalent: null,
@@ -588,18 +603,20 @@ export function getAnyHijriYearDetails(
     eraNameAr = "العصر الحديث وقاعدة الذهب";
   }
 
-  // Calculate historical gold-to-silver ratio
-  let ratio = 10.0;
+  // Modelled gold-to-silver weight ratio. Up to 923 AH the anchor points are dirhams per dinar
+  // converted to weight; the later points are gram ratios. None of this is a recorded series.
+  let ratio = PAR_WEIGHT_RATIO;
   if (safeYear <= 40) {
-    ratio = 10.0;
+    ratio = weightRatio(10.0);
   } else if (safeYear <= 132) {
-    ratio = 10.0 + ((safeYear - 40) / 92) * 1.0; // 10.0 -> 11.0
+    ratio = weightRatio(10.0 + ((safeYear - 40) / 92) * 1.0); // 10 -> 11 dirhams
   } else if (safeYear <= 656) {
-    ratio = 11.0 + ((safeYear - 132) / 524) * 3.5; // 11.0 -> 14.5
+    ratio = weightRatio(11.0 + ((safeYear - 132) / 524) * 3.5); // 11 -> 14.5 dirhams
   } else if (safeYear <= 923) {
-    ratio = 14.5 + ((safeYear - 656) / 267) * 1.0; // 14.5 -> 15.5
+    ratio = weightRatio(14.5 + ((safeYear - 656) / 267) * 1.0); // 14.5 -> 15.5 dirhams
   } else if (safeYear <= 1342) {
-    ratio = 15.5 + ((safeYear - 923) / 419) * 14.5; // 15.5 -> 30.0
+    const from = weightRatio(15.5);
+    ratio = from + ((safeYear - 923) / 419) * (30.0 - from); // -> 30.0 by weight
   } else if (safeYear <= 1391) {
     ratio = 30.0 + ((safeYear - 1342) / 49) * 5.0; // 30.0 -> 35.0
   } else if (safeYear <= 1421) {

@@ -1,3 +1,4 @@
+// @refresh reset
 import type { ErrorComponentProps } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
@@ -17,6 +18,7 @@ import { ThemeProvider } from "../lib/theme";
 import { Shell } from "../components/site/Shell";
 import { VisitorPriceAlerts } from "../components/site/VisitorPriceAlerts";
 import { Toaster } from "../components/ui/sonner";
+import { LivePriceWatch } from "../components/site/LivePriceWatch";
 
 function NotFoundComponent() {
   return (
@@ -142,6 +144,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <LivePriceWatch />
       <I18nProvider>
         <ThemeProvider>
           <VisitorPriceAlerts />

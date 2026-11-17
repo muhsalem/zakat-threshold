@@ -57,7 +57,8 @@ export function VisitorPriceAlerts() {
       "postgres_changes",
       { event: "*", schema: "public", table: "official_nisab" },
       () => {
-        if (!disposed) void client.invalidateQueries({ queryKey: ["calculator-official-nisab", country] });
+        if (!disposed)
+          void client.invalidateQueries({ queryKey: ["calculator-official-nisab", country] });
       },
     );
     channel.subscribe((status) => {

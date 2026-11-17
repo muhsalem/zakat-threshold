@@ -48,7 +48,14 @@ const egyptSilver = () => iSaghaSilver();
 
 /** Nagmadin public live-price JSON (EGP per gram, 24K gold and pure silver). */
 export function parseNagmadin(json: unknown): { gold: number | null; silver: number | null } {
-  const d = (json as { data?: any })?.data;
+  const d = (
+    json as {
+      data?: {
+        gold_latest?: { metal_prices?: { XAU?: { price_24k?: unknown } } };
+        market_data?: { rates_per_gram?: { XAG?: { current?: unknown } } };
+      };
+    }
+  )?.data;
   const pos = (v: unknown) => (typeof v === "number" && Number.isFinite(v) && v > 0 ? v : null);
   return {
     gold: pos(d?.gold_latest?.metal_prices?.XAU?.price_24k),

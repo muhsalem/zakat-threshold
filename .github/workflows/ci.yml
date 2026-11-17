@@ -18,6 +18,8 @@ jobs:
       - name: Type check
         run: bunx tsc --noEmit
       - name: Lint
+        if: ${{ !cancelled() }}
         run: bunx eslint . --max-warnings 40
       - name: Tests
+        if: ${{ !cancelled() }}
         run: bun test src/lib

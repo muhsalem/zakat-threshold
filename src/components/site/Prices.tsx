@@ -789,10 +789,22 @@ export function LocalMarket({
         {[
           { label: t("local.goldQuote"), value: money(goldGram) },
           { label: t("local.silverQuote"), value: money(silverGram) },
-          { label: `${t("local.goldBuy")} · ${quote?.buybackGram ? (lang === "ar" ? "منشور" : "Published") : (lang === "ar" ? "تقديري" : "Estimated")}`, value: money(goldBuy) },
-          { label: `${t("local.silverBuy")} · ${quote?.silverBuybackGram ? (lang === "ar" ? "منشور" : "Published") : (lang === "ar" ? "تقديري" : "Estimated")}`, value: money(silverBuy) },
-          { label: `${t("local.goldNisab")}${quote?.buybackGram ? "" : (lang === "ar" ? " · تقديري" : " · Estimated")}`, value: money(goldBuy * goldWeightFor(standardWeight)) },
-          { label: `${t("local.silverNisab")}${quote?.silverBuybackGram ? "" : (lang === "ar" ? " · تقديري" : " · Estimated")}`, value: money(silverBuy * standardWeight) },
+          {
+            label: `${t("local.goldBuy")} · ${quote?.buybackGram ? (lang === "ar" ? "منشور" : "Published") : lang === "ar" ? "تقديري" : "Estimated"}`,
+            value: money(goldBuy),
+          },
+          {
+            label: `${t("local.silverBuy")} · ${quote?.silverBuybackGram ? (lang === "ar" ? "منشور" : "Published") : lang === "ar" ? "تقديري" : "Estimated"}`,
+            value: money(silverBuy),
+          },
+          {
+            label: `${t("local.goldNisab")}${quote?.buybackGram ? "" : lang === "ar" ? " · تقديري" : " · Estimated"}`,
+            value: money(goldBuy * goldWeightFor(standardWeight)),
+          },
+          {
+            label: `${t("local.silverNisab")}${quote?.silverBuybackGram ? "" : lang === "ar" ? " · تقديري" : " · Estimated"}`,
+            value: money(silverBuy * standardWeight),
+          },
         ].map((row) => (
           <div
             key={row.label}

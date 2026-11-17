@@ -24,7 +24,7 @@ const CURRENCIES = new Set(["USD", ...COUNTRIES.map((c) => c.currency)]);
 async function readRates(): Promise<{ rates: Record<string, number>; source: string }> {
   const attempts = [
     { source: "open.er-api.com", url: "https://open.er-api.com/v6/latest/USD" },
-    { source: "frankfurter.app (ECB)", url: "https://api.frankfurter.app/latest?from=USD" },
+    { source: "frankfurter.dev (ECB)", url: "https://api.frankfurter.dev/v1/latest?base=USD" },
   ];
   for (const { source, url } of attempts) {
     try {

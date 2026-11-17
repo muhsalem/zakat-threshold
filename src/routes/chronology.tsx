@@ -29,6 +29,7 @@ import { COUNTRIES, findCountry } from "@/lib/countries";
 import {
   getAnyHijriYearDetails,
   ISLAMIC_CHRONOLOGY,
+  PAR_WEIGHT_RATIO,
   type AnyHijriYearDetails,
 } from "@/lib/islamic-chronology";
 
@@ -411,8 +412,8 @@ export function ChronologyPage() {
               1 : {yearDetails.goldToSilverRatio}
             </span>
             <span className="text-[0.65rem] text-muted-foreground block mt-0.5">
-              {yearDetails.goldToSilverRatio === 10.0
-                ? "تعادل تقريبي اعتبره الفقهاء بين النصابين"
+              {yearDetails.goldToSilverRatio === PAR_WEIGHT_RATIO
+                ? "الدينار بعشرة دراهم: نصابا الذهب والفضة متكافئان في القيمة"
                 : `كل جرام ذهب ≈ ${yearDetails.goldToSilverRatio} جرام فضة`}
             </span>
           </div>
