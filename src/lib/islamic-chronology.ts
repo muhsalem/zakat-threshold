@@ -241,8 +241,8 @@ export const SPECIFIC_YEAR_EVENTS: Record<
     eventAr: "الوقت الراهن وتسجيل أسعار الذهب والفضة القياسية عالمياً واتساع الفجوة لنسبة قياسية.",
     rulerAr: "العصر المعاصر الرقمي",
     fiqhNoteAr:
-      "انفصال نصاب الفضة (نحو 650-1,200 دولار) عن نصاب الذهب (نحو 8,500-11,000 دولار)، وترجيح كبار العلماء لنصاب الذهب للنقود.",
-    ratio: 93.0,
+      "انفصال نصاب الفضة (نحو 770 دولاراً بمتوسط 2025) عن نصاب الذهب (نحو 9,400 دولار)، واختلاف المعاصرين في أيّهما يُعتمد للنقود.",
+    ratio: 85.7,
   },
 };
 
@@ -462,17 +462,17 @@ export const ISLAMIC_CHRONOLOGY: ChronologyMilestone[] = [
     eraNameAr: "الوقت الراهن (عصر التضخم والملاذات الآمنة)",
     eraNameEn: "Contemporary Market Reality",
     titleAr:
-      "اتساع الفجوة التاريخية بين نصابي الذهب والفضة وارتفاع النسبة إلى نحو 93:1 (متوسط 2025)",
-    titleEn: "Record Disparity: Gold-to-Silver Ratio Reaches ~90:1",
+      "اتساع الفجوة التاريخية بين نصابي الذهب والفضة وارتفاع النسبة إلى نحو 86:1 (متوسط 2025)",
+    titleEn: "Record Disparity: Gold-to-Silver Ratio Reaches ~86:1",
     goldDinarGrams: 4.25,
     silverDirhamGrams: 2.975,
-    goldToSilverRatio: 93.0,
+    goldToSilverRatio: 85.7,
     goldNisabGrams: 85,
     silverNisabGrams: 595,
-    goldUsdOzEquivalent: 3120.0,
-    silverUsdOzEquivalent: 33.5,
+    goldUsdOzEquivalent: 3431.5,
+    silverUsdOzEquivalent: 40.03,
     purchasingPowerNoteAr:
-      "نصاب الفضة (595 جم) أصبح يساوي نحو 640 دولاراً فقط (أقل من الحد الأدنى للأجور في كثير من الدول)، بينما نصاب الذهب (85 جم) يمثل ثروة نقدية حقيقية تتجاوز 8,500 دولار.",
+      "نصاب الفضة (595 جم) أصبح يساوي نحو 770 دولاراً فقط (أقل من الحد الأدنى للأجور في كثير من الدول)، بينما نصاب الذهب (85 جم) يمثل ثروة نقدية حقيقية تقارب 9,400 دولار.",
     historicalContextAr:
       "تحول الفضة إلى معدن صناعي خاضع للطلب التكنولوجي، بينما بقي الذهب الملاذ الآمن الأول واحتياطي البنوك المركزية الكبرى، مما فكك الترابط الذي دام لآلاف السنين.",
     fiqhiVerdictAr:
@@ -622,7 +622,7 @@ export function getAnyHijriYearDetails(
   } else if (safeYear <= 1421) {
     ratio = 35.0 + ((safeYear - 1391) / 30) * 21.4; // 35.0 -> 56.4
   } else {
-    ratio = 56.4 + ((safeYear - 1421) / 27) * 36.6; // 56.4 -> 93.0
+    ratio = 56.4 + ((safeYear - 1421) / 27) * (85.7 - 56.4); // 56.4 -> 85.7
   }
   ratio = Number(ratio.toFixed(1));
 

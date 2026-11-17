@@ -26,21 +26,34 @@ describe("reachConsensus", () => {
     assert.equal(c?.goldUsdOz, 4000);
   });
 
-  it("agrees when sources are close and keeps the spot quote as the headline", () => {
+  it("agrees when sources are close and headlines their median, attributed to the spot quote", () => {
     const c = reachConsensus([
       quote("fut", "futures", 4010, 50.1),
       quote("spot", "spot", 4000, 50),
     ]);
     assert.equal(c?.status, "agree");
     assert.equal(c?.primary.source, "spot");
-    assert.equal(c?.goldUsdOz, 4000);
+    assert.equal(c?.goldUsdOz, 4005);
+    assert.equal(c?.silverUsdOz, 50.05);
     assert.equal(c?.used.length, 2);
   });
 
   it("warns when the gap is above the warning threshold but within the limit", () => {
     const c = reachConsensus([quote("spot", "spot", 4000, 50), quote("fut", "futures", 4080, 50)]);
     assert.equal(c?.status, "warn");
+    assert.equal(c?.goldUsdOz, 4040);
     assert.ok((c?.deviationPct ?? 0) > 1.5);
+  });
+
+  it("a high but accepted quote does not drag the headline: it is the median, not the first source", () => {
+    const c = reachConsensus([
+      quote("b", "benchmark", 4000, 50),
+      quote("spot", "spot", 4010, 50),
+      quote("fut", "futures", 4110, 50),
+    ]);
+    assert.equal(c?.goldUsdOz, 4010);
+    assert.equal(c?.primary.source, "spot");
+    assert.equal(c?.used.length, 3);
   });
 
   it("flags divergence between two sources instead of hiding it", () => {
@@ -57,6 +70,7 @@ describe("reachConsensus", () => {
       quote("fut", "futures", 4010, 50),
     ]);
     assert.equal(c?.status, "agree");
+    assert.equal(c?.goldUsdOz, 4005);
     assert.equal(c?.primary.source, "b");
     assert.ok(c?.rejected.some((r) => r.source === "spot" && r.reason.startsWith("outlier")));
   });

@@ -2,8 +2,8 @@
  * Reconciles gold/silver quotes from independent sources. Pure, no I/O.
  *
  * Nisab figures must not hinge on one free feed: quotes are compared, outliers are
- * dropped when a majority exists, and disagreement the data cannot resolve is
- * reported instead of hidden.
+ * dropped when a majority exists, the headline is the median of the accepted quotes, and
+ * disagreement the data cannot resolve is reported instead of hidden.
  */
 
 /** benchmark = published fixing, spot = OTC spot feed, futures = exchange futures (carries a basis). */
@@ -124,12 +124,23 @@ export function reachConsensus(
     };
   }
 
+  // The headline is the median of the accepted quotes, so no single feed's error or futures
+  // basis moves it alone. `primary` is the accepted quote nearest that median (ties go to the
+  // higher-priority kind), which is the source the figures are attributed to.
+  const goldUsdOz = median(accepted.map((q) => q.goldUsdOz));
+  const silverUsdOz = median(accepted.map((q) => q.silverUsdOz));
+  const distance = (q: SpotQuote) =>
+    Math.max(
+      Math.abs(q.goldUsdOz - goldUsdOz) / goldUsdOz,
+      Math.abs(q.silverUsdOz - silverUsdOz) / silverUsdOz,
+    );
+  const nearest = accepted.reduce((best, q) => (distance(q) < distance(best) - 1e-12 ? q : best));
   return {
-    goldUsdOz: primary.goldUsdOz,
-    silverUsdOz: primary.silverUsdOz,
+    goldUsdOz,
+    silverUsdOz,
     status: gap > warnPct ? "warn" : "agree",
     deviationPct: gap,
-    primary,
+    primary: nearest,
     used: accepted,
     rejected,
   };

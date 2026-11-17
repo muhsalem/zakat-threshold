@@ -4,7 +4,9 @@
  * market feeds have no coverage. Values are rounded annual averages and are
  * indicative only. The values are hand-entered with no published source,
  * and gold up to 1971 is the officially fixed price rather than a market price.
- * The last entry may lag the current year; live prices come from the price API.
+ * 2024 and 2025 were checked on 17 Nov 2026 against LBMA annual averages as reported by the World
+ * Gold Council (gold 2386.2 and 3431.5) and metalcharts.org citing LBMA (silver 28.27 and 40.03); the
+ * rest remain unchecked. The last entry may lag the current year; live prices come from the price API.
  */
 
 export type AnnualPoint = { year: number; gold: number; silver: number };
@@ -110,7 +112,7 @@ export const ANNUAL_METALS: AnnualPoint[] = [
   { year: 2022, gold: 1801.9, silver: 21.73 },
   { year: 2023, gold: 1943.0, silver: 23.35 },
   { year: 2024, gold: 2386.0, silver: 28.27 },
-  { year: 2025, gold: 3120.0, silver: 33.5 },
+  { year: 2025, gold: 3431.5, silver: 40.03 },
 ];
 
 /** Annual points for the last `years` calendar years. */
