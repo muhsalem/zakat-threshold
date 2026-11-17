@@ -14,9 +14,9 @@ describe("official fatwa data", () => {
   });
 
   it("the standard matches what the ruling text says for the checked countries", () => {
-    assert.equal(OFFICIAL_FATWAS.EG!.standard, "gold");
-    assert.match(OFFICIAL_FATWAS.EG!.rulingAr, /عيار 21/);
-    assert.equal(OFFICIAL_FATWAS.SA!.standard, "lower");
-    assert.match(OFFICIAL_FATWAS.SA!.rulingAr, /أدنى النصابين/);
+    assert.equal(OFFICIAL_FATWAS["EG"]!.standard, "gold");
+    assert.match(OFFICIAL_FATWAS["EG"]!.rulingAr, /عيار 21/);
+    assert.equal(OFFICIAL_FATWAS["SA"]!.standard, "lower");
+    assert.match(OFFICIAL_FATWAS["SA"]!.rulingAr, /أدنى النصابين/);
   });
 });
