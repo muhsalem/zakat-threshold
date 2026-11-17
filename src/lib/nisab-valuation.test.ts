@@ -12,12 +12,18 @@ import {
 
 describe("country nisab valuation", () => {
   test("compares published purchase proceeds against the selected nisab", () => {
-    assert.deepEqual(comparePublishedBuyback(6900, 85, 595000), { gram: 6900, proceeds: 586500, threshold: 595000, difference: -8500 });
+    assert.deepEqual(comparePublishedBuyback(6900, 85, 595000), {
+      gram: 6900,
+      proceeds: 586500,
+      threshold: 595000,
+      difference: -8500,
+    });
     assert.equal(comparePublishedBuyback(98, 595, 60000)?.proceeds, 58310);
     assert.equal(comparePublishedBuyback(98, 612.36, 60000)?.proceeds, 60011.28);
   });
   test("does not invent a published purchase price when it is missing or invalid", () => {
-    for (const bid of [null, undefined, 0, -10, NaN]) assert.equal(comparePublishedBuyback(bid, 85, 595000), null);
+    for (const bid of [null, undefined, 0, -10, NaN])
+      assert.equal(comparePublishedBuyback(bid, 85, 595000), null);
     assert.equal(comparePublishedBuyback(6900, 85, null)?.difference, null);
   });
   test("uses the local purchase quote, not the sale quote, when available", () => {

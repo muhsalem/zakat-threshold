@@ -2,7 +2,12 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { getAnyHijriYearDetails } from "./islamic-chronology.ts";
+import {
+  getAnyHijriYearDetails,
+  ISLAMIC_CHRONOLOGY,
+  PAR_WEIGHT_RATIO,
+  weightRatio,
+} from "./islamic-chronology.ts";
 import { calculateYearNisab } from "./historical-nisab.ts";
 
 describe("hijri-year nisab model", () => {
@@ -32,5 +37,31 @@ describe("hijri-year nisab model", () => {
     assert.equal(n.goldNisab, 0);
     // A year that is recorded is priced.
     assert.equal(calculateYearNisab(1990, false, 3.75).priced, true);
+  });
+});
+
+describe("early Islamic par", () => {
+  it("10 dirhams per dinar is 7 by weight, so 20 dinars equal 200 dirhams in value", () => {
+    assert.equal(PAR_WEIGHT_RATIO, 7);
+    assert.equal(85 * PAR_WEIGHT_RATIO, 595);
+  });
+
+  it("the prophetic-era model uses the weight ratio, not the exchange rate", () => {
+    assert.equal(getAnyHijriYearDetails(5, "SA", 3.75).goldToSilverRatio, 7);
+    assert.equal(getAnyHijriYearDetails(30, "SA", 3.75).goldToSilverRatio, 7);
+    assert.equal(ISLAMIC_CHRONOLOGY[0]!.goldToSilverRatio, 7);
+  });
+
+  it("the modelled ratio rises monotonically before 1925 CE", () => {
+    let prev = 0;
+    for (let y = 2; y <= 1342; y += 20) {
+      const r = getAnyHijriYearDetails(y, "SA", 3.75).goldToSilverRatio;
+      assert.ok(r >= prev, `year ${y}: ${r} < ${prev}`);
+      prev = r;
+    }
+  });
+
+  it("weightRatio converts dirhams per dinar by the coin weights", () => {
+    assert.equal(weightRatio(12), 8.4);
   });
 });

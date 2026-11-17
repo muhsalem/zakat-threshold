@@ -94,14 +94,14 @@ async function fxFromErApi(): Promise<Fx> {
 }
 
 async function fxFromFrankfurter(): Promise<Fx> {
-  const fx = await fetchJson("https://api.frankfurter.app/latest?from=USD");
+  const fx = await fetchJson("https://api.frankfurter.dev/v1/latest?base=USD");
   const rates = fx?.rates as Record<string, number> | undefined;
   if (!rates || !Number.isFinite(Number(rates["EUR"]))) throw new Error("frankfurter: bad payload");
   return {
     rates,
     updatedAt: fx?.date ? `${fx.date}T00:00:00Z` : new Date().toISOString(),
     label: "Frankfurter / ECB — official daily reference rates",
-    url: "https://api.frankfurter.app/latest?from=USD",
+    url: "https://api.frankfurter.dev/v1/latest?base=USD",
   };
 }
 

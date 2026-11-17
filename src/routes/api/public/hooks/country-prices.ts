@@ -19,7 +19,8 @@ export const Route = createFileRoute("/api/public/hooks/country-prices")({
       POST: async ({ request }) =>
         withCronAuthorization(request, async () => {
           const input = countryPriceRequestSchema.safeParse(await request.json().catch(() => null));
-          if (!input.success) return Response.json({ ok: false, error: "invalid_request" }, { status: 400 });
+          if (!input.success)
+            return Response.json({ ok: false, error: "invalid_request" }, { status: 400 });
           const requested = requestedPriceCountries(input.data.kind);
           const idle = Response.json({ ok: true, idle: true, updated: [], errors: [] });
           const now = new Date();
@@ -40,7 +41,10 @@ export const Route = createFileRoute("/api/public/hooks/country-prices")({
 
           const { notifyFeedAdmins, recordNisabHistory, saveJewelerFeed, scheduledRunSaver } =
             await import("@/lib/price-update.server");
-          const saveRun = scheduledRunSaver(supabaseAdmin, requested ? "Egypt hourly price check" : "country price slot update");
+          const saveRun = scheduledRunSaver(
+            supabaseAdmin,
+            requested ? "Egypt hourly price check" : "country price slot update",
+          );
           return trackScheduledFeedRun(async () => {
             const today = now.toISOString().slice(0, 10);
             const only = requested ?? new Set(pending.map((s) => s.country));
@@ -48,7 +52,10 @@ export const Route = createFileRoute("/api/public/hooks/country-prices")({
             await notifyFeedAdmins(supabaseAdmin, alerts, errors);
             // An Egypt test must read a real local quote, not silently substitute spot.
             if (requested && !rows.some((row) => row.country === "EG")) {
-              return Response.json({ ok: false, updated: [], errors: [...errors, "egypt_quote_unavailable"] }, { status: 503 });
+              return Response.json(
+                { ok: false, updated: [], errors: [...errors, "egypt_quote_unavailable"] },
+                { status: 503 },
+              );
             }
             const history = await recordNisabHistory(supabaseAdmin, rows, today, only);
 
