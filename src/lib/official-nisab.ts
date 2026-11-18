@@ -12,37 +12,54 @@ export interface OfficialFatwaInfo {
   notesEn: string;
   portalUrl?: string;
   portalNameAr?: string;
+  /** The page of the ruling itself. Entries without one have not been checked against a source. */
+  sourceUrl?: string;
+  /** Day the ruling was last compared with `sourceUrl` (YYYY-MM-DD). */
+  checkedOn?: string;
 }
 
+/**
+ * Rulings by country. Only entries with a `sourceUrl` were compared with a source (EG and SA, on
+ * 17 Nov 2026); the rest are unchecked summaries and must not be shown as an authority's
+ * position. Nothing in the app renders this table yet: today's official figures come from the
+ * `official_nisab` table.
+ */
 export const OFFICIAL_FATWAS: Record<string, OfficialFatwaInfo> = {
   EG: {
     countryCode: "EG",
     authorityAr: "دار الإفتاء المصرية",
     authorityEn: "Egyptian Dar Al-Ifta",
     rulingAr:
-      "تعتمد دار الإفتاء المصرية في نصاب زكاة المال قيمة 85 جراماً من الذهب عيار 21، وترجح في بعض الفتاوى نصاب الفضة (595 جراماً) كونه الأحوط والأنفع للفقراء والمحتاجين.",
+      "تقدّر دار الإفتاء المصرية نصاب زكاة المال بقيمة 85 جراماً من الذهب عيار 21، أي أقل من قيمة 85 جراماً من الذهب الخالص عيار 24.",
     rulingEn:
-      "Egyptian Dar Al-Ifta bases the cash zakat nisab on 85g of 21k gold, while also noting silver (595g) as the more beneficial to the poor.",
-    standard: "lower",
-    notesAr: "العيار المعتمد محلياً في صاغة مصر لحساب النصاب هو عيار 21.",
-    notesEn: "21 karat is the standard reference used in Egyptian market calculations.",
+      "Egyptian Dar Al-Ifta sets the cash zakat nisab at the value of 85g of 21k gold, which is less than 85g of pure 24k gold.",
+    standard: "gold",
+    notesAr:
+      "الحاسبة تحسب نصاب الذهب بالذهب الخالص، فيزيد رقمها على رقم الدار بنحو 14%. للمقدار الرسمي المعلن راجع إعلان الدار نفسه.",
+    notesEn:
+      "The calculator values the gold nisab in pure gold, so its figure is about 14% above Dar Al-Ifta's. For the announced official amount, see the Dar's own announcement.",
     portalUrl: "https://www.dar-alifta.org",
     portalNameAr: "البوابة الرسمية لدار الإفتاء المصرية",
+    sourceUrl: "https://www.dar-alifta.org/ar/fatwa/details/16827",
+    checkedOn: "2026-11-17",
   },
   SA: {
     countryCode: "SA",
-    authorityAr: "هيئة كبار العلماء وهيئة الزكاة والضريبة والجمارك (زكاتي)",
-    authorityEn: "Council of Senior Scholars & ZATCA (Zakaty)",
+    authorityAr: "اللجنة الدائمة للإفتاء وهيئة كبار العلماء",
+    authorityEn: "Permanent Committee for Ifta & Council of Senior Scholars",
     rulingAr:
-      "يُعتمد نصاب الذهب (85 جراماً من الذهب الخالص عيار 24) كمرجع أساسي لزكاة الأموال النقدية وعروض التجارة.",
+      "الراجح عند اللجنة الدائمة، نقلاً عن موقع الإسلام سؤال وجواب، أن النقود الورقية تُقاس بأدنى النصابين مراعاةً للفقراء، وهو في الوقت الحاضر نصاب الفضة (595 جراماً).",
     rulingEn:
-      "85 grams of pure 24k gold is the standard benchmark for monetary and commercial zakat.",
-    standard: "gold",
+      "Per IslamQA's report of the Permanent Committee's view, paper money is measured by the lower of the two nisabs, in the interest of the poor, which is today the silver nisab (595g).",
+    standard: "lower",
     notesAr:
-      "خدمة «زكاتي» تتيح الحساب والدفع الآلي المباشر لمستفيدي الضمان الاجتماعي عبر منصة إحسان.",
-    notesEn: "Zakaty allows direct calculation and payout to social welfare recipients.",
+      "المصدر ناقل للفتوى وليس نصها. لم يُتحقق من نص اللجنة (المجلد 9)، ولم يُتحقق من موقف هيئة الزكاة والضريبة والجمارك.",
+    notesEn:
+      "The source relays the fatwa rather than quoting it. The Committee's own text (vol. 9) and ZATCA's position were not checked.",
     portalUrl: "https://ehsan.sa/zakat",
     portalNameAr: "منصة إحسان الوطنية للعمل الخيري",
+    sourceUrl: "https://islamqa.info/ar/answers/370380",
+    checkedOn: "2026-11-17",
   },
   KW: {
     countryCode: "KW",

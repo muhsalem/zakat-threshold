@@ -45,6 +45,7 @@ import { Route as CountryCodeRouteImport } from './routes/country.$code'
 import { Route as ApiPublicHooksCountryPricesRouteImport } from './routes/api/public/hooks/country-prices'
 import { Route as ApiPublicHooksJewelerFeedRouteImport } from './routes/api/public/hooks/jeweler-feed'
 import { Route as ApiPublicHooksMarketTickRouteImport } from './routes/api/public/hooks/market-tick'
+import { Route as ApiPublicV1OpenapiDotjsonRouteImport } from './routes/api/public/v1/openapi[.]json'
 import { Route as ApiPublicV1NisabIndexRouteImport } from './routes/api/public/v1/nisab/index'
 import { Route as ApiPublicV1NisabAtRouteImport } from './routes/api/public/v1/nisab/at'
 import { Route as ApiPublicV1NisabBulletinRouteImport } from './routes/api/public/v1/nisab/bulletin'
@@ -236,6 +237,12 @@ const ApiPublicHooksMarketTickRoute =
     path: '/api/public/hooks/market-tick',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicV1OpenapiDotjsonRoute =
+  ApiPublicV1OpenapiDotjsonRouteImport.update({
+    id: '/api/public/v1/openapi.json',
+    path: '/api/public/v1/openapi.json',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicV1NisabIndexRoute = ApiPublicV1NisabIndexRouteImport.update({
   id: '/api/public/v1/nisab/',
   path: '/api/public/v1/nisab/',
@@ -305,6 +312,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/country-prices': typeof ApiPublicHooksCountryPricesRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
   '/api/public/hooks/market-tick': typeof ApiPublicHooksMarketTickRoute
+  '/api/public/v1/openapi.json': typeof ApiPublicV1OpenapiDotjsonRoute
   '/api/public/v1/nisab/at': typeof ApiPublicV1NisabAtRoute
   '/api/public/v1/nisab/bulletin': typeof ApiPublicV1NisabBulletinRoute
   '/api/public/v1/nisab/csv': typeof ApiPublicV1NisabCsvRoute
@@ -348,6 +356,7 @@ export interface FileRoutesByTo {
   '/api/public/hooks/country-prices': typeof ApiPublicHooksCountryPricesRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
   '/api/public/hooks/market-tick': typeof ApiPublicHooksMarketTickRoute
+  '/api/public/v1/openapi.json': typeof ApiPublicV1OpenapiDotjsonRoute
   '/api/public/v1/nisab/at': typeof ApiPublicV1NisabAtRoute
   '/api/public/v1/nisab/bulletin': typeof ApiPublicV1NisabBulletinRoute
   '/api/public/v1/nisab/csv': typeof ApiPublicV1NisabCsvRoute
@@ -393,6 +402,7 @@ export interface FileRoutesById {
   '/api/public/hooks/country-prices': typeof ApiPublicHooksCountryPricesRoute
   '/api/public/hooks/jeweler-feed': typeof ApiPublicHooksJewelerFeedRoute
   '/api/public/hooks/market-tick': typeof ApiPublicHooksMarketTickRoute
+  '/api/public/v1/openapi.json': typeof ApiPublicV1OpenapiDotjsonRoute
   '/api/public/v1/nisab/at': typeof ApiPublicV1NisabAtRoute
   '/api/public/v1/nisab/bulletin': typeof ApiPublicV1NisabBulletinRoute
   '/api/public/v1/nisab/csv': typeof ApiPublicV1NisabCsvRoute
@@ -438,6 +448,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/country-prices'
     | '/api/public/hooks/jeweler-feed'
     | '/api/public/hooks/market-tick'
+    | '/api/public/v1/openapi.json'
     | '/api/public/v1/nisab/at'
     | '/api/public/v1/nisab/bulletin'
     | '/api/public/v1/nisab/csv'
@@ -481,6 +492,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/country-prices'
     | '/api/public/hooks/jeweler-feed'
     | '/api/public/hooks/market-tick'
+    | '/api/public/v1/openapi.json'
     | '/api/public/v1/nisab/at'
     | '/api/public/v1/nisab/bulletin'
     | '/api/public/v1/nisab/csv'
@@ -525,6 +537,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/country-prices'
     | '/api/public/hooks/jeweler-feed'
     | '/api/public/hooks/market-tick'
+    | '/api/public/v1/openapi.json'
     | '/api/public/v1/nisab/at'
     | '/api/public/v1/nisab/bulletin'
     | '/api/public/v1/nisab/csv'
@@ -565,6 +578,7 @@ export interface RootRouteChildren {
   ApiPublicHooksCountryPricesRoute: typeof ApiPublicHooksCountryPricesRoute
   ApiPublicHooksJewelerFeedRoute: typeof ApiPublicHooksJewelerFeedRoute
   ApiPublicHooksMarketTickRoute: typeof ApiPublicHooksMarketTickRoute
+  ApiPublicV1OpenapiDotjsonRoute: typeof ApiPublicV1OpenapiDotjsonRoute
   ApiPublicV1NisabAtRoute: typeof ApiPublicV1NisabAtRoute
   ApiPublicV1NisabBulletinRoute: typeof ApiPublicV1NisabBulletinRoute
   ApiPublicV1NisabCsvRoute: typeof ApiPublicV1NisabCsvRoute
@@ -827,6 +841,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksMarketTickRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/openapi.json': {
+      id: '/api/public/v1/openapi.json'
+      path: '/api/public/v1/openapi.json'
+      fullPath: '/api/public/v1/openapi.json'
+      preLoaderRoute: typeof ApiPublicV1OpenapiDotjsonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/v1/nisab/': {
       id: '/api/public/v1/nisab/'
       path: '/api/public/v1/nisab'
@@ -924,6 +945,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicHooksCountryPricesRoute: ApiPublicHooksCountryPricesRoute,
   ApiPublicHooksJewelerFeedRoute: ApiPublicHooksJewelerFeedRoute,
   ApiPublicHooksMarketTickRoute: ApiPublicHooksMarketTickRoute,
+  ApiPublicV1OpenapiDotjsonRoute: ApiPublicV1OpenapiDotjsonRoute,
   ApiPublicV1NisabAtRoute: ApiPublicV1NisabAtRoute,
   ApiPublicV1NisabBulletinRoute: ApiPublicV1NisabBulletinRoute,
   ApiPublicV1NisabCsvRoute: ApiPublicV1NisabCsvRoute,
